@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionInsertLogicalFact;
@@ -42,6 +41,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.common.ClickableLabel;
@@ -72,13 +72,13 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         this.layout = new DirtyableFlexTable();
         this.factType = set.getFactType();
 
-        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
-        this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                                 set.getFactType() );
+        AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
+        this.fieldCompletions = oracle.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                            set.getFactType() );
 
         layout.setStyleName( "model-builderInner-Background" ); //NON-NLS
 
-        this.isFactTypeKnown = completions.isFactTypeRecognized( set.getFactType() );
+        this.isFactTypeKnown = oracle.isFactTypeRecognized( set.getFactType() );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {
@@ -150,10 +150,10 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor( final ActionFieldValue val ) {
-        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
-        DropDownData enums = completions.getEnums( this.factType,
-                                                   val.getField(),
-                                                   FieldNatureUtil.toMap( this.model.getFieldValues() ) );
+        AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
+        DropDownData enums = oracle.getEnums( this.factType,
+                                              val.getField(),
+                                              FieldNatureUtil.toMap( this.model.getFieldValues() ) );
 
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,
@@ -190,7 +190,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             assertType = "assertLogical"; //NON-NLS
         }
 
-        String lbl = ( model.isBound() == false ) ? HumanReadable.getActionDisplayName(assertType) + " <b>" + this.model.getFactType() + "</b>" : HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.getFactType() + "</b>" + " <b>["
+        String lbl = ( model.isBound() == false ) ? HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.getFactType() + "</b>" : HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.getFactType() + "</b>" + " <b>["
                 + model.getBoundName() + "]</b>";
         if ( this.model.getFieldValues() != null && model.getFieldValues().length > 0 ) {
             lbl = lbl + ":";
@@ -202,7 +202,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     }
 
     protected void showAddFieldPopup( Widget w ) {
-        final PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );
@@ -220,8 +220,8 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         box.addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = completions.getFieldType( model.getFactType(),
-                                                             fieldName );
+                String fieldType = oracle.getFieldType( model.getFactType(),
+                                                        fieldName );
                 model.addFieldValue( new ActionFieldValue( fieldName,
                                                            "",
                                                            fieldType ) );

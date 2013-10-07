@@ -21,8 +21,8 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
@@ -43,12 +43,12 @@ public class GuidedRuleEditorViewImpl
     @Override
     public void setContent( final Path path,
                             final RuleModel model,
-                            final PackageDataModelOracle dataModel,
+                            final AsyncPackageDataModelOracle oracle,
                             final boolean isReadOnly,
                             final boolean isDSLEnabled ) {
         modeller = new RuleModeller( path,
                                      model,
-                                     dataModel,
+                                     oracle,
                                      new RuleModellerWidgetFactory(),
                                      localBus,
                                      isReadOnly,

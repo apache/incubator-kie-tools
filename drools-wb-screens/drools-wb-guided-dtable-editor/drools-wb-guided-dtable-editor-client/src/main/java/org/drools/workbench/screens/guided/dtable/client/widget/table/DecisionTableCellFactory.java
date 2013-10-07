@@ -41,6 +41,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.Popu
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupValueListDropDownEditCell;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;
@@ -65,7 +66,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
      * @param eventBus An EventBus on which cells can subscribe to events
      */
     public DecisionTableCellFactory( final GuidedDecisionTable52 model,
-                                     final PackageDataModelOracle oracle,
+                                     final AsyncPackageDataModelOracle oracle,
                                      final DecisionTableDropDownManager dropDownManager,
                                      final boolean isReadOnly,
                                      final EventBus eventBus ) {
@@ -80,8 +81,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
             throw new IllegalArgumentException( "oracle cannot be null" );
         }
         this.model = model;
-        this.utils = new GuidedDecisionTableUtils( oracle,
-                                                   model );
+        this.utils = new GuidedDecisionTableUtils( model,
+                                                   oracle );
     }
 
     /**

@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -40,6 +39,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -72,23 +72,23 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         layout.setStyleName( "model-builderInner-Background" );
 
-        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
-        if ( completions.isGlobalVariable( set.getVariable() ) ) {
-            this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.getVariable() );
-            this.variableClass = completions.getGlobalVariable( set.getVariable() );
+        if ( oracle.isGlobalVariable( set.getVariable() ) ) {
+            this.fieldCompletions = oracle.getFieldCompletionsForGlobalVariable( set.getVariable() );
+            this.variableClass = oracle.getGlobalVariable( set.getVariable() );
         } else {
             String type = mod.getModel().getLHSBindingType( set.getVariable() );
             if ( type != null ) {
-                this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                                         type );
+                this.fieldCompletions = oracle.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                                    type );
                 this.variableClass = type;
                 this.isBoundFact = true;
             } else {
                 ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.getVariable() );
                 if ( patternRhs != null ) {
-                    this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                                             patternRhs.getFactType() );
+                    this.fieldCompletions = oracle.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+                                                                        patternRhs.getFactType() );
                     this.variableClass = patternRhs.getFactType();
                     this.isBoundFact = true;
                 }
@@ -100,7 +100,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             ErrorPopup.showMessage( Constants.INSTANCE.CouldNotFindTheTypeForVariable0( set.getVariable() ) );
         }
 
-        this.isFactTypeKnown = completions.isFactTypeRecognized( this.variableClass );
+        this.isFactTypeKnown = oracle.isFactTypeRecognized( this.variableClass );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {
@@ -199,7 +199,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         String descFact = ( type != null ) ? type + " <b>[" + model.getVariable() + "]</b>" : model.getVariable();
 
-        String sl = Constants.INSTANCE.setterLabel( HumanReadable.getActionDisplayName(modifyType),
+        String sl = Constants.INSTANCE.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
                                                     descFact );
         return new ClickableLabel( sl,
                                    clk,
@@ -207,7 +207,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     }
 
     protected void showAddFieldPopup( ClickEvent w ) {
-        final PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddAField() );
 
@@ -227,8 +227,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             public void onChange( ChangeEvent event ) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
 
-                String fieldType = completions.getFieldType( variableClass,
-                                                             fieldName );
+                String fieldType = oracle.getFieldType( variableClass,
+                                                        fieldName );
                 model.addFieldValue( new ActionFieldValue( fieldName,
                                                            "",
                                                            fieldType ) );
@@ -243,10 +243,10 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor( final ActionFieldValue val ) {
-        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String type = "";
-        if ( completions.isGlobalVariable( this.model.getVariable() ) ) {
-            type = completions.getGlobalVariable( this.model.getVariable() );
+        if ( oracle.isGlobalVariable( this.model.getVariable() ) ) {
+            type = oracle.getGlobalVariable( this.model.getVariable() );
         } else {
             type = this.getModeller().getModel().getLHSBindingType( this.model.getVariable() );
             /*
@@ -257,9 +257,9 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             }
         }
 
-        DropDownData enums = completions.getEnums( type,
-                                                   val.getField(),
-                                                   FieldNatureUtil.toMap( this.model.getFieldValues() ) );
+        DropDownData enums = oracle.getEnums( type,
+                                              val.getField(),
+                                              FieldNatureUtil.toMap( this.model.getFieldValues() ) );
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,
                                                                      this.getModeller(),

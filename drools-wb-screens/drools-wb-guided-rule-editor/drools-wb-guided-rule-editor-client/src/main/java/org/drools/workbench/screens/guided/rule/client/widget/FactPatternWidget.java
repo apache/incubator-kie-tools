@@ -130,14 +130,14 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         this.popupCreator = new PopupCreator();
         this.popupCreator.setBindable( bindable );
-        this.popupCreator.setCompletions( mod.getSuggestionCompletions() );
+        this.popupCreator.setDataModelOracle( mod.getDataModelOracle() );
         this.popupCreator.setModeller( mod );
         this.popupCreator.setPattern( pattern );
 
         this.isAll0WithLabel = isAll0WithLabel;
 
         //if readOnly == null, the RO attribute is calculated.
-        this.isFactTypeKnown = mod.getSuggestionCompletions().isFactTypeRecognized( this.pattern.getFactType() );
+        this.isFactTypeKnown = mod.getDataModelOracle().isFactTypeRecognized( this.pattern.getFactType() );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {
@@ -520,7 +520,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     //Widget for CEP 'windows'
     private Widget createCEPWindowWidget( final RuleModeller modeller,
                                           final HasCEPWindow c ) {
-        if ( modeller.getSuggestionCompletions().isFactTypeAnEvent( pattern.getFactType() ) ) {
+        if ( modeller.getDataModelOracle().isFactTypeAnEvent( pattern.getFactType() ) ) {
             HorizontalPanel hp = new HorizontalPanel();
             Label lbl = new Label( HumanReadableConstants.INSTANCE.OverCEPWindow() );
             lbl.setStyleName( "paddedLabel" );
@@ -715,8 +715,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                 fieldName = c.getFieldName();
             }
 
-            String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
-                                                                                      fieldName );
+            String[] operators = connectives.getDataModelOracle().getOperatorCompletions( factType,
+                                                                                          fieldName );
             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
                                                                c );
 
@@ -831,9 +831,9 @@ public class FactPatternWidget extends RuleModellerWidget {
                     //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
                     String fieldName = con.getFieldName();
                     if ( DataType.TYPE_THIS.equals( fieldName ) ) {
-                        fields = connectives.getCompletions().getFieldCompletions( pattern.getFactType() );
+                        fields = connectives.getDataModelOracle().getFieldCompletions( pattern.getFactType() );
                     } else {
-                        fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
+                        fields = connectives.getDataModelOracle().getFieldCompletions( con.getFieldType() );
                     }
                     popupCreator.showBindFieldPopup( (Widget) event.getSource(),
                                                      pattern,

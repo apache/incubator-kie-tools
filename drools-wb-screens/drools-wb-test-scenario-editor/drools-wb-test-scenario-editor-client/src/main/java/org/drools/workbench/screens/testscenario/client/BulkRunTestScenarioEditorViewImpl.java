@@ -53,7 +53,7 @@ public class BulkRunTestScenarioEditorViewImpl
     DependencyGrid dependencyGrid;*/
 
     @Inject
-    public BulkRunTestScenarioEditorViewImpl( Event<NotificationEvent> notificationEvent/*,
+    public BulkRunTestScenarioEditorViewImpl( final Event<NotificationEvent> notificationEvent/*,
                                    DependencyGrid dependencyGrid */ ) {
         //this.dependencyGrid = dependencyGrid;
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -61,7 +61,7 @@ public class BulkRunTestScenarioEditorViewImpl
     }
 
     @Override
-    public void showSaveSuccessful( String fileName ) {
+    public void showSaveSuccessful( final String fileName ) {
         notificationEvent.fire( new NotificationEvent( "ProjectEditorResources.CONSTANTS.SaveSuccessful( fileName )" ) );
     }
 
@@ -71,7 +71,7 @@ public class BulkRunTestScenarioEditorViewImpl
     }
 
     @Override
-    public void setDependencies( List<Dependency> dependencies ) {
+    public void setDependencies( final List<Dependency> dependencies ) {
         //dependencyGrid.fillList( dependencies );
     }
 
@@ -88,7 +88,7 @@ public class BulkRunTestScenarioEditorViewImpl
     }
 
     @Override
-    public void setTitleText( String titleText ) {
+    public void setTitleText( final String titleText ) {
         tabTitleLabel = titleText;
     }
 
@@ -115,7 +115,7 @@ public class BulkRunTestScenarioEditorViewImpl
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter( final Presenter presenter ) {
         this.presenter = presenter;
     }
 

@@ -21,14 +21,16 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -59,9 +61,9 @@ public class ScenarioEditorPresenter {
     private final PlaceManager placeManager;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotification;
     private final TestScenarioResourceType type;
+    private final AsyncPackageDataModelOracle oracle;
 
     private Menus menus;
-    protected PackageDataModelOracle dmo;
 
     private ObservablePath path;
     private PlaceRequest place;
@@ -76,13 +78,15 @@ public class ScenarioEditorPresenter {
                                     final Caller<ScenarioTestEditorService> service,
                                     final PlaceManager placeManager,
                                     final Event<ChangeTitleWidgetEvent> changeTitleNotification,
-                                    final TestScenarioResourceType type ) {
+                                    final TestScenarioResourceType type,
+                                    final AsyncPackageDataModelOracle oracle ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.service = service;
         this.placeManager = placeManager;
         this.changeTitleNotification = changeTitleNotification;
         this.type = type;
+        this.oracle = oracle;
     }
 
     @OnStartup
@@ -184,14 +188,16 @@ public class ScenarioEditorPresenter {
     private RemoteCallback<TestScenarioModelContent> getModelSuccessCallback() {
         return new RemoteCallback<TestScenarioModelContent>() {
             @Override
-            public void callback( TestScenarioModelContent modelContent ) {
-                scenario = modelContent.getScenario();
-                dmo = modelContent.getOracle();
-                dmo.filter( scenario.getImports() );
+            public void callback( TestScenarioModelContent content ) {
+                scenario = content.getScenario();
+                final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( scenario,
+                                                                              oracle,
+                                                                              dataModel );
 
                 view.clear();
                 view.setScenario( scenario,
-                                  dmo );
+                                  oracle );
 
                 ifFixturesSizeZeroThenAddExecutionTrace();
 
@@ -203,7 +209,7 @@ public class ScenarioEditorPresenter {
 
                 view.renderEditor();
 
-                view.initImportsTab( dmo,
+                view.initImportsTab( oracle,
                                      scenario.getImports(),
                                      isReadOnly );
                 view.hideBusyIndicator();
@@ -217,26 +223,26 @@ public class ScenarioEditorPresenter {
         } else {
             if ( concurrentUpdateSessionInfo != null ) {
                 newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                        concurrentUpdateSessionInfo.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                save();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                //cancel?
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                reload();
-                            }
-                        }
-                ).show();
+                                     concurrentUpdateSessionInfo.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             save();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             //cancel?
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             reload();
+                                         }
+                                     }
+                                   ).show();
             } else {
                 save();
             }

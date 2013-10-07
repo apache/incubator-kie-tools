@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
@@ -39,6 +38,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModelEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerWidgetFactory;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.Popup;
 
@@ -88,8 +88,8 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
     protected final RuleModel ruleModel;
 
     public AbstractLimitedEntryBRLColumnViewImpl( final Path path,
-                                                  final PackageDataModelOracle oracle,
                                                   final GuidedDecisionTable52 model,
+                                                  final AsyncPackageDataModelOracle oracle,
                                                   final BRLColumn<T, C> column,
                                                   final EventBus eventBus,
                                                   final boolean isNew,

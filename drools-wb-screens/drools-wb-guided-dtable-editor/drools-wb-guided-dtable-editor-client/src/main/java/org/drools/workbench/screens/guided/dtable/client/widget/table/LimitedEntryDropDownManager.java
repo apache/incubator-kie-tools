@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -30,6 +29,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DropDownDataValueMapProvider;
 
 /**
@@ -40,12 +40,12 @@ public class LimitedEntryDropDownManager
         implements
         DropDownDataValueMapProvider<LimitedEntryDropDownManager.Context> {
 
-    protected final PackageDataModelOracle oracle;
+    protected final AsyncPackageDataModelOracle oracle;
     protected final GuidedDecisionTable52 model;
     protected final DTCellValueUtilities utilities;
 
     public LimitedEntryDropDownManager( final GuidedDecisionTable52 model,
-                                        final PackageDataModelOracle oracle ) {
+                                        final AsyncPackageDataModelOracle oracle ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }

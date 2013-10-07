@@ -17,7 +17,7 @@ package org.drools.workbench.screens.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
@@ -32,7 +32,7 @@ public class TemplateDataCellFactory
      * @param isReadOnly Should cells be created for a read-only mode of operation
      * @param eventBus EventBus to which cells can send update events
      */
-    public TemplateDataCellFactory( PackageDataModelOracle oracle,
+    public TemplateDataCellFactory( AsyncPackageDataModelOracle oracle,
                                     TemplateDropDownManager dropDownManager,
                                     boolean isReadOnly,
                                     EventBus eventBus ) {

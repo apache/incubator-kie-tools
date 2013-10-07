@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestResultMessage;
@@ -48,6 +49,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.kie.workbench.common.services.backend.session.SessionService;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
@@ -141,8 +143,8 @@ public class ScenarioTestEditorServiceImpl
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
                                                                sessionInfo ) );
 
-            Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(content);
-            scenario.setName(path.getFileName());
+            Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal( content );
+            scenario.setName( path.getFileName() );
             return scenario;
 
         } catch ( Exception e ) {
@@ -225,10 +227,14 @@ public class ScenarioTestEditorServiceImpl
     @Override
     public TestScenarioModelContent loadContent( Path path ) {
         try {
-            return new TestScenarioModelContent(
-                    load( path ),
-                    dataModelService.getDataModel( path ),
-                    projectService.resolvePackage( path ).getPackageName() );
+            final Scenario scenario = load( path );
+            final String packageName = projectService.resolvePackage( path ).getPackageName();
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+            return new TestScenarioModelContent( scenario,
+                                                 packageName,
+                                                 dataModel );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -267,12 +273,13 @@ public class ScenarioTestEditorServiceImpl
 
     @Override
     public void runAllScenarios( final Path testResourcePath ) {
-    	runAllScenarios(testResourcePath,
-                        testResultMessageEvent);
+        runAllScenarios( testResourcePath,
+                         testResultMessageEvent );
     }
-    
+
     //@Override
-    public void runAllScenarios( final Path testResourcePath, Event<TestResultMessage> customTestResultEvent ) {
+    public void runAllScenarios( final Path testResourcePath,
+                                 Event<TestResultMessage> customTestResultEvent ) {
         try {
             final Project project = projectService.resolveProject( testResourcePath );
             List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );
@@ -291,7 +298,7 @@ public class ScenarioTestEditorServiceImpl
             throw ExceptionUtilities.handleException( e );
         }
     }
-    
+
     public List<Path> loadScenarioPaths( final Path path ) {
         try {
             // Check Path exists

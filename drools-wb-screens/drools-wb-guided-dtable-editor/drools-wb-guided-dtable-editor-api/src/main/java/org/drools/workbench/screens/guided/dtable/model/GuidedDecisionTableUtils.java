@@ -2,7 +2,6 @@ package org.drools.workbench.screens.guided.dtable.model;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -25,6 +24,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -32,17 +32,15 @@ import org.uberfire.commons.validation.PortablePreconditions;
  */
 public class GuidedDecisionTableUtils {
 
-    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTable52 model;
+    private final AsyncPackageDataModelOracle oracle;
 
-    public GuidedDecisionTableUtils( final PackageDataModelOracle oracle,
-                                     final GuidedDecisionTable52 model ) {
-        PortablePreconditions.checkNotNull( "oracle",
-                                            oracle );
-        PortablePreconditions.checkNotNull( "model",
-                                            model );
-        this.oracle = oracle;
-        this.model = model;
+    public GuidedDecisionTableUtils( final GuidedDecisionTable52 model,
+                                     final AsyncPackageDataModelOracle oracle ) {
+        this.model = PortablePreconditions.checkNotNull( "model",
+                                                         model );
+        this.oracle = PortablePreconditions.checkNotNull( "oracle",
+                                                          oracle );
     }
 
     public String getType( final BaseColumn col ) {

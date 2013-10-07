@@ -19,26 +19,25 @@ package org.drools.workbench.screens.testscenario.client;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class GlobalPanel extends VerticalPanel {
 
-    public GlobalPanel(Map<String, FixtureList> globals,
-                       Scenario scenario,
-                       ExecutionTrace previousEx,
-                       PackageDataModelOracle dmo,
-                       ScenarioParentWidget scenarioWidget) {
-        for (Map.Entry<String, FixtureList> e : globals.entrySet()) {
-            add(new GlobalFactWidget(
-                    e.getKey(),
-                    globals.get(e.getKey()),
-                    scenario,
-                    dmo,
-                    scenarioWidget,
-                    previousEx));
+    public GlobalPanel( final Map<String, FixtureList> globals,
+                        final Scenario scenario,
+                        final ExecutionTrace previousEx,
+                        final AsyncPackageDataModelOracle oracle,
+                        final ScenarioParentWidget scenarioWidget ) {
+        for ( Map.Entry<String, FixtureList> e : globals.entrySet() ) {
+            add( new GlobalFactWidget( e.getKey(),
+                                       globals.get( e.getKey() ),
+                                       scenario,
+                                       oracle,
+                                       scenarioWidget,
+                                       previousEx ) );
         }
     }
 }

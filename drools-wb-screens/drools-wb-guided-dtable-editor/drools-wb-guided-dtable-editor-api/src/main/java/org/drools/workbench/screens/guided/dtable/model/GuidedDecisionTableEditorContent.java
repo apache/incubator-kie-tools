@@ -18,39 +18,43 @@ package org.drools.workbench.screens.guided.dtable.model;
 
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 
 @Portable
 public class GuidedDecisionTableEditorContent {
 
-    private PackageDataModelOracle dataModel;
-    private GuidedDecisionTable52 ruleModel;
+    private GuidedDecisionTable52 model;
     private Set<PortableWorkDefinition> workItemDefinitions;
+    private PackageDataModelOracleBaselinePayload dataModel;
 
     public GuidedDecisionTableEditorContent() {
     }
 
-    public GuidedDecisionTableEditorContent( final PackageDataModelOracle dataModel,
-                                             final GuidedDecisionTable52 ruleModel,
-                                             final Set<PortableWorkDefinition> workItemDefinitions ) {
-        this.dataModel = dataModel;
-        this.ruleModel = ruleModel;
-        this.workItemDefinitions = workItemDefinitions;
+    public GuidedDecisionTableEditorContent( final GuidedDecisionTable52 model,
+                                             final Set<PortableWorkDefinition> workItemDefinitions,
+                                             final PackageDataModelOracleBaselinePayload dataModel ) {
+        this.model = PortablePreconditions.checkNotNull( "model",
+                                                         model );
+        this.workItemDefinitions = PortablePreconditions.checkNotNull( "workItemDefinitions",
+                                                                       workItemDefinitions );
+        this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
+                                                             dataModel );
     }
 
-    public PackageDataModelOracle getDataModel() {
-        return dataModel;
-    }
-
-    public GuidedDecisionTable52 getRuleModel() {
-        return ruleModel;
+    public GuidedDecisionTable52 getModel() {
+        return model;
     }
 
     public Set<PortableWorkDefinition> getWorkItemDefinitions() {
         return workItemDefinitions;
+    }
+
+    public PackageDataModelOracleBaselinePayload getDataModel() {
+        return dataModel;
     }
 
 }

@@ -23,9 +23,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.RuleContentWidget;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
 
@@ -76,10 +76,17 @@ public class DRLEditorViewImpl
     }
 
     @Override
+    public void setContent( final AsyncPackageDataModelOracle oracle ) {
+        setContent( "",
+                    oracle );
+    }
+
+    @Override
     public void setContent( final String content,
-                            final PackageDataModelOracle dataModel ) {
-        ruleContentWidget.setContent( content, 15 );
-        browser.setDataModel( dataModel );
+                            final AsyncPackageDataModelOracle oracle ) {
+        ruleContentWidget.setContent( content,
+                                      15 );
+        browser.setDataModel( oracle );
     }
 
     @Override

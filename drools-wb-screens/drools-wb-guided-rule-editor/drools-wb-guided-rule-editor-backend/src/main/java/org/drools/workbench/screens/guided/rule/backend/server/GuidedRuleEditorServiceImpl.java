@@ -50,6 +50,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -166,8 +167,10 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         try {
             final RuleModel model = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            return new GuidedEditorContent( oracle,
-                                            model );
+            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+            return new GuidedEditorContent( model,
+                                            dataModel );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

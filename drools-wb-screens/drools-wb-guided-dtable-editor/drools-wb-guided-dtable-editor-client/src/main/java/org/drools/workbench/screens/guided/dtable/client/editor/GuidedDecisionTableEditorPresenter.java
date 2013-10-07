@@ -24,7 +24,6 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
@@ -34,7 +33,10 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -108,6 +110,9 @@ public class GuidedDecisionTableEditorPresenter {
     private GuidedDTableResourceType type;
 
     @Inject
+    private AsyncPackageDataModelOracle oracle;
+
+    @Inject
     @New
     private FileMenuBuilder menuBuilder;
     private Menus menus;
@@ -118,7 +123,6 @@ public class GuidedDecisionTableEditorPresenter {
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private GuidedDecisionTable52 model;
-    private PackageDataModelOracle oracle;
 
     @Inject
     private MetadataWidget metadataWidget;
@@ -253,15 +257,17 @@ public class GuidedDecisionTableEditorPresenter {
         return new RemoteCallback<GuidedDecisionTableEditorContent>() {
 
             @Override
-            public void callback( final GuidedDecisionTableEditorContent response ) {
-                model = response.getRuleModel();
-                oracle = response.getDataModel();
-                oracle.filter( model.getImports() );
+            public void callback( final GuidedDecisionTableEditorContent content ) {
+                model = content.getModel();
+                final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                              oracle,
+                                                                              dataModel );
 
                 view.setContent( path,
-                                 oracle,
                                  model,
-                                 response.getWorkItemDefinitions(),
+                                 content.getWorkItemDefinitions(),
+                                 oracle,
                                  isReadOnly );
                 importsWidget.setContent( oracle,
                                           model.getImports(),
@@ -320,26 +326,26 @@ public class GuidedDecisionTableEditorPresenter {
 
         if ( concurrentUpdateSessionInfo != null ) {
             newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                    concurrentUpdateSessionInfo.getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            save();
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel?
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            reload();
-                        }
-                    }
-            ).show();
+                                 concurrentUpdateSessionInfo.getIdentity(),
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         save();
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //cancel?
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         reload();
+                                     }
+                                 }
+                               ).show();
         } else {
             save();
         }

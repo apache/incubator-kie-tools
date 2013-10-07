@@ -29,32 +29,32 @@ public class FiredRulesPanel extends HorizontalPanel {
 
     private final ExecutionTrace executionTrace;
 
-    public FiredRulesPanel(ExecutionTrace executionTrace) {
+    public FiredRulesPanel( final ExecutionTrace executionTrace ) {
         this.executionTrace = executionTrace;
 
-        add(createText());
-        add(createShowButton());
+        add( createText() );
+        add( createShowButton() );
     }
 
     private HTML createText() {
-        return new HTML("<i><small>" + TestScenarioConstants.INSTANCE.property0RulesFiredIn1Ms(
-                executionTrace.getNumberOfRulesFired(), executionTrace.getExecutionTimeResult()) + "</small></i>");
+        return new HTML( "<i><small>" + TestScenarioConstants.INSTANCE.property0RulesFiredIn1Ms(
+                executionTrace.getNumberOfRulesFired(), executionTrace.getExecutionTimeResult() ) + "</small></i>" );
     }
 
     private Button createShowButton() {
-        final Button show = new Button(TestScenarioConstants.INSTANCE.ShowRulesFired());
-        show.addClickHandler(new ClickHandler() {
+        final Button show = new Button( TestScenarioConstants.INSTANCE.ShowRulesFired() );
+        show.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                ListBox rules = new ListBox(true);
-                for (String ruleName : executionTrace.getRulesFired()) {
-                    rules.addItem(ruleName);
+            public void onClick( ClickEvent event ) {
+                ListBox rules = new ListBox( true );
+                for ( String ruleName : executionTrace.getRulesFired() ) {
+                    rules.addItem( ruleName );
                 }
-                add(new SmallLabel("&nbsp:" + TestScenarioConstants.INSTANCE.RulesFired()));
-                add(rules);
-                show.setVisible(false);
+                add( new SmallLabel( "&nbsp:" + TestScenarioConstants.INSTANCE.RulesFired() ) );
+                add( rules );
+                show.setVisible( false );
             }
-        });
+        } );
 
         return show;
     }

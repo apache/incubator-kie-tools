@@ -17,34 +17,34 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class AddFieldToFactClickHandler
         extends AddFieldClickHandler {
 
-
     private final Fact fact;
 
-    public AddFieldToFactClickHandler(Fact fact,
-                                      PackageDataModelOracle dmo,
-                                      ScenarioParentWidget parent) {
-        super(dmo, parent);
+    public AddFieldToFactClickHandler( final Fact fact,
+                                       final AsyncPackageDataModelOracle oracle,
+                                       final ScenarioParentWidget parent ) {
+        super( oracle,
+               parent );
         this.fact = fact;
     }
 
     @Override
-    public void onSelection(SelectionEvent<String> stringSelectionEvent) {
-        fact.getFieldData().add(new FieldPlaceHolder(stringSelectionEvent.getSelectedItem()));
+    public void onSelection( final SelectionEvent<String> stringSelectionEvent ) {
+        fact.getFieldData().add( new FieldPlaceHolder( stringSelectionEvent.getSelectedItem() ) );
         parent.renderEditor();
     }
 
     protected FactFieldSelector createFactFieldSelector() {
         FactFieldSelector factFieldSelector = new FactFieldSelector();
-        for (String fieldName : dmo.getFieldCompletions(fact.getType())) {
-            if (!fact.isFieldNameInUse(fieldName)) {
-                factFieldSelector.addField(fieldName);
+        for ( String fieldName : oracle.getFieldCompletions( fact.getType() ) ) {
+            if ( !fact.isFieldNameInUse( fieldName ) ) {
+                factFieldSelector.addField( fieldName );
             }
         }
         return factFieldSelector;

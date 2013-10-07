@@ -25,18 +25,18 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 
 public class AddExecuteButton extends Button {
 
-    public AddExecuteButton(final Scenario scenario,
-                            final ScenarioParentWidget parent) {
-        super( TestScenarioConstants.INSTANCE.MoreDotDot());
+    public AddExecuteButton( final Scenario scenario,
+                             final ScenarioParentWidget parent ) {
+        super( TestScenarioConstants.INSTANCE.MoreDotDot() );
 
-        setTitle(TestScenarioConstants.INSTANCE.AddAnotherSectionOfDataAndExpectations());
+        setTitle( TestScenarioConstants.INSTANCE.AddAnotherSectionOfDataAndExpectations() );
 
-        addClickHandler(new ClickHandler() {
+        addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                scenario.getFixtures().add(new ExecutionTrace());
+            public void onClick( ClickEvent event ) {
+                scenario.getFixtures().add( new ExecutionTrace() );
                 parent.renderEditor();
             }
-        });
+        } );
     }
 }

@@ -11,27 +11,28 @@ import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 
 public class ListEditor extends VerticalPanel {
 
-
-    public ListEditor(final CollectionFieldData field, FieldConstraintHelper helper, final ScenarioParentWidget parent) {
-        if (field.getCollectionFieldList().isEmpty()) {
+    public ListEditor( final CollectionFieldData field,
+                       final FieldConstraintHelper helper,
+                       final ScenarioParentWidget parent ) {
+        if ( field.getCollectionFieldList().isEmpty() ) {
             Image image = ItemAltedImages.INSTANCE.NewItem();
-            image.setAltText(TestScenarioConstants.INSTANCE.AElementToAddInCollectionList());
-            image.setTitle(TestScenarioConstants.INSTANCE.AElementToAddInCollectionList());
-            image.addClickHandler(new ClickHandler() {
+            image.setAltText( TestScenarioConstants.INSTANCE.AElementToAddInCollectionList() );
+            image.setTitle( TestScenarioConstants.INSTANCE.AElementToAddInCollectionList() );
+            image.addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent w) {
+                public void onClick( ClickEvent w ) {
                     FieldData fieldData = new FieldData();
-                    fieldData.setName(field.getName());
-                    field.getCollectionFieldList().add(fieldData);
+                    fieldData.setName( field.getName() );
+                    field.getCollectionFieldList().add( fieldData );
                     parent.renderEditor();
                 }
-            });
+            } );
 
-            add(image);
+            add( image );
         } else {
             int i = 0;
-            for (final FieldData fieldData : field.getCollectionFieldList()) {
-                add(new ListEditorRow(i, field, fieldData, helper, parent));
+            for ( final FieldData fieldData : field.getCollectionFieldList() ) {
+                add( new ListEditorRow( i, field, fieldData, helper, parent ) );
                 i++;
             }
         }

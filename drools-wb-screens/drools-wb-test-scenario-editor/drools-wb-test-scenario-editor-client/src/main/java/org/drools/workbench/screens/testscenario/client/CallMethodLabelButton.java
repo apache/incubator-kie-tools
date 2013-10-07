@@ -17,27 +17,26 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.SmallLabel;
 
 public class CallMethodLabelButton extends HorizontalPanel {
 
-    public CallMethodLabelButton(ExecutionTrace previousEx,
-                                 Scenario scenario,
-                                 ExecutionTrace executionTrace,
-                                 ScenarioParentWidget scenarioWidget,
-                                 PackageDataModelOracle dmo) {
+    public CallMethodLabelButton( final ExecutionTrace previousEx,
+                                  final Scenario scenario,
+                                  final ExecutionTrace executionTrace,
+                                  final ScenarioParentWidget scenarioWidget,
+                                  final AsyncPackageDataModelOracle oracle ) {
 
-        add(new CallMethodOnNewDataButton(
-                previousEx,
-                scenario,
-                executionTrace,
-                scenarioWidget,
-                dmo));
-        add(new SmallLabel(TestScenarioConstants.INSTANCE.CALL()));
+        add( new CallMethodOnNewDataButton( previousEx,
+                                            scenario,
+                                            executionTrace,
+                                            scenarioWidget,
+                                            oracle ) );
+        add( new SmallLabel( TestScenarioConstants.INSTANCE.CALL() ) );
 
     }
 

@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.cell.client.Cell.Context;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
@@ -38,42 +38,42 @@ public class TemplateDropDownManager
         implements
         CellTableDropDownDataValueMapProvider {
 
-    private final PackageDataModelOracle sce;
     private final TemplateModel model;
+    private final AsyncPackageDataModelOracle oracle;
     private final TemplateDataCellValueFactory cellValueFactory;
     private DynamicData data;
 
     public TemplateDropDownManager( final TemplateModel model,
-                                    final PackageDataModelOracle sce ) {
+                                    final AsyncPackageDataModelOracle oracle ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "data cannot be null" );
         }
-        if ( sce == null ) {
-            throw new IllegalArgumentException( "sce cannot be null" );
+        if ( oracle == null ) {
+            throw new IllegalArgumentException( "oracle cannot be null" );
         }
         this.cellValueFactory = new TemplateDataCellValueFactory( model,
-                                                                  sce );
+                                                                  oracle );
         this.model = model;
-        this.sce = sce;
+        this.oracle = oracle;
     }
 
     public TemplateDropDownManager( final TemplateModel model,
-                                    final DynamicData data,
-                                    final PackageDataModelOracle sce ) {
+                                    final AsyncPackageDataModelOracle oracle,
+                                    final DynamicData data ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
         if ( data == null ) {
             throw new IllegalArgumentException( "data cannot be null" );
         }
-        if ( sce == null ) {
-            throw new IllegalArgumentException( "sce cannot be null" );
+        if ( oracle == null ) {
+            throw new IllegalArgumentException( "oracle cannot be null" );
         }
         this.cellValueFactory = new TemplateDataCellValueFactory( model,
-                                                                  sce );
+                                                                  oracle );
         this.model = model;
+        this.oracle = oracle;
         this.data = data;
-        this.sce = sce;
     }
 
     @Override
@@ -171,9 +171,9 @@ public class TemplateDropDownManager
                     final InterpolationVariable variable = allVariables[ iCol ];
                     final String field = variable.getFactField();
 
-                    if ( sce.isDependentEnum( baseVariable.getFactType(),
-                                              baseVariable.getFactField(),
-                                              field ) ) {
+                    if ( oracle.isDependentEnum( baseVariable.getFactType(),
+                                                 baseVariable.getFactField(),
+                                                 field ) ) {
                         dependentColumnIndexes.add( iCol );
                     }
                     break;

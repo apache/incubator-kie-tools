@@ -22,11 +22,11 @@ import java.util.Map;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
 import org.drools.workbench.screens.guided.template.client.editor.events.SetTemplateDataEvent;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridWidget;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
@@ -73,14 +73,14 @@ public class TemplateDataTableWidget extends Composite
      * Constructor
      */
     public TemplateDataTableWidget( TemplateModel model,
-                                    PackageDataModelOracle sce,
+                                    AsyncPackageDataModelOracle oracle,
                                     boolean isReadOnly,
                                     EventBus globalEventBus ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
-        if ( sce == null ) {
-            throw new IllegalArgumentException( "sce cannot be null" );
+        if ( oracle == null ) {
+            throw new IllegalArgumentException( "oracle cannot be null" );
         }
         if ( globalEventBus == null ) {
             throw new IllegalArgumentException( "globalEventBus cannot be null" );
@@ -91,15 +91,15 @@ public class TemplateDataTableWidget extends Composite
         //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
         //for dependent enumerations. This needs to be called before the columns are created.
         this.dropDownManager = new TemplateDropDownManager( model,
-                                                            sce );
+                                                            oracle );
 
         //Factories for new cell elements
-        this.cellFactory = new TemplateDataCellFactory( sce,
+        this.cellFactory = new TemplateDataCellFactory( oracle,
                                                         dropDownManager,
                                                         isReadOnly,
                                                         eventBus );
         this.cellValueFactory = new TemplateDataCellValueFactory( model,
-                                                                  sce );
+                                                                  oracle );
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedTemplateDataGridWidget( resources,

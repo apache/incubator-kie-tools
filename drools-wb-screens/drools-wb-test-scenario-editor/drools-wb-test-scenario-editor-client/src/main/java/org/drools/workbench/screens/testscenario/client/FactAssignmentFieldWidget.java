@@ -18,39 +18,36 @@ package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonsResources;
 import org.uberfire.client.common.DirtyableFlexTable;
-
 
 public class FactAssignmentFieldWidget implements IsWidget {
 
     private final DirtyableFlexTable widget;
 
-    public FactAssignmentFieldWidget(final FactAssignmentField factAssignmentField,
-                                     final FixtureList definitionList,
-                                     Scenario scenario,
-                                     PackageDataModelOracle dmo,
-                                     final ScenarioParentWidget parent,
-                                     ExecutionTrace executionTrace) {
+    public FactAssignmentFieldWidget( final FactAssignmentField factAssignmentField,
+                                      final FixtureList definitionList,
+                                      final Scenario scenario,
+                                      final AsyncPackageDataModelOracle oracle,
+                                      final ScenarioParentWidget parent,
+                                      final ExecutionTrace executionTrace ) {
 
         widget = new DirtyableFlexTable();
 
-        widget.setStyleName(CommonsResources.INSTANCE.css().greyBorderWithRoundCorners());
-        new FactDataWidgetFactory(
-                scenario,
-                dmo,
-                definitionList,
-                executionTrace,
-                parent,
-                widget
-        ).build(
-                factAssignmentField.getFact().getType(),
-                factAssignmentField.getFact());
+        widget.setStyleName( CommonsResources.INSTANCE.css().greyBorderWithRoundCorners() );
+        new FactDataWidgetFactory( scenario,
+                                   oracle,
+                                   definitionList,
+                                   executionTrace,
+                                   parent,
+                                   widget
+        ).build( factAssignmentField.getFact().getType(),
+                 factAssignmentField.getFact() );
 
     }
 

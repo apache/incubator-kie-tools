@@ -36,9 +36,9 @@ public class RetractWidget extends FlexTable {
     protected final Scenario scenario;
     protected final ScenarioParentWidget parent;
 
-    public RetractWidget(FixtureList retractList,
-                         Scenario scenario,
-                         ScenarioParentWidget parent) {
+    public RetractWidget( final FixtureList retractList,
+                          final Scenario scenario,
+                          final ScenarioParentWidget parent ) {
 
         this.retractList = retractList;
         this.scenario = scenario;
@@ -68,7 +68,7 @@ public class RetractWidget extends FlexTable {
 
         int row = 1;
         for ( Fixture fixture : retractList ) {
-            if ( fixture instanceof RetractFact) {
+            if ( fixture instanceof RetractFact ) {
                 final RetractFact retractFact = (RetractFact) fixture;
                 setWidget( row,
                            0,
@@ -84,12 +84,13 @@ public class RetractWidget extends FlexTable {
     }
 
     class DeleteButton extends ImageButton {
-        public DeleteButton(final RetractFact retractFact) {
-            super(CommonAltedImages.INSTANCE.DeleteItemSmall(),
+
+        public DeleteButton( final RetractFact retractFact ) {
+            super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
                    TestScenarioConstants.INSTANCE.RemoveThisRetractStatement() );
 
             addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent event) {
+                public void onClick( ClickEvent event ) {
                     retractList.remove( retractFact );
                     scenario.getFixtures().remove( retractFact );
                     parent.renderEditor();

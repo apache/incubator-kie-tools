@@ -25,9 +25,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.SmallLabel;
 
@@ -84,13 +84,13 @@ public class FactTypeBrowserWidget
         initWidget( panel );
     }
 
-    public void setDataModel( final PackageDataModelOracle dataModel ) {
+    public void setDataModel( final AsyncPackageDataModelOracle oracle ) {
         if ( tree.getItem( 0 ) != null ) {
             tree.clear();
         }
 
-        if ( dataModel.getFactTypes() != null ) {
-            for ( String type : dataModel.getFactTypes() ) {
+        if ( oracle.getFactTypes() != null ) {
+            for ( String type : oracle.getFactTypes() ) {
                 TreeItem it = new TreeItem();
                 it.setHTML( AbstractImagePrototype.create( DRLTextEditorResources.INSTANCE.images().classImage() ).getHTML()
                                     + "<small>"
@@ -98,7 +98,7 @@ public class FactTypeBrowserWidget
                 it.setUserObject( type + "( )" );
                 tree.addItem( it );
 
-                String[] fields = dataModel.getFieldCompletions( type );
+                String[] fields = oracle.getFieldCompletions( type );
                 if ( fields != null ) {
                     for ( String field : fields ) {
                         TreeItem fi = new TreeItem();

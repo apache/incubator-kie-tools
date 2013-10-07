@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -38,6 +37,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.SmallLabel;
 
@@ -66,10 +66,10 @@ public class Connectives {
     }
 
     /**
-     * Returns the completions.
+     * Returns the oracle.
      */
-    public PackageDataModelOracle getCompletions() {
-        return this.modeller.getSuggestionCompletions();
+    public AsyncPackageDataModelOracle getDataModelOracle() {
+        return this.modeller.getDataModelOracle();
     }
 
     public Widget connectives( SingleFieldConstraint c,
@@ -116,8 +116,8 @@ public class Connectives {
             String factType = cc.getFactType();
             String fieldName = cc.getFieldName();
 
-            String[] operators = this.getCompletions().getConnectiveOperatorCompletions( factType,
-                                                                                         fieldName );
+            String[] operators = this.getDataModelOracle().getConnectiveOperatorCompletions( factType,
+                                                                                             fieldName );
             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
                                                                cc );
 
@@ -133,7 +133,7 @@ public class Connectives {
             return w;
 
         } else {
-            SmallLabel sl = new SmallLabel( "<b>" + ( cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName(cc.getOperator()) ) + "</b>" );
+            SmallLabel sl = new SmallLabel( "<b>" + ( cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() ) ) + "</b>" );
             return sl;
         }
     }

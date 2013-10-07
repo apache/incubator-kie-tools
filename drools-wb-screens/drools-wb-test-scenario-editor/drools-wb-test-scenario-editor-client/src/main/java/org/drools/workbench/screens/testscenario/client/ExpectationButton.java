@@ -19,7 +19,6 @@ package org.drools.workbench.screens.testscenario.client;
 import java.util.ArrayList;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
@@ -28,6 +27,7 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 
 public class ExpectationButton
@@ -35,17 +35,17 @@ public class ExpectationButton
 
     private final ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
 
-    public ExpectationButton(final ExecutionTrace previousEx,
-                             final Scenario scenario,
-                             ScenarioParentWidget scenarioWidget,
-                             ScenarioWidgetComponentCreator scenarioWidgetComponentCreator,
-                             PackageDataModelOracle dmo) {
-        super(ItemAltedImages.INSTANCE.NewItem(),
-                TestScenarioConstants.INSTANCE.AddANewExpectation(),
-                previousEx,
-                scenario,
-                scenarioWidget,
-                dmo);
+    public ExpectationButton( final ExecutionTrace previousEx,
+                              final Scenario scenario,
+                              final ScenarioParentWidget scenarioWidget,
+                              final ScenarioWidgetComponentCreator scenarioWidgetComponentCreator,
+                              final AsyncPackageDataModelOracle dmo ) {
+        super( ItemAltedImages.INSTANCE.NewItem(),
+               TestScenarioConstants.INSTANCE.AddANewExpectation(),
+               previousEx,
+               scenario,
+               scenarioWidget,
+               dmo );
 
         this.scenarioWidgetComponentCreator = scenarioWidgetComponentCreator;
     }
@@ -56,62 +56,64 @@ public class ExpectationButton
     }
 
     class NewExpectationPopup extends TestScenarioButtonPopup {
+
         public NewExpectationPopup() {
-            super(TestScenarioAltedImages.INSTANCE.RuleAsset(),
-                    TestScenarioConstants.INSTANCE.NewExpectation());
+            super( TestScenarioAltedImages.INSTANCE.RuleAsset(),
+                   TestScenarioConstants.INSTANCE.NewExpectation() );
 
             Widget selectRule = scenarioWidgetComponentCreator.getRuleSelectionWidget(
                     new RuleSelectionEvent() {
 
-                        public void ruleSelected(String name) {
-                            VerifyRuleFired verifyRuleFired = new VerifyRuleFired(name,
-                                    null,
-                                    Boolean.TRUE);
-                            scenario.insertBetween(previousEx,
-                                    verifyRuleFired);
+                        public void ruleSelected( String name ) {
+                            VerifyRuleFired verifyRuleFired = new VerifyRuleFired( name,
+                                                                                   null,
+                                                                                   Boolean.TRUE );
+                            scenario.insertBetween( previousEx,
+                                                    verifyRuleFired );
                             parent.renderEditor();
                             hide();
                         }
-                    });
+                    } );
 
-            addAttribute(TestScenarioConstants.INSTANCE.Rule(),
-                    selectRule);
+            addAttribute( TestScenarioConstants.INSTANCE.Rule(),
+                          selectRule );
 
-            addAttribute(TestScenarioConstants.INSTANCE.FactValue(),
-                    new FactsPanel());
+            addAttribute( TestScenarioConstants.INSTANCE.FactValue(),
+                          new FactsPanel() );
 
             //add in list box for anon facts
-            addAttribute(TestScenarioConstants.INSTANCE.AnyFactThatMatches(),
-                    new AnyFactThatMatchesPanel());
+            addAttribute( TestScenarioConstants.INSTANCE.AnyFactThatMatches(),
+                          new AnyFactThatMatchesPanel() );
 
         }
 
         class AnyFactThatMatchesPanel extends ListBoxBasePanel {
+
             public AnyFactThatMatchesPanel() {
-                super(dmo.getFactTypes());
+                super( oracle.getFactTypes() );
             }
 
             @Override
             public Fixture getFixture() {
-                String factName = valueWidget.getItemText(valueWidget.getSelectedIndex());
-                return new VerifyFact(factName,
-                        new ArrayList<VerifyField>(),
-                        true);
+                String factName = valueWidget.getItemText( valueWidget.getSelectedIndex() );
+                return new VerifyFact( factName,
+                                       new ArrayList<VerifyField>(),
+                                       true );
             }
         }
 
         class FactsPanel extends ListBoxBasePanel {
 
             public FactsPanel() {
-                super(scenario.getFactNamesInScope(previousEx,
-                        true));
+                super( scenario.getFactNamesInScope( previousEx,
+                                                     true ) );
             }
 
             @Override
             public Fixture getFixture() {
-                String factName = valueWidget.getItemText(valueWidget.getSelectedIndex());
-                return new VerifyFact(factName,
-                        new ArrayList<VerifyField>());
+                String factName = valueWidget.getItemText( valueWidget.getSelectedIndex() );
+                return new VerifyFact( factName,
+                                       new ArrayList<VerifyField>() );
             }
 
         }

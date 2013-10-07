@@ -16,9 +16,10 @@
 
 package org.drools.workbench.screens.guided.template.model;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 
 /**
  * Container for data needed to edit a Guided Template
@@ -26,24 +27,26 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class GuidedTemplateEditorContent {
 
-    private PackageDataModelOracle dataModel;
-    private TemplateModel ruleModel;
+    private TemplateModel model;
+    private PackageDataModelOracleBaselinePayload dataModel;
 
     public GuidedTemplateEditorContent() {
     }
 
-    public GuidedTemplateEditorContent( final PackageDataModelOracle dataModel,
-                                        final TemplateModel ruleModel ) {
-        this.dataModel = dataModel;
-        this.ruleModel = ruleModel;
+    public GuidedTemplateEditorContent( final TemplateModel model,
+                                        final PackageDataModelOracleBaselinePayload dataModel ) {
+        this.model = PortablePreconditions.checkNotNull( "model",
+                                                         model );
+        this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
+                                                             dataModel );
     }
 
-    public PackageDataModelOracle getDataModel() {
+    public TemplateModel getModel() {
+        return model;
+    }
+
+    public PackageDataModelOracleBaselinePayload getDataModel() {
         return dataModel;
-    }
-
-    public TemplateModel getRuleModel() {
-        return ruleModel;
     }
 
 }

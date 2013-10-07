@@ -25,6 +25,7 @@ import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 
@@ -33,23 +34,23 @@ public class DataInputWidget
         implements ScenarioParentWidget {
 
     private final Scenario scenario;
-    private final PackageDataModelOracle dmo;
+    private final AsyncPackageDataModelOracle oracle;
     protected final String type;
     private final ScenarioParentWidget parent;
     private final ExecutionTrace executionTrace;
     private final FixtureList definitionList;
     private final String headerText;
 
-    public DataInputWidget(String factType,
-                           FixtureList definitionList,
-                           Scenario scenario,
-                           PackageDataModelOracle dmo,
-                           ScenarioParentWidget parent,
-                           ExecutionTrace executionTrace,
-                           String headerText) {
+    public DataInputWidget( String factType,
+                            FixtureList definitionList,
+                            Scenario scenario,
+                            AsyncPackageDataModelOracle oracle,
+                            ScenarioParentWidget parent,
+                            ExecutionTrace executionTrace,
+                            String headerText ) {
 
         this.scenario = scenario;
-        this.dmo = dmo;
+        this.oracle = oracle;
         this.type = factType;
 
         this.parent = parent;
@@ -63,47 +64,45 @@ public class DataInputWidget
     }
 
     private void setStyles() {
-        getCellFormatter().setStyleName(0,
-                0,
-                "modeller-fact-TypeHeader"); //NON-NLS
-        getCellFormatter().setAlignment(0,
-                0,
-                HasHorizontalAlignment.ALIGN_CENTER,
-                HasVerticalAlignment.ALIGN_MIDDLE);
-        setStyleName("modeller-fact-pattern-Widget"); //NON-NLS
+        getCellFormatter().setStyleName( 0,
+                                         0,
+                                         "modeller-fact-TypeHeader" ); //NON-NLS
+        getCellFormatter().setAlignment( 0,
+                                         0,
+                                         HasHorizontalAlignment.ALIGN_CENTER,
+                                         HasVerticalAlignment.ALIGN_MIDDLE );
+        setStyleName( "modeller-fact-pattern-Widget" ); //NON-NLS
     }
-
 
     public void renderEditor() {
 
         clear();
 
-        if (definitionList.size() == 0) {
+        if ( definitionList.size() == 0 ) {
             parent.renderEditor();
         }
 
         //This will work out what row is for what field, adding labels and remove icons
-        FactDataWidgetFactory factDataWidgetFactory = new FactDataWidgetFactory(
-                scenario,
-                dmo,
-                definitionList,
-                executionTrace,
-                this,
-                this);
-        for (Fixture fixture : definitionList) {
-            if (fixture instanceof FactData) {
+        FactDataWidgetFactory factDataWidgetFactory = new FactDataWidgetFactory( scenario,
+                                                                                 oracle,
+                                                                                 definitionList,
+                                                                                 executionTrace,
+                                                                                 this,
+                                                                                 this );
+        for ( Fixture fixture : definitionList ) {
+            if ( fixture instanceof FactData ) {
                 factDataWidgetFactory.build(
                         headerText,
-                        (FactData) fixture);
+                        (FactData) fixture );
             }
         }
 
         getFlexCellFormatter().setHorizontalAlignment(
                 factDataWidgetFactory.amountOrRows() + 1,
                 0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+                HasHorizontalAlignment.ALIGN_RIGHT );
 
-        if (factDataWidgetFactory.amountOrRows() == 0) {
+        if ( factDataWidgetFactory.amountOrRows() == 0 ) {
             setWidget(
                     1,
                     1,
@@ -111,8 +110,8 @@ public class DataInputWidget
                             TestScenarioConstants.INSTANCE.AddAField(),
                             new AddFieldToFactDataClickHandler(
                                     definitionList,
-                                    dmo,
-                                    parent)));
+                                    oracle,
+                                    parent ) ) );
         }
     }
 }

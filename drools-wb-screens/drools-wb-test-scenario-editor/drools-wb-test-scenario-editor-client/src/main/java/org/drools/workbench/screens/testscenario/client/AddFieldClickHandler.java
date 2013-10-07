@@ -20,43 +20,44 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;
 
 abstract class AddFieldClickHandler
-        implements SelectionHandler<String>, ClickHandler {
+        implements SelectionHandler<String>,
+                   ClickHandler {
 
-    protected final PackageDataModelOracle dmo;
+    protected final AsyncPackageDataModelOracle oracle;
     protected final ScenarioParentWidget parent;
 
-    public AddFieldClickHandler(PackageDataModelOracle dmo,
-                                ScenarioParentWidget parent) {
-        this.dmo = dmo;
+    public AddFieldClickHandler( final AsyncPackageDataModelOracle oracle,
+                                 final ScenarioParentWidget parent ) {
+        this.oracle = oracle;
         this.parent = parent;
     }
 
     @Override
-    public void onClick(ClickEvent event) {
+    public void onClick( final ClickEvent event ) {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle(TestScenarioConstants.INSTANCE.ChooseDotDotDot());
+        pop.setTitle( TestScenarioConstants.INSTANCE.ChooseDotDotDot() );
 
-        pop.addAttribute(TestScenarioConstants.INSTANCE.ChooseAFieldToAdd(), createAddNewField(pop));
+        pop.addAttribute( TestScenarioConstants.INSTANCE.ChooseAFieldToAdd(), createAddNewField( pop ) );
 
         pop.show();
     }
 
-    private FactFieldSelector createAddNewField(final FormStylePopup pop) {
+    private FactFieldSelector createAddNewField( final FormStylePopup pop ) {
         FactFieldSelector factFieldSelector = createFactFieldSelector();
 
-        factFieldSelector.addSelectionHandler(this);
-        factFieldSelector.addSelectionHandler(new SelectionHandler<String>() {
+        factFieldSelector.addSelectionHandler( this );
+        factFieldSelector.addSelectionHandler( new SelectionHandler<String>() {
             @Override
-            public void onSelection(SelectionEvent<String> stringSelectionEvent) {
+            public void onSelection( SelectionEvent<String> stringSelectionEvent ) {
                 pop.hide();
                 parent.renderEditor();
             }
-        });
+        } );
 
         return factFieldSelector;
     }

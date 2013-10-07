@@ -36,61 +36,61 @@ public class ActivateRuleFlowWidget
 
     private final ScenarioParentWidget parent;
 
-    public ActivateRuleFlowWidget(FixtureList retList,
-                                  Scenario sc,
-                                  ScenarioParentWidget parent) {
+    public ActivateRuleFlowWidget( final FixtureList retList,
+                                   final Scenario sc,
+                                   final ScenarioParentWidget parent ) {
         FlexTable outer = new FlexTable();
-        render(retList,
+        render( retList,
                 outer,
-                sc);
+                sc );
 
         this.parent = parent;
 
-        initWidget(outer);
+        initWidget( outer );
     }
 
-    private void render(final FixtureList retList,
-                        final FlexTable outer,
-                        final Scenario sc) {
+    private void render( final FixtureList retList,
+                         final FlexTable outer,
+                         final Scenario sc ) {
         outer.clear();
-        outer.getCellFormatter().setStyleName(0,
-                0,
-                "modeller-fact-TypeHeader");
-        outer.getCellFormatter().setAlignment(0,
-                0,
-                HasHorizontalAlignment.ALIGN_CENTER,
-                HasVerticalAlignment.ALIGN_MIDDLE);
-        outer.setStyleName("modeller-fact-pattern-Widget");
-        outer.setWidget(0,
-                0,
-                new SmallLabel(TestScenarioConstants.INSTANCE.ActivateRuleFlowGroup()));
-        outer.getFlexCellFormatter().setColSpan(0,
-                0,
-                2);
+        outer.getCellFormatter().setStyleName( 0,
+                                               0,
+                                               "modeller-fact-TypeHeader" );
+        outer.getCellFormatter().setAlignment( 0,
+                                               0,
+                                               HasHorizontalAlignment.ALIGN_CENTER,
+                                               HasVerticalAlignment.ALIGN_MIDDLE );
+        outer.setStyleName( "modeller-fact-pattern-Widget" );
+        outer.setWidget( 0,
+                         0,
+                         new SmallLabel( TestScenarioConstants.INSTANCE.ActivateRuleFlowGroup() ) );
+        outer.getFlexCellFormatter().setColSpan( 0,
+                                                 0,
+                                                 2 );
 
         int row = 1;
-        for (Fixture fixture : retList) {
+        for ( Fixture fixture : retList ) {
             final ActivateRuleFlowGroup acticateRuleFlowGroup = (ActivateRuleFlowGroup) fixture;
             outer.setWidget( row,
                              0,
                              new SmallLabel( acticateRuleFlowGroup.getName() ) );
             Image image = CommonAltedImages.INSTANCE.DeleteItemSmall();
-            image.setAltText(TestScenarioConstants.INSTANCE.RemoveThisRuleFlowActivation());
-            ImageButton del = new ImageButton(image,
-                    TestScenarioConstants.INSTANCE.RemoveThisRuleFlowActivation(),
-                    new ClickHandler() {
-                        public void onClick(ClickEvent w) {
-                            retList.remove(acticateRuleFlowGroup);
-                            sc.getFixtures().remove(acticateRuleFlowGroup);
-                            render(retList,
-                                    outer,
-                                    sc);
-                            parent.renderEditor();
-                        }
-                    });
-            outer.setWidget(row,
-                    1,
-                    del);
+            image.setAltText( TestScenarioConstants.INSTANCE.RemoveThisRuleFlowActivation() );
+            ImageButton del = new ImageButton( image,
+                                               TestScenarioConstants.INSTANCE.RemoveThisRuleFlowActivation(),
+                                               new ClickHandler() {
+                                                   public void onClick( ClickEvent w ) {
+                                                       retList.remove( acticateRuleFlowGroup );
+                                                       sc.getFixtures().remove( acticateRuleFlowGroup );
+                                                       render( retList,
+                                                               outer,
+                                                               sc );
+                                                       parent.renderEditor();
+                                                   }
+                                               } );
+            outer.setWidget( row,
+                             1,
+                             del );
 
             row++;
         }

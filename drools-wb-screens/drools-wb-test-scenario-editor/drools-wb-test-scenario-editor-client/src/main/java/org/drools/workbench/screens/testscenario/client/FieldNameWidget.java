@@ -1,18 +1,17 @@
 package org.drools.workbench.screens.testscenario.client;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class FieldNameWidget implements FieldNameWidgetView.Presenter {
 
     private final FieldNameWidgetView view;
 
-
-    public FieldNameWidget(String fieldName,
-                           PackageDataModelOracle dmo,
-                           FieldNameWidgetView view) {
+    public FieldNameWidget( final String fieldName,
+                            final AsyncPackageDataModelOracle oracle,
+                            final FieldNameWidgetView view ) {
         this.view = view;
-        this.view.setPresenter(this);
-        this.view.setTitle("fieldName");
+        this.view.setPresenter( this );
+        this.view.setTitle( "fieldName" );
     }
 
     @Override

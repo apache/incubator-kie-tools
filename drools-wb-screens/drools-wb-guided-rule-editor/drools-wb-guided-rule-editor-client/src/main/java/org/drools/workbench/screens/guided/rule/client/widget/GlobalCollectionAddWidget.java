@@ -59,7 +59,7 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         super( modeller,
                eventBus );
 
-        this.isFactTypeKnown = modeller.getSuggestionCompletions().isFactTypeRecognized( modeller.getModel().getLHSBindingType( action.getFactName() ) );
+        this.isFactTypeKnown = modeller.getDataModelOracle().isFactTypeRecognized( modeller.getModel().getLHSBindingType( action.getFactName() ) );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {

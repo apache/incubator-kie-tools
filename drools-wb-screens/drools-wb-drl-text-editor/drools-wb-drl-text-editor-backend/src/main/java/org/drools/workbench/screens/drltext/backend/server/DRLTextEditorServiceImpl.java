@@ -44,12 +44,13 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
-import org.kie.workbench.common.services.datamodel.service.DataModelService;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -148,9 +149,10 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
         try {
             final String drl = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
             return new DrlModelContent( drl,
-                                        oracle );
+                                        dataModel );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -175,7 +177,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
             //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
             //@wmedvede TODO review this event throwing, now the DataModelResourceChangeObserver takes care of
             //throwing this event.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, projectService.resolveProject(resource), resource ) );
+            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, projectService.resolveProject( resource ), resource ) );
 
             return resource;
 

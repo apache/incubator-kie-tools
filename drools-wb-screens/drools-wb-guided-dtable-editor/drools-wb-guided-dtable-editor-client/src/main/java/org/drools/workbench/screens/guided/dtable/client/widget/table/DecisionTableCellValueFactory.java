@@ -32,6 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue.CellState;
@@ -52,7 +53,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
      * @param oracle DataModelOracle to assist with drop-downs
      */
     public DecisionTableCellValueFactory( GuidedDecisionTable52 model,
-                                          PackageDataModelOracle oracle ) {
+                                          AsyncPackageDataModelOracle oracle ) {
         super( oracle );
         this.model = model;
         this.utilities = new DTCellValueUtilities( model,

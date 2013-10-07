@@ -24,7 +24,6 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.type.DRLResourceType;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
@@ -34,7 +33,10 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -99,6 +101,9 @@ public class DRLEditorPresenter {
 
     @Inject
     private DRLResourceType type;
+
+    @Inject
+    private AsyncPackageDataModelOracle oracle;
 
     @Inject
     @New
@@ -223,10 +228,11 @@ public class DRLEditorPresenter {
             @Override
             public void callback( final DrlModelContent content ) {
                 final String drl = content.getDrl();
-                final PackageDataModelOracle oracle = content.getDataModel();
+                final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( oracle,
+                                                                              dataModel );
                 if ( drl == null || drl.isEmpty() ) {
-                    view.setContent( null,
-                                     oracle );
+                    view.setContent( oracle );
                 } else {
                     view.setContent( drl,
                                      oracle );

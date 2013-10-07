@@ -2,8 +2,8 @@ package org.drools.workbench.screens.guided.template.client.editor;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 /**
  * Guided Rule Template Data View definition
@@ -11,7 +11,7 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 public interface GuidedRuleTemplateDataView extends IsWidget {
 
     void setContent( final TemplateModel model,
-                     final PackageDataModelOracle dataModel,
+                     final AsyncPackageDataModelOracle oracle,
                      final EventBus eventBus,
                      final boolean isReadOnly );
 

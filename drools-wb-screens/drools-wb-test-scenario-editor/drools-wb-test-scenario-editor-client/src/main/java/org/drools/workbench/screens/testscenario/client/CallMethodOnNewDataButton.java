@@ -18,17 +18,16 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.CallMethod;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 
 /**
- * 
  * This button gives a choice of modifying data, based on the positional
  * context.
  */
@@ -36,17 +35,17 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
 
     private final ExecutionTrace currentEx;
 
-    public CallMethodOnNewDataButton(final ExecutionTrace previousEx,
-                                     final Scenario scenario,
-                                     final ExecutionTrace currentEx,
-                                     ScenarioParentWidget scenarioWidget,
-                                     PackageDataModelOracle dmo) {
+    public CallMethodOnNewDataButton( final ExecutionTrace previousEx,
+                                      final Scenario scenario,
+                                      final ExecutionTrace currentEx,
+                                      final ScenarioParentWidget scenarioWidget,
+                                      final AsyncPackageDataModelOracle oracle ) {
         super( ItemAltedImages.INSTANCE.NewItem(),
                TestScenarioConstants.INSTANCE.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,
                scenarioWidget,
-               dmo);
+               oracle );
 
         this.currentEx = currentEx;
     }
@@ -57,6 +56,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
     }
 
     class NewInputPopup extends TestScenarioButtonPopup {
+
         public NewInputPopup() {
             super( TestScenarioAltedImages.INSTANCE.RuleAsset(),
                    TestScenarioConstants.INSTANCE.NewInput() );
@@ -71,7 +71,7 @@ public class CallMethodOnNewDataButton extends TestScenarioButton {
 
         class CallMethodFactPanel extends ListBoxBasePanel {
 
-            public CallMethodFactPanel(List<String> listItems) {
+            public CallMethodFactPanel( List<String> listItems ) {
                 super( listItems );
             }
 

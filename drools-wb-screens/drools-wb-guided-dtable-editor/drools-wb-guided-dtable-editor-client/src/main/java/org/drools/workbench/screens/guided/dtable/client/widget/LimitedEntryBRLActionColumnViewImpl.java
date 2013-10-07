@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -31,6 +30,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -43,15 +43,15 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
     private Presenter presenter;
 
     public LimitedEntryBRLActionColumnViewImpl( final Path path,
-                                                final PackageDataModelOracle oracle,
                                                 final GuidedDecisionTable52 model,
+                                                final AsyncPackageDataModelOracle oracle,
                                                 final LimitedEntryBRLActionColumn column,
                                                 final EventBus eventBus,
                                                 final boolean isNew,
                                                 final boolean isReadOnly ) {
         super( path,
-               oracle,
                model,
+               oracle,
                column,
                eventBus,
                isNew,

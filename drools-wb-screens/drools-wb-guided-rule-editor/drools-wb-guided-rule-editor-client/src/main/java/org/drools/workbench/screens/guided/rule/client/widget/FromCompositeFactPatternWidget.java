@@ -27,12 +27,12 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -152,7 +152,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
             }
         };
-        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName("from") + "</div>";
+        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from" ) + "</div>";
 
         DirtyableFlexTable panel = new DirtyableFlexTable();
 
@@ -190,9 +190,9 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
      * Pops up the fact selector.
      */
     protected void showFactTypeSelector( final Widget w ) {
-        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
+        AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         final ListBox box = new ListBox();
-        String[] facts = completions.getFactTypes();
+        String[] facts = oracle.getFactTypes();
 
         box.addItem( Constants.INSTANCE.Choose() );
 
@@ -243,7 +243,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void calculateReadOnly() {
         if ( this.pattern.getFactPattern() != null ) {
-            this.isFactTypeKnown = this.getModeller().getSuggestionCompletions().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() );
+            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() );
             this.readOnly = !this.isFactTypeKnown;
         }
     }

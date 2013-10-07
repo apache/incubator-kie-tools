@@ -43,7 +43,7 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
         layout.setWidth( "100%" );
         layout.setStyleName( "model-builderInner-Background" );
 
-        this.isFactTypeKnown = modeller.getSuggestionCompletions().isFactTypeRecognized( modeller.getModel().getLHSBindingType( model.getVariableName() ) );
+        this.isFactTypeKnown = modeller.getDataModelOracle().isFactTypeRecognized( modeller.getModel().getLHSBindingType( model.getVariableName() ) );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
         } else {
@@ -55,7 +55,7 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
         }
 
         String desc = modeller.getModel().getLHSBindingType( model.getVariableName() ) + " [" + model.getVariableName() + "]";
-        layout.add( new SmallLabel( HumanReadable.getActionDisplayName("retract") + "&nbsp;<b>" + desc + "</b>" ) );
+        layout.add( new SmallLabel( HumanReadable.getActionDisplayName( "retract" ) + "&nbsp;<b>" + desc + "</b>" ) );
 
         //This widget couldn't be modified.
         this.setModified( false );

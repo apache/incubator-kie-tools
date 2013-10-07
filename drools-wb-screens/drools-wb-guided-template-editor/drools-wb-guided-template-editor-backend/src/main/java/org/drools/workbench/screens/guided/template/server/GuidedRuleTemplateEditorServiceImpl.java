@@ -47,6 +47,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -153,8 +154,10 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
         try {
             final TemplateModel model = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            return new GuidedTemplateEditorContent( oracle,
-                                                    model );
+            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+            return new GuidedTemplateEditorContent( model,
+                                                    dataModel );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -239,7 +242,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                                              final TemplateModel content ) {
         try {
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream( BRDRTXMLPersistence.getInstance().marshal(content).getBytes() ),
+                                              new ByteArrayInputStream( BRDRTXMLPersistence.getInstance().marshal( content ).getBytes() ),
                                               FILTER_JAVA,
                                               FILTER_GLOBALS,
                                               FILTER_DSLS );

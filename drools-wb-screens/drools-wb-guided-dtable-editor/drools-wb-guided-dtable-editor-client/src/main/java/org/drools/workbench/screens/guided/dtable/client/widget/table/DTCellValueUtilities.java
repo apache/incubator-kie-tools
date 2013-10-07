@@ -21,7 +21,6 @@ import java.util.Date;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DateConverter;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
@@ -33,6 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 /**
  * Utilities relating to the use of DTCellValue's
@@ -52,15 +52,15 @@ public class DTCellValueUtilities {
     }
 
     private final GuidedDecisionTable52 model;
-    private final PackageDataModelOracle oracle;
+    private final AsyncPackageDataModelOracle oracle;
     private final GuidedDecisionTableUtils utils;
 
     public DTCellValueUtilities( final GuidedDecisionTable52 model,
-                                 final PackageDataModelOracle oracle ) {
+                                 final AsyncPackageDataModelOracle oracle ) {
         this.model = model;
         this.oracle = oracle;
-        this.utils = new GuidedDecisionTableUtils( oracle,
-                                                   model );
+        this.utils = new GuidedDecisionTableUtils( model,
+                                                   oracle );
     }
 
     /**

@@ -28,6 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 /**
  * Specific implementation for Default Value dependent enumerations
@@ -35,7 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 public class DefaultValueDropDownManager extends LimitedEntryDropDownManager {
 
     public DefaultValueDropDownManager( final GuidedDecisionTable52 model,
-                                        final PackageDataModelOracle oracle ) {
+                                        final AsyncPackageDataModelOracle oracle ) {
         super( model,
                oracle );
     }

@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.CallFixtureMap;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
@@ -42,6 +41,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
@@ -79,7 +79,7 @@ public class ScenarioEditorViewImpl
                                    final @New MultiPageEditor multiPage,
                                    final @New MetadataWidget metadataWidget,
                                    final @New BulkRunTestScenarioEditor bulkRunTestScenarioEditor,
-                                   Caller<MetadataService> metadataService,
+                                   final Caller<MetadataService> metadataService,
                                    final Event<NotificationEvent> notification,
                                    final BusyIndicatorView busyIndicatorView ) {
         this.importsWidget = importsWidget;
@@ -105,18 +105,17 @@ public class ScenarioEditorViewImpl
 
     }
 
-    public String getTitle( String fileName ) {
+    public String getTitle( final String fileName ) {
         return TestScenarioConstants.INSTANCE.TestScenarioParamFileName( fileName );
     }
 
     @Override
-    public void initImportsTab( PackageDataModelOracle dmo,
-                                Imports imports,
-                                boolean readOnly ) {
-        importsWidget.setContent(
-                dmo,
-                imports,
-                readOnly );
+    public void initImportsTab( final AsyncPackageDataModelOracle oracle,
+                                final Imports imports,
+                                final boolean readOnly ) {
+        importsWidget.setContent( oracle,
+                                  imports,
+                                  readOnly );
     }
 
     @Override
@@ -129,10 +128,10 @@ public class ScenarioEditorViewImpl
         metadataWidget.resetDirty();
     }
 
-    private void createWidgetForEditorLayout( DirtyableFlexTable editorLayout,
-                                              int layoutRow,
-                                              int layoutColumn,
-                                              Widget widget ) {
+    private void createWidgetForEditorLayout( final DirtyableFlexTable editorLayout,
+                                              final int layoutRow,
+                                              final int layoutColumn,
+                                              final Widget widget ) {
         editorLayout.setWidget( layoutRow,
                                 layoutColumn,
                                 widget );
@@ -307,9 +306,10 @@ public class ScenarioEditorViewImpl
     }
 
     @Override
-    public void setScenario( Scenario scenario,
-                             PackageDataModelOracle dmo ) {
-        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( this, dmo );
+    public void setScenario( final Scenario scenario,
+                             final AsyncPackageDataModelOracle oracle ) {
+        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( this,
+                                                                             oracle );
         scenarioWidgetComponentCreator.setScenario( scenario );
         scenarioWidgetComponentCreator.setShowResults( false );
     }
@@ -323,7 +323,7 @@ public class ScenarioEditorViewImpl
         scenarioWidgetComponentCreator.setShowResults( showResults );
     }
 
-    public void setScenario( Scenario scenario ) {
+    public void setScenario( final Scenario scenario ) {
         scenarioWidgetComponentCreator.setScenario( scenario );
     }
 

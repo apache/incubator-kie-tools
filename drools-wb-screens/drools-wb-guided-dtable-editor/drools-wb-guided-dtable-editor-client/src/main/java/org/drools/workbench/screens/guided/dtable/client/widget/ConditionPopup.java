@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
@@ -62,6 +61,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
@@ -97,7 +97,7 @@ public class ConditionPopup extends FormStylePopup {
     private int cepWindowRowIndex;
 
     private final GuidedDecisionTable52 model;
-    private final PackageDataModelOracle oracle;
+    private final AsyncPackageDataModelOracle oracle;
     private final GuidedDecisionTableUtils utils;
     private final DTCellValueWidgetFactory factory;
     private final Validator validator;
@@ -111,8 +111,8 @@ public class ConditionPopup extends FormStylePopup {
 
     private InfoPopup fieldLabelInterpolationInfo = getPredicateHint();
 
-    public ConditionPopup( final PackageDataModelOracle oracle,
-                           final GuidedDecisionTable52 model,
+    public ConditionPopup( final GuidedDecisionTable52 model,
+                           final AsyncPackageDataModelOracle oracle,
                            final ConditionColumnCommand refreshGrid,
                            final ConditionCol52 col,
                            final boolean isNew,
@@ -122,8 +122,8 @@ public class ConditionPopup extends FormStylePopup {
         this.editingCol = cloneConditionColumn( col );
         this.model = model;
         this.oracle = oracle;
-        this.utils = new GuidedDecisionTableUtils( oracle,
-                                                   model );
+        this.utils = new GuidedDecisionTableUtils( model,
+                                                   oracle );
         this.isReadOnly = isReadOnly;
         this.validator = new Validator( model.getConditions() );
         this.utilities = new DTCellValueUtilities( model,

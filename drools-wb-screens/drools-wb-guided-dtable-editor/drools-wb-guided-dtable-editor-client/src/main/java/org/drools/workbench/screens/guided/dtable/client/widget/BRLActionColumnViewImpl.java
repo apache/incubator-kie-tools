@@ -34,6 +34,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -46,15 +47,15 @@ public class BRLActionColumnViewImpl extends AbstractBRLColumnViewImpl<IAction, 
     private Presenter presenter;
 
     public BRLActionColumnViewImpl( final Path path,
-                                    final PackageDataModelOracle oracle,
                                     final GuidedDecisionTable52 model,
+                                    final AsyncPackageDataModelOracle oracle,
                                     final BRLActionColumn column,
                                     final EventBus eventBus,
                                     final boolean isNew,
                                     final boolean isReadOnly ) {
         super( path,
-               oracle,
                model,
+               oracle,
                column,
                eventBus,
                isNew,

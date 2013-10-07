@@ -35,8 +35,8 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.AuditEventsImages;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
@@ -78,7 +78,7 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
         initWidget( layout );
     }
 
-    private void showErrors( List<BuilderResultLine> rs ) {
+    private void showErrors( final List<BuilderResultLine> rs ) {
         results.clear();
         results.setVisible( true );
 
@@ -216,7 +216,7 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 //
 //    }
 
-    private Widget doAuditView( List<String[]> auditLog ) {
+    private Widget doAuditView( final List<String[]> auditLog ) {
         VerticalPanel vp = new VerticalPanel();
         vp.add( new HTML( "<hr/>" ) );
         FlexTable g = new FlexTable();
@@ -277,15 +277,15 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
         return vp;
     }
 
-    private Widget hz( Image image,
-                       SmallLabel smallLabel ) {
+    private Widget hz( final Image image,
+                       final SmallLabel smallLabel ) {
         HorizontalPanel h = new HorizontalPanel();
         h.add( image );
         h.add( smallLabel );
         return h;
     }
 
-    private Image getEventImage( String eventType ) {
+    private Image getEventImage( final String eventType ) {
         int type;
 
         try {
@@ -315,7 +315,7 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
     }
 
     @Override
-    public void showBusyIndicator( String message ) {
+    public void showBusyIndicator( final String message ) {
         BusyPopup.showMessage( message );
     }
 

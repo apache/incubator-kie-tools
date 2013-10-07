@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
@@ -47,6 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;
@@ -63,7 +63,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
     private int defaultValueWidgetContainerIndex = -1;
 
     private final GuidedDecisionTable52 model;
-    private final PackageDataModelOracle oracle;
+    private final AsyncPackageDataModelOracle oracle;
     private final GuidedDecisionTableUtils utils;
     private final DTCellValueWidgetFactory factory;
     private final BRLRuleModel rm;
@@ -73,8 +73,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
     private final boolean isReadOnly;
 
-    public ActionSetFieldPopup( final PackageDataModelOracle oracle,
-                                final GuidedDecisionTable52 model,
+    public ActionSetFieldPopup( final GuidedDecisionTable52 model,
+                                final AsyncPackageDataModelOracle oracle,
                                 final GenericColumnCommand refreshGrid,
                                 final ActionSetFieldCol52 col,
                                 final boolean isNew,
@@ -83,8 +83,8 @@ public class ActionSetFieldPopup extends FormStylePopup {
         this.editingCol = cloneActionSetColumn( col );
         this.model = model;
         this.oracle = oracle;
-        this.utils = new GuidedDecisionTableUtils( oracle,
-                                                   model );
+        this.utils = new GuidedDecisionTableUtils( model,
+                                                   oracle );
         this.isReadOnly = isReadOnly;
         this.utilities = new DTCellValueUtilities( model,
                                                    oracle );

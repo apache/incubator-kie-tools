@@ -43,6 +43,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.kie.workbench.common.services.security.UserCapabilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.uberfire.backend.vfs.Path;
@@ -65,7 +66,7 @@ public class RuleModeller extends DirtyableComposite
 
     private DirtyableFlexTable layout;
     private RuleModel model;
-    private PackageDataModelOracle dataModel;
+    private AsyncPackageDataModelOracle oracle;
     private RuleModellerConfiguration configuration;
 
     private boolean showingOptions = false;
@@ -91,14 +92,14 @@ public class RuleModeller extends DirtyableComposite
     //used by Guided Rule (DRL + DSLR)
     public RuleModeller( final Path path,
                          final RuleModel model,
-                         final PackageDataModelOracle dataModel,
+                         final AsyncPackageDataModelOracle oracle,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly,
                          final boolean isDSLEnabled ) {
         this( path,
               model,
-              dataModel,
+              oracle,
               widgetFactory,
               RuleModellerConfiguration.getDefault(),
               eventBus,
@@ -109,13 +110,13 @@ public class RuleModeller extends DirtyableComposite
     //used by Guided Templates
     public RuleModeller( final Path path,
                          final RuleModel model,
-                         final PackageDataModelOracle dataModel,
+                         final AsyncPackageDataModelOracle oracle,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly ) {
         this( path,
               model,
-              dataModel,
+              oracle,
               widgetFactory,
               eventBus,
               isReadOnly,
@@ -125,14 +126,14 @@ public class RuleModeller extends DirtyableComposite
     //used by Guided Decision BRL Fragments
     public RuleModeller( final Path path,
                          final RuleModel model,
-                         final PackageDataModelOracle dataModel,
+                         final AsyncPackageDataModelOracle oracle,
                          final ModellerWidgetFactory widgetFactory,
                          final RuleModellerConfiguration configuration,
                          final EventBus eventBus,
                          final boolean isReadOnly ) {
         this.path = path;
         this.model = model;
-        this.dataModel = dataModel;
+        this.oracle = oracle;
         this.widgetFactory = widgetFactory;
         this.configuration = configuration;
         this.eventBus = eventBus;
@@ -176,7 +177,7 @@ public class RuleModeller extends DirtyableComposite
                                               "64px" );
 
         if ( this.showExtendedRuleDropdown() ) {
-            addExtendedRuleDropdown( dataModel.getRuleNamesForPackage( model.getPackageName() ) );
+            addExtendedRuleDropdown( oracle.getRuleNamesForPackage( model.getPackageName() ) );
         }
 
         if ( this.showLHS() ) {
@@ -478,7 +479,7 @@ public class RuleModeller extends DirtyableComposite
         RuleModellerConditionSelectorPopup popup = new RuleModellerConditionSelectorPopup( model,
                                                                                            this,
                                                                                            position,
-                                                                                           getSuggestionCompletions() );
+                                                                                           getDataModelOracle() );
         popup.show();
     }
 
@@ -487,7 +488,7 @@ public class RuleModeller extends DirtyableComposite
         RuleModellerActionSelectorPopup popup = new RuleModellerActionSelectorPopup( model,
                                                                                      this,
                                                                                      position,
-                                                                                     getSuggestionCompletions() );
+                                                                                     getDataModelOracle() );
         popup.show();
     }
 
@@ -772,7 +773,7 @@ public class RuleModeller extends DirtyableComposite
      * as a global.
      */
     public boolean isVariableNameUsed( String name ) {
-        return model.isVariableNameUsed( name ) || getSuggestionCompletions().isGlobalVariable( name );
+        return model.isVariableNameUsed( name ) || getDataModelOracle().isGlobalVariable( name );
     }
 
     @Override
@@ -780,8 +781,8 @@ public class RuleModeller extends DirtyableComposite
         return ( layout.hasDirty() || dirtyflag );
     }
 
-    public PackageDataModelOracle getSuggestionCompletions() {
-        return dataModel;
+    public AsyncPackageDataModelOracle getDataModelOracle() {
+        return oracle;
     }
 
     public ModellerWidgetFactory getWidgetFactory() {

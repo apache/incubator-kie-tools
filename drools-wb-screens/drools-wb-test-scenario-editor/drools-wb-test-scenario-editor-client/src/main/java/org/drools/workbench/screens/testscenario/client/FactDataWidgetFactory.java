@@ -26,7 +26,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fact;
@@ -38,6 +37,7 @@ import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -48,7 +48,7 @@ public class FactDataWidgetFactory {
 
     private final DirtyableFlexTable widget;
     private final Scenario scenario;
-    private final PackageDataModelOracle dmo;
+    private final AsyncPackageDataModelOracle oracle;
     private final FixtureList definitionList;
     private final ExecutionTrace executionTrace;
 
@@ -56,29 +56,28 @@ public class FactDataWidgetFactory {
     private int col = 0;
     private final ScenarioParentWidget parent;
 
-    public FactDataWidgetFactory(Scenario scenario,
-                                 PackageDataModelOracle dmo,
-                                 FixtureList definitionList,
-                                 ExecutionTrace executionTrace,
-                                 ScenarioParentWidget parent,
-                                 DirtyableFlexTable widget) {
+    public FactDataWidgetFactory( final Scenario scenario,
+                                  final AsyncPackageDataModelOracle oracle,
+                                  final FixtureList definitionList,
+                                  final ExecutionTrace executionTrace,
+                                  final ScenarioParentWidget parent,
+                                  final DirtyableFlexTable widget ) {
         this.scenario = scenario;
-        this.dmo = dmo;
+        this.oracle = oracle;
         this.definitionList = definitionList;
         this.executionTrace = executionTrace;
         this.parent = parent;
         this.widget = widget;
     }
 
+    public void build( final String headerText,
+                       final Fact fact ) {
 
-    public void build(String headerText,
-                      Fact fact) {
-
-        if (fact instanceof FactData ) {
+        if ( fact instanceof FactData ) {
             FactData factData = (FactData) fact;
-            widget.setWidget(0,
-                    ++col,
-                    new SmallLabel("[" + factData.getName() + "]"));
+            widget.setWidget( 0,
+                              ++col,
+                              new SmallLabel( "[" + factData.getName() + "]" ) );
         } else {
             col++;
         }
@@ -86,148 +85,141 @@ public class FactDataWidgetFactory {
         widget.setWidget(
                 0,
                 0,
-                new ClickableLabel(headerText,
-                        createAddFieldButton(fact)));
+                new ClickableLabel( headerText,
+                                    createAddFieldButton( fact ) ) );
 
         Map<FieldData, FieldDataConstraintEditor> enumEditorMap
                 = new HashMap<FieldData, FieldDataConstraintEditor>();
         // Sets row name and delete button.
-        for (final Field field : fact.getFieldData()) {
+        for ( final Field field : fact.getFieldData() ) {
             // Avoid duplicate field rows, only one for each name.
-            if (rowIndexByFieldName.doesNotContain(field.getName())) {
-                newRow(fact, field.getName());
+            if ( rowIndexByFieldName.doesNotContain( field.getName() ) ) {
+                newRow( fact, field.getName() );
             }
 
             // Sets row data
-            int fieldRowIndex = rowIndexByFieldName.getRowIndex(field.getName());
+            int fieldRowIndex = rowIndexByFieldName.getRowIndex( field.getName() );
             IsWidget editableCell = editableCell(
                     field,
                     fact,
-                    fact.getType());
-            widget.setWidget(fieldRowIndex,
-                    col,
-                    editableCell);
-            if (field instanceof FieldData) {
+                    fact.getType() );
+            widget.setWidget( fieldRowIndex,
+                              col,
+                              editableCell );
+            if ( field instanceof FieldData ) {
                 FieldData fieldData = (FieldData) field;
-                if (fieldData.getNature() == FieldData.TYPE_ENUM) {
-                    enumEditorMap.put(fieldData, (FieldDataConstraintEditor) editableCell);
+                if ( fieldData.getNature() == FieldData.TYPE_ENUM ) {
+                    enumEditorMap.put( fieldData, (FieldDataConstraintEditor) editableCell );
                 }
             }
         }
-        for (FieldDataConstraintEditor outerEnumEditor : enumEditorMap.values()) {
-            for (FieldDataConstraintEditor innerEnumEditor : enumEditorMap.values()) {
-                if (outerEnumEditor != innerEnumEditor) {
-                    outerEnumEditor.addIfDependentEnumEditor(innerEnumEditor);
+        for ( FieldDataConstraintEditor outerEnumEditor : enumEditorMap.values() ) {
+            for ( FieldDataConstraintEditor innerEnumEditor : enumEditorMap.values() ) {
+                if ( outerEnumEditor != innerEnumEditor ) {
+                    outerEnumEditor.addIfDependentEnumEditor( innerEnumEditor );
                 }
             }
         }
 
-        if (fact instanceof FactData) {
-            DeleteFactColumnButton deleteFactColumnButton = new DeleteFactColumnButton((FactData) fact);
+        if ( fact instanceof FactData ) {
+            DeleteFactColumnButton deleteFactColumnButton = new DeleteFactColumnButton( (FactData) fact );
 
             widget.setWidget(
                     rowIndexByFieldName.amountOrRows() + 1,
                     col,
-                    deleteFactColumnButton);
+                    deleteFactColumnButton );
         }
-
 
     }
 
-    private ClickHandler createAddFieldButton(Fact fact) {
+    private ClickHandler createAddFieldButton( final Fact fact ) {
 
-        if (fact instanceof FactData) {
+        if ( fact instanceof FactData ) {
             return new AddFieldToFactDataClickHandler(
                     definitionList,
-                    dmo,
-                    parent);
+                    oracle,
+                    parent );
         } else {
             return new AddFieldToFactClickHandler(
                     fact,
-                    dmo,
-                    parent);
+                    oracle,
+                    parent );
         }
     }
 
-    private void newRow(final Fact fact,
-                        final String fieldName) {
-        rowIndexByFieldName.addRow(fieldName);
+    private void newRow( final Fact fact,
+                         final String fieldName ) {
+        rowIndexByFieldName.addRow( fieldName );
 
-        int rowIndex = rowIndexByFieldName.getRowIndex(fieldName);
+        int rowIndex = rowIndexByFieldName.getRowIndex( fieldName );
 
-        widget.setWidget(rowIndex,
-                0,
-                createFieldNameWidget(fieldName));
-        widget.setWidget(rowIndex,
-                definitionList.size() + 1,
-                new DeleteFieldRowButton(fact,
-                        fieldName));
-        widget.getCellFormatter().setHorizontalAlignment(rowIndex,
-                0,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+        widget.setWidget( rowIndex,
+                          0,
+                          createFieldNameWidget( fieldName ) );
+        widget.setWidget( rowIndex,
+                          definitionList.size() + 1,
+                          new DeleteFieldRowButton( fact,
+                                                    fieldName ) );
+        widget.getCellFormatter().setHorizontalAlignment( rowIndex,
+                                                          0,
+                                                          HasHorizontalAlignment.ALIGN_RIGHT );
     }
 
     /**
      * This will provide a cell editor. It will filter non numerics, show choices etc as appropriate.
-     *
      * @param field
      * @param factType
      * @return
      */
-    private IsWidget editableCell(final Field field,
-                                  Fact fact,
-                                  String factType) {
-        if (field instanceof FieldData) {
-            FieldDataConstraintEditor fieldDataConstraintEditor = new FieldDataConstraintEditor(
-                    factType,
-                    (FieldData)field,
-                    fact,
-                    dmo,
-                    scenario,
-                    executionTrace);
-            fieldDataConstraintEditor.addValueChangeHandler(new ValueChangeHandler<String>() {
+    private IsWidget editableCell( final Field field,
+                                   final Fact fact,
+                                   final String factType ) {
+        if ( field instanceof FieldData ) {
+            FieldDataConstraintEditor fieldDataConstraintEditor = new FieldDataConstraintEditor( factType,
+                                                                                                 (FieldData) field,
+                                                                                                 fact,
+                                                                                                 oracle,
+                                                                                                 scenario,
+                                                                                                 executionTrace );
+            fieldDataConstraintEditor.addValueChangeHandler( new ValueChangeHandler<String>() {
                 @Override
-                public void onValueChange(ValueChangeEvent<String> stringValueChangeEvent) {
-                    ((FieldData) field).setValue(stringValueChangeEvent.getValue());
+                public void onValueChange( ValueChangeEvent<String> stringValueChangeEvent ) {
+                    ( (FieldData) field ).setValue( stringValueChangeEvent.getValue() );
                 }
-            });
+            } );
             return fieldDataConstraintEditor;
-        } else if (field instanceof CollectionFieldData ) {
-            return new CollectionFieldDataConstraintEditor(
-                    factType,
-                    (CollectionFieldData)field,
-                    fact,
-                    dmo,
-                    scenario,
-                    executionTrace);
-        } else if (field instanceof FactAssignmentField ) {
-            return new FactAssignmentFieldWidget(
-                    (FactAssignmentField) field,
-                    definitionList,
-                    scenario,
-                    dmo,
-                    parent,
-                    executionTrace);
-        } else if (field instanceof FieldPlaceHolder) {
+        } else if ( field instanceof CollectionFieldData ) {
+            return new CollectionFieldDataConstraintEditor( factType,
+                                                            (CollectionFieldData) field,
+                                                            fact,
+                                                            oracle,
+                                                            scenario,
+                                                            executionTrace );
+        } else if ( field instanceof FactAssignmentField ) {
+            return new FactAssignmentFieldWidget( (FactAssignmentField) field,
+                                                  definitionList,
+                                                  scenario,
+                                                  oracle,
+                                                  parent,
+                                                  executionTrace );
+        } else if ( field instanceof FieldPlaceHolder ) {
 
             return new FieldSelectorWidget(
                     field,
-                    new FieldConstraintHelper(
-                            scenario,
-                            executionTrace,
-                            dmo,
-                            factType,
-                            field,
-                            fact),
-                    parent);
+                    new FieldConstraintHelper( scenario,
+                                               executionTrace,
+                                               oracle,
+                                               factType,
+                                               field,
+                                               fact ),
+                    parent );
         }
 
-        throw new IllegalArgumentException("Unknown field type: " + field.getClass());
+        throw new IllegalArgumentException( "Unknown field type: " + field.getClass() );
     }
 
-
-    private IsWidget createFieldNameWidget(String fieldName) {
-        return new FieldNameWidgetImpl(fieldName);
+    private IsWidget createFieldNameWidget( final String fieldName ) {
+        return new FieldNameWidgetImpl( fieldName );
     }
 
     public int amountOrRows() {
@@ -236,64 +228,66 @@ public class FactDataWidgetFactory {
 
     class DeleteFactColumnButton extends ImageButton {
 
-        public DeleteFactColumnButton(final FactData fact) {
-            super(CommonAltedImages.INSTANCE.DeleteItemSmall(),
-                    TestScenarioConstants.INSTANCE.RemoveTheColumnForScenario(fact.getName()));
+        public DeleteFactColumnButton( final FactData fact ) {
+            super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
+                   TestScenarioConstants.INSTANCE.RemoveTheColumnForScenario( fact.getName() ) );
 
-            addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
-                    if (scenario.isFactDataReferenced(fact)) {
-                        Window.alert(TestScenarioConstants.INSTANCE.CanTRemoveThisColumnAsTheName0IsBeingUsed(fact.getName()));
-                    } else if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveColumn0(fact.getName()))) {
-                        scenario.removeFixture(fact);
-                        definitionList.remove(fact);
+            addClickHandler( new ClickHandler() {
+                public void onClick( ClickEvent event ) {
+                    if ( scenario.isFactDataReferenced( fact ) ) {
+                        Window.alert( TestScenarioConstants.INSTANCE.CanTRemoveThisColumnAsTheName0IsBeingUsed( fact.getName() ) );
+                    } else if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveColumn0( fact.getName() ) ) ) {
+                        scenario.removeFixture( fact );
+                        definitionList.remove( fact );
 
                         parent.renderEditor();
                     }
                 }
-            });
+            } );
         }
     }
 
     class DeleteFieldRowButton extends ImageButton {
-        public DeleteFieldRowButton(final Fact fact,
-                                    final String fieldName) {
-            super(CommonAltedImages.INSTANCE.DeleteItemSmall(),
-                    TestScenarioConstants.INSTANCE.RemoveThisRow());
 
-            addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
-                    if (fact instanceof FactData) {
-                        if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveRow0(fieldName))) {
-                            ScenarioHelper.removeFields(definitionList,
-                                    fieldName);
+        public DeleteFieldRowButton( final Fact fact,
+                                     final String fieldName ) {
+            super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
+                   TestScenarioConstants.INSTANCE.RemoveThisRow() );
+
+            addClickHandler( new ClickHandler() {
+                public void onClick( ClickEvent event ) {
+                    if ( fact instanceof FactData ) {
+                        if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveRow0( fieldName ) ) ) {
+                            ScenarioHelper.removeFields( definitionList,
+                                                         fieldName );
                         }
-                    } else if (fact instanceof Fact) {
-                        if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveRow0(fieldName))) {
-                            fact.removeField(fieldName);
+                    } else if ( fact instanceof Fact ) {
+                        if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveRow0( fieldName ) ) ) {
+                            fact.removeField( fieldName );
                         }
                     }
 
                     parent.renderEditor();
                 }
-            });
+            } );
         }
     }
 
     class RowIndexByFieldName {
+
         private Map<String, Integer> rows = new HashMap<String, Integer>();
 
-        public void addRow(String fieldName) {
-            rows.put(fieldName,
-                    rows.size() + 1);
+        public void addRow( final String fieldName ) {
+            rows.put( fieldName,
+                      rows.size() + 1 );
         }
 
-        public boolean doesNotContain(String fieldName) {
-            return !rows.containsKey(fieldName);
+        public boolean doesNotContain( final String fieldName ) {
+            return !rows.containsKey( fieldName );
         }
 
-        public Integer getRowIndex(String fieldName) {
-            return rows.get(fieldName);
+        public Integer getRowIndex( final String fieldName ) {
+            return rows.get( fieldName );
         }
 
         public int amountOrRows() {

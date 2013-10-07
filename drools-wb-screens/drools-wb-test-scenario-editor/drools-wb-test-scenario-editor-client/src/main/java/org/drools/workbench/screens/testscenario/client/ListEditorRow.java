@@ -15,14 +15,13 @@ import org.drools.workbench.models.testscenarios.shared.FieldData;
 
 public class ListEditorRow extends Composite {
 
-
     interface ListEditorRowBinder
             extends
             UiBinder<Widget, ListEditorRow> {
 
     }
 
-    private static ListEditorRowBinder uiBinder = GWT.create(ListEditorRowBinder.class);
+    private static ListEditorRowBinder uiBinder = GWT.create( ListEditorRowBinder.class );
 
     @UiField(provided = true)
     FieldDataConstraintEditor fieldDataConstraintEditor;
@@ -43,65 +42,65 @@ public class ListEditorRow extends Composite {
     private final CollectionFieldData parentField;
     private final ScenarioParentWidget parent;
 
-    public ListEditorRow(final int index,
-                         final CollectionFieldData parentField,
-                         final FieldData fieldData,
-                         FieldConstraintHelper helper,
-                         final ScenarioParentWidget parent) {
+    public ListEditorRow( final int index,
+                          final CollectionFieldData parentField,
+                          final FieldData fieldData,
+                          final FieldConstraintHelper helper,
+                          final ScenarioParentWidget parent ) {
 
         this.index = index;
         this.parentField = parentField;
         this.parent = parent;
 
-        fieldDataConstraintEditor = helper.createFieldDataConstraintEditor(fieldData);
-        fieldDataConstraintEditor.addValueChangeHandler(new ValueChangeHandler<String>() {
+        fieldDataConstraintEditor = helper.createFieldDataConstraintEditor( fieldData );
+        fieldDataConstraintEditor.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             @Override
-            public void onValueChange(ValueChangeEvent<String> stringValueChangeEvent) {
-                fieldData.setValue(stringValueChangeEvent.getValue());
+            public void onValueChange( ValueChangeEvent<String> stringValueChangeEvent ) {
+                fieldData.setValue( stringValueChangeEvent.getValue() );
             }
-        });
+        } );
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @UiHandler("deleteItem")
-    public void deleteItem(ClickEvent event) {
-        parentField.getCollectionFieldList().remove(index);
+    public void deleteItem( final ClickEvent event ) {
+        parentField.getCollectionFieldList().remove( index );
         parent.renderEditor();
     }
 
     @UiHandler("newItemBelow")
-    public void newItemBelow(ClickEvent event) {
+    public void newItemBelow( final ClickEvent event ) {
         FieldData newFieldData = new FieldData();
-        newFieldData.setName(parentField.getName());
-        parentField.getCollectionFieldList().add(index + 1,
-                newFieldData);
+        newFieldData.setName( parentField.getName() );
+        parentField.getCollectionFieldList().add( index + 1,
+                                                  newFieldData );
         parent.renderEditor();
     }
 
     @UiHandler("suffleDown")
-    public void suffleDown(ClickEvent event) {
-        if (index < parentField.getCollectionFieldList().size() - 1) {
-            FieldData onMyLine = parentField.getCollectionFieldList().get(index);
-            FieldData onDown = parentField.getCollectionFieldList().get(index + 1);
-            parentField.getCollectionFieldList().set(index + 1,
-                    onMyLine);
-            parentField.getCollectionFieldList().set(index,
-                    onDown);
+    public void suffleDown( final ClickEvent event ) {
+        if ( index < parentField.getCollectionFieldList().size() - 1 ) {
+            FieldData onMyLine = parentField.getCollectionFieldList().get( index );
+            FieldData onDown = parentField.getCollectionFieldList().get( index + 1 );
+            parentField.getCollectionFieldList().set( index + 1,
+                                                      onMyLine );
+            parentField.getCollectionFieldList().set( index,
+                                                      onDown );
             parent.renderEditor();
         }
     }
 
     @UiHandler("suffleUp")
-    public void suffleUp(ClickEvent event) {
-        if (index > 0) {
-            FieldData oneUp = parentField.getCollectionFieldList().get(index - 1);
-            FieldData onMyLine = parentField.getCollectionFieldList().get(index);
-            parentField.getCollectionFieldList().set(index,
-                    oneUp);
-            parentField.getCollectionFieldList().set(index - 1,
-                    onMyLine);
+    public void suffleUp( final ClickEvent event ) {
+        if ( index > 0 ) {
+            FieldData oneUp = parentField.getCollectionFieldList().get( index - 1 );
+            FieldData onMyLine = parentField.getCollectionFieldList().get( index );
+            parentField.getCollectionFieldList().set( index,
+                                                      oneUp );
+            parentField.getCollectionFieldList().set( index - 1,
+                                                      onMyLine );
             parent.renderEditor();
         }
     }

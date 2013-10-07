@@ -30,13 +30,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.CallFixtureMap;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
@@ -44,7 +44,7 @@ import org.uberfire.client.common.SmallLabel;
 public class ScenarioWidgetComponentCreator {
 
     private final ScenarioParentWidget scenarioWidget;
-    private final PackageDataModelOracle dmo;
+    private final AsyncPackageDataModelOracle oracle;
 
     private final String[] availableRules;
     private HandlerRegistration availableRulesHandlerRegistration;
@@ -52,135 +52,170 @@ public class ScenarioWidgetComponentCreator {
     private boolean showResults;
     private Scenario scenario;
 
-    protected ScenarioWidgetComponentCreator(ScenarioParentWidget scenarioWidget,
-                                             PackageDataModelOracle dmo) {
+    protected ScenarioWidgetComponentCreator( final ScenarioParentWidget scenarioWidget,
+                                              final AsyncPackageDataModelOracle oracle ) {
         this.scenarioWidget = scenarioWidget;
-        this.dmo = dmo;
-        this.availableRules = dmo.getRuleNames().toArray( new String[ dmo.getRuleNames().size() ] );
+        this.oracle = oracle;
+        this.availableRules = this.oracle.getRuleNames().toArray( new String[ this.oracle.getRuleNames().size() ] );
     }
 
-    protected GlobalPanel createGlobalPanel(ScenarioHelper scenarioHelper, ExecutionTrace previousExecutionTrace) {
-        return new GlobalPanel(
-                scenarioHelper.lumpyMapGlobals(getScenario().getGlobals()),
-                getScenario(),
-                previousExecutionTrace,
-                this.dmo,
-                this.scenarioWidget);
+    protected GlobalPanel createGlobalPanel( final ScenarioHelper scenarioHelper,
+                                             final ExecutionTrace previousExecutionTrace ) {
+        return new GlobalPanel( scenarioHelper.lumpyMapGlobals( getScenario().getGlobals() ),
+                                getScenario(),
+                                previousExecutionTrace,
+                                this.oracle,
+                                this.scenarioWidget );
     }
 
     protected HorizontalPanel createHorizontalPanel() {
         HorizontalPanel h = new HorizontalPanel();
-        h.add(new GlobalButton(getScenario(), this.scenarioWidget, dmo));
-        h.add(new SmallLabel(TestScenarioConstants.INSTANCE.globals()));
+        h.add( new GlobalButton( getScenario(), this.scenarioWidget, oracle ) );
+        h.add( new SmallLabel( TestScenarioConstants.INSTANCE.globals() ) );
         return h;
     }
 
     protected SmallLabel createSmallLabel() {
-        return new SmallLabel(TestScenarioConstants.INSTANCE.configuration());
+        return new SmallLabel( TestScenarioConstants.INSTANCE.configuration() );
     }
 
     protected ConfigWidget createConfigWidget() {
-        return new ConfigWidget(getScenario(), this);
+        return new ConfigWidget( getScenario(), this );
     }
 
     protected AddExecuteButton createAddExecuteButton() {
-        return new AddExecuteButton(getScenario(), this.scenarioWidget);
+        return new AddExecuteButton( getScenario(), this.scenarioWidget );
     }
 
-    protected VerifyRulesFiredWidget createVerifyRulesFiredWidget(FixtureList fixturesList) {
-        return new VerifyRulesFiredWidget(fixturesList, getScenario(), isShowResults());
+    protected VerifyRulesFiredWidget createVerifyRulesFiredWidget( final FixtureList fixturesList ) {
+        return new VerifyRulesFiredWidget( fixturesList,
+                                           getScenario(),
+                                           isShowResults() );
     }
 
-    protected VerifyFactsPanel createVerifyFactsPanel(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, FixtureList fixturesList) {
-        return new VerifyFactsPanel(fixturesList, listExecutionTrace.get(executionTraceLine), getScenario(), this.scenarioWidget, isShowResults(), dmo);
+    protected VerifyFactsPanel createVerifyFactsPanel( final List<ExecutionTrace> listExecutionTrace,
+                                                       final int executionTraceLine,
+                                                       final FixtureList fixturesList ) {
+        return new VerifyFactsPanel( fixturesList,
+                                     listExecutionTrace.get( executionTraceLine ),
+                                     getScenario(),
+                                     this.scenarioWidget,
+                                     isShowResults(),
+                                     oracle );
     }
 
-    protected CallMethodLabelButton createCallMethodLabelButton(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, ExecutionTrace previousExecutionTrace) {
-        return new CallMethodLabelButton(previousExecutionTrace, getScenario(), listExecutionTrace.get(executionTraceLine), this.scenarioWidget, dmo);
+    protected CallMethodLabelButton createCallMethodLabelButton( final List<ExecutionTrace> listExecutionTrace,
+                                                                 final int executionTraceLine,
+                                                                 final ExecutionTrace previousExecutionTrace ) {
+        return new CallMethodLabelButton( previousExecutionTrace,
+                                          getScenario(),
+                                          listExecutionTrace.get( executionTraceLine ),
+                                          this.scenarioWidget,
+                                          oracle );
     }
 
-    protected GivenLabelButton createGivenLabelButton(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, ExecutionTrace previousExecutionTrace) {
-        return new GivenLabelButton(previousExecutionTrace, getScenario(), listExecutionTrace.get(executionTraceLine), this.scenarioWidget, dmo);
+    protected GivenLabelButton createGivenLabelButton( final List<ExecutionTrace> listExecutionTrace,
+                                                       final int executionTraceLine,
+                                                       final ExecutionTrace previousExecutionTrace ) {
+        return new GivenLabelButton( previousExecutionTrace,
+                                     getScenario(),
+                                     listExecutionTrace.get( executionTraceLine ),
+                                     this.scenarioWidget,
+                                     oracle );
     }
 
-    protected ExecutionWidget createExecutionWidget(ExecutionTrace currentExecutionTrace) {
-        return new ExecutionWidget(currentExecutionTrace, isShowResults());
+    protected ExecutionWidget createExecutionWidget( final ExecutionTrace currentExecutionTrace ) {
+        return new ExecutionWidget( currentExecutionTrace,
+                                    isShowResults() );
     }
 
-    protected ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
-        return new ExpectPanel(currentExecutionTrace, getScenario(), this.scenarioWidget, this, dmo);
+    protected ExpectPanel createExpectPanel( final ExecutionTrace currentExecutionTrace ) {
+        return new ExpectPanel( currentExecutionTrace,
+                                getScenario(), this.scenarioWidget,
+                                this,
+                                oracle );
     }
 
     protected DirtyableFlexTable createDirtyableFlexTable() {
         DirtyableFlexTable editorLayout = new DirtyableFlexTable();
         editorLayout.clear();
-        editorLayout.setWidth("100%");
-        editorLayout.setStyleName("model-builder-Background");
+        editorLayout.setWidth( "100%" );
+        editorLayout.setStyleName( "model-builder-Background" );
         return editorLayout;
     }
 
-    protected Widget createGivenPanel(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, FixturesMap given) {
+    protected Widget createGivenPanel( final List<ExecutionTrace> listExecutionTrace,
+                                       final int executionTraceLine,
+                                       final FixturesMap given ) {
 
-        if (given.size() > 0) {
-            return new GivenPanel(
-                    listExecutionTrace,
-                    executionTraceLine,
-                    given,
-                    getScenario(),
-                    this.dmo,
-                    this.scenarioWidget);
+        if ( given.size() > 0 ) {
+            return new GivenPanel( listExecutionTrace,
+                                   executionTraceLine,
+                                   given,
+                                   getScenario(),
+                                   this.oracle,
+                                   this.scenarioWidget );
 
         } else {
-            return new HTML("<i><small>" + TestScenarioConstants.INSTANCE.AddInputDataAndExpectationsHere() + "</small></i>");
+            return new HTML( "<i><small>" + TestScenarioConstants.INSTANCE.AddInputDataAndExpectationsHere() + "</small></i>" );
         }
     }
 
-    protected Widget createCallMethodOnGivenPanel(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, CallFixtureMap given) {
+    protected Widget createCallMethodOnGivenPanel( final List<ExecutionTrace> listExecutionTrace,
+                                                   final int executionTraceLine,
+                                                   final CallFixtureMap given ) {
 
-        if (given.size() > 0) {
-            return new CallMethodOnGivenPanel(listExecutionTrace, executionTraceLine, given, getScenario(), this.scenarioWidget, dmo);
+        if ( given.size() > 0 ) {
+            return new CallMethodOnGivenPanel( listExecutionTrace,
+                                               executionTraceLine,
+                                               given,
+                                               getScenario(),
+                                               this.scenarioWidget,
+                                               oracle );
 
         } else {
-            return new HTML("<i><small>" + TestScenarioConstants.INSTANCE.AddInputDataAndExpectationsHere() + "</small></i>");
+            return new HTML( "<i><small>" + TestScenarioConstants.INSTANCE.AddInputDataAndExpectationsHere() + "</small></i>" );
         }
     }
 
     protected TextBox createRuleNameTextBox() {
         final TextBox ruleNameTextBox = new TextBox();
-        ruleNameTextBox.setTitle(TestScenarioConstants.INSTANCE.EnterRuleNameScenario());
+        ruleNameTextBox.setTitle( TestScenarioConstants.INSTANCE.EnterRuleNameScenario() );
         return ruleNameTextBox;
     }
 
-    protected Button createOkButton(final RuleSelectionEvent selected, final TextBox ruleNameTextBox) {
-        Button ok = new Button(TestScenarioConstants.INSTANCE.OK());
-        ok.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                selected.ruleSelected(ruleNameTextBox.getText());
+    protected Button createOkButton( final RuleSelectionEvent selected,
+                                     final TextBox ruleNameTextBox ) {
+        Button ok = new Button( TestScenarioConstants.INSTANCE.OK() );
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                selected.ruleSelected( ruleNameTextBox.getText() );
             }
-        });
+        } );
         return ok;
     }
 
-    protected ChangeHandler createRuleChangeHandler(final TextBox ruleNameTextBox, final ListBox availableRulesBox) {
+    protected ChangeHandler createRuleChangeHandler( final TextBox ruleNameTextBox,
+                                                     final ListBox availableRulesBox ) {
         final ChangeHandler ruleSelectionCL = new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
-                ruleNameTextBox.setText(availableRulesBox.getItemText(availableRulesBox.getSelectedIndex()));
+            public void onChange( ChangeEvent event ) {
+                ruleNameTextBox.setText( availableRulesBox.getItemText( availableRulesBox.getSelectedIndex() ) );
             }
         };
         return ruleSelectionCL;
     }
 
-    protected ListBox createAvailableRulesBox(String[] list) {
+    protected ListBox createAvailableRulesBox( final String[] list ) {
         final ListBox availableRulesBox = new ListBox();
-        availableRulesBox.addItem(TestScenarioConstants.INSTANCE.pleaseChoose1());
-        for (int i = 0; i < list.length; i++) {
-            availableRulesBox.addItem(list[i]);
+        availableRulesBox.addItem( TestScenarioConstants.INSTANCE.pleaseChoose1() );
+        for ( int i = 0; i < list.length; i++ ) {
+            availableRulesBox.addItem( list[ i ] );
         }
         return availableRulesBox;
     }
 
-    public void setShowResults(boolean showResults) {
+    public void setShowResults( final boolean showResults ) {
         this.showResults = showResults;
     }
 
@@ -192,60 +227,60 @@ public class ScenarioWidgetComponentCreator {
         return scenario;
     }
 
-    public void setScenario(Scenario scenario) {
+    public void setScenario( final Scenario scenario ) {
         this.scenario = scenario;
     }
 
-    public Widget getRuleSelectionWidget(final RuleSelectionEvent selected) {
+    public Widget getRuleSelectionWidget( final RuleSelectionEvent selected ) {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
         final TextBox ruleNameTextBox = createRuleNameTextBox();
-        horizontalPanel.add(ruleNameTextBox);
-        if (availableRules != null) {
-            final ListBox availableRulesBox = createAvailableRulesBox(availableRules);
-            availableRulesBox.setSelectedIndex(0);
-            if (availableRulesHandlerRegistration != null) {
+        horizontalPanel.add( ruleNameTextBox );
+        if ( availableRules != null ) {
+            final ListBox availableRulesBox = createAvailableRulesBox( availableRules );
+            availableRulesBox.setSelectedIndex( 0 );
+            if ( availableRulesHandlerRegistration != null ) {
                 availableRulesHandlerRegistration.removeHandler();
             }
-            final ChangeHandler ruleSelectionCL = createRuleChangeHandler(ruleNameTextBox,
-                    availableRulesBox);
+            final ChangeHandler ruleSelectionCL = createRuleChangeHandler( ruleNameTextBox,
+                                                                           availableRulesBox );
 
-            availableRulesHandlerRegistration = availableRulesBox.addChangeHandler(ruleSelectionCL);
-            horizontalPanel.add(availableRulesBox);
+            availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
+            horizontalPanel.add( availableRulesBox );
 
         } else {
 
-            final Button showList = new Button(TestScenarioConstants.INSTANCE.showListButton());
-            horizontalPanel.add(showList);
-            showList.addClickHandler(new ClickHandler() {
+            final Button showList = new Button( TestScenarioConstants.INSTANCE.showListButton() );
+            horizontalPanel.add( showList );
+            showList.addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
-                    horizontalPanel.remove(showList);
-                    final Image busy = new Image(ImageResources.INSTANCE.searching());
-                    final Label loading = new SmallLabel(TestScenarioConstants.INSTANCE.loadingList1());
-                    horizontalPanel.add(busy);
-                    horizontalPanel.add(loading);
+                public void onClick( ClickEvent event ) {
+                    horizontalPanel.remove( showList );
+                    final Image busy = new Image( ImageResources.INSTANCE.searching() );
+                    final Label loading = new SmallLabel( TestScenarioConstants.INSTANCE.loadingList1() );
+                    horizontalPanel.add( busy );
+                    horizontalPanel.add( loading );
 
-                    final ListBox availableRulesBox = createAvailableRulesBox(availableRules);
+                    final ListBox availableRulesBox = createAvailableRulesBox( availableRules );
 
                     final ChangeHandler ruleSelectionCL = new ChangeHandler() {
-                        public void onChange(ChangeEvent event) {
-                            ruleNameTextBox.setText(availableRulesBox.getItemText(availableRulesBox.getSelectedIndex()));
+                        public void onChange( ChangeEvent event ) {
+                            ruleNameTextBox.setText( availableRulesBox.getItemText( availableRulesBox.getSelectedIndex() ) );
                         }
                     };
-                    availableRulesHandlerRegistration = availableRulesBox.addChangeHandler(ruleSelectionCL);
-                    availableRulesBox.setSelectedIndex(0);
-                    horizontalPanel.add(availableRulesBox);
-                    horizontalPanel.remove(busy);
-                    horizontalPanel.remove(loading);
+                    availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
+                    availableRulesBox.setSelectedIndex( 0 );
+                    horizontalPanel.add( availableRulesBox );
+                    horizontalPanel.remove( busy );
+                    horizontalPanel.remove( loading );
 
                 }
-            });
+            } );
 
         }
 
-        Button ok = createOkButton(selected,
-                ruleNameTextBox);
-        horizontalPanel.add(ok);
+        Button ok = createOkButton( selected,
+                                    ruleNameTextBox );
+        horizontalPanel.add( ok );
         return horizontalPanel;
     }
 }

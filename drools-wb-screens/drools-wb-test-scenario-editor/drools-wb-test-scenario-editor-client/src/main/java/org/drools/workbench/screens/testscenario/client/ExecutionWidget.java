@@ -39,8 +39,8 @@ public class ExecutionWidget extends Composite {
 
     private final ExecutionTrace executionTrace;
 
-    public ExecutionWidget(final ExecutionTrace executionTrace,
-                           boolean showResults) {
+    public ExecutionWidget( final ExecutionTrace executionTrace,
+                            final boolean showResults ) {
 
         this.executionTrace = executionTrace;
 
@@ -51,10 +51,10 @@ public class ExecutionWidget extends Composite {
 
         choice.addItem( TestScenarioConstants.INSTANCE.UseRealDateAndTime() );
         choice.addItem( TestScenarioConstants.INSTANCE.UseASimulatedDateAndTime() );
-        choice.setSelectedIndex( (executionTrace.getScenarioSimulatedDate() == null) ? 0 : 1 );
+        choice.setSelectedIndex( ( executionTrace.getScenarioSimulatedDate() == null ) ? 0 : 1 );
         choice.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 if ( choice.getSelectedIndex() == 0 ) {
                     simulDatePanel.setVisible( false );
                     executionTrace.setScenarioSimulatedDate( null );
@@ -95,34 +95,34 @@ public class ExecutionWidget extends Composite {
         if ( executionTrace.getScenarioSimulatedDate() == null ) {
             textBox.setText( "<" + format + ">" );
         } else {
-            textBox.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(executionTrace.getScenarioSimulatedDate()));
+            textBox.setText( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( executionTrace.getScenarioSimulatedDate() ) );
         }
         final SmallLabel dateHint = new SmallLabel();
         textBox.addKeyUpHandler( new KeyUpHandler() {
 
-            public void onKeyUp(KeyUpEvent event) {
+            public void onKeyUp( KeyUpEvent event ) {
                 try {
-                    String exampleDate = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(new Date());
-                    String suggestedDate = textBox.getText() + exampleDate.substring(textBox.getText().length());
-                    Date d = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).parse(suggestedDate);
-                    dateHint.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d) );
+                    String exampleDate = DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( new Date() );
+                    String suggestedDate = textBox.getText() + exampleDate.substring( textBox.getText().length() );
+                    Date d = DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).parse( suggestedDate );
+                    dateHint.setText( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( d ) );
                 } catch ( Exception e ) {
-                    dateHint.setText( "..."  );
+                    dateHint.setText( "..." );
                 }
             }
         } );
 
         textBox.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 if ( textBox.getText().trim().equals( "" ) ) {
                     textBox.setText( TestScenarioConstants.INSTANCE.currentDateAndTime() );
                 } else {
                     try {
                         //Date d1 = new Date();
-                        Date d = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).parse(textBox.getText());
+                        Date d = DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).parse( textBox.getText() );
                         executionTrace.setScenarioSimulatedDate( d );
-                        textBox.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d) );
+                        textBox.setText( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( d ) );
                         dateHint.setText( "" );
                     } catch ( Exception e ) {
                         ErrorPopup.showMessage( TestScenarioConstants.INSTANCE.BadDateFormatPleaseTryAgainTryTheFormatOf0( format ) );

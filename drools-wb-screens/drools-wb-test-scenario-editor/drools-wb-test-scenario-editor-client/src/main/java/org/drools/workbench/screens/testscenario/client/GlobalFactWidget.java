@@ -16,46 +16,46 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class GlobalFactWidget extends FactWidget {
 
-    public GlobalFactWidget(String factType,
-                            FixtureList definitionList,
-                            Scenario sc,
-                            PackageDataModelOracle dmo,
-                            ScenarioParentWidget parent,
-                            ExecutionTrace executionTrace) {
-        super(factType,
-                definitionList,
-                sc,
-                dmo,
-                parent,
-                executionTrace,
-                TestScenarioConstants.INSTANCE.globalForScenario(factType));
+    public GlobalFactWidget( final String factType,
+                             final FixtureList definitionList,
+                             final Scenario sc,
+                             final AsyncPackageDataModelOracle dmo,
+                             final ScenarioParentWidget parent,
+                             final ExecutionTrace executionTrace ) {
+        super( factType,
+               definitionList,
+               sc,
+               dmo,
+               parent,
+               executionTrace,
+               TestScenarioConstants.INSTANCE.globalForScenario( factType ) );
     }
 
     public void onDelete() {
         boolean used = false;
 
-        for (Fixture fixture : definitionList) {
-            if (fixture instanceof FactData) {
+        for ( Fixture fixture : definitionList ) {
+            if ( fixture instanceof FactData ) {
                 final FactData factData = (FactData) fixture;
-                if (scenario.isFactDataReferenced(factData)) {
+                if ( scenario.isFactDataReferenced( factData ) ) {
                     used = true;
                     break;
                 }
             }
         }
 
-        if (used) {
+        if ( used ) {
             ErrorPopup.showMessage( TestScenarioConstants.INSTANCE.CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed() );
         } else {
             super.onDelete();

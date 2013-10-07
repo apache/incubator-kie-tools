@@ -46,7 +46,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
@@ -82,6 +81,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.images.Guided
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.uberfire.backend.vfs.Path;
@@ -117,7 +117,7 @@ public class GuidedDecisionTableWidget extends Composite
     private VerticalPanel actionsConfigWidget;
     private GuidedDecisionTable52 model;
     private GuidedDecisionTableUtils utils;
-    private PackageDataModelOracle oracle;
+    private AsyncPackageDataModelOracle oracle;
     private BRLRuleModel rm;
 
     private Path path;
@@ -156,10 +156,10 @@ public class GuidedDecisionTableWidget extends Composite
     private final boolean isReadOnly;
 
     public GuidedDecisionTableWidget( final Path path,
-                                      final PackageDataModelOracle oracle,
                                       final GuidedDecisionTable52 model,
-                                      final Identity identity,
                                       final Set<PortableWorkDefinition> workItemDefinitions,
+                                      final AsyncPackageDataModelOracle oracle,
+                                      final Identity identity,
                                       final boolean isReadOnly ) {
         this.path = path;
         this.oracle = oracle;
@@ -213,7 +213,7 @@ public class GuidedDecisionTableWidget extends Composite
         options.add( getAttributes() );
         config.add( options );
 
-        layout.add( getRuleInheritancePanel(model, oracle.getRuleNames()) );
+        layout.add( getRuleInheritancePanel( model, oracle.getRuleNames() ) );
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
         layout.add( dtableContainer );
@@ -221,12 +221,13 @@ public class GuidedDecisionTableWidget extends Composite
         initWidget( layout );
     }
 
-    private Widget getRuleInheritancePanel(final GuidedDecisionTable52 model, List<String> ruleNames) {
+    private Widget getRuleInheritancePanel( final GuidedDecisionTable52 model,
+                                            List<String> ruleNames ) {
 
         HorizontalPanel result = new HorizontalPanel();
         result.add( new Label( GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit() ) );
 
-        RuleSelector ruleSelector = new RuleSelector(ruleNames);
+        RuleSelector ruleSelector = new RuleSelector( ruleNames );
         ruleSelector.setRuleName( model.getParentName() );
         ruleSelector.addValueChangeHandler( new ValueChangeHandler<String>() {
             @Override
@@ -308,8 +309,8 @@ public class GuidedDecisionTableWidget extends Composite
                                     GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
-                                            ActionWorkItemSetFieldPopup ed = new ActionWorkItemSetFieldPopup( oracle,
-                                                                                                              model,
+                                            ActionWorkItemSetFieldPopup ed = new ActionWorkItemSetFieldPopup( model,
+                                                                                                              oracle,
                                                                                                               new GenericColumnCommand() {
                                                                                                                   public void execute( DTColumnConfig52 column ) {
                                                                                                                       dtable.updateColumn( awisf,
@@ -332,8 +333,8 @@ public class GuidedDecisionTableWidget extends Composite
                                     GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
-                                            ActionSetFieldPopup ed = new ActionSetFieldPopup( oracle,
-                                                                                              model,
+                                            ActionSetFieldPopup ed = new ActionSetFieldPopup( model,
+                                                                                              oracle,
                                                                                               new GenericColumnCommand() {
                                                                                                   public void execute( DTColumnConfig52 column ) {
                                                                                                       dtable.updateColumn( asf,
@@ -356,8 +357,8 @@ public class GuidedDecisionTableWidget extends Composite
                                     GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
-                                            ActionWorkItemInsertFactPopup ed = new ActionWorkItemInsertFactPopup( oracle,
-                                                                                                                  model,
+                                            ActionWorkItemInsertFactPopup ed = new ActionWorkItemInsertFactPopup( model,
+                                                                                                                  oracle,
                                                                                                                   new GenericColumnCommand() {
                                                                                                                       public void execute( DTColumnConfig52 column ) {
                                                                                                                           dtable.updateColumn( awiif,
@@ -380,8 +381,8 @@ public class GuidedDecisionTableWidget extends Composite
                                     GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
-                                            ActionInsertFactPopup ed = new ActionInsertFactPopup( oracle,
-                                                                                                  model,
+                                            ActionInsertFactPopup ed = new ActionInsertFactPopup( model,
+                                                                                                  oracle,
                                                                                                   new GenericColumnCommand() {
                                                                                                       public void execute( DTColumnConfig52 column ) {
                                                                                                           dtable.updateColumn( asf,
@@ -454,8 +455,8 @@ public class GuidedDecisionTableWidget extends Composite
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             LimitedEntryBRLActionColumnViewImpl popup = new LimitedEntryBRLActionColumnViewImpl( path,
-                                                                                                                                 oracle,
                                                                                                                                  model,
+                                                                                                                                 oracle,
                                                                                                                                  column,
                                                                                                                                  eventBus,
                                                                                                                                  false,
@@ -474,8 +475,8 @@ public class GuidedDecisionTableWidget extends Composite
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( path,
-                                                                                                         oracle,
                                                                                                          model,
+                                                                                                         oracle,
                                                                                                          column,
                                                                                                          eventBus,
                                                                                                          false,
@@ -843,8 +844,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showConditionSimple() {
                         final ConditionCol52 column = makeNewConditionColumn();
-                        ConditionPopup dialog = new ConditionPopup( oracle,
-                                                                    model,
+                        ConditionPopup dialog = new ConditionPopup( model,
+                                                                    oracle,
                                                                     new ConditionColumnCommand() {
                                                                         public void execute( Pattern52 pattern,
                                                                                              ConditionCol52 column ) {
@@ -866,8 +867,8 @@ public class GuidedDecisionTableWidget extends Composite
                         switch ( model.getTableFormat() ) {
                             case EXTENDED_ENTRY:
                                 BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( path,
-                                                                                                   oracle,
                                                                                                    model,
+                                                                                                   oracle,
                                                                                                    column,
                                                                                                    eventBus,
                                                                                                    true,
@@ -877,8 +878,8 @@ public class GuidedDecisionTableWidget extends Composite
                                 break;
                             case LIMITED_ENTRY:
                                 LimitedEntryBRLConditionColumnViewImpl limtedEntryPopup = new LimitedEntryBRLConditionColumnViewImpl( path,
-                                                                                                                                      oracle,
                                                                                                                                       model,
+                                                                                                                                      oracle,
                                                                                                                                       (LimitedEntryBRLConditionColumn) column,
                                                                                                                                       eventBus,
                                                                                                                                       true,
@@ -891,8 +892,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showActionInsert() {
                         final ActionInsertFactCol52 afc = makeNewActionInsertColumn();
-                        ActionInsertFactPopup ins = new ActionInsertFactPopup( oracle,
-                                                                               model,
+                        ActionInsertFactPopup ins = new ActionInsertFactPopup( model,
+                                                                               oracle,
                                                                                new GenericColumnCommand() {
                                                                                    public void execute( DTColumnConfig52 column ) {
                                                                                        newActionAdded( (ActionCol52) column );
@@ -906,8 +907,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showActionSet() {
                         final ActionSetFieldCol52 afc = makeNewActionSetColumn();
-                        ActionSetFieldPopup set = new ActionSetFieldPopup( oracle,
-                                                                           model,
+                        ActionSetFieldPopup set = new ActionSetFieldPopup( model,
+                                                                           oracle,
                                                                            new GenericColumnCommand() {
                                                                                public void execute( DTColumnConfig52 column ) {
                                                                                    newActionAdded( (ActionCol52) column );
@@ -952,8 +953,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showActionWorkItemActionSet() {
                         final ActionWorkItemSetFieldCol52 awisf = makeNewActionWorkItemSetField();
-                        ActionWorkItemSetFieldPopup popup = new ActionWorkItemSetFieldPopup( oracle,
-                                                                                             model,
+                        ActionWorkItemSetFieldPopup popup = new ActionWorkItemSetFieldPopup( model,
+                                                                                             oracle,
                                                                                              new GenericColumnCommand() {
                                                                                                  public void execute( DTColumnConfig52 column ) {
                                                                                                      newActionAdded( (ActionCol52) column );
@@ -967,8 +968,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                     private void showActionWorkItemActionInsert() {
                         final ActionWorkItemInsertFactCol52 awiif = makeNewActionWorkItemInsertFact();
-                        ActionWorkItemInsertFactPopup popup = new ActionWorkItemInsertFactPopup( oracle,
-                                                                                                 model,
+                        ActionWorkItemInsertFactPopup popup = new ActionWorkItemInsertFactPopup( model,
+                                                                                                 oracle,
                                                                                                  new GenericColumnCommand() {
                                                                                                      public void execute( DTColumnConfig52 column ) {
                                                                                                          newActionAdded( (ActionCol52) column );
@@ -985,8 +986,8 @@ public class GuidedDecisionTableWidget extends Composite
                         switch ( model.getTableFormat() ) {
                             case EXTENDED_ENTRY:
                                 BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( path,
-                                                                                             oracle,
                                                                                              model,
+                                                                                             oracle,
                                                                                              column,
                                                                                              eventBus,
                                                                                              true,
@@ -996,8 +997,8 @@ public class GuidedDecisionTableWidget extends Composite
                                 break;
                             case LIMITED_ENTRY:
                                 LimitedEntryBRLActionColumnViewImpl limtedEntryPopup = new LimitedEntryBRLActionColumnViewImpl( path,
-                                                                                                                                oracle,
                                                                                                                                 model,
+                                                                                                                                oracle,
                                                                                                                                 (LimitedEntryBRLActionColumn) column,
                                                                                                                                 eventBus,
                                                                                                                                 true,
@@ -1156,8 +1157,8 @@ public class GuidedDecisionTableWidget extends Composite
                                 GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
-                                        ConditionPopup dialog = new ConditionPopup( oracle,
-                                                                                    model,
+                                        ConditionPopup dialog = new ConditionPopup( model,
+                                                                                    oracle,
                                                                                     new ConditionColumnCommand() {
                                                                                         public void execute( Pattern52 pattern,
                                                                                                              ConditionCol52 column ) {
@@ -1187,8 +1188,8 @@ public class GuidedDecisionTableWidget extends Composite
                                     new ClickHandler() {
                                         public void onClick( ClickEvent w ) {
                                             LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl( path,
-                                                                                                                                       oracle,
                                                                                                                                        model,
+                                                                                                                                       oracle,
                                                                                                                                        (LimitedEntryBRLConditionColumn) origCol,
                                                                                                                                        eventBus,
                                                                                                                                        false,
@@ -1203,8 +1204,8 @@ public class GuidedDecisionTableWidget extends Composite
                                 new ClickHandler() {
                                     public void onClick( ClickEvent w ) {
                                         BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( path,
-                                                                                                           oracle,
                                                                                                            model,
+                                                                                                           oracle,
                                                                                                            origCol,
                                                                                                            eventBus,
                                                                                                            false,

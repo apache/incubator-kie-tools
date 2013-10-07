@@ -26,11 +26,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 
@@ -38,24 +38,24 @@ abstract class TestScenarioButton extends ImageButton {
 
     protected final Scenario scenario;
     protected final ScenarioParentWidget parent;
-    protected final PackageDataModelOracle dmo;
+    protected final AsyncPackageDataModelOracle oracle;
     protected final ExecutionTrace previousEx;
 
-    public TestScenarioButton(Image img,
-                              String tooltip,
-                              final ExecutionTrace previousEx,
-                              final Scenario scenario,
-                              ScenarioParentWidget scenarioWidget,
-                              PackageDataModelOracle dmo) {
+    public TestScenarioButton( final Image img,
+                               final String tooltip,
+                               final ExecutionTrace previousEx,
+                               final Scenario scenario,
+                               final ScenarioParentWidget scenarioWidget,
+                               final AsyncPackageDataModelOracle oracle ) {
         super( img,
                tooltip );
         this.previousEx = previousEx;
         this.scenario = scenario;
         this.parent = scenarioWidget;
-        this.dmo = dmo;
+        this.oracle = oracle;
 
         addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 final FormStylePopup pop = getPopUp();
                 pop.show();
             }
@@ -65,14 +65,16 @@ abstract class TestScenarioButton extends ImageButton {
     protected abstract TestScenarioButtonPopup getPopUp();
 
     protected abstract class TestScenarioButtonPopup extends FormStylePopup {
-        public TestScenarioButtonPopup(Image image,
-                                       String text) {
+
+        public TestScenarioButtonPopup( final Image image,
+                                        final String text ) {
             super( image,
                    text );
         }
 
         protected abstract class BasePanel<T extends Widget> extends HorizontalPanel {
-            protected final T      valueWidget;
+
+            protected final T valueWidget;
             protected final Button add = new Button( TestScenarioConstants.INSTANCE.Add() );
 
             public BasePanel() {
@@ -91,7 +93,7 @@ abstract class TestScenarioButton extends ImageButton {
             protected void addAddButtonClickHandler() {
                 add.addClickHandler( new ClickHandler() {
 
-                    public void onClick(ClickEvent event) {
+                    public void onClick( ClickEvent event ) {
                         scenario.insertBetween( previousEx,
                                                 getFixture() );
                         parent.renderEditor();
@@ -108,12 +110,12 @@ abstract class TestScenarioButton extends ImageButton {
 
         protected abstract class ListBoxBasePanel extends BasePanel<ListBox> {
 
-            public ListBoxBasePanel(List<String> listItems) {
+            public ListBoxBasePanel( final List<String> listItems ) {
                 super();
                 fillWidget( listItems );
             }
 
-            public ListBoxBasePanel(String[] listItems) {
+            public ListBoxBasePanel( final String[] listItems ) {
                 super();
                 List<String> list = new ArrayList<String>();
                 for ( String string : listItems ) {
@@ -122,7 +124,7 @@ abstract class TestScenarioButton extends ImageButton {
                 fillWidget( list );
             }
 
-            protected void fillWidget(List<String> listItems) {
+            protected void fillWidget( final List<String> listItems ) {
                 for ( String item : listItems ) {
                     valueWidget.addItem( item );
                 }

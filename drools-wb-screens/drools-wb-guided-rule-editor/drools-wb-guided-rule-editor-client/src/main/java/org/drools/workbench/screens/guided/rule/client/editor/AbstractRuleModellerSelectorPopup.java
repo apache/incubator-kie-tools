@@ -23,9 +23,9 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.Popup;
 
@@ -43,7 +43,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
 
     protected RuleModel model;
     protected RuleModeller ruleModeller;
-    protected PackageDataModelOracle completions;
+    protected AsyncPackageDataModelOracle oracle;
     protected Map<String, Command> cmds = new HashMap<String, Command>();
     protected Integer position;
 
@@ -55,11 +55,11 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
     public AbstractRuleModellerSelectorPopup( RuleModel model,
                                               RuleModeller ruleModeller,
                                               Integer position,
-                                              PackageDataModelOracle dataModel ) {
+                                              AsyncPackageDataModelOracle oracle ) {
         this.model = model;
         this.position = position;
         this.ruleModeller = ruleModeller;
-        this.completions = dataModel;
+        this.oracle = oracle;
         this.setTitle( getPopupTitle() );
     }
 

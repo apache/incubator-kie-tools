@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
@@ -45,6 +44,7 @@ import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.security.UserCapabilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.InfoPopup;
 
 /**
@@ -55,8 +55,11 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     public RuleModellerActionSelectorPopup( RuleModel model,
                                             RuleModeller ruleModeller,
                                             Integer position,
-                                            PackageDataModelOracle dataModel ) {
-        super( model, ruleModeller, position, dataModel );
+                                            AsyncPackageDataModelOracle oracle ) {
+        super( model,
+               ruleModeller,
+               position,
+               oracle );
     }
 
     @Override
@@ -81,7 +84,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             positionCbo.setSelectedIndex( 0 );
         }
 
-        if ( completions.getDSLConditions().size() == 0 && completions.getFactTypes().length == 0 ) {
+        if ( oracle.getDSLConditions().size() == 0 && oracle.getFactTypes().length == 0 ) {
             layoutPanel.addRow( new HTML( "<div class='highlight'>" + Constants.INSTANCE.NoModelTip() + "</div>" ) );
         }
 
@@ -179,7 +182,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             return;
         }
 
-        for ( final DSLSentence sen : completions.getDSLActions() ) {
+        for ( final DSLSentence sen : oracle.getDSLActions() ) {
             final String sentence = sen.toString();
             final String key = "DSL" + sentence;
             choices.addItem( sentence,
@@ -224,7 +227,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add Globals
     private void addGlobals() {
-        String[] globals = completions.getGlobalVariables();
+        String[] globals = oracle.getGlobalVariables();
         if ( globals.length == 0 ) {
             return;
         }
@@ -294,12 +297,12 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add insertions
     private void addInsertions() {
-        if ( completions.getFactTypes().length == 0 ) {
+        if ( oracle.getFactTypes().length == 0 ) {
             return;
         }
         choices.addItem( SECTION_SEPARATOR );
-        for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
-            final String item = completions.getFactTypes()[ i ];
+        for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
+            final String item = oracle.getFactTypes()[ i ];
             choices.addItem( Constants.INSTANCE.InsertFact0( item ),
                              "INS" + item );
             cmds.put( "INS" + item,
@@ -316,12 +319,12 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add logical insertions
     private void addLogicalInsertions() {
-        if ( completions.getFactTypes().length == 0 ) {
+        if ( oracle.getFactTypes().length == 0 ) {
             return;
         }
         choices.addItem( SECTION_SEPARATOR );
-        for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
-            final String item = completions.getFactTypes()[ i ];
+        for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
+            final String item = oracle.getFactTypes()[ i ];
             choices.addItem( Constants.INSTANCE.LogicallyInsertFact0( item ),
                              "LINS" + item );
             cmds.put( "LINS" + item,
@@ -342,13 +345,13 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         if ( vars.size() == 0 ) {
             return;
         }
-        if ( completions.getGlobalCollections().length == 0 ) {
+        if ( oracle.getGlobalCollections().length == 0 ) {
             return;
         }
         choices.addItem( SECTION_SEPARATOR );
         for ( String bf : vars ) {
-            for ( int i = 0; i < completions.getGlobalCollections().length; i++ ) {
-                final String glob = completions.getGlobalCollections()[ i ];
+            for ( int i = 0; i < oracle.getGlobalCollections().length; i++ ) {
+                final String glob = oracle.getGlobalCollections()[ i ];
                 final String var = bf;
                 choices.addItem( Constants.INSTANCE.Append0ToList1( var,
                                                                     glob ),
@@ -373,7 +376,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
     private void addFreeFormDRL() {
         List<String> lhsVars = model.getAllLHSVariables();
         List<String> rhsVars = model.getRHSBoundFacts();
-        String[] globals = completions.getGlobalVariables();
+        String[] globals = oracle.getGlobalVariables();
 
         if ( UserCapabilities.canSeeModulesTree() ) {
             choices.addItem( SECTION_SEPARATOR );

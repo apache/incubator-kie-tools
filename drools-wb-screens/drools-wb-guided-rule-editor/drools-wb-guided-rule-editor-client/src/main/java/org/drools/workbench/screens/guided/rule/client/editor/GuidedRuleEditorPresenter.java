@@ -24,8 +24,6 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.imports.ImportAddedEvent;
-import org.drools.workbench.models.datamodel.imports.ImportRemovedEvent;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
@@ -37,7 +35,12 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
+import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
+import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -110,6 +113,9 @@ public class GuidedRuleEditorPresenter {
     private GuidedRuleDSLRResourceType resourceTypeDSL;
 
     @Inject
+    private AsyncPackageDataModelOracle oracle;
+
+    @Inject
     @New
     private FileMenuBuilder menuBuilder;
     private Menus menus;
@@ -124,7 +130,6 @@ public class GuidedRuleEditorPresenter {
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private RuleModel model;
-    private PackageDataModelOracle oracle;
 
     @OnStartup
     public void onStartup( final ObservablePath path,
@@ -256,10 +261,12 @@ public class GuidedRuleEditorPresenter {
         return new RemoteCallback<GuidedEditorContent>() {
 
             @Override
-            public void callback( final GuidedEditorContent response ) {
-                model = response.getRuleModel();
-                oracle = response.getDataModel();
-                oracle.filter( model.getImports() );
+            public void callback( final GuidedEditorContent content ) {
+                model = content.getModel();
+                final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                              oracle,
+                                                                              dataModel );
 
                 view.setContent( path,
                                  model,

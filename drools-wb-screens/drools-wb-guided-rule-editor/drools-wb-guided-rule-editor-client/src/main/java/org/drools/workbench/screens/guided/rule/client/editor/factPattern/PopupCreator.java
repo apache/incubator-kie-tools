@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
@@ -40,6 +39,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.InfoPopup;
@@ -48,9 +48,9 @@ import org.uberfire.client.common.SmallLabel;
 public class PopupCreator {
 
     private FactPattern pattern;
-    private PackageDataModelOracle completions;
+    private AsyncPackageDataModelOracle oracle;
     private RuleModeller modeller;
-    private boolean      bindable;
+    private boolean bindable;
 
     /**
      * Returns the pattern.
@@ -67,17 +67,17 @@ public class PopupCreator {
     }
 
     /**
-     * Returns the completions.
+     * Returns the oracle.
      */
-    public PackageDataModelOracle getCompletions() {
-        return completions;
+    public AsyncPackageDataModelOracle getDataModelOracle() {
+        return oracle;
     }
 
     /**
-     * @param completions the completions to set
+     * @param oracle the oracle to set
      */
-    public void setCompletions( PackageDataModelOracle completions ) {
-        this.completions = completions;
+    public void setDataModelOracle( AsyncPackageDataModelOracle oracle ) {
+        this.oracle = oracle;
     }
 
     /**
@@ -185,7 +185,7 @@ public class PopupCreator {
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
-        String[] fields = this.completions.getFieldCompletions( this.pattern.getFactType() );
+        String[] fields = this.oracle.getFieldCompletions( this.pattern.getFactType() );
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[ i ] );
         }
@@ -196,8 +196,8 @@ public class PopupCreator {
             public void onChange( ChangeEvent event ) {
                 String factType = pattern.getFactType();
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = getCompletions().getFieldType( factType,
-                                                                  fieldName );
+                String fieldType = getDataModelOracle().getFieldType( factType,
+                                                                      fieldName );
                 hasConstraints.addConstraint( new SingleFieldConstraint( factType,
                                                                          fieldName,
                                                                          fieldType,
@@ -275,8 +275,8 @@ public class PopupCreator {
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
-        String[] fields = this.completions.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
-                                                                factType );
+        String[] fields = this.oracle.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
+                                                           factType );
         for ( int i = 0; i < fields.length; i++ ) {
             //You can't use "this" in a nested accessor
             if ( !isNested || !fields[ i ].equals( DataType.TYPE_THIS ) ) {
@@ -292,8 +292,8 @@ public class PopupCreator {
                 if ( "...".equals( fieldName ) ) {
                     return;
                 }
-                String fieldType = completions.getFieldType( factType,
-                                                             fieldName );
+                String fieldType = oracle.getFieldType( factType,
+                                                        fieldName );
                 fp.addConstraint( new SingleFieldConstraint( factType,
                                                              fieldName,
                                                              fieldType,

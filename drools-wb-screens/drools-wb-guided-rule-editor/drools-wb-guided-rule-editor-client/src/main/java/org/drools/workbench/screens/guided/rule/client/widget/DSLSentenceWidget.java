@@ -36,7 +36,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
@@ -47,6 +46,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.DatePickerLabel;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;
@@ -313,7 +313,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         if ( !editorReadOnly ) {
             //if no one is forcing us to be in readonly mode, let's see
             //if there is a constraint for the fact type of the custom form
-            editorReadOnly = !this.getModeller().getSuggestionCompletions().isFactTypeRecognized( factType );
+            editorReadOnly = !this.getModeller().getDataModelOracle().isFactTypeRecognized( factType );
         }
 
         if ( customFormConfiguration != null ) {
@@ -439,7 +439,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             implements
             DSLVariableEditor {
 
-        final PackageDataModelOracle completions = getModeller().getSuggestionCompletions();
+        final AsyncPackageDataModelOracle oracle = getModeller().getDataModelOracle();
         EnumDropDown resultWidget = null;
         String factType;
         String factField;
@@ -506,9 +506,9 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
 
         private DropDownData getDropDownData() {
-            DropDownData dropDownData = completions.getEnums( factType,
-                                                              factField,
-                                                              sentence.getEnumFieldValueMap() );
+            DropDownData dropDownData = oracle.getEnums( factType,
+                                                         factField,
+                                                         sentence.getEnumFieldValueMap() );
             return dropDownData;
         }
 

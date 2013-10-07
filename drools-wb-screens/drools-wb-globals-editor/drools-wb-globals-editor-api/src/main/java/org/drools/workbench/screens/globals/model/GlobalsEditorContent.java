@@ -16,33 +16,33 @@
 
 package org.drools.workbench.screens.globals.model;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class GlobalsEditorContent {
 
     private GlobalsModel model;
-    private PackageDataModelOracle oracle;
+    private PackageDataModelOracleBaselinePayload dataModel;
 
     public GlobalsEditorContent() {
     }
 
     public GlobalsEditorContent( final GlobalsModel model,
-                                 final PackageDataModelOracle oracle ) {
+                                 final PackageDataModelOracleBaselinePayload dataModel ) {
         this.model = PortablePreconditions.checkNotNull( "model",
                                                          model );
-        this.oracle = PortablePreconditions.checkNotNull( "oracle",
-                                                          oracle );
+        this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
+                                                             dataModel );
     }
 
     public GlobalsModel getModel() {
         return this.model;
     }
 
-    public PackageDataModelOracle getDataModel() {
-        return this.oracle;
+    public PackageDataModelOracleBaselinePayload getDataModel() {
+        return this.dataModel;
     }
 
 }

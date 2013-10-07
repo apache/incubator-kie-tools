@@ -22,7 +22,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextBox;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FactData;
@@ -33,6 +32,7 @@ import org.drools.workbench.models.testscenarios.shared.RetractFact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 import org.uberfire.client.common.SmallLabel;
 
@@ -44,17 +44,17 @@ public class NewDataButton extends TestScenarioButton {
 
     private final ExecutionTrace currentEx;
 
-    public NewDataButton(final ExecutionTrace previousEx,
-                         final Scenario scenario,
-                         final ExecutionTrace currentEx,
-                         ScenarioParentWidget scenarioWidget,
-                         PackageDataModelOracle dmo) {
+    public NewDataButton( final ExecutionTrace previousEx,
+                          final Scenario scenario,
+                          final ExecutionTrace currentEx,
+                          final ScenarioParentWidget scenarioWidget,
+                          final AsyncPackageDataModelOracle oracle ) {
         super( ItemAltedImages.INSTANCE.NewItem(),
-                TestScenarioConstants.INSTANCE.AddANewDataInputToThisScenario(),
-                previousEx,
-                scenario,
-                scenarioWidget,
-                dmo);
+               TestScenarioConstants.INSTANCE.AddANewDataInputToThisScenario(),
+               previousEx,
+               scenario,
+               scenarioWidget,
+               oracle );
 
         this.currentEx = currentEx;
     }
@@ -65,27 +65,28 @@ public class NewDataButton extends TestScenarioButton {
     }
 
     class NewInputPopup extends TestScenarioButtonPopup {
+
         public NewInputPopup() {
-            super(TestScenarioAltedImages.INSTANCE.RuleAsset(),
-                    TestScenarioConstants.INSTANCE.NewInput());
+            super( TestScenarioAltedImages.INSTANCE.RuleAsset(),
+                   TestScenarioConstants.INSTANCE.NewInput() );
 
-            addAttribute(TestScenarioConstants.INSTANCE.InsertANewFact1(),
-                    new InsertFactPanel());
+            addAttribute( TestScenarioConstants.INSTANCE.InsertANewFact1(),
+                          new InsertFactPanel() );
 
-            List<String> varsInScope = scenario.getFactNamesInScope(currentEx,
-                    false);
+            List<String> varsInScope = scenario.getFactNamesInScope( currentEx,
+                                                                     false );
             //now we do modifies & retracts
-            if (varsInScope.size() > 0) {
-                addAttribute(TestScenarioConstants.INSTANCE.ModifyAnExistingFactScenario(),
-                        new ModifyFactPanel(varsInScope));
+            if ( varsInScope.size() > 0 ) {
+                addAttribute( TestScenarioConstants.INSTANCE.ModifyAnExistingFactScenario(),
+                              new ModifyFactPanel( varsInScope ) );
 
-                addAttribute(TestScenarioConstants.INSTANCE.RetractAnExistingFactScenario(),
-                        new ExtractFactPanel(varsInScope));
+                addAttribute( TestScenarioConstants.INSTANCE.RetractAnExistingFactScenario(),
+                              new ExtractFactPanel( varsInScope ) );
 
             }
 
-            addAttribute(TestScenarioConstants.INSTANCE.ActivateRuleFlowGroup(),
-                    new ActivateRuleFlowPanel());
+            addAttribute( TestScenarioConstants.INSTANCE.ActivateRuleFlowGroup(),
+                          new ActivateRuleFlowPanel() );
         }
 
         class ActivateRuleFlowPanel extends BasePanel<TextBox> {
@@ -97,99 +98,100 @@ public class NewDataButton extends TestScenarioButton {
 
             @Override
             public Fixture getFixture() {
-                return new ActivateRuleFlowGroup(valueWidget.getText());
+                return new ActivateRuleFlowGroup( valueWidget.getText() );
             }
         }
 
         class ExtractFactPanel extends ListBoxBasePanel {
 
-            public ExtractFactPanel(List<String> listItems) {
-                super(listItems);
+            public ExtractFactPanel( List<String> listItems ) {
+                super( listItems );
             }
 
             @Override
             public Fixture getFixture() {
-                String factName = valueWidget.getItemText(valueWidget.getSelectedIndex());
+                String factName = valueWidget.getItemText( valueWidget.getSelectedIndex() );
 
-                return new RetractFact(factName);
+                return new RetractFact( factName );
             }
         }
 
         class ModifyFactPanel extends ListBoxBasePanel {
 
-            public ModifyFactPanel(List<String> listItems) {
-                super(listItems);
+            public ModifyFactPanel( List<String> listItems ) {
+                super( listItems );
             }
 
             @Override
             public Fixture getFixture() {
-                String factName = valueWidget.getItemText(valueWidget.getSelectedIndex());
-                String type = scenario.getVariableTypes().get(factName);
+                String factName = valueWidget.getItemText( valueWidget.getSelectedIndex() );
+                String type = scenario.getVariableTypes().get( factName );
 
-                return new FactData(type,
-                        factName,
-                        true);
+                return new FactData( type,
+                                     factName,
+                                     true );
 
             }
         }
 
         class InsertFactPanel extends ListBoxBasePanel {
+
             TextBox factNameTextBox;
 
             public InsertFactPanel() {
-                super(dmo.getFactTypes());
+                super( oracle.getFactTypes() );
             }
 
             @Override
             protected void addAddButtonClickHandler() {
-                add.addClickHandler(new ClickHandler() {
+                add.addClickHandler( new ClickHandler() {
 
-                    public void onClick(ClickEvent event) {
-                        String factName = ("" + factNameTextBox.getText()).trim();
-                        if (factName.equals("") || factNameTextBox.getText().indexOf(' ') > -1) {
-                            Window.alert(TestScenarioConstants.INSTANCE.YouMustEnterAValidFactName());
+                    public void onClick( ClickEvent event ) {
+                        String factName = ( "" + factNameTextBox.getText() ).trim();
+                        if ( factName.equals( "" ) || factNameTextBox.getText().indexOf( ' ' ) > -1 ) {
+                            Window.alert( TestScenarioConstants.INSTANCE.YouMustEnterAValidFactName() );
                         } else {
-                            if (scenario.isFactNameReserved(factName)) {
-                                Window.alert(TestScenarioConstants.INSTANCE.TheFactName0IsAlreadyInUsePleaseChooseAnotherName(factName));
+                            if ( scenario.isFactNameReserved( factName ) ) {
+                                Window.alert( TestScenarioConstants.INSTANCE.TheFactName0IsAlreadyInUsePleaseChooseAnotherName( factName ) );
                             } else {
-                                scenario.insertBetween(previousEx,
-                                        getFixture());
+                                scenario.insertBetween( previousEx,
+                                                        getFixture() );
                                 parent.renderEditor();
                                 hide();
                             }
                         }
                     }
-                });
+                } );
 
             }
 
             @Override
             protected void initWidgets() {
                 factNameTextBox = new TextBox();
-                factNameTextBox.setVisibleLength(5);
+                factNameTextBox.setVisibleLength( 5 );
 
-                add(valueWidget);
-                add(new SmallLabel(TestScenarioConstants.INSTANCE.FactName()));
-                add(factNameTextBox);
-                add(add);
+                add( valueWidget );
+                add( new SmallLabel( TestScenarioConstants.INSTANCE.FactName() ) );
+                add( factNameTextBox );
+                add( add );
             }
 
             @Override
             public Fixture getFixture() {
-                String factType = valueWidget.getItemText(valueWidget.getSelectedIndex());
+                String factType = valueWidget.getItemText( valueWidget.getSelectedIndex() );
                 FactData factData = new FactData(
                         factType,
                         factNameTextBox.getText(),
-                        false);
+                        false );
 
                 //Create new Field objects for new Fixture based upon the first existing of the same data-type
                 //Only the "first" existing of the same data-type is checked as second, third etc should have been
                 //based upon the first if they were all created after this fix for GUVNOR-1139 was implemented.
-                List<FactData> existingFactData = scenario.getFactTypesToFactData().get(factType);
-                if (existingFactData != null && existingFactData.size() > 0) {
-                    for (Field field : existingFactData.get(0).getFieldData()) {
+                List<FactData> existingFactData = scenario.getFactTypesToFactData().get( factType );
+                if ( existingFactData != null && existingFactData.size() > 0 ) {
+                    for ( Field field : existingFactData.get( 0 ).getFieldData() ) {
                         factData.getFieldData().add(
-                                new FieldPlaceHolder(field.getName()));
+                                new FieldPlaceHolder( field.getName() ) );
                     }
                 }
 
@@ -197,6 +199,5 @@ public class NewDataButton extends TestScenarioButton {
             }
         }
     }
-
 
 }

@@ -19,29 +19,32 @@ package org.drools.workbench.screens.guided.rule.model;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 
 @Portable
 public class GuidedEditorContent {
 
-    private PackageDataModelOracle dataModel;
-    private RuleModel ruleModel;
+    private RuleModel model;
+    private PackageDataModelOracleBaselinePayload dataModel;
 
     public GuidedEditorContent() {
-
     }
 
-    public GuidedEditorContent( final PackageDataModelOracle dataModel,
-                                final RuleModel ruleModel ) {
-        this.dataModel = dataModel;
-        this.ruleModel = ruleModel;
+    public GuidedEditorContent( final RuleModel model,
+                                final PackageDataModelOracleBaselinePayload dataModel ) {
+        this.model = PortablePreconditions.checkNotNull( "model",
+                                                         model );
+        this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
+                                                             dataModel );
     }
 
-    public PackageDataModelOracle getDataModel() {
+    public RuleModel getModel() {
+        return model;
+    }
+
+    public PackageDataModelOracleBaselinePayload getDataModel() {
         return dataModel;
-    }
-
-    public RuleModel getRuleModel() {
-        return ruleModel;
     }
 
 }

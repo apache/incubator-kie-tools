@@ -25,7 +25,6 @@ import java.util.Map;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -37,11 +36,15 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 
 import static junit.framework.Assert.*;
@@ -51,8 +54,8 @@ import static junit.framework.Assert.*;
  */
 public class CellValueFactoryTests {
 
-    private PackageDataModelOracle oracle;
-    private GuidedDecisionTable52 dt = null;
+    private AsyncPackageDataModelOracle oracle;
+    private GuidedDecisionTable52 model = null;
     private DecisionTableCellValueFactory factory = null;
 
     private AttributeCol52 at1 = null;
@@ -74,7 +77,7 @@ public class CellValueFactoryTests {
     @Before
     @SuppressWarnings("serial")
     public void setup() {
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "MyClass" )
                 .addField( new ModelField( "bigDecimalField",
                                            Integer.class.getName(),
@@ -145,17 +148,23 @@ public class CellValueFactoryTests {
                 .end()
                 .build();
 
-        oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        model = new GuidedDecisionTable52();
 
-        dt = new GuidedDecisionTable52();
+        //Emulate server-to-client conversions
+        oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( loader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         at1 = new AttributeCol52();
         at1.setAttribute( "salience" );
         at2 = new AttributeCol52();
         at2.setAttribute( "enabled" );
 
-        dt.getAttributeCols().add( at1 );
-        dt.getAttributeCols().add( at2 );
+        model.getAttributeCols().add( at1 );
+        model.getAttributeCols().add( at2 );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -166,7 +175,7 @@ public class CellValueFactoryTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dt.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -177,7 +186,7 @@ public class CellValueFactoryTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( c2 );
-        dt.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         c3 = new ConditionCol52();
         c3.setFactField( "bigIntegerField" );
@@ -230,7 +239,7 @@ public class CellValueFactoryTests {
         c10.setOperator( "==" );
         c10.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p3.getChildColumns().add( c10 );
-        dt.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
         Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
@@ -241,20 +250,20 @@ public class CellValueFactoryTests {
         c11.setOperator( "==" );
         c11.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p4.getChildColumns().add( c11 );
-        dt.getConditions().add( p4 );
+        model.getConditions().add( p4 );
 
         a1 = new ActionSetFieldCol52();
         a1.setBoundName( "c1" );
         a1.setFactField( "stringField" );
-        dt.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         a2 = new ActionInsertFactCol52();
         a2.setBoundName( "a2" );
         a2.setFactType( "MyClass" );
         a2.setFactField( "stringField" );
-        dt.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        factory = new DecisionTableCellValueFactory( dt,
+        factory = new DecisionTableCellValueFactory( model,
                                                      oracle );
 
         Map<String, String> preferences = new HashMap<String, String>();

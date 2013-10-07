@@ -40,6 +40,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.FactPatter
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.ImportsPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.RowExpander;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.SummaryPage;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
@@ -78,7 +79,7 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
 
     private NewGuidedDecisionTableAssetWizardContext context;
     private GuidedDecisionTable52 model;
-    private PackageDataModelOracle oracle;
+    private AsyncPackageDataModelOracle oracle;
     private NewGuidedDecisionTableHandler handler;
 
     @PostConstruct
@@ -93,7 +94,7 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
     }
 
     public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
-                            final PackageDataModelOracle oracle,
+                            final AsyncPackageDataModelOracle oracle,
                             final NewGuidedDecisionTableHandler handler ) {
         this.context = context;
         this.model = new GuidedDecisionTable52();

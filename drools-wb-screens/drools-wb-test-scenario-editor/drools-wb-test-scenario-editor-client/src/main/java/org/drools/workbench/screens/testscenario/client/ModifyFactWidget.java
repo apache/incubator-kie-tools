@@ -16,27 +16,26 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class ModifyFactWidget extends FactWidget {
 
-    public ModifyFactWidget(String factType,
-                            FixtureList definitionList,
-                            Scenario scenario,
-                            PackageDataModelOracle dmo,
-                            ScenarioParentWidget parent,
-                            ExecutionTrace executionTrace) {
-        super(factType,
-                definitionList,
-                scenario,
-                dmo,
-                parent,
-                executionTrace,
-                TestScenarioConstants.INSTANCE.modifyForScenario(factType));
+    public ModifyFactWidget( final String factType,
+                             final FixtureList definitionList,
+                             final Scenario scenario,
+                             final AsyncPackageDataModelOracle oracle,
+                             final ScenarioParentWidget parent,
+                             final ExecutionTrace executionTrace ) {
+        super( factType,
+               definitionList,
+               scenario,
+               oracle,
+               parent,
+               executionTrace,
+               TestScenarioConstants.INSTANCE.modifyForScenario( factType ) );
     }
 }

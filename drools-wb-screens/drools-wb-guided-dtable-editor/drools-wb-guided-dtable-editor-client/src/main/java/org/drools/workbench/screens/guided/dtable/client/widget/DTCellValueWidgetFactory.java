@@ -33,7 +33,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
@@ -48,6 +47,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.DefaultVal
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
@@ -66,8 +66,8 @@ import org.uberfire.client.common.NumericTextBox;
  */
 public class DTCellValueWidgetFactory {
 
-    private final PackageDataModelOracle oracle;
-    private final GuidedDecisionTable52 dtable;
+    private final GuidedDecisionTable52 model;
+    private final AsyncPackageDataModelOracle oracle;
     private final GuidedDecisionTableUtils utils;
     private final LimitedEntryDropDownManager dropDownManager;
     private final boolean isReadOnly;
@@ -76,37 +76,37 @@ public class DTCellValueWidgetFactory {
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat format = DateTimeFormat.getFormat( DATE_FORMAT );
 
-    public static DTCellValueWidgetFactory getInstance( GuidedDecisionTable52 dtable,
-                                                        PackageDataModelOracle oracle,
+    public static DTCellValueWidgetFactory getInstance( GuidedDecisionTable52 model,
+                                                        AsyncPackageDataModelOracle oracle,
                                                         boolean isReadOnly,
                                                         boolean allowEmptyValues ) {
-        switch ( dtable.getTableFormat() ) {
+        switch ( model.getTableFormat() ) {
             case EXTENDED_ENTRY:
-                return new DTCellValueWidgetFactory( dtable,
+                return new DTCellValueWidgetFactory( model,
                                                      oracle,
-                                                     new DefaultValueDropDownManager( dtable,
+                                                     new DefaultValueDropDownManager( model,
                                                                                       oracle ),
                                                      isReadOnly,
                                                      allowEmptyValues );
             default:
-                return new DTCellValueWidgetFactory( dtable,
+                return new DTCellValueWidgetFactory( model,
                                                      oracle,
-                                                     new LimitedEntryDropDownManager( dtable,
+                                                     new LimitedEntryDropDownManager( model,
                                                                                       oracle ),
                                                      isReadOnly,
                                                      allowEmptyValues );
         }
     }
 
-    private DTCellValueWidgetFactory( GuidedDecisionTable52 dtable,
-                                      PackageDataModelOracle oracle,
+    private DTCellValueWidgetFactory( GuidedDecisionTable52 model,
+                                      AsyncPackageDataModelOracle oracle,
                                       LimitedEntryDropDownManager dropDownManager,
                                       boolean isReadOnly,
                                       boolean allowEmptyValues ) {
+        this.model = model;
         this.oracle = oracle;
-        this.dtable = dtable;
-        this.utils = new GuidedDecisionTableUtils( oracle,
-                                                   dtable );
+        this.utils = new GuidedDecisionTableUtils( model,
+                                                   oracle );
         this.dropDownManager = dropDownManager;
         this.isReadOnly = isReadOnly;
         this.allowEmptyValues = allowEmptyValues;
@@ -167,7 +167,7 @@ public class DTCellValueWidgetFactory {
         } else if ( oracle.hasEnums( pattern.getFactType(),
                                      column.getFactField() ) ) {
             final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context( pattern,
-                                                 column );
+                                                                                                         column );
             final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
             final DropDownData dd = oracle.getEnums( pattern.getFactType(),
                                                      column.getFactField(),
@@ -256,7 +256,7 @@ public class DTCellValueWidgetFactory {
         } else if ( oracle.hasEnums( pattern.getFactType(),
                                      column.getFactField() ) ) {
             final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context( pattern,
-                                                 column );
+                                                                                                         column );
             final Map<String, String> currentValueMap = dropDownManager.getCurrentValueMap( context );
             final DropDownData dd = oracle.getEnums( pattern.getFactType(),
                                                      column.getFactField(),
@@ -424,10 +424,10 @@ public class DTCellValueWidgetFactory {
 
                         //Update any dependent enumerations
                         final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context( basePattern,
-                                                             baseCondition );
+                                                                                                                     baseCondition );
                         Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes( context );
                         for ( Integer iCol : dependentColumnIndexes ) {
-                            BaseColumn column = dtable.getExpandedColumns().get( iCol );
+                            BaseColumn column = model.getExpandedColumns().get( iCol );
                             if ( column instanceof LimitedEntryCol ) {
                                 ( (LimitedEntryCol) column ).setValue( null );
                             } else if ( column instanceof DTColumnConfig52 ) {
@@ -464,10 +464,10 @@ public class DTCellValueWidgetFactory {
 
                         //Update any dependent enumerations
                         final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context( basePattern,
-                                                             baseAction );
+                                                                                                                     baseAction );
                         Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes( context );
                         for ( Integer iCol : dependentColumnIndexes ) {
-                            BaseColumn column = dtable.getExpandedColumns().get( iCol );
+                            BaseColumn column = model.getExpandedColumns().get( iCol );
                             if ( column instanceof LimitedEntryCol ) {
                                 ( (LimitedEntryCol) column ).setValue( null );
                             } else if ( column instanceof DTColumnConfig52 ) {
@@ -505,7 +505,7 @@ public class DTCellValueWidgetFactory {
                         final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context( baseAction );
                         Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes( context );
                         for ( Integer iCol : dependentColumnIndexes ) {
-                            BaseColumn column = dtable.getExpandedColumns().get( iCol );
+                            BaseColumn column = model.getExpandedColumns().get( iCol );
                             if ( column instanceof LimitedEntryCol ) {
                                 ( (LimitedEntryCol) column ).setValue( null );
                             } else if ( column instanceof DTColumnConfig52 ) {

@@ -20,51 +20,47 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class GivenPanel
         extends VerticalPanel {
 
-    public GivenPanel(List<ExecutionTrace> listExecutionTrace,
-                      int executionTraceLine,
-                      FixturesMap given,
-                      final Scenario scenario,
-                      PackageDataModelOracle dmo,
-                      final ScenarioParentWidget parent) {
+    public GivenPanel( final List<ExecutionTrace> listExecutionTrace,
+                       final int executionTraceLine,
+                       final FixturesMap given,
+                       final Scenario scenario,
+                       final AsyncPackageDataModelOracle oracle,
+                       final ScenarioParentWidget parent ) {
 
-        for (Map.Entry<String, FixtureList> e : given.entrySet()) {
-            FixtureList itemList = given.get(e.getKey());
-            if (e.getKey().equals(ScenarioHelper.RETRACT_KEY)) {
-                add(new RetractWidget(
-                        itemList,
-                        scenario,
-                        parent));
-            } else if (e.getKey().equals(ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP)) {
-                add(new ActivateRuleFlowWidget(
-                        itemList,
-                        scenario,
-                        parent));
+        for ( Map.Entry<String, FixtureList> e : given.entrySet() ) {
+            FixtureList itemList = given.get( e.getKey() );
+            if ( e.getKey().equals( ScenarioHelper.RETRACT_KEY ) ) {
+                add( new RetractWidget( itemList,
+                                        scenario,
+                                        parent ) );
+            } else if ( e.getKey().equals( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP ) ) {
+                add( new ActivateRuleFlowWidget( itemList,
+                                                 scenario,
+                                                 parent ) );
             } else {
-                if (itemList.getFirstFactData().isModify()) {
-                    add(new ModifyFactWidget(
-                            e.getKey(),
-                            itemList,
-                            scenario,
-                            dmo,
-                            parent,
-                            listExecutionTrace.get(executionTraceLine)));
+                if ( itemList.getFirstFactData().isModify() ) {
+                    add( new ModifyFactWidget( e.getKey(),
+                                               itemList,
+                                               scenario,
+                                               oracle,
+                                               parent,
+                                               listExecutionTrace.get( executionTraceLine ) ) );
                 } else {
-                    add(new InsertFactWidget(
-                            e.getKey(),
-                            itemList,
-                            scenario,
-                            dmo,
-                            parent,
-                            listExecutionTrace.get(executionTraceLine)));
+                    add( new InsertFactWidget( e.getKey(),
+                                               itemList,
+                                               scenario,
+                                               oracle,
+                                               parent,
+                                               listExecutionTrace.get( executionTraceLine ) ) );
                 }
             }
         }

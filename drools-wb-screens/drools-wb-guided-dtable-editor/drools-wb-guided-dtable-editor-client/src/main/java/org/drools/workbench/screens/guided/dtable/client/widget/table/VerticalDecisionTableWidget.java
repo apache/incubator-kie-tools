@@ -17,9 +17,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.SetGuidedDecisionTableModelEvent;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.security.Identity;
 
 /**
@@ -30,7 +30,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
     private DecisionTableControlsWidget ctrls;
 
     public VerticalDecisionTableWidget( GuidedDecisionTable52 model,
-                                        PackageDataModelOracle oracle,
+                                        AsyncPackageDataModelOracle oracle,
                                         Identity identity,
                                         boolean isReadOnly,
                                         EventBus eventBus ) {

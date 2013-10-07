@@ -18,19 +18,19 @@ package org.drools.workbench.screens.guided.rule.client.widget;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionGlobalVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class ExpressionPartHelper {
 
-    public static ExpressionPart getExpressionPartForMethod( PackageDataModelOracle sce,
+    public static ExpressionPart getExpressionPartForMethod( AsyncPackageDataModelOracle oracle,
                                                              String factName,
                                                              String methodName ) {
-        MethodInfo mi = sce.getMethodInfo( factName, methodName );
+        MethodInfo mi = oracle.getMethodInfo( factName, methodName );
         if ( DataType.TYPE_COLLECTION.equals( mi.getGenericType() ) ) {
             return new ExpressionCollection( methodName, mi.getReturnClassType(),
                                              mi.getGenericType(), mi.getParametricReturnType() );
@@ -38,22 +38,22 @@ public class ExpressionPartHelper {
         return new ExpressionMethod( mi.getName(), mi.getReturnClassType(), mi.getGenericType() );
     }
 
-    public static ExpressionPart getExpressionPartForField( PackageDataModelOracle sce,
+    public static ExpressionPart getExpressionPartForField( AsyncPackageDataModelOracle oracle,
                                                             String factName,
                                                             String fieldName ) {
-        String fieldClassName = sce.getFieldClassName( factName, fieldName );
-        String fieldGenericType = sce.getFieldType( factName, fieldName );
+        String fieldClassName = oracle.getFieldClassName( factName, fieldName );
+        String fieldGenericType = oracle.getFieldType( factName, fieldName );
         if ( DataType.TYPE_COLLECTION.equals( fieldGenericType ) ) {
-            String fieldParametricType = sce.getParametricFieldType( factName, fieldName );
+            String fieldParametricType = oracle.getParametricFieldType( factName, fieldName );
             return new ExpressionCollection( fieldName, fieldClassName, fieldGenericType,
                                              fieldParametricType );
         }
         return new ExpressionField( fieldName, fieldClassName, fieldGenericType );
     }
 
-    public static ExpressionPart getExpressionPartForGlobalVariable( PackageDataModelOracle sce,
+    public static ExpressionPart getExpressionPartForGlobalVariable( AsyncPackageDataModelOracle oracle,
                                                                      String varName ) {
-        String globalVarType = sce.getGlobalVariable( varName );
+        String globalVarType = oracle.getGlobalVariable( varName );
         return new ExpressionGlobalVariable( varName, globalVarType, globalVarType );
     }
 }

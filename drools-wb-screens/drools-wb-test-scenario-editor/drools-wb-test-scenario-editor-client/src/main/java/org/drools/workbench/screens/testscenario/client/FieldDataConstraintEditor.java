@@ -33,13 +33,13 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.common.DirtyableComposite;
@@ -62,21 +62,21 @@ public class FieldDataConstraintEditor
 
     private List<FieldDataConstraintEditor> dependentEnumEditors = null;
 
-    public FieldDataConstraintEditor(String factType,
-                                     FieldData field,
-                                     Fact givenFact,
-                                     PackageDataModelOracle dmo,
-                                     Scenario scenario,
-                                     ExecutionTrace executionTrace) {
+    public FieldDataConstraintEditor( final String factType,
+                                      final FieldData field,
+                                      final Fact givenFact,
+                                      final AsyncPackageDataModelOracle oracle,
+                                      final Scenario scenario,
+                                      final ExecutionTrace executionTrace ) {
         this.field = field;
-        this.helper = new FieldConstraintHelper(scenario,
-                executionTrace,
-                dmo,
-                factType,
-                field,
-                givenFact);
+        this.helper = new FieldConstraintHelper( scenario,
+                                                 executionTrace,
+                                                 oracle,
+                                                 factType,
+                                                 field,
+                                                 givenFact );
         renderEditor();
-        initWidget(panel);
+        initWidget( panel );
     }
 
     @Override
@@ -84,27 +84,27 @@ public class FieldDataConstraintEditor
         final String flType = helper.getFieldType();
         panel.clear();
 
-        if (flType != null && flType.equals( DataType.TYPE_BOOLEAN)) {
+        if ( flType != null && flType.equals( DataType.TYPE_BOOLEAN ) ) {
             addBooleanEditor();
 
-        } else if (flType != null && flType.equals(DataType.TYPE_DATE)) {
+        } else if ( flType != null && flType.equals( DataType.TYPE_DATE ) ) {
             addDateEditor();
 
         } else {
             final DropDownData dropDownData = helper.getEnums();
 
-            if (dropDownData != null) {
-                addDropDownEditor(dropDownData);
+            if ( dropDownData != null ) {
+                addDropDownEditor( dropDownData );
             } else {
 
                 setFieldNatureIfItIsWasNotSetBefore();
 
-                if (field.getNature() == FieldData.TYPE_UNDEFINED && (helper.isThereABoundVariableToSet() == true || helper.isItAList() == true)) {
+                if ( field.getNature() == FieldData.TYPE_UNDEFINED && ( helper.isThereABoundVariableToSet() == true || helper.isItAList() == true ) ) {
                     addFieldSelectorWidget();
-                } else if (isFieldVariable()) {
+                } else if ( isFieldVariable() ) {
                     addVariableEditor();
                 } else {
-                    addDefaultTextBoxWidget(flType);
+                    addDefaultTextBoxWidget( flType );
                 }
             }
         }
@@ -113,58 +113,58 @@ public class FieldDataConstraintEditor
 
     private void addDateEditor() {
         valueEditorWidget = dateEditor();
-        panel.add(valueEditorWidget);
+        panel.add( valueEditorWidget );
     }
 
     private void addBooleanEditor() {
         valueEditorWidget = booleanEditor();
-        panel.add(valueEditorWidget);
+        panel.add( valueEditorWidget );
     }
 
-    private void addDropDownEditor(DropDownData dropDownData) {
-        field.setNature(FieldData.TYPE_ENUM);
+    private void addDropDownEditor( final DropDownData dropDownData ) {
+        field.setNature( FieldData.TYPE_ENUM );
         dependentEnumEditors = new ArrayList<FieldDataConstraintEditor>();
-        valueEditorWidget = dropDownEditor(dropDownData);
-        panel.add(valueEditorWidget);
+        valueEditorWidget = dropDownEditor( dropDownData );
+        panel.add( valueEditorWidget );
     }
 
-    private void addDefaultTextBoxWidget(String flType) {
-        valueEditorWidget = textBoxEditor(new ValueChangeHandler<String>() {
+    private void addDefaultTextBoxWidget( final String flType ) {
+        valueEditorWidget = textBoxEditor( new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange(ValueChangeEvent<String> newValue) {
-                valueHasChanged(newValue.getValue());
+            public void onValueChange( ValueChangeEvent<String> newValue ) {
+                valueHasChanged( newValue.getValue() );
             }
         },
-                flType,
-                field.getName(),
-                field.getValue());
+                                           flType,
+                                           field.getName(),
+                                           field.getValue() );
 
-        panel.add(valueEditorWidget);
+        panel.add( valueEditorWidget );
     }
 
     private void setFieldNatureIfItIsWasNotSetBefore() {
-        if (field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED) {
-            if (field.getValue().length() > 1 && field.getValue().charAt(1) == '[' && field.getValue().charAt(0) == '=') {
-                field.setNature(FieldData.TYPE_LITERAL);
-            } else if (field.getValue().charAt(0) == '=') {
-                field.setNature(FieldData.TYPE_VARIABLE);
+        if ( field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {
+            if ( field.getValue().length() > 1 && field.getValue().charAt( 1 ) == '[' && field.getValue().charAt( 0 ) == '=' ) {
+                field.setNature( FieldData.TYPE_LITERAL );
+            } else if ( field.getValue().charAt( 0 ) == '=' ) {
+                field.setNature( FieldData.TYPE_VARIABLE );
             } else {
-                field.setNature(FieldData.TYPE_LITERAL);
+                field.setNature( FieldData.TYPE_LITERAL );
             }
         }
     }
 
     private void addVariableEditor() {
         valueEditorWidget = variableEditor();
-        panel.add(valueEditorWidget);
+        panel.add( valueEditorWidget );
     }
 
     private void addFieldSelectorWidget() {
-        helper.setParentIsAList(true);
-        valueEditorWidget = new FieldSelectorWidget(field,
-                helper,
-                this);
-        panel.add(valueEditorWidget);
+        helper.setParentIsAList( true );
+        valueEditorWidget = new FieldSelectorWidget( field,
+                                                     helper,
+                                                     this );
+        panel.add( valueEditorWidget );
     }
 
     private boolean isFieldVariable() {
@@ -172,51 +172,51 @@ public class FieldDataConstraintEditor
     }
 
     private EnumDropDown booleanEditor() {
-        return new EnumDropDown(field.getValue(),
-                new DropDownValueChanged() {
-                    public void valueChanged(String newText,
-                                             String newValue) {
-                        valueHasChanged(newValue);
-                    }
+        return new EnumDropDown( field.getValue(),
+                                 new DropDownValueChanged() {
+                                     public void valueChanged( String newText,
+                                                               String newValue ) {
+                                         valueHasChanged( newValue );
+                                     }
 
-                },
-                DropDownData.create(new String[]{"true", "false"}));
+                                 },
+                                 DropDownData.create( new String[]{ "true", "false" } ) );
     }
 
-    private EnumDropDown dropDownEditor(final DropDownData dropDownData) {
-        return new EnumDropDown(field.getValue(),
-                new DropDownValueChanged() {
-                    public void valueChanged(String newText,
-                                             String newValue) {
-                        valueHasChanged(newValue);
-                        for (FieldDataConstraintEditor dependentEnumEditor : dependentEnumEditors) {
-                            dependentEnumEditor.refreshDropDownData();
-                        }
-                    }
-                },
-                dropDownData);
+    private EnumDropDown dropDownEditor( final DropDownData dropDownData ) {
+        return new EnumDropDown( field.getValue(),
+                                 new DropDownValueChanged() {
+                                     public void valueChanged( String newText,
+                                                               String newValue ) {
+                                         valueHasChanged( newValue );
+                                         for ( FieldDataConstraintEditor dependentEnumEditor : dependentEnumEditors ) {
+                                             dependentEnumEditor.refreshDropDownData();
+                                         }
+                                     }
+                                 },
+                                 dropDownData );
 
     }
 
     private DatePickerTextBox dateEditor() {
-        DatePickerTextBox editor = new DatePickerTextBox(field.getValue());
-        editor.setTitle( TestScenarioConstants.INSTANCE.ValueFor0(field.getName()));
-        editor.addValueChanged(new ValueChanged() {
-            public void valueChanged(String newValue) {
-                field.setValue(newValue);
+        DatePickerTextBox editor = new DatePickerTextBox( field.getValue() );
+        editor.setTitle( TestScenarioConstants.INSTANCE.ValueFor0( field.getName() ) );
+        editor.addValueChanged( new ValueChanged() {
+            public void valueChanged( String newValue ) {
+                field.setValue( newValue );
             }
-        });
+        } );
         return editor;
     }
 
-    private TextBox textBoxEditor(final ValueChangeHandler<String> valueChangeHandler,
-                                  final String dataType,
-                                  String fieldName,
-                                  String initialValue) {
-        final TextBox tb = TextBoxFactory.getTextBox(dataType);
-        tb.setText(initialValue);
-        tb.setTitle(TestScenarioConstants.INSTANCE.ValueFor0(fieldName));
-        tb.addValueChangeHandler(valueChangeHandler);
+    private TextBox textBoxEditor( final ValueChangeHandler<String> valueChangeHandler,
+                                   final String dataType,
+                                   final String fieldName,
+                                   final String initialValue ) {
+        final TextBox tb = TextBoxFactory.getTextBox( dataType );
+        tb.setText( initialValue );
+        tb.setTitle( TestScenarioConstants.INSTANCE.ValueFor0( fieldName ) );
+        tb.addValueChangeHandler( valueChangeHandler );
         return tb;
     }
 
@@ -225,58 +225,58 @@ public class FieldDataConstraintEditor
 
         final ListBox box = new ListBox();
 
-        if (this.field.getValue() == null) {
-            box.addItem(TestScenarioConstants.INSTANCE.Choose());
+        if ( this.field.getValue() == null ) {
+            box.addItem( TestScenarioConstants.INSTANCE.Choose() );
         }
         int j = 0;
-        for (String var : vars) {
-            if (helper.getFactTypeByVariableName(var).getType().equals(helper.resolveFieldType())) {
-                if (box.getItemCount() == 0) {
-                    box.addItem("...");
+        for ( String var : vars ) {
+            if ( helper.getFactTypeByVariableName( var ).getType().equals( helper.resolveFieldType() ) ) {
+                if ( box.getItemCount() == 0 ) {
+                    box.addItem( "..." );
                     j++;
                 }
-                box.addItem("=" + var);
-                if (this.field.getValue() != null && this.field.getValue().equals("=" + var)) {
-                    box.setSelectedIndex(j);
+                box.addItem( "=" + var );
+                if ( this.field.getValue() != null && this.field.getValue().equals( "=" + var ) ) {
+                    box.setSelectedIndex( j );
 
                 }
                 j++;
             }
         }
 
-        box.addChangeHandler(new ChangeHandler() {
+        box.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
-                field.setValue(box.getItemText(box.getSelectedIndex()));
-                valueHasChanged(field.getValue());
+            public void onChange( ChangeEvent event ) {
+                field.setValue( box.getItemText( box.getSelectedIndex() ) );
+                valueHasChanged( field.getValue() );
             }
-        });
+        } );
 
         return box;
     }
 
-    private void valueHasChanged(String newValue) {
-        ValueChangeEvent.fire(this,
-                newValue);
+    private void valueHasChanged( final String newValue ) {
+        ValueChangeEvent.fire( this,
+                               newValue );
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> stringValueChangeHandler) {
-        return addHandler(stringValueChangeHandler,
-                ValueChangeEvent.getType());
+    public HandlerRegistration addValueChangeHandler( final ValueChangeHandler<String> stringValueChangeHandler ) {
+        return addHandler( stringValueChangeHandler,
+                           ValueChangeEvent.getType() );
     }
 
-    public void addIfDependentEnumEditor(FieldDataConstraintEditor candidateDependentEnumEditor) {
-        if (helper.isDependentEnum(candidateDependentEnumEditor.helper)) {
-            dependentEnumEditors.add(candidateDependentEnumEditor);
+    public void addIfDependentEnumEditor( final FieldDataConstraintEditor candidateDependentEnumEditor ) {
+        if ( helper.isDependentEnum( candidateDependentEnumEditor.helper ) ) {
+            dependentEnumEditors.add( candidateDependentEnumEditor );
         }
     }
 
     private void refreshDropDownData() {
-        if (this.valueEditorWidget instanceof EnumDropDown) {
+        if ( this.valueEditorWidget instanceof EnumDropDown ) {
             final EnumDropDown dropdown = (EnumDropDown) this.valueEditorWidget;
-            dropdown.setDropDownData(field.getValue(),
-                    helper.getEnums());
+            dropdown.setDropDownData( field.getValue(),
+                                      helper.getEnums() );
         }
     }
 

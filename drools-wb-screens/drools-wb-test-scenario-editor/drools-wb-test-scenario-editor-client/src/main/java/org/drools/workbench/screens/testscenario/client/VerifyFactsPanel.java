@@ -21,13 +21,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.uberfire.client.common.ImageButton;
 
@@ -37,12 +37,12 @@ public class VerifyFactsPanel extends VerticalPanel {
 
     private final ScenarioParentWidget parent;
 
-    public VerifyFactsPanel(FixtureList verifyFacts,
-                            ExecutionTrace executionTrace,
-                            final Scenario scenario,
-                            ScenarioParentWidget scenarioWidget,
-                            boolean showResults,
-                            PackageDataModelOracle dmo) {
+    public VerifyFactsPanel( FixtureList verifyFacts,
+                             ExecutionTrace executionTrace,
+                             final Scenario scenario,
+                             ScenarioParentWidget scenarioWidget,
+                             boolean showResults,
+                             AsyncPackageDataModelOracle oracle ) {
 
         this.scenario = scenario;
         this.parent = scenarioWidget;
@@ -54,7 +54,7 @@ public class VerifyFactsPanel extends VerticalPanel {
                 HorizontalPanel column = new HorizontalPanel();
                 column.add( new VerifyFactWidget( verifyFact,
                                                   scenario,
-                                                  dmo,
+                                                  oracle,
                                                   executionTrace,
                                                   showResults ) );
 
@@ -66,13 +66,14 @@ public class VerifyFactsPanel extends VerticalPanel {
     }
 
     class DeleteButton extends ImageButton {
-        public DeleteButton(final VerifyFact verifyFact) {
-            super(CommonAltedImages.INSTANCE.DeleteItemSmall(),
+
+        public DeleteButton( final VerifyFact verifyFact ) {
+            super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
                    TestScenarioConstants.INSTANCE.DeleteTheExpectationForThisFact() );
 
             addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onClick( ClickEvent event ) {
                     if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisExpectation() ) ) {
                         scenario.removeFixture( verifyFact );
                         parent.renderEditor();

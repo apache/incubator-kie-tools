@@ -49,11 +49,11 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -89,14 +89,14 @@ public class GuidedScoreCardEditor extends Composite {
     private Map<String, ModelField[]> oracleModelFields;
 
     private ScoreCardModel model;
-    private PackageDataModelOracle oracle;
+    private AsyncPackageDataModelOracle oracle;
 
     public GuidedScoreCardEditor() {
         initWidget( container );
     }
 
     public void setContent( final ScoreCardModel model,
-                            final PackageDataModelOracle oracle ) {
+                            final AsyncPackageDataModelOracle oracle ) {
         this.model = model;
         this.oracle = oracle;
         this.oracleModelFields = oracle.getModelFields();

@@ -35,7 +35,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
@@ -44,6 +43,7 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
@@ -60,22 +60,22 @@ import org.uberfire.client.common.ValueChanged;
  */
 public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
-    private String                     factType;
+    private String factType;
     private VerifyField field;
-    private final Panel                panel;
+    private final Panel panel;
     private Scenario scenario;
-    private PackageDataModelOracle dmo;
-    private ValueChanged               callback;
+    private AsyncPackageDataModelOracle oracle;
+    private ValueChanged callback;
     private ExecutionTrace executionTrace;
 
-    public VerifyFieldConstraintEditor(String factType,
-                                       ValueChanged callback,
-                                       VerifyField field,
-                                       PackageDataModelOracle dmo,
-                                       Scenario scenario,
-                                       ExecutionTrace executionTrace) {
+    public VerifyFieldConstraintEditor( final String factType,
+                                        final ValueChanged callback,
+                                        final VerifyField field,
+                                        final AsyncPackageDataModelOracle oracle,
+                                        final Scenario scenario,
+                                        final ExecutionTrace executionTrace ) {
         this.field = field;
-        this.dmo = dmo;
+        this.oracle = oracle;
         this.factType = factType;
         this.callback = callback;
         this.scenario = scenario;
@@ -86,26 +86,27 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
     }
 
     private void refreshEditor() {
-        String flType = dmo.getFieldType( factType,  field.getFieldName());
+        String flType = oracle.getFieldType( factType,
+                                             field.getFieldName() );
         panel.clear();
 
         if ( flType != null && flType.equals( DataType.TYPE_BOOLEAN ) ) {
-            String[] c = new String[]{"true", "false"};
+            String[] c = new String[]{ "true", "false" };
             panel.add( new EnumDropDown( field.getExpected(),
-                    new DropDownValueChanged() {
-                        public void valueChanged(String newText,
-                                                 String newValue) {
-                            callback.valueChanged( newValue );
-                        }
-                    },
-                    DropDownData.create( c ) ) );
+                                         new DropDownValueChanged() {
+                                             public void valueChanged( String newText,
+                                                                       String newValue ) {
+                                                 callback.valueChanged( newValue );
+                                             }
+                                         },
+                                         DropDownData.create( c ) ) );
 
         } else if ( flType != null && flType.equals( DataType.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getExpected() );
             String m = TestScenarioConstants.INSTANCE.ValueFor0( field.getFieldName() );
             datePicker.setTitle( m );
             datePicker.addValueChanged( new ValueChanged() {
-                public void valueChanged(String newValue) {
+                public void valueChanged( String newValue ) {
                     field.setExpected( newValue );
                 }
             } );
@@ -114,14 +115,14 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         } else {
             Map<String, String> currentValueMap = new HashMap<String, String>();
             // TODO fill currentValueMap with values of other VerifyFields (if any)
-            DropDownData dropDownData = dmo.getEnums( factType,
-                    field.getFieldName(),
-                    currentValueMap );
+            DropDownData dropDownData = oracle.getEnums( factType,
+                                                         field.getFieldName(),
+                                                         currentValueMap );
             if ( dropDownData != null ) {
                 //GUVNOR-1324: Java enums are of type TYPE_COMPARABLE whereas Guvnor enums are not.
                 //The distinction here controls whether the EXPECTED value is handled as a true
                 //Java enum or a literal with a selection list (i.e. Guvnor enum)
-                String dataType = dmo.getFieldType( factType,  field.getFieldName() );
+                String dataType = oracle.getFieldType( factType, field.getFieldName() );
                 if ( dataType.equals( DataType.TYPE_COMPARABLE ) ) {
                     field.setNature( FieldData.TYPE_ENUM );
                 } else {
@@ -129,13 +130,13 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                 }
 
                 panel.add( new EnumDropDown( field.getExpected(),
-                        new DropDownValueChanged() {
-                            public void valueChanged(String newText,
-                                                     String newValue) {
-                                callback.valueChanged( newValue );
-                            }
-                        },
-                        dropDownData ) );
+                                             new DropDownValueChanged() {
+                                                 public void valueChanged( String newText,
+                                                                           String newValue ) {
+                                                     callback.valueChanged( newValue );
+                                                 }
+                                             },
+                                             dropDownData ) );
 
             } else {
                 if ( field.getExpected() != null && field.getExpected().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {
@@ -149,9 +150,9 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                     Image clickme = CommonAltedImages.INSTANCE.Edit();
                     clickme.addClickHandler( new ClickHandler() {
 
-                        public void onClick(ClickEvent event) {
+                        public void onClick( ClickEvent event ) {
                             showTypeChoice( (Widget) event.getSource(),
-                                    field );
+                                            field );
                         }
                     } );
                     panel.add( clickme );
@@ -159,9 +160,9 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                     panel.add( variableEditor() );
                 } else {
                     panel.add( editableTextBox( callback,
-                            flType,
-                            field.getFieldName(),
-                            field.getExpected() ) );
+                                                flType,
+                                                field.getFieldName(),
+                                                field.getExpected() ) );
                 }
 
             }
@@ -170,7 +171,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
     private Widget variableEditor() {
         List<String> vars = this.scenario.getFactNamesInScope( this.executionTrace,
-                true );
+                                                               true );
 
         final ListBox box = new ListBox();
 
@@ -181,8 +182,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         for ( int i = 0; i < vars.size(); i++ ) {
             String var = vars.get( i );
             FactData f = scenario.getFactTypes().get( var );
-            String fieldType = dmo.getFieldType( this.factType,
-                    field.getFieldName() );
+            String fieldType = oracle.getFieldType( this.factType,
+                                                    field.getFieldName() );
             if ( f.getType().equals( fieldType ) ) {
                 if ( box.getItemCount() == 0 ) {
                     box.addItem( "..." );
@@ -198,7 +199,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
         box.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 field.setExpected( box.getItemText( box.getSelectedIndex() ) );
             }
         } );
@@ -206,17 +207,17 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         return box;
     }
 
-    private static TextBox editableTextBox(final ValueChanged changed,
-                                           final String dataType,
-                                           String fieldName,
-                                           String initialValue) {
-        final TextBox tb = TextBoxFactory.getTextBox(dataType);
+    private static TextBox editableTextBox( final ValueChanged changed,
+                                            final String dataType,
+                                            final String fieldName,
+                                            final String initialValue ) {
+        final TextBox tb = TextBoxFactory.getTextBox( dataType );
         tb.setText( initialValue );
         String m = TestScenarioConstants.INSTANCE.ValueFor0( fieldName );
         tb.setTitle( m );
         tb.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 changed.valueChanged( tb.getText() );
             }
         } );
@@ -224,24 +225,24 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         return tb;
     }
 
-    private void showTypeChoice(Widget w,
-                                final VerifyField con) {
-        final FormStylePopup form = new FormStylePopup(TestScenarioAltedImages.INSTANCE.Wizard(),
-                TestScenarioConstants.INSTANCE.FieldValue() );
+    private void showTypeChoice( Widget w,
+                                 final VerifyField con ) {
+        final FormStylePopup form = new FormStylePopup( TestScenarioAltedImages.INSTANCE.Wizard(),
+                                                        TestScenarioConstants.INSTANCE.FieldValue() );
 
         Button lit = new Button( TestScenarioConstants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 con.setNature( FieldData.TYPE_LITERAL );
                 doTypeChosen( form );
             }
 
         } );
         form.addAttribute( TestScenarioConstants.INSTANCE.LiteralValue() + ":",
-                widgets( lit,
-                        new InfoPopup( TestScenarioConstants.INSTANCE.LiteralValue(),
-                                TestScenarioConstants.INSTANCE.LiteralValTip() ) ) );
+                           widgets( lit,
+                                    new InfoPopup( TestScenarioConstants.INSTANCE.LiteralValue(),
+                                                   TestScenarioConstants.INSTANCE.LiteralValTip() ) ) );
 
         form.addRow( new HTML( "<hr/>" ) );
         form.addRow( new SmallLabel( TestScenarioConstants.INSTANCE.AdvancedOptions() ) );
@@ -252,15 +253,15 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         Button variable = new Button( TestScenarioConstants.INSTANCE.BoundVariable() );
         variable.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 con.setNature( FieldData.TYPE_VARIABLE );
                 doTypeChosen( form );
             }
         } );
         form.addAttribute( TestScenarioConstants.INSTANCE.AVariable(),
-                widgets( variable,
-                        new InfoPopup( TestScenarioConstants.INSTANCE.ABoundVariable(),
-                                TestScenarioConstants.INSTANCE.BoundVariableTip() ) ) );
+                           widgets( variable,
+                                    new InfoPopup( TestScenarioConstants.INSTANCE.ABoundVariable(),
+                                                   TestScenarioConstants.INSTANCE.BoundVariableTip() ) ) );
 
         form.show();
     }
@@ -268,13 +269,13 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
     private boolean isThereABoundVariableToSet() {
         boolean retour = false;
         List<String> vars = this.scenario.getFactNamesInScope( executionTrace,
-                true );
+                                                               true );
         if ( vars.size() > 0 ) {
             for ( int i = 0; i < vars.size(); i++ ) {
                 String var = vars.get( i );
                 FactData f = scenario.getFactTypes().get( var );
-                String fieldType = dmo.getFieldType( this.factType,
-                        field.getFieldName() );
+                String fieldType = oracle.getFieldType( this.factType,
+                                                        field.getFieldName() );
                 if ( f.getType().equals( fieldType ) ) {
                     retour = true;
                     break;
@@ -284,13 +285,13 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         return retour;
     }
 
-    private void doTypeChosen(final FormStylePopup form) {
+    private void doTypeChosen( final FormStylePopup form ) {
         refreshEditor();
         form.hide();
     }
 
-    private Panel widgets(Widget left,
-                          Widget right) {
+    private Panel widgets( final Widget left,
+                           final Widget right ) {
         HorizontalPanel panel = new HorizontalPanel();
         panel.add( left );
         panel.add( right );

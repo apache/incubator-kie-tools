@@ -24,11 +24,11 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
@@ -39,28 +39,28 @@ class GlobalButton
     private final Scenario scenario;
     private final ScenarioParentWidget parent;
 
-    private final PackageDataModelOracle dmo;
+    private final AsyncPackageDataModelOracle oracle;
 
-    public GlobalButton(final Scenario scenario,
-                        final ScenarioParentWidget parent,
-                        final PackageDataModelOracle dmo) {
-        super(ItemAltedImages.INSTANCE.NewItem(),
-                TestScenarioConstants.INSTANCE.AddANewGlobalToThisScenario());
+    public GlobalButton( final Scenario scenario,
+                         final ScenarioParentWidget parent,
+                         final AsyncPackageDataModelOracle oracle ) {
+        super( ItemAltedImages.INSTANCE.NewItem(),
+               TestScenarioConstants.INSTANCE.AddANewGlobalToThisScenario() );
 
         this.scenario = scenario;
         this.parent = parent;
-        this.dmo = dmo;
+        this.oracle = oracle;
 
         addGlobalButtonClickHandler();
     }
 
     private void addGlobalButtonClickHandler() {
-        addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
+        addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
                 final FormStylePopup popup = new NewGlobalPopup();
                 popup.show();
             }
-        });
+        } );
     }
 
     class NewGlobalPopup extends FormStylePopup {
@@ -70,8 +70,8 @@ class GlobalButton
         private Widget warning;
 
         public NewGlobalPopup() {
-            super(TestScenarioAltedImages.INSTANCE.RuleAsset(),
-                    TestScenarioConstants.INSTANCE.NewGlobal());
+            super( TestScenarioAltedImages.INSTANCE.RuleAsset(),
+                   TestScenarioConstants.INSTANCE.NewGlobal() );
 
             factTypes = new ListBox();
             addButton = new AddButton();
@@ -79,31 +79,30 @@ class GlobalButton
 
             fillFactTypes();
 
-            addRow(warning);
+            addRow( warning );
 
-            addAttribute(TestScenarioConstants.INSTANCE.GlobalColon(),
-                    getHorizontalPanel());
+            addAttribute( TestScenarioConstants.INSTANCE.GlobalColon(),
+                          getHorizontalPanel() );
         }
-
 
         private HorizontalPanel getHorizontalPanel() {
             HorizontalPanel insertFact = new HorizontalPanel();
-            insertFact.add(factTypes);
-            insertFact.add(addButton);
+            insertFact.add( factTypes );
+            insertFact.add( addButton );
             return insertFact;
         }
 
         private void fillFactTypes() {
-            if (dmo.getGlobalVariables().length == 0) {
-                addButton.setEnabled(false);
-                factTypes.setEnabled(false);
-                warning.setVisible(true);
+            if ( oracle.getGlobalVariables().length == 0 ) {
+                addButton.setEnabled( false );
+                factTypes.setEnabled( false );
+                warning.setVisible( true );
             } else {
-                addButton.setEnabled(true);
-                factTypes.setEnabled(true);
-                warning.setVisible(false);
-                for (String globals : dmo.getGlobalVariables()) {
-                    factTypes.addItem(globals);
+                addButton.setEnabled( true );
+                factTypes.setEnabled( true );
+                warning.setVisible( false );
+                for ( String globals : oracle.getGlobalVariables() ) {
+                    factTypes.addItem( globals );
                 }
             }
         }
@@ -111,28 +110,28 @@ class GlobalButton
         class AddButton extends Button {
 
             public AddButton() {
-                super(TestScenarioConstants.INSTANCE.Add());
+                super( TestScenarioConstants.INSTANCE.Add() );
                 addAddClickHandler();
             }
 
             private void addAddClickHandler() {
-                addClickHandler(new ClickHandler() {
+                addClickHandler( new ClickHandler() {
 
-                    public void onClick(ClickEvent event) {
-                        String text = factTypes.getItemText(factTypes.getSelectedIndex());
-                        if (scenario.isFactNameReserved(text)) {
-                            Window.alert(TestScenarioConstants.INSTANCE.TheName0IsAlreadyInUsePleaseChooseAnotherName(text));
+                    public void onClick( ClickEvent event ) {
+                        String text = factTypes.getItemText( factTypes.getSelectedIndex() );
+                        if ( scenario.isFactNameReserved( text ) ) {
+                            Window.alert( TestScenarioConstants.INSTANCE.TheName0IsAlreadyInUsePleaseChooseAnotherName( text ) );
                         } else {
-                            FactData factData = new FactData(dmo.getGlobalVariable(text),
-                                    text,
-                                    false);
-                            scenario.getGlobals().add(factData);
+                            FactData factData = new FactData( oracle.getGlobalVariable( text ),
+                                                              text,
+                                                              false );
+                            scenario.getGlobals().add( factData );
                             parent.renderEditor();
 
                             hide();
                         }
                     }
-                });
+                } );
             }
         }
 
@@ -140,8 +139,8 @@ class GlobalButton
 
     //A simple banner to alert users that no Globals have been defined
     private Widget getMissingGlobalsWarning() {
-        HTML warning = new HTML(TestScenarioConstants.INSTANCE.missingGlobalsWarning());
-        warning.getElement().setClassName("missingGlobalsWarning");
+        HTML warning = new HTML( TestScenarioConstants.INSTANCE.missingGlobalsWarning() );
+        warning.getElement().setClassName( "missingGlobalsWarning" );
         return warning;
     }
 }

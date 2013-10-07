@@ -50,6 +50,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -159,11 +160,25 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
         try {
             final GuidedDecisionTable52 model = load( path );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final PackageDataModelOracleBaselinePayload dataModel = loadDataModel( path );
             final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
-            return new GuidedDecisionTableEditorContent( oracle,
-                                                         model,
-                                                         workItemDefinitions );
+
+            return new GuidedDecisionTableEditorContent( model,
+                                                         workItemDefinitions,
+                                                         dataModel );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
+    public PackageDataModelOracleBaselinePayload loadDataModel( final Path path ) {
+        try {
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+            return dataModel;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

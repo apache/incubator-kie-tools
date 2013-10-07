@@ -60,20 +60,20 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
     private CallFieldValue methodParameter;
     private DropDownData enums;
-    private SimplePanel    root;
-    private Scenario model                = null;
-    private String         parameterType        = null;
-    private Command        onValueChangeCommand = null;
+    private SimplePanel root;
+    private Scenario model = null;
+    private String parameterType = null;
+    private Command onValueChangeCommand = null;
     private ExecutionTrace ex;
 
-    public MethodParameterCallValueEditor(final CallFieldValue val,
-                                          final DropDownData enums,
-                                          ExecutionTrace ex,
-                                          Scenario model,
-                                          String parameterType,
-                                          Command onValueChangeCommand) {
+    public MethodParameterCallValueEditor( final CallFieldValue val,
+                                           final DropDownData enums,
+                                           final ExecutionTrace ex,
+                                           final Scenario model,
+                                           final String parameterType,
+                                           final Command onValueChangeCommand ) {
         if ( val.type.equals( DataType.TYPE_BOOLEAN ) ) {
-            this.enums = DropDownData.create( new String[]{"true", "false"} );
+            this.enums = DropDownData.create( new String[]{ "true", "false" } );
         } else {
             this.enums = enums;
         }
@@ -89,11 +89,11 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
     private void refresh() {
         root.clear();
-        if ( enums != null && (enums.getFixedList() != null || enums.getQueryExpression() != null) ) {
+        if ( enums != null && ( enums.getFixedList() != null || enums.getQueryExpression() != null ) ) {
             root.add( new EnumDropDown( methodParameter.value,
                                         new DropDownValueChanged() {
-                                            public void valueChanged(String newText,
-                                                                     String newValue) {
+                                            public void valueChanged( String newText,
+                                                                      String newValue ) {
                                                 methodParameter.value = newValue;
                                                 if ( onValueChangeCommand != null ) {
                                                     onValueChangeCommand.execute();
@@ -122,7 +122,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         }
     }
 
-    private ListBox boundVariable(final FieldNature c) {
+    private ListBox boundVariable( final FieldNature c ) {
         /*
          * If there is a bound variable that is the same type of the current
          * variable type, then propose a list
@@ -154,7 +154,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
             listVariable.addChangeHandler( new ChangeHandler() {
 
-                public void onChange(ChangeEvent event) {
+                public void onChange( ChangeEvent event ) {
                     methodParameter.value = listVariable.getValue( listVariable.getSelectedIndex() );
                     if ( onValueChangeCommand != null ) {
                         onValueChangeCommand.execute();
@@ -168,9 +168,9 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         return listVariable;
     }
 
-    private TextBox boundTextBox(final CallFieldValue c) {
+    private TextBox boundTextBox( final CallFieldValue c ) {
 
-        final TextBox box = TextBoxFactory.getTextBox(methodParameter.type);
+        final TextBox box = TextBoxFactory.getTextBox( methodParameter.type );
         box.setStyleName( "constraint-value-Editor" );
         if ( c.value == null ) {
             box.setText( "" );
@@ -189,7 +189,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
         box.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 c.value = box.getText();
                 if ( onValueChangeCommand != null ) {
                     onValueChangeCommand.execute();
@@ -201,7 +201,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
         box.addKeyUpHandler( new KeyUpHandler() {
 
-            public void onKeyUp(KeyUpEvent event) {
+            public void onKeyUp( KeyUpEvent event ) {
                 box.setVisibleLength( box.getText().length() );
             }
         } );
@@ -213,20 +213,20 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         Image clickme = CommonAltedImages.INSTANCE.Edit();
         clickme.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 showTypeChoice( (Widget) event.getSource() );
             }
         } );
         return clickme;
     }
 
-    protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup(TestScenarioAltedImages.INSTANCE.Wizard(),
+    protected void showTypeChoice( final Widget w ) {
+        final FormStylePopup form = new FormStylePopup( TestScenarioAltedImages.INSTANCE.Wizard(),
                                                         TestScenarioConstants.INSTANCE.FieldValue() );
         Button lit = new Button( TestScenarioConstants.INSTANCE.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 methodParameter.nature = FieldData.TYPE_LITERAL;
                 methodParameter.value = " ";
                 makeDirty();
@@ -238,13 +238,13 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         form.addAttribute( TestScenarioConstants.INSTANCE.LiteralValue() + ":",
                            widgets( lit,
                                     new InfoPopup( TestScenarioConstants.INSTANCE.Literal(),
-                                            TestScenarioConstants.INSTANCE.LiteralValTip() ) ) );
+                                                   TestScenarioConstants.INSTANCE.LiteralValTip() ) ) );
         form.addRow( new HTML( "<hr/>" ) );
         form.addRow( new SmallLabel( TestScenarioConstants.INSTANCE.AdvancedSection() ) );
 
         /*
          * If there is a bound variable that is the same type of the current
-         * variable type, then show abutton
+         * variable type, then show a button
          */
 
         List<String> vars = model.getFactNamesInScope( ex,
@@ -261,7 +261,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                    variable );
                 variable.addClickHandler( new ClickHandler() {
 
-                    public void onClick(ClickEvent event) {
+                    public void onClick( ClickEvent event ) {
                         methodParameter.nature = FieldData.TYPE_VARIABLE;
                         methodParameter.value = "=";
                         makeDirty();
@@ -277,8 +277,8 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         form.show();
     }
 
-    private Widget widgets(Button lit,
-                           InfoPopup popup) {
+    private Widget widgets( final Button lit,
+                            final InfoPopup popup ) {
         HorizontalPanel h = new HorizontalPanel();
         h.add( lit );
         h.add( popup );

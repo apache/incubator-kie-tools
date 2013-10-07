@@ -17,26 +17,26 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.SmallLabel;
 
 public class GivenLabelButton extends HorizontalPanel {
 
-    public GivenLabelButton(ExecutionTrace previousEx,
-                            Scenario scenario,
-                            ExecutionTrace executionTrace,
-                            ScenarioParentWidget scenarioWidget,
-                            PackageDataModelOracle dmo) {
+    public GivenLabelButton( final ExecutionTrace previousEx,
+                             final Scenario scenario,
+                             final ExecutionTrace executionTrace,
+                             final ScenarioParentWidget scenarioWidget,
+                             final AsyncPackageDataModelOracle oracle ) {
 
-        add(new NewDataButton(previousEx,
-                scenario,
-                executionTrace,
-                scenarioWidget,
-                dmo));
-        add(new SmallLabel( TestScenarioConstants.INSTANCE.GIVEN()));
+        add( new NewDataButton( previousEx,
+                                scenario,
+                                executionTrace,
+                                scenarioWidget,
+                                oracle ) );
+        add( new SmallLabel( TestScenarioConstants.INSTANCE.GIVEN() ) );
 
     }
 

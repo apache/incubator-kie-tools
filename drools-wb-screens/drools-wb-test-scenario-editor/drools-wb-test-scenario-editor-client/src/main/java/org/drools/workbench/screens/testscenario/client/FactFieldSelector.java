@@ -27,25 +27,26 @@ public class FactFieldSelector
     interface FactFieldSelectorUiBinder
             extends
             UiBinder<Widget, FactFieldSelector> {
+
     }
 
-    private static FactFieldSelectorUiBinder uiBinder = GWT.create(FactFieldSelectorUiBinder.class);
+    private static FactFieldSelectorUiBinder uiBinder = GWT.create( FactFieldSelectorUiBinder.class );
 
     public FactFieldSelector() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void addField(String field) {
-        fieldsListBox.addItem(field);
+    public void addField( String field ) {
+        fieldsListBox.addItem( field );
     }
 
     @UiHandler("ok")
-    public void handleClick(ClickEvent event) {
-        SelectionEvent.fire(this, fieldsListBox.getItemText(fieldsListBox.getSelectedIndex()));
+    public void handleClick( final ClickEvent event ) {
+        SelectionEvent.fire( this, fieldsListBox.getItemText( fieldsListBox.getSelectedIndex() ) );
     }
 
     @Override
-    public HandlerRegistration addSelectionHandler(SelectionHandler<String> selectionHandler) {
-        return addHandler(selectionHandler, SelectionEvent.getType());
+    public HandlerRegistration addSelectionHandler( final SelectionHandler<String> selectionHandler ) {
+        return addHandler( selectionHandler, SelectionEvent.getType() );
     }
 }

@@ -69,6 +69,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.Ins
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
@@ -111,8 +112,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected AbstractDecoratedDecisionTableGridWidget widget;
     protected GuidedDecisionTableUtils utils;
 
-    protected final PackageDataModelOracle oracle;
     protected final GuidedDecisionTable52 model;
+    protected final AsyncPackageDataModelOracle oracle;
     protected final DecisionTableCellFactory cellFactory;
     protected final DecisionTableCellValueFactory cellValueFactory;
     protected final DecisionTableDropDownManager dropDownManager;
@@ -132,7 +133,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * Constructor
      */
     public AbstractDecisionTableWidget( GuidedDecisionTable52 model,
-                                        PackageDataModelOracle oracle,
+                                        AsyncPackageDataModelOracle oracle,
                                         Identity identity,
                                         boolean isReadOnly,
                                         EventBus eventBus ) {
@@ -153,8 +154,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.oracle = oracle;
         this.identity = identity;
         this.rm = new BRLRuleModel( model );
-        this.utils = new GuidedDecisionTableUtils( oracle,
-                                                   model );
+        this.utils = new GuidedDecisionTableUtils( model,
+                                                   oracle );
         this.eventBus = eventBus;
         this.isReadOnly = isReadOnly;
 
@@ -562,7 +563,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * Return the DataModelOracle associated with this Decision Table
      * @return
      */
-    public PackageDataModelOracle getOracle() {
+    public AsyncPackageDataModelOracle getOracle() {
         return this.oracle;
     }
 

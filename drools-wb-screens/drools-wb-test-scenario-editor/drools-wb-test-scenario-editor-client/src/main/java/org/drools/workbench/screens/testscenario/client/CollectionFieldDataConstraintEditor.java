@@ -18,11 +18,11 @@ package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.DirtyableComposite;
 
 /**
@@ -37,28 +37,28 @@ public class CollectionFieldDataConstraintEditor
     private final Panel panel = new SimplePanel();
     private final FieldConstraintHelper helper;
 
-    public CollectionFieldDataConstraintEditor(String factType,
-                                               CollectionFieldData field,
-                                               Fact givenFact,
-                                               PackageDataModelOracle dmo,
-                                               Scenario scenario,
-                                               ExecutionTrace executionTrace) {
+    public CollectionFieldDataConstraintEditor( final String factType,
+                                                final CollectionFieldData field,
+                                                final Fact givenFact,
+                                                final AsyncPackageDataModelOracle oracle,
+                                                final Scenario scenario,
+                                                final ExecutionTrace executionTrace ) {
         this.field = field;
-        this.helper = new FieldConstraintHelper(scenario,
-                executionTrace,
-                dmo,
-                factType,
-                field,
-                givenFact);
+        this.helper = new FieldConstraintHelper( scenario,
+                                                 executionTrace,
+                                                 oracle,
+                                                 factType,
+                                                 field,
+                                                 givenFact );
         renderEditor();
-        initWidget(panel);
+        initWidget( panel );
     }
 
     @Override
     public void renderEditor() {
         panel.clear();
 
-        panel.add(new ListEditor(field, helper, this));
+        panel.add( new ListEditor( field, helper, this ) );
     }
 
 }

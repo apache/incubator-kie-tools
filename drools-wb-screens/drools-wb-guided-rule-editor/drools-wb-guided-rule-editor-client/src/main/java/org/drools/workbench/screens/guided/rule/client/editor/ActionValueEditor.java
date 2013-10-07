@@ -488,8 +488,8 @@ public class ActionValueEditor
             if ( !this.variableType.equals( DataType.TYPE_COMPARABLE ) ) {
                 return false;
             }
-            String[] dd = this.modeller.getSuggestionCompletions().getEnumValues( boundFactType,
-                                                                                  this.value.getField() );
+            String[] dd = this.modeller.getDataModelOracle().getEnumValues( boundFactType,
+                                                                            this.value.getField() );
             return isEnumEquivalent( dd );
         }
 
@@ -512,8 +512,8 @@ public class ActionValueEditor
             if ( fc instanceof SingleFieldConstraint ) {
                 String fieldName = ( (SingleFieldConstraint) fc ).getFieldName();
                 String parentFactTypeForBinding = this.modeller.getModel().getLHSParentFactPatternForBinding( boundVariable ).getFactType();
-                String[] dd = this.modeller.getSuggestionCompletions().getEnumValues( parentFactTypeForBinding,
-                                                                                      fieldName );
+                String[] dd = this.modeller.getDataModelOracle().getEnumValues( parentFactTypeForBinding,
+                                                                                fieldName );
                 return isEnumEquivalent( dd );
             }
             return false;
@@ -540,8 +540,8 @@ public class ActionValueEditor
             if ( !this.variableType.equals( DataType.TYPE_COMPARABLE ) ) {
                 return false;
             }
-            String[] dd = this.modeller.getSuggestionCompletions().getEnumValues( boundFactType,
-                                                                                  this.value.getField() );
+            String[] dd = this.modeller.getDataModelOracle().getEnumValues( boundFactType,
+                                                                            this.value.getField() );
             return isEnumEquivalent( dd );
         }
 

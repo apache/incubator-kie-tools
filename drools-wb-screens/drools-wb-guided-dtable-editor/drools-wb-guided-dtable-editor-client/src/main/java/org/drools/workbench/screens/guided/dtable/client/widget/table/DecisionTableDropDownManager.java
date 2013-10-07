@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.cell.client.Cell.Context;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -40,6 +39,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.template.client.editor.RuleModelPeerVariableVisitor;
 import org.drools.workbench.screens.guided.template.client.editor.RuleModelPeerVariableVisitor.ValueHolder;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
@@ -54,14 +54,14 @@ public class DecisionTableDropDownManager
         implements
         CellTableDropDownDataValueMapProvider {
 
-    private final PackageDataModelOracle oracle;
     private final GuidedDecisionTable52 model;
+    private final AsyncPackageDataModelOracle oracle;
     private final DecisionTableCellValueFactory cellValueFactory;
     private final DTCellValueUtilities utilities;
     private DynamicData data;
 
     public DecisionTableDropDownManager( final GuidedDecisionTable52 model,
-                                         final PackageDataModelOracle oracle ) {
+                                         final AsyncPackageDataModelOracle oracle ) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
@@ -77,24 +77,24 @@ public class DecisionTableDropDownManager
     }
 
     public DecisionTableDropDownManager( final GuidedDecisionTable52 model,
-                                         final DynamicData data,
-                                         final PackageDataModelOracle oracle ) {
+                                         final AsyncPackageDataModelOracle oracle,
+                                         final DynamicData data) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
-        if ( data == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
-        }
         if ( oracle == null ) {
             throw new IllegalArgumentException( "oracle cannot be null" );
+        }
+        if ( data == null ) {
+            throw new IllegalArgumentException( "data cannot be null" );
         }
         this.cellValueFactory = new DecisionTableCellValueFactory( model,
                                                                    oracle );
         this.utilities = new DTCellValueUtilities( model,
                                                    oracle );
         this.model = model;
-        this.data = data;
         this.oracle = oracle;
+        this.data = data;
     }
 
     @Override

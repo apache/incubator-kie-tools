@@ -2,11 +2,11 @@ package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.vfs.Path;
 
@@ -28,13 +28,13 @@ public interface ScenarioEditorView
                           final boolean isReadOnly );
 
     void setScenario( final Scenario scenario,
-                      final PackageDataModelOracle dmo );
+                      final AsyncPackageDataModelOracle oracle );
 
     void showSaveSuccessful();
 
-    String getTitle( String fileName );
+    String getTitle( final String fileName );
 
-    void initImportsTab( final PackageDataModelOracle dmo,
+    void initImportsTab( final AsyncPackageDataModelOracle oracle,
                          final Imports imports,
                          final boolean readOnly );
 

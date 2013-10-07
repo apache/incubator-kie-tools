@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -55,19 +54,20 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.conditi
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.StringConditionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.UnrecognizedConditionDetector;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class DecisionTableAnalyzer {
 
-    private final PackageDataModelOracle oracle;
+    private final AsyncPackageDataModelOracle oracle;
 
-    public DecisionTableAnalyzer( final PackageDataModelOracle oracle ) {
+    public DecisionTableAnalyzer( final AsyncPackageDataModelOracle oracle ) {
         this.oracle = oracle;
     }
 
     @SuppressWarnings("rawtypes")
     public List<Analysis> analyze( final GuidedDecisionTable52 model ) {
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( oracle,
-                                                                             model );
+        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
+                                                                             oracle );
         final List<List<DTCellValue52>> data = model.getData();
         final List<Analysis> analysisData = new ArrayList<Analysis>( data.size() );
         final List<RowDetector> rowDetectorList = new ArrayList<RowDetector>( data.size() );

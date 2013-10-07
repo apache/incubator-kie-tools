@@ -17,13 +17,13 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewAssetWizardContext;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.wizards.WizardPage;
 
 /**
@@ -42,8 +42,8 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected Validator validator;
 
     protected GuidedDecisionTableUtils modelUtils;
+    protected AsyncPackageDataModelOracle oracle;
     protected DTCellValueUtilities cellUtils;
-    protected PackageDataModelOracle oracle;
 
     @Override
     public Widget asWidget() {
@@ -51,17 +51,17 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     }
 
     public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
-                            final PackageDataModelOracle oracle,
+                            final AsyncPackageDataModelOracle oracle,
                             final GuidedDecisionTable52 model,
                             final Validator validator ) {
         this.context = context;
         this.oracle = oracle;
         this.model = model;
         this.validator = validator;
-        this.cellUtils = new DTCellValueUtilities( this.model,
-                                                   this.oracle );
-        this.modelUtils = new GuidedDecisionTableUtils( this.oracle,
-                                                        this.model );
+        this.cellUtils = new DTCellValueUtilities( model,
+                                                   oracle );
+        this.modelUtils = new GuidedDecisionTableUtils( model,
+                                                        oracle );
     }
 
     public Validator getValidator() {

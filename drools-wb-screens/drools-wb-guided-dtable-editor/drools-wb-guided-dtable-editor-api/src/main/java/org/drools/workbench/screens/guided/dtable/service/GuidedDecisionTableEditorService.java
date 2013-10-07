@@ -26,6 +26,7 @@ import org.guvnor.common.services.shared.file.SupportsRename;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.source.ViewSourceService;
 import org.uberfire.backend.vfs.Path;
 
@@ -42,5 +43,7 @@ public interface GuidedDecisionTableEditorService
         SupportsRename {
 
     GuidedDecisionTableEditorContent loadContent( final Path path );
+
+    PackageDataModelOracleBaselinePayload loadDataModel( final Path path );
 
 }

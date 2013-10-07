@@ -36,7 +36,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollectionIndex;
 import org.drools.workbench.models.datamodel.rule.ExpressionFieldVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
@@ -54,6 +53,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionChang
 import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionTypeChangeHandlers;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.FormStylePopup;
@@ -97,7 +97,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         if ( this.expression.isEmpty() ) {
             this.isFactTypeKnown = true;
         } else {
-            this.isFactTypeKnown = getModeller().getSuggestionCompletions().isFactTypeRecognized( getModeller().getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
+            this.isFactTypeKnown = getModeller().getDataModelOracle().isFactTypeRecognized( getModeller().getDataModelOracle().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
         }
 
         if ( readOnly == null ) {
@@ -150,11 +150,11 @@ public class ExpressionBuilder extends RuleModellerWidget
                             "" );
 
         // TODO {baunax} uncomment when global collections is implemented.
-        // for (String gc : getCompletionEngine().getGlobalCollections()) {
+        // for (String gc : getDataModelOracle().getGlobalCollections()) {
         // startPoint.addItem(gc, GLOBAL_COLLECTION_VALUE_PREFIX + "." + gc);
         // }
 
-        for ( String gv : getCompletionEngine().getGlobalVariables() ) {
+        for ( String gv : getDataModelOracle().getGlobalVariables() ) {
             startPoint.addItem( gv,
                                 GLOBAL_VARIABLE_VALUE_PREFIX + "." + gv );
         }
@@ -207,7 +207,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             expression.appendPart( variable );
 
         } else if ( prefix.equals( GLOBAL_VARIABLE_VALUE_PREFIX ) ) {
-            expression.appendPart( ExpressionPartHelper.getExpressionPartForGlobalVariable( getCompletionEngine(),
+            expression.appendPart( ExpressionPartHelper.getExpressionPartForGlobalVariable( getDataModelOracle(),
                                                                                             attrib ) );
         }
         w = getWidgetForCurrentType();
@@ -262,7 +262,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                          DataType.TYPE_BOOLEAN ) );
         } else {
             ExpressionCollectionIndex collectionIndex;
-            String factName = getCompletionEngine().getFactNameFromType( getCurrentParametricType() );
+            String factName = getDataModelOracle().getFactNameFromType( getCurrentParametricType() );
             if ( getCurrentParametricType() != null && factName != null ) {
                 collectionIndex = new ExpressionCollectionIndex( "get",
                                                                  getCurrentParametricType(),
@@ -314,14 +314,14 @@ public class ExpressionBuilder extends RuleModellerWidget
                                              dotPos );
             String attrib = value.substring( dotPos + 1 );
 
-            prevFactName = getCompletionEngine().getFactNameFromType( getCurrentClassType() );
+            prevFactName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
             // String genericType = SuggestionCompletionEngine.TYPE_OBJECT;
             if ( FIElD_VALUE_PREFIX.equals( prefix ) ) {
-                expression.appendPart( ExpressionPartHelper.getExpressionPartForField( getCompletionEngine(),
+                expression.appendPart( ExpressionPartHelper.getExpressionPartForField( getDataModelOracle(),
                                                                                        prevFactName,
                                                                                        attrib ) );
             } else if ( METHOD_VALUE_PREFIX.equals( prefix ) ) {
-                expression.appendPart( ExpressionPartHelper.getExpressionPartForMethod( getCompletionEngine(),
+                expression.appendPart( ExpressionPartHelper.getExpressionPartForMethod( getDataModelOracle(),
                                                                                         prevFactName,
                                                                                         attrib ) );
             }
@@ -380,13 +380,13 @@ public class ExpressionBuilder extends RuleModellerWidget
             return completions;
         }
 
-        String factName = getCompletionEngine().getFactNameFromType( getCurrentClassType() );
+        String factName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
         if ( factName != null ) {
             // we currently only support 0 param method calls
-            List<String> methodNames = getCompletionEngine().getMethodNames( factName,
-                                                                             0 );
+            List<String> methodNames = getDataModelOracle().getMethodNames( factName,
+                                                                            0 );
 
-            for ( String field : getCompletionEngine().getFieldCompletions( factName ) ) {
+            for ( String field : getDataModelOracle().getFieldCompletions( factName ) ) {
 
                 //You can't use "this" in a nested accessor
                 if ( !isNested || !field.equals( DataType.TYPE_THIS ) ) {
@@ -416,8 +416,8 @@ public class ExpressionBuilder extends RuleModellerWidget
         return this.getModeller().getModel();
     }
 
-    private PackageDataModelOracle getCompletionEngine() {
-        return this.getModeller().getSuggestionCompletions();
+    private AsyncPackageDataModelOracle getDataModelOracle() {
+        return this.getModeller().getDataModelOracle();
     }
 
     private String getCurrentClassType() {

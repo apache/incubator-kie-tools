@@ -23,9 +23,9 @@ import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DateConverter;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
@@ -57,7 +57,7 @@ public class TemplateDataCellValueFactory
      * @param oracle SuggestionCompletionEngine to assist with drop-downs
      */
     public TemplateDataCellValueFactory( final TemplateModel model,
-                                         final PackageDataModelOracle oracle ) {
+                                         final AsyncPackageDataModelOracle oracle ) {
         super( oracle );
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );

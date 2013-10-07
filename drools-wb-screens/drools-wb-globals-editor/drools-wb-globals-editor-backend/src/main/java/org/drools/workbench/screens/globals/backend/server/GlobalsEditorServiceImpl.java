@@ -45,6 +45,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -149,9 +150,10 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
             //De-serialize model
             final GlobalsModel model = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
             return new GlobalsEditorContent( model,
-                                             oracle );
+                                             dataModel );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

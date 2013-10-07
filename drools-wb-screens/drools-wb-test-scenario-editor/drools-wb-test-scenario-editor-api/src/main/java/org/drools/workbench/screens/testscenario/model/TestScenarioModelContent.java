@@ -1,37 +1,41 @@
 package org.drools.workbench.screens.testscenario.model;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 
 @Portable
 public class TestScenarioModelContent {
 
     private Scenario scenario;
-
-    private PackageDataModelOracle oracle;
     private String packageName;
-
+    private PackageDataModelOracleBaselinePayload dataModel;
 
     public TestScenarioModelContent() {
-
     }
 
-    public TestScenarioModelContent(Scenario scenario, PackageDataModelOracle oracle, String packageName) {
-        this.scenario = scenario;
-        this.oracle = oracle;
-        this.packageName = packageName;
+    public TestScenarioModelContent( final Scenario scenario,
+                                     final String packageName,
+                                     final PackageDataModelOracleBaselinePayload dataModel ) {
+        this.scenario = PortablePreconditions.checkNotNull( "scenario",
+                                                            scenario );
+        this.packageName = PortablePreconditions.checkNotNull( "packageName",
+                                                               packageName );
+        this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
+                                                             dataModel );
     }
 
     public Scenario getScenario() {
         return scenario;
     }
 
-    public PackageDataModelOracle getOracle() {
-        return oracle;
-    }
-
     public String getPackageName() {
         return packageName;
     }
+
+    public PackageDataModelOracleBaselinePayload getDataModel() {
+        return dataModel;
+    }
+
 }

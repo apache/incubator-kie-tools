@@ -36,6 +36,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 
 import static org.junit.Assert.*;
 
@@ -44,9 +48,9 @@ public class RowExpanderTests {
     @Test
     @SuppressWarnings("serial")
     public void testExpansionNoExpansion() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -75,7 +79,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -86,7 +96,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -97,7 +107,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -108,7 +118,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
         Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
@@ -119,21 +129,21 @@ public class RowExpanderTests {
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p4.getChildColumns().add( c4 );
-        dtable.getConditions().add( p4 );
+        model.getConditions().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "c1" );
         a1.setFactField( "name" );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
         a2.setBoundName( "a2" );
         a2.setFactType( "Driver" );
         a2.setFactField( "name" );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
         assertEquals( 8,
@@ -157,15 +167,14 @@ public class RowExpanderTests {
 
         RowExpander.RowIterator ri = re.iterator();
         assertFalse( ri.hasNext() );
-
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testExpansionWithValuesList() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -194,7 +203,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -206,7 +221,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -218,7 +233,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -230,7 +245,7 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
         Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
@@ -242,23 +257,23 @@ public class RowExpanderTests {
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c4.setValueList( "c4a,c4b" );
         p4.getChildColumns().add( c4 );
-        dtable.getConditions().add( p4 );
+        model.getConditions().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "c1" );
         a1.setFactField( "name" );
         a1.setValueList( "a1a,a1b" );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
         a2.setBoundName( "a2" );
         a2.setFactType( "Driver" );
         a2.setFactField( "name" );
         a2.setValueList( "a2a,a2b" );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
         assertEquals( 8,
@@ -307,14 +322,13 @@ public class RowExpanderTests {
 
         RowExpander.RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
-
     }
 
     @Test
     public void testExpansionWithGuvnorEnums() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -343,10 +357,19 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .addEnum( "'Driver.name' : ['f1a', 'f1b'], 'Driver.age' : ['f2a', 'f2b'], 'Driver.dateOfBirth' : ['f3a', 'f3b'], 'Driver.approved' : ['f4a', 'f4b']" )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -357,7 +380,7 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -368,7 +391,7 @@ public class RowExpanderTests {
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -379,7 +402,7 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
         Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
@@ -390,21 +413,21 @@ public class RowExpanderTests {
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p4.getChildColumns().add( c4 );
-        dtable.getConditions().add( p4 );
+        model.getConditions().add( p4 );
 
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "c1" );
         a1.setFactField( "name" );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
         a2.setBoundName( "a2" );
         a2.setFactType( "Driver" );
         a2.setFactField( "name" );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
         assertEquals( 8,
@@ -453,19 +476,18 @@ public class RowExpanderTests {
 
         RowExpander.RowIterator ri = re.iterator();
         assertTrue( ri.hasNext() );
-
     }
 
     @Test
     public void testExpansionWithGuvnorDependentEnums_2enum_x_3values() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
         final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b', 'f1c'], "
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b', 'f1af2c'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b', 'f1bf2c'], "
                 + "'Fact.field2[field1=f1c]' : ['f1cf2a', 'f1cf2b', 'f1cf2c']";
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -482,15 +504,24 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .addEnum( enumDefinitions )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "f1" );
         p1.setFactType( "Fact" );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         ConditionCol52 c1 = new ConditionCol52();
         c1.setFactField( "field1" );
@@ -507,16 +538,16 @@ public class RowExpanderTests {
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "f1" );
         a1.setFactField( "field1" );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
         a2.setBoundName( "f2" );
         a2.setFactType( "Fact" );
         a2.setFactField( "field1" );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
         assertEquals( 6,
@@ -639,13 +670,13 @@ public class RowExpanderTests {
 
     @Test
     public void testExpansionWithGuvnorDependentEnumsExplicitExpansion1_2enum_x_2values() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
         final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b'], "
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -662,15 +693,24 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .addEnum( enumDefinitions )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "f1" );
         p1.setFactType( "Fact" );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         ConditionCol52 c1 = new ConditionCol52();
         c1.setFactField( "field1" );
@@ -687,16 +727,16 @@ public class RowExpanderTests {
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "f1" );
         a1.setFactField( "field1" );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
         a2.setBoundName( "f2" );
         a2.setFactType( "Fact" );
         a2.setFactField( "field1" );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         //Explicitly set which columns to expand
         for ( ConditionCol52 c : p1.getChildColumns() ) {
@@ -775,13 +815,13 @@ public class RowExpanderTests {
 
     @Test
     public void testExpansionWithGuvnorDependentEnumsExplicitExpansion2_2enum_x_2values() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
         final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b'], "
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -798,15 +838,24 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .addEnum( enumDefinitions )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "f1" );
         p1.setFactType( "Fact" );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         ConditionCol52 c1 = new ConditionCol52();
         c1.setFactField( "field1" );
@@ -823,16 +872,16 @@ public class RowExpanderTests {
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "f1" );
         a1.setFactField( "field1" );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
         a2.setBoundName( "f2" );
         a2.setFactType( "Fact" );
         a2.setFactField( "field1" );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         //Explicitly expand the first column, not the second
         re.setExpandColumn( c1,
@@ -889,13 +938,13 @@ public class RowExpanderTests {
 
     @Test
     public void testExpansionWithGuvnorDependentEnumsExplicitExpansion3_2enum_x_2values() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
         final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b'], "
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -912,15 +961,24 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .addEnum( enumDefinitions )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "f1" );
         p1.setFactType( "Fact" );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         ConditionCol52 c1 = new ConditionCol52();
         c1.setFactField( "field1" );
@@ -937,16 +995,16 @@ public class RowExpanderTests {
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "f1" );
         a1.setFactField( "field1" );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
         a2.setBoundName( "f2" );
         a2.setFactType( "Fact" );
         a2.setFactField( "field1" );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         //Explicitly expand the first column, not the second
         re.setExpandColumn( c1,
@@ -993,7 +1051,7 @@ public class RowExpanderTests {
 
     @Test
     public void testExpansionWithGuvnorDependentEnums_3enum_x_2values() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
         final String enumDefinitions = "'Fact.field1' : ['f1a', 'f1b'], "
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
@@ -1003,7 +1061,7 @@ public class RowExpanderTests {
                 + "'Fact.field3[field2=f1bf2a]' : ['f1bf2af3a', 'f1bf2af3b'], "
                 + "'Fact.field3[field2=f1bf2b]' : ['f1bf2bf3a', 'f1bf2bf3b']";
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Fact" )
                 .addField( new ModelField( "field1",
                                            String.class.getName(),
@@ -1026,15 +1084,24 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .addEnum( enumDefinitions )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "f1" );
         p1.setFactType( "Fact" );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         ConditionCol52 c1 = new ConditionCol52();
         c1.setFactField( "field1" );
@@ -1057,16 +1124,16 @@ public class RowExpanderTests {
         ActionSetFieldCol52 a1 = new ActionSetFieldCol52();
         a1.setBoundName( "f1" );
         a1.setFactField( "field1" );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         ActionInsertFactCol52 a2 = new ActionInsertFactCol52();
         a2.setBoundName( "f2" );
         a2.setFactType( "Fact" );
         a2.setFactField( "field1" );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
         assertEquals( 7,
@@ -1197,9 +1264,9 @@ public class RowExpanderTests {
     @SuppressWarnings("serial")
     @Test
     public void testColumnValues() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
@@ -1210,9 +1277,18 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1224,10 +1300,10 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
         assertEquals( 3,
@@ -1248,15 +1324,14 @@ public class RowExpanderTests {
         columns.get( 2 ).advanceColumnValue();
         assertEquals( "c1b",
                       columns.get( 2 ).getCurrentValue().getStringValue() );
-
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testRowExpansionWithValuesList1() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "name",
                                            String.class.getName(),
@@ -1267,9 +1342,18 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1281,10 +1365,10 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         assertEquals( 3,
                       re.getColumns().size() );
@@ -1311,15 +1395,14 @@ public class RowExpanderTests {
                       rows.get( 1 ).get( 1 ).getStringValue() );
         assertEquals( "c1b",
                       rows.get( 1 ).get( 2 ).getStringValue() );
-
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testRowExpansionWithValuesList2() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1336,7 +1419,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1348,7 +1437,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -1360,10 +1449,10 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         assertEquals( 4,
                       re.getColumns().size() );
@@ -1415,9 +1504,9 @@ public class RowExpanderTests {
     @Test
     @SuppressWarnings("serial")
     public void testRowExpansionWithValuesList3() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1440,7 +1529,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1452,7 +1547,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -1464,7 +1559,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -1475,10 +1570,10 @@ public class RowExpanderTests {
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         assertEquals( 5,
                       re.getColumns().size() );
@@ -1537,9 +1632,9 @@ public class RowExpanderTests {
     @Test
     @SuppressWarnings("serial")
     public void testRowExpansionWithValuesListAndDefaultValues() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1562,7 +1657,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1575,7 +1676,7 @@ public class RowExpanderTests {
         c1.setValueList( "c1a,c1b" );
         c1.setDefaultValue( new DTCellValue52( "c1default" ) );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -1588,7 +1689,7 @@ public class RowExpanderTests {
         c2.setValueList( "c2a,c2b" );
         c2.setDefaultValue( new DTCellValue52( "c2default" ) );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -1600,10 +1701,10 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setDefaultValue( new DTCellValue52( "c3default" ) );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         assertEquals( 5,
                       re.getColumns().size() );
@@ -1666,9 +1767,9 @@ public class RowExpanderTests {
     @Test
     @SuppressWarnings("serial")
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled1() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1691,7 +1792,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1703,7 +1810,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -1715,7 +1822,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -1727,10 +1834,10 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
         re.setExpandColumn( c1,
                             false );
         re.setExpandColumn( c2,
@@ -1743,15 +1850,14 @@ public class RowExpanderTests {
 
         RowExpander.RowIterator i = re.iterator();
         assertFalse( i.hasNext() );
-
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled2() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1774,7 +1880,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1786,7 +1898,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -1798,7 +1910,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -1810,10 +1922,10 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
         re.setExpandColumn( c1,
                             false );
         re.setExpandColumn( c2,
@@ -1849,15 +1961,14 @@ public class RowExpanderTests {
         assertNull( rows.get( 1 ).get( 3 ) );
         assertEquals( "c3b",
                       rows.get( 1 ).get( 4 ).getStringValue() );
-
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled3() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -1880,7 +1991,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -1892,7 +2009,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -1904,7 +2021,7 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "c2a,c2b" );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -1916,10 +2033,10 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
         re.setExpandColumn( c2,
                             false );
 
@@ -1975,15 +2092,14 @@ public class RowExpanderTests {
         assertNull( rows.get( 3 ).get( 3 ) );
         assertEquals( "c3b",
                       rows.get( 3 ).get( 4 ).getStringValue() );
-
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testRowExpansionWithValuesListAndColumnExpansionDisabledAndDefaultValues() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -2006,7 +2122,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -2018,7 +2140,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValueList( "c1a,c1b" );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -2031,7 +2153,7 @@ public class RowExpanderTests {
         c2.setValueList( "c2a,c2b" );
         c2.setDefaultValue( new DTCellValue52( "c2default" ) );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
@@ -2043,10 +2165,10 @@ public class RowExpanderTests {
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c3.setValueList( "c3a,c3b" );
         p3.getChildColumns().add( c3 );
-        dtable.getConditions().add( p3 );
+        model.getConditions().add( p3 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
         re.setExpandColumn( c2,
                             false );
 
@@ -2106,16 +2228,15 @@ public class RowExpanderTests {
                       rows.get( 3 ).get( 3 ).getStringValue() );
         assertEquals( "c3b",
                       rows.get( 3 ).get( 4 ).getStringValue() );
-
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testExpansionWithLimitedEntry() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
-        dtable.setTableFormat( GuidedDecisionTable52.TableFormat.LIMITED_ENTRY );
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        model.setTableFormat( GuidedDecisionTable52.TableFormat.LIMITED_ENTRY );
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "age",
                                            Integer.class.getName(),
@@ -2144,7 +2265,13 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( pd ).build();
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -2156,7 +2283,7 @@ public class RowExpanderTests {
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValue( new DTCellValue52( "Mike" ) );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
+        model.getConditions().add( p1 );
 
         Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
@@ -2168,23 +2295,23 @@ public class RowExpanderTests {
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1.setValue( new DTCellValue52( 25 ) );
         p2.getChildColumns().add( c2 );
-        dtable.getConditions().add( p2 );
+        model.getConditions().add( p2 );
 
         LimitedEntryActionSetFieldCol52 a1 = new LimitedEntryActionSetFieldCol52();
         a1.setBoundName( "c1" );
         a1.setFactField( "name" );
         a1.setValue( new DTCellValue52( "a1name" ) );
-        dtable.getActionCols().add( a1 );
+        model.getActionCols().add( a1 );
 
         LimitedEntryActionInsertFactCol52 a2 = new LimitedEntryActionInsertFactCol52();
         a2.setBoundName( "a2" );
         a2.setFactType( "Driver" );
         a2.setFactField( "name" );
         a2.setValue( new DTCellValue52( "a2name" ) );
-        dtable.getActionCols().add( a2 );
+        model.getActionCols().add( a2 );
 
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
         assertEquals( 6,
@@ -2280,15 +2407,14 @@ public class RowExpanderTests {
                       rows.get( 3 ).get( 4 ).getBooleanValue() );
         assertEquals( Boolean.FALSE,
                       rows.get( 3 ).get( 5 ).getBooleanValue() );
-
     }
 
     @Test
     //GUVNOR-1960
     public void testExpansionObjectUniqueness() {
-        GuidedDecisionTable52 dtable = new GuidedDecisionTable52();
+        GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle pd = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
                 .addFact( "Driver" )
                 .addField( new ModelField( "gender",
                                            String.class.getName(),
@@ -2299,10 +2425,19 @@ public class RowExpanderTests {
                 .end()
                 .build();
 
-        final PackageDataModelOracle dmo = PackageDataModelOracleBuilder.newPackageOracleBuilder()
-                .setProjectOracle( pd )
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+                .setProjectOracle( projectLoader )
                 .addEnum( "'Driver.gender' : ['M', 'F']" )
                 .build();
+
+        //Emulate server-to-client conversions
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                                                                      oracle,
+                                                                      dataModel );
 
         Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
@@ -2313,9 +2448,9 @@ public class RowExpanderTests {
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p1.getChildColumns().add( c1 );
-        dtable.getConditions().add( p1 );
-        RowExpander re = new RowExpander( dtable,
-                                          dmo );
+        model.getConditions().add( p1 );
+        RowExpander re = new RowExpander( model,
+                                          oracle );
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
         assertEquals( 3,

@@ -25,27 +25,27 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.FactAssignmentField;
+import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
-import org.drools.workbench.models.testscenarios.shared.Field;
 
 public class FieldSelectorWidget
-        implements IsWidget, ClickHandler {
+        implements IsWidget,
+                   ClickHandler {
 
     private final Field field;
     private final FieldConstraintHelper helper;
     private final ScenarioParentWidget parent;
     private final Image clickMe;
 
-
-    public FieldSelectorWidget(Field field,
-                               FieldConstraintHelper helper,
-                               ScenarioParentWidget parent) {
+    public FieldSelectorWidget( final Field field,
+                                final FieldConstraintHelper helper,
+                                final ScenarioParentWidget parent ) {
         this.field = field;
         this.helper = helper;
         this.parent = parent;
         this.clickMe = CommonAltedImages.INSTANCE.Edit();
-        this.clickMe.addClickHandler(this);
+        this.clickMe.addClickHandler( this );
     }
 
     @Override
@@ -54,32 +54,32 @@ public class FieldSelectorWidget
     }
 
     @Override
-    public void onClick(ClickEvent event) {
-        TypeChoiceFormPopup typeChoiceForm = new TypeChoiceFormPopup(helper);
-        typeChoiceForm.addSelectionHandler(new SelectionHandler<Integer>() {
+    public void onClick( final ClickEvent event ) {
+        TypeChoiceFormPopup typeChoiceForm = new TypeChoiceFormPopup( helper );
+        typeChoiceForm.addSelectionHandler( new SelectionHandler<Integer>() {
 
             @Override
-            public void onSelection(SelectionEvent<Integer> selectionEvent) {
-                helper.replaceFieldWith(createField(selectionEvent));
+            public void onSelection( SelectionEvent<Integer> selectionEvent ) {
+                helper.replaceFieldWith( createField( selectionEvent ) );
 
                 parent.renderEditor();
             }
-        });
+        } );
 
         typeChoiceForm.show();
     }
 
-    private Field createField(SelectionEvent<Integer> selectionEvent) {
-        if (selectionEvent.getSelectedItem() == FieldData.TYPE_FACT) {
-            return new FactAssignmentField(field.getName(), helper.getFieldType());
+    private Field createField( final SelectionEvent<Integer> selectionEvent ) {
+        if ( selectionEvent.getSelectedItem() == FieldData.TYPE_FACT ) {
+            return new FactAssignmentField( field.getName(), helper.getFieldType() );
         } else {
-            if (selectionEvent.getSelectedItem() == FieldData.TYPE_COLLECTION) {
+            if ( selectionEvent.getSelectedItem() == FieldData.TYPE_COLLECTION ) {
                 CollectionFieldData collectionFieldData = new CollectionFieldData();
-                collectionFieldData.setName(field.getName());
+                collectionFieldData.setName( field.getName() );
                 return collectionFieldData;
             } else {
-                FieldData fieldData = new FieldData(field.getName(), "");
-                fieldData.setNature(selectionEvent.getSelectedItem());
+                FieldData fieldData = new FieldData( field.getName(), "" );
+                fieldData.setNature( selectionEvent.getSelectedItem() );
                 return fieldData;
             }
         }

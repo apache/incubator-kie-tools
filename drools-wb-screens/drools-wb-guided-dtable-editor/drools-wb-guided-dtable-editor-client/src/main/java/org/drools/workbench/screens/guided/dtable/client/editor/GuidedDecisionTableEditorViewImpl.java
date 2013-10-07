@@ -22,10 +22,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.GuidedDecisionTableWidget;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
@@ -50,16 +50,16 @@ public class GuidedDecisionTableEditorViewImpl extends Composite implements Guid
 
     @Override
     public void setContent( final Path path,
-                            final PackageDataModelOracle dataModel,
                             final GuidedDecisionTable52 model,
                             final Set<PortableWorkDefinition> workItemDefinitions,
+                            final AsyncPackageDataModelOracle oracle,
                             final boolean isReadOnly ) {
         this.model = model;
         this.editor = new GuidedDecisionTableWidget( path,
-                                                     dataModel,
                                                      model,
-                                                     identity,
                                                      workItemDefinitions,
+                                                     oracle,
+                                                     identity,
                                                      isReadOnly );
         panel.setWidget( this.editor );
     }

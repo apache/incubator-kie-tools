@@ -47,7 +47,6 @@ import org.drools.workbench.models.commons.shared.oracle.CEPOracle;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
@@ -67,6 +66,7 @@ import org.drools.workbench.screens.guided.rule.client.widget.ExpressionBuilder;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.common.DirtyableComposite;
@@ -91,7 +91,7 @@ public class ConstraintValueEditor
     private String fieldName;
     private String fieldType;
 
-    private final PackageDataModelOracle sce;
+    private final AsyncPackageDataModelOracle oracle;
     private final BaseSingleFieldConstraint constraint;
     private final Panel panel;
     private final RuleModel model;
@@ -111,7 +111,7 @@ public class ConstraintValueEditor
                                   boolean readOnly ) {
         this.constraint = con;
         this.constraintList = constraintList;
-        this.sce = modeller.getSuggestionCompletions();
+        this.oracle = modeller.getDataModelOracle();
         this.model = modeller.getModel();
 
         this.modeller = modeller;
@@ -129,7 +129,7 @@ public class ConstraintValueEditor
             this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
 
-        } else if ( con instanceof ConnectiveConstraint) {
+        } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
             this.factType = cc.getFactType();
             this.fieldName = cc.getFieldName();
@@ -139,8 +139,8 @@ public class ConstraintValueEditor
             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
             this.factType = sfc.getFactType();
             this.fieldName = sfc.getFieldName();
-            this.fieldType = sce.getFieldType( factType,
-                                               fieldName );
+            this.fieldType = oracle.getFieldType( factType,
+                                                  fieldName );
         }
 
         refreshEditor();
@@ -723,8 +723,8 @@ public class ConstraintValueEditor
             if ( !this.fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
                 return false;
             }
-            String[] dd = this.sce.getEnumValues( boundFactType,
-                                                  this.fieldName );
+            String[] dd = this.oracle.getEnumValues( boundFactType,
+                                                     this.fieldName );
             return isEnumEquivalent( dd );
         }
         return isBoundVariableApplicable( boundFactType,
@@ -743,8 +743,8 @@ public class ConstraintValueEditor
             if ( fc instanceof SingleFieldConstraint ) {
                 String fieldName = ( (SingleFieldConstraint) fc ).getFieldName();
                 String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding( boundVariable ).getFactType();
-                String[] dd = this.sce.getEnumValues( parentFactTypeForBinding,
-                                                      fieldName );
+                String[] dd = this.oracle.getEnumValues( parentFactTypeForBinding,
+                                                         fieldName );
                 return isEnumEquivalent( dd );
             }
             return false;
@@ -787,8 +787,8 @@ public class ConstraintValueEditor
         }
 
         //For collection, present the list of possible bound variable
-        String factCollectionType = sce.getParametricFieldType( this.factType,
-                                                                this.fieldName );
+        String factCollectionType = oracle.getParametricFieldType( this.factType,
+                                                                   this.fieldName );
         if ( boundFactType != null && factCollectionType != null && boundFactType.equals( factCollectionType ) ) {
             return true;
         }
@@ -811,7 +811,7 @@ public class ConstraintValueEditor
         }
 
         //'this' can be compared to bound events if using a CEP operator
-        if ( this.fieldName.equals( DataType.TYPE_THIS ) && sce.isFactTypeAnEvent( boundFieldType ) ) {
+        if ( this.fieldName.equals( DataType.TYPE_THIS ) && oracle.isFactTypeAnEvent( boundFieldType ) ) {
             if ( this.constraint instanceof HasOperator ) {
                 HasOperator hop = (HasOperator) this.constraint;
                 if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
@@ -831,7 +831,7 @@ public class ConstraintValueEditor
         }
 
         //Dates can be compared to bound events if using a CEP operator
-        if ( ( this.fieldType.equals( DataType.TYPE_DATE ) && sce.isFactTypeAnEvent( boundFieldType ) ) ) {
+        if ( ( this.fieldType.equals( DataType.TYPE_DATE ) && oracle.isFactTypeAnEvent( boundFieldType ) ) ) {
             if ( this.constraint instanceof HasOperator ) {
                 HasOperator hop = (HasOperator) this.constraint;
                 if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
@@ -841,8 +841,8 @@ public class ConstraintValueEditor
         }
 
         //For collection, present the list of possible bound variable
-        String factCollectionType = sce.getParametricFieldType( this.factType,
-                                                                this.fieldName );
+        String factCollectionType = oracle.getParametricFieldType( this.factType,
+                                                                   this.fieldName );
         if ( factCollectionType != null && factCollectionType.equals( boundFieldType ) ) {
             return true;
         }
@@ -871,9 +871,9 @@ public class ConstraintValueEditor
                 }
             }
 
-            this.dropDownData = sce.getEnums( this.factType,
-                                              fieldName,
-                                              currentValueMap );
+            this.dropDownData = oracle.getEnums( this.factType,
+                                                 fieldName,
+                                                 currentValueMap );
         }
         return dropDownData;
     }

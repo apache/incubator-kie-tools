@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 /**
  * Guided Rule Template Data View implementation
@@ -41,7 +42,7 @@ public class GuidedRuleTemplateDataViewImpl extends Composite implements GuidedR
 
     @Override
     public void setContent( final TemplateModel model,
-                            final PackageDataModelOracle dataModel,
+                            final AsyncPackageDataModelOracle oracle,
                             final EventBus eventBus,
                             final boolean isReadOnly ) {
 
@@ -55,7 +56,7 @@ public class GuidedRuleTemplateDataViewImpl extends Composite implements GuidedR
             @Override
             public void execute() {
                 final TemplateDataTableWidget dataTable = new TemplateDataTableWidget( model,
-                                                                                       dataModel,
+                                                                                       oracle,
                                                                                        isReadOnly,
                                                                                        eventBus );
                 final Button btnAddRow = new Button( Constants.INSTANCE.AddRow(),

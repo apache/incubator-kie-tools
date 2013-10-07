@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
@@ -40,6 +39,7 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.common.ClickableLabel;
@@ -229,8 +229,8 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
      */
     protected void showRightPatternSelector( final Widget w ) {
         final ListBox box = new ListBox();
-        PackageDataModelOracle completions = this.getModeller().getSuggestionCompletions();
-        String[] facts = completions.getFactTypes();
+        AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
+        String[] facts = oracle.getFactTypes();
 
         box.addItem( Constants.INSTANCE.Choose() );
         for ( int i = 0; i < facts.length; i++ ) {
@@ -311,7 +311,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     protected void calculateReadOnly() {
         if ( this.pattern.getFactPattern() != null ) {
             this.readOnly = !( this.getExtraLeftSidePatternFactTypes().containsValue( this.pattern.getFactPattern().getFactType() )
-                    || this.getModeller().getSuggestionCompletions().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() ) );
+                    || this.getModeller().getDataModelOracle().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() ) );
         }
     }
 

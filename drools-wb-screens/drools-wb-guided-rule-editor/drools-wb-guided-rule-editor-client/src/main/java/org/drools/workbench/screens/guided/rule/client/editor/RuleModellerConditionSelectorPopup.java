@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -40,6 +39,7 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.security.UserCapabilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.InfoPopup;
 
@@ -51,8 +51,11 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
     public RuleModellerConditionSelectorPopup( RuleModel model,
                                                RuleModeller ruleModeller,
                                                Integer position,
-                                               PackageDataModelOracle dataModel ) {
-        super( model, ruleModeller, position, dataModel );
+                                               AsyncPackageDataModelOracle oracle ) {
+        super( model,
+               ruleModeller,
+               position,
+               oracle );
     }
 
     @Override
@@ -77,7 +80,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             positionCbo.setSelectedIndex( 0 );
         }
 
-        if ( completions.getDSLConditions().size() == 0 && completions.getFactTypes().length == 0 ) {
+        if ( oracle.getDSLConditions().size() == 0 && oracle.getFactTypes().length == 0 ) {
             layoutPanel.addRow( new HTML( "<div class='highlight'>" + Constants.INSTANCE.NoModelTip() + "</div>" ) );
         }
 
@@ -171,7 +174,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             return;
         }
 
-        for ( final DSLSentence sen : completions.getDSLConditions() ) {
+        for ( final DSLSentence sen : oracle.getDSLConditions() ) {
             final String sentence = sen.toString();
             final String key = "DSL" + sentence;
             choices.addItem( sentence,
@@ -191,11 +194,11 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     // The list of facts
     private void addFacts() {
-        if ( completions.getFactTypes().length > 0 ) {
+        if ( oracle.getFactTypes().length > 0 ) {
             choices.addItem( SECTION_SEPARATOR );
 
-            for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
-                final String f = completions.getFactTypes()[ i ];
+            for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
+                final String f = oracle.getFactTypes()[ i ];
                 String key = "NF" + f;
 
                 choices.addItem( f + " ...",

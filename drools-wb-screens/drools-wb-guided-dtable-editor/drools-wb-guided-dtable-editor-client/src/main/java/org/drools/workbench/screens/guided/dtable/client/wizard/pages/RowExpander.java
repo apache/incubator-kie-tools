@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -34,6 +33,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
 
 /**
@@ -50,7 +50,7 @@ public class RowExpander {
 
     private final GuidedDecisionTable52 model;
     private final GuidedDecisionTableUtils modelUtils;
-    private final PackageDataModelOracle oracle;
+    private final AsyncPackageDataModelOracle oracle;
 
     private static final List<DTCellValue52> EMPTY_VALUE = new ArrayList<DTCellValue52>();
 
@@ -64,12 +64,12 @@ public class RowExpander {
      * @param oracle
      */
     public RowExpander( final GuidedDecisionTable52 model,
-                        final PackageDataModelOracle oracle ) {
+                        final AsyncPackageDataModelOracle oracle ) {
         this.columns = new ArrayList<ColumnValues>();
         this.model = model;
         this.oracle = oracle;
-        this.modelUtils = new GuidedDecisionTableUtils( oracle,
-                                                        model );
+        this.modelUtils = new GuidedDecisionTableUtils( model,
+                                                        oracle );
 
         //Add all columns to Expander to generate row data. The AnalysisCol is not added 
         //as its data is transient, not held in the underlying Decision Table's data
@@ -402,11 +402,11 @@ public class RowExpander {
     static class ColumnDynamicValues extends ColumnValues {
 
         private final LimitedEntryDropDownManager.Context context;
-        private final PackageDataModelOracle oracle;
+        private final AsyncPackageDataModelOracle oracle;
         private boolean initialiseValueList = true;
 
         ColumnDynamicValues( final List<ColumnValues> columns,
-                             final PackageDataModelOracle oracle,
+                             final AsyncPackageDataModelOracle oracle,
                              final LimitedEntryDropDownManager.Context context,
                              final DTCellValue52 defaultValue ) {
             super( columns,

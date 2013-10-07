@@ -39,102 +39,99 @@ public class TypeChoiceFormPopup
         extends FormStylePopup
         implements HasSelectionHandlers<Integer> {
 
-
-    public TypeChoiceFormPopup(FieldConstraintHelper helper) {
-        super(TestScenarioAltedImages.INSTANCE.Wizard(),
-                TestScenarioConstants.INSTANCE.FieldValue());
-
+    public TypeChoiceFormPopup( final FieldConstraintHelper helper ) {
+        super( TestScenarioAltedImages.INSTANCE.Wizard(),
+               TestScenarioConstants.INSTANCE.FieldValue() );
 
         addLiteralValueSelection();
 
-        addRow(new HTML("<hr/>"));
-        addRow(new SmallLabel(TestScenarioConstants.INSTANCE.AdvancedOptions()));
+        addRow( new HTML( "<hr/>" ) );
+        addRow( new SmallLabel( TestScenarioConstants.INSTANCE.AdvancedOptions() ) );
 
         // If we are here, then there must be a bound variable compatible with
         // me
-        if (helper.isThereABoundVariableToSet()) {
+        if ( helper.isThereABoundVariableToSet() ) {
             addBoundVariableSelection();
         }
-        if (helper.isItAList() && !helper.isTheParentAList()) {
+        if ( helper.isItAList() && !helper.isTheParentAList() ) {
             addListSelection();
         }
 
-        if (!helper.isTheParentAList()) {
+        if ( !helper.isTheParentAList() ) {
             addCreateNewObject();
         }
     }
 
     private void addCreateNewObject() {
-        Button button = new Button(TestScenarioConstants.INSTANCE.CreateNewFact());
-        button.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                fireSelection(FieldData.TYPE_FACT);
+        Button button = new Button( TestScenarioConstants.INSTANCE.CreateNewFact() );
+        button.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent w ) {
+                fireSelection( FieldData.TYPE_FACT );
             }
 
-
-        });
-        addAttribute(TestScenarioConstants.INSTANCE.Fact(),
-                widgets(button,
-                        new InfoPopup(TestScenarioConstants.INSTANCE.Fact(),
-                                TestScenarioConstants.INSTANCE.Fact())));
+        } );
+        addAttribute( TestScenarioConstants.INSTANCE.Fact(),
+                      widgets( button,
+                               new InfoPopup( TestScenarioConstants.INSTANCE.Fact(),
+                                              TestScenarioConstants.INSTANCE.Fact() ) ) );
     }
 
     private void addLiteralValueSelection() {
-        Button lit = new Button(TestScenarioConstants.INSTANCE.LiteralValue());
-        lit.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                fireSelection( FieldData.TYPE_LITERAL);
+        Button lit = new Button( TestScenarioConstants.INSTANCE.LiteralValue() );
+        lit.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent w ) {
+                fireSelection( FieldData.TYPE_LITERAL );
             }
-        });
-        addAttribute(TestScenarioConstants.INSTANCE.LiteralValue() + ":",
-                widgets(lit,
-                        new InfoPopup(TestScenarioConstants.INSTANCE.LiteralValue(),
-                                TestScenarioConstants.INSTANCE.LiteralValTip())));
+        } );
+        addAttribute( TestScenarioConstants.INSTANCE.LiteralValue() + ":",
+                      widgets( lit,
+                               new InfoPopup( TestScenarioConstants.INSTANCE.LiteralValue(),
+                                              TestScenarioConstants.INSTANCE.LiteralValTip() ) ) );
     }
 
     private void addListSelection() {
-        Button variable = new Button(TestScenarioConstants.INSTANCE.GuidedList());
-        variable.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                fireSelection(FieldData.TYPE_COLLECTION);
+        Button variable = new Button( TestScenarioConstants.INSTANCE.GuidedList() );
+        variable.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent w ) {
+                fireSelection( FieldData.TYPE_COLLECTION );
             }
-        });
-        addAttribute(TestScenarioConstants.INSTANCE.AVariable(),
-                widgets(variable,
-                        new InfoPopup(TestScenarioConstants.INSTANCE.AGuidedList(),
-                                TestScenarioConstants.INSTANCE.AGuidedListTip())));
+        } );
+        addAttribute( TestScenarioConstants.INSTANCE.AVariable(),
+                      widgets( variable,
+                               new InfoPopup( TestScenarioConstants.INSTANCE.AGuidedList(),
+                                              TestScenarioConstants.INSTANCE.AGuidedListTip() ) ) );
     }
 
     private void addBoundVariableSelection() {
-        Button variable = new Button(Constants.INSTANCE.BoundVariable());
-        variable.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                fireSelection(FieldData.TYPE_VARIABLE);
+        Button variable = new Button( Constants.INSTANCE.BoundVariable() );
+        variable.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent w ) {
+                fireSelection( FieldData.TYPE_VARIABLE );
             }
-        });
-        addAttribute(Constants.INSTANCE.AVariable(),
-                widgets(variable,
-                        new InfoPopup(Constants.INSTANCE.ABoundVariable(),
-                                Constants.INSTANCE.BoundVariableTip())));
+        } );
+        addAttribute( Constants.INSTANCE.AVariable(),
+                      widgets( variable,
+                               new InfoPopup( Constants.INSTANCE.ABoundVariable(),
+                                              Constants.INSTANCE.BoundVariableTip() ) ) );
     }
 
-    private void fireSelection(int type) {
-        SelectionEvent.fire(this, type);
+    private void fireSelection( final int type ) {
+        SelectionEvent.fire( this, type );
         hide();
     }
 
     @Override
-    public HandlerRegistration addSelectionHandler(SelectionHandler<Integer
-            > selectionHandler) {
-        return addHandler(selectionHandler, SelectionEvent.getType());
+    public HandlerRegistration addSelectionHandler( final SelectionHandler<Integer> selectionHandler ) {
+        return addHandler( selectionHandler,
+                           SelectionEvent.getType() );
     }
 
-    private Panel widgets(Widget left,
-                          Widget right) {
+    private Panel widgets( final Widget left,
+                           final Widget right ) {
         HorizontalPanel panel = new HorizontalPanel();
-        panel.add(left);
-        panel.add(right);
-        panel.setWidth("100%");
+        panel.add( left );
+        panel.add( right );
+        panel.setWidth( "100%" );
         return panel;
     }
 }

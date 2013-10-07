@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
@@ -18,9 +17,10 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.commons.data.Pair;
-import org.kie.workbench.common.services.datamodel.service.DataModelService;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -28,6 +28,7 @@ import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.WizardPresenter;
+import org.uberfire.commons.data.Pair;
 
 /**
  * Handler for the creation of new Guided Decision Tables
@@ -40,9 +41,6 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @Inject
     private Caller<GuidedDecisionTableEditorService> service;
-
-    @Inject
-    private Caller<DataModelService> dmoService;
 
     @Inject
     private GuidedDTableResourceType resourceType;
@@ -58,6 +56,9 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
+
+    @Inject
+    private AsyncPackageDataModelOracle oracle;
 
     private NewResourcePresenter newResourcePresenter;
 
@@ -108,11 +109,13 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     private void createDecisionTableWithWizard( final String baseFileName,
                                                 final Path contextPath,
                                                 final GuidedDecisionTable52.TableFormat tableFormat ) {
-        dmoService.call( new RemoteCallback<PackageDataModelOracle>() {
+        service.call( new RemoteCallback<PackageDataModelOracleBaselinePayload>() {
 
             @Override
-            public void callback( final PackageDataModelOracle oracle ) {
+            public void callback( final PackageDataModelOracleBaselinePayload dataModel ) {
                 newResourcePresenter.complete();
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( oracle,
+                                                                              dataModel );
                 final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
                                                                                                                        contextPath,
                                                                                                                        tableFormat );
@@ -121,8 +124,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                                    NewGuidedDecisionTableHandler.this );
                 wizardPresenter.start( wizard );
             }
-        } ).getDataModel( contextPath );
-
+        } ).loadDataModel( contextPath );
     }
 
     public void save( final String baseFileName,

@@ -16,31 +16,31 @@
 
 package org.drools.workbench.screens.guided.scorecard.model;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 
 @Portable
 public class ScoreCardModelContent {
 
     private ScoreCardModel model;
-    private PackageDataModelOracle oracle;
+    private PackageDataModelOracleBaselinePayload dataModel;
 
     public ScoreCardModelContent() {
     }
 
-    public ScoreCardModelContent( final ScoreCardModel model,
-                                  final PackageDataModelOracle oracle ) {
+    public ScoreCardModelContent( final ScoreCardModel dataModel,
+                                  final PackageDataModelOracleBaselinePayload oracle ) {
         this.model = model;
-        this.oracle = oracle;
+        this.dataModel = oracle;
     }
 
     public ScoreCardModel getModel() {
         return this.model;
     }
 
-    public PackageDataModelOracle getDataModel() {
-        return this.oracle;
+    public PackageDataModelOracleBaselinePayload getDataModel() {
+        return this.dataModel;
     }
 
 }

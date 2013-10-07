@@ -19,7 +19,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.testscenarios.shared.CallFieldValue;
 import org.drools.workbench.models.testscenarios.shared.CallMethod;
@@ -28,6 +27,7 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.DirtyableComposite;
@@ -41,59 +41,59 @@ public class CallMethodWidget extends DirtyableComposite {
     protected final ScenarioParentWidget parent;
     protected final Scenario scenario;
     protected final CallMethod mCall;
-    protected final String                   factName;
+    protected final String factName;
     private final ExecutionTrace executionTrace;
 
     final private DirtyableFlexTable layout;
-    private boolean                          isBoundFact = false;
+    private boolean isBoundFact = false;
 
-    private String[]                         fieldCompletionTexts;
-    private String[]                         fieldCompletionValues;
-    private String                           variableClass;
+    private String[] fieldCompletionTexts;
+    private String[] fieldCompletionValues;
+    private String variableClass;
 
-    private final PackageDataModelOracle dmo;
+    private final AsyncPackageDataModelOracle oracle;
 
-    public CallMethodWidget(String factName,
-                            ScenarioParentWidget parent,
-                            Scenario scenario,
-                            CallMethod mCall,
-                            ExecutionTrace executionTrace,
-                            PackageDataModelOracle dmo) {
+    public CallMethodWidget( final String factName,
+                             final ScenarioParentWidget parent,
+                             final Scenario scenario,
+                             final CallMethod mCall,
+                             final ExecutionTrace executionTrace,
+                             final AsyncPackageDataModelOracle oracle ) {
         super();
         this.factName = factName;
         this.parent = parent;
         this.scenario = scenario;
         this.mCall = mCall;
         this.executionTrace = executionTrace;
-        this.dmo = dmo;
+        this.oracle = oracle;
 
         this.layout = new DirtyableFlexTable();
 
         layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
-        if ( dmo.isGlobalVariable( mCall.getVariable() ) ) {
+        if ( this.oracle.isGlobalVariable( mCall.getVariable() ) ) {
 
-            List<MethodInfo> infos = dmo.getMethodInfosForGlobalVariable( mCall.getVariable() );
-            this.fieldCompletionTexts = new String[infos.size()];
-            this.fieldCompletionValues = new String[infos.size()];
+            List<MethodInfo> infos = this.oracle.getMethodInfosForGlobalVariable( mCall.getVariable() );
+            this.fieldCompletionTexts = new String[ infos.size() ];
+            this.fieldCompletionValues = new String[ infos.size() ];
             int i = 0;
             for ( MethodInfo info : infos ) {
-                this.fieldCompletionTexts[i] = info.getName();
-                this.fieldCompletionValues[i] = info.getNameWithParameters();
+                this.fieldCompletionTexts[ i ] = info.getName();
+                this.fieldCompletionValues[ i ] = info.getNameWithParameters();
                 i++;
             }
 
-            this.variableClass = (String) dmo.getGlobalVariable( mCall.getVariable() );
+            this.variableClass = (String) this.oracle.getGlobalVariable( mCall.getVariable() );
         } else {
             FactData pattern = (FactData) scenario.getFactTypes().get( mCall.getVariable() );
             if ( pattern != null ) {
-                List<String> methodList = dmo.getMethodNames( pattern.getType() );
-                fieldCompletionTexts = new String[methodList.size()];
-                fieldCompletionValues = new String[methodList.size()];
+                List<String> methodList = this.oracle.getMethodNames( pattern.getType() );
+                fieldCompletionTexts = new String[ methodList.size() ];
+                fieldCompletionValues = new String[ methodList.size() ];
                 int i = 0;
                 for ( String methodName : methodList ) {
-                    fieldCompletionTexts[i] = methodName;
-                    fieldCompletionValues[i] = methodName;
+                    fieldCompletionTexts[ i ] = methodName;
+                    fieldCompletionValues[ i ] = methodName;
                     i++;
                 }
                 this.variableClass = pattern.getType();
@@ -112,7 +112,7 @@ public class CallMethodWidget extends DirtyableComposite {
                           getSetterLabel() );
         DirtyableFlexTable inner = new DirtyableFlexTable();
         int i = 0;
-        for ( CallFieldValue val : mCall.getCallFieldValues()) {
+        for ( CallFieldValue val : mCall.getCallFieldValues() ) {
 
             inner.setWidget( i,
                              0,
@@ -139,14 +139,14 @@ public class CallMethodWidget extends DirtyableComposite {
 
             edit.addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onClick( ClickEvent event ) {
                     Image w = (Image) event.getSource();
                     showAddFieldPopup( w );
 
                 }
             } );
 
-            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName("call") + " [" + mCall.getVariable() + "]" ) ); // NON-NLS
+            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + mCall.getVariable() + "]" ) ); // NON-NLS
             horiz.add( edit );
         } else {
             horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + mCall.getVariable() + "." + mCall.getMethodName() + "]" ) ); // NON-NLS
@@ -155,15 +155,15 @@ public class CallMethodWidget extends DirtyableComposite {
         return horiz;
     }
 
-    protected void showAddFieldPopup(Widget w) {
-        final FormStylePopup popup = new FormStylePopup(TestScenarioAltedImages.INSTANCE.Wizard(),
+    protected void showAddFieldPopup( final Widget w ) {
+        final FormStylePopup popup = new FormStylePopup( TestScenarioAltedImages.INSTANCE.Wizard(),
                                                          TestScenarioConstants.INSTANCE.ChooseAMethodToInvoke() );
         ListBox box = new ListBox();
         box.addItem( "..." );
 
         for ( int i = 0; i < fieldCompletionTexts.length; i++ ) {
-            box.addItem( fieldCompletionTexts[i],
-                         fieldCompletionValues[i] );
+            box.addItem( fieldCompletionTexts[ i ],
+                         fieldCompletionValues[ i ] );
         }
 
         box.setSelectedIndex( 0 );
@@ -172,7 +172,7 @@ public class CallMethodWidget extends DirtyableComposite {
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 mCall.setState( ActionCallMethod.TYPE_DEFINED );
                 ListBox sourceW = (ListBox) event.getSource();
                 String methodName = sourceW.getItemText( sourceW.getSelectedIndex() );
@@ -181,10 +181,10 @@ public class CallMethodWidget extends DirtyableComposite {
                 mCall.setMethodName( methodName );
                 List<String> fieldList = new ArrayList<String>();
 
-                fieldList.addAll( dmo.getMethodParams( variableClass,
-                                                       methodNameWithParams ) );
+                fieldList.addAll( oracle.getMethodParams( variableClass,
+                                                          methodNameWithParams ) );
 
-                // String fieldType = completions.getFieldType( variableClass,
+                // String fieldType = oracle.getFieldType( variableClass,
                 // fieldName );
                 int i = 0;
                 for ( String fieldParameter : fieldList ) {
@@ -206,21 +206,21 @@ public class CallMethodWidget extends DirtyableComposite {
 
     }
 
-    private Widget valueEditor(final CallFieldValue val) {
+    private Widget valueEditor( final CallFieldValue val ) {
 
         String type = "";
-        if ( dmo.isGlobalVariable( this.mCall.getVariable() ) ) {
-            type = dmo.getGlobalVariable( this.mCall.getVariable() );
+        if ( oracle.isGlobalVariable( this.mCall.getVariable() ) ) {
+            type = oracle.getGlobalVariable( this.mCall.getVariable() );
         } else {
             Map<String, String> mFactTypes = scenario.getVariableTypes();
             type = mFactTypes.get( this.mCall.getVariable() );
         }
 
-        DropDownData enums = dmo.getEnums(
+        DropDownData enums = oracle.getEnums(
                 type,
                 val.field,
                 this.mCall.getCallFieldValuesMap()
-        );
+                                            );
         return new MethodParameterCallValueEditor( val,
                                                    enums,
                                                    executionTrace,
@@ -240,21 +240,21 @@ public class CallMethodWidget extends DirtyableComposite {
      * first value is a "=" which means it is meant to be taken as the user
      * typed)
      */
-    public static KeyPressHandler getNumericFilter(final TextBox box) {
+    public static KeyPressHandler getNumericFilter( final TextBox box ) {
         return new KeyPressHandler() {
 
-            public void onKeyPress(KeyPressEvent event) {
+            public void onKeyPress( KeyPressEvent event ) {
                 TextBox w = (TextBox) event.getSource();
                 char c = event.getCharCode();
-                if ( Character.isLetter( c ) && c != '=' && !(box.getText().startsWith( "=" )) ) {
-                    ((TextBox) w).cancelKey();
+                if ( Character.isLetter( c ) && c != '=' && !( box.getText().startsWith( "=" ) ) ) {
+                    ( (TextBox) w ).cancelKey();
                 }
 
             }
         };
     }
 
-    private Widget fieldSelector(final CallFieldValue val) {
+    private Widget fieldSelector( final CallFieldValue val ) {
         return new SmallLabel( val.type );
     }
 
@@ -277,13 +277,14 @@ public class CallMethodWidget extends DirtyableComposite {
     }
 
     class DeleteButton extends ImageButton {
+
         public DeleteButton() {
             super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
                    TestScenarioConstants.INSTANCE.RemoveCallMethod() );
 
             addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onClick( ClickEvent event ) {
                     onDelete();
                 }
             } );
