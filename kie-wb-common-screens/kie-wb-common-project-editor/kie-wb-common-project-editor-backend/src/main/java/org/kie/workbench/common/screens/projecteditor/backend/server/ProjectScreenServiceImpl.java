@@ -11,7 +11,6 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
-import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.vfs.Path;
 
 @Service
@@ -29,16 +28,11 @@ public class ProjectScreenServiceImpl
     private ProjectService projectService;
 
     @Inject
-    private DataModelService dataModelService;
-
-    @Inject
     private MetadataService metadataService;
 
     @Override
     public ProjectScreenModel load( final Path pathToPom ) {
         ProjectScreenModel model = new ProjectScreenModel();
-
-        model.setProjectDataModelOracle(dataModelService.getProjectDataModel(pathToPom));
 
         model.setPOM( pomService.load( pathToPom ) );
         model.setPOMMetaData( metadataService.getMetadata( pathToPom ) );

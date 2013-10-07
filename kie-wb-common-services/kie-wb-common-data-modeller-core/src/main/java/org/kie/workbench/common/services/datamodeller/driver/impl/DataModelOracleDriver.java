@@ -31,6 +31,7 @@ import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
+import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationListener;
@@ -56,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 public class DataModelOracleDriver implements ModelDriver {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataModelOracleDriver.class);
+    private static final Logger logger = LoggerFactory.getLogger( DataModelOracleDriver.class );
 
     private List<AnnotationDefinition> configuredAnnotations = new ArrayList<AnnotationDefinition>();
 
@@ -68,24 +69,24 @@ public class DataModelOracleDriver implements ModelDriver {
 
     protected DataModelOracleDriver() {
         AnnotationDefinition annotationDefinition = DescriptionAnnotationDefinition.getInstance();
-        configuredAnnotations.add(annotationDefinition);
-        annotationDrivers.put(annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver());
+        configuredAnnotations.add( annotationDefinition );
+        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
 
         annotationDefinition = KeyAnnotationDefinition.getInstance();
-        configuredAnnotations.add(annotationDefinition);
-        annotationDrivers.put(annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver());
+        configuredAnnotations.add( annotationDefinition );
+        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
 
         annotationDefinition = LabelAnnotationDefinition.getInstance();
-        configuredAnnotations.add(annotationDefinition);
-        annotationDrivers.put(annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver());
+        configuredAnnotations.add( annotationDefinition );
+        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
 
         annotationDefinition = RoleAnnotationDefinition.getInstance();
-        configuredAnnotations.add(annotationDefinition);
-        annotationDrivers.put(annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver());
+        configuredAnnotations.add( annotationDefinition );
+        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
 
         annotationDefinition = PositionAnnotationDefinition.getInstance();
-        configuredAnnotations.add(annotationDefinition);
-        annotationDrivers.put(annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver());
+        configuredAnnotations.add( annotationDefinition );
+        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
 
     }
 
@@ -95,27 +96,32 @@ public class DataModelOracleDriver implements ModelDriver {
     }
 
     @Override
-    public AnnotationDefinition getConfiguredAnnotation(String annotationClassName) {
-        for (AnnotationDefinition annotationDefinition : configuredAnnotations) {
-            if (annotationClassName.equals(annotationDefinition.getClassName())) return annotationDefinition;
+    public AnnotationDefinition getConfiguredAnnotation( String annotationClassName ) {
+        for ( AnnotationDefinition annotationDefinition : configuredAnnotations ) {
+            if ( annotationClassName.equals( annotationDefinition.getClassName() ) ) {
+                return annotationDefinition;
+            }
         }
         return null;
     }
 
     @Override
-    public AnnotationDriver getAnnotationDriver(String annotationClassName) {
-        return annotationDrivers.get(annotationClassName);
+    public AnnotationDriver getAnnotationDriver( String annotationClassName ) {
+        return annotationDrivers.get( annotationClassName );
     }
 
     @Override
-    public List<FileChangeDescriptor> generateModel(DataModel dataModel, IOService ioService, Path root, OpenOption option) throws Exception {
+    public List<FileChangeDescriptor> generateModel( DataModel dataModel,
+                                                     IOService ioService,
+                                                     Path root,
+                                                     OpenOption option ) throws Exception {
 
-        GenerationContext generationContext = new GenerationContext(dataModel);
-        OracleGenerationListener generationListener = new OracleGenerationListener(ioService, root, option);
-        generationContext.setGenerationListener(generationListener);
+        GenerationContext generationContext = new GenerationContext( dataModel );
+        OracleGenerationListener generationListener = new OracleGenerationListener( ioService, root, option );
+        generationContext.setGenerationListener( generationListener );
 
         GenerationEngine generationEngine = GenerationEngine.getInstance();
-        generationEngine.generate(generationContext);
+        generationEngine.generate( generationContext );
         return generationListener.getFileChanges();
     }
 
@@ -124,233 +130,272 @@ public class DataModelOracleDriver implements ModelDriver {
         return ModelFactoryImpl.getInstance().newModel();
     }
 
-    public DataModel loadModel(ProjectDataModelOracle oracleDataModel) throws ModelDriverException {
+    public DataModel loadModel( ProjectDataModelOracle oracleDataModel ) throws ModelDriverException {
 
         DataModel dataModel = createModel();
 
-        logger.debug("Adding oracleDataModel: " + oracleDataModel + " to dataModel: " + dataModel);
+        logger.debug( "Adding oracleDataModel: " + oracleDataModel + " to dataModel: " + dataModel );
 
-        String[] factTypes = oracleDataModel.getFactTypes();
+        String[] factTypes = DataModelOracleUtilities.getFactTypes( oracleDataModel );
         ObjectSource source = null;
 
-        if (factTypes != null && factTypes.length > 0) {
-            for (int i = 0; i < factTypes.length; i++) {
+        if ( factTypes != null && factTypes.length > 0 ) {
+            for ( int i = 0; i < factTypes.length; i++ ) {
                 //skip .drl declared fact types.
-                source = factSource(oracleDataModel, factTypes[i]);
-                if (source != null && (ObjectSource.INTERNAL.equals(source) || ObjectSource.DEPENDENCY.equals(source))) {
-                    addFactType(dataModel, oracleDataModel, factTypes[i], source);
+                source = factSource( oracleDataModel, factTypes[ i ] );
+                if ( source != null && ( ObjectSource.INTERNAL.equals( source ) || ObjectSource.DEPENDENCY.equals( source ) ) ) {
+                    addFactType( dataModel, oracleDataModel, factTypes[ i ], source );
                 }
             }
         } else {
-            logger.debug("oracleDataModel hasn't defined fact types");
+            logger.debug( "oracleDataModel hasn't defined fact types" );
         }
         return dataModel;
     }
 
-    private void addFactType(DataModel dataModel, ProjectDataModelOracle oracleDataModel, String factType, ObjectSource source) throws ModelDriverException {
+    private void addFactType( DataModel dataModel,
+                              ProjectDataModelOracle oracleDataModel,
+                              String factType,
+                              ObjectSource source ) throws ModelDriverException {
 
-        String packageName = NamingUtils.getInstance().extractPackageName(factType);
-        String className = NamingUtils.getInstance().extractClassName(factType);
-        String superClass = oracleDataModel.getSuperType(factType);
+        String packageName = NamingUtils.getInstance().extractPackageName( factType );
+        String className = NamingUtils.getInstance().extractClassName( factType );
+        String superClass = DataModelOracleUtilities.getSuperType( oracleDataModel,
+                                                                   factType );
 
-        logger.debug("Adding factType: " + factType + ", to dataModel: " + dataModel + ", from oracleDataModel: " + oracleDataModel);
-        DataObject dataObject = dataModel.addDataObject(factType, source);
-        dataObject.setSuperClassName(superClass);
+        logger.debug( "Adding factType: " + factType + ", to dataModel: " + dataModel + ", from oracleDataModel: " + oracleDataModel );
+        DataObject dataObject = dataModel.addDataObject( factType, source );
+        dataObject.setSuperClassName( superClass );
 
         //process type annotations
-        Set<Annotation> typeAnnotations = oracleDataModel.getTypeAnnotations(factType);
-        if (typeAnnotations != null) {
-            for (Annotation annotation : typeAnnotations) {
-                addFactTypeAnnotation(dataObject, annotation);
+        Set<Annotation> typeAnnotations = DataModelOracleUtilities.getTypeAnnotations( oracleDataModel,
+                                                                                       factType );
+        if ( typeAnnotations != null ) {
+            for ( Annotation annotation : typeAnnotations ) {
+                addFactTypeAnnotation( dataObject, annotation );
             }
         }
 
-        Map<String, ModelField[]> fields = oracleDataModel.getModelFields();
-        if (fields != null) {
-            ModelField[] factFields = fields.get(factType);
+        Map<String, ModelField[]> fields = oracleDataModel.getProjectModelFields();
+        if ( fields != null ) {
+            ModelField[] factFields = fields.get( factType );
             ModelField field;
             ObjectProperty property;
-            Map<String, Set<Annotation>> typeFieldsAnnotations = oracleDataModel.getTypeFieldsAnnotations(factType);
+            Map<String, Set<Annotation>> typeFieldsAnnotations = DataModelOracleUtilities.getTypeFieldsAnnotations( oracleDataModel,
+                                                                                                                    factType );
             Set<Annotation> fieldAnnotations;
             Integer naturalOrder = 0;
             List<PropertyPosition> naturalOrderPositions = new ArrayList<PropertyPosition>();
 
-            if (factFields != null && factFields.length > 0) {
-                for (int j = 0; j < factFields.length ; j++) {
-                    field = factFields[j];
-                    if (isLoadableField(field)) {
+            if ( factFields != null && factFields.length > 0 ) {
+                for ( int j = 0; j < factFields.length; j++ ) {
+                    field = factFields[ j ];
+                    if ( isLoadableField( field ) ) {
 
-                        if (field.getType().equals("Collection")) {
+                        if ( field.getType().equals( "Collection" ) ) {
                             //particular processing for collection types
                             //read the correct bag and item classes.
-                            String bag = oracleDataModel.getFieldClassName(factType, field.getName());
-                            String itemsClass = oracleDataModel.getParametricFieldType(factType, field.getName());
-                            property = dataObject.addProperty(field.getName(), itemsClass, true, bag);
+                            String bag = DataModelOracleUtilities.getFieldClassName( oracleDataModel,
+                                                                                     factType,
+                                                                                     field.getName() );
+                            String itemsClass = DataModelOracleUtilities.getParametricFieldType( oracleDataModel,
+                                                                                                 factType,
+                                                                                                 field.getName() );
+                            property = dataObject.addProperty( field.getName(), itemsClass, true, bag );
 
                         } else {
-                            property = dataObject.addProperty(field.getName(), getFieldType(oracleDataModel, packageName, field.getClassName()));
+                            property = dataObject.addProperty( field.getName(), getFieldType( oracleDataModel, packageName, field.getClassName() ) );
                         }
 
                         //process property annotations
-                        if (typeFieldsAnnotations != null && (fieldAnnotations = typeFieldsAnnotations.get(field.getName())) != null) {
-                            for (Annotation fieldAnnotation : fieldAnnotations) {
-                                addFieldAnnotation(dataObject, property, fieldAnnotation);
+                        if ( typeFieldsAnnotations != null && ( fieldAnnotations = typeFieldsAnnotations.get( field.getName() ) ) != null ) {
+                            for ( Annotation fieldAnnotation : fieldAnnotations ) {
+                                addFieldAnnotation( dataObject, property, fieldAnnotation );
                             }
                         }
 
-                        AnnotationImpl position = new AnnotationImpl(PositionAnnotationDefinition.getInstance());
-                        position.setValue("value", naturalOrder.toString());
-                        naturalOrderPositions.add(new PropertyPosition(property, position));
+                        AnnotationImpl position = new AnnotationImpl( PositionAnnotationDefinition.getInstance() );
+                        position.setValue( "value", naturalOrder.toString() );
+                        naturalOrderPositions.add( new PropertyPosition( property, position ) );
                         naturalOrder++;
                     }
                 }
-                verifyPositions(dataObject, naturalOrderPositions);
+                verifyPositions( dataObject, naturalOrderPositions );
             }
         } else {
-            logger.debug("No fields for factTye: " + factType);
+            logger.debug( "No fields for factTye: " + factType );
         }
     }
 
-    private void verifyPositions(DataObject dataObject, List<PropertyPosition> naturalOrderPositions) {
+    private void verifyPositions( DataObject dataObject,
+                                  List<PropertyPosition> naturalOrderPositions ) {
 
         //1) check if all fields has position and all positions are consumed
         HashMap<String, String> availablePositions = new HashMap<String, String>();
-        for (int i = 0; i < dataObject.getProperties().size(); i++) {
-            availablePositions.put(String.valueOf(i), "");
+        for ( int i = 0; i < dataObject.getProperties().size(); i++ ) {
+            availablePositions.put( String.valueOf( i ), "" );
         }
 
         boolean recalculate = false;
         org.kie.workbench.common.services.datamodeller.core.Annotation position;
-        for (ObjectProperty property : dataObject.getProperties().values()) {
-            position = property.getAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
-            if (position == null) {
+        for ( ObjectProperty property : dataObject.getProperties().values() ) {
+            position = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
+            if ( position == null ) {
                 //the position is missing for at least one field.
                 recalculate = true;
                 break;
             } else {
-                String value = (String)position.getValue("value");
-                if (value != null) availablePositions.remove(value.trim());
+                String value = (String) position.getValue( "value" );
+                if ( value != null ) {
+                    availablePositions.remove( value.trim() );
+                }
             }
         }
 
         org.kie.workbench.common.services.datamodeller.core.Annotation desiredPosition;
         List<PropertyPosition> desiredPositions = new ArrayList<PropertyPosition>();
 
-        if (recalculate || availablePositions.size() > 0) {
+        if ( recalculate || availablePositions.size() > 0 ) {
             //we need to recalculate positions.
-            for (PropertyPosition propertyPosition : naturalOrderPositions) {
-                desiredPosition = propertyPosition.property.removeAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
-                if (desiredPosition != null) desiredPositions.add(new PropertyPosition(propertyPosition.property, desiredPosition));
-                propertyPosition.property.addAnnotation(propertyPosition.position);
+            for ( PropertyPosition propertyPosition : naturalOrderPositions ) {
+                desiredPosition = propertyPosition.property.removeAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
+                if ( desiredPosition != null ) {
+                    desiredPositions.add( new PropertyPosition( propertyPosition.property, desiredPosition ) );
+                }
+                propertyPosition.property.addAnnotation( propertyPosition.position );
             }
-            recalculatePositions(dataObject, desiredPositions);
+            recalculatePositions( dataObject, desiredPositions );
         }
     }
 
-    private void recalculatePositions(DataObject dataObject, List<PropertyPosition> desiredPositions) {
+    private void recalculatePositions( DataObject dataObject,
+                                       List<PropertyPosition> desiredPositions ) {
 
         Collection<ObjectProperty> properties = dataObject.getProperties().values();
         org.kie.workbench.common.services.datamodeller.core.Annotation currentPosition, naturalOrder;
 
-        for (PropertyPosition desiredPosition : desiredPositions) {
-            ObjectProperty property = dataObject.getProperties().get(desiredPosition.property.getName());
-            currentPosition = property.getAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
-            recalculatePositions(properties, currentPosition, desiredPosition.position);
+        for ( PropertyPosition desiredPosition : desiredPositions ) {
+            ObjectProperty property = dataObject.getProperties().get( desiredPosition.property.getName() );
+            currentPosition = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
+            recalculatePositions( properties, currentPosition, desiredPosition.position );
         }
     }
 
-    private void recalculatePositions(Collection<ObjectProperty> properties, org.kie.workbench.common.services.datamodeller.core.Annotation oldPositionAnnotaion, org.kie.workbench.common.services.datamodeller.core.Annotation newPositionAnnotation) {
+    private void recalculatePositions( Collection<ObjectProperty> properties,
+                                       org.kie.workbench.common.services.datamodeller.core.Annotation oldPositionAnnotaion,
+                                       org.kie.workbench.common.services.datamodeller.core.Annotation newPositionAnnotation ) {
 
         Integer newPosition;
         Integer oldPosition;
         Integer maxPosition = properties.size() - 1;
 
         try {
-            oldPosition = Integer.parseInt((String)oldPositionAnnotaion.getValue("value"));
-        } catch (NumberFormatException e) {
+            oldPosition = Integer.parseInt( (String) oldPositionAnnotaion.getValue( "value" ) );
+        } catch ( NumberFormatException e ) {
             //the old position is calculated by construction. This case is not possible.
             return;
         }
 
         try {
-            newPosition = Integer.parseInt((String)newPositionAnnotation.getValue("value"));
-        } catch (NumberFormatException e) {
+            newPosition = Integer.parseInt( (String) newPositionAnnotation.getValue( "value" ) );
+        } catch ( NumberFormatException e ) {
             //if the value for the desired annotation is not valid it has no sence to continue.
             return;
         }
 
-        if (newPosition < 0) newPosition = 0;
-        if (newPosition > maxPosition) newPosition = maxPosition;
+        if ( newPosition < 0 ) {
+            newPosition = 0;
+        }
+        if ( newPosition > maxPosition ) {
+            newPosition = maxPosition;
+        }
 
-        if (newPosition == oldPosition) return;
+        if ( newPosition == oldPosition ) {
+            return;
+        }
 
         org.kie.workbench.common.services.datamodeller.core.Annotation propertyPositionAnnotation;
         int propertyPosition;
-        for (ObjectProperty property : properties) {
+        for ( ObjectProperty property : properties ) {
 
-            propertyPositionAnnotation = property.getAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
-            propertyPosition = Integer.parseInt((String)propertyPositionAnnotation.getValue("value"));
+            propertyPositionAnnotation = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
+            propertyPosition = Integer.parseInt( (String) propertyPositionAnnotation.getValue( "value" ) );
 
-            if (newPosition < oldPosition) {
-                if (propertyPosition >= newPosition && propertyPosition < oldPosition) {
-                    propertyPositionAnnotation.setValue("value", Integer.valueOf( propertyPosition + 1 ).toString());
+            if ( newPosition < oldPosition ) {
+                if ( propertyPosition >= newPosition && propertyPosition < oldPosition ) {
+                    propertyPositionAnnotation.setValue( "value", Integer.valueOf( propertyPosition + 1 ).toString() );
                 }
             } else {
-                if (propertyPosition <= newPosition && propertyPosition > oldPosition) {
-                    propertyPositionAnnotation.setValue("value", Integer.valueOf( propertyPosition - 1 ).toString());
+                if ( propertyPosition <= newPosition && propertyPosition > oldPosition ) {
+                    propertyPositionAnnotation.setValue( "value", Integer.valueOf( propertyPosition - 1 ).toString() );
                 }
             }
 
-            if (propertyPosition == oldPosition) propertyPositionAnnotation.setValue("value", newPosition.toString());
+            if ( propertyPosition == oldPosition ) {
+                propertyPositionAnnotation.setValue( "value", newPosition.toString() );
+            }
 
         }
 
     }
 
-    private void addFactTypeAnnotation(DataObject dataObject, Annotation annotationToken) throws ModelDriverException {
-        org.kie.workbench.common.services.datamodeller.core.Annotation annotation = createAnnotation(annotationToken);
-        if (annotation != null) dataObject.addAnnotation(annotation);
+    private void addFactTypeAnnotation( DataObject dataObject,
+                                        Annotation annotationToken ) throws ModelDriverException {
+        org.kie.workbench.common.services.datamodeller.core.Annotation annotation = createAnnotation( annotationToken );
+        if ( annotation != null ) {
+            dataObject.addAnnotation( annotation );
+        }
     }
 
-    private void addFieldAnnotation(DataObject dataObject, ObjectProperty property, Annotation annotationToken) throws ModelDriverException {
-        org.kie.workbench.common.services.datamodeller.core.Annotation annotation = createAnnotation(annotationToken);
-        if (annotation != null) property.addAnnotation(annotation);
+    private void addFieldAnnotation( DataObject dataObject,
+                                     ObjectProperty property,
+                                     Annotation annotationToken ) throws ModelDriverException {
+        org.kie.workbench.common.services.datamodeller.core.Annotation annotation = createAnnotation( annotationToken );
+        if ( annotation != null ) {
+            property.addAnnotation( annotation );
+        }
     }
 
-    private org.kie.workbench.common.services.datamodeller.core.Annotation createAnnotation(Annotation annotationToken) throws ModelDriverException {
+    private org.kie.workbench.common.services.datamodeller.core.Annotation createAnnotation( Annotation annotationToken ) throws ModelDriverException {
 
-        AnnotationDefinition annotationDefinition = getConfiguredAnnotation(annotationToken.getQualifiedTypeName());
+        AnnotationDefinition annotationDefinition = getConfiguredAnnotation( annotationToken.getQualifiedTypeName() );
         org.kie.workbench.common.services.datamodeller.core.Annotation annotation = null;
 
-        if (annotationDefinition != null) {
-            AnnotationDriver annotationDriver = getAnnotationDriver(annotationDefinition.getClassName());
-            if (annotationDriver != null) {
-                annotation = annotationDriver.buildAnnotation(annotationDefinition, annotationToken);
+        if ( annotationDefinition != null ) {
+            AnnotationDriver annotationDriver = getAnnotationDriver( annotationDefinition.getClassName() );
+            if ( annotationDriver != null ) {
+                annotation = annotationDriver.buildAnnotation( annotationDefinition, annotationToken );
             } else {
-                logger.warn("AnnotationDriver for annotation: " + annotationToken.getQualifiedTypeName() + " is not configured for this driver");
+                logger.warn( "AnnotationDriver for annotation: " + annotationToken.getQualifiedTypeName() + " is not configured for this driver" );
             }
         } else {
-            logger.warn("Annotation: " + annotationToken.getQualifiedTypeName() + " is not configured for this driver.");
+            logger.warn( "Annotation: " + annotationToken.getQualifiedTypeName() + " is not configured for this driver." );
         }
         return annotation;
     }
 
-    private String getFieldType(ProjectDataModelOracle oracleDataModel, String packageName, String fieldType) {
-        String primitiveClass = NamingUtils.getInstance().getClassForPrimitiveTypeId(fieldType);
-        if (primitiveClass != null) return primitiveClass;
+    private String getFieldType( ProjectDataModelOracle oracleDataModel,
+                                 String packageName,
+                                 String fieldType ) {
+        String primitiveClass = NamingUtils.getInstance().getClassForPrimitiveTypeId( fieldType );
+        if ( primitiveClass != null ) {
+            return primitiveClass;
+        }
         return fieldType;
     }
 
     /**
      * True if the given fact type is a DataObject.
      */
-    private ObjectSource factSource(ProjectDataModelOracle oracleDataModel, String factType) {
-        TypeSource oracleType = oracleDataModel.getTypeSource(factType);
+    private ObjectSource factSource( ProjectDataModelOracle oracleDataModel,
+                                     String factType ) {
+        TypeSource oracleType = DataModelOracleUtilities.getTypeSource( oracleDataModel,
+                                                                        factType );
         // for testing if (factType.startsWith("test")) return ObjectSource.DEPENDENCY;
 
-        if (TypeSource.JAVA_PROJECT.equals(oracleType)) {
+        if ( TypeSource.JAVA_PROJECT.equals( oracleType ) ) {
             return ObjectSource.INTERNAL;
-        } else if (TypeSource.JAVA_DEPENDENCY.equals(oracleType)) {
+        } else if ( TypeSource.JAVA_DEPENDENCY.equals( oracleType ) ) {
             return ObjectSource.DEPENDENCY;
         }
         return null;
@@ -360,15 +405,17 @@ public class DataModelOracleDriver implements ModelDriver {
      * Indicates if this field should be loaded or not.
      * Some fields like a filed with name "this" shouldn't be loaded.
      */
-    private boolean isLoadableField(ModelField field) {
-        return ( field.getOrigin().equals(ModelField.FIELD_ORIGIN.DECLARED) );
+    private boolean isLoadableField( ModelField field ) {
+        return ( field.getOrigin().equals( ModelField.FIELD_ORIGIN.DECLARED ) );
     }
 
     static class PropertyPosition {
+
         ObjectProperty property;
         org.kie.workbench.common.services.datamodeller.core.Annotation position;
 
-        PropertyPosition(ObjectProperty property, org.kie.workbench.common.services.datamodeller.core.Annotation position) {
+        PropertyPosition( ObjectProperty property,
+                          org.kie.workbench.common.services.datamodeller.core.Annotation position ) {
             this.property = property;
             this.position = position;
         }
@@ -384,14 +431,17 @@ public class DataModelOracleDriver implements ModelDriver {
 
         List<FileChangeDescriptor> fileChanges = new ArrayList<FileChangeDescriptor>();
 
-        public OracleGenerationListener(IOService ioService, org.uberfire.java.nio.file.Path output, OpenOption option) {
+        public OracleGenerationListener( IOService ioService,
+                                         org.uberfire.java.nio.file.Path output,
+                                         OpenOption option ) {
             this.ioService = ioService;
             this.output = output;
             this.option = option;
         }
 
         @Override
-        public void assetGenerated(String fileName, String content) {
+        public void assetGenerated( String fileName,
+                                    String content ) {
 
             String subDir;
             org.uberfire.java.nio.file.Path subDirPath;
@@ -399,36 +449,42 @@ public class DataModelOracleDriver implements ModelDriver {
             StringTokenizer dirNames;
 
             subDirPath = output;
-            int index = fileName.lastIndexOf("/");
-            if (index == 0) {
+            int index = fileName.lastIndexOf( "/" );
+            if ( index == 0 ) {
                 //the file names was provided in the form /SomeFile.java
-                fileName = fileName.substring(1, fileName.length());
-            } else if (index > 0) {
+                fileName = fileName.substring( 1, fileName.length() );
+            } else if ( index > 0 ) {
                 //the file name was provided in the most common form /dir1/dir2/SomeFile.java
-                String dirNamesPath = fileName.substring(0, index);
-                fileName = fileName.substring(index+1, fileName.length());
-                dirNames = new StringTokenizer(dirNamesPath, "/");
-                while (dirNames.hasMoreElements()) {
+                String dirNamesPath = fileName.substring( 0, index );
+                fileName = fileName.substring( index + 1, fileName.length() );
+                dirNames = new StringTokenizer( dirNamesPath, "/" );
+                while ( dirNames.hasMoreElements() ) {
                     subDir = dirNames.nextToken();
-                    subDirPath = subDirPath.resolve(subDir);
-                    if (!ioService.exists(subDirPath)) {
-                        ioService.createDirectory(subDirPath);
+                    subDirPath = subDirPath.resolve( subDir );
+                    if ( !ioService.exists( subDirPath ) ) {
+                        ioService.createDirectory( subDirPath );
                     }
                 }
             }
 
             //the last subDirPath is the directory to crate the file.
-            destFilePath = subDirPath.resolve(fileName);
-            boolean exists = ioService.exists(destFilePath);
+            destFilePath = subDirPath.resolve( fileName );
+            boolean exists = ioService.exists( destFilePath );
 
-            ioService.write(destFilePath, content, option);
+            ioService.write( destFilePath,
+                             content,
+                             option );
 
-            if (!exists) {
-                if (logger.isDebugEnabled()) logger.debug("Genertion listener created a new file: " + destFilePath);
-                fileChanges.add(new FileChangeDescriptor(destFilePath, FileChangeDescriptor.ADD));
+            if ( !exists ) {
+                if ( logger.isDebugEnabled() ) {
+                    logger.debug( "Genertion listener created a new file: " + destFilePath );
+                }
+                fileChanges.add( new FileChangeDescriptor( destFilePath, FileChangeDescriptor.ADD ) );
             } else {
-                if (logger.isDebugEnabled()) logger.debug("Generation listener modified file: " + destFilePath);
-                fileChanges.add(new FileChangeDescriptor(destFilePath, FileChangeDescriptor.UPDATE));
+                if ( logger.isDebugEnabled() ) {
+                    logger.debug( "Generation listener modified file: " + destFilePath );
+                }
+                fileChanges.add( new FileChangeDescriptor( destFilePath, FileChangeDescriptor.UPDATE ) );
             }
         }
 

@@ -21,8 +21,8 @@ import java.util.Date;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDateEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericBigDecimalEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupNumericBigIntegerEditCell;
@@ -43,7 +43,7 @@ public abstract class AbstractCellFactory<T> {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
-    protected final PackageDataModelOracle oracle;
+    protected final AsyncPackageDataModelOracle oracle;
 
     protected final CellTableDropDownDataValueMapProvider dropDownManager;
 
@@ -58,7 +58,7 @@ public abstract class AbstractCellFactory<T> {
      * @param isReadOnly Should cells be created for a read-only mode of operation
      * @param eventBus EventBus to which cells can send update events
      */
-    public AbstractCellFactory( final PackageDataModelOracle oracle,
+    public AbstractCellFactory( final AsyncPackageDataModelOracle oracle,
                                 final CellTableDropDownDataValueMapProvider dropDownManager,
                                 final boolean isReadOnly,
                                 final EventBus eventBus ) {

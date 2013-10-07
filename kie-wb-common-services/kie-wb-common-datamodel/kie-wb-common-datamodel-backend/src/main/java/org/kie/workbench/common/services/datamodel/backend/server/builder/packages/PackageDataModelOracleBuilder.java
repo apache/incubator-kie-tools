@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracleImpl;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.commons.backend.oracle.PackageDataModelOracleImpl;
+import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
@@ -146,18 +146,18 @@ public final class PackageDataModelOracleBuilder {
     public PackageDataModelOracle build() {
         //Copy Project DMO into Package DMO
         final ProjectDataModelOracleImpl pd = (ProjectDataModelOracleImpl) projectOracle;
-        packageOracle.addFactsAndFields( pd.getModelFields() );
-        packageOracle.addFieldParametersType( pd.getProjectFieldParametersType() );
-        packageOracle.addEnumDefinitions( pd.getProjectJavaEnumLists() );
-        packageOracle.addMethodInformation( pd.getProjectMethodInformation() );
-        packageOracle.addCollectionTypes( pd.getProjectCollectionTypes() );
-        packageOracle.addEventTypes( pd.getProjectEventTypes() );
-        packageOracle.addTypeSources( pd.getProjectTypeSources() );
-        packageOracle.addSuperTypes( pd.getProjectSuperTypes() );
-        packageOracle.addTypeAnnotations( pd.getTypeAnnotations() );
-        packageOracle.addTypeFieldsAnnotations( pd.getTypeFieldsAnnotations() );
-        packageOracle.getRuleNamesMap().putAll( pd.getRuleNamesMap() );
-        packageOracle.addPackageNames( pd.getPackageNames() );
+        packageOracle.addProjectModelFields( pd.getProjectModelFields() );
+        packageOracle.addProjectFieldParametersType( pd.getProjectFieldParametersType() );
+        packageOracle.addProjectJavaEnumDefinitions( pd.getProjectJavaEnumDefinitions() );
+        packageOracle.addProjectMethodInformation( pd.getProjectMethodInformation() );
+        packageOracle.addProjectCollectionTypes( pd.getProjectCollectionTypes() );
+        packageOracle.addProjectEventTypes( pd.getProjectEventTypes() );
+        packageOracle.addProjectTypeSources( pd.getProjectTypeSources() );
+        packageOracle.addProjectSuperTypes( pd.getProjectSuperTypes() );
+        packageOracle.addProjectTypeAnnotations( pd.getProjectTypeAnnotations() );
+        packageOracle.addProjectTypeFieldsAnnotations( pd.getProjectTypeFieldsAnnotations() );
+        packageOracle.getProjectRuleNamesMap().putAll( pd.getProjectRuleNamesMap() );
+        packageOracle.addProjectPackageNames( pd.getProjectPackageNames() );
 
         //Add Package DMO specifics
         loadEnums();
@@ -170,7 +170,6 @@ public final class PackageDataModelOracleBuilder {
 
     private void loadProjectOracle() {
         packageOracle.setPackageName( packageName );
-        packageOracle.filter();
     }
 
     private void loadEnums() {
@@ -180,7 +179,7 @@ public final class PackageDataModelOracleBuilder {
             loadableEnums.put( qualifiedFactField,
                                e.getValue() );
         }
-        packageOracle.addPackageGuvnorEnums( loadableEnums );
+        packageOracle.addPackageWorkbenchEnumDefinitions( loadableEnums );
     }
 
     private void loadDsls() {

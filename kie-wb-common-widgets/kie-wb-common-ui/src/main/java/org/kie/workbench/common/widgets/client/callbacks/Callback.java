@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.widgets.client.callbacks;
 
-package org.kie.workbench.common.services.datamodel.service;
+/**
+ * Generic callback
+ */
+public interface Callback<T> {
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.uberfire.backend.vfs.Path;
-
-public interface DataModelService {
-
-    public static final String DEFAULT_PACKAGE = "defaultpkg";
-
-    PackageDataModelOracle getDataModel( final Path resourcePath );
-
-    ProjectDataModelOracle getProjectDataModel( final Path resourcePath );
+    void callback( T result );
 
 }

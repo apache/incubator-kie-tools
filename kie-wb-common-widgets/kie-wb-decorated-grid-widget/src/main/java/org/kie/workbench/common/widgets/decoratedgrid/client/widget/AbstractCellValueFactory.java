@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 
 /**
@@ -28,10 +28,10 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Dynamic
  */
 public abstract class AbstractCellValueFactory<C, V> {
 
-    // SuggestionCompletionEngine to aid data-type resolution etc
-    protected PackageDataModelOracle oracle;
+    // Data Model Oracle to aid data-type resolution etc
+    protected AsyncPackageDataModelOracle oracle;
 
-    public AbstractCellValueFactory( PackageDataModelOracle oracle ) {
+    public AbstractCellValueFactory( AsyncPackageDataModelOracle oracle ) {
         if ( oracle == null ) {
             throw new IllegalArgumentException( "oracle cannot be null" );
         }

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
@@ -87,17 +87,17 @@ public abstract class BaseFactBuilder implements FactBuilder {
 
     @Override
     public void build( final ProjectDataModelOracleImpl oracle ) {
-        oracle.addFactsAndFields( buildFactsAndFields() );
-        oracle.addCollectionTypes( buildCollectionTypes() );
-        oracle.addEventTypes( buildEventTypes() );
-        oracle.addTypeSources( buildTypeSources() );
+        oracle.addProjectModelFields( buildModelFields() );
+        oracle.addProjectCollectionTypes( buildCollectionTypes() );
+        oracle.addProjectEventTypes( buildEventTypes() );
+        oracle.addProjectTypeSources( buildTypeSources() );
     }
 
     public ProjectDataModelOracleBuilder getDataModelBuilder() {
         return this.builder;
     }
 
-    private Map<String, ModelField[]> buildFactsAndFields() {
+    private Map<String, ModelField[]> buildModelFields() {
         final Map<String, ModelField[]> loadableFactsAndFields = new HashMap<String, ModelField[]>();
         final ModelField[] loadableFields = new ModelField[ fields.size() ];
         fields.toArray( loadableFields );

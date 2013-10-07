@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
@@ -21,7 +21,7 @@ public final class ProjectDataModelOracleBuilder {
 
     private List<FactBuilder> factTypeBuilders = new ArrayList<FactBuilder>();
     private Map<String, String[]> factFieldEnums = new HashMap<String, String[]>();
-    private Map<String,Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
+    private Map<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
     private List<String> packageNames = new ArrayList<String>();
 
     private List<String> errors = new ArrayList<String>();
@@ -116,13 +116,13 @@ public final class ProjectDataModelOracleBuilder {
     }
 
     private void loadRuleNames() {
-        for (String packageName : ruleNames.keySet()) {
-            oracle.addRuleNames(packageName, ruleNames.get(packageName));
+        for ( String packageName : ruleNames.keySet() ) {
+            oracle.addProjectRuleNames( packageName, ruleNames.get( packageName ) );
         }
     }
 
     private void loadPackageNames() {
-        oracle.addPackageNames(packageNames);
+        oracle.addProjectPackageNames( packageNames );
     }
 
     private void loadFactTypes() {
@@ -138,14 +138,15 @@ public final class ProjectDataModelOracleBuilder {
             loadableEnums.put( qualifiedFactField,
                                e.getValue() );
         }
-        oracle.addEnumDefinitions( loadableEnums );
+        oracle.addProjectJavaEnumDefinitions( loadableEnums );
     }
 
-    public void addRuleNames(String packageName, Collection<String> ruleNames) {
-        this.ruleNames.put(packageName, ruleNames);
+    public void addRuleNames( String packageName,
+                              Collection<String> ruleNames ) {
+        this.ruleNames.put( packageName, ruleNames );
     }
 
-    public void addPackages(Collection<String> packageNames) {
-        this.packageNames.addAll(packageNames);
+    public void addPackages( Collection<String> packageNames ) {
+        this.packageNames.addAll( packageNames );
     }
 }

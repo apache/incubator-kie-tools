@@ -25,7 +25,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 
@@ -35,25 +35,25 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class PopupDropDownEditCell extends
                                    AbstractPopupEditCell<String, String> {
 
-    private final ListBox    listBox;
-    private       String[][] items;
+    private final ListBox listBox;
+    private String[][] items;
 
     private final String factType;
     private final String factField;
 
-    private final PackageDataModelOracle sce;
+    private final AsyncPackageDataModelOracle dmo;
     private final CellTableDropDownDataValueMapProvider dropDownManager;
 
     public PopupDropDownEditCell( final String factType,
                                   final String factField,
-                                  final PackageDataModelOracle sce,
+                                  final AsyncPackageDataModelOracle dmo,
                                   final CellTableDropDownDataValueMapProvider dropDownManager,
                                   final boolean isReadOnly ) {
         super( isReadOnly );
         this.factType = factType;
         this.factField = factField;
         this.dropDownManager = dropDownManager;
-        this.sce = sce;
+        this.dmo = dmo;
 
         this.listBox = new ListBox();
 
@@ -82,7 +82,7 @@ public class PopupDropDownEditCell extends
         //We need to get the list of potential values to lookup the "Display" value from the "Stored" value.
         //Since the content of the list may be different for each cell (dependent enumerations) the list
         //has to be populated "on demand". 
-        DropDownData dd = sce.getEnums( this.factType,
+        DropDownData dd = dmo.getEnums( this.factType,
                                         this.factField,
                                         this.dropDownManager.getCurrentValueMap( context ) );
         if ( dd == null ) {
@@ -157,7 +157,7 @@ public class PopupDropDownEditCell extends
         //We need to get the list of potential values for the enumeration. Since the content 
         //of the list may be different for each cell (dependent enumerations) the list
         //has to be populated "on demand". 
-        DropDownData dd = sce.getEnums( this.factType,
+        DropDownData dd = dmo.getEnums( this.factType,
                                         this.factField,
                                         this.dropDownManager.getCurrentValueMap( context ) );
         if ( dd == null ) {

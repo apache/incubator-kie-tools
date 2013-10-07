@@ -24,10 +24,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.imports.ImportAddedEvent;
-import org.drools.workbench.models.datamodel.imports.ImportRemovedEvent;
 import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
+import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -39,7 +39,7 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
     private Event<ImportAddedEvent> importAddedEvent;
     private Event<ImportRemovedEvent> importRemovedEvent;
 
-    private PackageDataModelOracle oracle;
+    private AsyncPackageDataModelOracle dmo;
 
     public ImportsWidgetPresenter() {
     }
@@ -55,17 +55,17 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
     }
 
     @Override
-    public void setContent( final PackageDataModelOracle oracle,
+    public void setContent( final AsyncPackageDataModelOracle dmo,
                             final Imports importTypes,
                             final boolean isReadOnly ) {
-        this.oracle = checkNotNull( "oracle",
-                                    oracle );
+        this.dmo = checkNotNull( "dmo",
+                                 dmo );
         checkNotNull( "importTypes",
                       importTypes );
 
         //Get list of potential imports
         final List<Import> allAvailableImportTypes = new ArrayList<Import>();
-        for ( String importType : oracle.getExternalFactTypes() ) {
+        for ( String importType : dmo.getExternalFactTypes() ) {
             allAvailableImportTypes.add( new Import( importType ) );
         }
 
@@ -77,20 +77,20 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
     @Override
     public void onAddImport( final Import importType ) {
         //resourceImports.getImports().add( importType );
-        oracle.filter();
+        dmo.filter();
 
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
-        importAddedEvent.fire( new ImportAddedEvent( oracle,
+        importAddedEvent.fire( new ImportAddedEvent( dmo,
                                                      importType ) );
     }
 
     @Override
     public void onRemoveImport( final Import importType ) {
         //resourceImports.removeImport( importType );
-        oracle.filter();
+        dmo.filter();
 
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
-        importRemovedEvent.fire( new ImportRemovedEvent( oracle,
+        importRemovedEvent.fire( new ImportRemovedEvent( dmo,
                                                          importType ) );
     }
 

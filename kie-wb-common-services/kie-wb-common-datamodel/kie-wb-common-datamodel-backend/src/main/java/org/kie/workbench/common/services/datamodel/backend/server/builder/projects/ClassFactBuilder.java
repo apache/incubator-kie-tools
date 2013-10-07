@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
@@ -57,11 +57,11 @@ public class ClassFactBuilder extends BaseFactBuilder {
     @Override
     public void build( final ProjectDataModelOracleImpl oracle ) {
         super.build( oracle );
-        oracle.addMethodInformation( methodInformation );
-        oracle.addFieldParametersType( fieldParametersType );
-        oracle.addSuperTypes( buildSuperTypes() );
-        oracle.addTypeAnnotations( buildTypeAnnotations() );
-        oracle.addTypeFieldsAnnotations( buildTypeFieldsAnnotations() );
+        oracle.addProjectMethodInformation( methodInformation );
+        oracle.addProjectFieldParametersType( fieldParametersType );
+        oracle.addProjectSuperTypes( buildSuperTypes() );
+        oracle.addProjectTypeAnnotations( buildTypeAnnotations() );
+        oracle.addProjectTypeFieldsAnnotations( buildTypeFieldsAnnotations() );
     }
 
     protected String getSuperType( final Class<?> clazz ) {
@@ -169,7 +169,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                            field.getGenericType() );
 
                 Field[] _declaredClassFields = clazz.getDeclaredFields();
-                Collection declaredClassFields = _declaredClassFields != null ? Arrays.asList(_declaredClassFields) : Collections.EMPTY_LIST;
+                Collection declaredClassFields = _declaredClassFields != null ? Arrays.asList( _declaredClassFields ) : Collections.EMPTY_LIST;
 
                 final Class<?> returnType = field.getType();
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
@@ -177,7 +177,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 addField( new ModelField( fieldName,
                                           returnType.getName(),
                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                          declaredClassFields.contains(field) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
+                                          declaredClassFields.contains( field ) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
                                           methodSignatures.get( qualifiedName ).accessorAndMutator,
                                           genericReturnType ) );
 

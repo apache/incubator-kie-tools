@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.client.mvp.UberView;
 
@@ -15,7 +15,7 @@ public interface ImportsWidgetView
 
     interface Presenter {
 
-        void setContent( final PackageDataModelOracle oracle,
+        void setContent( final AsyncPackageDataModelOracle dmo,
                          final Imports resourceImports,
                          final boolean isReadOnly );
 

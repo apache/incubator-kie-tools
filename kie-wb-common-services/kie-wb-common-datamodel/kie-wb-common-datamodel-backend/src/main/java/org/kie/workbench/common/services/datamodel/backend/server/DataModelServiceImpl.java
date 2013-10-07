@@ -20,8 +20,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracleImpl;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracleImpl;
+import org.drools.workbench.models.commons.backend.oracle.PackageDataModelOracleImpl;
+import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -35,7 +35,6 @@ import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProje
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.vfs.Path;
 
-@Service
 @ApplicationScoped
 public class DataModelServiceImpl
         implements DataModelService {
