@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.globals.client.editor;
 
+import java.util.List;
+
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.ListBox;
@@ -136,11 +138,11 @@ public class AddGlobalPopup extends Modal {
     }
 
     public void setContent( final Command callbackCommand,
-                            final String[] allClassNames ) {
+                            final List<String> fullyQualifiedClassNames ) {
         this.callbackCommand = callbackCommand;
         this.classNameListBox.clear();
         this.aliasTextBox.setText( "" );
-        for ( String className : allClassNames ) {
+        for ( String className : fullyQualifiedClassNames ) {
             classNameListBox.addItem( className );
         }
     }

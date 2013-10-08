@@ -53,6 +53,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionChang
 import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionTypeChangeHandlers;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.common.ClickableLabel;
@@ -339,8 +340,8 @@ public class ExpressionBuilder extends RuleModellerWidget
         fireExpressionTypeChangeEvent( oldType );
     }
 
-    private Map<String, String> getCompletionsForCurrentType( boolean isNested ) {
-        Map<String, String> completions = new LinkedHashMap<String, String>();
+    private Map<String, String> getCompletionsForCurrentType( final boolean isNested ) {
+        final Map<String, String> completions = new LinkedHashMap<String, String>();
 
         if ( DataType.TYPE_FINAL_OBJECT.equals( getCurrentGenericType() ) ) {
             return completions;
@@ -383,30 +384,37 @@ public class ExpressionBuilder extends RuleModellerWidget
         String factName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
         if ( factName != null ) {
             // we currently only support 0 param method calls
-            List<String> methodNames = getDataModelOracle().getMethodNames( factName,
-                                                                            0 );
+            final List<String> methodNames = getDataModelOracle().getMethodNames( factName,
+                                                                                  0 );
+            getDataModelOracle().getFieldCompletions( factName,
+                                                      new Callback<String[]>() {
 
-            for ( String field : getDataModelOracle().getFieldCompletions( factName ) ) {
+                                                          @Override
+                                                          public void callback( final String[] fields ) {
+                                                              for ( String field : fields ) {
 
-                //You can't use "this" in a nested accessor
-                if ( !isNested || !field.equals( DataType.TYPE_THIS ) ) {
+                                                                  //You can't use "this" in a nested accessor
+                                                                  if ( !isNested || !field.equals( DataType.TYPE_THIS ) ) {
 
-                    boolean changed = false;
-                    for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
-                        String method = i.next();
-                        if ( method.startsWith( field ) ) {
-                            completions.put( method,
-                                             METHOD_VALUE_PREFIX + "." + method );
-                            i.remove();
-                            changed = true;
-                        }
-                    }
-                    if ( !changed ) {
-                        completions.put( field,
-                                         FIElD_VALUE_PREFIX + "." + field );
-                    }
-                }
-            }
+                                                                      boolean changed = false;
+                                                                      for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
+                                                                          String method = i.next();
+                                                                          if ( method.startsWith( field ) ) {
+                                                                              completions.put( method,
+                                                                                               METHOD_VALUE_PREFIX + "." + method );
+                                                                              i.remove();
+                                                                              changed = true;
+                                                                          }
+                                                                      }
+                                                                      if ( !changed ) {
+                                                                          completions.put( field,
+                                                                                           FIElD_VALUE_PREFIX + "." + field );
+                                                                      }
+                                                                  }
+                                                              }
+                                                          }
+                                                      } );
+
         }
         // else {We don't know anything about this type, so return empty map}
         return completions;

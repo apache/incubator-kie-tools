@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.drltext.service;
 
+import java.util.List;
+
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
@@ -39,6 +41,9 @@ public interface DRLTextEditorService
         SupportsRename {
 
     DrlModelContent loadContent( final Path path );
+
+    List<String> loadClassFields( final Path path,
+                                  final String fullyQualifiedClassName );
 
     String assertPackageName( final String drl,
                               final Path resource );

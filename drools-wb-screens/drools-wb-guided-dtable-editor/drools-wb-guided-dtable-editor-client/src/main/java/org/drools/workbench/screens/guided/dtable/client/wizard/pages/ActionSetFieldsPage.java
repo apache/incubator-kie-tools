@@ -37,6 +37,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidge
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionSetFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
@@ -165,28 +166,33 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
         //Add fields available
         final String type = pattern.getFactType();
-        final String[] fieldNames = oracle.getFieldCompletions( type );
-        final List<AvailableField> availableFields = new ArrayList<AvailableField>();
-        for ( String fieldName : fieldNames ) {
-            final String fieldType = oracle.getFieldType( type,
-                                                          fieldName );
-            final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );
-            final AvailableField field = new AvailableField( fieldName,
-                                                             fieldType,
-                                                             fieldDisplayType,
-                                                             BaseSingleFieldConstraint.TYPE_LITERAL );
-            availableFields.add( field );
-        }
-        view.setAvailableFields( availableFields );
+        oracle.getFieldCompletions( type,
+                                    new Callback<String[]>() {
+                                        @Override
+                                        public void callback( final String[] fields ) {
+                                            final List<AvailableField> availableFields = new ArrayList<AvailableField>();
+                                            for ( String fieldName : fields ) {
+                                                final String fieldType = oracle.getFieldType( type,
+                                                                                              fieldName );
+                                                final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );
+                                                final AvailableField field = new AvailableField( fieldName,
+                                                                                                 fieldType,
+                                                                                                 fieldDisplayType,
+                                                                                                 BaseSingleFieldConstraint.TYPE_LITERAL );
+                                                availableFields.add( field );
+                                            }
+                                            view.setAvailableFields( availableFields );
 
-        //Set fields already chosen
-        List<ActionSetFieldCol52> actionsForPattern = patternToActionsMap.get( pattern );
-        if ( actionsForPattern == null ) {
-            actionsForPattern = new ArrayList<ActionSetFieldCol52>();
-            patternToActionsMap.put( pattern,
-                                     actionsForPattern );
-        }
-        view.setChosenFields( actionsForPattern );
+                                            //Set fields already chosen
+                                            List<ActionSetFieldCol52> actionsForPattern = patternToActionsMap.get( pattern );
+                                            if ( actionsForPattern == null ) {
+                                                actionsForPattern = new ArrayList<ActionSetFieldCol52>();
+                                                patternToActionsMap.put( pattern,
+                                                                         actionsForPattern );
+                                            }
+                                            view.setChosenFields( actionsForPattern );
+                                        }
+                                    } );
     }
 
     @Override

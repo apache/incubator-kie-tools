@@ -39,6 +39,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.ClickableLabel;
@@ -80,15 +81,28 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         } else {
             String type = mod.getModel().getLHSBindingType( set.getVariable() );
             if ( type != null ) {
-                this.fieldCompletions = oracle.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                                    type );
+                oracle.getFieldCompletions( type,
+                                            FieldAccessorsAndMutators.MUTATOR,
+                                            new Callback<String[]>() {
+                                                @Override
+                                                public void callback( final String[] fields ) {
+                                                    fieldCompletions = fields;
+                                                }
+                                            } );
                 this.variableClass = type;
                 this.isBoundFact = true;
             } else {
                 ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.getVariable() );
                 if ( patternRhs != null ) {
-                    this.fieldCompletions = oracle.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                                        patternRhs.getFactType() );
+                    oracle.getFieldCompletions( patternRhs.getFactType(),
+                                                FieldAccessorsAndMutators.MUTATOR,
+                                                new Callback<String[]>() {
+                                                    @Override
+                                                    public void callback( final String[] fields ) {
+                                                        fieldCompletions = fields;
+                                                    }
+                                                }
+                                              );
                     this.variableClass = patternRhs.getFactType();
                     this.isBoundFact = true;
                 }

@@ -33,6 +33,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
@@ -119,28 +120,33 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
         //Add Fact fields
         final String type = pattern.getFactType();
-        final String[] fieldNames = oracle.getFieldCompletions( type );
-        final List<AvailableField> availableFields = new ArrayList<AvailableField>();
-        for ( String fieldName : fieldNames ) {
-            final String fieldType = oracle.getFieldType( type,
-                                                          fieldName );
-            final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );
-            final AvailableField field = new AvailableField( fieldName,
-                                                             fieldType,
-                                                             fieldDisplayType,
-                                                             BaseSingleFieldConstraint.TYPE_LITERAL );
-            availableFields.add( field );
-        }
+        oracle.getFieldCompletions( type,
+                                    new Callback<String[]>() {
+                                        @Override
+                                        public void callback( final String[] fields ) {
+                                            final List<AvailableField> availableFields = new ArrayList<AvailableField>();
+                                            for ( String fieldName : fields ) {
+                                                final String fieldType = oracle.getFieldType( type,
+                                                                                              fieldName );
+                                                final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );
+                                                final AvailableField field = new AvailableField( fieldName,
+                                                                                                 fieldType,
+                                                                                                 fieldDisplayType,
+                                                                                                 BaseSingleFieldConstraint.TYPE_LITERAL );
+                                                availableFields.add( field );
+                                            }
 
-        //Add predicates
-        if ( model.getTableFormat() == GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY ) {
-            final AvailableField field = new AvailableField( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardPredicate(),
-                                                             BaseSingleFieldConstraint.TYPE_PREDICATE );
-            availableFields.add( field );
-        }
+                                            //Add predicates
+                                            if ( model.getTableFormat() == GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY ) {
+                                                final AvailableField field = new AvailableField( GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardPredicate(),
+                                                                                                 BaseSingleFieldConstraint.TYPE_PREDICATE );
+                                                availableFields.add( field );
+                                            }
 
-        view.setAvailableFields( availableFields );
-        view.setChosenConditions( pattern.getChildColumns() );
+                                            view.setAvailableFields( availableFields );
+                                            view.setChosenConditions( pattern.getChildColumns() );
+                                        }
+                                    } );
     }
 
     @Override

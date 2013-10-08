@@ -260,7 +260,8 @@ public class GuidedDecisionTableEditorPresenter {
             public void callback( final GuidedDecisionTableEditorContent content ) {
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
+                                                                              model,
                                                                               oracle,
                                                                               dataModel );
 

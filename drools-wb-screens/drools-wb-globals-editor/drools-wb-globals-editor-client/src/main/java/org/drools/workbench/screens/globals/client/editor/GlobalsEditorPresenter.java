@@ -18,10 +18,7 @@ import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -96,9 +93,6 @@ public class GlobalsEditorPresenter {
 
     @Inject
     private GlobalResourceType type;
-
-    @Inject
-    private AsyncPackageDataModelOracle oracle;
 
     @Inject
     @New
@@ -241,13 +235,10 @@ public class GlobalsEditorPresenter {
             @Override
             public void callback( final GlobalsEditorContent content ) {
                 model = content.getModel();
-                final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( oracle,
-                                                                              dataModel );
-                oracle.filter();
+                final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
 
                 view.setContent( content.getModel().getGlobals(),
-                                 oracle,
+                                 fullyQualifiedClassNames,
                                  isReadOnly );
 
                 view.hideBusyIndicator();

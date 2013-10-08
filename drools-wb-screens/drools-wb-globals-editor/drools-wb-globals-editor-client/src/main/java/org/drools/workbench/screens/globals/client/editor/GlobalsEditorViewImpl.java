@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.model.Global;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
 
@@ -57,8 +56,7 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
     private ListDataProvider<Global> dataProvider = new ListDataProvider<Global>();
     private final Command addGlobalCommand = makeAddGlobalCommand();
 
-    private AsyncPackageDataModelOracle oracle;
-    private GlobalsEditorPresenter presenter;
+    private List<String> fullyQualifiedClassNames;
 
     private boolean isDirty = false;
     private boolean isReadOnly = false;
@@ -131,16 +129,11 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
     }
 
     @Override
-    public void init( final GlobalsEditorPresenter presenter ) {
-        this.presenter = presenter;
-    }
-
-    @Override
     public void setContent( final List<Global> globals,
-                            final AsyncPackageDataModelOracle oracle,
+                            final List<String> fullyQualifiedClassNames,
                             final boolean isReadOnly ) {
-        this.oracle = oracle;
         this.globals = globals;
+        this.fullyQualifiedClassNames = fullyQualifiedClassNames;
         this.dataProvider.setList( globals );
         this.addGlobalButton.setEnabled( !isReadOnly );
         this.isReadOnly = isReadOnly;
@@ -170,7 +163,7 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
     @UiHandler("addGlobalButton")
     public void onClickAddGlobalButton( final ClickEvent event ) {
         addGlobalPopup.setContent( addGlobalCommand,
-                                   oracle.getAllFactTypes() );
+                                   fullyQualifiedClassNames );
         addGlobalPopup.show();
     }
 

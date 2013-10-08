@@ -261,7 +261,8 @@ public class GuidedScoreCardEditorPresenter {
             public void callback( final ScoreCardModelContent content ) {
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
+                                                                              model,
                                                                               oracle,
                                                                               dataModel );
 

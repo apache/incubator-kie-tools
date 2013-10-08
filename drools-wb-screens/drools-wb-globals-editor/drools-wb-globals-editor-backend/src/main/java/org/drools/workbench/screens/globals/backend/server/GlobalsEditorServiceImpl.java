@@ -17,14 +17,17 @@
 package org.drools.workbench.screens.globals.backend.server;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.globals.backend.server.util.GlobalsPersistence;
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
@@ -45,8 +48,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.source.SourceServices;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.datamodel.service.DataModelService;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -149,11 +151,14 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
         try {
             //De-serialize model
             final GlobalsModel model = load( path );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            final List<String> fullyQualifiedClassNames = new ArrayList<String>();
+            final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
+            for ( Map.Entry<String, ModelField[]> e : oracle.getProjectModelFields().entrySet() ) {
+                fullyQualifiedClassNames.add( e.getKey() );
+            }
 
             return new GlobalsEditorContent( model,
-                                             dataModel );
+                                             fullyQualifiedClassNames );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

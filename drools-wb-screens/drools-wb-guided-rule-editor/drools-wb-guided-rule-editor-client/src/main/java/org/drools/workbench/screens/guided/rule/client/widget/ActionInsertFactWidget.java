@@ -41,6 +41,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
@@ -56,16 +57,17 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
     private final DirtyableFlexTable layout;
     private final ActionInsertFact model;
-    private final String[] fieldCompletions;
     private final String factType;
     private boolean readOnly;
 
+    private String[] fieldCompletions;
+
     private boolean isFactTypeKnown;
 
-    public ActionInsertFactWidget( RuleModeller mod,
-                                   EventBus eventBus,
-                                   ActionInsertFact set,
-                                   Boolean readOnly ) {
+    public ActionInsertFactWidget( final RuleModeller mod,
+                                   final EventBus eventBus,
+                                   final ActionInsertFact set,
+                                   final Boolean readOnly ) {
         super( mod,
                eventBus );
         this.model = set;
@@ -73,8 +75,14 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         this.factType = set.getFactType();
 
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
-        this.fieldCompletions = oracle.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                            set.getFactType() );
+        oracle.getFieldCompletions( set.getFactType(),
+                                    FieldAccessorsAndMutators.MUTATOR,
+                                    new Callback<String[]>() {
+                                        @Override
+                                        public void callback( final String[] fields ) {
+                                            fieldCompletions = fields;
+                                        }
+                                    } );
 
         layout.setStyleName( "model-builderInner-Background" ); //NON-NLS
 

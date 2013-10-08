@@ -49,6 +49,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
@@ -298,13 +299,19 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
 
     private void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setModal( false );
-        String[] fields = this.oracle.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                           this.editingCol.getFactType() );
         final ListBox box = new ListBox();
-        for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[ i ] );
-        }
+        pop.setModal( false );
+        this.oracle.getFieldCompletions( this.editingCol.getFactType(),
+                                         FieldAccessorsAndMutators.MUTATOR,
+                                         new Callback<String[]>() {
+                                             @Override
+                                             public void callback( final String[] fields ) {
+                                                 for ( int i = 0; i < fields.length; i++ ) {
+                                                     box.addItem( fields[ i ] );
+                                                 }
+                                             }
+                                         } );
+
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );

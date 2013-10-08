@@ -36,6 +36,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
@@ -201,28 +202,35 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
         //Add fields available
         final String type = pattern.getFactType();
-        final String[] fieldNames = oracle.getFieldCompletions( type );
-        final List<AvailableField> availableFields = new ArrayList<AvailableField>();
-        for ( String fieldName : fieldNames ) {
-            final String fieldType = oracle.getFieldType( type,
-                                                          fieldName );
-            final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );
-            final AvailableField field = new AvailableField( fieldName,
-                                                             fieldType,
-                                                             fieldDisplayType,
-                                                             BaseSingleFieldConstraint.TYPE_LITERAL );
-            availableFields.add( field );
-        }
-        view.setAvailableFields( availableFields );
 
-        //Set fields already chosen
-        List<ActionInsertFactCol52> actionsForPattern = patternToActionsMap.get( pattern );
-        if ( actionsForPattern == null ) {
-            actionsForPattern = new ArrayList<ActionInsertFactCol52>();
-            patternToActionsMap.put( pattern,
-                                     actionsForPattern );
-        }
-        view.setChosenFields( actionsForPattern );
+        oracle.getFieldCompletions( type,
+                                    new Callback<String[]>() {
+                                        @Override
+                                        public void callback( final String[] fields ) {
+                                            final List<AvailableField> availableFields = new ArrayList<AvailableField>();
+                                            for ( String fieldName : fields ) {
+                                                final String fieldType = oracle.getFieldType( type,
+                                                                                              fieldName );
+                                                final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );
+                                                final AvailableField field = new AvailableField( fieldName,
+                                                                                                 fieldType,
+                                                                                                 fieldDisplayType,
+                                                                                                 BaseSingleFieldConstraint.TYPE_LITERAL );
+                                                availableFields.add( field );
+                                            }
+                                            view.setAvailableFields( availableFields );
+
+                                            //Set fields already chosen
+                                            List<ActionInsertFactCol52> actionsForPattern = patternToActionsMap.get( pattern );
+                                            if ( actionsForPattern == null ) {
+                                                actionsForPattern = new ArrayList<ActionInsertFactCol52>();
+                                                patternToActionsMap.put( pattern,
+                                                                         actionsForPattern );
+                                            }
+                                            view.setChosenFields( actionsForPattern );
+                                        }
+                                    } );
+
     }
 
     @Override

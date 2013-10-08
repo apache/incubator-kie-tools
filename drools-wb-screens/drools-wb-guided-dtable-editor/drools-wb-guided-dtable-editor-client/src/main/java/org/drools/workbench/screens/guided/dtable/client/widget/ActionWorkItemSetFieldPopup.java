@@ -45,6 +45,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
@@ -448,14 +449,19 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
 
     private void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
+        final ListBox box = new ListBox();
         pop.setModal( false );
 
         final String factType = getFactType();
-        String[] fields = this.oracle.getFieldCompletions( factType );
-        final ListBox box = new ListBox();
-        for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[ i ] );
-        }
+        this.oracle.getFieldCompletions( factType,
+                                         new Callback<String[]>() {
+                                             @Override
+                                             public void callback( final String[] fields ) {
+                                                 for ( int i = 0; i < fields.length; i++ ) {
+                                                     box.addItem( fields[ i ] );
+                                                 }
+                                             }
+                                         } );
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );

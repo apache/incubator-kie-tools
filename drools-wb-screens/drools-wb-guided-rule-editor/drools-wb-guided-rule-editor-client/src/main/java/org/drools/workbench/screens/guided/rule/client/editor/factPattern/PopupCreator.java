@@ -39,6 +39,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.common.FormStylePopup;
@@ -178,17 +179,23 @@ public class PopupCreator {
     /**
      * This shows a popup for adding fields to a composite
      */
-    public void showPatternPopupForComposite( Widget w,
+    public void showPatternPopupForComposite( final Widget w,
                                               final HasConstraints hasConstraints ) {
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          Constants.INSTANCE.AddFieldsToThisConstraint() );
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
-        String[] fields = this.oracle.getFieldCompletions( this.pattern.getFactType() );
-        for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[ i ] );
-        }
+        this.oracle.getFieldCompletions( this.pattern.getFactType(),
+                                         new Callback<String[]>() {
+
+                                             @Override
+                                             public void callback( final String[] fields ) {
+                                                 for ( int i = 0; i < fields.length; i++ ) {
+                                                     box.addItem( fields[ i ] );
+                                                 }
+                                             }
+                                         } );
 
         box.setSelectedIndex( 0 );
 
@@ -261,7 +268,7 @@ public class PopupCreator {
      * This shows a popup allowing you to add field constraints to a pattern
      * (its a popup).
      */
-    public void showPatternPopup( Widget w,
+    public void showPatternPopup( final Widget w,
                                   final FactPattern fp,
                                   final SingleFieldConstraint con,
                                   final boolean isNested ) {
@@ -275,14 +282,19 @@ public class PopupCreator {
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
-        String[] fields = this.oracle.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
-                                                           factType );
-        for ( int i = 0; i < fields.length; i++ ) {
-            //You can't use "this" in a nested accessor
-            if ( !isNested || !fields[ i ].equals( DataType.TYPE_THIS ) ) {
-                box.addItem( fields[ i ] );
-            }
-        }
+        this.oracle.getFieldCompletions( factType,
+                                         FieldAccessorsAndMutators.ACCESSOR,
+                                         new Callback<String[]>() {
+                                             @Override
+                                             public void callback( final String[] fields ) {
+                                                 for ( int i = 0; i < fields.length; i++ ) {
+                                                     //You can't use "this" in a nested accessor
+                                                     if ( !isNested || !fields[ i ].equals( DataType.TYPE_THIS ) ) {
+                                                         box.addItem( fields[ i ] );
+                                                     }
+                                                 }
+                                             }
+                                         } );
 
         box.setSelectedIndex( 0 );
 

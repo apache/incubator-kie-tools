@@ -1,16 +1,17 @@
 package org.drools.workbench.screens.drltext.client.editor;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import java.util.List;
+
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.uberfire.client.mvp.UberView;
 
 public interface DRLEditorView extends HasBusyIndicator,
-                                       IsWidget {
+                                       UberView<DRLEditorPresenter> {
 
-    void setContent( final AsyncPackageDataModelOracle oracle );
+    void setContent( final List<String> fullyQualifiedClassNames );
 
     void setContent( final String content,
-                     final AsyncPackageDataModelOracle oracle );
+                     final List<String> fullyQualifiedClassNames );
 
     String getContent();
 

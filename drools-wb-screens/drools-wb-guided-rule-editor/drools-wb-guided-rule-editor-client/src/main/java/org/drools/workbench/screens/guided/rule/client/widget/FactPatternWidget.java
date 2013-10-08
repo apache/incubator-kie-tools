@@ -63,6 +63,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.factPattern.PopupC
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.common.ClickableLabel;
@@ -808,8 +809,8 @@ public class FactPatternWidget extends RuleModellerWidget {
      */
     private Widget fieldLabel( final SingleFieldConstraint con,
                                final HasConstraints hasConstraints,
-                               boolean showBinding,
-                               int padding ) {
+                               final boolean showBinding,
+                               final int padding ) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
 
@@ -826,20 +827,35 @@ public class FactPatternWidget extends RuleModellerWidget {
         if ( bindable && showBinding && !this.readOnly ) {
             ClickHandler click = new ClickHandler() {
 
-                public void onClick( ClickEvent event ) {
-                    String[] fields = new String[ 0 ];
+                public void onClick( final ClickEvent event ) {
                     //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
                     String fieldName = con.getFieldName();
                     if ( DataType.TYPE_THIS.equals( fieldName ) ) {
-                        fields = connectives.getDataModelOracle().getFieldCompletions( pattern.getFactType() );
+                        connectives.getDataModelOracle().getFieldCompletions( pattern.getFactType(),
+                                                                              new Callback<String[]>() {
+                                                                                  @Override
+                                                                                  public void callback( final String[] fields ) {
+                                                                                      popupCreator.showBindFieldPopup( (Widget) event.getSource(),
+                                                                                                                       pattern,
+                                                                                                                       con,
+                                                                                                                       fields,
+                                                                                                                       popupCreator );
+                                                                                  }
+                                                                              } );
+
                     } else {
-                        fields = connectives.getDataModelOracle().getFieldCompletions( con.getFieldType() );
+                        connectives.getDataModelOracle().getFieldCompletions( con.getFieldType(),
+                                                                              new Callback<String[]>() {
+                                                                                  @Override
+                                                                                  public void callback( final String[] fields ) {
+                                                                                      popupCreator.showBindFieldPopup( (Widget) event.getSource(),
+                                                                                                                       pattern,
+                                                                                                                       con,
+                                                                                                                       fields,
+                                                                                                                       popupCreator );
+                                                                                  }
+                                                                              } );
                     }
-                    popupCreator.showBindFieldPopup( (Widget) event.getSource(),
-                                                     pattern,
-                                                     con,
-                                                     fields,
-                                                     popupCreator );
                 }
             };
             ClickableLabel cl = new ClickableLabel( bindingLabel.toString(),

@@ -39,6 +39,7 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
@@ -88,13 +89,19 @@ public class VerifyFactWidget extends Composite {
         add.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
 
-                String[] fields = VerifyFactWidget.this.oracle.getFieldCompletions( type );
+                final ListBox b = new ListBox();
+                VerifyFactWidget.this.oracle.getFieldCompletions( type,
+                                                                  new Callback<String[]>() {
+                                                                      @Override
+                                                                      public void callback( final String[] fields ) {
+                                                                          for ( int i = 0; i < fields.length; i++ ) {
+                                                                              b.addItem( fields[ i ] );
+                                                                          }
+                                                                      }
+                                                                  } );
+
                 final FormStylePopup pop = new FormStylePopup( TestScenarioAltedImages.INSTANCE.RuleAsset(),
                                                                TestScenarioConstants.INSTANCE.ChooseAFieldToAdd() );
-                final ListBox b = new ListBox();
-                for ( int i = 0; i < fields.length; i++ ) {
-                    b.addItem( fields[ i ] );
-                }
                 pop.addRow( b );
                 Button ok = new Button( TestScenarioConstants.INSTANCE.OK() );
                 ok.addClickHandler( new ClickHandler() {

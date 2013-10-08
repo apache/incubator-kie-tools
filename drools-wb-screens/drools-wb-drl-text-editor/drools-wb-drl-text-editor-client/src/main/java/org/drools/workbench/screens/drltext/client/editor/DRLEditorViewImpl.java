@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.drltext.client.editor;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 
 import com.google.gwt.user.client.Window;
@@ -25,7 +26,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.RuleContentWidget;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.BusyPopup;
 
@@ -35,6 +35,11 @@ public class DRLEditorViewImpl
 
     private RuleContentWidget ruleContentWidget = null;
     private FactTypeBrowserWidget browser = null;
+
+    @Override
+    public void init( final DRLEditorPresenter presenter ) {
+        this.browser.init( presenter );
+    }
 
     @PostConstruct
     public void init() {
@@ -59,9 +64,9 @@ public class DRLEditorViewImpl
                           ruleContentWidget );
 
         layout.getColumnFormatter().setWidth( 0,
-                                              "10%" );
+                                              "20%" );
         layout.getColumnFormatter().setWidth( 1,
-                                              "90%" );
+                                              "80%" );
         layout.getCellFormatter().setAlignment( 0,
                                                 0,
                                                 HasHorizontalAlignment.ALIGN_LEFT,
@@ -76,17 +81,17 @@ public class DRLEditorViewImpl
     }
 
     @Override
-    public void setContent( final AsyncPackageDataModelOracle oracle ) {
+    public void setContent( final List<String> fullyQualifiedClassNames ) {
         setContent( "",
-                    oracle );
+                    fullyQualifiedClassNames );
     }
 
     @Override
     public void setContent( final String content,
-                            final AsyncPackageDataModelOracle oracle ) {
+                            final List<String> fullyQualifiedClassNames ) {
         ruleContentWidget.setContent( content,
                                       15 );
-        browser.setDataModel( oracle );
+        browser.setFullyQualifiedClassNames( fullyQualifiedClassNames );
     }
 
     @Override

@@ -16,7 +16,11 @@
 
 package org.drools.workbench.screens.drltext.client.widget;
 
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -25,14 +29,22 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.workbench.screens.drltext.client.editor.DRLEditorPresenter;
 import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.SmallLabel;
+import org.uberfire.client.common.Util;
+import org.uberfire.client.mvp.UberView;
 
 public class FactTypeBrowserWidget
-        extends Composite {
+        extends Composite implements UberView<DRLEditorPresenter> {
+
+    private static final String LAZY_LOAD = CommonConstants.INSTANCE.Loading();
+
+    private DRLEditorPresenter presenter;
 
     private final Tree tree;
 
@@ -40,7 +52,6 @@ public class FactTypeBrowserWidget
         this.tree = new Tree();
 
         final VerticalPanel panel = new VerticalPanel();
-
         final HorizontalPanel hpFactsAndHide = new HorizontalPanel();
         final HorizontalPanel hpShow = new HorizontalPanel();
 
@@ -71,8 +82,37 @@ public class FactTypeBrowserWidget
         tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
             public void onSelection( SelectionEvent<TreeItem> event ) {
                 Object o = event.getSelectedItem().getUserObject();
-                if ( o instanceof String ) {
+                if ( o instanceof ClassUserObject ) {
+                    ev.selected( ( (ClassUserObject) o ).textToInsert );
+                } else if ( o instanceof String ) {
                     ev.selected( (String) o );
+                }
+            }
+        } );
+
+        tree.addOpenHandler( new OpenHandler<TreeItem>() {
+            @Override
+            public void onOpen( final OpenEvent<TreeItem> event ) {
+                final TreeItem item = event.getTarget();
+                if ( needsLoading( item ) ) {
+                    final Object userObject = event.getTarget().getUserObject();
+                    presenter.loadClassFields( ( (ClassUserObject) userObject ).fullyQualifiedClassName,
+                                               new Callback<List<String>>() {
+                                                   @Override
+                                                   public void callback( final List<String> fields ) {
+                                                       item.getChild( 0 ).remove();
+                                                       if ( fields != null ) {
+                                                           for ( String field : fields ) {
+                                                               final TreeItem fi = new TreeItem();
+                                                               fi.setHTML( AbstractImagePrototype.create( DRLTextEditorResources.INSTANCE.images().fieldImage() ).getHTML()
+                                                                                   + "<small>"
+                                                                                   + field + "</small>" );
+                                                               fi.setUserObject( field );
+                                                               item.addItem( fi );
+                                                           }
+                                                       }
+                                                   }
+                                               } );
                 }
             }
         } );
@@ -84,38 +124,50 @@ public class FactTypeBrowserWidget
         initWidget( panel );
     }
 
-    public void setDataModel( final AsyncPackageDataModelOracle oracle ) {
+    @Override
+    public void init( final DRLEditorPresenter presenter ) {
+        this.presenter = presenter;
+    }
+
+    public void setFullyQualifiedClassNames( final List<String> fullyQualifiedClassNames ) {
         if ( tree.getItem( 0 ) != null ) {
             tree.clear();
         }
 
-        if ( oracle.getFactTypes() != null ) {
-            for ( String type : oracle.getFactTypes() ) {
-                TreeItem it = new TreeItem();
+        if ( fullyQualifiedClassNames != null ) {
+            for ( String type : fullyQualifiedClassNames ) {
+                final TreeItem it = new TreeItem();
                 it.setHTML( AbstractImagePrototype.create( DRLTextEditorResources.INSTANCE.images().classImage() ).getHTML()
                                     + "<small>"
                                     + type + "</small>" );
-                it.setUserObject( type + "( )" );
+                it.setUserObject( new ClassUserObject( type + "( )",
+                                                       type ) );
                 tree.addItem( it );
-
-                String[] fields = oracle.getFieldCompletions( type );
-                if ( fields != null ) {
-                    for ( String field : fields ) {
-                        TreeItem fi = new TreeItem();
-                        fi.setHTML( AbstractImagePrototype.create( DRLTextEditorResources.INSTANCE.images().fieldImage() ).getHTML()
-                                            + "<small>"
-                                            + field + "</small>" );
-                        fi.setUserObject( field );
-                        it.addItem( fi );
-                    }
-                }
+                it.addItem( Util.toSafeHtml( LAZY_LOAD ) );
             }
         }
+    }
+
+    private boolean needsLoading( final TreeItem item ) {
+        return item.getChildCount() == 1 && LAZY_LOAD.equals( item.getChild( 0 ).getText() );
     }
 
     public static interface ClickEvent {
 
         public void selected( String text );
+    }
+
+    private static class ClassUserObject {
+
+        private String textToInsert;
+        private String fullyQualifiedClassName;
+
+        ClassUserObject( final String textToInsert,
+                         final String fullyQualifiedClassName ) {
+            this.textToInsert = textToInsert;
+            this.fullyQualifiedClassName = fullyQualifiedClassName;
+        }
+
     }
 
 }

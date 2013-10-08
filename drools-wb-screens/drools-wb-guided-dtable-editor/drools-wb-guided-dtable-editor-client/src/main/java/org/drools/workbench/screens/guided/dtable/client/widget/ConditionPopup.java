@@ -61,6 +61,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.FormStylePopup;
@@ -821,36 +822,41 @@ public class ConditionPopup extends FormStylePopup {
 
     protected void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
-        pop.setModal( false );
-        String[] fields = this.oracle.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
-                                                           this.editingPattern.getFactType() );
-
         final ListBox box = new ListBox();
+        pop.setModal( false );
 
-        switch ( this.editingCol.getConstraintValueType() ) {
-            case BaseSingleFieldConstraint.TYPE_LITERAL:
-                //Literals can be on any field
-                for ( int i = 0; i < fields.length; i++ ) {
-                    box.addItem( fields[ i ] );
-                }
-                break;
+        this.oracle.getFieldCompletions( this.editingPattern.getFactType(),
+                                         FieldAccessorsAndMutators.ACCESSOR,
+                                         new Callback<String[]>() {
+                                             @Override
+                                             public void callback( final String[] fields ) {
+                                                 switch ( editingCol.getConstraintValueType() ) {
+                                                     case BaseSingleFieldConstraint.TYPE_LITERAL:
+                                                         //Literals can be on any field
+                                                         for ( int i = 0; i < fields.length; i++ ) {
+                                                             box.addItem( fields[ i ] );
+                                                         }
+                                                         break;
 
-            case BaseSingleFieldConstraint.TYPE_RET_VALUE:
-                //Formulae can only consume fields that do not have enumerations
-                for ( int i = 0; i < fields.length; i++ ) {
-                    if ( !oracle.hasEnums( this.editingPattern.getFactType(),
-                                           fields[ i ] ) ) {
-                        box.addItem( fields[ i ] );
-                    }
-                }
-                break;
+                                                     case BaseSingleFieldConstraint.TYPE_RET_VALUE:
+                                                         //Formulae can only consume fields that do not have enumerations
+                                                         for ( int i = 0; i < fields.length; i++ ) {
+                                                             if ( !oracle.hasEnums( editingPattern.getFactType(),
+                                                                                    fields[ i ] ) ) {
+                                                                 box.addItem( fields[ i ] );
+                                                             }
+                                                         }
+                                                         break;
 
-            case BaseSingleFieldConstraint.TYPE_PREDICATE:
-                //Predicates don't need a field (this should never be reachable as the
-                //field selector is disabled when the Calculation Type is Predicate)
-                break;
+                                                     case BaseSingleFieldConstraint.TYPE_PREDICATE:
+                                                         //Predicates don't need a field (this should never be reachable as the
+                                                         //field selector is disabled when the Calculation Type is Predicate)
+                                                         break;
 
-        }
+                                                 }
+                                             }
+                                         } );
+
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );

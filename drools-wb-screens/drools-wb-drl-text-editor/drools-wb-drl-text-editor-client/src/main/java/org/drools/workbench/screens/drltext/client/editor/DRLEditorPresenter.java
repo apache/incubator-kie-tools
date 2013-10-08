@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.drltext.client.editor;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -33,10 +34,8 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -103,9 +102,6 @@ public class DRLEditorPresenter {
     private DRLResourceType type;
 
     @Inject
-    private AsyncPackageDataModelOracle oracle;
-
-    @Inject
     @New
     private FileMenuBuilder menuBuilder;
     private Menus menus;
@@ -114,6 +110,11 @@ public class DRLEditorPresenter {
     private PlaceRequest place;
     private boolean isReadOnly;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
+
+    @PostConstruct
+    public void init() {
+        view.init( this );
+    }
 
     @OnStartup
     public void onStartup( final ObservablePath path,
@@ -218,26 +219,44 @@ public class DRLEditorPresenter {
     }
 
     private void loadContent() {
-        drlTextEditorService.call( getModelSuccessCallback(),
+        drlTextEditorService.call( getLoadContentSuccessCallback(),
                                    new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
     }
 
-    private RemoteCallback<DrlModelContent> getModelSuccessCallback() {
+    private RemoteCallback<DrlModelContent> getLoadContentSuccessCallback() {
         return new RemoteCallback<DrlModelContent>() {
 
             @Override
             public void callback( final DrlModelContent content ) {
                 final String drl = content.getDrl();
-                final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( oracle,
-                                                                              dataModel );
+                final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
+
+                //Populate view
                 if ( drl == null || drl.isEmpty() ) {
-                    view.setContent( oracle );
+                    view.setContent( fullyQualifiedClassNames );
                 } else {
                     view.setContent( drl,
-                                     oracle );
+                                     fullyQualifiedClassNames );
                 }
                 view.hideBusyIndicator();
+            }
+        };
+    }
+
+    public void loadClassFields( final String fullyQualifiedClassName,
+                                 final Callback<List<String>> callback ) {
+        drlTextEditorService.call( getLoadClassFieldsSuccessCallback( callback ),
+                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).loadClassFields( path,
+                                                                                                       fullyQualifiedClassName );
+
+    }
+
+    private RemoteCallback<List<String>> getLoadClassFieldsSuccessCallback( final Callback<List<String>> callback ) {
+        return new RemoteCallback<List<String>>() {
+
+            @Override
+            public void callback( final List<String> fields ) {
+                callback.callback( fields );
             }
         };
     }
@@ -386,4 +405,5 @@ public class DRLEditorPresenter {
             notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
         }
     }
+
 }

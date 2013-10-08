@@ -50,8 +50,8 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -154,7 +154,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
             return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
                                                                      globals,
-                                                                     dataModelService.getDataModel(path),
+                                                                     dataModelService.getDataModel( path ),
                                                                      dsls );
 
         } catch ( Exception e ) {

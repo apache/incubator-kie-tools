@@ -42,8 +42,10 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
+import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class GuidedDecisionTableTest {
 
@@ -64,7 +66,8 @@ public class GuidedDecisionTableTest {
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         dataModel.setWorkbenchEnumLists( loader.getPackageWorkbenchEnums() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
+                                                                      model,
                                                                       oracle,
                                                                       dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
@@ -301,7 +304,8 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
+                                                                      model,
                                                                       oracle,
                                                                       dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
@@ -425,7 +429,8 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
+                                                                      model,
                                                                       oracle,
                                                                       dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
@@ -533,7 +538,8 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
+                                                                      model,
                                                                       oracle,
                                                                       dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
@@ -588,7 +594,8 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
+                                                                      model,
                                                                       oracle,
                                                                       dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
@@ -705,7 +712,8 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
+                                                                      model,
                                                                       oracle,
                                                                       dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
@@ -756,7 +764,8 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
+                                                                      model,
                                                                       oracle,
                                                                       dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,

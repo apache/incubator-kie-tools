@@ -5,6 +5,7 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 class AddFieldToFactDataClickHandler
@@ -31,12 +32,19 @@ class AddFieldToFactDataClickHandler
     }
 
     protected FactFieldSelector createFactFieldSelector() {
-        FactFieldSelector factFieldSelector = new FactFieldSelector();
-        for ( String fieldName : oracle.getFieldCompletions( definitionList.getFirstFactData().getType() ) ) {
-            if ( !definitionList.isFieldNameInUse( fieldName ) ) {
-                factFieldSelector.addField( fieldName );
-            }
-        }
+        final FactFieldSelector factFieldSelector = new FactFieldSelector();
+        oracle.getFieldCompletions( definitionList.getFirstFactData().getType(),
+                                    new Callback<String[]>() {
+                                        @Override
+                                        public void callback( final String[] fields ) {
+                                            for ( String field : fields ) {
+                                                if ( !definitionList.isFieldNameInUse( field ) ) {
+                                                    factFieldSelector.addField( field );
+                                                }
+                                            }
+                                        }
+                                    } );
+
         return factFieldSelector;
     }
 }

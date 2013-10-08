@@ -46,8 +46,10 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.uberfire.backend.vfs.Path;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * Tests for CellValueFactory
@@ -154,7 +156,8 @@ public class CellValueFactoryTests {
         oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
+                                                                      model,
                                                                       oracle,
                                                                       dataModel );
 

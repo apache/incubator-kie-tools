@@ -282,7 +282,8 @@ public class GuidedRuleTemplateEditorPresenter {
             public void callback( final GuidedTemplateEditorContent content ) {
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( model,
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
+                                                                              model,
                                                                               oracle,
                                                                               dataModel );
 

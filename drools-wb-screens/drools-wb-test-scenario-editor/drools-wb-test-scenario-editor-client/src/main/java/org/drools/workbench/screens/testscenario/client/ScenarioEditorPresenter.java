@@ -191,7 +191,8 @@ public class ScenarioEditorPresenter {
             public void callback( TestScenarioModelContent content ) {
                 scenario = content.getScenario();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( scenario,
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
+                                                                              scenario,
                                                                               oracle,
                                                                               dataModel );
 

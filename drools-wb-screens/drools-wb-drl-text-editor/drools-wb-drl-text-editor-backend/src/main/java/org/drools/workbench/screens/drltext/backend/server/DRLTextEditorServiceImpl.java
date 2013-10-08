@@ -17,8 +17,10 @@
 package org.drools.workbench.screens.drltext.backend.server;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -26,7 +28,8 @@ import javax.inject.Named;
 
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.packages.HasPackageName;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
@@ -45,7 +48,6 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -148,11 +150,35 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     public DrlModelContent loadContent( final Path path ) {
         try {
             final String drl = load( path );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            final List<String> fullyQualifiedClassNames = new ArrayList<String>();
+            final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
+            for ( Map.Entry<String, ModelField[]> e : oracle.getProjectModelFields().entrySet() ) {
+                fullyQualifiedClassNames.add( e.getKey() );
+            }
 
             return new DrlModelContent( drl,
-                                        dataModel );
+                                        fullyQualifiedClassNames );
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
+    public List<String> loadClassFields( final Path path,
+                                         final String fullyQualifiedClassName ) {
+        try {
+            final List<String> fieldNames = new ArrayList<String>();
+            final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
+            final ModelField[] modelFields = oracle.getProjectModelFields().get( fullyQualifiedClassName );
+            if ( modelFields == null ) {
+                return fieldNames;
+            }
+            for ( ModelField mf : modelFields ) {
+                fieldNames.add( mf.getName() );
+            }
+
+            return fieldNames;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

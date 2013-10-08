@@ -114,7 +114,8 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
             @Override
             public void callback( final PackageDataModelOracleBaselinePayload dataModel ) {
                 newResourcePresenter.complete();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( oracle,
+                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( contextPath,
+                                                                              oracle,
                                                                               dataModel );
                 final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
                                                                                                                        contextPath,

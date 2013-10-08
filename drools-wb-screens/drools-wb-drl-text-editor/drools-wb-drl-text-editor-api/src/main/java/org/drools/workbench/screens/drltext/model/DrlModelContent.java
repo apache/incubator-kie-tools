@@ -1,32 +1,33 @@
 package org.drools.workbench.screens.drltext.model;
 
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class DrlModelContent {
 
     private String drl;
-    private PackageDataModelOracleBaselinePayload dataModel;
+    private List<String> fullyQualifiedClassNames;
 
     public DrlModelContent() {
     }
 
     public DrlModelContent( final String drl,
-                            final PackageDataModelOracleBaselinePayload dataModel ) {
+                            final List<String> fullyQualifiedClassNames ) {
         this.drl = PortablePreconditions.checkNotNull( "drl",
                                                        drl );
-        this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
-                                                             dataModel );
+        this.fullyQualifiedClassNames = PortablePreconditions.checkNotNull( "fullyQualifiedClassNames",
+                                                                            fullyQualifiedClassNames );
     }
 
     public String getDrl() {
         return this.drl;
     }
 
-    public PackageDataModelOracleBaselinePayload getDataModel() {
-        return this.dataModel;
+    public List<String> getFullyQualifiedClassNames() {
+        return this.fullyQualifiedClassNames;
     }
 
 }
