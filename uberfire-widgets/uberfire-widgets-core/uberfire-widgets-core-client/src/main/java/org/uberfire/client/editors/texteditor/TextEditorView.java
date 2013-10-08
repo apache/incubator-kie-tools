@@ -80,6 +80,11 @@ public class TextEditorView extends Composite
     }
 
     @Override
+    public void makeReadOnly() {
+        fileContent.setEnabled(false);
+    }
+
+    @Override
     public void setDirty(boolean dirty) {
         isDirty = dirty;
     }
