@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.inject.Inject;
 
 import org.drools.workbench.models.commons.shared.oracle.OracleUtils;
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracleUtils;
@@ -37,11 +38,24 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Default implementation of DataModelOracle
  */
 public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOracle {
+
+    @Inject
+    private Caller<IncrementalDataModelService> service;
+
+    //Path that this DMO is coupled to
+    private Path resourcePath;
 
     //Project name
     protected String projectName;
@@ -146,6 +160,12 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     //Public constructor is needed for Errai Marshaller :(
     public AsyncPackageDataModelOracleImpl() {
+    }
+
+    @Override
+    public void init( final Path resourcePath ) {
+        this.resourcePath = PortablePreconditions.checkNotNull( "resourcePath",
+                                                                resourcePath );
     }
 
     // ####################################
@@ -331,8 +351,27 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public String[] getFieldCompletions( final String factType ) {
-        return getModelFields( factType );
+    public void getFieldCompletions( final String factType,
+                                     final Callback<String[]> callback ) {
+        final String[] fieldNames = getModelFields( factType );
+
+        //Load incremental content
+        if ( fieldNames == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    final String[] fieldNames = getModelFields( factType );
+                    callback.callback( fieldNames );
+                }
+            } ).getUpdates( resourcePath,
+                            factType );
+
+        } else {
+            callback.callback( fieldNames );
+        }
     }
 
     private String[] getModelFields( final String modelClassName ) {
@@ -341,7 +380,13 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
             return new String[ 0 ];
         }
 
+        //If fields do not exist return null; so they can be incrementally loaded
         final ModelField[] fields = filteredModelFields.get( shortName );
+        if ( fields == null ) {
+            return null;
+        }
+
+        //Otherwise return existing fields
         final String[] fieldNames = new String[ fields.length ];
         for ( int i = 0; i < fields.length; i++ ) {
             fieldNames[ i ] = fields[ i ].getName();
@@ -350,14 +395,46 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public String[] getFieldCompletions( final FieldAccessorsAndMutators accessorOrMutator,
-                                         final String factType ) {
-        final String shortName = getFactNameFromType( factType );
+    public void getFieldCompletions( final String factType,
+                                     final FieldAccessorsAndMutators accessorOrMutator,
+                                     final Callback<String[]> callback ) {
+        final String[] fieldNames = getModelFields( factType,
+                                                    accessorOrMutator );
+
+        //Load incremental content
+        if ( fieldNames == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    final String[] fieldNames = getModelFields( factType,
+                                                                accessorOrMutator );
+                    callback.callback( fieldNames );
+                }
+            } ).getUpdates( resourcePath,
+                            factType );
+
+        } else {
+            callback.callback( fieldNames );
+        }
+    }
+
+    private String[] getModelFields( final String modelClassName,
+                                     final FieldAccessorsAndMutators accessorOrMutator ) {
+        final String shortName = getFactNameFromType( modelClassName );
         if ( !filteredModelFields.containsKey( shortName ) ) {
             return new String[ 0 ];
         }
 
+        //If fields do not exist return null; so they can be incrementally loaded
         final ModelField[] fields = filteredModelFields.get( shortName );
+        if ( fields == null ) {
+            return null;
+        }
+
+        //Otherwise return existing fields
         final List<String> fieldNames = new ArrayList<String>();
         for ( int i = 0; i < fields.length; i++ ) {
             final ModelField field = fields[ i ];
@@ -982,7 +1059,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public void addFactsAndFields( final Map<String, ModelField[]> modelFields ) {
+    public void addModelFields( final Map<String, ModelField[]> modelFields ) {
         this.projectModelFields.putAll( modelFields );
     }
 
@@ -1022,7 +1099,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public void addEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
+    public void addJavaEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
         this.projectJavaEnumLists.putAll( dataEnumLists );
     }
 
@@ -1042,7 +1119,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public void addWorkbenchEnums( final Map<String, String[]> dataEnumLists ) {
+    public void addWorkbenchEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
         this.packageWorkbenchEnumLists.putAll( dataEnumLists );
     }
 

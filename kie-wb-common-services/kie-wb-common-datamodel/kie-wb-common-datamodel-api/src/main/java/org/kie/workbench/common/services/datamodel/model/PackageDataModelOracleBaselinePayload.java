@@ -160,7 +160,7 @@ public class PackageDataModelOracleBaselinePayload {
         this.typeFieldsAnnotations = typeFieldsAnnotations;
     }
 
-    public Map<String, String[]> getJavaEnumLists() {
+    public Map<String, String[]> getJavaEnumDefinitions() {
         return javaEnumLists;
     }
 
@@ -168,7 +168,7 @@ public class PackageDataModelOracleBaselinePayload {
         this.javaEnumLists = javaEnumLists;
     }
 
-    public Map<String, String[]> getWorkbenchEnumLists() {
+    public Map<String, String[]> getWorkbenchEnumDefinitions() {
         return workbenchEnumLists;
     }
 
@@ -208,7 +208,7 @@ public class PackageDataModelOracleBaselinePayload {
         this.dslActionSentences = dslActionSentences;
     }
 
-    public Map<String, String> getGlobalTypes() {
+    public Map<String, String> getGlobals() {
         return globalTypes;
     }
 

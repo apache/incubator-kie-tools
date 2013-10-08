@@ -13,46 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.services.datamodel.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.commons.backend.oracle.PackageDataModelOracleImpl;
-import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
-import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
-import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.uberfire.backend.vfs.Path;
 
+/**
+ *
+ */
+@Service
 @ApplicationScoped
-public class DataModelServiceImpl
-        implements DataModelService {
+public class IncrementalDataModelServiceImpl implements IncrementalDataModelService {
 
     @Inject
     @Named("PackageDataModelOracleCache")
     private LRUDataModelOracleCache cachePackages;
 
     @Inject
-    @Named("ProjectDataModelOracleCache")
-    private LRUProjectDataModelOracleCache cacheProjects;
-
-    @Inject
     private ProjectService projectService;
 
     @Override
-    public PackageDataModelOracle getDataModel( final Path resourcePath ) {
+    public PackageDataModelOracleIncrementalPayload getUpdates( final Path resourcePath,
+                                                                final String factType ) {
+        PortablePreconditions.checkNotNull( "resourcePath",
+                                            resourcePath );
+        PortablePreconditions.checkNotNull( "factType",
+                                            factType );
+
+        final PackageDataModelOracleIncrementalPayload dataModel = new PackageDataModelOracleIncrementalPayload();
+
         try {
             PortablePreconditions.checkNotNull( "resourcePath",
                                                 resourcePath );
@@ -61,39 +63,20 @@ public class DataModelServiceImpl
 
             //Resource was not within a Project structure
             if ( project == null ) {
-                return new PackageDataModelOracleImpl();
+                return dataModel;
             }
 
-            //Retrieve (or build) oracle
+            //Retrieve (or build) oracle and populate incremental content
             final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle( project,
                                                                                               pkg );
-            return oracle;
+
+            //TODO Populate DataModel!!
+            return dataModel;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
 
-    @Override
-    public ProjectDataModelOracle getProjectDataModel( final Path resourcePath ) {
-        try {
-            PortablePreconditions.checkNotNull( "resourcePath",
-                                                resourcePath );
-            final Project project = resolveProject( resourcePath );
-
-            //Resource was not within a Project structure
-            if ( project == null ) {
-                return new ProjectDataModelOracleImpl();
-            }
-
-            //Retrieve (or build) oracle
-            final ProjectDataModelOracle oracle = cacheProjects.assertProjectDataModelOracle( project );
-            return oracle;
-
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            throw ExceptionUtilities.handleException( e );
-        }
     }
 
     private Project resolveProject( final Path resourcePath ) {

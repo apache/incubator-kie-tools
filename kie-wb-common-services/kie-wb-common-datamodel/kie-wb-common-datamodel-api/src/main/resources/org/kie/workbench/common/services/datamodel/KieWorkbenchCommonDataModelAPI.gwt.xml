@@ -24,8 +24,6 @@
   <inherits name='org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI'/>
 
   <source path='model'/>
-  <source path='oracle'/>
   <source path='service'/>
-  <source path='events'/>
 
 </module>

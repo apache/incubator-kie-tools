@@ -28,8 +28,16 @@ import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
+import org.uberfire.backend.vfs.Path;
 
-public interface AsyncPackageDataModelOracle  {
+public interface AsyncPackageDataModelOracle {
+
+    // ####################################
+    // Initialise
+    // ####################################
+
+    void init( final Path resourcePath );
 
     // ####################################
     // Editor functions
@@ -68,10 +76,12 @@ public interface AsyncPackageDataModelOracle  {
 
     Map<String, ModelField[]> getModelFields();
 
-    String[] getFieldCompletions( final String factType );
+    void getFieldCompletions( final String factType,
+                              final Callback<String[]> callback );
 
-    String[] getFieldCompletions( final FieldAccessorsAndMutators accessor,
-                                  final String factType );
+    void getFieldCompletions( final String factType,
+                              final FieldAccessorsAndMutators accessor,
+                              final Callback<String[]> callback );
 
     String getFieldType( final String variableClass,
                          final String fieldName );
@@ -150,7 +160,7 @@ public interface AsyncPackageDataModelOracle  {
 
     void setPackageName( final String packageName );
 
-    void addFactsAndFields( final Map<String, ModelField[]> modelFields );
+    void addModelFields( final Map<String, ModelField[]> modelFields );
 
     void addRuleNames( final Map<String, Collection<String>> ruleNames );
 
@@ -166,7 +176,7 @@ public interface AsyncPackageDataModelOracle  {
 
     void addTypeFieldsAnnotations( final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations );
 
-    void addEnumDefinitions( final Map<String, String[]> dataEnumLists );
+    void addJavaEnumDefinitions( final Map<String, String[]> dataEnumLists );
 
     void addMethodInformation( final Map<String, List<MethodInfo>> methodInformation );
 
@@ -174,7 +184,7 @@ public interface AsyncPackageDataModelOracle  {
 
     void addPackageNames( final List<String> packageNames );
 
-    void addWorkbenchEnums( final Map<String, String[]> dataEnumLists );
+    void addWorkbenchEnumDefinitions( final Map<String, String[]> dataEnumLists );
 
     void addDslConditionSentences( final List<DSLSentence> dslConditionSentences );
 
