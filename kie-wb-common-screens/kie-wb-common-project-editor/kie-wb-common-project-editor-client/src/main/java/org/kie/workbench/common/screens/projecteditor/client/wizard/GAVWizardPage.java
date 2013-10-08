@@ -61,9 +61,9 @@ public class GAVWizardPage
 
     @Override
     public boolean isComplete() {
-        boolean validGroupId = !( gav.getGroupId() == null || gav.getGroupId().isEmpty() );
-        boolean validArtifactId = !( gav.getArtifactId() == null || gav.getArtifactId().isEmpty() );
-        boolean validVersion = !( gav.getVersion() == null || gav.getVersion().isEmpty() );
+        boolean validGroupId = !( gav.getGroupId() == null || gav.getGroupId().isEmpty() || !gav.getGroupId().matches("^[a-zA-Z0-9\\.\\-_]+$") );
+        boolean validArtifactId = !( gav.getArtifactId() == null || gav.getArtifactId().isEmpty() || !gav.getArtifactId().matches("^[a-zA-Z0-9\\.\\-_]+$") );
+        boolean validVersion = !( gav.getVersion() == null || gav.getVersion().isEmpty() || !gav.getArtifactId().matches("^[a-zA-Z0-9\\.\\-_]+$") );
         return validGroupId && validArtifactId && validVersion;
     }
 
