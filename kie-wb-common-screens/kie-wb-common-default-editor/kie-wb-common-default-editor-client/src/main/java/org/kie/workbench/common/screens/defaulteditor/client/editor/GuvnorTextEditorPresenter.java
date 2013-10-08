@@ -3,6 +3,7 @@ package org.kie.workbench.common.screens.defaulteditor.client.editor;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
@@ -47,7 +48,7 @@ public class GuvnorTextEditorPresenter
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
-    private FileMenuBuilder menuBuilder;
+    protected FileMenuBuilder menuBuilder;
 
     protected Menus menus;
 
@@ -65,6 +66,10 @@ public class GuvnorTextEditorPresenter
         this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
 
         makeMenuBar();
+
+        if (isReadOnly) {
+            view.makeReadOnly();
+        }
 
         multiPage.addWidget(super.getWidget(),
                 CommonConstants.INSTANCE.EditTabTitle());
