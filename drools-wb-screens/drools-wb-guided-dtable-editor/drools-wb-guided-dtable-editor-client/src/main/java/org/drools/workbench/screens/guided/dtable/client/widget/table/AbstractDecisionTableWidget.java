@@ -630,6 +630,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
             setColumnVisibility( origColumn,
                                  !editColumn.isHideColumn() );
+            bUpdateColumnDefinition = true;
         }
 
         // Change in column's binding forces an update and redraw if FactType or
@@ -673,6 +674,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
             if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
                 bUpdateColumnDefinition = true;
             }
+        }
+
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // BZ-996932: Update column's "logically insert" if it's changed.
+        if ( origColumn.isInsertLogical() != editColumn.isInsertLogical()) {
+            bUpdateColumnDefinition = true;
         }
 
         //Log change to column definition
@@ -779,6 +791,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // BZ-996932: Update column's hide value if it's changed.
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // BZ-996932: Update column's "Update engine with changes" value if it's changed.
+        if ( origColumn.isUpdate() != editColumn.isUpdate() ) {
+            bUpdateColumnDefinition = true;
+        }
+
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
@@ -858,6 +886,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             bUpdateColumnDefinition = true;
         }
 
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
@@ -900,6 +934,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
             setColumnVisibility( origColumn,
                                  !editColumn.isHideColumn() );
+            bUpdateColumnDefinition = true;
         }
 
         // Update column header in Header Widget
@@ -914,6 +949,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
                 bUpdateColumnDefinition = true;
             }
+        }
+
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
+            bUpdateColumnDefinition = true;
         }
 
         //Log change to column definition
@@ -958,10 +999,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
             setColumnVisibility( origColumn,
                                  !editColumn.isHideColumn() );
+            bUpdateColumnDefinition = true;
         }
 
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
             bUpdateColumnDefinition = true;
         }
 
@@ -1051,6 +1099,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
                        true );
         model.getConditions().remove( origColumn );
 
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // BZ-996932: Update column's "hide" if it's changed.
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn()) {
+            bUpdateColumnDefinition = true;
+        }
+
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
@@ -1130,6 +1189,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
                        true );
         model.getConditions().remove( origColumn );
 
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // BZ-996932: Update column's "hide" if it's changed.
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn()) {
+            bUpdateColumnDefinition = true;
+        }
+
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
@@ -1168,10 +1238,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
             setColumnVisibility( origColumn,
                                  !editColumn.isHideColumn() );
+            bUpdateColumnDefinition = true;
         }
 
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
             bUpdateColumnDefinition = true;
         }
 
@@ -1217,10 +1294,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
             setColumnVisibility( origColumn,
                                  !editColumn.isHideColumn() );
+            bUpdateColumnDefinition = true;
         }
 
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bUpdateColumnDefinition = true;
+        }
+
+        // BZ-996932: Update column's default value if it's changed.
+        if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                editColumn.getDefaultValue() ) ) {
             bUpdateColumnDefinition = true;
         }
 
@@ -1332,6 +1416,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
                 setColumnVisibility( origColumn,
                                      !editColumn.isHideColumn() );
+                bUpdateColumnDefinition = true;
             }
 
             // Change in operator
@@ -1392,6 +1477,18 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                      lecEditing.getValue() ) ) {
                     bUpdateColumnDefinition = true;
                 }
+            }
+
+            // BZ-996932: Update column's default value if it's changed.
+            if ( !isEqualOrNull( origColumn.getDefaultValue(),
+                    editColumn.getDefaultValue() ) ) {
+                bUpdateColumnDefinition = true;
+            }
+
+            // BZ-996932: Update column's entrypoint value if it's changed.
+            if ( !isEqualOrNull( origPattern.getEntryPointName(),
+                    editPattern.getEntryPointName() ) ) {
+                bUpdateColumnDefinition = true;
             }
 
             //Log change to column definition

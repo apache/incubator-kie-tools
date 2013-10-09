@@ -50,6 +50,7 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.guided.dtable.shared.auditlog.UpdateColumnAuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
@@ -1275,6 +1276,7 @@ public class GuidedDecisionTableWidget extends Composite
         return attributeConfigWidget;
     }
 
+    // BZ-996932: Added default value change notifications.
     private void refreshAttributeWidget() {
         this.attributeConfigWidget.clear();
         if ( model.getMetadataCols().size() > 0 ) {
@@ -1304,6 +1306,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
+                    fireUpdateColumn(identity.getName(), at, at);
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1331,7 +1334,13 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( label );
 
             final Widget defaultValue = DefaultValueWidgetFactory.getDefaultValueWidget( atc,
-                                                                                         isReadOnly );
+                                                                                         isReadOnly, new DefaultValueWidgetFactory.DefaultValueChangedEventHandler() {
+                @Override
+                public void onDefaultValueChanged(DefaultValueWidgetFactory.DefaultValueChangedEvent event) {
+                    fireUpdateColumn(identity.getName(), at, at);
+                }
+            });
+
 
             if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1352,6 +1361,7 @@ public class GuidedDecisionTableWidget extends Composite
                         at.setUseRowNumber( useRowNumber.getValue() );
                         reverseOrder.setEnabled( useRowNumber.getValue() );
                         dtable.updateSystemControlledColumnValues();
+                        fireUpdateColumn(identity.getName(), at, at);
                     }
                 } );
 
@@ -1359,6 +1369,7 @@ public class GuidedDecisionTableWidget extends Composite
                     public void onClick( ClickEvent sender ) {
                         at.setReverseOrder( reverseOrder.getValue() );
                         dtable.updateSystemControlledColumnValues();
+                        fireUpdateColumn(identity.getName(), at, at);
                     }
                 } );
                 hp.add( reverseOrder );
@@ -1378,6 +1389,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
+                    fireUpdateColumn(identity.getName(), at, at);
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1387,6 +1399,17 @@ public class GuidedDecisionTableWidget extends Composite
             setupColumnsNote();
         }
 
+    }
+
+    /**
+     * Fires a <code><UpdateColumnAuditLogEntry/code> event for the mode.
+     * @param userName The user name.
+     * @param originCol The source column.
+     * @param newCol The new edited column.
+     */
+    private void fireUpdateColumn(String userName, BaseColumn originCol, BaseColumn newCol) {
+        UpdateColumnAuditLogEntry entry = new UpdateColumnAuditLogEntry( userName, originCol, newCol);
+        model.getAuditLog().add( entry );
     }
 
     private SmallLabel makeColumnLabel( MetadataCol52 mdc ) {

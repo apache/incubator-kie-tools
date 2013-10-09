@@ -343,6 +343,8 @@ public interface GuidedDecisionTableConstants
     String DecisionTableAuditLogUpdateColumn0Was1( String value,
                                                    String originalValue );
 
+    String DecisionTableAuditLogUpdateAttribute( String value );
+
     String AreYouSureYouWantToRemoveThisItem();
 
     //Wizard

@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -45,10 +46,40 @@ public class DefaultValueWidgetFactory {
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat format = DateTimeFormat.getFormat( DATE_FORMAT );
 
-    public static Widget getDefaultValueWidget( final AttributeCol52 ac,
-                                                final boolean isReadOnly ) {
-        Widget editor = null;
+    /**
+     * BZ-996932: Default value changed event handler interface.
+     *
+     * Widgets using DefaultValueWidget should listen to value changed event by implementing this custom GWT Event Handler.
+     */
+    interface DefaultValueChangedEventHandler {
+        void onDefaultValueChanged(DefaultValueChangedEvent event);
+    }
 
+    /**
+     * BZ-996932: Default value changed event definition.
+     *
+     * When default value is changed this event if fired to notified handlers.
+     */
+    static class DefaultValueChangedEvent {
+
+        private final DTCellValue52 defaultValue;
+
+        public DefaultValueChangedEvent(DTCellValue52 defaultValue) {
+            this.defaultValue = defaultValue;
+        }
+
+        public DTCellValue52 getDefaultValue() {
+            return defaultValue;
+        }
+
+    }
+
+    // BZ-996932: Added value change notifications.
+    public static Widget getDefaultValueWidget( final AttributeCol52 ac,
+                                        final boolean isReadOnly,
+                                        final DefaultValueChangedEventHandler defaultValueChangedEventHandler ) {
+        Widget editor = null;
+        final AttributeCol52 originCol = ac;
         final String attributeName = ac.getAttribute();
         if ( attributeName.equals( RuleAttributeWidget.RULEFLOW_GROUP_ATTR )
                 || attributeName.equals( RuleAttributeWidget.AGENDA_GROUP_ATTR )
@@ -67,6 +98,7 @@ public class DefaultValueWidgetFactory {
 
                     public void onValueChange( ValueChangeEvent<String> event ) {
                         defaultValue.setStringValue( tb.getValue() );
+                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
                     }
 
                 } );
@@ -93,6 +125,8 @@ public class DefaultValueWidgetFactory {
                         } catch ( NumberFormatException nfe ) {
                             defaultValue.setNumericValue( new Integer( "0" ) );
                             tb.setValue( "0" );
+                        } finally {
+                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
                         }
                     }
 
@@ -120,6 +154,8 @@ public class DefaultValueWidgetFactory {
                         } catch ( NumberFormatException nfe ) {
                             defaultValue.setNumericValue( new Long( "0" ) );
                             tb.setValue( "0" );
+                        } finally {
+                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
                         }
                     }
 
@@ -151,6 +187,7 @@ public class DefaultValueWidgetFactory {
             cb.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     defaultValue.setBooleanValue( cb.getValue() );
+                    defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
                 }
             } );
             editor = cb;
@@ -171,10 +208,12 @@ public class DefaultValueWidgetFactory {
                 final PopupDatePicker dp = new PopupDatePicker( false );
                 final Date dateValue = defaultValue.getDateValue();
                 dp.setValue( dateValue );
+
                 dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
 
                     public void onValueChange( ValueChangeEvent<Date> event ) {
                         defaultValue.setDateValue( event.getValue() );
+                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
                     }
 
                 } );
@@ -198,7 +237,9 @@ public class DefaultValueWidgetFactory {
                         if ( selectedIndex < 0 ) {
                             return;
                         }
-                        ac.setDefaultValue( new DTCellValue52( lb.getValue( selectedIndex ) ) );
+                        DTCellValue52 newValue = new DTCellValue52( lb.getValue( selectedIndex ) );
+                        ac.setDefaultValue( newValue );
+                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(newValue));
                     }
                 } );
             }

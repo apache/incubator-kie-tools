@@ -278,11 +278,28 @@ public class AuditLogEntryCellHelper {
             buildColumnDetailsUpdate( (LimitedEntryActionSetFieldColumnDetails) details,
                                       (LimitedEntryActionSetFieldColumnDetails) originalDetails,
                                       sb );
+        } else if ( ( details instanceof AttributeColumnDetails ) && ( originalDetails instanceof AttributeColumnDetails ) ) {
+            buildColumnDetailsUpdate( (AttributeColumnDetails) details,
+                    (AttributeColumnDetails) originalDetails,
+                    sb );
         } else {
             sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateColumn0Was1( details.getColumnHeader(),
                                                                                                           originalDetails.getColumnHeader() ) ) );
         }
     }
+
+    /**
+     * BZ-996932: Added column update details for attribute columns.
+     * @param details The new details column.
+     * @param originalDetails The origin details column.
+     * @param sb The html bulder buffer.
+     */
+    private void buildColumnDetailsUpdate( final AttributeColumnDetails details,
+                                           final AttributeColumnDetails originalDetails,
+                                           final SafeHtmlBuilder sb ) {
+        sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAttribute( details.getAttribute()) ) );
+    }
+
 
     private void buildColumnDetailsUpdate( final ConditionColumnDetails details,
                                            final ConditionColumnDetails originalDetails,
