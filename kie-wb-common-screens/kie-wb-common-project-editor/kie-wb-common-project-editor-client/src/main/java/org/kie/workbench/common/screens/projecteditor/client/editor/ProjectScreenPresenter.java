@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -249,9 +250,22 @@ public class ProjectScreenPresenter
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                        buildServiceCaller.call( getBuildSuccessCallback(),
-                                                 new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
+                        if ( Window.confirm( ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy() ) ) {
+                            saveProject( new RemoteCallback<Void>() {
+                                @Override
+                                public void callback( Void v ) {
+                                    view.switchBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
+                                    notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
+                                            NotificationEvent.NotificationType.SUCCESS ) );
+                                    buildServiceCaller.call( getBuildSuccessCallback(),
+                                            new HasBusyIndicatorDefaultErrorCallback( view )).buildAndDeploy( project );
+                                }
+                            } );
+                        } else {
+                            view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
+                            buildServiceCaller.call( getBuildSuccessCallback(),
+                                    new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
+                        }
                     }
                 } )
                 .endMenu().build();
@@ -262,31 +276,37 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                KModuleValidator kModuleValidator = new KModuleValidator(ProjectEditorResources.CONSTANTS);
-                kModuleValidator.validate(model.getKModule());
-
-                if ( !kModuleValidator.hasErrors() ) {
-                    saveOperationService.save( pathToPomXML,
-                                               new CommandWithCommitMessage() {
-                                                   @Override
-                                                   public void execute( final String comment ) {
-
-                                                       view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-
-                                                       projectScreenService.call( new RemoteCallback<Void>() {
-                                                           @Override
-                                                           public void callback( Void v ) {
-                                                               view.hideBusyIndicator();
-                                                           }
-                                                       } ).save( pathToPomXML, model, comment );
-
-                                                   }
-                                               } );
-                } else {
-                    ErrorPopup.showMessage( kModuleValidator.getErrorsString() );
-                }
+                saveProject( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void v ) {
+                        view.hideBusyIndicator();
+                        notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
+                                NotificationEvent.NotificationType.SUCCESS ) );
+                    }
+                } );
             }
         };
+    }
+
+    private void saveProject( final RemoteCallback callback ) {
+        KModuleValidator kModuleValidator = new KModuleValidator( ProjectEditorResources.CONSTANTS );
+        kModuleValidator.validate( model.getKModule() );
+
+        if ( !kModuleValidator.hasErrors() ) {
+            saveOperationService.save( pathToPomXML,
+                    new CommandWithCommitMessage() {
+                        @Override
+                        public void execute( final String comment ) {
+
+                            view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+
+                            projectScreenService.call( callback ).save( pathToPomXML, model, comment );
+
+                        }
+                    } );
+        } else {
+            ErrorPopup.showMessage( kModuleValidator.getErrorsString() );
+        }
     }
 
     private RemoteCallback getBuildSuccessCallback() {

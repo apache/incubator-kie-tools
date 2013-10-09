@@ -82,6 +82,8 @@ public interface ProjectEditorConstants
 
     String BuildAndDeploy();
 
+    String SaveBeforeBuildAndDeploy();
+
     String Building();
 
     String BuildSuccessful();

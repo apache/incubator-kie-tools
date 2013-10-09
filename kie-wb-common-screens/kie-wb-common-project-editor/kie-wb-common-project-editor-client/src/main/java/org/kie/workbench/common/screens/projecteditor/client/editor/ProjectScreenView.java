@@ -77,4 +77,5 @@ public interface ProjectScreenView
 
     void showKBaseMetadataPanel();
 
+    void switchBusyIndicator(String newMessage);
 }

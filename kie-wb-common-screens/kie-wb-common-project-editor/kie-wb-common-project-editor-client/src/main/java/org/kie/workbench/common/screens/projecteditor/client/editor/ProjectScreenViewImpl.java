@@ -278,4 +278,8 @@ public class ProjectScreenViewImpl
         kModuleMetaDataPanel.setContent(kModuleMetaData, false);
     }
 
+    @Override
+    public void switchBusyIndicator(String newMessage) {
+        BusyPopup.showMessage(newMessage);
+    }
 }
