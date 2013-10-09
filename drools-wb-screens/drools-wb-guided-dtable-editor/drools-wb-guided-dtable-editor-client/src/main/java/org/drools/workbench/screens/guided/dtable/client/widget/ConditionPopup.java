@@ -958,6 +958,7 @@ public class ConditionPopup extends FormStylePopup {
                 doValueList();
                 doCalculationType();
                 doOperatorLabel();
+                doImageButtons();
 
                 pop.hide();
             }
