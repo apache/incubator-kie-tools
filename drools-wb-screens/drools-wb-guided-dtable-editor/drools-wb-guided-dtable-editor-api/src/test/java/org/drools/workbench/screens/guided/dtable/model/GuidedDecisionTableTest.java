@@ -65,7 +65,7 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( loader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( loader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,

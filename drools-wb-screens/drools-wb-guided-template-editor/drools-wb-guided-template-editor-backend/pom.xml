@@ -29,7 +29,7 @@
 
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-datamodel-api</artifactId>
+      <artifactId>kie-wb-common-datamodel-backend</artifactId>
     </dependency>
 
     <dependency>

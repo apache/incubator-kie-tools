@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.backend.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
@@ -50,6 +51,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
@@ -160,7 +162,11 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
         try {
             final GuidedDecisionTable52 model = load( path );
-            final PackageDataModelOracleBaselinePayload dataModel = loadDataModel( path );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            DataModelOracleUtilities.populateDataModel( oracle,
+                                                        dataModel,
+                                                        new HashSet<String>() );
             final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
 
             return new GuidedDecisionTableEditorContent( model,
@@ -177,6 +183,9 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
         try {
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            DataModelOracleUtilities.populateDataModel( oracle,
+                                                        dataModel,
+                                                        new HashSet<String>() );
 
             return dataModel;
 

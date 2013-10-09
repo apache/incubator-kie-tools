@@ -18,6 +18,7 @@ package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -45,6 +46,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.session.SessionService;
+import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -231,6 +233,9 @@ public class ScenarioTestEditorServiceImpl
             final String packageName = projectService.resolvePackage( path ).getPackageName();
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            DataModelOracleUtilities.populateDataModel( oracle,
+                                                        dataModel,
+                                                        new HashSet<String>() );
 
             return new TestScenarioModelContent( scenario,
                                                  packageName,

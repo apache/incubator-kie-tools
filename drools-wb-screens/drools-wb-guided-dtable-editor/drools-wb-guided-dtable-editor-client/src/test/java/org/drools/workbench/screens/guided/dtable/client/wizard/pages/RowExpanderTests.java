@@ -370,7 +370,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
@@ -518,7 +518,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
@@ -708,7 +708,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
@@ -854,7 +854,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
@@ -978,7 +978,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
@@ -1102,7 +1102,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
@@ -1295,7 +1295,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
@@ -1361,7 +1361,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
@@ -2454,7 +2454,7 @@ public class RowExpanderTests {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
-        dataModel.setWorkbenchEnumLists( packageLoader.getPackageWorkbenchEnums() );
+        dataModel.setWorkbenchEnumDefinitions( packageLoader.getPackageWorkbenchDefinitions() );
         AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
                                                                       model,
                                                                       oracle,
