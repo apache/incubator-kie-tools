@@ -24,9 +24,9 @@
   <ui:with field="resources"
            type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <bootstrap:Container>
-    <bootstrap:Row addStyleNames="well">
-      <bootstrap:Column size="8">
+  <bootstrap:FluidContainer>
+    <bootstrap:FluidRow addStyleNames="well well-small">
+      <bootstrap:Column size="6">
         <bootstrap:Heading size="4">
           <ui:text from="{i18n.Dependencies}"/>
         </bootstrap:Heading>
@@ -37,10 +37,10 @@
       <bootstrap:Column size="1">
         <bootstrap:Button ui:field="addFromRepositoryDependencyButton" text='{i18n.AddFromRepository}'/>
       </bootstrap:Column>
-    </bootstrap:Row>
-    <bootstrap:Row>
+    </bootstrap:FluidRow>
+    <bootstrap:FluidRow>
       <bootstrap:DataGrid ui:field="dataGrid" width="600px" height="400px"/>
-    </bootstrap:Row>
-  </bootstrap:Container>
+    </bootstrap:FluidRow>
+  </bootstrap:FluidContainer>
 
 </ui:UiBinder>

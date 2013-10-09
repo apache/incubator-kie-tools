@@ -24,8 +24,8 @@
   <ui:with field="resources"
            type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <bootstrap:Container>
-    <bootstrap:Row addStyleNames="well">
+  <bootstrap:FluidContainer width="90%">
+    <bootstrap:FluidRow addStyleNames="well">
       <bootstrap:DropdownButton text="Project Settings: Group arfifact version" ui:field="dropDownButton">
 
         <bootstrap:NavList>
@@ -79,7 +79,7 @@
           <!--</bootstrap:NavLink>-->
         </bootstrap:NavList>
       </bootstrap:DropdownButton>
-    </bootstrap:Row>
+    </bootstrap:FluidRow>
     <gwt:DeckPanel ui:field="deckPanel"/>
-  </bootstrap:Container>
+  </bootstrap:FluidContainer>
 </ui:UiBinder>
