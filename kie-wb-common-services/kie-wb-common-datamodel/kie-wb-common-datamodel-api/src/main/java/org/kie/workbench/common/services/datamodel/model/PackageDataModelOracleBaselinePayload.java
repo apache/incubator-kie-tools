@@ -164,7 +164,7 @@ public class PackageDataModelOracleBaselinePayload {
         return javaEnumLists;
     }
 
-    public void setJavaEnumLists( final Map<String, String[]> javaEnumLists ) {
+    public void setJavaEnumDefinitions( final Map<String, String[]> javaEnumLists ) {
         this.javaEnumLists = javaEnumLists;
     }
 
@@ -172,7 +172,7 @@ public class PackageDataModelOracleBaselinePayload {
         return workbenchEnumLists;
     }
 
-    public void setWorkbenchEnumLists( final Map<String, String[]> workbenchEnumLists ) {
+    public void setWorkbenchEnumDefinitions( final Map<String, String[]> workbenchEnumLists ) {
         this.workbenchEnumLists = workbenchEnumLists;
     }
 

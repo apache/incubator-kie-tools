@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.commons.shared.oracle.OracleUtils;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracleUtils;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -238,7 +236,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         final String[] allTypes = getAllFactTypes();
         final List<String> externalTypes = new ArrayList<String>();
         for ( String type : allTypes ) {
-            final String packageName = PackageDataModelOracleUtils.getPackageName( type );
+            final String packageName = AsyncPackageDataModelOracleUtilities.getPackageName( type );
             if ( !packageName.equals( this.packageName ) ) {
                 externalTypes.add( type );
             }
@@ -367,6 +365,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                     callback.callback( fieldNames );
                 }
             } ).getUpdates( resourcePath,
+                            imports,
                             factType );
 
         } else {
@@ -414,6 +413,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                     callback.callback( fieldNames );
                 }
             } ).getUpdates( resourcePath,
+                            imports,
                             factType );
 
         } else {
@@ -978,70 +978,70 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void filter() {
         //Filter and rename Model Fields based on package name and imports
         filteredModelFields = new HashMap<String, ModelField[]>();
-        filteredModelFields.putAll( PackageDataModelOracleUtils.filterModelFields( packageName,
-                                                                                   imports,
-                                                                                   projectModelFields ) );
+        filteredModelFields.putAll( AsyncPackageDataModelOracleUtilities.filterModelFields( packageName,
+                                                                                            imports,
+                                                                                            projectModelFields ) );
 
         //Filter and rename Global Types based on package name and imports
         filteredGlobalTypes = new HashMap<String, String>();
-        filteredGlobalTypes.putAll( PackageDataModelOracleUtils.filterGlobalTypes( packageName,
-                                                                                   imports,
-                                                                                   packageGlobalTypes ) );
+        filteredGlobalTypes.putAll( AsyncPackageDataModelOracleUtilities.filterGlobalTypes( packageName,
+                                                                                            imports,
+                                                                                            packageGlobalTypes ) );
 
         //Filter and rename Collection Types based on package name and imports
         filteredCollectionTypes = new HashMap<String, Boolean>();
-        filteredCollectionTypes.putAll( PackageDataModelOracleUtils.filterCollectionTypes( packageName,
-                                                                                           imports,
-                                                                                           projectCollectionTypes ) );
+        filteredCollectionTypes.putAll( AsyncPackageDataModelOracleUtilities.filterCollectionTypes( packageName,
+                                                                                                    imports,
+                                                                                                    projectCollectionTypes ) );
 
         //Filter and rename Event Types based on package name and imports
         filteredEventTypes = new HashMap<String, Boolean>();
-        filteredEventTypes.putAll( PackageDataModelOracleUtils.filterEventTypes( packageName,
-                                                                                 imports,
-                                                                                 projectEventTypes ) );
+        filteredEventTypes.putAll( AsyncPackageDataModelOracleUtilities.filterEventTypes( packageName,
+                                                                                          imports,
+                                                                                          projectEventTypes ) );
 
         //Filter and rename TypeSources based on package name and imports
         filteredTypeSources = new HashMap<String, TypeSource>();
-        filteredTypeSources.putAll( PackageDataModelOracleUtils.filterTypeSources( packageName,
-                                                                                   imports,
-                                                                                   projectTypeSources ) );
+        filteredTypeSources.putAll( AsyncPackageDataModelOracleUtilities.filterTypeSources( packageName,
+                                                                                            imports,
+                                                                                            projectTypeSources ) );
 
         //Filter and rename Declared Types based on package name and imports
         filteredSuperTypes = new HashMap<String, String>();
-        filteredSuperTypes.putAll( PackageDataModelOracleUtils.filterSuperTypes( packageName,
-                                                                                 imports,
-                                                                                 projectSuperTypes ) );
+        filteredSuperTypes.putAll( AsyncPackageDataModelOracleUtilities.filterSuperTypes( packageName,
+                                                                                          imports,
+                                                                                          projectSuperTypes ) );
 
         //Filter and rename Type Annotations based on package name and imports
         filteredTypeAnnotations = new HashMap<String, Set<Annotation>>();
-        filteredTypeAnnotations.putAll( PackageDataModelOracleUtils.filterTypeAnnotations( packageName,
-                                                                                           imports,
-                                                                                           projectTypeAnnotations ) );
+        filteredTypeAnnotations.putAll( AsyncPackageDataModelOracleUtilities.filterTypeAnnotations( packageName,
+                                                                                                    imports,
+                                                                                                    projectTypeAnnotations ) );
 
         //Filter and rename Type Field Annotations based on package name and imports
         filteredTypeFieldsAnnotations = new HashMap<String, Map<String, Set<Annotation>>>();
-        filteredTypeFieldsAnnotations.putAll( PackageDataModelOracleUtils.filterTypeFieldsAnnotations( packageName,
-                                                                                                       imports,
-                                                                                                       projectTypeFieldsAnnotations ) );
+        filteredTypeFieldsAnnotations.putAll( AsyncPackageDataModelOracleUtilities.filterTypeFieldsAnnotations( packageName,
+                                                                                                                imports,
+                                                                                                                projectTypeFieldsAnnotations ) );
 
         //Filter and rename Enum definitions based on package name and imports
         filteredEnumLists = new HashMap<String, String[]>();
         filteredEnumLists.putAll( packageWorkbenchEnumLists );
-        filteredEnumLists.putAll( PackageDataModelOracleUtils.filterEnumDefinitions( packageName,
-                                                                                     imports,
-                                                                                     projectJavaEnumLists ) );
+        filteredEnumLists.putAll( AsyncPackageDataModelOracleUtilities.filterEnumDefinitions( packageName,
+                                                                                              imports,
+                                                                                              projectJavaEnumLists ) );
 
         //Filter and rename based on package name and imports
         filteredMethodInformation = new HashMap<String, List<MethodInfo>>();
-        filteredMethodInformation.putAll( PackageDataModelOracleUtils.filterMethodInformation( packageName,
-                                                                                               imports,
-                                                                                               projectMethodInformation ) );
+        filteredMethodInformation.putAll( AsyncPackageDataModelOracleUtilities.filterMethodInformation( packageName,
+                                                                                                        imports,
+                                                                                                        projectMethodInformation ) );
 
         //Filter and rename based on package name and imports
         filteredFieldParametersType = new HashMap<String, String>();
-        filteredFieldParametersType.putAll( PackageDataModelOracleUtils.filterFieldParametersTypes( packageName,
-                                                                                                    imports,
-                                                                                                    projectFieldParametersType ) );
+        filteredFieldParametersType.putAll( AsyncPackageDataModelOracleUtilities.filterFieldParametersTypes( packageName,
+                                                                                                             imports,
+                                                                                                             projectFieldParametersType ) );
     }
 
     // ####################################

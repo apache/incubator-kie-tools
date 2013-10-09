@@ -19,6 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
@@ -47,30 +49,47 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
 
     @Override
     public PackageDataModelOracleIncrementalPayload getUpdates( final Path resourcePath,
+                                                                final Imports imports,
                                                                 final String factType ) {
         PortablePreconditions.checkNotNull( "resourcePath",
                                             resourcePath );
+        PortablePreconditions.checkNotNull( "imports",
+                                            imports );
         PortablePreconditions.checkNotNull( "factType",
                                             factType );
 
         final PackageDataModelOracleIncrementalPayload dataModel = new PackageDataModelOracleIncrementalPayload();
 
         try {
-            PortablePreconditions.checkNotNull( "resourcePath",
-                                                resourcePath );
+            //Check resource was within a Project structure
             final Project project = resolveProject( resourcePath );
-            final Package pkg = resolvePackage( resourcePath );
-
-            //Resource was not within a Project structure
             if ( project == null ) {
                 return dataModel;
+            }
+            //Check resource was within a Package structure
+            final Package pkg = resolvePackage( resourcePath );
+            if ( pkg == null ) {
+                return dataModel;
+            }
+
+            //Get the fully qualified class name of the fact type
+            String fullyQualifiedClassName = null;
+            for ( Import imp : imports.getImports() ) {
+                if ( imp.getType().endsWith( factType ) ) {
+                    fullyQualifiedClassName = imp.getType();
+                    break;
+                }
+            }
+            if ( fullyQualifiedClassName == null ) {
+                fullyQualifiedClassName = pkg.getPackageName() + "." + factType;
             }
 
             //Retrieve (or build) oracle and populate incremental content
             final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle( project,
                                                                                               pkg );
-
-            //TODO Populate DataModel!!
+            DataModelOracleUtilities.populateDataModel( oracle,
+                                                        dataModel,
+                                                        fullyQualifiedClassName );
             return dataModel;
 
         } catch ( Exception e ) {
