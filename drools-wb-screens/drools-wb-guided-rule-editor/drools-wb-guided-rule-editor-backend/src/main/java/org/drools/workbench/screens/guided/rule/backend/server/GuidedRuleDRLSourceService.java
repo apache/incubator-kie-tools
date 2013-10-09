@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.rule.backend.server;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.uberfire.java.nio.file.Path;
@@ -40,7 +40,7 @@ public class GuidedRuleDRLSourceService
     @Override
     public String getSource( final Path path,
                              final RuleModel model ) {
-        return new StringBuilder().append( BRDRLPersistence.getInstance().marshal( model ) ).toString();
+        return new StringBuilder().append( RuleModelDRLPersistenceImpl.getInstance().marshal( model ) ).toString();
     }
 
 }

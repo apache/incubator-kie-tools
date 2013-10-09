@@ -27,7 +27,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
@@ -154,10 +154,10 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
                                                                sessionInfo ) );
 
-            return BRDRLPersistence.getInstance().unmarshalUsingDSL( drl,
-                                                                     globals,
-                                                                     dataModelService.getDataModel( path ),
-                                                                     dsls );
+            return RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                globals,
+                                                                                dataModelService.getDataModel( path ),
+                                                                                dsls );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.guided.template.backend.BRDRTXMLPersistence;
+import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
@@ -125,7 +125,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
 
             ioService.createFile( nioPath );
             ioService.write( nioPath,
-                             BRDRTXMLPersistence.getInstance().marshal( content ),
+                             RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( content ),
                              makeCommentedOption( comment ) );
 
             return newPath;
@@ -144,7 +144,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
                                                                sessionInfo ) );
 
-            return (TemplateModel) BRDRTXMLPersistence.getInstance().unmarshal( content, dataModelService.getDataModel( path ) );
+            return (TemplateModel) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -180,7 +180,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             model.setPackageName( packageName );
 
             ioService.write( paths.convert( resource ),
-                             BRDRTXMLPersistence.getInstance().marshal( model ),
+                             RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource, metadata ),
                              makeCommentedOption( comment ) );
 
@@ -247,7 +247,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                                              final TemplateModel content ) {
         try {
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream( BRDRTXMLPersistence.getInstance().marshal( content ).getBytes() ),
+                                              new ByteArrayInputStream( RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( content ).getBytes() ),
                                               FILTER_JAVA,
                                               FILTER_GLOBALS,
                                               FILTER_DSLS );

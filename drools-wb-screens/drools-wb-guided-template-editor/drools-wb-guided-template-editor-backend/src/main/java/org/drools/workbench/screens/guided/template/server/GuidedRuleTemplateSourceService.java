@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.template.server;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.guided.template.backend.BRDRTPersistence;
+import org.drools.workbench.models.guided.template.backend.RuleTemplateModelDRLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.uberfire.java.nio.file.Path;
@@ -40,7 +40,7 @@ public class GuidedRuleTemplateSourceService
     @Override
     public String getSource( final Path path,
                              final TemplateModel model ) {
-        return new StringBuilder().append( BRDRTPersistence.getInstance().marshal( model ) ).toString();
+        return new StringBuilder().append( RuleTemplateModelDRLPersistenceImpl.getInstance().marshal( model ) ).toString();
     }
 
 }
