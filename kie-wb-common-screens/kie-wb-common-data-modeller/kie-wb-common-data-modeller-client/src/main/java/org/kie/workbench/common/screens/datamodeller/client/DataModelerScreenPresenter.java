@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.client;
 
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.context.ProjectContext;
@@ -219,7 +220,7 @@ public class DataModelerScreenPresenter {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Error(),
 
-                    Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change_force(externalUser, currentProjectURI ),
+                    Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change_force(SafeHtmlUtils.htmlEscape(externalUser != null ? externalUser : ""), currentProjectURI ),
                     new Command() {
                         @Override
                         public void execute() {
