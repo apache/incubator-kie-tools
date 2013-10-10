@@ -48,7 +48,7 @@ public class DataModelResourceChangeObserver {
     public void processBatchChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
 
         final Set<ResourceChange> batchChanges = resourceBatchChangesEvent.getBatch();
-        final Map<Project, Boolean> notifiedProjects = new HashMap<Project, Boolean>();
+        final Map<String, Boolean> notifiedProjects = new HashMap<String, Boolean>();
 
         if (batchChanges == null) {
             //un expected case
@@ -62,10 +62,10 @@ public class DataModelResourceChangeObserver {
     }
 
     private void processResourceChange(final SessionInfo sessionInfo, final Path path, final ChangeType changeType) {
-        processResourceChange(sessionInfo, path, changeType, new HashMap<Project, Boolean>());
+        processResourceChange(sessionInfo, path, changeType, new HashMap<String, Boolean>());
     }
 
-    private void processResourceChange(final SessionInfo sessionInfo, final Path path, final ChangeType changeType, final Map<Project, Boolean> notifiedProjects) {
+    private void processResourceChange(final SessionInfo sessionInfo, final Path path, final ChangeType changeType, final Map<String, Boolean> notifiedProjects) {
 
         final Project project = projectService.resolveProject( path );
 
@@ -73,9 +73,9 @@ public class DataModelResourceChangeObserver {
             logger.debug("Processing resource change for sessionInfo: " + sessionInfo + ", project: " + project +
                 ", path: " + path + ", changeType: " + changeType);
 
-        if (project != null && !notifiedProjects.containsKey(project) && isObservableResource(path)) {
+        if (project != null && !notifiedProjects.containsKey(project.getRootPath().toURI()) && isObservableResource(path)) {
             invalidateDMOProjectCacheEvent.fire(new InvalidateDMOProjectCacheEvent(sessionInfo, project, path));
-            notifiedProjects.put(project, Boolean.TRUE);
+            notifiedProjects.put(project.getRootPath().toURI(), Boolean.TRUE);
         }
     }
 

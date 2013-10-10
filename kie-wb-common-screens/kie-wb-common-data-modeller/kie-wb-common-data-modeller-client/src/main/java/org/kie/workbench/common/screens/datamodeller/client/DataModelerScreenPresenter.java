@@ -17,24 +17,20 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.Window;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.NewDataObjectPopup;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelReload;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
@@ -48,22 +44,29 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.YesNoCancelPopup;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.model.toolbar.IconType;
-import org.uberfire.workbench.model.toolbar.ToolBar;
-import org.uberfire.workbench.model.toolbar.ToolBarItem;
-import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
-import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
+import org.uberfire.client.resources.i18n.CommonConstants;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentChange;
+import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentUpdate;
 
 //@Dependent
 @WorkbenchScreen(identifier = "dataModelerScreen")
@@ -93,8 +96,6 @@ public class DataModelerScreenPresenter {
 
     private Menus menus;
 
-    private ToolBar toolBar;
-
     @Inject
     Event<DataModelerEvent> dataModelerEvent;
 
@@ -115,6 +116,9 @@ public class DataModelerScreenPresenter {
 
     private boolean open = false;
 
+    @Inject
+    private SessionInfo sessionInfo;
+
     @WorkbenchPartTitle
     public String getTitle() {
         return Constants.INSTANCE.modelEditor_screen_name();
@@ -125,10 +129,14 @@ public class DataModelerScreenPresenter {
         return view;
     }
 
+    @WorkbenchMenu
+    public Menus getMenus() {
+        return menus;
+    }
+
     @OnStartup
     public void onStartup() {
         makeMenuBar();
-        makeToolBar();
         initContext();
         open = true;
         processProjectChange( workbenchContext.getActiveProject() );
@@ -136,7 +144,7 @@ public class DataModelerScreenPresenter {
 
     @IsDirty
     public boolean isDirty() {
-        return getContext() != null ? getContext().isDirty() : false;
+        return getContext() != null && getContext().isDirty();
     }
 
     @OnMayClose
@@ -153,44 +161,143 @@ public class DataModelerScreenPresenter {
         clearContext();
     }
 
-    public void onSave( final Project project ) {
+    /*
+     * The common use case, when the user clicks on the "Save" menu.
+     */
+    public void onSave() {
+
+        if (getContext().isDMOInvalidated()) {
+
+            //if the DMO was modified by another user we need to give the user the opportunity to force saving his
+            //changes or reload the model.
+
+            newConcurrentUpdate( getContext().getLastDMOUpdate().getProject().getRootPath(),
+                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //force save.
+                            saveAndChangeProject(true, null);
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //cancel
+                            //the editor remains in current status.
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //re-open, local changes will be discarded.
+                            reload();
+                        }
+                    }
+            ).show();
+        } else {
+            //no concurrency problems, we can save the model directly.
+            saveAndChangeProject(false, null);
+        }
+    }
+
+    /*
+     * Less normal use case, when the data modeler is open, and the user selects a distinct project in the project explorer.
+     * The user will have the option to save/discard/or force save prior to navigate to the next project.
+     *
+     */
+    public void onSaveAndChange( final Project changeProject ) {
+
+        if (getContext().isDMOInvalidated()) {
+
+            //The user selected to save current modifications prior to open next project, but the DMO was modified.
+            //we need to ask the user if he wants to force writing his changes, or he prefer to discard them.
+
+            final String newProjectURI = changeProject.getRootPath().toURI();
+            final String currentProjectURI = ( currentProject != null ? currentProject.getRootPath().toURI() : "" );
+            final String externalUser = getContext().getLastDMOUpdate() != null ? getSessionInfoIdentity(getContext().getLastDMOUpdate().getSessionInfo()) : null;
+
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Error(),
+
+                    Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change_force(externalUser, currentProjectURI ),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //force my changes to be written and then change the project.
+                            saveAndChangeProject(true, changeProject);
+                        }
+                    },
+                    Constants.INSTANCE.modelEditor_action_yes_force_save(),
+                    ButtonType.PRIMARY,
+                    IconType.PLUS_SIGN,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //discard my changes and load next project directly.
+                            loadProjectDataModel(changeProject);
+                        }
+                    },
+                    Constants.INSTANCE.modelEditor_action_no_discard_changes(),
+                    ButtonType.DANGER,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            yesNoCancelPopup.setCloseVisible(true);
+            yesNoCancelPopup.show();
+
+        } else {
+            //no problem, save my changes and load next project.
+            saveAndChangeProject(false, changeProject);
+        }
+    }
+
+    /**
+     * This method saves currentProject, and gives the opportunity to load another project after saving, the changeProject.
+     * Also if the overwrite attribute is true, we will ensure that currentProject pojos will overwrite existing ones.
+     * This attribute is used in cases where the project model was concurrently modified during edition and we want
+     * to force a rewriting.
+     *
+     * @param overwrite. true, ensures that what you see in the UI will be the model after generation. This attribute
+     *                   is set to true in when we want to force a model rewriting. false, indicates that we'll proceed
+     *                   as in the normal sequence when the DMO wasn't concurrently modified.
+     *
+     * @param changeProject if this parameter is set, currentProject will be saved, and then the changeProject will be
+     *                      loaded.
+     */
+    private void saveAndChangeProject(boolean overwrite, final Project changeProject) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_saving() );
-        if ( project == null ) {
+        if ( changeProject == null ) {
             projectContextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(),
-                                                                           workbenchContext.getActiveRepository(),
-                                                                           currentProject ) );
+                    workbenchContext.getActiveRepository(),
+                    currentProject ) );
         }
 
-        modelerService.call( new RemoteCallback<GenerationResult>() {
-            @Override
-            public void callback( GenerationResult result ) {
-                BusyPopup.close();
-                restoreModelStatus( result );
-                Boolean oldDirtyStatus = getContext().isDirty();
-                getContext().setDirty( false );
-                notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
-                if ( project != null ) {
-                    loadProjectDataModel( project );
+        modelerService.call(
+            new RemoteCallback<GenerationResult>() {
+                @Override
+                public void callback( GenerationResult result ) {
+                    BusyPopup.close();
+                    restoreModelStatus( result );
+                    Boolean oldDirtyStatus = getContext().isDirty();
+                    getContext().setDirty( false );
+                    getContext().setDMOInvalidated(false);
+                    getContext().setLastDMOUpdate(null);
+                    notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
+
+                    if ( changeProject != null ) {
+                        loadProjectDataModel( changeProject );
+                    }
+
+                    dataModelerEvent.fire(new DataModelStatusChangeEvent(DataModelerEvent.DATA_MODEL_BROWSER,
+                            getDataModel(),
+                            oldDirtyStatus,
+                            getContext().isDirty()));
                 }
-                dataModelerEvent.fire(new DataModelStatusChangeEvent(DataModelerEvent.DATA_MODEL_BROWSER,
-                        getDataModel(),
-                        oldDirtyStatus,
-                        getContext().isDirty()));
-            }
-        },
-        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel(getDataModel(), currentProject);
-
-    }
-
-    @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
-    }
-
-    @WorkbenchToolBar
-    public ToolBar getToolBar() {
-        return this.toolBar;
+            }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel(getDataModel(), currentProject, overwrite);
     }
 
     private void loadProjectDataModel( final Project project ) {
@@ -218,6 +325,11 @@ public class DataModelerScreenPresenter {
                                     @Override
                                     public void callback( DataModelTO dataModel ) {
                                         BusyPopup.close();
+
+                                        getContext().setDirty( false );
+                                        getContext().setDMOInvalidated(false);
+                                        getContext().setLastDMOUpdate(null);
+
                                         dataModel.setParentProjectName( projectRootPath.getFileName() );
                                         setDataModel( dataModel );
                                         notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_loaded( projectRootPath.toURI() ) ) );
@@ -259,8 +371,30 @@ public class DataModelerScreenPresenter {
     }
 
     private void onNewDataObject() {
-        newDataObjectPopup.setContext( getContext() );
-        newDataObjectPopup.show();
+
+        if (getContext().isDMOInvalidated()) {
+            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
+                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //ignore external changes
+                            newDataObjectPopup.setContext( getContext() );
+                            newDataObjectPopup.show();
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //re-open
+                            reload();
+                        }
+                    }
+            ).show();
+        } else {
+            newDataObjectPopup.setContext( getContext() );
+            newDataObjectPopup.show();
+        }
     }
 
     private void onProjectContextChange( @Observes final ProjectContextChangeEvent event ) {
@@ -269,6 +403,13 @@ public class DataModelerScreenPresenter {
             return;
         }
         processProjectChange( project );
+    }
+
+    private void onDataModelReload( @Observes final DataModelReload event) {
+        if (event.isFrom(getDataModel())) {
+            //Some of the related widgets has sent this event in order to re-load the model.
+            reload();
+        }
     }
 
     /*
@@ -292,27 +433,67 @@ public class DataModelerScreenPresenter {
         return open;
     }
 
+    /**
+     * This method is invoked when we detect that currentProject changed. Current project can change due to the following
+     * two scenarios.
+     * 1) The window is being opened at this moment, so we need to load the newProject for the first time.
+     * 2) The window was already opened and the user navigated to another project with the project explorer.
+     */
     private void processProjectChange( final Project newProject ) {
 
-        final boolean[] needsSave = new boolean[]{ false };
-
         if ( newProject != null && isOpen() && currentProjectChanged( newProject ) ) {
-            //the project has changed.
+            //the project has changed and we have pending changes to save.
             final String newProjectURI = newProject.getRootPath().toURI();
             final String currentProjectURI = ( currentProject != null ? currentProject.getRootPath().toURI() : "" );
             if ( getContext() != null && getContext().isDirty() ) {
-                needsSave[ 0 ] = Window.confirm( Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change( currentProjectURI,
-                                                                                                                          newProjectURI ) );
+                //when the project changed, and the current project is dirty we give the opportunity to the user
+                //to save current changes prior to open the destination project.
+                YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Warning(),
+                        Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change( currentProjectURI,
+                        newProjectURI ),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                //ok, the user wants to save current changes and then open next project.
+                                //save current project and open the new project.
+                                onSaveAndChange(newProject);
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                //not save current changes, simply open the new project.
+                                loadProjectDataModel(newProject);
+                            }
+                        },
+                        null
+                );
+                yesNoCancelPopup.setCloseVisible(false);
+                yesNoCancelPopup.show();
             } else if ( currentProject != null ) {
-                Window.alert( Constants.INSTANCE.modelEditor_notify_project_change( currentProjectURI,
-                                                                                    newProjectURI ) );
-            }
-            if ( needsSave[ 0 ] ) {
-                onSave( newProject );
+                //no pending changes, so simply notify the user that another project will be opened.
+                YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
+                        Constants.INSTANCE.modelEditor_notify_project_change( currentProjectURI, newProjectURI ),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                //simply open the new project.
+                                loadProjectDataModel(newProject);
+                            }
+                        },
+                        CommonConstants.INSTANCE.OK(),
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                yesNoCancelPopup.setCloseVisible(false);
+                yesNoCancelPopup.show();
             } else {
-                loadProjectDataModel( newProject );
+                //if currentProject is null, we are at the window opening type, simply load the data model
+                //to start working.
+                loadProjectDataModel(newProject);
             }
-
         } else {
             //TODO check if this is possible. By definition we will always have a path.
         }
@@ -323,6 +504,61 @@ public class DataModelerScreenPresenter {
             return true;
         }
         return !newProject.getRootPath().equals( currentProject.getRootPath() );
+    }
+
+    private void processDMOChange(@Observes InvalidateDMOProjectCacheEvent evt) {
+        /*
+        Window.alert("InvalidateDMOProjectCacheEvent was received: \n" +
+                " currentSessionInfo: \n" + printSessionInfo(sessionInfo) +
+                " eventSessionInfo: " + printSessionInfo(evt.getSessionInfo()) + ", path: " + evt.getResourcePath() +
+                " \n eventProject: " + evt.getProject() + " \n" +
+                " eventID: " + evt.getEventId());
+        */
+        //filter if the event is related to current project
+        if (currentProject != null && currentProject.getRootPath().equals( evt.getProject().getRootPath() ) && sessionInfo != null ) {
+
+            if (!sessionInfo.equals(evt.getSessionInfo()) || evt.getResourcePath().getFileName().equals("pom.xml")) {
+                //the project data model oracle was changed because of another user different than me OR
+                //the modification was done by me, executing in the same session but saving the project
+                //likely in the project editor.
+
+                //current project DMO was concurrently modified.
+                getContext().setDMOInvalidated(true);
+                getContext().setLastDMOUpdate(evt);
+
+                if (getContext().isDirty()) {
+                    notifyExternalDMOChange(evt);
+                }
+            } else {
+                //the event was generated when I saved the model
+                getContext().setDMOInvalidated(false);
+                getContext().setLastDMOUpdate(null);
+            }
+        }
+    }
+
+    private void notifyExternalDMOChange(InvalidateDMOProjectCacheEvent evt) {
+
+        newConcurrentChange( evt.getProject().getRootPath(),
+                evt.getSessionInfo().getIdentity(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //ignore, do nothing.
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        reload();
+                    }
+                }
+        ).show();
+
+    }
+
+    private void reload() {
+        loadProjectDataModel(currentProject);
     }
 
     private void restoreModelStatus( GenerationResult result ) {
@@ -341,31 +577,6 @@ public class DataModelerScreenPresenter {
     }
     */
 
-    private void makeToolBar() {
-        toolBar = new DefaultToolBar( "dataModelerToolbar" );
-
-        org.uberfire.mvp.Command saveCommand = new org.uberfire.mvp.Command() {
-            @Override
-            public void execute() {
-                onSave( null );
-            }
-        };
-
-        org.uberfire.mvp.Command newDataObjectCommand = new org.uberfire.mvp.Command() {
-            @Override
-            public void execute() {
-                onNewDataObject();
-            }
-        };
-
-        ToolBarItem item = new DefaultToolBarItem( IconType.SAVE, Constants.INSTANCE.modelEditor_menu_save(), saveCommand );
-        toolBar.addItem( item );
-
-        item = new DefaultToolBarItem( IconType.FILE, Constants.INSTANCE.modelEditor_menu_new_dataObject(), newDataObjectCommand );
-        toolBar.addItem( item );
-
-    }
-
     private void makeMenuBar() {
 
         org.uberfire.mvp.Command newDataObjectCommand = new org.uberfire.mvp.Command() {
@@ -378,7 +589,7 @@ public class DataModelerScreenPresenter {
         org.uberfire.mvp.Command saveCommand = new org.uberfire.mvp.Command() {
             @Override
             public void execute() {
-                onSave( null );
+                onSave();
             }
         };
 
@@ -408,5 +619,16 @@ public class DataModelerScreenPresenter {
 
     private void clearContext() {
         context.clear();
+    }
+
+    private static String printSessionInfo(SessionInfo sessionInfo) {
+        if (sessionInfo != null) {
+            return " [id: " + sessionInfo.getId() + ", identity: " + (sessionInfo.getIdentity() != null ? sessionInfo.getIdentity().getName() : null) + " ]";
+        }
+        return null;
+    }
+
+    private static String getSessionInfoIdentity(SessionInfo sessionInfo) {
+        return sessionInfo != null && sessionInfo.getIdentity() != null ? sessionInfo.getIdentity().getName() : null;
     }
 }

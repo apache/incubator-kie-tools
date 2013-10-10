@@ -29,6 +29,9 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.kie.commons.java.nio.file.OpenOption;
+import org.kie.commons.java.nio.file.Option;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
@@ -107,10 +110,10 @@ public class DataModelOracleDriver implements ModelDriver {
     }
 
     @Override
-    public List<FileChangeDescriptor> generateModel(DataModel dataModel, IOService ioService, Path root) throws Exception {
+    public List<FileChangeDescriptor> generateModel(DataModel dataModel, IOService ioService, Path root, OpenOption option) throws Exception {
 
         GenerationContext generationContext = new GenerationContext(dataModel);
-        OracleGenerationListener generationListener = new OracleGenerationListener(ioService, root);
+        OracleGenerationListener generationListener = new OracleGenerationListener(ioService, root, option);
         generationContext.setGenerationListener(generationListener);
 
         GenerationEngine generationEngine = GenerationEngine.getInstance();
@@ -379,11 +382,14 @@ public class DataModelOracleDriver implements ModelDriver {
 
         IOService ioService;
 
+        OpenOption option;
+
         List<FileChangeDescriptor> fileChanges = new ArrayList<FileChangeDescriptor>();
 
-        public OracleGenerationListener(IOService ioService, org.kie.commons.java.nio.file.Path output) {
+        public OracleGenerationListener(IOService ioService, org.kie.commons.java.nio.file.Path output, OpenOption option) {
             this.ioService = ioService;
             this.output = output;
+            this.option = option;
         }
 
         @Override
@@ -417,7 +423,7 @@ public class DataModelOracleDriver implements ModelDriver {
             destFilePath = subDirPath.resolve(fileName);
             boolean exists = ioService.exists(destFilePath);
 
-            ioService.write(destFilePath, content);
+            ioService.write(destFilePath, content, option);
 
             if (!exists) {
                 if (logger.isDebugEnabled()) logger.debug("Genertion listener created a new file: " + destFilePath);

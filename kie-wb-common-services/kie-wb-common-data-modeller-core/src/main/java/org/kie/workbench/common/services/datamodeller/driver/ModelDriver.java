@@ -17,6 +17,7 @@
 package org.kie.workbench.common.services.datamodeller.driver;
 
 
+import org.kie.commons.java.nio.file.OpenOption;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.commons.io.IOService;
@@ -32,7 +33,7 @@ public interface ModelDriver {
 
     AnnotationDriver getAnnotationDriver(String annotationClass);
 
-    List<FileChangeDescriptor> generateModel(DataModel dataModel, IOService ioService, Path root) throws Exception;
+    List<FileChangeDescriptor> generateModel(DataModel dataModel, IOService ioService, Path root, OpenOption option) throws Exception;
 
     DataModel createModel();
 }

@@ -58,17 +58,15 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.images.Ima
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataObjectComparator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentChange;
 
 public class DataModelBrowser extends Composite {
 
@@ -175,7 +173,7 @@ public class DataModelBrowser extends Composite {
             public void update( final int index,
                                 final DataObjectTO object,
                                 final ImageResource value ) {
-                deleteDataObject(object, index);
+                checkAndDeleteDataObject(object, index);
             }
         } );
 
@@ -296,8 +294,29 @@ public class DataModelBrowser extends Composite {
 
     @UiHandler("newEntityButton")
     void newEntityClick( ClickEvent event ) {
-        newDataObjectPopup.setContext( getContext() );
-        newDataObjectPopup.show();
+
+        if (getContext().isDMOInvalidated()) {
+            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
+                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            newDataObjectPopup.setContext( getContext() );
+                            newDataObjectPopup.show();
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            dataModelerEvent.fire(new DataModelReload(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), null));
+                        }
+                    }
+            ).show();
+        } else {
+            newDataObjectPopup.setContext( getContext() );
+            newDataObjectPopup.show();
+        }
+
     }
 
     public void selectDataObject( DataObjectTO dataObject ) {
@@ -320,6 +339,28 @@ public class DataModelBrowser extends Composite {
         index = index > 0 ? ( index - 1 ) : 0;
 
         dataObjectsTable.setKeyboardSelectedRow( index );
+    }
+
+    private void checkAndDeleteDataObject(final DataObjectTO dataObject, final int index) {
+        if (getContext().isDMOInvalidated()) {
+            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
+                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            deleteDataObject(dataObject, index);
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            dataModelerEvent.fire(new DataModelReload(DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObject));
+                        }
+                    }
+            ).show();
+        } else {
+            deleteDataObject(dataObject, index);
+        }
     }
 
     private void deleteDataObject( final DataObjectTO dataObjectTO,

@@ -16,12 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -32,6 +27,7 @@ import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCac
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.commons.io.IOService;
+import org.kie.commons.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -53,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
@@ -79,6 +76,9 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Inject
     private SessionInfo sessionInfo;
+
+    @Inject
+    private Identity identity;
 
     @Inject
     private DataModelService dataModelService;
@@ -139,41 +139,61 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
+
     @Override
     public GenerationResult saveModel( DataModelTO dataModel,
                                        final Project project ) {
 
+        return saveModel(dataModel, project, false);
+
+    }
+
+    @Override
+    public GenerationResult saveModel( DataModelTO dataModel,
+                                       final Project project,
+                                       final boolean overwrite) {
+
         Path projectPath = project.getRootPath();
+        Long startTime = System.currentTimeMillis();
+        boolean onBatch = false;
 
         try {
-
-            Long startTime = System.currentTimeMillis();
-
-            //calculate the java sources path
             //ensure java sources directory exists.
             org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
 
+            if (overwrite) {
+                mergeWithExistingModel(dataModel, project);
+            }
+
             //convert to domain model
             DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain( dataModel );
-            //optimization remove unmodified data objects from the model in order to skip generation for unmodified objects.
-            removeUnmodifiedObjects( dataModelDomain, dataModel );
 
-            //clean the files that needs to be deleted prior to model generation.
+            if (!overwrite) {
+                //optimization remove unmodified data objects from the model in order to skip generation for unmodified objects.
+                removeUnmodifiedObjects( dataModelDomain, dataModel );
+            }
+
+            //calculate the files that needs to be deleted prior to model generation.
             List<Path> deleteableFiles = calculateDeleteableFiles( dataModel, javaPath );
-            cleanupFiles( deleteableFiles );
 
+            //@wmedvede now the InvalidateDMOProjectCacheEvent will be fired in the DataModelResourceChangeObserver
             //invalidate ProjectDataModelOracle for this project.
             //invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( projectPath ) );
 
+            //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
+            //to it must be treated carefully.
+            CommentedOption option = makeCommentedOption("Data modeller");
+            ioService.startBatch();
+            onBatch = true;
+
+            //delete removed data objects
+            cleanupFiles( deleteableFiles, option );
+            javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
-            javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
-            List<FileChangeDescriptor> driverChanges = driver.generateModel( dataModelDomain, ioService, javaPath );
+            driver.generateModel( dataModelDomain, ioService, javaPath , option);
 
-            notifyFileChanges( deleteableFiles, driverChanges );
-
-            //cleanupEmptyDirs( javaPath );
-            //after file cleaning we must ensure again that the java path exists
-            javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
+            onBatch = false;
+            ioService.endBatch();
 
             Long endTime = System.currentTimeMillis();
             if ( logger.isDebugEnabled() ) {
@@ -187,8 +207,49 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         } catch ( Exception e ) {
             logger.error( "An error was produced during data model generation, dataModel: " + dataModel + ", path: " + projectPath, e );
+            if (onBatch) {
+                try {
+                    logger.warn("IOService batch method is still on, trying to end batch processing.");
+                    ioService.endBatch();
+                    logger.warn("IOService batch method is was successfully finished. The user will still get the exception, but the batch processing was finished.");
+                } catch (Exception ex) {
+                    logger.error("An error was produced when the IOService.endBatch processing was executed.", ex);
+                }
+            }
             throw new ServiceException( "Data model: " + dataModel.getParentProjectName() + ", couldn't be generated due to the following error. " + e );
         }
+    }
+
+    private void mergeWithExistingModel(DataModelTO dataModel, Project project) {
+
+        Map<String, DataObjectTO> deletedObjects = new HashMap<String, DataObjectTO>();
+        Map<String, DataObjectTO> currentObjects = new HashMap<String, DataObjectTO>();
+        DataModelTO reloadedModel = loadModel(project);
+
+        for (DataObjectTO dataObject : dataModel.getDataObjects()) {
+            currentObjects.put(dataObject.getClassName(), dataObject);
+        }
+
+        for (DataObjectTO dataObject : dataModel.getDeletedDataObjects()) {
+            deletedObjects.put(dataObject.getClassName(), dataObject);
+        }
+
+        for (DataObjectTO reloadedDataObject : reloadedModel.getDataObjects() ) {
+            if (!currentObjects.containsKey(reloadedDataObject.getClassName()) && !deletedObjects.containsKey(reloadedDataObject.getClassName())) {
+                dataModel.getDeletedDataObjects().add(reloadedDataObject);
+            }
+        }
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+        final CommentedOption option = new CommentedOption( sessionInfo.getId(),
+                name,
+                null,
+                commitMessage,
+                when );
+        return option;
     }
 
     @Override
@@ -304,9 +365,9 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    private void cleanupFiles( List<Path> deleteableFiles ) {
+    private void cleanupFiles( List<Path> deleteableFiles, CommentedOption option ) {
         for ( Path filePath : deleteableFiles ) {
-            ioService.deleteIfExists( paths.convert( filePath ) );
+            ioService.deleteIfExists( paths.convert( filePath ) , option );
         }
     }
 

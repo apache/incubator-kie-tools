@@ -63,21 +63,16 @@ import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValue
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.util.ObjectPropertyComparator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.mvp.Command;
+
+import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentChange;
 
 
 public class DataObjectBrowser extends Composite {
@@ -342,7 +337,7 @@ public class DataObjectBrowser extends Composite {
                                 final ObjectPropertyTO property,
                                 final ImageResource value ) {
 
-                deleteDataObjectProperty(property, index);
+                checkAndDeleteDataObjectProperty(property, index);
             }
         } );
 
@@ -538,7 +533,29 @@ public class DataObjectBrowser extends Composite {
         }
     }
 
-    private void deleteDataObjectProperty(ObjectPropertyTO objectProperty, int index) {
+    private void checkAndDeleteDataObjectProperty(final ObjectPropertyTO objectPropertyTO, final int index) {
+        if (getContext().isDMOInvalidated()) {
+            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
+                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            deleteDataObjectProperty(objectPropertyTO, index);
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            dataModelerEvent.fire(new DataModelReload(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), dataObject));
+                        }
+                    }
+            ).show();
+        } else {
+            deleteDataObjectProperty(objectPropertyTO, index);
+        }
+    }
+
+    private void deleteDataObjectProperty(final ObjectPropertyTO objectProperty, final int index) {
         if (dataObject != null) {
             dataObject.getProperties().remove(objectProperty);
 
@@ -607,10 +624,31 @@ public class DataObjectBrowser extends Composite {
 
     @UiHandler("newPropertyButton")
     void newPropertyClick(ClickEvent event) {
-        createNewProperty(  dataObject,
-                            DataModelerUtils.getInstance().unCapitalize(newPropertyId.getText()),
-                            newPropertyLabel.getText(),
-                            newPropertyType.getValue() );
+        if (getContext().isDMOInvalidated()) {
+            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
+                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            createNewProperty(dataObject,
+                                    DataModelerUtils.getInstance().unCapitalize(newPropertyId.getText()),
+                                    newPropertyLabel.getText(),
+                                    newPropertyType.getValue());
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            dataModelerEvent.fire(new DataModelReload(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), dataObject));
+                        }
+                    }
+            ).show();
+        } else {
+            createNewProperty(dataObject,
+                    DataModelerUtils.getInstance().unCapitalize(newPropertyId.getText()),
+                    newPropertyLabel.getText(),
+                    newPropertyType.getValue());
+        }
     }
 
     //Event Observers

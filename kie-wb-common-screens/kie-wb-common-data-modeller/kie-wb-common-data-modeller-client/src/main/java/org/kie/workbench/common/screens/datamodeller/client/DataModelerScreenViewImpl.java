@@ -28,11 +28,14 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.DataModelBro
 import org.kie.workbench.common.screens.datamodeller.client.widgets.DataObjectBrowser;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.ModelPropertiesEditor;
 import org.kie.workbench.common.screens.datamodeller.events.*;
+import org.uberfire.mvp.Command;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+
+import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentChange;
 
 //@Dependent
 public class DataModelerScreenViewImpl extends Composite
@@ -115,6 +118,7 @@ public class DataModelerScreenViewImpl extends Composite
 
     private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
         updateChangeStatus(event);
+        checkDMODirtyStatus();
     }
 
     private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
@@ -127,10 +131,35 @@ public class DataModelerScreenViewImpl extends Composite
     
     private void onDataObjectFieldChange(@Observes DataObjectFieldChangeEvent event) {
         updateChangeStatus(event);
+        checkDMODirtyStatus();
     }
 
     private void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
         updateChangeStatus(event);
+    }
+
+    private void checkDMODirtyStatus() {
+        if (getContext() != null && getContext().isDMOInvalidated()) {
+            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
+                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //do nothing in this case
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            dataModelerEvent.fire(new DataModelReload(null, getContext().getDataModel(), null));
+                        }
+                    }
+            ).show();
+        }
+    }
+
+    private DataModelerContext getContext() {
+        return context;
     }
 
 }

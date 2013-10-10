@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 
+import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
@@ -39,6 +40,10 @@ public class DataModelerContext {
     private List<PropertyTypeTO> baseTypes;
 
     private boolean dirty = false;
+
+    private boolean DMOInvalidated = false;
+
+    private InvalidateDMOProjectCacheEvent lastDMOUpdate;
 
     private List<String> currentProjectPackages = new ArrayList<String>();
 
@@ -88,6 +93,22 @@ public class DataModelerContext {
         this.dirty = dirty;
     }
 
+    public boolean isDMOInvalidated() {
+        return DMOInvalidated;
+    }
+
+    public void setDMOInvalidated(boolean DMOInvalidated) {
+        this.DMOInvalidated = DMOInvalidated;
+    }
+
+    public InvalidateDMOProjectCacheEvent getLastDMOUpdate() {
+        return lastDMOUpdate;
+    }
+
+    public void setLastDMOUpdate(InvalidateDMOProjectCacheEvent lastDMOUpdate) {
+        this.lastDMOUpdate = lastDMOUpdate;
+    }
+
     public void appendPackages(Collection<Package> packages) {
         if (packages != null) {
             for (Package packageToAppend : packages) {
@@ -124,5 +145,7 @@ public class DataModelerContext {
         if (dataModel != null && dataModel.getDataObjects() != null) dataModel.getDataObjects().clear();
         cleanPackages();
         helper = new DataModelHelper();
+        setLastDMOUpdate(null);
+        setDMOInvalidated(false);
     }
 }

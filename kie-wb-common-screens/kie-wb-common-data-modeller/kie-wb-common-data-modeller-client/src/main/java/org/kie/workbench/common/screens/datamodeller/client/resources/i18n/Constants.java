@@ -65,7 +65,13 @@ public interface Constants extends Messages {
 
     public String modelEditor_confirm_delete();
 
+    public String modelEditor_action_yes_force_save();
+
+    public String modelEditor_action_no_discard_changes();
+
     public String modelEditor_confirm_save_model_before_project_change(String from, String to);
+
+    public String modelEditor_confirm_save_model_before_project_change_force(String user, String to);
 
     public String modelEditor_notify_project_change(String from, String to);
 

@@ -36,7 +36,11 @@ public interface DataModelerService {
     DataModelTO loadModel( final Project project );
 
     GenerationResult saveModel( final DataModelTO dataModel,
-                                final Project project );
+                                final Project project,
+                                final boolean overwrite);
+
+    GenerationResult saveModel( final DataModelTO dataModel,
+                                final Project project);
 
     List<PropertyTypeTO> getBasePropertyTypes();
 
