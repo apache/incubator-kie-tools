@@ -410,7 +410,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                                       }
                                                                       if ( !changed ) {
                                                                           completions.put( fieldName,
-                                                                                           FIElD_VALUE_PREFIX + "." + field );
+                                                                                           FIElD_VALUE_PREFIX + "." + fieldName );
                                                                       }
                                                                   }
                                                               }
