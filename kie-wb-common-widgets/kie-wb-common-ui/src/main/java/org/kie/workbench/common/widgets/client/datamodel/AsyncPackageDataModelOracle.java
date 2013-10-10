@@ -53,7 +53,7 @@ public interface AsyncPackageDataModelOracle {
 
     Collection<String> getRuleNamesForPackage( String packageName );
 
-    //Fact and Field related methods
+    //Fact related methods
     String[] getFactTypes();
 
     String[] getAllFactTypes();
@@ -74,14 +74,13 @@ public interface AsyncPackageDataModelOracle {
 
     Map<String, Set<Annotation>> getTypeFieldsAnnotations( final String factType );
 
-    Map<String, ModelField[]> getModelFields();
-
+    //Field related methods
     void getFieldCompletions( final String factType,
-                              final Callback<String[]> callback );
+                              final Callback<ModelField[]> callback );
 
     void getFieldCompletions( final String factType,
                               final FieldAccessorsAndMutators accessor,
-                              final Callback<String[]> callback );
+                              final Callback<ModelField[]> callback );
 
     String getFieldType( final String variableClass,
                          final String fieldName );
@@ -116,7 +115,7 @@ public interface AsyncPackageDataModelOracle {
 
     boolean isGlobalVariable( final String variable );
 
-    String[] getFieldCompletionsForGlobalVariable( final String variable );
+    ModelField[] getFieldCompletionsForGlobalVariable( final String variable );
 
     List<MethodInfo> getMethodInfosForGlobalVariable( final String variable );
 

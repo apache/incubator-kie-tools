@@ -21,74 +21,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
-import org.uberfire.backend.vfs.Path;
 
 public class AsyncPackageDataModelOracleUtilities {
-
-    public static void populateDataModelOracle( final Path resourcePath,
-                                                final AsyncPackageDataModelOracle oracle,
-                                                final PackageDataModelOracleBaselinePayload payload ) {
-        populate( oracle,
-                  payload );
-        oracle.init( resourcePath );
-        oracle.filter();
-    }
 
     public static void populateDataModelOracle( final AsyncPackageDataModelOracle oracle,
                                                 final PackageDataModelOracleIncrementalPayload payload ) {
         populate( oracle,
                   payload );
         oracle.filter();
-    }
-
-    public static void populateDataModelOracle( final Path resourcePath,
-                                                final HasImports hasImports,
-                                                final AsyncPackageDataModelOracle oracle,
-                                                final PackageDataModelOracleBaselinePayload payload ) {
-        populate( oracle,
-                  payload );
-        oracle.init( resourcePath );
-        oracle.filter( hasImports.getImports() );
-    }
-
-    public static void populateDataModelOracle( final HasImports hasImports,
-                                                final AsyncPackageDataModelOracle oracle,
-                                                final PackageDataModelOracleIncrementalPayload payload ) {
-        populate( oracle,
-                  payload );
-        oracle.filter( hasImports.getImports() );
-    }
-
-    private static void populate( final AsyncPackageDataModelOracle oracle,
-                                  final PackageDataModelOracleBaselinePayload payload ) {
-        oracle.setProjectName( payload.getProjectName() );
-        oracle.addModelFields( payload.getModelFields() );
-        oracle.addRuleNames( payload.getRuleNames() );
-        oracle.addFieldParametersType( payload.getFieldParametersType() );
-        oracle.addEventTypes( payload.getEventTypes() );
-        oracle.addTypeSources( payload.getTypeSources() );
-        oracle.addSuperTypes( payload.getSuperTypes() );
-        oracle.addTypeAnnotations( payload.getTypeAnnotations() );
-        oracle.addTypeFieldsAnnotations( payload.getTypeFieldsAnnotations() );
-        oracle.addJavaEnumDefinitions( payload.getJavaEnumDefinitions() );
-        oracle.addMethodInformation( payload.getMethodInformation() );
-        oracle.addCollectionTypes( payload.getCollectionTypes() );
-        oracle.addPackageNames( payload.getPackageNames() );
-
-        oracle.setPackageName( payload.getPackageName() );
-        oracle.addWorkbenchEnumDefinitions( payload.getWorkbenchEnumDefinitions() );
-        oracle.addDslConditionSentences( payload.getDslConditionSentences() );
-        oracle.addDslActionSentences( payload.getDslActionSentences() );
-        oracle.addGlobals( payload.getGlobals() );
     }
 
     private static void populate( final AsyncPackageDataModelOracle oracle,
