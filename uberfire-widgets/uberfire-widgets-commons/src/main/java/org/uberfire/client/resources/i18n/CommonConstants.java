@@ -30,11 +30,17 @@ public interface CommonConstants
 
     String OK();
 
+    String YES();
+
+    String NO();
+
     String Information();
 
     String Close();
 
     String Error();
+
+    String Warning();
 
     String ShowDetail();
 
