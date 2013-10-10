@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.kie.commons.services.cdi.Startup;
 import org.kie.commons.services.cdi.StartupType;
@@ -31,6 +32,7 @@ import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.config.ConfigGroup;
+import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
@@ -92,6 +94,12 @@ public class AppSetup {
         }
 
         //Define mandatory properties
+        defineGlobalProperties();
+
+        defineEditorProperties();
+    }
+
+    private void defineGlobalProperties() {
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
         boolean globalSettingsDefined = false;
         for ( ConfigGroup globalConfigGroup : globalConfigGroups ) {
@@ -103,17 +111,42 @@ public class AppSetup {
         if ( !globalSettingsDefined ) {
             configurationService.addConfiguration( getGlobalConfiguration() );
         }
+    }
 
-        //Define properties required by the Work Items Editor
+    private void defineEditorProperties() {
         List<ConfigGroup> editorConfigGroups = configurationService.getConfiguration( ConfigType.EDITOR );
-        boolean workItemsEditorSettingsDefined = false;
+        defineWorkItemsProperties(editorConfigGroups);
+        defineTestScenarioProperties(editorConfigGroups);
+    }
+
+    private void defineTestScenarioProperties(List<ConfigGroup> editorConfigGroups) {
+        boolean settingsDefined = false;
         for ( ConfigGroup editorConfigGroup : editorConfigGroups ) {
-            if ( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
-                workItemsEditorSettingsDefined = true;
+            if ( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
+                settingsDefined = true;
                 break;
             }
         }
-        if ( !workItemsEditorSettingsDefined ) {
+        if ( !settingsDefined ) {
+            /**
+             *
+             * TODO : get TEST SCENARIO ELEMENT DEFINITIONS
+             *
+             */
+            configurationService.addConfiguration( getTestScenarioElementDefinitions() );
+        }
+    }
+
+
+    private void defineWorkItemsProperties(List<ConfigGroup> editorConfigGroups) {
+        boolean settingsDefined = false;
+        for ( ConfigGroup editorConfigGroup : editorConfigGroups ) {
+            if ( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
+                settingsDefined = true;
+                break;
+            }
+        }
+        if ( !settingsDefined ) {
             configurationService.addConfiguration( getWorkItemElementDefinitions() );
         }
     }
@@ -135,6 +168,19 @@ public class AppSetup {
                                                                  "true" ) );
         group.addConfigItem( configurationFactory.newConfigItem( "rule-modeller-onlyShowDSLStatements",
                                                                  "false" ) );
+        return group;
+    }
+
+    private ConfigGroup getTestScenarioElementDefinitions() {
+        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.EDITOR,
+                ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS,
+                "" );
+
+        ConfigItem<Integer> configItem = new ConfigItem<Integer>();
+        configItem.setName(ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS);
+        configItem.setValue(10000);
+        group.addConfigItem( configItem );
+
         return group;
     }
 
