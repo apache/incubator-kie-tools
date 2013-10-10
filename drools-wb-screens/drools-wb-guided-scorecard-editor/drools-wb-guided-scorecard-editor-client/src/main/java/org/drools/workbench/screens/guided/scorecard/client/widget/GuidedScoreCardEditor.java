@@ -53,6 +53,7 @@ import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
@@ -86,8 +87,6 @@ public class GuidedScoreCardEditor extends Composite {
     private ListBox dropDownFields = new ListBox();
     private ListBox dropDownFacts = new ListBox();
 
-    private Map<String, ModelField[]> oracleModelFields;
-
     private ScoreCardModel model;
     private AsyncPackageDataModelOracle oracle;
 
@@ -99,7 +98,6 @@ public class GuidedScoreCardEditor extends Composite {
                             final AsyncPackageDataModelOracle oracle ) {
         this.model = model;
         this.oracle = oracle;
-        this.oracleModelFields = oracle.getModelFields();
 
         final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.scoreCardTitle0( model.getName() ) );
         disclosurePanel.setWidth( "100%" );
@@ -142,16 +140,22 @@ public class GuidedScoreCardEditor extends Composite {
         ListBox enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget( 1,
                                                                             0 );
         if ( enumDropDown.getSelectedIndex() > -1 ) {
-            final String factName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-            model.setFactName( factName );
-            if ( oracleModelFields.get( factName ) != null ) {
-                for ( final ModelField mf : oracleModelFields.get( factName ) ) {
-                    if ( mf.getType().equals( factName ) ) {
-                        model.setFactName( mf.getClassName() );
-                        break;
-                    }
-                }
-            }
+            final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
+            model.setFactName( simpleFactName );
+            oracle.getFieldCompletions( simpleFactName,
+                                        new Callback<ModelField[]>() {
+                                            @Override
+                                            public void callback( final ModelField[] fields ) {
+                                                if ( fields != null ) {
+                                                    for ( final ModelField mf : fields ) {
+                                                        if ( mf.getType().equals( simpleFactName ) ) {
+                                                            model.setFactName( mf.getClassName() );
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } );
         }
 
         enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget( 1,
@@ -182,14 +186,20 @@ public class GuidedScoreCardEditor extends Composite {
             if ( enumDropDown.getSelectedIndex() > -1 ) {
                 final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
                 characteristic.setFact( simpleFactName );
-                if ( oracleModelFields.get( simpleFactName ) != null ) {
-                    for ( ModelField mf : oracleModelFields.get( simpleFactName ) ) {
-                        if ( mf.getType().equals( simpleFactName ) ) {
-                            characteristic.setFact( mf.getClassName() );
-                            break;
-                        }
-                    }
-                }
+                oracle.getFieldCompletions( simpleFactName,
+                                            new Callback<ModelField[]>() {
+                                                @Override
+                                                public void callback( final ModelField[] fields ) {
+                                                    if ( fields != null ) {
+                                                        for ( ModelField mf : fields ) {
+                                                            if ( mf.getType().equals( simpleFactName ) ) {
+                                                                characteristic.setFact( mf.getClassName() );
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            } );
 
                 //Characteristic Field (cannot be set if no Fact Type has been set)
                 enumDropDown = (ListBox) flexTable.getWidget( 2,
@@ -201,8 +211,14 @@ public class GuidedScoreCardEditor extends Composite {
                 } else {
                     characteristic.setField( "" );
                 }
-                characteristic.setDataType( getDataTypeForField( simpleFactName,
-                                                                 characteristic.getField() ) );
+                getDataTypeForField( simpleFactName,
+                                     characteristic.getField(),
+                                     new Callback<String>() {
+                                         @Override
+                                         public void callback( final String result ) {
+                                             characteristic.setDataType( result );
+                                         }
+                                     } );
             }
 
             //Characteristic Reason Code
@@ -234,8 +250,6 @@ public class GuidedScoreCardEditor extends Composite {
         for ( final String factType : eligibleFacts ) {
             dropDownFacts.addItem( factType );
         }
-
-        this.oracleModelFields = oracle.getModelFields();
 
         String factName = model.getFactName();
         // if fact is a fully qualified className, strip off the packageName
@@ -286,14 +300,19 @@ public class GuidedScoreCardEditor extends Composite {
 
         //Reason Codes List Box
         ddReasonCodeField = new ListBox();
-        final String[] eligibleReasonCodeFields = getEligibleFields( factName,
-                                                                     typesForRC );
-        for ( final String field : eligibleReasonCodeFields ) {
-            ddReasonCodeField.addItem( field );
-        }
-        final String rcField = model.getReasonCodeField() + " : List";
-        final int selectedReasonCodeIndex = Arrays.asList( eligibleReasonCodeFields ).indexOf( rcField );
-        ddReasonCodeField.setSelectedIndex( selectedReasonCodeIndex >= 0 ? selectedReasonCodeIndex : 0 );
+        getEligibleFields( factName,
+                           typesForRC,
+                           new Callback<String[]>() {
+                               @Override
+                               public void callback( final String[] eligibleReasonCodeFields ) {
+                                   for ( final String field : eligibleReasonCodeFields ) {
+                                       ddReasonCodeField.addItem( field );
+                                   }
+                                   final String rcField = model.getReasonCodeField() + " : List";
+                                   final int selectedReasonCodeIndex = Arrays.asList( eligibleReasonCodeFields ).indexOf( rcField );
+                                   ddReasonCodeField.setSelectedIndex( selectedReasonCodeIndex >= 0 ? selectedReasonCodeIndex : 0 );
+                               }
+                           } );
 
         final boolean useReasonCodes = model.isUseReasonCodes();
         String reasonCodesAlgo = model.getReasonCodesAlgorithm();
@@ -382,14 +401,19 @@ public class GuidedScoreCardEditor extends Composite {
             return;
         }
         final String selectedFactType = dropDownFacts.getItemText( selectedIndex );
-        final String[] eligibleFieldsForSelectedFactType = getEligibleFields( selectedFactType,
-                                                                              typesForScore );
-        for ( final String field : eligibleFieldsForSelectedFactType ) {
-            dropDownFields.addItem( field );
-        }
-        final String qualifiedFieldName = model.getFieldName() + " : double";
-        final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( qualifiedFieldName );
-        dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
+        getEligibleFields( selectedFactType,
+                           typesForScore,
+                           new Callback<String[]>() {
+                               @Override
+                               public void callback( final String[] eligibleFieldsForSelectedFactType ) {
+                                   for ( final String field : eligibleFieldsForSelectedFactType ) {
+                                       dropDownFields.addItem( field );
+                                   }
+                                   final String qualifiedFieldName = model.getFieldName() + " : double";
+                                   final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( qualifiedFieldName );
+                                   dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
+                               }
+                           } );
     }
 
     private Widget getCharacteristics() {
@@ -618,21 +642,25 @@ public class GuidedScoreCardEditor extends Composite {
                                             final ListBox dropDownFields ) {
         final int selectedIndex = dropDownFacts.getSelectedIndex();
         final String selectedFactType = dropDownFacts.getItemText( selectedIndex );
-        final String[] eligibleFieldsForSelectedFactType = getEligibleFields( selectedFactType,
-                                                                              typesForAttributes );
+        getEligibleFields( selectedFactType,
+                           typesForAttributes,
+                           new Callback<String[]>() {
+                               @Override
+                               public void callback( final String[] eligibleFieldsForSelectedFactType ) {
+                                   String selectedField = "";
+                                   if ( characteristic != null ) {
+                                       selectedField = characteristic.getField();
+                                       selectedField = selectedField + " : " + characteristic.getDataType();
+                                   }
 
-        String selectedField = "";
-        if ( characteristic != null ) {
-            selectedField = characteristic.getField();
-            selectedField = selectedField + " : " + characteristic.getDataType();
-        }
-
-        dropDownFields.clear();
-        for ( final String field : eligibleFieldsForSelectedFactType ) {
-            dropDownFields.addItem( field );
-        }
-        final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( selectedField );
-        dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
+                                   dropDownFields.clear();
+                                   for ( final String field : eligibleFieldsForSelectedFactType ) {
+                                       dropDownFields.addItem( field );
+                                   }
+                                   final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( selectedField );
+                                   dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
+                               }
+                           } );
     }
 
     private Widget addAttributeCellTable( final DirtyableFlexTable cGrid,
@@ -778,48 +806,56 @@ public class GuidedScoreCardEditor extends Composite {
         return ( attributeCellTable );
     }
 
-    private String[] getEligibleFields( final String factName,
-                                        final String[] types ) {
-        final List<String> fields = new ArrayList<String>();
-        for ( final String clazz : oracleModelFields.keySet() ) {
-            if ( clazz.equalsIgnoreCase( factName ) ) {
-                for ( final ModelField field : oracleModelFields.get( clazz ) ) {
-                    String type = field.getClassName();
-                    if ( type.lastIndexOf( "." ) > -1 ) {
-                        type = type.substring( type.lastIndexOf( "." ) + 1 );
-                    }
-                    for ( final String t : types ) {
-                        if ( type.equalsIgnoreCase( t ) ) {
-                            fields.add( field.getName() + " : " + type );
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return fields.toArray( new String[]{ } );
+    private void getEligibleFields( final String factName,
+                                    final String[] types,
+                                    final Callback<String[]> callback ) {
+        oracle.getFieldCompletions( factName,
+                                    new Callback<ModelField[]>() {
+                                        @Override
+                                        public void callback( final ModelField[] fields ) {
+                                            final List<String> eligibleFieldNames = new ArrayList<String>();
+                                            for ( final ModelField field : fields ) {
+                                                String type = field.getClassName();
+                                                if ( type.lastIndexOf( "." ) > -1 ) {
+                                                    type = type.substring( type.lastIndexOf( "." ) + 1 );
+                                                }
+                                                for ( final String t : types ) {
+                                                    if ( type.equalsIgnoreCase( t ) ) {
+                                                        eligibleFieldNames.add( field.getName() + " : " + type );
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            callback.callback( eligibleFieldNames.toArray( new String[]{ } ) );
+                                        }
+                                    } );
     }
 
-    private String getDataTypeForField( final String factName,
-                                        final String fieldName ) {
-        for ( final String clazz : oracleModelFields.keySet() ) {
-            if ( clazz.equalsIgnoreCase( factName ) ) {
-                for ( final ModelField field : oracleModelFields.get( clazz ) ) {
-                    if ( fieldName.equalsIgnoreCase( field.getName() ) ) {
-                        String type = field.getClassName();
-                        if ( type.endsWith( "String" ) ) {
-                            type = "String";
-                        } else if ( type.endsWith( "Double" ) ) {
-                            type = "Double";
-                        } else if ( type.endsWith( "Integer" ) ) {
-                            type = "int";
-                        }
-                        return type;
-                    }
-                }
-            }
-        }
-        return null;
+    private void getDataTypeForField( final String factName,
+                                      final String fieldName,
+                                      final Callback<String> callback ) {
+        oracle.getFieldCompletions( factName,
+                                    new Callback<ModelField[]>() {
+
+                                        @Override
+                                        public void callback( final ModelField[] fields ) {
+                                            for ( final ModelField field : fields ) {
+                                                if ( fieldName.equalsIgnoreCase( field.getName() ) ) {
+                                                    String type = field.getClassName();
+                                                    if ( type.endsWith( "String" ) ) {
+                                                        type = "String";
+                                                    } else if ( type.endsWith( "Double" ) ) {
+                                                        type = "Double";
+                                                    } else if ( type.endsWith( "Integer" ) ) {
+                                                        type = "int";
+                                                    }
+                                                    callback.callback( type );
+                                                    return;
+                                                }
+                                            }
+                                            callback.callback( null );
+                                        }
+                                    } );
     }
 
     private ListBox booleanEditor( final String currentValue ) {

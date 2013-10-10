@@ -38,7 +38,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
@@ -113,7 +113,7 @@ public class GuidedRuleTemplateEditorPresenter {
     private GuidedRuleTemplateResourceType type;
 
     @Inject
-    private AsyncPackageDataModelOracle oracle;
+    private AsyncPackageDataModelOracleFactory oracleFactory;
 
     @Inject
     @New
@@ -131,6 +131,7 @@ public class GuidedRuleTemplateEditorPresenter {
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private TemplateModel model;
+    private AsyncPackageDataModelOracle oracle;
 
     @OnStartup
     public void onStartup( final ObservablePath path,
@@ -282,10 +283,9 @@ public class GuidedRuleTemplateEditorPresenter {
             public void callback( final GuidedTemplateEditorContent content ) {
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
-                                                                              model,
-                                                                              oracle,
-                                                                              dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
+                                                                        model,
+                                                                        dataModel );
 
                 view.setContent( path,
                                  model,
@@ -363,26 +363,26 @@ public class GuidedRuleTemplateEditorPresenter {
 
         if ( concurrentUpdateSessionInfo != null ) {
             newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                    concurrentUpdateSessionInfo.getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            save();
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel?
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            reload();
-                        }
-                    }
-            ).show();
+                                 concurrentUpdateSessionInfo.getIdentity(),
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         save();
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //cancel?
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         reload();
+                                     }
+                                 }
+                               ).show();
         } else {
             save();
         }
@@ -424,6 +424,7 @@ public class GuidedRuleTemplateEditorPresenter {
     @OnClose
     public void onClose() {
         this.path = null;
+        this.oracleFactory.destroy( oracle );
     }
 
     @OnMayClose

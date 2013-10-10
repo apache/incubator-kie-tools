@@ -29,10 +29,10 @@ public class ScoreCardModelContent {
     public ScoreCardModelContent() {
     }
 
-    public ScoreCardModelContent( final ScoreCardModel dataModel,
-                                  final PackageDataModelOracleBaselinePayload oracle ) {
+    public ScoreCardModelContent( final ScoreCardModel model,
+                                  final PackageDataModelOracleBaselinePayload dataModel ) {
         this.model = model;
-        this.dataModel = oracle;
+        this.dataModel = dataModel;
     }
 
     public ScoreCardModel getModel() {

@@ -36,7 +36,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
@@ -111,7 +111,7 @@ public class GuidedScoreCardEditorPresenter {
     private GuidedScoreCardResourceType type;
 
     @Inject
-    private AsyncPackageDataModelOracle oracle;
+    private AsyncPackageDataModelOracleFactory oracleFactory;
 
     @Inject
     @New
@@ -124,6 +124,7 @@ public class GuidedScoreCardEditorPresenter {
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private ScoreCardModel model;
+    private AsyncPackageDataModelOracle oracle;
 
     @Inject
     private ImportsWidgetPresenter importsWidget;
@@ -261,10 +262,9 @@ public class GuidedScoreCardEditorPresenter {
             public void callback( final ScoreCardModelContent content ) {
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
-                                                                              model,
-                                                                              oracle,
-                                                                              dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
+                                                                        model,
+                                                                        dataModel );
 
                 view.setContent( model,
                                  oracle );
@@ -400,6 +400,7 @@ public class GuidedScoreCardEditorPresenter {
     @OnClose
     public void onClose() {
         this.path = null;
+        this.oracleFactory.destroy( oracle );
     }
 
     @IsDirty

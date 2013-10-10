@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
@@ -827,23 +828,24 @@ public class ConditionPopup extends FormStylePopup {
 
         this.oracle.getFieldCompletions( this.editingPattern.getFactType(),
                                          FieldAccessorsAndMutators.ACCESSOR,
-                                         new Callback<String[]>() {
+                                         new Callback<ModelField[]>() {
                                              @Override
-                                             public void callback( final String[] fields ) {
+                                             public void callback( final ModelField[] fields ) {
                                                  switch ( editingCol.getConstraintValueType() ) {
                                                      case BaseSingleFieldConstraint.TYPE_LITERAL:
                                                          //Literals can be on any field
                                                          for ( int i = 0; i < fields.length; i++ ) {
-                                                             box.addItem( fields[ i ] );
+                                                             box.addItem( fields[ i ].getName() );
                                                          }
                                                          break;
 
                                                      case BaseSingleFieldConstraint.TYPE_RET_VALUE:
                                                          //Formulae can only consume fields that do not have enumerations
                                                          for ( int i = 0; i < fields.length; i++ ) {
+                                                             final String fieldName = fields[ i ].getName();
                                                              if ( !oracle.hasEnums( editingPattern.getFactType(),
-                                                                                    fields[ i ] ) ) {
-                                                                 box.addItem( fields[ i ] );
+                                                                                    fieldName ) ) {
+                                                                 box.addItem( fieldName );
                                                              }
                                                          }
                                                          break;

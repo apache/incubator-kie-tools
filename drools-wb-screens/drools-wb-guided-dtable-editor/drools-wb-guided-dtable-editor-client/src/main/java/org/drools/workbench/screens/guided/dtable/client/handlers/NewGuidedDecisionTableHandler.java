@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -58,6 +58,8 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
+    private AsyncPackageDataModelOracleFactory oracleFactory;
+
     private AsyncPackageDataModelOracle oracle;
 
     private NewResourcePresenter newResourcePresenter;
@@ -114,9 +116,8 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
             @Override
             public void callback( final PackageDataModelOracleBaselinePayload dataModel ) {
                 newResourcePresenter.complete();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( contextPath,
-                                                                              oracle,
-                                                                              dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( contextPath,
+                                                                        dataModel );
                 final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
                                                                                                                        contextPath,
                                                                                                                        tableFormat );
@@ -132,6 +133,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                       final Path contextPath,
                       final GuidedDecisionTable52 model,
                       final Command postSaveCommand ) {
+        oracleFactory.destroy( oracle );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         service.call( getSuccessCallback( newResourcePresenter,
                                           postSaveCommand ),

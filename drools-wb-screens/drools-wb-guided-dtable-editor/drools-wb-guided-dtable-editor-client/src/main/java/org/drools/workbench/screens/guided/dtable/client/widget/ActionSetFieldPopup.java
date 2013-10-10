@@ -34,6 +34,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
@@ -503,11 +504,11 @@ public class ActionSetFieldPopup extends FormStylePopup {
 
         final String factType = getFactType();
         this.oracle.getFieldCompletions( factType,
-                                         new Callback<String[]>() {
+                                         new Callback<ModelField[]>() {
                                              @Override
-                                             public void callback( final String[] fields ) {
+                                             public void callback( final ModelField[] fields ) {
                                                  for ( int i = 0; i < fields.length; i++ ) {
-                                                     box.addItem( fields[ i ] );
+                                                     box.addItem( fields[ i ].getName() );
                                                  }
                                              }
                                          } );

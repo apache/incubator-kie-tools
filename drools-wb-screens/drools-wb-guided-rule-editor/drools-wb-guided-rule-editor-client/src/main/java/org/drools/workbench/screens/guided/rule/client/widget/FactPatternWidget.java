@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -832,9 +833,9 @@ public class FactPatternWidget extends RuleModellerWidget {
                     String fieldName = con.getFieldName();
                     if ( DataType.TYPE_THIS.equals( fieldName ) ) {
                         connectives.getDataModelOracle().getFieldCompletions( pattern.getFactType(),
-                                                                              new Callback<String[]>() {
+                                                                              new Callback<ModelField[]>() {
                                                                                   @Override
-                                                                                  public void callback( final String[] fields ) {
+                                                                                  public void callback( final ModelField[] fields ) {
                                                                                       popupCreator.showBindFieldPopup( (Widget) event.getSource(),
                                                                                                                        pattern,
                                                                                                                        con,
@@ -845,9 +846,9 @@ public class FactPatternWidget extends RuleModellerWidget {
 
                     } else {
                         connectives.getDataModelOracle().getFieldCompletions( con.getFieldType(),
-                                                                              new Callback<String[]>() {
+                                                                              new Callback<ModelField[]>() {
                                                                                   @Override
-                                                                                  public void callback( final String[] fields ) {
+                                                                                  public void callback( final ModelField[] fields ) {
                                                                                       popupCreator.showBindFieldPopup( (Widget) event.getSource(),
                                                                                                                        pattern,
                                                                                                                        con,

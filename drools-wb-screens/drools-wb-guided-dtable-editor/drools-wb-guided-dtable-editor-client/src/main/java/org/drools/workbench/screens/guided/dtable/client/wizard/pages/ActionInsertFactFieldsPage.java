@@ -26,6 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -204,11 +205,12 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         final String type = pattern.getFactType();
 
         oracle.getFieldCompletions( type,
-                                    new Callback<String[]>() {
+                                    new Callback<ModelField[]>() {
                                         @Override
-                                        public void callback( final String[] fields ) {
+                                        public void callback( final ModelField[] fields ) {
                                             final List<AvailableField> availableFields = new ArrayList<AvailableField>();
-                                            for ( String fieldName : fields ) {
+                                            for ( ModelField modelField : fields ) {
+                                                final String fieldName = modelField.getName();
                                                 final String fieldType = oracle.getFieldType( type,
                                                                                               fieldName );
                                                 final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );

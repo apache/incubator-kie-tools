@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
@@ -91,11 +92,11 @@ public class VerifyFactWidget extends Composite {
 
                 final ListBox b = new ListBox();
                 VerifyFactWidget.this.oracle.getFieldCompletions( type,
-                                                                  new Callback<String[]>() {
+                                                                  new Callback<ModelField[]>() {
                                                                       @Override
-                                                                      public void callback( final String[] fields ) {
+                                                                      public void callback( final ModelField[] fields ) {
                                                                           for ( int i = 0; i < fields.length; i++ ) {
-                                                                              b.addItem( fields[ i ] );
+                                                                              b.addItem( fields[ i ].getName() );
                                                                           }
                                                                       }
                                                                   } );

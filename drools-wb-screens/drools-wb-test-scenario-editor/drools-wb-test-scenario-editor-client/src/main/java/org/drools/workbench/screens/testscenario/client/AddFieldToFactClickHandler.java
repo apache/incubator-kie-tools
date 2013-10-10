@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
 import org.kie.workbench.common.widgets.client.callbacks.Callback;
@@ -44,12 +45,13 @@ public class AddFieldToFactClickHandler
     protected FactFieldSelector createFactFieldSelector() {
         final FactFieldSelector factFieldSelector = new FactFieldSelector();
         oracle.getFieldCompletions( fact.getType(),
-                                    new Callback<String[]>() {
+                                    new Callback<ModelField[]>() {
                                         @Override
-                                        public void callback( final String[] fields ) {
-                                            for ( String field : fields ) {
-                                                if ( !fact.isFieldNameInUse( field ) ) {
-                                                    factFieldSelector.addField( field );
+                                        public void callback( final ModelField[] fields ) {
+                                            for ( ModelField field : fields ) {
+                                                final String fieldName = field.getName();
+                                                if ( !fact.isFieldNameInUse( fieldName ) ) {
+                                                    factFieldSelector.addField( fieldName );
                                                 }
                                             }
                                         }

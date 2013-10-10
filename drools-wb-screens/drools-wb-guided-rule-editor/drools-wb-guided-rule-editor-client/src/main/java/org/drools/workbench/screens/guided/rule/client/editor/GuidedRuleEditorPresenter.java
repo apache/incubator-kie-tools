@@ -24,7 +24,6 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
@@ -38,7 +37,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
@@ -113,7 +112,7 @@ public class GuidedRuleEditorPresenter {
     private GuidedRuleDSLRResourceType resourceTypeDSL;
 
     @Inject
-    private AsyncPackageDataModelOracle oracle;
+    private AsyncPackageDataModelOracleFactory oracleFactory;
 
     @Inject
     @New
@@ -130,6 +129,7 @@ public class GuidedRuleEditorPresenter {
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private RuleModel model;
+    private AsyncPackageDataModelOracle oracle;
 
     @OnStartup
     public void onStartup( final ObservablePath path,
@@ -264,10 +264,9 @@ public class GuidedRuleEditorPresenter {
             public void callback( final GuidedEditorContent content ) {
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
-                                                                              model,
-                                                                              oracle,
-                                                                              dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
+                                                                        model,
+                                                                        dataModel );
 
                 view.setContent( path,
                                  model,
@@ -345,26 +344,26 @@ public class GuidedRuleEditorPresenter {
 
         if ( concurrentUpdateSessionInfo != null ) {
             newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                    concurrentUpdateSessionInfo.getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            save();
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel?
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            reload();
-                        }
-                    }
-            ).show();
+                                 concurrentUpdateSessionInfo.getIdentity(),
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         save();
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //cancel?
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         reload();
+                                     }
+                                 }
+                               ).show();
         } else {
             save();
         }
@@ -406,6 +405,7 @@ public class GuidedRuleEditorPresenter {
     @OnClose
     public void onClose() {
         this.path = null;
+        this.oracleFactory.destroy( oracle );
     }
 
     @OnMayClose

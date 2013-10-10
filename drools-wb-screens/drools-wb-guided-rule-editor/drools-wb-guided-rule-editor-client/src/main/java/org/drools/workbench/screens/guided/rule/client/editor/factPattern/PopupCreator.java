@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
@@ -115,7 +116,7 @@ public class PopupCreator {
     public void showBindFieldPopup( final Widget w,
                                     final FactPattern fp,
                                     final SingleFieldConstraint con,
-                                    String[] fields,
+                                    final ModelField[] fields,
                                     final PopupCreator popupCreator ) {
         final FormStylePopup popup = new FormStylePopup();
         popup.setWidth( 500 + "px" );
@@ -163,14 +164,14 @@ public class PopupCreator {
     }
 
     //Check if there are any fields other than "this"
-    private boolean hasApplicableFields( String[] fields ) {
+    private boolean hasApplicableFields( final ModelField[] fields ) {
         if ( fields == null || fields.length == 0 ) {
             return false;
         }
         if ( fields.length > 1 ) {
             return true;
         }
-        if ( DataType.TYPE_THIS.equals( fields[ 0 ] ) ) {
+        if ( DataType.TYPE_THIS.equals( fields[ 0 ].getName() ) ) {
             return false;
         }
         return true;
@@ -187,12 +188,13 @@ public class PopupCreator {
         final ListBox box = new ListBox();
         box.addItem( "..." );
         this.oracle.getFieldCompletions( this.pattern.getFactType(),
-                                         new Callback<String[]>() {
+                                         new Callback<ModelField[]>() {
 
                                              @Override
-                                             public void callback( final String[] fields ) {
+                                             public void callback( final ModelField[] fields ) {
                                                  for ( int i = 0; i < fields.length; i++ ) {
-                                                     box.addItem( fields[ i ] );
+                                                     final String fieldName = fields[ i ].getName();
+                                                     box.addItem( fieldName );
                                                  }
                                              }
                                          } );
@@ -284,13 +286,14 @@ public class PopupCreator {
         box.addItem( "..." );
         this.oracle.getFieldCompletions( factType,
                                          FieldAccessorsAndMutators.ACCESSOR,
-                                         new Callback<String[]>() {
+                                         new Callback<ModelField[]>() {
                                              @Override
-                                             public void callback( final String[] fields ) {
+                                             public void callback( final ModelField[] fields ) {
                                                  for ( int i = 0; i < fields.length; i++ ) {
                                                      //You can't use "this" in a nested accessor
-                                                     if ( !isNested || !fields[ i ].equals( DataType.TYPE_THIS ) ) {
-                                                         box.addItem( fields[ i ] );
+                                                     final String fieldName = fields[ i ].getName();
+                                                     if ( !isNested || !fieldName.equals( DataType.TYPE_THIS ) ) {
+                                                         box.addItem( fieldName );
                                                      }
                                                  }
                                              }

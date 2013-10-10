@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionInsertLogicalFact;
@@ -60,7 +61,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private final String factType;
     private boolean readOnly;
 
-    private String[] fieldCompletions;
+    private ModelField[] fieldCompletions;
 
     private boolean isFactTypeKnown;
 
@@ -77,9 +78,9 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         oracle.getFieldCompletions( set.getFactType(),
                                     FieldAccessorsAndMutators.MUTATOR,
-                                    new Callback<String[]>() {
+                                    new Callback<ModelField[]>() {
                                         @Override
-                                        public void callback( final String[] fields ) {
+                                        public void callback( final ModelField[] fields ) {
                                             fieldCompletions = fields;
                                         }
                                     } );
@@ -218,7 +219,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         box.addItem( "..." );
 
         for ( int i = 0; i < fieldCompletions.length; i++ ) {
-            box.addItem( fieldCompletions[ i ] );
+            box.addItem( fieldCompletions[ i ].getName() );
         }
 
         box.setSelectedIndex( 0 );

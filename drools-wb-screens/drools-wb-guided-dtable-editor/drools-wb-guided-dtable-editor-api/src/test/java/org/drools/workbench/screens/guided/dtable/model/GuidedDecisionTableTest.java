@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
@@ -41,7 +42,6 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.projec
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
@@ -66,10 +66,10 @@ public class GuidedDecisionTableTest {
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
         dataModel.setWorkbenchEnumDefinitions( loader.getPackageWorkbenchDefinitions() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
-                                                                      model,
-                                                                      oracle,
-                                                                      dataModel );
+        populateDataModelOracle( mock( Path.class ),
+                                 model,
+                                 oracle,
+                                 dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
                                                                              oracle );
 
@@ -304,10 +304,10 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
-                                                                      model,
-                                                                      oracle,
-                                                                      dataModel );
+        populateDataModelOracle( mock( Path.class ),
+                                 model,
+                                 oracle,
+                                 dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
                                                                              oracle );
 
@@ -429,10 +429,10 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
-                                                                      model,
-                                                                      oracle,
-                                                                      dataModel );
+        populateDataModelOracle( mock( Path.class ),
+                                 model,
+                                 oracle,
+                                 dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
                                                                              oracle );
 
@@ -538,10 +538,10 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
-                                                                      model,
-                                                                      oracle,
-                                                                      dataModel );
+        populateDataModelOracle( mock( Path.class ),
+                                 model,
+                                 oracle,
+                                 dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
                                                                              oracle );
 
@@ -594,10 +594,10 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
-                                                                      model,
-                                                                      oracle,
-                                                                      dataModel );
+        populateDataModelOracle( mock( Path.class ),
+                                 model,
+                                 oracle,
+                                 dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
                                                                              oracle );
 
@@ -712,10 +712,10 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
-                                                                      model,
-                                                                      oracle,
-                                                                      dataModel );
+        populateDataModelOracle( mock( Path.class ),
+                                 model,
+                                 oracle,
+                                 dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
                                                                              oracle );
 
@@ -764,10 +764,10 @@ public class GuidedDecisionTableTest {
         final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( loader.getProjectModelFields() );
-        AsyncPackageDataModelOracleUtilities.populateDataModelOracle( mock( Path.class ),
-                                                                      model,
-                                                                      oracle,
-                                                                      dataModel );
+        populateDataModelOracle( mock( Path.class ),
+                                 model,
+                                 oracle,
+                                 dataModel );
         final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
                                                                              oracle );
 
@@ -789,6 +789,39 @@ public class GuidedDecisionTableTest {
                       utils.getValueList( c1 )[ 1 ] );
         assertEquals( "getAge()>30",
                       utils.getValueList( c1 )[ 2 ] );
+    }
+
+    private void populateDataModelOracle( final Path resourcePath,
+                                          final HasImports hasImports,
+                                          final AsyncPackageDataModelOracle oracle,
+                                          final PackageDataModelOracleBaselinePayload payload ) {
+        populate( oracle,
+                  payload );
+        oracle.init( resourcePath );
+        oracle.filter( hasImports.getImports() );
+    }
+
+    private static void populate( final AsyncPackageDataModelOracle oracle,
+                                  final PackageDataModelOracleBaselinePayload payload ) {
+        oracle.setProjectName( payload.getProjectName() );
+        oracle.addModelFields( payload.getModelFields() );
+        oracle.addRuleNames( payload.getRuleNames() );
+        oracle.addFieldParametersType( payload.getFieldParametersType() );
+        oracle.addEventTypes( payload.getEventTypes() );
+        oracle.addTypeSources( payload.getTypeSources() );
+        oracle.addSuperTypes( payload.getSuperTypes() );
+        oracle.addTypeAnnotations( payload.getTypeAnnotations() );
+        oracle.addTypeFieldsAnnotations( payload.getTypeFieldsAnnotations() );
+        oracle.addJavaEnumDefinitions( payload.getJavaEnumDefinitions() );
+        oracle.addMethodInformation( payload.getMethodInformation() );
+        oracle.addCollectionTypes( payload.getCollectionTypes() );
+        oracle.addPackageNames( payload.getPackageNames() );
+
+        oracle.setPackageName( payload.getPackageName() );
+        oracle.addWorkbenchEnumDefinitions( payload.getWorkbenchEnumDefinitions() );
+        oracle.addDslConditionSentences( payload.getDslConditionSentences() );
+        oracle.addDslActionSentences( payload.getDslActionSentences() );
+        oracle.addGlobals( payload.getGlobals() );
     }
 
 }

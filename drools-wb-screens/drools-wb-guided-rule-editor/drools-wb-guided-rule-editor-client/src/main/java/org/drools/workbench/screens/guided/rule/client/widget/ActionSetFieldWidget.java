@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -56,7 +57,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     final private ActionSetField model;
     final private DirtyableFlexTable layout;
     private boolean isBoundFact = false;
-    private String[] fieldCompletions;
+    private ModelField[] fieldCompletions;
     private String variableClass;
     private boolean readOnly;
 
@@ -83,9 +84,9 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             if ( type != null ) {
                 oracle.getFieldCompletions( type,
                                             FieldAccessorsAndMutators.MUTATOR,
-                                            new Callback<String[]>() {
+                                            new Callback<ModelField[]>() {
                                                 @Override
-                                                public void callback( final String[] fields ) {
+                                                public void callback( final ModelField[] fields ) {
                                                     fieldCompletions = fields;
                                                 }
                                             } );
@@ -96,9 +97,9 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                 if ( patternRhs != null ) {
                     oracle.getFieldCompletions( patternRhs.getFactType(),
                                                 FieldAccessorsAndMutators.MUTATOR,
-                                                new Callback<String[]>() {
+                                                new Callback<ModelField[]>() {
                                                     @Override
-                                                    public void callback( final String[] fields ) {
+                                                    public void callback( final ModelField[] fields ) {
                                                         fieldCompletions = fields;
                                                     }
                                                 }
@@ -229,7 +230,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         box.addItem( "..." );
 
         for ( int i = 0; i < fieldCompletions.length; i++ ) {
-            box.addItem( fieldCompletions[ i ] );
+            box.addItem( fieldCompletions[ i ].getName() );
         }
 
         box.setSelectedIndex( 0 );

@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollectionIndex;
 import org.drools.workbench.models.datamodel.rule.ExpressionFieldVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
@@ -387,19 +388,20 @@ public class ExpressionBuilder extends RuleModellerWidget
             final List<String> methodNames = getDataModelOracle().getMethodNames( factName,
                                                                                   0 );
             getDataModelOracle().getFieldCompletions( factName,
-                                                      new Callback<String[]>() {
+                                                      new Callback<ModelField[]>() {
 
                                                           @Override
-                                                          public void callback( final String[] fields ) {
-                                                              for ( String field : fields ) {
+                                                          public void callback( final ModelField[] fields ) {
+                                                              for ( ModelField field : fields ) {
 
                                                                   //You can't use "this" in a nested accessor
-                                                                  if ( !isNested || !field.equals( DataType.TYPE_THIS ) ) {
+                                                                  final String fieldName = field.getName();
+                                                                  if ( !isNested || !fieldName.equals( DataType.TYPE_THIS ) ) {
 
                                                                       boolean changed = false;
                                                                       for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
                                                                           String method = i.next();
-                                                                          if ( method.startsWith( field ) ) {
+                                                                          if ( method.startsWith( fieldName ) ) {
                                                                               completions.put( method,
                                                                                                METHOD_VALUE_PREFIX + "." + method );
                                                                               i.remove();
@@ -407,7 +409,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                                           }
                                                                       }
                                                                       if ( !changed ) {
-                                                                          completions.put( field,
+                                                                          completions.put( fieldName,
                                                                                            FIElD_VALUE_PREFIX + "." + field );
                                                                       }
                                                                   }

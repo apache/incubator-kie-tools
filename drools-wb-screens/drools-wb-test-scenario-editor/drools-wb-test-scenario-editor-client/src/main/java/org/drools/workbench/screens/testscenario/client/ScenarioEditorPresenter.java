@@ -30,7 +30,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -43,6 +43,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -61,7 +62,7 @@ public class ScenarioEditorPresenter {
     private final PlaceManager placeManager;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotification;
     private final TestScenarioResourceType type;
-    private final AsyncPackageDataModelOracle oracle;
+    private final AsyncPackageDataModelOracleFactory oracleFactory;
 
     private Menus menus;
 
@@ -71,6 +72,7 @@ public class ScenarioEditorPresenter {
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private Scenario scenario;
+    private AsyncPackageDataModelOracle oracle;
 
     @Inject
     public ScenarioEditorPresenter( final @New ScenarioEditorView view,
@@ -79,14 +81,14 @@ public class ScenarioEditorPresenter {
                                     final PlaceManager placeManager,
                                     final Event<ChangeTitleWidgetEvent> changeTitleNotification,
                                     final TestScenarioResourceType type,
-                                    final AsyncPackageDataModelOracle oracle ) {
+                                    final AsyncPackageDataModelOracleFactory oracleFactory ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.service = service;
         this.placeManager = placeManager;
         this.changeTitleNotification = changeTitleNotification;
         this.type = type;
-        this.oracle = oracle;
+        this.oracleFactory = oracleFactory;
     }
 
     @OnStartup
@@ -191,10 +193,9 @@ public class ScenarioEditorPresenter {
             public void callback( TestScenarioModelContent content ) {
                 scenario = content.getScenario();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
-                                                                              scenario,
-                                                                              oracle,
-                                                                              dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
+                                                                        scenario,
+                                                                        dataModel );
 
                 view.clear();
                 view.setScenario( scenario,
@@ -316,4 +317,11 @@ public class ScenarioEditorPresenter {
             scenario.getFixtures().add( new ExecutionTrace() );
         }
     }
+
+    @OnClose
+    public void onClose() {
+        this.path = null;
+        this.oracleFactory.destroy( oracle );
+    }
+
 }

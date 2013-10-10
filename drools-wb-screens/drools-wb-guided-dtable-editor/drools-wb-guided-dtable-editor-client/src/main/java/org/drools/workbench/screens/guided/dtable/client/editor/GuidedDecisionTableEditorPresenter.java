@@ -36,7 +36,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleUtilities;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -110,7 +110,7 @@ public class GuidedDecisionTableEditorPresenter {
     private GuidedDTableResourceType type;
 
     @Inject
-    private AsyncPackageDataModelOracle oracle;
+    private AsyncPackageDataModelOracleFactory oracleFactory;
 
     @Inject
     @New
@@ -123,6 +123,7 @@ public class GuidedDecisionTableEditorPresenter {
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private GuidedDecisionTable52 model;
+    private AsyncPackageDataModelOracle oracle;
 
     @Inject
     private MetadataWidget metadataWidget;
@@ -260,10 +261,9 @@ public class GuidedDecisionTableEditorPresenter {
             public void callback( final GuidedDecisionTableEditorContent content ) {
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                AsyncPackageDataModelOracleUtilities.populateDataModelOracle( path,
-                                                                              model,
-                                                                              oracle,
-                                                                              dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
+                                                                        model,
+                                                                        dataModel );
 
                 view.setContent( path,
                                  model,
@@ -388,6 +388,7 @@ public class GuidedDecisionTableEditorPresenter {
     @OnClose
     public void onClose() {
         this.path = null;
+        this.oracleFactory.destroy( oracle );
     }
 
     @OnMayClose
