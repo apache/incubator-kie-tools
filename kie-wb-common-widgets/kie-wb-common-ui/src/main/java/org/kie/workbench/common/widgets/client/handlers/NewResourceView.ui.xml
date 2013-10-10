@@ -20,12 +20,14 @@
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants"/>
   <ui:with field="i18nCommon" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
-
-  <b:Well>
+  <ui:style>
+        .controls.readonly{
+            padding-top: 5px;
+        }
+  </ui:style>
+  
+  <b:Form type="HORIZONTAL">
     <b:Fieldset>
-      <b:Legend>New resource
-        <small>* is required</small>
-      </b:Legend>
       <b:ControlGroup ui:field="fileNameGroup">
         <b:ControlLabel for="fileName">
           <font color="red">*</font>
@@ -36,15 +38,16 @@
           <b:HelpInline ui:field="fileNameHelpInline"/>
         </b:Controls>
       </b:ControlGroup>
-      <b:Well>
-        <g:ScrollPanel width="100%" height="100px">
-          <g:VerticalPanel ui:field="handlersList"/>
-        </g:ScrollPanel>
-      </b:Well>
-      <b:Well ui:field="handlerExtensionsContainer">
-        <g:VerticalPanel ui:field="handlerExtensions"/>
-      </b:Well>
+      
+      <b:ControlGroup>
+          <b:ControlLabel>
+          Location
+        </b:ControlLabel>
+        <b:Controls addStyleNames="readonly">
+            <g:VerticalPanel ui:field="handlerExtensions"/>
+        </b:Controls>
+      </b:ControlGroup>
     </b:Fieldset>
-  </b:Well>
+  </b:Form>
 
 </ui:UiBinder>

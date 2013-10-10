@@ -92,23 +92,16 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
     HelpInline fileNameHelpInline;
 
     @UiField
-    VerticalPanel handlersList;
-
-    @UiField
-    Well handlerExtensionsContainer;
-
-    @UiField
     VerticalPanel handlerExtensions;
 
     public NewResourceView() {
-        setTitle( NewItemPopupConstants.INSTANCE.popupTitle() );
         setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
         setBackdrop( BackdropType.STATIC );
         setKeyboard( true );
         setAnimation( true );
         setDynamicSafe( true );
 
-        footer.enableOkButton( false );
+        footer.enableOkButton( true );
 
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
@@ -126,6 +119,7 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
     @Override
     public void init( final NewResourcePresenter presenter ) {
         this.presenter = presenter;
+        
     }
 
     @Override
@@ -169,13 +163,6 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
             }
         } );
 
-        //Add handlers to container
-        for ( NewResourceHandler handler : handlers ) {
-            final RadioButton option = makeOption( handler );
-            handlerToWidgetMap.put( handler,
-                                    option );
-            handlersList.add( option );
-        }
     }
 
     @Override
@@ -241,6 +228,11 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
                                 }
 
                             } );
+    }
+    
+    @Override
+    public void setTitle(String title){
+        super.setTitle(title);
     }
 
 }

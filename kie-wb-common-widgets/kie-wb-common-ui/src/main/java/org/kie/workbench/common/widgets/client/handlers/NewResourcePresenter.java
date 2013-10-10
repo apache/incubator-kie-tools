@@ -32,6 +32,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.mvp.UberView;
 
 @ApplicationScoped
@@ -51,6 +52,8 @@ public class NewResourcePresenter {
 
         void enableHandler( final NewResourceHandler handler,
                             final boolean enabled );
+        
+        void setTitle(String title);
 
     }
 
@@ -122,6 +125,7 @@ public class NewResourcePresenter {
         }
         view.show();
         view.setActiveHandler( activeHandler );
+        view.setTitle( NewItemPopupConstants.INSTANCE.popupTitle() + " " + getActiveHandlerDescription() );
     }
 
     void setActiveHandler( final NewResourceHandler handler ) {
@@ -146,6 +150,14 @@ public class NewResourcePresenter {
 
     public void complete() {
         view.hide();
+    }
+    
+    public String getActiveHandlerDescription(){
+        if(activeHandler != null){
+            return activeHandler.getDescription();
+        }else{
+            return "";
+        }
     }
 
 }
