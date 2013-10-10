@@ -49,13 +49,15 @@ import org.kie.commons.java.nio.file.DirectoryStream;
 import org.kie.commons.java.nio.file.Files;
 import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
+import org.uberfire.backend.server.config.ConfigGroup;
+import org.uberfire.backend.server.config.ConfigItem;
+import org.uberfire.backend.server.config.ConfigType;
+import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Service
 @ApplicationScoped
@@ -104,6 +106,9 @@ public class ScenarioTestEditorServiceImpl
 
     @Inject
     private SessionInfo sessionInfo;
+
+    @Inject
+    private ConfigurationService configurationService;
 
     @Override
     public Path create( final Path context,
@@ -237,13 +242,27 @@ public class ScenarioTestEditorServiceImpl
 
             final Project project = projectService.resolveProject( path );
 
-            new ScenarioRunnerWrapper().run( scenario,
-                                             sessionService.newKieSession( project ),
-                                             testResultMessageEvent );
+            new ScenarioRunnerWrapper(testResultMessageEvent, getMaxRuleFirings()).run(
+                    scenario,
+                    sessionService.newKieSession(project));
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private int getMaxRuleFirings() {
+        for ( ConfigGroup editorConfigGroup : configurationService.getConfiguration( ConfigType.EDITOR ) ) {
+            if ( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
+                for ( ConfigItem item : editorConfigGroup.getItems() ) {
+                    String itemName = item.getName();
+                    if(itemName.equals(ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS)){
+                        return (Integer)item.getValue();
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -263,9 +282,10 @@ public class ScenarioTestEditorServiceImpl
                 scenarios.add( s );
             }
 
-            new ScenarioRunnerWrapper().run( scenarios,
-                                             sessionService.newKieSession( project ),
-                                             testResultMessageEvent );
+            new ScenarioRunnerWrapper(testResultMessageEvent, getMaxRuleFirings()).run(
+                    scenarios,
+                    sessionService.newKieSession(project)
+            );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

@@ -12,11 +12,22 @@ import org.kie.api.runtime.KieSession;
 
 public class ScenarioRunnerWrapper {
 
-    public void run(Scenario scenario, KieSession ksession, Event<TestResultMessage> testResultMessageEvent) {
+    private final Event<TestResultMessage> testResultMessageEvent;
+    private final int maxRuleFirings;
+
+    public ScenarioRunnerWrapper(
+            Event<TestResultMessage> testResultMessageEvent,
+            int maxRuleFirings) {
+        this.testResultMessageEvent = testResultMessageEvent;
+        this.maxRuleFirings = maxRuleFirings;
+    }
+
+    public void run(Scenario scenario, KieSession ksession) {
         try {
             ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
                     scenario,
-                    ksession);
+                    ksession,
+                    maxRuleFirings);
 
             scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
 
@@ -25,11 +36,12 @@ public class ScenarioRunnerWrapper {
         }
     }
     
-    public void run(List<Scenario> scenarios, KieSession ksession, Event<TestResultMessage> testResultMessageEvent) {
+    public void run(List<Scenario> scenarios, KieSession ksession) {
         try {
             ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
                     scenarios,
-                    ksession);
+                    ksession,
+                    maxRuleFirings);
 
             scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
 

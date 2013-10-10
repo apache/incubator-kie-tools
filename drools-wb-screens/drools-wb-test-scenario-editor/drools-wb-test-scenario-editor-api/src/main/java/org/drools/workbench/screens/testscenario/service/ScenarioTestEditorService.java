@@ -43,6 +43,9 @@ public interface ScenarioTestEditorService
         SupportsCopy,
         SupportsRename {
 
+    public static final String TEST_SCENARIO_EDITOR_SETTINGS = "test-scenario-editor-settings";
+    public static final String TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS = "max-rule-firings";
+
     TestScenarioModelContent loadContent( Path path );
 
     void runScenario( Path path,
