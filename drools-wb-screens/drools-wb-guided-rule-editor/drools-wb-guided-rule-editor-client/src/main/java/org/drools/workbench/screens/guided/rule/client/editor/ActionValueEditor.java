@@ -418,7 +418,6 @@ public class ActionValueEditor
 
             public void onClick( ClickEvent event ) {
                 value.setNature( FieldNatureType.TYPE_FORMULA );
-                value.setValue( "=" );
                 doTypeChosen( form );
             }
         } );
