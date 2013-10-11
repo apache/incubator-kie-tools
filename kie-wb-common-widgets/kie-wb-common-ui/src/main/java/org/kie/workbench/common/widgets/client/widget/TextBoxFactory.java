@@ -15,6 +15,12 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.uberfire.client.common.NumericBigDecimalTextBox;
@@ -57,6 +63,17 @@ public class TextBoxFactory {
             return new NumericLongTextBox();
         } else if ( DataType.TYPE_NUMERIC_SHORT.equals( dataType ) ) {
             return new NumericShortTextBox();
+        } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
+            final TextBox textBox = new TextBox();
+            textBox.addKeyPressHandler(new KeyPressHandler() {
+                @Override
+                public void onKeyPress(KeyPressEvent event) {
+                    if (  '\\' == event.getCharCode() || '\"' == event.getCharCode() ) {
+                        ((TextBox) event.getSource()).cancelKey();
+                    }
+                }
+            });
+            return textBox;
         } else {
             return new TextBox();
         }
