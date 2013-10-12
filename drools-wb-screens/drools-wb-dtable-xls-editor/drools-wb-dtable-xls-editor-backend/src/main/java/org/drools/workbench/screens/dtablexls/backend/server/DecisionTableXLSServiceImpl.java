@@ -16,6 +16,12 @@
 
 package org.drools.workbench.screens.dtablexls.backend.server;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,6 +33,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.drools.template.parser.DecisionTableParseException;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
@@ -122,30 +133,52 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     }
 
     public Path create( final Path resource,
-                        final InputStream content,
+                        InputStream content,
                         final String sessionId,
                         final String comment ) {
         log.info( "USER:" + identity.getName() + " CREATING asset [" + resource.getFileName() + "]" );
 
         try {
+
+            File tempFile = File.createTempFile("testxls", null);
+            FileOutputStream tempFOS = new FileOutputStream(tempFile);
+            IOUtils.copy( content, tempFOS );
+            tempFOS.flush();
+            tempFOS.close();
+
+            //Validate the xls
+            try {
+                Workbook workbook = WorkbookFactory.create( new FileInputStream(tempFile) );
+            } catch ( InvalidFormatException e ) {
+                throw new DecisionTableParseException( "DecisionTableParseException: An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
+                                                       e );
+            } catch ( IOException e ) {
+                throw new DecisionTableParseException( "DecisionTableParseException: Failed to open Excel stream, " + "please check that the content is xls97 format.",
+                                                       e );
+            } catch ( Throwable e ) {
+                throw new DecisionTableParseException( "DecisionTableParseException: " + e.getMessage(),
+                        e );
+            }
+ 
             final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
                                                                                               comment ) );
-            IOUtils.copy( content,
+            IOUtils.copy( new FileInputStream(tempFile),
                           outputStream );
             outputStream.flush();
             outputStream.close();
 
+            
             //Read Path to ensure attributes have been set
             final Path newPath = paths.convert( nioPath );
-
+            
             return newPath;
-
         } catch ( Exception e ) {
             log.error( e.getMessage(),
                        e );
+            e.printStackTrace();
             throw ExceptionUtilities.handleException( e );
 
         } finally {
