@@ -41,7 +41,7 @@
   <!-- Note, this configuration needs to be removed with AS7 deployement -->  
   <context-param>
     <param-name>resteasy.injector.factory</param-name>
-    <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
+    <param-value>org.jboss.resteasy.org.uberfire.commons.services.cdi.CdiInjectorFactory</param-value>
   </context-param>
 
   <servlet>
@@ -90,7 +90,7 @@ profile in pom.xml to use that. -->
 
     <init-param>
       <param-name>service-locator</param-name>
-      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
+      <param-value>org.jboss.errai.org.uberfire.commons.services.cdi.server.CDIServiceLocator</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>

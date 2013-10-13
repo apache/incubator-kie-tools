@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
 
 @ApplicationScoped

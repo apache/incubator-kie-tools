@@ -43,8 +43,8 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
@@ -107,7 +107,7 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             final Path newPath = paths.convert( nioPath,
                                                 false );
 

@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 public class ProjectResourceTest {
 

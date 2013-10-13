@@ -24,10 +24,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.kie.commons.io.FileSystemType;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceDotFileImpl;
-import org.kie.commons.java.nio.file.FileSystem;
+import org.uberfire.io.FileSystemType;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.SystemRepository;
 

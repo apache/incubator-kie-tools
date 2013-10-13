@@ -54,8 +54,8 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.Files;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Files;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -392,7 +392,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
         //Load existing PackageImports
         ProjectImports projectImports = new ProjectImports();
-        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( context ).resolve( "project.imports" );
+        final org.uberfire.java.nio.file.Path nioExternalImportsPath = paths.convert( context ).resolve( "project.imports" );
         final Path externalImportsPath = paths.convert( nioExternalImportsPath,
                                                         false );
         if ( Files.exists( nioExternalImportsPath ) ) {

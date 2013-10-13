@@ -61,8 +61,8 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,7 +167,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                                           "" );
 
             //Write file to VFS
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             final Path newPath = paths.convert( nioPath,
                                                 false );
 
@@ -214,15 +214,15 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
 
     private List<String> loadWorkItemImages( final Path resourcePath ) {
         final Path projectRoot = projectService.resolveProject( resourcePath ).getRootPath();
-        final org.kie.commons.java.nio.file.Path nioProjectPath = paths.convert( projectRoot );
-        final org.kie.commons.java.nio.file.Path nioResourceParent = paths.convert( resourcePath ).getParent();
+        final org.uberfire.java.nio.file.Path nioProjectPath = paths.convert( projectRoot );
+        final org.uberfire.java.nio.file.Path nioResourceParent = paths.convert( resourcePath ).getParent();
 
-        final Collection<org.kie.commons.java.nio.file.Path> imagePaths = fileDiscoveryService.discoverFiles( nioProjectPath,
+        final Collection<org.uberfire.java.nio.file.Path> imagePaths = fileDiscoveryService.discoverFiles( nioProjectPath,
                                                                                                               imageFilter,
                                                                                                               true );
         final List<String> images = new ArrayList<String>();
-        for ( org.kie.commons.java.nio.file.Path imagePath : imagePaths ) {
-            final org.kie.commons.java.nio.file.Path relativePath = nioResourceParent.relativize( imagePath );
+        for ( org.uberfire.java.nio.file.Path imagePath : imagePaths ) {
+            final org.uberfire.java.nio.file.Path relativePath = nioResourceParent.relativize( imagePath );
             images.add( relativePath.toString() );
         }
         return images;

@@ -21,7 +21,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.commons.io.IOService;
+import org.uberfire.io.IOService;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
@@ -159,7 +159,7 @@ public class ProjectResourceDispatcher {
         JobResult result = new JobResult();
         result.setJodId( jobId );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
             result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -178,7 +178,7 @@ public class ProjectResourceDispatcher {
                                                              projectName,
                                                              pom,
                                                              "/" );
-            } catch ( org.kie.commons.java.nio.file.FileAlreadyExistsException e ) {
+            } catch ( org.uberfire.java.nio.file.FileAlreadyExistsException e ) {
                 result.setStatus( JobRequest.Status.DUPLICATE_RESOURCE );
                 result.setResult( "Project [" + projectName + "] already exists" );
                 jobResultEvent.fire( result );
@@ -210,7 +210,7 @@ public class ProjectResourceDispatcher {
         JobResult result = new JobResult();
         result.setJodId( jobId );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
             result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -254,7 +254,7 @@ public class ProjectResourceDispatcher {
         JobResult result = new JobResult();
         result.setJodId( jobId );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
             result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -306,7 +306,7 @@ public class ProjectResourceDispatcher {
         final JobResult result = new JobResult();
         result.setJodId( jobId );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
             result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -376,7 +376,7 @@ public class ProjectResourceDispatcher {
         JobResult result = new JobResult();
         result.setJodId( jobId );
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
             result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -420,7 +420,7 @@ public class ProjectResourceDispatcher {
         List<org.uberfire.backend.repositories.Repository> repositories = new ArrayList<org.uberfire.backend.repositories.Repository>();
         if ( repositoryNameList != null && repositoryNameList.size() > 0 ) {
             for ( String repoName : repositoryNameList ) {
-                org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repoName );
+                org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repoName );
 
                 if(repositoryPath == null) {
                     result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -462,7 +462,7 @@ public class ProjectResourceDispatcher {
             return;
         }
         
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
         if(repositoryPath == null) {
             result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
@@ -502,7 +502,7 @@ public class ProjectResourceDispatcher {
             return;
         }
 
-        org.kie.commons.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
+        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
         if(repositoryPath == null) {
             result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
@@ -526,7 +526,7 @@ public class ProjectResourceDispatcher {
         jobResultEvent.fire( result );
     }
 
-    public org.kie.commons.java.nio.file.Path getRepositoryRootPath( String repositoryName ) {
+    public org.uberfire.java.nio.file.Path getRepositoryRootPath( String repositoryName ) {
         org.uberfire.backend.repositories.Repository repo = repositoryService.getRepository( repositoryName );
         if ( repo == null ) {
             return null;

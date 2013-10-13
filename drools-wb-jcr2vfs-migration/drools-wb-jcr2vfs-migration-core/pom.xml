@@ -112,8 +112,8 @@
 
     <!-- VFS Guvnor (Drools Workbench) dependencies -->
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-commons-io</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.apache.helix</groupId>
@@ -122,21 +122,21 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-model</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-jgit</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-jgit</artifactId>
     </dependency>
     <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-fs</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
     </dependency>
 
     <dependency>

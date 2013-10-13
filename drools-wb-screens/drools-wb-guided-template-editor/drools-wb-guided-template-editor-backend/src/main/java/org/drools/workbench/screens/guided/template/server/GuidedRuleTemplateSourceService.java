@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.drools.workbench.models.guided.template.backend.BRDRTPersistence;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
 
 @ApplicationScoped

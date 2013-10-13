@@ -21,7 +21,7 @@ import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.commons.io.IOService;
+import org.uberfire.io.IOService;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;

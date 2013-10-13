@@ -1,7 +1,7 @@
 package org.drools.workbench.screens.globals.backend.server.util;
 
 import org.junit.Test;
-import org.kie.commons.data.Pair;
+import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
 
 import java.util.List;

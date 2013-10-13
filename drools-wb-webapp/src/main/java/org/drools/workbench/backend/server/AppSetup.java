@@ -25,8 +25,8 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
-import org.kie.commons.services.cdi.Startup;
-import org.kie.commons.services.cdi.StartupType;
+import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;

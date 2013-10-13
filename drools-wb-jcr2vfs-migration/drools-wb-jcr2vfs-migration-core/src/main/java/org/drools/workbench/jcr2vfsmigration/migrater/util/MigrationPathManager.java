@@ -10,7 +10,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.repository.AssetItem;
-import org.kie.commons.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -35,7 +35,7 @@ public class MigrationPathManager {
 
     public Path generateRootPath() {
 
-        final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" );
+        final org.uberfire.java.nio.file.Path _path = fs.getPath( "/" );
 
         return paths.convert( _path, false);
 
@@ -44,7 +44,7 @@ public class MigrationPathManager {
     }
     
     public Path generatePathForModule( Module jcrModule ) {
-        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
+        final org.uberfire.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
 
         final Path path = PathFactory.newPath( paths.convert( modulePath.getFileSystem() ), modulePath.getFileName().toString(), modulePath.toUri().toString() );
 
@@ -55,10 +55,10 @@ public class MigrationPathManager {
     public Path generatePathForAsset( Module jcrModule,
                                       Asset jcrAsset,
                                       boolean hasDSL) {
-        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
+        final org.uberfire.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
         
-        //final org.kie.commons.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
-        org.kie.commons.java.nio.file.Path assetPath = null;
+        //final org.uberfire.java.nio.file.Path directory = getPomDirectoryPath(pathToPom);
+        org.uberfire.java.nio.file.Path assetPath = null;
         if(AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat()) && !hasDSL) {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + ".rdrl");
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAsset.getFormat()) && hasDSL) {
@@ -67,7 +67,7 @@ public class MigrationPathManager {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAsset.getName() + "." + jcrAsset.getFormat());           
         }
         
-        //final org.kie.commons.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) + "/" + escapePathEntry( jcrAsset.getName() ) + "." + jcrAsset.getFormat() );
+        //final org.uberfire.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) + "/" + escapePathEntry( jcrAsset.getName() ) + "." + jcrAsset.getFormat() );
 
         final Path path = PathFactory.newPath( paths.convert( assetPath.getFileSystem() ), assetPath.getFileName().toString(), assetPath.toUri().toString() );
 
@@ -80,9 +80,9 @@ public class MigrationPathManager {
     } 
 
     public Path generatePathForAsset(Module jcrModule, AssetItem jcrAssetItem, boolean hasDSL) {
-        final org.kie.commons.java.nio.file.Path modulePath = fs.getPath("/" + escapePathEntry(jcrModule.getName()));
+        final org.uberfire.java.nio.file.Path modulePath = fs.getPath("/" + escapePathEntry(jcrModule.getName()));
 
-        org.kie.commons.java.nio.file.Path assetPath = null;
+        org.uberfire.java.nio.file.Path assetPath = null;
         if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat()) && !hasDSL) {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + ".rdrl");
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat()) && hasDSL) {
@@ -103,7 +103,7 @@ public class MigrationPathManager {
         return generatePathForAsset(jcrModule, jcrAssetItem, false);
     }
     
-    private org.kie.commons.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
+    private org.uberfire.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
         return paths.convert(pathToPomXML).getParent();
     }
     

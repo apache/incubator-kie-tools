@@ -47,8 +47,8 @@ import javax.ws.rs.core.UriInfo;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.resteasy.annotations.GZIP;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.FileSystem;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.kie.workbench.common.services.shared.rest.AddRepositoryToOrganizationalUnitRequest;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
@@ -539,24 +539,24 @@ public class ProjectResource {
         return jobRequest;*/
     }
 
-    public org.kie.commons.java.nio.file.Path getRepositoryRootPath( String repositoryName ) {
-        org.kie.commons.java.nio.file.Path repositoryRootPath = null;
+    public org.uberfire.java.nio.file.Path getRepositoryRootPath( String repositoryName ) {
+        org.uberfire.java.nio.file.Path repositoryRootPath = null;
 
         final Iterator<FileSystem> fsIterator = ioService.getFileSystems().iterator();
 
         if ( fsIterator.hasNext() ) {
             final FileSystem fileSystem = fsIterator.next();
-            System.out.println( "-----FileSystem id--- :" + ( (org.kie.commons.java.nio.base.FileSystemId) fileSystem ).id() );
+            System.out.println( "-----FileSystem id--- :" + ( (org.uberfire.java.nio.base.FileSystemId) fileSystem ).id() );
 
-            if ( repositoryName.equalsIgnoreCase( ( (org.kie.commons.java.nio.base.FileSystemId) fileSystem ).id() ) ) {
-                final Iterator<org.kie.commons.java.nio.file.Path> rootIterator = fileSystem.getRootDirectories().iterator();
+            if ( repositoryName.equalsIgnoreCase( ( (org.uberfire.java.nio.base.FileSystemId) fileSystem ).id() ) ) {
+                final Iterator<org.uberfire.java.nio.file.Path> rootIterator = fileSystem.getRootDirectories().iterator();
                 if ( rootIterator.hasNext() ) {
                     repositoryRootPath = rootIterator.next();
                     System.out.println( "-----rootPath--- :" + repositoryRootPath );
 
-                    org.kie.commons.java.nio.file.DirectoryStream<org.kie.commons.java.nio.file.Path> paths = ioService
+                    org.uberfire.java.nio.file.DirectoryStream<org.uberfire.java.nio.file.Path> paths = ioService
                             .newDirectoryStream( repositoryRootPath );
-                    for ( final org.kie.commons.java.nio.file.Path child : paths ) {
+                    for ( final org.uberfire.java.nio.file.Path child : paths ) {
                         System.out.println( "-----child--- :" + child );
                     }
 

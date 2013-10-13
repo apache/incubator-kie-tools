@@ -2,7 +2,7 @@ package org.drools.workbench.screens.drltext.model;
 
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class DrlModelContent {

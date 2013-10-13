@@ -3,9 +3,8 @@ package org.drools.workbench.jcr2vfsmigration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.workbench.jcr2vfsmigration.vfs.IOServiceFactory;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import java.io.*;
 import java.net.URL;

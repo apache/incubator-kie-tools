@@ -18,9 +18,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.Files;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -64,7 +64,7 @@ public class GuidedDecisionTableMigrater {
 
         Path path = migrationPathManager.generatePathForAsset( jcrModule,
                                                                jcrAssetItem );
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
         if ( !Files.exists( nioPath ) ) {
             ioService.createFile( nioPath );
         }

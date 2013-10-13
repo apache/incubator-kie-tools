@@ -14,7 +14,7 @@ import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEd
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.guvnor.common.services.project.model.Package;
-import org.kie.commons.data.Pair;
+import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;

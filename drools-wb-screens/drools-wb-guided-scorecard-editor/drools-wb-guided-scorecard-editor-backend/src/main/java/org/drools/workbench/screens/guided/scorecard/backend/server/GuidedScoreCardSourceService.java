@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
 
 @ApplicationScoped

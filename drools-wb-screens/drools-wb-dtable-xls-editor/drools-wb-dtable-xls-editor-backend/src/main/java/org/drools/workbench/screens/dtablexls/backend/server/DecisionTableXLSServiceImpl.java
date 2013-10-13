@@ -16,12 +16,9 @@
 
 package org.drools.workbench.screens.dtablexls.backend.server;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,7 +31,6 @@ import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.drools.template.parser.DecisionTableParseException;
@@ -50,9 +46,9 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.StandardOpenOption;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.StandardOpenOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -160,7 +156,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                         e );
             }
  
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path nioPath = paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
@@ -197,7 +193,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
         log.info( "USER:" + identity.getName() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path nioPath = paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
                                                                                               comment ) );

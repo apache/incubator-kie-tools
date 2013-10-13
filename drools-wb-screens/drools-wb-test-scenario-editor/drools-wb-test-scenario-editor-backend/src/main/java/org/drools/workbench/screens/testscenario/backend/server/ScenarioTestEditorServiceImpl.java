@@ -43,10 +43,10 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Files;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
 import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -116,7 +116,7 @@ public class ScenarioTestEditorServiceImpl
                         final Scenario content,
                         final String comment ) {
         try {
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
+            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
             final Path newPath = paths.convert( nioPath,
                                                 false );
 
@@ -301,7 +301,7 @@ public class ScenarioTestEditorServiceImpl
             }
 
             // Ensure Path represents a Folder
-            org.kie.commons.java.nio.file.Path pPath = paths.convert( path );
+            org.uberfire.java.nio.file.Path pPath = paths.convert( path );
             if ( !Files.isDirectory( pPath ) ) {
                 pPath = pPath.getParent();
             }
@@ -312,8 +312,8 @@ public class ScenarioTestEditorServiceImpl
             FileExtensionFilter fileExtensionFilter = new FileExtensionFilter( ".scenario" );
 
             // Get list of immediate children
-            final DirectoryStream<org.kie.commons.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( pPath );
-            for ( final org.kie.commons.java.nio.file.Path p : directoryStream ) {
+            final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( pPath );
+            for ( final org.uberfire.java.nio.file.Path p : directoryStream ) {
                 if ( filter.accept( p ) && fileExtensionFilter.accept( p ) ) {
                     if ( Files.isRegularFile( p ) ) {
                         items.add( paths.convert( p ) );

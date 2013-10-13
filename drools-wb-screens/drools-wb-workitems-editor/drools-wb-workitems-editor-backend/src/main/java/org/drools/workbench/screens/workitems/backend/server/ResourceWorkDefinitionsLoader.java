@@ -27,7 +27,7 @@ import javax.inject.Named;
 import org.drools.core.process.core.WorkDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionFilter;
-import org.kie.commons.io.IOService;
+import org.uberfire.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -51,8 +51,8 @@ public class ResourceWorkDefinitionsLoader {
     public Map<String, WorkDefinition> loadWorkDefinitions( final Path projectRoot ) {
         //Find all WID files in the project
         final Map<String, WorkDefinition> workDefinitions = new HashMap<String, WorkDefinition>();
-        final org.kie.commons.java.nio.file.Path nioProjectRoot = paths.convert( projectRoot );
-        final Collection<org.kie.commons.java.nio.file.Path> widPaths = fileDiscoveryService.discoverFiles( nioProjectRoot,
+        final org.uberfire.java.nio.file.Path nioProjectRoot = paths.convert( projectRoot );
+        final Collection<org.uberfire.java.nio.file.Path> widPaths = fileDiscoveryService.discoverFiles( nioProjectRoot,
                                                                                                             widFilter,
                                                                                                             true );
         if ( widPaths == null || widPaths.isEmpty() ) {
@@ -61,7 +61,7 @@ public class ResourceWorkDefinitionsLoader {
 
         //Load WID files
         final List<String> definitions = new ArrayList<String>();
-        for ( org.kie.commons.java.nio.file.Path widPath : widPaths ) {
+        for ( org.uberfire.java.nio.file.Path widPath : widPaths ) {
             final String definition = ioService.readAllString( widPath );
             definitions.add( definition );
         }

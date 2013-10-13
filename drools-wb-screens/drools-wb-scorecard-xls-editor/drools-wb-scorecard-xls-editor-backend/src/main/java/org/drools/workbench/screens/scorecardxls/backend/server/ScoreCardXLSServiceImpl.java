@@ -37,9 +37,9 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.StandardOpenOption;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.StandardOpenOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -121,7 +121,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
         log.info( "USER:" + identity.getName() + " CREATING asset [" + resource.getFileName() + "]" );
 
         try {
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path nioPath = paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
@@ -140,7 +140,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
             try {
                 content.close();
             } catch ( IOException e ) {
-                throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+                throw new org.uberfire.java.nio.IOException( e.getMessage() );
             }
         }
     }
@@ -152,7 +152,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
         log.info( "USER:" + identity.getName() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
-            final org.kie.commons.java.nio.file.Path nioPath = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path nioPath = paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
                                                                                               comment ) );
@@ -170,7 +170,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
             try {
                 content.close();
             } catch ( IOException e ) {
-                throw new org.kie.commons.java.nio.IOException( e.getMessage() );
+                throw new org.uberfire.java.nio.IOException( e.getMessage() );
             }
         }
     }

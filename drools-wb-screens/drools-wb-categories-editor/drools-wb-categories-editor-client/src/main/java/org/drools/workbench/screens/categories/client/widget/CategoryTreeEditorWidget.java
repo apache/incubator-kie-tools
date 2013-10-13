@@ -25,7 +25,7 @@ import org.drools.workbench.screens.categories.client.resources.ImageResources;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to

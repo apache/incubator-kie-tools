@@ -115,7 +115,7 @@
 
           <!-- Errai -->
           <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
-          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-org.uberfire.commons.services.cdi-jetty-*.jar</exclude>
 
           <!-- Jetty -->
           <exclude>WEB-INF/lib/jetty-*.jar</exclude>
@@ -128,7 +128,7 @@
           <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
           <exclude>WEB-INF/lib/jsr250-api-*.jar</exclude>
           <exclude>WEB-INF/lib/weld-*.jar</exclude>
-          <exclude>WEB-INF/lib/cdi-api*.jar</exclude>
+          <exclude>WEB-INF/lib/org.uberfire.commons.services.cdi-api*.jar</exclude>
           <exclude>WEB-INF/lib/javax*.jar</exclude>
           <exclude>WEB-INF/lib/jboss-interceptors-api_*.jar</exclude>
 

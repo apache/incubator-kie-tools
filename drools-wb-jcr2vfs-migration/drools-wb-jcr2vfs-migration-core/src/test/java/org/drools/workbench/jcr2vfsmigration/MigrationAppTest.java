@@ -5,9 +5,8 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.drools.workbench.jcr2vfsmigration.vfs.IOServiceFactory;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 public class MigrationAppTest {
 

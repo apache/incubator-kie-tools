@@ -24,7 +24,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.guvnor.common.services.backend.file.upload.AbstractFileServlet;
-import org.kie.commons.io.IOService;
+import org.uberfire.io.IOService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -77,14 +77,14 @@ public class ScoreCardXLSFileServlet extends AbstractFileServlet {
     @Override
     protected Path convertPath( final String fileName,
                                 final String contextPath ) throws URISyntaxException {
-        final org.kie.commons.java.nio.file.Path path = ioService.get( new URI( contextPath ) );
+        final org.uberfire.java.nio.file.Path path = ioService.get( new URI( contextPath ) );
         return paths.convert( path.resolve( fileName ),
                               false );
     }
 
     @Override
     protected Path convertPath( final String fullPath ) throws URISyntaxException {
-        final org.kie.commons.java.nio.file.Path path = ioService.get( new URI( fullPath ) );
+        final org.uberfire.java.nio.file.Path path = ioService.get( new URI( fullPath ) );
         return paths.convert( path,
                               false );
     }

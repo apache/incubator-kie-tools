@@ -8,9 +8,9 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.Files;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -38,7 +38,7 @@ public class AttachementAssetMigrater {
                          AssetItem jcrAssetItem ) {
         Path path = migrationPathManager.generatePathForAsset( jcrModule,
                                                                jcrAssetItem );
-        final org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
         if ( !Files.exists( nioPath ) ) {
             ioService.createFile( nioPath );
         }

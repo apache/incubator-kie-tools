@@ -3,7 +3,7 @@ package org.drools.workbench.screens.workitems.model;
 import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class WorkItemDefinitionElements {

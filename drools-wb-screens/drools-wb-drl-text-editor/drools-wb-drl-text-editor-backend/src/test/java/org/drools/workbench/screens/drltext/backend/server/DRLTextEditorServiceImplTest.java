@@ -20,7 +20,7 @@ import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -81,7 +81,7 @@ public class DRLTextEditorServiceImplTest {
 
     private Path makePath( final String url ) throws URISyntaxException {
         final URL testUrl = this.getClass().getResource( url );
-        final org.kie.commons.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
+        final org.uberfire.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
         final Path testPath = paths.convert( testNioPath );
         return testPath;
     }

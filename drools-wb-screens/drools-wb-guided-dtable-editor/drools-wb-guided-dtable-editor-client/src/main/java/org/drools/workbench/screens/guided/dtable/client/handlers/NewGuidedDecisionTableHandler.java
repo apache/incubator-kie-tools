@@ -18,7 +18,7 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.commons.data.Pair;
+import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;

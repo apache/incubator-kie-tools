@@ -40,7 +40,7 @@
 
   <context-param>
     <param-name>resteasy.injector.factory</param-name>
-    <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
+    <param-value>org.jboss.resteasy.org.uberfire.commons.services.org.uberfire.commons.services.cdi.CdiInjectorFactory</param-value>
   </context-param>
 
   <servlet>
