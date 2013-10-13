@@ -30,6 +30,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
@@ -83,6 +84,7 @@ public class BatchIndexTest {
     }
 
     @Test
+    @Ignore
     public void testIndex() throws IOException, InterruptedException {
         {
             final Path file = ioService().get( "git://temp-repo-test/path/to/file.txt" );
