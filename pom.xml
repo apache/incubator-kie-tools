@@ -54,7 +54,7 @@
     <jetty-servlet.version>7.2.1.v20101111</jetty-servlet.version>
 
     <javax.inject.version>1</javax.inject.version>
-    <org.uberfire.commons.services.cdi-api.version>1.0-SP4</org.uberfire.commons.services.cdi-api.version>
+    <cdi-api.version>1.0-SP4</cdi-api.version>
     <weld-spi.version>1.1.Final</weld-spi.version>
     <weld.version>1.1.13.Final</weld.version>
 
@@ -714,7 +714,7 @@
       <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
-        <version>${org.uberfire.commons.services.cdi-api.version}</version>
+        <version>${cdi-api.version}</version>
       </dependency>
 
       <!-- Errai AS -->
