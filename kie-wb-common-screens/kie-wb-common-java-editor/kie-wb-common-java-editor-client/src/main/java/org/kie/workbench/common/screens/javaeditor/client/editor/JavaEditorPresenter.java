@@ -38,7 +38,7 @@ import org.uberfire.client.common.Page;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @WorkbenchEditor(identifier = "JavaEditor", supportedTypes = { JavaResourceType.class })
 public class JavaEditorPresenter {

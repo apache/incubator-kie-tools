@@ -31,9 +31,9 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Files;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -173,8 +173,8 @@ public class ExplorerServiceImpl
             return authorizedProjects;
         }
         final Path repositoryRoot = repository.getRoot();
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( paths.convert( repositoryRoot ) );
-        for ( org.kie.commons.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( paths.convert( repositoryRoot ) );
+        for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
             if ( Files.isDirectory( nioRepositoryPath ) ) {
                 final org.uberfire.backend.vfs.Path projectPath = paths.convert( nioRepositoryPath );
                 final Project project = projectService.resolveProject( projectPath );
@@ -209,11 +209,11 @@ public class ExplorerServiceImpl
 
     private Collection<FolderItem> getItems( final Path packagePath ) {
         final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
-        final org.kie.commons.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         if ( Files.exists( nioPackagePath ) ) {
-            final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
+            final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
                                                                                                                dotFileFilter );
-            for ( org.kie.commons.java.nio.file.Path nioPath : nioPaths ) {
+            for ( org.uberfire.java.nio.file.Path nioPath : nioPaths ) {
                 if ( Files.isRegularFile( nioPath ) ) {
                     final org.uberfire.backend.vfs.Path path = paths.convert( nioPath );
                     final FolderItem folderItem = new FolderItem( path,
@@ -233,15 +233,15 @@ public class ExplorerServiceImpl
         final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
 
         //Scan upwards until the path exists (as the current path could have been deleted)
-        org.kie.commons.java.nio.file.Path nioPath = paths.convert( path );
+        org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
         while ( !Files.exists( nioPath ) ) {
             nioPath = nioPath.getParent();
         }
         final Path basePath = paths.convert( nioPath );
         final Path baseParentPath = paths.convert( nioPath.getParent() );
-        final DirectoryStream<org.kie.commons.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath,
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath,
                                                                                                            dotFileFilter );
-        for ( org.kie.commons.java.nio.file.Path np : nioPaths ) {
+        for ( org.uberfire.java.nio.file.Path np : nioPaths ) {
             if ( Files.isRegularFile( np ) ) {
                 final org.uberfire.backend.vfs.Path p = paths.convert( np );
                 final FolderItem folderItem = new FolderItem( p,
@@ -267,7 +267,7 @@ public class ExplorerServiceImpl
     }
 
     private List<Path> getPathSegments( final Path path ) {
-        org.kie.commons.java.nio.file.Path nioSegmentPath = paths.convert( path );
+        org.uberfire.java.nio.file.Path nioSegmentPath = paths.convert( path );
         //We're not interested in the terminal segment prior to root (i.e. the Project name)
         final int segmentCount = nioSegmentPath.getNameCount() - 1;
         if ( segmentCount < 1 ) {

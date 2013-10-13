@@ -14,7 +14,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.commons.data.Pair;
+import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;

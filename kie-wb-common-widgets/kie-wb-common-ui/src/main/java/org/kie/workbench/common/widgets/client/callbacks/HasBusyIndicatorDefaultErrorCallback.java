@@ -1,7 +1,7 @@
 package org.kie.workbench.common.widgets.client.callbacks;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 
 /**

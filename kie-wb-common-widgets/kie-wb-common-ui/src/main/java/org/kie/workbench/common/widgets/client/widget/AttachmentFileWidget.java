@@ -96,7 +96,7 @@ public class AttachmentFileWidget extends Composite {
                   Window.alert( CommonConstants.INSTANCE.UploadSuccess() );
               } else {
                   executeCallback( errorCallback );
-                  if(event.getResults().contains("org.kie.commons.java.nio.file.FileAlreadyExistsException")) {
+                  if(event.getResults().contains("org.uberfire.java.nio.file.FileAlreadyExistsException")) {
                       ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( fieldFileName.getText() ) );
                   } else if(event.getResults().contains("DecisionTableParseException")) {
                       ErrorPopup.showMessage( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader or the content is not xls97 format" );

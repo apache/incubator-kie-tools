@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.services.datamodeller.driver;
 
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 
 public class FileChangeDescriptor {
 

@@ -25,9 +25,8 @@ import javax.enterprise.inject.Instance;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.workbench.common.services.backend.source.SourceService;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

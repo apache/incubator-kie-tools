@@ -1,7 +1,7 @@
 package org.kie.workbench.common.services.backend.file;
 
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Path;
 
 /**
  * Filter to match Enumeration Definitions source files

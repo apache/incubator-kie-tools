@@ -35,7 +35,7 @@ import org.guvnor.common.services.shared.version.VersionService;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.commons.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.kie.workbench.common.widgets.metadata.client.resources.Images;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
@@ -45,7 +45,7 @@ import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.mvp.PlaceManager;
 
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * This widget shows a list of versions for packages or assets

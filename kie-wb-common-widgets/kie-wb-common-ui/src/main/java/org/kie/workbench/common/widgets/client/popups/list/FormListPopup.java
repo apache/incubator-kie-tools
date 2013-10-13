@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.widgets.client.popups.list;
 
-import org.kie.commons.data.Pair;
+import org.uberfire.commons.data.Pair;
 
 import javax.inject.Inject;
 import java.util.List;

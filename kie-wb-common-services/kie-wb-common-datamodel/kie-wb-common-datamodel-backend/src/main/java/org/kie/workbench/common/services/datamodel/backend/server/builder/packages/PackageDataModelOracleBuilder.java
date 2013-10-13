@@ -14,7 +14,7 @@ import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracleI
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.kie.commons.data.Pair;
+import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
 import org.slf4j.Logger;

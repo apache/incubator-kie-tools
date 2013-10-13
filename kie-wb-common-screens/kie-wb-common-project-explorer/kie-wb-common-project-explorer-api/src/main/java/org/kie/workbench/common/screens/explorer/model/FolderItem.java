@@ -16,7 +16,7 @@
 package org.kie.workbench.common.screens.explorer.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
 
 /**

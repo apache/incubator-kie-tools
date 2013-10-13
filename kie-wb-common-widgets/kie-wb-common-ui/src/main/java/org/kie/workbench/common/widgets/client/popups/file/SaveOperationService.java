@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.client.popups.file;
 
 import org.uberfire.backend.vfs.Path;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class SaveOperationService {
 

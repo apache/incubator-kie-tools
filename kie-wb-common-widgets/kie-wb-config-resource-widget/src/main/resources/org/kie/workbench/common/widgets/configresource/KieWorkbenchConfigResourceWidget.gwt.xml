@@ -33,6 +33,6 @@
 
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
-  <inherits name="org.kie.commons.KieCommonsValidation"/>
+  <inherits name="org.uberfire.commons.UberfireCommons"/>
 
 </module>

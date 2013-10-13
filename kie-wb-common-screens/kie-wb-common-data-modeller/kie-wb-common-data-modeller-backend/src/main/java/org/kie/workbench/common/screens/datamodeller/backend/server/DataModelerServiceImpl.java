@@ -26,8 +26,8 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -159,7 +159,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         try {
             //ensure java sources directory exists.
-            org.kie.commons.java.nio.file.Path javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
+            org.uberfire.java.nio.file.Path javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
 
             if (overwrite) {
                 mergeWithExistingModel(dataModel, project);
@@ -307,12 +307,12 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     private List<Path> calculateDeleteableFiles( DataModelTO dataModel,
-                                                 org.kie.commons.java.nio.file.Path javaPath ) {
+                                                 org.uberfire.java.nio.file.Path javaPath ) {
 
         List<DataObjectTO> currentObjects = dataModel.getDataObjects();
         List<DataObjectTO> deletedObjects = dataModel.getDeletedDataObjects();
         List<Path> deleteableFiles = new ArrayList<Path>();
-        org.kie.commons.java.nio.file.Path filePath;
+        org.uberfire.java.nio.file.Path filePath;
 
         //process deleted persistent objects.
         for ( DataObjectTO dataObject : deletedObjects ) {
@@ -375,12 +375,12 @@ public class DataModelerServiceImpl implements DataModelerService {
      * This auxiliary method deletes the files that belongs to data objects that was removed in memory.
      */
     private List<ResourceChange> cleanupFiles( DataModelTO dataModel,
-                                               org.kie.commons.java.nio.file.Path javaPath ) {
+                                               org.uberfire.java.nio.file.Path javaPath ) {
 
         List<DataObjectTO> currentObjects = dataModel.getDataObjects();
         List<DataObjectTO> deletedObjects = dataModel.getDeletedDataObjects();
         List<ResourceChange> fileChanges = new ArrayList<ResourceChange>();
-        org.kie.commons.java.nio.file.Path filePath;
+        org.uberfire.java.nio.file.Path filePath;
 
         //process deleted persistent objects.
         for ( DataObjectTO dataObject : deletedObjects ) {
@@ -423,23 +423,23 @@ public class DataModelerServiceImpl implements DataModelerService {
         return fileChanges;
     }
 
-    private void cleanupEmptyDirs( org.kie.commons.java.nio.file.Path pojectPath ) {
+    private void cleanupEmptyDirs( org.uberfire.java.nio.file.Path pojectPath ) {
         FileUtils fileUtils = FileUtils.getInstance();
         List<String> deleteableFiles = new ArrayList<String>();
         deleteableFiles.add( ".gitignore" );
         fileUtils.cleanEmptyDirectories( ioService, pojectPath, false, deleteableFiles );
     }
 
-    private org.kie.commons.java.nio.file.Path existsProjectJavaPath( org.kie.commons.java.nio.file.Path projectPath ) {
-        org.kie.commons.java.nio.file.Path javaPath = projectPath.resolve( "src" ).resolve( "main" ).resolve( "java" );
+    private org.uberfire.java.nio.file.Path existsProjectJavaPath( org.uberfire.java.nio.file.Path projectPath ) {
+        org.uberfire.java.nio.file.Path javaPath = projectPath.resolve( "src" ).resolve( "main" ).resolve( "java" );
         if ( ioService.exists( javaPath ) ) {
             return javaPath;
         }
         return null;
     }
 
-    private org.kie.commons.java.nio.file.Path ensureProjectJavaPath( org.kie.commons.java.nio.file.Path projectPath ) {
-        org.kie.commons.java.nio.file.Path javaPath = projectPath.resolve( "src" );
+    private org.uberfire.java.nio.file.Path ensureProjectJavaPath( org.uberfire.java.nio.file.Path projectPath ) {
+        org.uberfire.java.nio.file.Path javaPath = projectPath.resolve( "src" );
         if ( !ioService.exists( javaPath ) ) {
             javaPath = ioService.createDirectory( javaPath );
         }
@@ -458,12 +458,12 @@ public class DataModelerServiceImpl implements DataModelerService {
     /**
      * Given a className calculates the path to the java file allocating the corresponding pojo.
      */
-    private org.kie.commons.java.nio.file.Path calculateFilePath( String className,
-                                                                  org.kie.commons.java.nio.file.Path javaPath ) {
+    private org.uberfire.java.nio.file.Path calculateFilePath( String className,
+                                                                  org.uberfire.java.nio.file.Path javaPath ) {
 
         String name = NamingUtils.getInstance().extractClassName( className );
         String packageName = NamingUtils.getInstance().extractPackageName( className );
-        org.kie.commons.java.nio.file.Path filePath = javaPath;
+        org.uberfire.java.nio.file.Path filePath = javaPath;
 
         if ( packageName != null ) {
             List<String> packageNameTokens = NamingUtils.getInstance().tokenizePackageName( packageName );

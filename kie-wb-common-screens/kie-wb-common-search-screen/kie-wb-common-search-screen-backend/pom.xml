@@ -16,8 +16,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kieora-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-api</artifactId>
     </dependency>
 
     <dependency>

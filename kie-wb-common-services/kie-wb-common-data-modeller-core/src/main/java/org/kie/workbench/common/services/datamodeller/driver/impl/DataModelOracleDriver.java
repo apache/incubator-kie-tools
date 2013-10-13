@@ -28,11 +28,9 @@ import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.OpenOption;
-import org.kie.commons.java.nio.file.Option;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.OpenOption;
+import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationListener;
@@ -378,7 +376,7 @@ public class DataModelOracleDriver implements ModelDriver {
 
     static class OracleGenerationListener implements GenerationListener {
 
-        org.kie.commons.java.nio.file.Path output;
+        org.uberfire.java.nio.file.Path output;
 
         IOService ioService;
 
@@ -386,7 +384,7 @@ public class DataModelOracleDriver implements ModelDriver {
 
         List<FileChangeDescriptor> fileChanges = new ArrayList<FileChangeDescriptor>();
 
-        public OracleGenerationListener(IOService ioService, org.kie.commons.java.nio.file.Path output, OpenOption option) {
+        public OracleGenerationListener(IOService ioService, org.uberfire.java.nio.file.Path output, OpenOption option) {
             this.ioService = ioService;
             this.output = output;
             this.option = option;
@@ -396,8 +394,8 @@ public class DataModelOracleDriver implements ModelDriver {
         public void assetGenerated(String fileName, String content) {
 
             String subDir;
-            org.kie.commons.java.nio.file.Path subDirPath;
-            org.kie.commons.java.nio.file.Path destFilePath;
+            org.uberfire.java.nio.file.Path subDirPath;
+            org.uberfire.java.nio.file.Path destFilePath;
             StringTokenizer dirNames;
 
             subDirPath = output;

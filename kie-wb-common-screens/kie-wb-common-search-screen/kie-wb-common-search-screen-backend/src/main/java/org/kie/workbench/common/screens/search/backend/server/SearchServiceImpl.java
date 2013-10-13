@@ -1,7 +1,6 @@
 package org.kie.workbench.common.screens.search.backend.server;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,12 +16,12 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOSearchService;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.attribute.DublinCoreView;
-import org.kie.commons.java.nio.base.version.VersionAttributeView;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.kieora.search.DateRange;
+import org.uberfire.io.IOSearchService;
+import org.uberfire.io.IOService;
+import org.uberfire.io.attribute.DublinCoreView;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.metadata.search.DateRange;
 import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;

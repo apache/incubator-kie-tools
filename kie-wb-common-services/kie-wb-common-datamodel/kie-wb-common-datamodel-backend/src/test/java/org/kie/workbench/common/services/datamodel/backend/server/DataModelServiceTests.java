@@ -10,7 +10,7 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.workbench.common.services.datamodel.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -52,7 +52,7 @@ public class DataModelServiceTests {
                                                                                                cc );
 
         final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/t3p1" );
-        final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
         final PackageDataModelOracle oracle = dataModelService.getDataModel( packagePath );
@@ -93,7 +93,7 @@ public class DataModelServiceTests {
                                                                                                cc );
 
         final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/t3p1" );
-        final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
         final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );
@@ -133,7 +133,7 @@ public class DataModelServiceTests {
                                                                                                cc );
 
         final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest2/src/main/java" );
-        final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
         final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );

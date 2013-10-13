@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.services.backend.source;
 
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 
 public abstract class DRLBaseSourceService
         extends BaseSourceService<String> {

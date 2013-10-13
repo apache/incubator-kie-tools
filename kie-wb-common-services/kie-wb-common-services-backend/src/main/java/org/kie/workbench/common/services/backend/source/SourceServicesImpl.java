@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 
 @Service
 @ApplicationScoped

@@ -44,7 +44,7 @@ import org.uberfire.client.common.FormStyleLayout;
 import org.uberfire.client.common.SmallLabel;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * This displays the metadata for a versionable artifact. It also captures

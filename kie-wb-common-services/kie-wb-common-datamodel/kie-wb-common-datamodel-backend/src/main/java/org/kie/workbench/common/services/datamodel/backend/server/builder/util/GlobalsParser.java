@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.services.datamodel.backend.server.builder.util;
 
-import org.kie.commons.data.Pair;
+import org.uberfire.commons.data.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

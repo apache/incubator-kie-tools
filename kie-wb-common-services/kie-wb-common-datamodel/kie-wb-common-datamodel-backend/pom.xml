@@ -70,13 +70,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-commons-io</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-api</artifactId>
     </dependency>
 
     <dependency>
@@ -108,8 +108,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-nio2-fs</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
       <scope>test</scope>
     </dependency>
 

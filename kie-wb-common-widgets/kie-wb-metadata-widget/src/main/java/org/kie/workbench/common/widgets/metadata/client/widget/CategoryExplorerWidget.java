@@ -40,7 +40,7 @@ import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.uberfire.backend.vfs.Path;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to

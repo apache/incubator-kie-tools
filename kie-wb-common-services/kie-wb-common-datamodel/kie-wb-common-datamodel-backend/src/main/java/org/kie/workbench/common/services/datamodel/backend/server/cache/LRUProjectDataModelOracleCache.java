@@ -19,9 +19,9 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.slf4j.Logger;
@@ -108,7 +108,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         }
 
         //Add external imports. The availability of these classes is checked in Builder and failed fast. Here we load them into the DMO
-        final org.kie.commons.java.nio.file.Path nioExternalImportsPath = paths.convert( project.getImportsPath() );
+        final org.uberfire.java.nio.file.Path nioExternalImportsPath = paths.convert( project.getImportsPath() );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final Path externalImportsPath = paths.convert( nioExternalImportsPath );
             final ProjectImports projectImports = projectService.load( externalImportsPath );

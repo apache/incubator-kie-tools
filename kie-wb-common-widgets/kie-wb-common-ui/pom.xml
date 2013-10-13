@@ -27,8 +27,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-commons-data</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
     </dependency>
 
     <dependency>

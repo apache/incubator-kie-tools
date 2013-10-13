@@ -29,7 +29,7 @@ import org.drools.workbench.models.datamodel.imports.ImportRemovedEvent;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
                                                IsWidget {

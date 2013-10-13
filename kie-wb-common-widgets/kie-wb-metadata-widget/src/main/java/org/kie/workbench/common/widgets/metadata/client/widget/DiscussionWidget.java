@@ -44,7 +44,7 @@ import org.uberfire.client.common.SmallLabel;
 import org.uberfire.security.Identity;
 
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * Does the discussion panel for artifacts.

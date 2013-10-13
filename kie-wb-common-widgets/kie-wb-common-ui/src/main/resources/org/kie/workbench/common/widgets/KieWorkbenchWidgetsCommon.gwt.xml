@@ -28,7 +28,7 @@
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
 
-  <inherits name="org.kie.commons.KieCommonsData"/>
+  <inherits name="org.uberfire.commons.UberfireCommons"/>
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
 
   <inherits name="org.uberfire.UberfireWorkbench"/>

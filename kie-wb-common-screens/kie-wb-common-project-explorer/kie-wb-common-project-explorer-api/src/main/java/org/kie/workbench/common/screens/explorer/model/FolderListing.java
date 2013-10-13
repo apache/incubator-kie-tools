@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
 
 /**

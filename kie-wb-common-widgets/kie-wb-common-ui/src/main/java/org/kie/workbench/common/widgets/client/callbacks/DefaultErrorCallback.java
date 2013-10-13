@@ -5,6 +5,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.java.nio.IOException;
 
 /**
  * Default Error handler for all Portable Exceptions
@@ -17,52 +18,52 @@ public class DefaultErrorCallback implements ErrorCallback<Message> {
         try {
             throw throwable;
 
-        } catch ( org.kie.commons.java.nio.file.AccessDeniedException e ) {
+        } catch ( org.uberfire.java.nio.file.AccessDeniedException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.AtomicMoveNotSupportedException e ) {
+        } catch ( org.uberfire.java.nio.file.AtomicMoveNotSupportedException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.ClosedWatchServiceException e ) {
+        } catch ( org.uberfire.java.nio.file.ClosedWatchServiceException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.DirectoryNotEmptyException e ) {
+        } catch ( org.uberfire.java.nio.file.DirectoryNotEmptyException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.FileAlreadyExistsException e ) {
+        } catch ( org.uberfire.java.nio.file.FileAlreadyExistsException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( e.getFile() ) );
 
         } catch ( PackageAlreadyExistsException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionPackageAlreadyExists0( e.getFile() ) );
 
-        } catch ( org.kie.commons.java.nio.file.FileSystemAlreadyExistsException e ) {
+        } catch ( org.uberfire.java.nio.file.FileSystemAlreadyExistsException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.FileSystemNotFoundException e ) {
+        } catch ( org.uberfire.java.nio.file.FileSystemNotFoundException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.InvalidPathException e ) {
+        } catch ( org.uberfire.java.nio.file.InvalidPathException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionInvalidPath() );
 
-        } catch ( org.kie.commons.java.nio.file.NoSuchFileException e ) {
+        } catch ( org.uberfire.java.nio.file.NoSuchFileException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionNoSuchFile0( e.getFile() ) );
 
-        } catch ( org.kie.commons.java.nio.file.NotDirectoryException e ) {
+        } catch ( org.uberfire.java.nio.file.NotDirectoryException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.NotLinkException e ) {
+        } catch ( org.uberfire.java.nio.file.NotLinkException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.PatternSyntaxException e ) {
+        } catch ( org.uberfire.java.nio.file.PatternSyntaxException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.ProviderNotFoundException e ) {
+        } catch ( org.uberfire.java.nio.file.ProviderNotFoundException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.file.FileSystemException e ) {
+        } catch ( org.uberfire.java.nio.file.FileSystemException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
-        } catch ( org.kie.commons.java.nio.IOException e ) {
+        } catch ( IOException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );
 
         } catch ( Throwable e ) {
