@@ -20,24 +20,12 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.common.Util;
 import org.uberfire.client.navigator.FileNavigator;
 import org.uberfire.client.navigator.NavigatorOptions;
-import org.uberfire.client.resources.CoreImages;
-
-import static org.kie.commons.validation.PortablePreconditions.*;
 
 @Dependent
 public class FileNavigatorView

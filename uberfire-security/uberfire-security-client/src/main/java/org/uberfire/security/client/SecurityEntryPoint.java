@@ -35,7 +35,7 @@ import org.uberfire.security.Role;
 import org.uberfire.security.authz.AuthorizationException;
 
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.Identity.*;
 
 @EntryPoint

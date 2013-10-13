@@ -26,8 +26,8 @@ import javax.inject.Named;
 
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.attribute.FileTime;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.Path;
@@ -41,9 +41,9 @@ public class Paths {
     @Named("ioStrategy")
     private IOService ioService;
 
-    private Map<org.kie.commons.java.nio.file.FileSystem, FileSystem> cache = new HashMap<org.kie.commons.java.nio.file.FileSystem, FileSystem>();
+    private Map<org.uberfire.java.nio.file.FileSystem, FileSystem> cache = new HashMap<org.uberfire.java.nio.file.FileSystem, FileSystem>();
 
-    public Path convert( final org.kie.commons.java.nio.file.Path path,
+    public Path convert( final org.uberfire.java.nio.file.Path path,
                          final boolean readAttrrs ) {
         if ( path == null ) {
             return null;
@@ -80,11 +80,11 @@ public class Paths {
         return newPath( convert( path.getFileSystem() ), path.getFileName().toString(), path.toUri().toString(), attributes );
     }
 
-    public Path convert( final org.kie.commons.java.nio.file.Path path ) {
+    public Path convert( final org.uberfire.java.nio.file.Path path ) {
         return convert( path, true );
     }
 
-    public org.kie.commons.java.nio.file.Path convert( final Path path ) {
+    public org.uberfire.java.nio.file.Path convert( final Path path ) {
         if ( path == null ) {
             return null;
         }
@@ -100,10 +100,10 @@ public class Paths {
         }
     }
 
-    public FileSystem convert( final org.kie.commons.java.nio.file.FileSystem fs ) {
+    public FileSystem convert( final org.uberfire.java.nio.file.FileSystem fs ) {
         if ( !cache.containsKey( fs ) ) {
             final Map<String, String> roots = new HashMap<String, String>();
-            for ( final org.kie.commons.java.nio.file.Path root : fs.getRootDirectories() ) {
+            for ( final org.uberfire.java.nio.file.Path root : fs.getRootDirectories() ) {
                 roots.put( root.toUri().toString(), root.getFileName() == null ? "/" : root.getFileName().toString() );
             }
             cache.put( fs, FileSystemFactory.newFS( roots, fs.supportedFileAttributeViews() ) );

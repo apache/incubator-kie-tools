@@ -26,7 +26,7 @@ import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 import org.uberfire.security.server.HttpSecurityContext;
 import org.uberfire.security.server.SecurityConstants;
 
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.security.server.SecurityConstants.*;
 
 public class FormAuthenticationScheme implements AuthenticationScheme {

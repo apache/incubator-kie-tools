@@ -11,7 +11,7 @@ import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.PasswordService;
 
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 @ApplicationScoped
 public class RepositoryFactoryImpl implements RepositoryFactory {

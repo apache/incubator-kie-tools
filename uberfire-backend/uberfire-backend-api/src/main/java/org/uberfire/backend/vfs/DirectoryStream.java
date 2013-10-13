@@ -16,7 +16,7 @@
 
 package org.uberfire.backend.vfs;
 
-import org.kie.commons.java.nio.IOException;
+import org.uberfire.java.nio.IOException;
 
 public interface DirectoryStream<T> extends Iterable<T> {
 

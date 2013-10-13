@@ -6,10 +6,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.FileSystem;
-import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -20,7 +20,7 @@ import org.uberfire.backend.server.repositories.EnvironmentParameters;
 import org.uberfire.backend.server.repositories.RepositoryFactoryHelper;
 import org.uberfire.backend.server.util.Paths;
 
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.backend.repositories.impl.git.GitRepository.*;
 
 @ApplicationScoped

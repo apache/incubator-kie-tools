@@ -66,7 +66,7 @@
 
           <!-- Errai -->
           <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
-          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-org.uberfire.commons.services.cdi-jetty-*.jar</exclude>
 
           <!-- Jetty -->
           <exclude>WEB-INF/lib/jetty-*.jar</exclude>

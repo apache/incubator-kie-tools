@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.security.Identity;
 
 @ApplicationScoped

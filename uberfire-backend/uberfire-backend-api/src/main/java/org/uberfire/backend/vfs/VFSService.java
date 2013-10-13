@@ -20,14 +20,14 @@ import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.jboss.errai.common.client.api.interceptor.InterceptedCall;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.file.AtomicMoveNotSupportedException;
-import org.kie.commons.java.nio.file.DirectoryNotEmptyException;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.commons.java.nio.file.NotDirectoryException;
-import org.kie.commons.java.nio.file.ProviderNotFoundException;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
+import org.uberfire.java.nio.file.DirectoryNotEmptyException;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.NotDirectoryException;
+import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.backend.vfs.impl.VFSCacheInterceptor;
 
 @Remote

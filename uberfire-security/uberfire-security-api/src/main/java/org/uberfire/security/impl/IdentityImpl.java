@@ -11,7 +11,7 @@ import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
 
 import static java.util.Collections.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class IdentityImpl implements Identity,
                                      Serializable {

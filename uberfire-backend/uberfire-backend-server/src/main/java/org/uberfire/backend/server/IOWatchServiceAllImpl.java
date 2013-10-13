@@ -6,12 +6,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.commons.io.IOWatchService;
-import org.kie.commons.java.nio.base.WatchContext;
-import org.kie.commons.java.nio.file.StandardWatchEventKind;
-import org.kie.commons.java.nio.file.WatchEvent;
-import org.kie.commons.java.nio.file.WatchKey;
-import org.kie.commons.java.nio.file.WatchService;
+import org.uberfire.io.IOWatchService;
+import org.uberfire.java.nio.base.WatchContext;
+import org.uberfire.java.nio.file.StandardWatchEventKind;
+import org.uberfire.java.nio.file.WatchEvent;
+import org.uberfire.java.nio.file.WatchKey;
+import org.uberfire.java.nio.file.WatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;

@@ -54,7 +54,7 @@
     <jetty-servlet.version>7.2.1.v20101111</jetty-servlet.version>
 
     <javax.inject.version>1</javax.inject.version>
-    <cdi-api.version>1.0-SP4</cdi-api.version>
+    <org.uberfire.commons.services.cdi-api.version>1.0-SP4</org.uberfire.commons.services.cdi-api.version>
     <weld-spi.version>1.1.Final</weld-spi.version>
     <weld.version>1.1.13.Final</weld.version>
 
@@ -63,7 +63,6 @@
     <jboss-ejb3-api.version>3.1.0</jboss-ejb3-api.version>
     <xml-apis.version>1.3.04</xml-apis.version>
 
-    <kie-commons.version>6.1.0-SNAPSHOT</kie-commons.version>
     <errai.version>2.4.1.Final</errai.version>
 
     <commons-httpclient.version>3.1</commons-httpclient.version>
@@ -90,6 +89,12 @@
     <mockito-all.version>1.9.0</mockito-all.version>
     <fest-assert-core.version>2.0M6</fest-assert-core.version>
     <hamcrest.version>1.3</hamcrest.version>
+
+    <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
+    <version.org.apache.helix>0.6.1-incubating</version.org.apache.helix>
+    <version.org.eclipse.jgit>2.1.0.201209190230-r</version.org.eclipse.jgit>
+    <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
+
   </properties>
 
   <scm>
@@ -105,6 +110,35 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.7</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>parse-version</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.3.7</version>
+          <extensions>true</extensions>
+          <configuration>
+            <!-- Split packages in combination with <Export-Package> causes bloated jars otherwise -->
+            <excludeDependencies>true</excludeDependencies>
+            <instructions>
+              <_removeheaders>Ignore-Package</_removeheaders>
+              <_nouses>true</_nouses>
+              <_snapshot>${osgi.snapshot.qualifier}</_snapshot>
+              <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+            </instructions>
+          </configuration>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
@@ -172,10 +206,40 @@
           <version>2.1.2</version>
           <executions>
             <execution>
+              <id>jar</id>
               <goals>
                 <goal>jar</goal>
+              </goals>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                    <Bundle-SymbolicName>${project.artifactId}.source</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <execution>
+              <id>test-jar</id>
+              <goals>
                 <goal>test-jar</goal>
               </goals>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                    <Bundle-SymbolicName>${project.artifactId}.tests.source</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                  </manifestEntries>
+                </archive>
+              </configuration>
             </execution>
           </executions>
         </plugin>
@@ -244,8 +308,39 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.2</version>
+          <version>2.3.1</version>
+          <executions>
+            <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
+            <execution>
+              <id>test-jar</id>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+              <configuration>
+                <excludes>
+                  <exclude>**/logback-test.xml</exclude>
+                </excludes>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-SymbolicName>${project.artifactId}.tests</Bundle-SymbolicName>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+          </configuration>
         </plugin>
 
       </plugins>
@@ -253,6 +348,11 @@
     </pluginManagement>
 
     <plugins>
+      <plugin>
+        <!-- Entry needed to provide parsed version properties -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
 
       <!-- We need source files generated by our Java Annotations Processor -->
       <!-- in the resulting JAR for GWT to reference in child projects. Consequentially -->
@@ -340,6 +440,10 @@
   </build>
 
   <modules>
+    <module>uberfire-commons</module>
+    <module>uberfire-nio2-backport</module>
+    <module>uberfire-io</module>
+    <module>uberfire-metadata</module>
     <module>uberfire-security</module>
     <module>uberfire-api</module>
     <module>uberfire-server</module>
@@ -353,6 +457,39 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-common</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-codecs</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.jgit</groupId>
+        <artifactId>org.eclipse.jgit</artifactId>
+        <version>${version.org.eclipse.jgit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.helix</groupId>
+        <artifactId>helix-core</artifactId>
+        <version>${version.org.apache.helix}</version>
+      </dependency>
 
       <!-- Showcase WebApp -->
       <dependency>
@@ -508,63 +645,76 @@
 
       <!-- KIE Commons -->
       <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-commons-regex</artifactId>
-        <version>${kie-commons.version}</version>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-commons</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-commons-data</artifactId>
-        <version>${kie-commons.version}</version>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-io</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-commons-validation</artifactId>
-        <version>${kie-commons.version}</version>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-io</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-commons-io</artifactId>
-        <version>${kie-commons.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-commons-cdi</artifactId>
-        <version>${kie-commons.version}</version>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-commons</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- KIE Commons VFS -->
       <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-nio2-model</artifactId>
-        <version>${kie-commons.version}</version>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-nio2-model</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-nio2-api</artifactId>
-        <version>${kie-commons.version}</version>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-nio2-api</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-nio2-fs</artifactId>
-        <version>${kie-commons.version}</version>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-nio2-fs</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.commons</groupId>
-        <artifactId>kie-nio2-jgit</artifactId>
-        <version>${kie-commons.version}</version>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-nio2-jgit</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-metadata-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-metadata-backend-lucene</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-metadata-commons-io</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- Errai -->
       <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
-        <version>${cdi-api.version}</version>
+        <version>${org.uberfire.commons.services.cdi-api.version}</version>
       </dependency>
 
       <!-- Errai AS -->

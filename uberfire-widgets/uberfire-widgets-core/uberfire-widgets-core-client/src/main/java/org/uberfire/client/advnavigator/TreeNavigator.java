@@ -22,7 +22,7 @@ import org.uberfire.navigator.FileNavigatorService;
 import org.uberfire.navigator.NavigatorContent;
 import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Dependent
 @Named("TreeNav")

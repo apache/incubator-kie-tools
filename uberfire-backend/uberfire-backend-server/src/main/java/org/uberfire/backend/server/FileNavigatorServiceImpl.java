@@ -9,11 +9,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.base.version.VersionAttributeView;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;

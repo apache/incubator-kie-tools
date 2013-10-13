@@ -22,7 +22,7 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 import static org.uberfire.workbench.model.impl.PanelTypeHelper.isRoot;
 

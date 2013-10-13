@@ -3,7 +3,7 @@ package org.uberfire.rpc.impl;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class SessionInfoImpl implements SessionInfo {
 

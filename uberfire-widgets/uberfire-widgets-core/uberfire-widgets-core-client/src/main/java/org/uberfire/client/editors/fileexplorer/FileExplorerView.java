@@ -28,7 +28,7 @@ import org.uberfire.client.resources.CoreImages;
 import org.uberfire.client.tree.Tree;
 import org.uberfire.client.tree.TreeItem;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class FileExplorerView
         extends Composite

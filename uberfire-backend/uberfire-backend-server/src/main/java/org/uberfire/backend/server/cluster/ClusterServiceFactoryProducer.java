@@ -4,10 +4,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.kie.commons.cluster.ClusterService;
-import org.kie.commons.cluster.ClusterServiceFactory;
-import org.kie.commons.io.impl.cluster.helix.ClusterServiceHelix;
-import org.kie.commons.message.MessageHandlerResolver;
+import org.uberfire.commons.cluster.ClusterService;
+import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.io.impl.cluster.helix.ClusterServiceHelix;
+import org.uberfire.commons.message.MessageHandlerResolver;
 
 @ApplicationScoped
 public class ClusterServiceFactoryProducer {

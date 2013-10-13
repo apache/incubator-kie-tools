@@ -4,7 +4,7 @@
 <module>
 
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
-  <inherits name='org.kie.commons.java.nio.KieCommonsVFSModel'/>
+  <inherits name='org.uberfire.java.nio.UberfireNIO2Model'/>
 
   <source path='backend'>
     <exclude name="server/**"/>

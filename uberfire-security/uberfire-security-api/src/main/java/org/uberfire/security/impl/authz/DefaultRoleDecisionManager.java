@@ -24,7 +24,7 @@ import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.authz.RolesResource;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class DefaultRoleDecisionManager implements RoleDecisionManager {

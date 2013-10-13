@@ -11,7 +11,7 @@ import org.uberfire.security.impl.auth.UserNameCredential;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 import org.uberfire.security.server.HttpSecurityContext;
 
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 public class HttpServletRequestAuthenticationSource extends JACCAuthenticationSource {
 

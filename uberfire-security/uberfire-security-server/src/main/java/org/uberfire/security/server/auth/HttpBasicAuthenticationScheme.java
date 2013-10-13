@@ -18,15 +18,13 @@ package org.uberfire.security.server.auth;
 
 import com.google.common.base.Charsets;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.StringUtils;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationScheme;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 import org.uberfire.security.server.HttpSecurityContext;
 
-import static org.kie.commons.validation.Preconditions.*;
-import static org.uberfire.security.server.SecurityConstants.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 public class HttpBasicAuthenticationScheme implements AuthenticationScheme {
 

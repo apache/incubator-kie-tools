@@ -27,7 +27,7 @@ import org.uberfire.security.impl.auth.PrincipalImpl;
 import org.uberfire.security.server.HttpSecurityContext;
 import org.uberfire.security.server.crypt.DefaultCryptProvider;
 
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 public class CookieStorage implements AuthenticatedStorageProvider {
 

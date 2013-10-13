@@ -17,14 +17,14 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.kie.commons.io.FileSystemType;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.base.options.CommentedOption;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
-import org.kie.commons.java.nio.file.Files;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.io.FileSystemType;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.security.Identity;
 

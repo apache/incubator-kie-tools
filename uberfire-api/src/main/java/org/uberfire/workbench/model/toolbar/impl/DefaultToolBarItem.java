@@ -27,7 +27,7 @@ import org.uberfire.workbench.model.toolbar.ToolBarTypeIcon;
 import org.uberfire.workbench.model.toolbar.ToolBarUrlIcon;
 
 import static java.lang.System.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * Default implementation of ToolBarItem

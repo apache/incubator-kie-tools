@@ -33,7 +33,7 @@ import org.uberfire.security.authz.RolesResource;
 import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.authz.VotingStrategy;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class RuntimeResourceDecisionManager implements ResourceDecisionManager {

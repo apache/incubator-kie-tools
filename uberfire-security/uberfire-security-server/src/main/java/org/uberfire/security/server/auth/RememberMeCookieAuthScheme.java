@@ -23,8 +23,8 @@ import org.uberfire.security.auth.Principal;
 import org.uberfire.security.server.HttpSecurityContext;
 
 import static java.lang.Boolean.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 public class RememberMeCookieAuthScheme implements AuthenticationScheme {
 

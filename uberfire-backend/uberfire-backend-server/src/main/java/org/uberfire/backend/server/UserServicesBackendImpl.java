@@ -21,11 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.FileSystem;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
 
-import static org.kie.commons.io.FileSystemType.Bootstrap.*;
+import static org.uberfire.io.FileSystemType.Bootstrap.*;
 
 @ApplicationScoped
 public class UserServicesBackendImpl {

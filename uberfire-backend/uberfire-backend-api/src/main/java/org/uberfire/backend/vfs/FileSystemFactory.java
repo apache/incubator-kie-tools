@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.backend.vfs.PathFactory.*;
 
 /**

@@ -26,18 +26,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.file.AtomicMoveNotSupportedException;
-import org.kie.commons.java.nio.file.DirectoryNotEmptyException;
-import org.kie.commons.java.nio.file.FileAlreadyExistsException;
-import org.kie.commons.java.nio.file.FileSystemAlreadyExistsException;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.commons.java.nio.file.NotDirectoryException;
-import org.kie.commons.java.nio.file.ProviderNotFoundException;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
+import org.uberfire.java.nio.file.DirectoryNotEmptyException;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.NotDirectoryException;
+import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.DirectoryStream;
-import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.backend.vfs.impl.DirectoryStreamImpl;
@@ -62,7 +61,7 @@ public class VFSServicesServerImpl implements VFSService {
     public DirectoryStream<Path> newDirectoryStream( final Path dir )
             throws IllegalArgumentException, NotDirectoryException, IOException {
 
-        final Iterator<org.kie.commons.java.nio.file.Path> content = ioService.newDirectoryStream( paths.convert( dir ) ).iterator();
+        final Iterator<org.uberfire.java.nio.file.Path> content = ioService.newDirectoryStream( paths.convert( dir ) ).iterator();
 
         return newDirectoryStream( content );
     }
@@ -71,7 +70,7 @@ public class VFSServicesServerImpl implements VFSService {
     public DirectoryStream<Path> newDirectoryStream( final Path dir,
                                                      final DirectoryStream.Filter<Path> filter )
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        final Iterator<org.kie.commons.java.nio.file.Path> content = ioService.newDirectoryStream( paths.convert( dir ), null ).iterator();
+        final Iterator<org.uberfire.java.nio.file.Path> content = ioService.newDirectoryStream( paths.convert( dir ), null ).iterator();
 
         return newDirectoryStream( content );
     }
@@ -154,7 +153,7 @@ public class VFSServicesServerImpl implements VFSService {
         return paths.convert( ioService.write( paths.convert( path ), content, attrs ) );
     }
 
-    private DirectoryStream<Path> newDirectoryStream( final Iterator<org.kie.commons.java.nio.file.Path> iterator ) {
+    private DirectoryStream<Path> newDirectoryStream( final Iterator<org.uberfire.java.nio.file.Path> iterator ) {
         final List<Path> content = new LinkedList<Path>();
         while ( iterator.hasNext() ) {
             content.add( paths.convert( iterator.next() ) );
@@ -162,10 +161,10 @@ public class VFSServicesServerImpl implements VFSService {
         return new DirectoryStreamImpl( content );
     }
 
-    private DirectoryStream.Filter<org.kie.commons.java.nio.file.Path> convert( final DirectoryStream.Filter<Path> filter ) {
-        return new DirectoryStream.Filter<org.kie.commons.java.nio.file.Path>() {
+    private DirectoryStream.Filter<org.uberfire.java.nio.file.Path> convert( final DirectoryStream.Filter<Path> filter ) {
+        return new DirectoryStream.Filter<org.uberfire.java.nio.file.Path>() {
             @Override
-            public boolean accept( final org.kie.commons.java.nio.file.Path entry ) throws IOException {
+            public boolean accept( final org.uberfire.java.nio.file.Path entry ) throws IOException {
                 return filter.accept( paths.convert( entry ) );
             }
         };

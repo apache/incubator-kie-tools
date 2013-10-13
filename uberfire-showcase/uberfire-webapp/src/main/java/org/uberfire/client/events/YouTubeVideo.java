@@ -16,7 +16,7 @@
 
 package org.uberfire.client.events;
 
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class YouTubeVideo {
 

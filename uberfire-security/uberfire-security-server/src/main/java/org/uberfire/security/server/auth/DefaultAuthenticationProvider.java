@@ -30,10 +30,9 @@ import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.impl.auth.PrincipalImpl;
 import org.uberfire.security.impl.auth.UserNameCredential;
-import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 
 import static java.util.Collections.*;
-import static org.kie.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class DefaultAuthenticationProvider implements AuthenticationProvider {
 

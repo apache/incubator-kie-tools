@@ -23,9 +23,9 @@ import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.io.IOService;
-import org.kie.commons.java.nio.file.NoSuchFileException;
-import org.kie.commons.java.nio.file.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.services.WorkbenchServices;
 

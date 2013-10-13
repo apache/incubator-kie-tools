@@ -49,10 +49,10 @@ import org.uberfire.security.server.auth.RememberMeCookieAuthProvider;
 import org.uberfire.security.server.authz.URLAccessDecisionManager;
 
 import static java.util.Collections.*;
-import static org.kie.commons.validation.PortablePreconditions.checkCondition;
-import static org.kie.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
-import static org.kie.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 public class HttpSecurityManagerImpl implements SecurityManager {
 

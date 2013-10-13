@@ -18,7 +18,7 @@ import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.impl.auth.UserNameCredential;
 
-import static org.kie.commons.validation.Preconditions.checkInstanceOf;
+import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
 import static org.uberfire.security.server.SecurityConstants.*;
 
 public class JACCAuthenticationSource implements AuthenticationSource,

@@ -19,7 +19,7 @@ package org.uberfire.security.impl.authz;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.VotingStrategy;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class UnanimousBasedVoter implements VotingStrategy {
