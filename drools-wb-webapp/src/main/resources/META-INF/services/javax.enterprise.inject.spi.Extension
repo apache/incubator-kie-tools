@@ -1,2 +1,2 @@
 org.uberfire.commons.services.cdi.StartupBeanExtension
-org.uberfire.security.server.org.uberfire.commons.services.cdi.SecurityExtension
+org.uberfire.security.server.cdi.SecurityExtension
