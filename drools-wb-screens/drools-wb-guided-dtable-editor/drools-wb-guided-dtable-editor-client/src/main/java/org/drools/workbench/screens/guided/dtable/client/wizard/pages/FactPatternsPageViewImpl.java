@@ -53,6 +53,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Patt
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
 import org.kie.workbench.common.widgets.client.resources.WizardResources;
 
@@ -207,12 +208,20 @@ public class FactPatternsPageViewImpl extends Composite
                     txtEntryPoint.setText( chosenPatternSelection.getEntryPointName() );
                     enableMoveUpButton();
                     enableMoveDownButton();
-                    if ( presenter.isPatternEvent( chosenPatternSelection ) ) {
-                        ddCEPWindow.setCEPWindow( chosenPatternSelection );
-                        cepWindowContainer.setVisible( true );
-                    } else {
-                        cepWindowContainer.setVisible( false );
-                    }
+
+                    presenter.isPatternEvent( chosenPatternSelection,
+                                              new Callback<Boolean>() {
+                                                  @Override
+                                                  public void callback( final Boolean result ) {
+                                                      if ( Boolean.TRUE.equals( result ) ) {
+                                                          ddCEPWindow.setCEPWindow( chosenPatternSelection );
+                                                          cepWindowContainer.setVisible( true );
+                                                      } else {
+                                                          cepWindowContainer.setVisible( false );
+                                                      }
+                                                  }
+                                              } );
+
                 } else {
                     chosenPatternSelection = null;
                     patternDefinition.setVisible( false );

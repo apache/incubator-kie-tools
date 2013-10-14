@@ -16,11 +16,12 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -378,12 +379,21 @@ public class ConstraintValueEditor
         box.addItem( Constants.INSTANCE.Choose() );
 
         List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
-        List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
-        for ( String var : applicableBindingsInScope ) {
-            box.addItem( var );
-            if ( this.constraint.getValue() != null && this.constraint.getValue().equals( var ) ) {
-                box.setSelectedIndex( box.getItemCount() - 1 );
-            }
+
+        for ( String var : bindingsInScope ) {
+            final String binding = var;
+            isApplicableBindingsInScope( var,
+                                         new Callback<Boolean>() {
+                                             @Override
+                                             public void callback( final Boolean result ) {
+                                                 if ( Boolean.TRUE.equals( result ) ) {
+                                                     box.addItem( binding );
+                                                     if ( ConstraintValueEditor.this.constraint.getValue() != null && ConstraintValueEditor.this.constraint.getValue().equals( binding ) ) {
+                                                         box.setSelectedIndex( box.getItemCount() - 1 );
+                                                     }
+                                                 }
+                                             }
+                                         } );
         }
 
         box.addChangeHandler( new ChangeHandler() {
@@ -596,21 +606,35 @@ public class ConstraintValueEditor
             List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
             if ( bindingsInScope.size() > 0 || DataType.TYPE_COLLECTION.equals( this.fieldType ) ) {
 
-                List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
-                if ( applicableBindingsInScope.size() > 0 ) {
+                final Button bindingButton = new Button( Constants.INSTANCE.BoundVariable() );
 
-                    Button variable = new Button( Constants.INSTANCE.BoundVariable() );
-                    variable.addClickHandler( new ClickHandler() {
+                //This Set is used as a flag to know whether the button has been added; due to use of callbacks
+                final Set<Button> bindingButtonContainer = new HashSet<Button>();
 
-                        public void onClick( ClickEvent event ) {
-                            con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
-                            doTypeChosen( form );
-                        }
-                    } );
-                    form.addAttribute( Constants.INSTANCE.AVariable(),
-                                       widgets( variable,
-                                                new InfoPopup( Constants.INSTANCE.ABoundVariable(),
-                                                               Constants.INSTANCE.BoundVariableTip() ) ) );
+                for ( String var : bindingsInScope ) {
+                    isApplicableBindingsInScope( var,
+                                                 new Callback<Boolean>() {
+                                                     @Override
+                                                     public void callback( final Boolean result ) {
+                                                         if ( Boolean.TRUE.equals( result ) ) {
+                                                             if ( !bindingButtonContainer.contains( bindingButton ) ) {
+                                                                 bindingButtonContainer.add( bindingButton );
+                                                                 bindingButton.addClickHandler( new ClickHandler() {
+
+                                                                     public void onClick( ClickEvent event ) {
+                                                                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+                                                                         doTypeChosen( form );
+                                                                     }
+                                                                 } );
+                                                                 form.addAttribute( Constants.INSTANCE.AVariable(),
+                                                                                    widgets( bindingButton,
+                                                                                             new InfoPopup( Constants.INSTANCE.ABoundVariable(),
+                                                                                                            Constants.INSTANCE.BoundVariableTip() ) ) );
+                                                             }
+                                                         }
+                                                     }
+                                                 } );
+
                 }
             }
         }
@@ -687,31 +711,22 @@ public class ConstraintValueEditor
         this.onValueChangeCommand = onValueChangeCommand;
     }
 
-    private List<String> getApplicableBindingsInScope( List<String> bindingsInScope ) {
-        List<String> applicableBindingsInScope = new ArrayList<String>();
+    private void isApplicableBindingsInScope( final String binding,
+                                              final Callback<Boolean> callback ) {
 
-        //Examine LHS Fact and Field bindings and RHS (new) Fact bindings
-        for ( String v : bindingsInScope ) {
-
-            //LHS FactPattern
-            FactPattern fp = model.getLHSBoundFact( v );
-            if ( fp != null ) {
-                if ( isLHSFactTypeEquivalent( v ) ) {
-                    applicableBindingsInScope.add( v );
-                }
-            }
-
-            //LHS FieldConstraint
-            FieldConstraint fc = model.getLHSBoundField( v );
-            if ( fc != null ) {
-                if ( isLHSFieldTypeEquivalent( v ) ) {
-                    applicableBindingsInScope.add( v );
-                }
-            }
-
+        //LHS FactPattern
+        FactPattern fp = model.getLHSBoundFact( binding );
+        if ( fp != null ) {
+            isLHSFactTypeEquivalent( binding,
+                                     callback );
         }
 
-        return applicableBindingsInScope;
+        //LHS FieldConstraint
+        FieldConstraint fc = model.getLHSBoundField( binding );
+        if ( fc != null ) {
+            isLHSFieldTypeEquivalent( binding,
+                                      callback );
+        }
     }
 
     private void isLHSFactTypeEquivalent( final String boundVariable,

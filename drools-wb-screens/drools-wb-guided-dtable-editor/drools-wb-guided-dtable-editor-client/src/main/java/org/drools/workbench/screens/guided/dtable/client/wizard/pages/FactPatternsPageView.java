@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberView;
 
 import java.util.List;
@@ -31,7 +32,8 @@ public interface FactPatternsPageView
 
     interface Presenter {
 
-        boolean isPatternEvent( Pattern52 pattern );
+        void isPatternEvent( Pattern52 pattern,
+                             Callback<Boolean> callback );
 
         void signalRemovalOfPattern( Pattern52 pattern );
 

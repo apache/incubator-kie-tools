@@ -1,6 +1,5 @@
 package org.drools.workbench.screens.testscenario.client;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +26,7 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
@@ -73,31 +73,42 @@ public class CallMethodWidget extends DirtyableComposite {
 
         if ( this.oracle.isGlobalVariable( mCall.getVariable() ) ) {
 
-            List<MethodInfo> infos = this.oracle.getMethodInfosForGlobalVariable( mCall.getVariable() );
-            this.fieldCompletionTexts = new String[ infos.size() ];
-            this.fieldCompletionValues = new String[ infos.size() ];
-            int i = 0;
-            for ( MethodInfo info : infos ) {
-                this.fieldCompletionTexts[ i ] = info.getName();
-                this.fieldCompletionValues[ i ] = info.getNameWithParameters();
-                i++;
-            }
+            this.oracle.getMethodInfosForGlobalVariable( mCall.getVariable(),
+                                                         new Callback<List<MethodInfo>>() {
+                                                             @Override
+                                                             public void callback( final List<MethodInfo> infos ) {
+                                                                 CallMethodWidget.this.fieldCompletionTexts = new String[ infos.size() ];
+                                                                 CallMethodWidget.this.fieldCompletionValues = new String[ infos.size() ];
+                                                                 int i = 0;
+                                                                 for ( MethodInfo info : infos ) {
+                                                                     CallMethodWidget.this.fieldCompletionTexts[ i ] = info.getName();
+                                                                     CallMethodWidget.this.fieldCompletionValues[ i ] = info.getNameWithParameters();
+                                                                     i++;
+                                                                 }
 
-            this.variableClass = (String) this.oracle.getGlobalVariable( mCall.getVariable() );
+                                                                 CallMethodWidget.this.variableClass = (String) CallMethodWidget.this.oracle.getGlobalVariable( mCall.getVariable() );
+                                                             }
+                                                         } );
         } else {
-            FactData pattern = (FactData) scenario.getFactTypes().get( mCall.getVariable() );
+
+            final FactData pattern = (FactData) scenario.getFactTypes().get( mCall.getVariable() );
             if ( pattern != null ) {
-                List<String> methodList = this.oracle.getMethodNames( pattern.getType() );
-                fieldCompletionTexts = new String[ methodList.size() ];
-                fieldCompletionValues = new String[ methodList.size() ];
-                int i = 0;
-                for ( String methodName : methodList ) {
-                    fieldCompletionTexts[ i ] = methodName;
-                    fieldCompletionValues[ i ] = methodName;
-                    i++;
-                }
-                this.variableClass = pattern.getType();
-                this.isBoundFact = true;
+                this.oracle.getMethodNames( pattern.getType(),
+                                            new Callback<List<String>>() {
+                                                @Override
+                                                public void callback( final List<String> methodList ) {
+                                                    CallMethodWidget.this.fieldCompletionTexts = new String[ methodList.size() ];
+                                                    CallMethodWidget.this.fieldCompletionValues = new String[ methodList.size() ];
+                                                    int i = 0;
+                                                    for ( String methodName : methodList ) {
+                                                        CallMethodWidget.this.fieldCompletionTexts[ i ] = methodName;
+                                                        CallMethodWidget.this.fieldCompletionValues[ i ] = methodName;
+                                                        i++;
+                                                    }
+                                                    CallMethodWidget.this.variableClass = pattern.getType();
+                                                    CallMethodWidget.this.isBoundFact = true;
+                                                }
+                                            } );
             }
         }
 
@@ -175,28 +186,29 @@ public class CallMethodWidget extends DirtyableComposite {
             public void onChange( ChangeEvent event ) {
                 mCall.setState( ActionCallMethod.TYPE_DEFINED );
                 ListBox sourceW = (ListBox) event.getSource();
-                String methodName = sourceW.getItemText( sourceW.getSelectedIndex() );
-                String methodNameWithParams = sourceW.getValue( sourceW.getSelectedIndex() );
+                final String methodName = sourceW.getItemText( sourceW.getSelectedIndex() );
+                final String methodNameWithParams = sourceW.getValue( sourceW.getSelectedIndex() );
 
                 mCall.setMethodName( methodName );
-                List<String> fieldList = new ArrayList<String>();
 
-                fieldList.addAll( oracle.getMethodParams( variableClass,
-                                                          methodNameWithParams ) );
+                oracle.getMethodParams( variableClass,
+                                        methodNameWithParams,
+                                        new Callback<List<String>>() {
+                                            @Override
+                                            public void callback( final List<String> fieldList ) {
+                                                // String fieldType = oracle.getFieldType( variableClass, fieldName );
+                                                int i = 0;
+                                                for ( String fieldParameter : fieldList ) {
+                                                    mCall.addFieldValue( new CallFieldValue( methodName,
+                                                                                             String.valueOf( i ),
+                                                                                             fieldParameter ) );
+                                                    i++;
+                                                }
 
-                // String fieldType = oracle.getFieldType( variableClass,
-                // fieldName );
-                int i = 0;
-                for ( String fieldParameter : fieldList ) {
-                    mCall.addFieldValue( new CallFieldValue( methodName,
-                                                             String.valueOf( i ),
-                                                             fieldParameter ) );
-                    i++;
-                }
-
-                parent.renderEditor();
-                popup.hide();
-
+                                                parent.renderEditor();
+                                                popup.hide();
+                                            }
+                                        } );
             }
         } );
 

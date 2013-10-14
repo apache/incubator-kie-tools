@@ -22,6 +22,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberView;
 
 /**
@@ -39,8 +40,9 @@ public interface FactPatternConstraintsPageView
         void setChosenConditions( Pattern52 pattern,
                                   List<ConditionCol52> conditions );
 
-        String[] getOperatorCompletions( Pattern52 selectedPattern,
-                                         ConditionCol52 selectedCondition );
+        void getOperatorCompletions( Pattern52 selectedPattern,
+                                     ConditionCol52 selectedCondition,
+                                     Callback<String[]> callback );
 
         void stateChanged();
 

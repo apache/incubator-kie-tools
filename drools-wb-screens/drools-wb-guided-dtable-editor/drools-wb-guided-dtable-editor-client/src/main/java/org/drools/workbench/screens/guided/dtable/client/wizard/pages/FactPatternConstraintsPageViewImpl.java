@@ -65,6 +65,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Cond
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionPatternCell;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
 import org.kie.workbench.common.widgets.client.resources.WizardResources;
 
@@ -339,8 +340,18 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 txtColumnHeader.setEnabled( true );
                 txtColumnHeader.setText( chosenConditionsSelection.getHeader() );
 
-                final String[] ops = presenter.getOperatorCompletions( availablePatternsSelection,
-                                                                       chosenConditionsSelection );
+                presenter.getOperatorCompletions( availablePatternsSelection,
+                                                  chosenConditionsSelection,
+                                                  new Callback<String[]>() {
+                                                      @Override
+                                                      public void callback( final String[] ops ) {
+                                                          doPopulateConditionDefinition( ops );
+
+                                                      }
+                                                  } );
+            }
+
+            private void doPopulateConditionDefinition( final String[] ops ) {
                 final CEPOperatorsDropdown ddOperator = new CEPOperatorsDropdown( ops,
                                                                                   chosenConditionsSelection );
                 ddOperatorContainer.setWidget( ddOperator );
@@ -418,7 +429,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                         } );
                         break;
                 }
-
             }
 
             private void makeLimitedValueWidget() {

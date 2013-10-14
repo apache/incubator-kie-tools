@@ -28,6 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
@@ -108,8 +109,10 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public boolean isPatternEvent( final Pattern52 pattern ) {
-        return oracle.isFactTypeAnEvent( pattern.getFactType() );
+    public void isPatternEvent( final Pattern52 pattern,
+                                final Callback<Boolean> callback ) {
+        oracle.isFactTypeAnEvent( pattern.getFactType(),
+                                  callback );
     }
 
     @Override

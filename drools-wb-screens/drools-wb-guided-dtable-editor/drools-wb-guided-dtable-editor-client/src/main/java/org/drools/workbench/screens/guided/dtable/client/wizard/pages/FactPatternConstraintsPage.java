@@ -159,33 +159,37 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     }
 
     @Override
-    public String[] getOperatorCompletions( final Pattern52 selectedPattern,
-                                            final ConditionCol52 selectedCondition ) {
+    public void getOperatorCompletions( final Pattern52 selectedPattern,
+                                        final ConditionCol52 selectedCondition,
+                                        final Callback<String[]> callback ) {
 
         final String factType = selectedPattern.getFactType();
         final String factField = selectedCondition.getFactField();
-        final String[] ops = this.oracle.getOperatorCompletions( factType,
-                                                                 factField );
+        this.oracle.getOperatorCompletions( factType,
+                                            factField,
+                                            new Callback<String[]>() {
+                                                @Override
+                                                public void callback( final String[] ops ) {
+                                                    //Operators "in" and "not in" are only allowed if the Calculation Type is a Literal
+                                                    final List<String> filteredOps = new ArrayList<String>();
+                                                    for ( String op : ops ) {
+                                                        filteredOps.add( op );
+                                                    }
+                                                    if ( BaseSingleFieldConstraint.TYPE_LITERAL != selectedCondition.getConstraintValueType() ) {
+                                                        filteredOps.remove( "in" );
+                                                    }
 
-        //Operators "in" and "not in" are only allowed if the Calculation Type is a Literal
-        final List<String> filteredOps = new ArrayList<String>();
-        for ( String op : ops ) {
-            filteredOps.add( op );
-        }
-        if ( BaseSingleFieldConstraint.TYPE_LITERAL != selectedCondition.getConstraintValueType() ) {
-            filteredOps.remove( "in" );
-        }
+                                                    //But remove "in" if the Fact\Field is enumerated
+                                                    if ( oracle.hasEnums( factType,
+                                                                          factField ) ) {
+                                                        filteredOps.remove( "in" );
+                                                    }
 
-        //But remove "in" if the Fact\Field is enumerated
-        if ( oracle.hasEnums( factType,
-                              factField ) ) {
-            filteredOps.remove( "in" );
-        }
-
-        final String[] displayOps = new String[ filteredOps.size() ];
-        filteredOps.toArray( displayOps );
-
-        return displayOps;
+                                                    final String[] displayOps = new String[ filteredOps.size() ];
+                                                    filteredOps.toArray( displayOps );
+                                                    callback.callback( displayOps );
+                                                }
+                                            } );
     }
 
     @Override

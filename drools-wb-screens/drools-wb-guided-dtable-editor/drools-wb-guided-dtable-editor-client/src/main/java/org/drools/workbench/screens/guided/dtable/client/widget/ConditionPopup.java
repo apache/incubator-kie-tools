@@ -700,14 +700,26 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private void showOperatorChange() {
+        final String factType = editingPattern.getFactType();
+        final String factField = editingCol.getFactField();
+        this.oracle.getOperatorCompletions( factType,
+                                            factField,
+                                            new Callback<String[]>() {
+                                                @Override
+                                                public void callback( final String[] ops ) {
+                                                    doShowOperatorChange( factType,
+                                                                          factField,
+                                                                          ops );
+                                                }
+                                            } );
+    }
+
+    private void doShowOperatorChange( final String factType,
+                                       final String factField,
+                                       final String[] ops ) {
         final FormStylePopup pop = new FormStylePopup();
         pop.setTitle( GuidedDecisionTableConstants.INSTANCE.SetTheOperator() );
         pop.setModal( false );
-
-        final String factType = editingPattern.getFactType();
-        final String factField = editingCol.getFactField();
-        String[] ops = this.oracle.getOperatorCompletions( factType,
-                                                           factField );
 
         //Operators "in" and "not in" are only allowed if the Calculation Type is a Literal
         final List<String> filteredOps = new ArrayList<String>();
@@ -751,7 +763,6 @@ public class ConditionPopup extends FormStylePopup {
             }
         } );
         pop.show();
-
     }
 
     private boolean unique( String header ) {
@@ -997,9 +1008,16 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     private void displayCEPOperators() {
-        boolean isVisible = oracle.isFactTypeAnEvent( editingPattern.getFactType() );
-        setAttributeVisibility( cepWindowRowIndex,
-                                isVisible );
+        oracle.isFactTypeAnEvent( editingPattern.getFactType(),
+                                  new Callback<Boolean>() {
+                                      @Override
+                                      public void callback( final Boolean result ) {
+                                          if ( Boolean.TRUE.equals( result ) ) {
+                                              setAttributeVisibility( cepWindowRowIndex,
+                                                                      true );
+                                          }
+                                      }
+                                  } );
     }
 
 }
