@@ -730,6 +730,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                                          public void callback( final String[] operators ) {
                                                                              CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
                                                                                                                                 c );
+                                                                             hp.add( w );
 
                                                                              w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 

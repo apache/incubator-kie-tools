@@ -309,8 +309,12 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         if ( DELETE_VALUE.equals( value ) ) {
             expression.removeLast();
+            onChangeSelectionUpdateExpressionWidget( oldType );
+
         } else if ( DataType.TYPE_COLLECTION.equals( getCurrentGenericType() ) ) {
             onCollectionChange( value );
+            onChangeSelectionUpdateExpressionWidget( oldType );
+
         } else if ( DataType.TYPE_STRING.equals( getCurrentGenericType() ) ) {
             if ( "size".equals( value ) ) {
                 expression.appendPart( new ExpressionMethod( "size",
@@ -321,6 +325,8 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                            "",
                                                            DataType.TYPE_NUMERIC_INTEGER ) );
             }
+            onChangeSelectionUpdateExpressionWidget( oldType );
+
         } else {
             int dotPos = value.indexOf( '.' );
             String prefix = value.substring( 0,

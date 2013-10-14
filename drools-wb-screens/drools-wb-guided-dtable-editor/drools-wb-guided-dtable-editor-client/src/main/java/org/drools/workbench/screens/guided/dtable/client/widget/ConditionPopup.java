@@ -1012,10 +1012,8 @@ public class ConditionPopup extends FormStylePopup {
                                   new Callback<Boolean>() {
                                       @Override
                                       public void callback( final Boolean result ) {
-                                          if ( Boolean.TRUE.equals( result ) ) {
-                                              setAttributeVisibility( cepWindowRowIndex,
-                                                                      true );
-                                          }
+                                          setAttributeVisibility( cepWindowRowIndex,
+                                                                  Boolean.TRUE.equals( result ) );
                                       }
                                   } );
     }
