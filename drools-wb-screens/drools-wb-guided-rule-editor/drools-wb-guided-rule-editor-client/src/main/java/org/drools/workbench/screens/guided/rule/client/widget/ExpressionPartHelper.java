@@ -23,37 +23,61 @@ import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionGlobalVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class ExpressionPartHelper {
 
-    public static ExpressionPart getExpressionPartForMethod( AsyncPackageDataModelOracle oracle,
-                                                             String factName,
-                                                             String methodName ) {
-        MethodInfo mi = oracle.getMethodInfo( factName, methodName );
-        if ( DataType.TYPE_COLLECTION.equals( mi.getGenericType() ) ) {
-            return new ExpressionCollection( methodName, mi.getReturnClassType(),
-                                             mi.getGenericType(), mi.getParametricReturnType() );
-        }
-        return new ExpressionMethod( mi.getName(), mi.getReturnClassType(), mi.getGenericType() );
+    public static void getExpressionPartForMethod( final AsyncPackageDataModelOracle oracle,
+                                                   final String factName,
+                                                   final String methodName,
+                                                   final Callback<ExpressionPart> callback ) {
+        oracle.getMethodInfo( factName,
+                              methodName,
+                              new Callback<MethodInfo>() {
+                                  @Override
+                                  public void callback( final MethodInfo mi ) {
+                                      if ( DataType.TYPE_COLLECTION.equals( mi.getGenericType() ) ) {
+                                          callback.callback( new ExpressionCollection( methodName,
+                                                                                       mi.getReturnClassType(),
+                                                                                       mi.getGenericType(),
+                                                                                       mi.getParametricReturnType() ) );
+                                      } else {
+                                          callback.callback( new ExpressionMethod( mi.getName(),
+                                                                                   mi.getReturnClassType(),
+                                                                                   mi.getGenericType() ) );
+                                      }
+                                  }
+                              } );
     }
 
-    public static ExpressionPart getExpressionPartForField( AsyncPackageDataModelOracle oracle,
-                                                            String factName,
-                                                            String fieldName ) {
+    public static void getExpressionPartForField( final AsyncPackageDataModelOracle oracle,
+                                                  final String factName,
+                                                  final String fieldName,
+                                                  final Callback<ExpressionPart> callback ) {
         String fieldClassName = oracle.getFieldClassName( factName, fieldName );
         String fieldGenericType = oracle.getFieldType( factName, fieldName );
         if ( DataType.TYPE_COLLECTION.equals( fieldGenericType ) ) {
-            String fieldParametricType = oracle.getParametricFieldType( factName, fieldName );
-            return new ExpressionCollection( fieldName, fieldClassName, fieldGenericType,
-                                             fieldParametricType );
+            String fieldParametricType = oracle.getParametricFieldType( factName,
+                                                                        fieldName );
+            callback.callback( new ExpressionCollection( fieldName,
+                                                         fieldClassName,
+                                                         fieldGenericType,
+                                                         fieldParametricType ) );
+        } else {
+            callback.callback( new ExpressionField( fieldName,
+                                                    fieldClassName,
+                                                    fieldGenericType ) );
         }
-        return new ExpressionField( fieldName, fieldClassName, fieldGenericType );
     }
 
-    public static ExpressionPart getExpressionPartForGlobalVariable( AsyncPackageDataModelOracle oracle,
-                                                                     String varName ) {
+    public static void getExpressionPartForGlobalVariable( final AsyncPackageDataModelOracle oracle,
+                                                           final String varName,
+                                                           final Callback<ExpressionPart> callback ) {
         String globalVarType = oracle.getGlobalVariable( varName );
-        return new ExpressionGlobalVariable( varName, globalVarType, globalVarType );
+        callback.callback( new ExpressionGlobalVariable( varName,
+                                                         globalVarType,
+                                                         globalVarType ) );
     }
+
 }

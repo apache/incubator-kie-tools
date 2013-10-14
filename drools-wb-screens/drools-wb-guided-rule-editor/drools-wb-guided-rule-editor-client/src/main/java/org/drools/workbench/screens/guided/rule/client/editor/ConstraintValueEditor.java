@@ -65,6 +65,7 @@ import org.drools.workbench.screens.guided.rule.client.widget.ExpressionBuilder;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
@@ -593,8 +594,7 @@ public class ConstraintValueEditor
         //Show variables selector, if there are any variables in scope
         if ( showVariableSelector ) {
             List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
-            if ( bindingsInScope.size() > 0
-                    || DataType.TYPE_COLLECTION.equals( this.fieldType ) ) {
+            if ( bindingsInScope.size() > 0 || DataType.TYPE_COLLECTION.equals( this.fieldType ) ) {
 
                 List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
                 if ( applicableBindingsInScope.size() > 0 ) {
@@ -714,30 +714,37 @@ public class ConstraintValueEditor
         return applicableBindingsInScope;
     }
 
-    private boolean isLHSFactTypeEquivalent( String boundVariable ) {
+    private void isLHSFactTypeEquivalent( final String boundVariable,
+                                          final Callback<Boolean> callback ) {
         String boundFactType = model.getLHSBoundFact( boundVariable ).getFactType();
         String boundFieldType = model.getLHSBindingType( boundVariable );
 
         //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
         if ( boundFactType.equals( DataType.TYPE_COMPARABLE ) ) {
             if ( !this.fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-                return false;
+                callback.callback( false );
+                return;
             }
             String[] dd = this.oracle.getEnumValues( boundFactType,
                                                      this.fieldName );
-            return isEnumEquivalent( dd );
+            callback.callback( isEnumEquivalent( dd ) );
+            return;
         }
-        return isBoundVariableApplicable( boundFactType,
-                                          boundFieldType );
+
+        isBoundVariableApplicable( boundFactType,
+                                   boundFieldType,
+                                   callback );
     }
 
-    private boolean isLHSFieldTypeEquivalent( String boundVariable ) {
+    private void isLHSFieldTypeEquivalent( final String boundVariable,
+                                           final Callback<Boolean> callback ) {
         String boundFieldType = this.model.getLHSBindingType( boundVariable );
 
         //If the fieldTypes are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
         if ( boundFieldType.equals( DataType.TYPE_COMPARABLE ) ) {
             if ( !this.fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-                return false;
+                callback.callback( false );
+                return;
             }
             FieldConstraint fc = this.model.getLHSBoundField( boundVariable );
             if ( fc instanceof SingleFieldConstraint ) {
@@ -745,12 +752,15 @@ public class ConstraintValueEditor
                 String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding( boundVariable ).getFactType();
                 String[] dd = this.oracle.getEnumValues( parentFactTypeForBinding,
                                                          fieldName );
-                return isEnumEquivalent( dd );
+                callback.callback( isEnumEquivalent( dd ) );
+                return;
             }
-            return false;
+            callback.callback( false );
+            return;
         }
 
-        return isBoundVariableApplicable( boundFieldType );
+        isBoundVariableApplicable( boundFieldType,
+                                   callback );
     }
 
     private boolean isEnumEquivalent( String[] values ) {
@@ -771,18 +781,21 @@ public class ConstraintValueEditor
         return true;
     }
 
-    private boolean isBoundVariableApplicable( String boundFactType,
-                                               String boundFieldType ) {
+    private void isBoundVariableApplicable( final String boundFactType,
+                                            final String boundFieldType,
+                                            final Callback<Boolean> callback ) {
 
         //Fields of the same type as the bound variable can be compared
         if ( boundFactType != null && boundFactType.equals( this.fieldType ) ) {
-            return true;
+            callback.callback( true );
+            return;
         }
 
         //'this' can be compared to bound facts of the same type
         if ( this.fieldName.equals( DataType.TYPE_THIS ) ) {
             if ( boundFactType != null && boundFactType.equals( this.factType ) ) {
-                return true;
+                callback.callback( true );
+                return;
             }
         }
 
@@ -790,34 +803,48 @@ public class ConstraintValueEditor
         String factCollectionType = oracle.getParametricFieldType( this.factType,
                                                                    this.fieldName );
         if ( boundFactType != null && factCollectionType != null && boundFactType.equals( factCollectionType ) ) {
-            return true;
+            callback.callback( true );
+            return;
         }
 
-        return isBoundVariableApplicable( boundFieldType );
+        isBoundVariableApplicable( boundFieldType,
+                                   callback );
     }
 
-    private boolean isBoundVariableApplicable( String boundFieldType ) {
+    private void isBoundVariableApplicable( String boundFieldType,
+                                            final Callback<Boolean> callback ) {
 
         //Field-types can be simply compared
         if ( boundFieldType != null && boundFieldType.equals( this.fieldType ) ) {
-            return true;
+            callback.callback( true );
+            return;
         }
 
         //'this' can be compared to bound fields of the same type
         if ( this.fieldName.equals( DataType.TYPE_THIS ) ) {
             if ( boundFieldType != null && boundFieldType.equals( this.factType ) ) {
-                return true;
+                callback.callback( true );
+                return;
             }
         }
 
         //'this' can be compared to bound events if using a CEP operator
-        if ( this.fieldName.equals( DataType.TYPE_THIS ) && oracle.isFactTypeAnEvent( boundFieldType ) ) {
-            if ( this.constraint instanceof HasOperator ) {
-                HasOperator hop = (HasOperator) this.constraint;
-                if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
-                    return true;
-                }
-            }
+        if ( this.fieldName.equals( DataType.TYPE_THIS ) ) {
+            oracle.isFactTypeAnEvent( boundFieldType,
+                                      new Callback<Boolean>() {
+                                          @Override
+                                          public void callback( final Boolean result ) {
+                                              if ( Boolean.TRUE.equals( result ) ) {
+                                                  if ( ConstraintValueEditor.this.constraint instanceof HasOperator ) {
+                                                      HasOperator hop = (HasOperator) ConstraintValueEditor.this.constraint;
+                                                      if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
+                                                          callback.callback( true );
+                                                          return;
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      } );
         }
 
         //'this' can be compared to bound Dates if using a CEP operator
@@ -825,29 +852,40 @@ public class ConstraintValueEditor
             if ( this.constraint instanceof HasOperator ) {
                 HasOperator hop = (HasOperator) this.constraint;
                 if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
-                    return true;
+                    callback.callback( true );
+                    return;
                 }
             }
         }
 
         //Dates can be compared to bound events if using a CEP operator
-        if ( ( this.fieldType.equals( DataType.TYPE_DATE ) && oracle.isFactTypeAnEvent( boundFieldType ) ) ) {
-            if ( this.constraint instanceof HasOperator ) {
-                HasOperator hop = (HasOperator) this.constraint;
-                if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
-                    return true;
-                }
-            }
+        if ( this.fieldType.equals( DataType.TYPE_DATE ) ) {
+            oracle.isFactTypeAnEvent( boundFieldType,
+                                      new Callback<Boolean>() {
+                                          @Override
+                                          public void callback( final Boolean result ) {
+                                              if ( Boolean.TRUE.equals( result ) ) {
+                                                  if ( ConstraintValueEditor.this.constraint instanceof HasOperator ) {
+                                                      HasOperator hop = (HasOperator) ConstraintValueEditor.this.constraint;
+                                                      if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
+                                                          callback.callback( true );
+                                                          return;
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      } );
         }
 
         //For collection, present the list of possible bound variable
         String factCollectionType = oracle.getParametricFieldType( this.factType,
                                                                    this.fieldName );
         if ( factCollectionType != null && factCollectionType.equals( boundFieldType ) ) {
-            return true;
+            callback.callback( true );
+            return;
         }
 
-        return false;
+        callback.callback( false );
     }
 
     private DropDownData getDropDownData() {

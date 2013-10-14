@@ -37,6 +37,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.SmallLabel;
@@ -72,27 +73,31 @@ public class Connectives {
         return this.modeller.getDataModelOracle();
     }
 
-    public Widget connectives( SingleFieldConstraint c,
-                               String factClass ) {
-        HorizontalPanel hp = new HorizontalPanel();
+    public Widget connectives( final SingleFieldConstraint c ) {
+        final HorizontalPanel hp = new HorizontalPanel();
         if ( c.getConnectives() != null && c.getConnectives().length > 0 ) {
             hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
             hp.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
             for ( int i = 0; i < c.getConnectives().length; i++ ) {
+                final int index = i;
+                final ConnectiveConstraint con = c.getConnectives()[ i ];
+                connectiveOperatorDropDown( con,
+                                            new Callback<Widget>() {
+                                                @Override
+                                                public void callback( final Widget w ) {
+                                                    hp.add( w );
+                                                    hp.add( connectiveValueEditor( con ) );
 
-                ConnectiveConstraint con = c.getConnectives()[ i ];
-
-                hp.add( connectiveOperatorDropDown( con ) );
-                hp.add( connectiveValueEditor( con ) );
-
-                if ( !isReadOnly ) {
-                    Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-                    clear.setAltText( Constants.INSTANCE.RemoveThisRestriction() );
-                    clear.setTitle( Constants.INSTANCE.RemoveThisRestriction() );
-                    clear.addClickHandler( createClickHandlerForClearImageButton( c,
-                                                                                  i ) );
-                    hp.add( clear );
-                }
+                                                    if ( !isReadOnly ) {
+                                                        Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
+                                                        clear.setAltText( Constants.INSTANCE.RemoveThisRestriction() );
+                                                        clear.setTitle( Constants.INSTANCE.RemoveThisRestriction() );
+                                                        clear.addClickHandler( createClickHandlerForClearImageButton( c,
+                                                                                                                      index ) );
+                                                        hp.add( clear );
+                                                    }
+                                                }
+                                            } );
 
             }
         }
@@ -109,32 +114,37 @@ public class Connectives {
                                           isReadOnly );
     }
 
-    private Widget connectiveOperatorDropDown( final ConnectiveConstraint cc ) {
+    private void connectiveOperatorDropDown( final ConnectiveConstraint cc,
+                                             final Callback<Widget> callback ) {
 
         if ( !isReadOnly ) {
 
-            String factType = cc.getFactType();
-            String fieldName = cc.getFieldName();
+            final String factType = cc.getFactType();
+            final String fieldName = cc.getFieldName();
 
-            String[] operators = this.getDataModelOracle().getConnectiveOperatorCompletions( factType,
-                                                                                             fieldName );
-            CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
-                                                               cc );
+            this.getDataModelOracle().getConnectiveOperatorCompletions( factType,
+                                                                        fieldName,
+                                                                        new Callback<String[]>() {
+                                                                            @Override
+                                                                            public void callback( final String[] operators ) {
+                                                                                final CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
+                                                                                                                                         cc );
 
-            w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+                                                                                w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-                public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
-                    OperatorSelection selection = event.getValue();
-                    String selected = selection.getValue();
-                    cc.setOperator( selected );
-                }
-            } );
-
-            return w;
+                                                                                    public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
+                                                                                        OperatorSelection selection = event.getValue();
+                                                                                        String selected = selection.getValue();
+                                                                                        cc.setOperator( selected );
+                                                                                    }
+                                                                                } );
+                                                                                callback.callback( w );
+                                                                            }
+                                                                        } );
 
         } else {
-            SmallLabel sl = new SmallLabel( "<b>" + ( cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() ) ) + "</b>" );
-            return sl;
+            final SmallLabel w = new SmallLabel( "<b>" + ( cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() ) ) + "</b>" );
+            callback.callback( w );
         }
     }
 

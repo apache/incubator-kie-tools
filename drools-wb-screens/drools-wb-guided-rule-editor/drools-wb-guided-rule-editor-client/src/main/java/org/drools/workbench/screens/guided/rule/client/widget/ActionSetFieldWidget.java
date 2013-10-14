@@ -77,7 +77,13 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
         if ( oracle.isGlobalVariable( set.getVariable() ) ) {
-            this.fieldCompletions = oracle.getFieldCompletionsForGlobalVariable( set.getVariable() );
+            oracle.getFieldCompletionsForGlobalVariable( set.getVariable(),
+                                                         new Callback<ModelField[]>() {
+                                                             @Override
+                                                             public void callback( ModelField[] fieldCompletions ) {
+                                                                 ActionSetFieldWidget.this.fieldCompletions = fieldCompletions;
+                                                             }
+                                                         } );
             this.variableClass = oracle.getGlobalVariable( set.getVariable() );
         } else {
             String type = mod.getModel().getLHSBindingType( set.getVariable() );

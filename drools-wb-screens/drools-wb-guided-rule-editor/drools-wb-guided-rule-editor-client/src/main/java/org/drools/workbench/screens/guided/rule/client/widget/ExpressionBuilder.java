@@ -174,7 +174,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                 int index = lb.getSelectedIndex();
                 if ( index > 0 ) {
                     ExpressionBuilder.this.makeDirty();
-                    startPointChange( lb.getValue( index ) );
+                    onStartPointChange( lb.getValue( index ) );
                 }
             }
         } );
@@ -187,14 +187,14 @@ public class ExpressionBuilder extends RuleModellerWidget
         setModified( true );
     }
 
-    private void startPointChange( String value ) {
+    private void onStartPointChange( final String value ) {
         setModified( true );
         panel.clear();
-        Widget w;
-        int dotPos = value.indexOf( '.' );
-        String prefix = value.substring( 0,
-                                         dotPos );
-        String attrib = value.substring( dotPos + 1 );
+        final int dotPos = value.indexOf( '.' );
+        final String prefix = value.substring( 0,
+                                               dotPos );
+        final String attrib = value.substring( dotPos + 1 );
+
         if ( prefix.equals( VARIABLE_VALUE_PREFIX ) ) {
             FactPattern fact = getRuleModel().getLHSBoundFact( attrib );
             ExpressionPart variable;
@@ -207,13 +207,23 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                         lhsBindingType );
             }
             expression.appendPart( variable );
+            onStartPointChangeUpdateWidget();
 
         } else if ( prefix.equals( GLOBAL_VARIABLE_VALUE_PREFIX ) ) {
-            expression.appendPart( ExpressionPartHelper.getExpressionPartForGlobalVariable( getDataModelOracle(),
-                                                                                            attrib ) );
+            ExpressionPartHelper.getExpressionPartForGlobalVariable( getDataModelOracle(),
+                                                                     attrib,
+                                                                     new Callback<ExpressionPart>() {
+                                                                         @Override
+                                                                         public void callback( final ExpressionPart part ) {
+                                                                             expression.appendPart( part );
+                                                                             onStartPointChangeUpdateWidget();
+                                                                         }
+                                                                     } );
         }
-        w = getWidgetForCurrentType();
+    }
 
+    private void onStartPointChangeUpdateWidget() {
+        final Widget w = getWidgetForCurrentType();
         if ( !expression.isEmpty() ) {
             panel.add( createWidgetForExpression( expression.getText() + "." ) );
         }
@@ -294,8 +304,9 @@ public class ExpressionBuilder extends RuleModellerWidget
 
     private void onChangeSelection( String value ) {
         setModified( true );
-        String oldType = getCurrentGenericType();
         String prevFactName = null;
+        final String oldType = getCurrentGenericType();
+
         if ( DELETE_VALUE.equals( value ) ) {
             expression.removeLast();
         } else if ( DataType.TYPE_COLLECTION.equals( getCurrentGenericType() ) ) {
@@ -319,15 +330,33 @@ public class ExpressionBuilder extends RuleModellerWidget
             prevFactName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
             // String genericType = SuggestionCompletionEngine.TYPE_OBJECT;
             if ( FIElD_VALUE_PREFIX.equals( prefix ) ) {
-                expression.appendPart( ExpressionPartHelper.getExpressionPartForField( getDataModelOracle(),
-                                                                                       prevFactName,
-                                                                                       attrib ) );
+                ExpressionPartHelper.getExpressionPartForField( getDataModelOracle(),
+                                                                prevFactName,
+                                                                attrib,
+                                                                new Callback<ExpressionPart>() {
+                                                                    @Override
+                                                                    public void callback( final ExpressionPart part ) {
+                                                                        expression.appendPart( part );
+                                                                        onChangeSelectionUpdateExpressionWidget( oldType );
+                                                                    }
+                                                                } );
+
             } else if ( METHOD_VALUE_PREFIX.equals( prefix ) ) {
-                expression.appendPart( ExpressionPartHelper.getExpressionPartForMethod( getDataModelOracle(),
-                                                                                        prevFactName,
-                                                                                        attrib ) );
+                ExpressionPartHelper.getExpressionPartForMethod( getDataModelOracle(),
+                                                                 prevFactName,
+                                                                 attrib,
+                                                                 new Callback<ExpressionPart>() {
+                                                                     @Override
+                                                                     public void callback( final ExpressionPart part ) {
+                                                                         expression.appendPart( part );
+                                                                         onChangeSelectionUpdateExpressionWidget( oldType );
+                                                                     }
+                                                                 } );
             }
         }
+    }
+
+    private void onChangeSelectionUpdateExpressionWidget( final String oldType ) {
         Widget w = getWidgetForCurrentType();
 
         panel.clear();
@@ -382,40 +411,45 @@ public class ExpressionBuilder extends RuleModellerWidget
             return completions;
         }
 
-        String factName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
+        final String factName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
         if ( factName != null ) {
             // we currently only support 0 param method calls
-            final List<String> methodNames = getDataModelOracle().getMethodNames( factName,
-                                                                                  0 );
-            getDataModelOracle().getFieldCompletions( factName,
-                                                      new Callback<ModelField[]>() {
+            getDataModelOracle().getMethodNames( factName,
+                                                 0,
+                                                 new Callback<List<String>>() {
+                                                     @Override
+                                                     public void callback( final List<String> methodNames ) {
+                                                         getDataModelOracle().getFieldCompletions( factName,
+                                                                                                   new Callback<ModelField[]>() {
 
-                                                          @Override
-                                                          public void callback( final ModelField[] fields ) {
-                                                              for ( ModelField field : fields ) {
+                                                                                                       @Override
+                                                                                                       public void callback( final ModelField[] fields ) {
+                                                                                                           for ( ModelField field : fields ) {
 
-                                                                  //You can't use "this" in a nested accessor
-                                                                  final String fieldName = field.getName();
-                                                                  if ( !isNested || !fieldName.equals( DataType.TYPE_THIS ) ) {
+                                                                                                               //You can't use "this" in a nested accessor
+                                                                                                               final String fieldName = field.getName();
+                                                                                                               if ( !isNested || !fieldName.equals( DataType.TYPE_THIS ) ) {
 
-                                                                      boolean changed = false;
-                                                                      for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
-                                                                          String method = i.next();
-                                                                          if ( method.startsWith( fieldName ) ) {
-                                                                              completions.put( method,
-                                                                                               METHOD_VALUE_PREFIX + "." + method );
-                                                                              i.remove();
-                                                                              changed = true;
-                                                                          }
-                                                                      }
-                                                                      if ( !changed ) {
-                                                                          completions.put( fieldName,
-                                                                                           FIElD_VALUE_PREFIX + "." + fieldName );
-                                                                      }
-                                                                  }
-                                                              }
-                                                          }
-                                                      } );
+                                                                                                                   boolean changed = false;
+                                                                                                                   for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
+                                                                                                                       String method = i.next();
+                                                                                                                       if ( method.startsWith( fieldName ) ) {
+                                                                                                                           completions.put( method,
+                                                                                                                                            METHOD_VALUE_PREFIX + "." + method );
+                                                                                                                           i.remove();
+                                                                                                                           changed = true;
+                                                                                                                       }
+                                                                                                                   }
+                                                                                                                   if ( !changed ) {
+                                                                                                                       completions.put( fieldName,
+                                                                                                                                        FIElD_VALUE_PREFIX + "." + fieldName );
+                                                                                                                   }
+                                                                                                               }
+                                                                                                           }
+                                                                                                       }
+                                                                                                   } );
+                                                     }
+                                                 } );
 
         }
         // else {We don't know anything about this type, so return empty map}

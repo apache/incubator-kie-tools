@@ -474,8 +474,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                              valueEditor( constraint ) );
             inner.setWidget( row,
                              3 + col,
-                             connectives.connectives( constraint,
-                                                      constraint.getFieldType() ) );
+                             connectives.connectives( constraint ) );
 
             if ( ebContainer != null && ebContainer.getWidgetCount() > 0 ) {
                 if ( ebContainer.getWidget( 0 ) instanceof ExpressionBuilder ) {
@@ -522,31 +521,37 @@ public class FactPatternWidget extends RuleModellerWidget {
     //Widget for CEP 'windows'
     private Widget createCEPWindowWidget( final RuleModeller modeller,
                                           final HasCEPWindow c ) {
-        if ( modeller.getDataModelOracle().isFactTypeAnEvent( pattern.getFactType() ) ) {
-            HorizontalPanel hp = new HorizontalPanel();
-            Label lbl = new Label( HumanReadableConstants.INSTANCE.OverCEPWindow() );
-            lbl.setStyleName( "paddedLabel" );
-            hp.add( lbl );
-            CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c,
-                                                                             readOnly );
+        final HorizontalPanel hp = new HorizontalPanel();
+        modeller.getDataModelOracle().isFactTypeAnEvent( pattern.getFactType(),
+                                                         new Callback<Boolean>() {
+                                                             @Override
+                                                             public void callback( final Boolean result ) {
+                                                                 if ( Boolean.TRUE.equals( result ) ) {
+                                                                     final Label lbl = new Label( HumanReadableConstants.INSTANCE.OverCEPWindow() );
+                                                                     lbl.setStyleName( "paddedLabel" );
+                                                                     hp.add( lbl );
 
-            if ( !this.isReadOnly() ) {
-                cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+                                                                     final CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c,
+                                                                                                                                            readOnly );
 
-                    public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
-                        setModified( true );
-                        OperatorSelection selection = event.getValue();
-                        String selected = selection.getValue();
-                        c.getWindow().setOperator( selected );
-                        getModeller().makeDirty();
-                    }
-                } );
-            }
+                                                                     if ( !isReadOnly() ) {
+                                                                         cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-            hp.add( cwo );
-            return hp;
-        }
-        return new HTML();
+                                                                             public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
+                                                                                 setModified( true );
+                                                                                 OperatorSelection selection = event.getValue();
+                                                                                 String selected = selection.getValue();
+                                                                                 c.getWindow().setOperator( selected );
+                                                                                 getModeller().makeDirty();
+                                                                             }
+                                                                         } );
+                                                                     }
+
+                                                                     hp.add( cwo );
+                                                                 }
+                                                             }
+                                                         } );
+        return hp;
     }
 
     private void associateExpressionWithChangeHandler( final DirtyableFlexTable inner,
@@ -698,6 +703,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                      final DirtyableFlexTable inner,
                                      final int row,
                                      final int col ) {
+        final HorizontalPanel hp = new HorizontalPanel();
         if ( !this.readOnly ) {
 
             String fieldName;
@@ -717,68 +723,72 @@ public class FactPatternWidget extends RuleModellerWidget {
                 fieldName = c.getFieldName();
             }
 
-            String[] operators = connectives.getDataModelOracle().getOperatorCompletions( factType,
-                                                                                          fieldName );
-            CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
-                                                               c );
+            connectives.getDataModelOracle().getOperatorCompletions( factType,
+                                                                     fieldName,
+                                                                     new Callback<String[]>() {
+                                                                         @Override
+                                                                         public void callback( final String[] operators ) {
+                                                                             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
+                                                                                                                                c );
 
-            w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+                                                                             w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-                public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
-                    setModified( true );
-                    final OperatorSelection selection = event.getValue();
-                    final String selected = selection.getValue();
-                    final String selectedText = selection.getDisplayText();
+                                                                                 public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
+                                                                                     setModified( true );
+                                                                                     final OperatorSelection selection = event.getValue();
+                                                                                     final String selected = selection.getValue();
+                                                                                     final String selectedText = selection.getDisplayText();
 
-                    //Prevent recursion once operator change has been applied
-                    if ( selectedText.equals( c.getOperator() ) ) {
-                        return;
-                    }
+                                                                                     //Prevent recursion once operator change has been applied
+                                                                                     if ( selectedText.equals( c.getOperator() ) ) {
+                                                                                         return;
+                                                                                     }
 
-                    final boolean newOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( selected );
-                    final boolean oldOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( c.getOperator() );
-                    c.setOperator( selected );
-                    if ( c.getOperator().equals( "" ) ) {
-                        c.setOperator( null );
-                    }
-                    if ( selectedText.equals( HumanReadableConstants.INSTANCE.isEqualToNull() ) || selectedText.equals( HumanReadableConstants.INSTANCE.isNotEqualToNull() ) ) {
-                        if ( inner != null ) {
-                            inner.getWidget( row,
-                                             col ).setVisible( false );
-                        }
-                    } else {
-                        if ( inner != null ) {
-                            inner.getWidget( row,
-                                             col ).setVisible( true );
-                        }
-                    }
+                                                                                     final boolean newOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( selected );
+                                                                                     final boolean oldOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( c.getOperator() );
+                                                                                     c.setOperator( selected );
+                                                                                     if ( c.getOperator().equals( "" ) ) {
+                                                                                         c.setOperator( null );
+                                                                                     }
+                                                                                     if ( selectedText.equals( HumanReadableConstants.INSTANCE.isEqualToNull() ) || selectedText.equals( HumanReadableConstants.INSTANCE.isNotEqualToNull() ) ) {
+                                                                                         if ( inner != null ) {
+                                                                                             inner.getWidget( row,
+                                                                                                              col ).setVisible( false );
+                                                                                         }
+                                                                                     } else {
+                                                                                         if ( inner != null ) {
+                                                                                             inner.getWidget( row,
+                                                                                                              col ).setVisible( true );
+                                                                                         }
+                                                                                     }
 
-                    //If new operator requires a comma separated list and old did not, or vice-versa
-                    //we need to redraw the ConstraintValueEditor for the constraint
-                    if ( newOperatorRequiresExplicitList != oldOperatorRequiresExplicitList ) {
-                        if ( newOperatorRequiresExplicitList == false ) {
-                            final String[] oldValueList = c.getValue().split( "," );
-                            if ( oldValueList.length > 0 ) {
-                                c.setValue( oldValueList[ 0 ] );
-                            }
-                        }
+                                                                                     //If new operator requires a comma separated list and old did not, or vice-versa
+                                                                                     //we need to redraw the ConstraintValueEditor for the constraint
+                                                                                     if ( newOperatorRequiresExplicitList != oldOperatorRequiresExplicitList ) {
+                                                                                         if ( newOperatorRequiresExplicitList == false ) {
+                                                                                             final String[] oldValueList = c.getValue().split( "," );
+                                                                                             if ( oldValueList.length > 0 ) {
+                                                                                                 c.setValue( oldValueList[ 0 ] );
+                                                                                             }
+                                                                                         }
 
-                        //Redraw ConstraintValueEditor
-                        inner.setWidget( row,
-                                         col,
-                                         valueEditor( c ) );
-                    }
+                                                                                         //Redraw ConstraintValueEditor
+                                                                                         inner.setWidget( row,
+                                                                                                          col,
+                                                                                                          valueEditor( c ) );
+                                                                                     }
 
-                    getModeller().makeDirty();
-                }
-            } );
+                                                                                     getModeller().makeDirty();
+                                                                                 }
+                                                                             } );
+                                                                         }
+                                                                     } );
 
-            return w;
         } else {
-            SmallLabel sl = new SmallLabel( "<b>" + ( c.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() ) ) + "</b>" );
-            return sl;
+            final SmallLabel sl = new SmallLabel( "<b>" + ( c.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() ) ) + "</b>" );
+            hp.add( sl );
         }
-
+        return hp;
     }
 
     private HorizontalPanel expressionBuilderLS( final SingleFieldConstraintEBLeftSide con,

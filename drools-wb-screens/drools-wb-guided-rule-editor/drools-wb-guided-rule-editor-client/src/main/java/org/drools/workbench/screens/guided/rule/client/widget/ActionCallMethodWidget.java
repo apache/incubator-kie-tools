@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -40,6 +39,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -63,10 +63,10 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     private boolean isFactTypeKnown;
 
-    public ActionCallMethodWidget( RuleModeller mod,
-                                   EventBus eventBus,
-                                   ActionCallMethod set,
-                                   Boolean readOnly ) {
+    public ActionCallMethodWidget( final RuleModeller mod,
+                                   final EventBus eventBus,
+                                   final ActionCallMethod set,
+                                   final Boolean readOnly ) {
         super( mod,
                eventBus );
         this.model = set;
@@ -74,64 +74,79 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
-        AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
+        final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         if ( oracle.isGlobalVariable( set.getVariable() ) ) {
 
-            List<MethodInfo> infos = oracle.getMethodInfosForGlobalVariable( set.getVariable() );
-            if ( infos != null ) {
-                this.fieldCompletionTexts = new String[ infos.size() ];
-                this.fieldCompletionValues = new String[ infos.size() ];
-                int i = 0;
-                for ( MethodInfo info : infos ) {
-                    this.fieldCompletionTexts[ i ] = info.getName();
-                    this.fieldCompletionValues[ i ] = info.getNameWithParameters();
-                    i++;
-                }
+            oracle.getMethodInfosForGlobalVariable( set.getVariable(),
+                                                    new Callback<List<MethodInfo>>() {
+                                                        @Override
+                                                        public void callback( final List<MethodInfo> infos ) {
+                                                            if ( infos != null ) {
+                                                                ActionCallMethodWidget.this.fieldCompletionTexts = new String[ infos.size() ];
+                                                                ActionCallMethodWidget.this.fieldCompletionValues = new String[ infos.size() ];
+                                                                int i = 0;
+                                                                for ( MethodInfo info : infos ) {
+                                                                    ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = info.getName();
+                                                                    ActionCallMethodWidget.this.fieldCompletionValues[ i ] = info.getNameWithParameters();
+                                                                    i++;
+                                                                }
 
-                this.variableClass = oracle.getGlobalVariable( set.getVariable() );
+                                                                ActionCallMethodWidget.this.variableClass = oracle.getGlobalVariable( set.getVariable() );
 
-            } else {
-                this.fieldCompletionTexts = new String[ 0 ];
-                this.fieldCompletionValues = new String[ 0 ];
-                readOnly = true;
-            }
+                                                            } else {
+                                                                ActionCallMethodWidget.this.fieldCompletionTexts = new String[ 0 ];
+                                                                ActionCallMethodWidget.this.fieldCompletionValues = new String[ 0 ];
+                                                                ActionCallMethodWidget.this.readOnly = true;
+                                                            }
+                                                        }
+                                                    } );
 
         } else {
 
-            FactPattern pattern = mod.getModel().getLHSBoundFact( set.getVariable() );
+            final FactPattern pattern = mod.getModel().getLHSBoundFact( set.getVariable() );
             if ( pattern != null ) {
-                List<String> methodList = oracle.getMethodNames( pattern.getFactType() );
-                fieldCompletionTexts = new String[ methodList.size() ];
-                fieldCompletionValues = new String[ methodList.size() ];
-                int i = 0;
-                for ( String methodName : methodList ) {
-                    fieldCompletionTexts[ i ] = methodName;
-                    fieldCompletionValues[ i ] = methodName;
-                    i++;
-                }
-                this.variableClass = pattern.getFactType();
-                this.isBoundFact = true;
+                oracle.getMethodNames( pattern.getFactType(),
+                                       new Callback<List<String>>() {
+                                           @Override
+                                           public void callback( final List<String> methodList ) {
+                                               ActionCallMethodWidget.this.fieldCompletionTexts = new String[ methodList.size() ];
+                                               ActionCallMethodWidget.this.fieldCompletionValues = new String[ methodList.size() ];
+                                               int i = 0;
+                                               for ( String methodName : methodList ) {
+                                                   ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = methodName;
+                                                   ActionCallMethodWidget.this.fieldCompletionValues[ i ] = methodName;
+                                                   i++;
+                                               }
+                                               ActionCallMethodWidget.this.variableClass = pattern.getFactType();
+                                               ActionCallMethodWidget.this.isBoundFact = true;
+
+                                           }
+                                       } );
 
             } else {
                 /*
-                 * if the call method is applied on a bound variable created in
-                 * the rhs
+                 * if the call method is applied on a bound variable created in the rhs
                  */
-                ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.getVariable() );
+                final ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.getVariable() );
                 if ( patternRhs != null ) {
-                    List<String> methodList = oracle.getMethodNames( patternRhs.getFactType() );
-                    fieldCompletionTexts = new String[ methodList.size() ];
-                    fieldCompletionValues = new String[ methodList.size() ];
-                    int i = 0;
-                    for ( String methodName : methodList ) {
-                        fieldCompletionTexts[ i ] = methodName;
-                        fieldCompletionValues[ i ] = methodName;
-                        i++;
-                    }
-                    this.variableClass = patternRhs.getFactType();
-                    this.isBoundFact = true;
+                    oracle.getMethodNames( patternRhs.getFactType(),
+                                           new Callback<List<String>>() {
+                                               @Override
+                                               public void callback( final List<String> methodList ) {
+                                                   ActionCallMethodWidget.this.fieldCompletionTexts = new String[ methodList.size() ];
+                                                   ActionCallMethodWidget.this.fieldCompletionValues = new String[ methodList.size() ];
+                                                   int i = 0;
+                                                   for ( String methodName : methodList ) {
+                                                       ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = methodName;
+                                                       ActionCallMethodWidget.this.fieldCompletionValues[ i ] = methodName;
+                                                       i++;
+                                                   }
+                                                   ActionCallMethodWidget.this.variableClass = patternRhs.getFactType();
+                                                   ActionCallMethodWidget.this.isBoundFact = true;
+                                               }
+                                           } );
                 } else {
-                    readOnly = true;
+                    this.readOnly = true;
                 }
             }
         }
@@ -220,24 +235,27 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange( ChangeEvent event ) {
-                model.setState( ActionCallMethod.TYPE_DEFINED );
 
-                String methodName = box.getItemText( box.getSelectedIndex() );
-                String methodNameWithParams = box.getValue( box.getSelectedIndex() );
+                final String methodName = box.getItemText( box.getSelectedIndex() );
+                final String methodNameWithParams = box.getValue( box.getSelectedIndex() );
 
                 model.setMethodName( methodName );
-                List<String> fieldList = new ArrayList<String>();
+                model.setState( ActionCallMethod.TYPE_DEFINED );
 
-                fieldList.addAll( oracle.getMethodParams( variableClass,
-                                                          methodNameWithParams ) );
-
-                int i = 0;
-                for ( String fieldParameter : fieldList ) {
-                    model.addFieldValue( new ActionFieldFunction( methodName,
-                                                                  String.valueOf( i ),
-                                                                  fieldParameter ) );
-                    i++;
-                }
+                oracle.getMethodParams( variableClass,
+                                        methodNameWithParams,
+                                        new Callback<List<String>>() {
+                                            @Override
+                                            public void callback( final List<String> methodParameters ) {
+                                                int i = 0;
+                                                for ( String methodParameter : methodParameters ) {
+                                                    model.addFieldValue( new ActionFieldFunction( methodName,
+                                                                                                  String.valueOf( i ),
+                                                                                                  methodParameter ) );
+                                                    i++;
+                                                }
+                                            }
+                                        } );
 
                 getModeller().refreshWidget();
                 popup.hide();
