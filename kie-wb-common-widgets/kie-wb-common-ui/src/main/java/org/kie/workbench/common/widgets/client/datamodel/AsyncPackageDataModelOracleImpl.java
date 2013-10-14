@@ -52,7 +52,7 @@ import org.uberfire.backend.vfs.Path;
 public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOracle {
 
     @Inject
-    private Caller<IncrementalDataModelService> service;
+    protected Caller<IncrementalDataModelService> service;
 
     //Path that this DMO is coupled to
     private Path resourcePath;
@@ -288,11 +288,33 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public boolean isFactTypeAnEvent( final String factType ) {
-        if ( !filteredEventTypes.containsKey( factType ) ) {
-            return false;
+    public void isFactTypeAnEvent( final String factType,
+                                   final Callback<Boolean> callback ) {
+        final Boolean isFactTypeAnEvent = filteredEventTypes.get( factType );
+
+        //Load incremental content
+        if ( isFactTypeAnEvent == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    Boolean isFactTypeAnEvent = filteredEventTypes.get( factType );
+                    if ( isFactTypeAnEvent == null ) {
+                        isFactTypeAnEvent = false;
+                        filteredEventTypes.put( factType,
+                                                isFactTypeAnEvent );
+                    }
+                    callback.callback( isFactTypeAnEvent );
+                }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
+
+        } else {
+            callback.callback( isFactTypeAnEvent );
         }
-        return filteredEventTypes.get( factType );
     }
 
     /**
@@ -301,8 +323,28 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public TypeSource getTypeSource( final String factType ) {
-        return filteredTypeSources.get( factType );
+    public void getTypeSource( final String factType,
+                               final Callback<TypeSource> callback ) {
+        final TypeSource typeSource = filteredTypeSources.get( factType );
+
+        //Load incremental content
+        if ( typeSource == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    final TypeSource typeSource = filteredTypeSources.get( factType );
+                    callback.callback( typeSource );
+                }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
+
+        } else {
+            callback.callback( typeSource );
+        }
     }
 
     /**
@@ -311,8 +353,28 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return null if no Super Type
      */
     @Override
-    public String getSuperType( final String factType ) {
-        return filteredSuperTypes.get( factType );
+    public void getSuperType( final String factType,
+                              final Callback<String> callback ) {
+        final String superType = filteredSuperTypes.get( factType );
+
+        //Load incremental content
+        if ( superType == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    final String superType = filteredSuperTypes.get( factType );
+                    callback.callback( superType );
+                }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
+
+        } else {
+            callback.callback( superType );
+        }
     }
 
     /**
@@ -321,11 +383,33 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return Empty set if no annotations exist for the type
      */
     @Override
-    public Set<Annotation> getTypeAnnotations( final String factType ) {
-        if ( !filteredTypeAnnotations.containsKey( factType ) ) {
-            return Collections.EMPTY_SET;
+    public void getTypeAnnotations( final String factType,
+                                    final Callback<Set<Annotation>> callback ) {
+        final Set<Annotation> typeAnnotations = filteredTypeAnnotations.get( factType );
+
+        //Load incremental content
+        if ( typeAnnotations == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    Set<Annotation> typeAnnotations = filteredTypeAnnotations.get( factType );
+                    if ( typeAnnotations == null ) {
+                        typeAnnotations = Collections.EMPTY_SET;
+                        filteredTypeAnnotations.put( factType,
+                                                     typeAnnotations );
+                    }
+                    callback.callback( typeAnnotations );
+                }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
+
+        } else {
+            callback.callback( typeAnnotations );
         }
-        return filteredTypeAnnotations.get( factType );
     }
 
     /**
@@ -334,11 +418,33 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return Empty Map if no annotations exist for the type
      */
     @Override
-    public Map<String, Set<Annotation>> getTypeFieldsAnnotations( final String factType ) {
-        if ( !filteredTypeFieldsAnnotations.containsKey( factType ) ) {
-            return Collections.EMPTY_MAP;
+    public void getTypeFieldsAnnotations( final String factType,
+                                          final Callback<Map<String, Set<Annotation>>> callback ) {
+        final Map<String, Set<Annotation>> typeFieldsAnnotations = filteredTypeFieldsAnnotations.get( factType );
+
+        //Load incremental content
+        if ( typeFieldsAnnotations == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    Map<String, Set<Annotation>> typeFieldsAnnotations = filteredTypeFieldsAnnotations.get( factType );
+                    if ( typeFieldsAnnotations == null ) {
+                        typeFieldsAnnotations = Collections.EMPTY_MAP;
+                        filteredTypeFieldsAnnotations.put( factType,
+                                                           typeFieldsAnnotations );
+                    }
+                    callback.callback( typeFieldsAnnotations );
+                }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
+
+        } else {
+            callback.callback( typeFieldsAnnotations );
         }
-        return filteredTypeFieldsAnnotations.get( factType );
     }
 
     // ####################################
@@ -494,38 +600,59 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public String[] getOperatorCompletions( final String factType,
-                                            final String fieldName ) {
-
+    public void getOperatorCompletions( final String factType,
+                                        final String fieldName,
+                                        final Callback<String[]> callback ) {
         final String fieldType = getFieldType( factType,
                                                fieldName );
 
         if ( fieldType == null ) {
-            return OperatorsOracle.STANDARD_OPERATORS;
+            callback.callback( OperatorsOracle.STANDARD_OPERATORS );
+            return;
+
         } else if ( fieldName.equals( DataType.TYPE_THIS ) ) {
-            if ( isFactTypeAnEvent( factType ) ) {
-                return OracleUtils.joinArrays( OperatorsOracle.STANDARD_OPERATORS,
-                                               OperatorsOracle.SIMPLE_CEP_OPERATORS,
-                                               OperatorsOracle.COMPLEX_CEP_OPERATORS );
-            } else {
-                return OperatorsOracle.STANDARD_OPERATORS;
-            }
+            isFactTypeAnEvent( factType,
+                               new Callback<Boolean>() {
+                                   @Override
+                                   public void callback( final Boolean isFactTypeAnEvent ) {
+                                       if ( Boolean.TRUE.equals( isFactTypeAnEvent ) ) {
+                                           callback.callback( OracleUtils.joinArrays( OperatorsOracle.STANDARD_OPERATORS,
+                                                                                      OperatorsOracle.SIMPLE_CEP_OPERATORS,
+                                                                                      OperatorsOracle.COMPLEX_CEP_OPERATORS ) );
+                                           return;
+                                       } else {
+                                           callback.callback( OperatorsOracle.STANDARD_OPERATORS );
+                                           return;
+                                       }
+                                   }
+                               } );
+
         } else if ( fieldType.equals( DataType.TYPE_STRING ) ) {
-            return OracleUtils.joinArrays( OperatorsOracle.STRING_OPERATORS,
-                                           OperatorsOracle.EXPLICIT_LIST_OPERATORS );
+            callback.callback( OracleUtils.joinArrays( OperatorsOracle.STRING_OPERATORS,
+                                                       OperatorsOracle.EXPLICIT_LIST_OPERATORS ) );
+            return;
+
         } else if ( DataType.isNumeric( fieldType ) ) {
-            return OracleUtils.joinArrays( OperatorsOracle.COMPARABLE_OPERATORS,
-                                           OperatorsOracle.EXPLICIT_LIST_OPERATORS );
+            callback.callback( OracleUtils.joinArrays( OperatorsOracle.COMPARABLE_OPERATORS,
+                                                       OperatorsOracle.EXPLICIT_LIST_OPERATORS ) );
+            return;
+
         } else if ( fieldType.equals( DataType.TYPE_DATE ) ) {
-            return OracleUtils.joinArrays( OperatorsOracle.COMPARABLE_OPERATORS,
-                                           OperatorsOracle.EXPLICIT_LIST_OPERATORS,
-                                           OperatorsOracle.SIMPLE_CEP_OPERATORS );
+            callback.callback( OracleUtils.joinArrays( OperatorsOracle.COMPARABLE_OPERATORS,
+                                                       OperatorsOracle.EXPLICIT_LIST_OPERATORS,
+                                                       OperatorsOracle.SIMPLE_CEP_OPERATORS ) );
+            return;
+
         } else if ( fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-            return OperatorsOracle.COMPARABLE_OPERATORS;
+            callback.callback( OperatorsOracle.COMPARABLE_OPERATORS );
+            return;
+
         } else if ( fieldType.equals( DataType.TYPE_COLLECTION ) ) {
-            return OperatorsOracle.COLLECTION_OPERATORS;
+            callback.callback( OperatorsOracle.COLLECTION_OPERATORS );
+            return;
+
         } else {
-            return OperatorsOracle.STANDARD_OPERATORS;
+            callback.callback( OperatorsOracle.STANDARD_OPERATORS );
         }
     }
 
@@ -536,34 +663,55 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public String[] getConnectiveOperatorCompletions( final String factType,
-                                                      final String fieldName ) {
+    public void getConnectiveOperatorCompletions( final String factType,
+                                                  final String fieldName,
+                                                  final Callback<String[]> callback ) {
         final String fieldType = getFieldType( factType,
                                                fieldName );
 
         if ( fieldType == null ) {
-            return OperatorsOracle.STANDARD_CONNECTIVES;
+            callback.callback( OperatorsOracle.STANDARD_CONNECTIVES );
+            return;
+
         } else if ( fieldName.equals( DataType.TYPE_THIS ) ) {
-            if ( isFactTypeAnEvent( factType ) ) {
-                return OracleUtils.joinArrays( OperatorsOracle.STANDARD_CONNECTIVES,
-                                               OperatorsOracle.SIMPLE_CEP_CONNECTIVES,
-                                               OperatorsOracle.COMPLEX_CEP_CONNECTIVES );
-            } else {
-                return OperatorsOracle.STANDARD_CONNECTIVES;
-            }
+            isFactTypeAnEvent( factType,
+                               new Callback<Boolean>() {
+                                   @Override
+                                   public void callback( final Boolean isFactTypeAnEvent ) {
+                                       if ( Boolean.TRUE.equals( isFactTypeAnEvent ) ) {
+                                           callback.callback( OracleUtils.joinArrays( OperatorsOracle.STANDARD_CONNECTIVES,
+                                                                                      OperatorsOracle.SIMPLE_CEP_CONNECTIVES,
+                                                                                      OperatorsOracle.COMPLEX_CEP_CONNECTIVES ) );
+                                           return;
+                                       } else {
+                                           callback.callback( OperatorsOracle.STANDARD_CONNECTIVES );
+                                           return;
+                                       }
+                                   }
+                               } );
         } else if ( fieldType.equals( DataType.TYPE_STRING ) ) {
-            return OperatorsOracle.STRING_CONNECTIVES;
+            callback.callback( OperatorsOracle.STRING_CONNECTIVES );
+            return;
+
         } else if ( DataType.isNumeric( fieldType ) ) {
-            return OperatorsOracle.COMPARABLE_CONNECTIVES;
+            callback.callback( OperatorsOracle.COMPARABLE_CONNECTIVES );
+            return;
+
         } else if ( fieldType.equals( DataType.TYPE_DATE ) ) {
-            return OracleUtils.joinArrays( OperatorsOracle.COMPARABLE_CONNECTIVES,
-                                           OperatorsOracle.SIMPLE_CEP_CONNECTIVES );
+            callback.callback( OracleUtils.joinArrays( OperatorsOracle.COMPARABLE_CONNECTIVES,
+                                                       OperatorsOracle.SIMPLE_CEP_CONNECTIVES ) );
+            return;
+
         } else if ( fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-            return OperatorsOracle.COMPARABLE_CONNECTIVES;
+            callback.callback( OperatorsOracle.COMPARABLE_CONNECTIVES );
+            return;
+
         } else if ( fieldType.equals( DataType.TYPE_COLLECTION ) ) {
-            return OperatorsOracle.COLLECTION_CONNECTIVES;
+            callback.callback( OperatorsOracle.COLLECTION_CONNECTIVES );
+            return;
+
         } else {
-            return OperatorsOracle.STANDARD_CONNECTIVES;
+            callback.callback( OperatorsOracle.STANDARD_CONNECTIVES );
         }
 
     }
@@ -578,9 +726,11 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public List<String> getMethodNames( final String factType ) {
-        return getMethodNames( factType,
-                               -1 );
+    public void getMethodNames( final String factType,
+                                final Callback<List<String>> callback ) {
+        getMethodNames( factType,
+                        -1,
+                        callback );
     }
 
     /**
@@ -590,15 +740,39 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public List<String> getMethodNames( final String factType,
-                                        final int paramCount ) {
-        final List<MethodInfo> infos = filteredMethodInformation.get( factType );
-        final List<String> methodList = new ArrayList<String>();
-        if ( infos != null ) {
-            for ( MethodInfo info : infos ) {
-                if ( paramCount == -1 || info.getParams().size() <= paramCount ) {
-                    methodList.add( info.getNameWithParameters() );
+    public void getMethodNames( final String factType,
+                                final int paramCount,
+                                final Callback<List<String>> callback ) {
+        final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
+
+        //Load incremental content
+        if ( methodInformation == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
+                    callback.callback( getMethodNames( paramCount,
+                                                       methodInformation ) );
                 }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
+
+        } else {
+            callback.callback( getMethodNames( paramCount,
+                                               methodInformation ) );
+        }
+    }
+
+    private List<String> getMethodNames( final int paramCount,
+                                         final List<MethodInfo> methodInformation ) {
+        final List<String> methodList = new ArrayList<String>();
+        for ( MethodInfo info : methodInformation ) {
+            if ( paramCount == -1 || info.getParams().size() <= paramCount ) {
+                methodList.add( info.getNameWithParameters() );
             }
         }
         return methodList;
@@ -611,17 +785,22 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public List<String> getMethodParams( final String factType,
-                                         final String methodNameWithParams ) {
-        final List<MethodInfo> infos = filteredMethodInformation.get( factType );
-        if ( infos != null ) {
+    public void getMethodParams( final String factType,
+                                 final String methodNameWithParams,
+                                 final Callback<List<String>> callback ) {
+        if ( !filteredMethodInformation.containsKey( factType ) ) {
+
+        } else {
+            final List<MethodInfo> infos = filteredMethodInformation.get( factType );
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().startsWith( methodNameWithParams ) ) {
-                    return info.getParams();
+                    callback.callback( info.getParams() );
+                    return;
                 }
             }
         }
-        return null;
+        ;
+        callback.callback( null );
     }
 
     /**
@@ -631,17 +810,21 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public MethodInfo getMethodInfo( final String factType,
-                                     final String methodFullName ) {
-        final List<MethodInfo> infos = filteredMethodInformation.get( factType );
-        if ( infos != null ) {
+    public void getMethodInfo( final String factType,
+                               final String methodFullName,
+                               final Callback<MethodInfo> callback ) {
+        if ( !filteredMethodInformation.containsKey( factType ) ) {
+
+        } else {
+            final List<MethodInfo> infos = filteredMethodInformation.get( factType );
             for ( MethodInfo info : infos ) {
                 if ( info.getNameWithParameters().equals( methodFullName ) ) {
-                    return info;
+                    callback.callback( info );
+                    return;
                 }
             }
         }
-        return null;
+        callback.callback( null );
     }
 
     // ####################################
@@ -664,15 +847,36 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public ModelField[] getFieldCompletionsForGlobalVariable( final String varName ) {
+    public void getFieldCompletionsForGlobalVariable( final String varName,
+                                                      final Callback<ModelField[]> callback ) {
         final String type = getGlobalVariable( varName );
-        return getModelFields( type );
+        callback.callback( getModelFields( type ) );
     }
 
     @Override
-    public List<MethodInfo> getMethodInfosForGlobalVariable( final String varName ) {
-        final String type = getGlobalVariable( varName );
-        return filteredMethodInformation.get( type );
+    public void getMethodInfosForGlobalVariable( final String varName,
+                                                 final Callback<List<MethodInfo>> callback ) {
+        final String factType = getGlobalVariable( varName );
+        final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
+
+        //Load incremental content
+        if ( methodInformation == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
+                    callback.callback( methodInformation );
+                }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
+
+        } else {
+            callback.callback( methodInformation );
+        }
     }
 
     @Override

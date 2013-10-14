@@ -7,11 +7,14 @@ import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracle
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.Product;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.SmurfHouse;
 import org.uberfire.backend.vfs.Path;
@@ -42,7 +45,10 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -58,10 +64,15 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         assertEquals( "Product",
                       oracle.getFactTypes()[ 0 ] );
 
-        final Map<String, Set<Annotation>> fieldsAnnotations = oracle.getTypeFieldsAnnotations( "Product" );
-        assertNotNull( fieldsAnnotations );
-        assertEquals( 0,
-                      fieldsAnnotations.size() );
+        oracle.getTypeFieldsAnnotations( "Product",
+                                         new Callback<Map<String, Set<Annotation>>>() {
+                                             @Override
+                                             public void callback( final Map<String, Set<Annotation>> fieldsAnnotations ) {
+                                                 assertNotNull( fieldsAnnotations );
+                                                 assertEquals( 0,
+                                                               fieldsAnnotations.size() );
+                                             }
+                                         } );
     }
 
     @Test
@@ -82,7 +93,10 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -98,38 +112,43 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         assertEquals( "SmurfHouse",
                       oracle.getFactTypes()[ 0 ] );
 
-        final Map<String, Set<Annotation>> fieldsAnnotations = oracle.getTypeFieldsAnnotations( "SmurfHouse" );
-        assertNotNull( fieldsAnnotations );
-        assertEquals( 2,
-                      fieldsAnnotations.size() );
+        oracle.getTypeFieldsAnnotations( "SmurfHouse",
+                                         new Callback<Map<String, Set<Annotation>>>() {
+                                             @Override
+                                             public void callback( final Map<String, Set<Annotation>> fieldsAnnotations ) {
+                                                 assertNotNull( fieldsAnnotations );
+                                                 assertEquals( 2,
+                                                               fieldsAnnotations.size() );
 
-        assertTrue( fieldsAnnotations.containsKey( "occupant" ) );
-        final Set<Annotation> occupantAnnotations = fieldsAnnotations.get( "occupant" );
-        assertNotNull( occupantAnnotations );
-        assertEquals( 1,
-                      occupantAnnotations.size() );
+                                                 assertTrue( fieldsAnnotations.containsKey( "occupant" ) );
+                                                 final Set<Annotation> occupantAnnotations = fieldsAnnotations.get( "occupant" );
+                                                 assertNotNull( occupantAnnotations );
+                                                 assertEquals( 1,
+                                                               occupantAnnotations.size() );
+                                                 final Annotation annotation = occupantAnnotations.iterator().next();
+                                                 assertEquals( "org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.SmurfFieldDescriptor",
+                                                               annotation.getQualifiedTypeName() );
+                                                 assertEquals( "blue",
+                                                               annotation.getAttributes().get( "colour" ) );
+                                                 assertEquals( "M",
+                                                               annotation.getAttributes().get( "gender" ) );
+                                                 assertEquals( "Brains",
+                                                               annotation.getAttributes().get( "description" ) );
 
-        final Annotation annotation = occupantAnnotations.iterator().next();
-        assertEquals( "org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.SmurfFieldDescriptor",
-                      annotation.getQualifiedTypeName() );
-        assertEquals( "blue",
-                      annotation.getAttributes().get( "colour" ) );
-        assertEquals( "M",
-                      annotation.getAttributes().get( "gender" ) );
-        assertEquals( "Brains",
-                      annotation.getAttributes().get( "description" ) );
+                                                 assertTrue( fieldsAnnotations.containsKey( "positionedOccupant" ) );
+                                                 final Set<Annotation> posOccupantAnnotations = fieldsAnnotations.get( "positionedOccupant" );
+                                                 assertNotNull( posOccupantAnnotations );
+                                                 assertEquals( 1,
+                                                               posOccupantAnnotations.size() );
 
-        assertTrue( fieldsAnnotations.containsKey( "positionedOccupant" ) );
-        final Set<Annotation> posOccupantAnnotations = fieldsAnnotations.get( "positionedOccupant" );
-        assertNotNull( posOccupantAnnotations );
-        assertEquals( 1,
-                      posOccupantAnnotations.size() );
+                                                 final Annotation annotation2 = posOccupantAnnotations.iterator().next();
+                                                 assertEquals( "org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.SmurfFieldPositionDescriptor",
+                                                               annotation2.getQualifiedTypeName() );
+                                                 assertEquals( Integer.toString( 1 ),
+                                                               annotation2.getAttributes().get( "value" ) );
+                                             }
+                                         } );
 
-        final Annotation annotation2 = posOccupantAnnotations.iterator().next();
-        assertEquals( "org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.SmurfFieldPositionDescriptor",
-                      annotation2.getQualifiedTypeName() );
-        assertEquals( Integer.toString( 1 ),
-                      annotation2.getAttributes().get( "value" ) );
     }
 
     @Test
@@ -150,7 +169,10 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -164,10 +186,15 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         assertEquals( 0,
                       oracle.getFactTypes().length );
 
-        final Map<String, Set<Annotation>> fieldsAnnotations = oracle.getTypeFieldsAnnotations( "Product" );
-        assertNotNull( fieldsAnnotations );
-        assertEquals( 0,
-                      fieldsAnnotations.size() );
+        oracle.getTypeFieldsAnnotations( "Product",
+                                         new Callback<Map<String, Set<Annotation>>>() {
+                                             @Override
+                                             public void callback( final Map<String, Set<Annotation>> fieldsAnnotations ) {
+                                                 assertNotNull( fieldsAnnotations );
+                                                 assertEquals( 0,
+                                                               fieldsAnnotations.size() );
+                                             }
+                                         } );
     }
 
     @Test
@@ -188,7 +215,10 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -202,10 +232,15 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         assertEquals( 0,
                       oracle.getFactTypes().length );
 
-        final Map<String, Set<Annotation>> fieldAnnotations = oracle.getTypeFieldsAnnotations( "SmurfHouse" );
-        assertNotNull( fieldAnnotations );
-        assertEquals( 0,
-                      fieldAnnotations.size() );
+        oracle.getTypeFieldsAnnotations( "SmurfHouse",
+                                         new Callback<Map<String, Set<Annotation>>>() {
+                                             @Override
+                                             public void callback( final Map<String, Set<Annotation>> fieldAnnotations ) {
+                                                 assertNotNull( fieldAnnotations );
+                                                 assertEquals( 0,
+                                                               fieldAnnotations.size() );
+                                             }
+                                         } );
     }
 
 }

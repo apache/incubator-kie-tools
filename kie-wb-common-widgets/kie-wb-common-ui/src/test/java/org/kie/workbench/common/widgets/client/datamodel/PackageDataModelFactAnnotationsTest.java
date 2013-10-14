@@ -6,12 +6,15 @@ import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracle
 import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
 import org.kie.api.definition.type.Role;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.Product;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.RoleSmurf;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.Smurf;
@@ -43,7 +46,10 @@ public class PackageDataModelFactAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -59,10 +65,15 @@ public class PackageDataModelFactAnnotationsTest {
         assertEquals( "Product",
                       oracle.getFactTypes()[ 0 ] );
 
-        final Set<Annotation> annotations = oracle.getTypeAnnotations( "Product" );
-        assertNotNull( annotations );
-        assertEquals( 0,
-                      annotations.size() );
+        oracle.getTypeAnnotations( "Product",
+                                   new Callback<Set<Annotation>>() {
+                                       @Override
+                                       public void callback( final Set<Annotation> annotations ) {
+                                           assertNotNull( annotations );
+                                           assertEquals( 0,
+                                                         annotations.size() );
+                                       }
+                                   } );
     }
 
     @Test
@@ -83,7 +94,10 @@ public class PackageDataModelFactAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -99,20 +113,25 @@ public class PackageDataModelFactAnnotationsTest {
         assertEquals( "Smurf",
                       oracle.getFactTypes()[ 0 ] );
 
-        final Set<Annotation> annotations = oracle.getTypeAnnotations( "Smurf" );
-        assertNotNull( annotations );
-        assertEquals( 1,
-                      annotations.size() );
+        oracle.getTypeAnnotations( "Smurf",
+                                   new Callback<Set<Annotation>>() {
+                                       @Override
+                                       public void callback( final Set<Annotation> annotations ) {
+                                           assertNotNull( annotations );
+                                           assertEquals( 1,
+                                                         annotations.size() );
 
-        final Annotation annotation = annotations.iterator().next();
-        assertEquals( "org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.SmurfDescriptor",
-                      annotation.getQualifiedTypeName() );
-        assertEquals( "blue",
-                      annotation.getAttributes().get( "colour" ) );
-        assertEquals( "M",
-                      annotation.getAttributes().get( "gender" ) );
-        assertEquals( "Brains",
-                      annotation.getAttributes().get( "description" ) );
+                                           final Annotation annotation = annotations.iterator().next();
+                                           assertEquals( "org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations.SmurfDescriptor",
+                                                         annotation.getQualifiedTypeName() );
+                                           assertEquals( "blue",
+                                                         annotation.getAttributes().get( "colour" ) );
+                                           assertEquals( "M",
+                                                         annotation.getAttributes().get( "gender" ) );
+                                           assertEquals( "Brains",
+                                                         annotation.getAttributes().get( "description" ) );
+                                       }
+                                   } );
     }
 
     @Test
@@ -133,7 +152,10 @@ public class PackageDataModelFactAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -149,16 +171,21 @@ public class PackageDataModelFactAnnotationsTest {
         assertEquals( "RoleSmurf",
                       oracle.getFactTypes()[ 0 ] );
 
-        final Set<Annotation> annotations = oracle.getTypeAnnotations( "RoleSmurf" );
-        assertNotNull( annotations );
-        assertEquals( 1,
-                      annotations.size() );
+        oracle.getTypeAnnotations( "RoleSmurf",
+                                   new Callback<Set<Annotation>>() {
+                                       @Override
+                                       public void callback( final Set<Annotation> annotations ) {
+                                           assertNotNull( annotations );
+                                           assertEquals( 1,
+                                                         annotations.size() );
 
-        final Annotation annotation = annotations.iterator().next();
-        assertEquals( "org.kie.api.definition.type.Role",
-                      annotation.getQualifiedTypeName() );
-        assertEquals( Role.Type.EVENT.name(),
-                      annotation.getAttributes().get( "value" ) );
+                                           final Annotation annotation = annotations.iterator().next();
+                                           assertEquals( "org.kie.api.definition.type.Role",
+                                                         annotation.getQualifiedTypeName() );
+                                           assertEquals( Role.Type.EVENT.name(),
+                                                         annotation.getAttributes().get( "value" ) );
+                                       }
+                                   } );
     }
 
     @Test
@@ -179,7 +206,10 @@ public class PackageDataModelFactAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -193,10 +223,15 @@ public class PackageDataModelFactAnnotationsTest {
         assertEquals( 0,
                       oracle.getFactTypes().length );
 
-        final Set<Annotation> annotations = oracle.getTypeAnnotations( "Product" );
-        assertNotNull( annotations );
-        assertEquals( 0,
-                      annotations.size() );
+        oracle.getTypeAnnotations( "Product",
+                                   new Callback<Set<Annotation>>() {
+                                       @Override
+                                       public void callback( final Set<Annotation> annotations ) {
+                                           assertNotNull( annotations );
+                                           assertEquals( 0,
+                                                         annotations.size() );
+                                       }
+                                   } );
     }
 
     @Test
@@ -217,7 +252,10 @@ public class PackageDataModelFactAnnotationsTest {
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -230,10 +268,15 @@ public class PackageDataModelFactAnnotationsTest {
         assertEquals( 0,
                       oracle.getFactTypes().length );
 
-        final Set<Annotation> annotations = oracle.getTypeAnnotations( "Smurf" );
-        assertNotNull( annotations );
-        assertEquals( 0,
-                      annotations.size() );
+        oracle.getTypeAnnotations( "Smurf",
+                                   new Callback<Set<Annotation>>() {
+                                       @Override
+                                       public void callback( final Set<Annotation> annotations ) {
+                                           assertNotNull( annotations );
+                                           assertEquals( 0,
+                                                         annotations.size() );
+                                       }
+                                   } );
     }
 
 }

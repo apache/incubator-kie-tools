@@ -64,15 +64,20 @@ public interface AsyncPackageDataModelOracle {
 
     boolean isFactTypeRecognized( final String factType );
 
-    boolean isFactTypeAnEvent( final String factType );
+    void isFactTypeAnEvent( final String factType,
+                            final Callback<Boolean> callback );
 
-    TypeSource getTypeSource( final String factType );
+    void getTypeSource( final String factType,
+                        final Callback<TypeSource> callback );
 
-    String getSuperType( final String factType );
+    void getSuperType( final String factType,
+                       final Callback<String> callback );
 
-    Set<Annotation> getTypeAnnotations( final String factType );
+    void getTypeAnnotations( final String factType,
+                             final Callback<Set<Annotation>> callback );
 
-    Map<String, Set<Annotation>> getTypeFieldsAnnotations( final String factType );
+    void getTypeFieldsAnnotations( final String factType,
+                                   final Callback<Map<String, Set<Annotation>>> callback );
 
     //Field related methods
     void getFieldCompletions( final String factType,
@@ -91,22 +96,28 @@ public interface AsyncPackageDataModelOracle {
     String getParametricFieldType( final String factType,
                                    final String fieldName );
 
-    String[] getOperatorCompletions( final String factType,
-                                     final String fieldName );
+    void getOperatorCompletions( final String factType,
+                                 final String fieldName,
+                                 final Callback<String[]> callback );
 
-    String[] getConnectiveOperatorCompletions( final String factType,
-                                               final String fieldName );
+    void getConnectiveOperatorCompletions( final String factType,
+                                           final String fieldName,
+                                           final Callback<String[]> callback );
 
-    List<String> getMethodNames( final String factType );
+    void getMethodNames( final String factType,
+                         final Callback<List<String>> callback );
 
-    List<String> getMethodNames( final String factName,
-                                 final int i );
+    void getMethodNames( final String factName,
+                         final int i,
+                         final Callback<List<String>> callback );
 
-    List<String> getMethodParams( final String factType,
-                                  final String methodNameWithParams );
+    void getMethodParams( final String factType,
+                          final String methodNameWithParams,
+                          final Callback<List<String>> callback );
 
-    MethodInfo getMethodInfo( final String factName,
-                              final String methodName );
+    void getMethodInfo( final String factName,
+                        final String methodName,
+                        final Callback<MethodInfo> callback );
 
     // Global Variable related methods
     String[] getGlobalVariables();
@@ -115,9 +126,11 @@ public interface AsyncPackageDataModelOracle {
 
     boolean isGlobalVariable( final String variable );
 
-    ModelField[] getFieldCompletionsForGlobalVariable( final String variable );
+    void getFieldCompletionsForGlobalVariable( final String variable,
+                                               final Callback<ModelField[]> callback );
 
-    List<MethodInfo> getMethodInfosForGlobalVariable( final String variable );
+    void getMethodInfosForGlobalVariable( final String variable,
+                                          final Callback<List<MethodInfo>> callback );
 
     String[] getGlobalCollections();
 

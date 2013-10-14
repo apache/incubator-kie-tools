@@ -33,6 +33,9 @@ public class AsyncPackageDataModelOracleUtilities {
 
     public static void populateDataModelOracle( final AsyncPackageDataModelOracle oracle,
                                                 final PackageDataModelOracleIncrementalPayload payload ) {
+        if ( payload == null ) {
+            return;
+        }
         populate( oracle,
                   payload );
         oracle.filter();

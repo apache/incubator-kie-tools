@@ -125,12 +125,15 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
@@ -179,7 +182,10 @@ public class PackageDataModelSuperTypesTests {
         final PackageDataModelOracle packageLoader = dataModelService.getDataModel( packagePath );
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
@@ -198,11 +204,29 @@ public class PackageDataModelSuperTypesTests {
         assertContains( "Bean4",
                         oracle.getFactTypes() );
 
-        assertNull( oracle.getSuperType( "Bean1" ) );
-        assertEquals( "Bean1",
-                      oracle.getSuperType( "Bean2" ) );
-        assertEquals( "t2p2.Bean3",
-                      oracle.getSuperType( "Bean4" ) );
+        oracle.getSuperType( "Bean1",
+                             new Callback<String>() {
+                                 @Override
+                                 public void callback( final String result ) {
+                                     assertNull( result );
+                                 }
+                             } );
+        oracle.getSuperType( "Bean2",
+                             new Callback<String>() {
+                                 @Override
+                                 public void callback( final String result ) {
+                                     assertEquals( "Bean1",
+                                                   result );
+                                 }
+                             } );
+        oracle.getSuperType( "Bean4",
+                             new Callback<String>() {
+                                 @Override
+                                 public void callback( final String result ) {
+                                     assertEquals( "t2p2.Bean3",
+                                                   result );
+                                 }
+                             } );
     }
 
     @Test
@@ -220,7 +244,10 @@ public class PackageDataModelSuperTypesTests {
         final ProjectDataModelOracle packageLoader = dataModelService.getProjectDataModel( packagePath );
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
@@ -241,13 +268,37 @@ public class PackageDataModelSuperTypesTests {
         assertContains( "t2p1.Bean4",
                         oracle.getFactTypes() );
 
-        assertNull( oracle.getSuperType( "t2p1.Bean1" ) );
-        assertEquals( "t2p1.Bean1",
-                      oracle.getSuperType( "t2p1.Bean2" ) );
-        assertEquals( "t2p1.Bean1",
-                      oracle.getSuperType( "t2p2.Bean3" ) );
-        assertEquals( "t2p2.Bean3",
-                      oracle.getSuperType( "t2p1.Bean4" ) );
+        oracle.getSuperType( "t2p1.Bean1",
+                             new Callback<String>() {
+                                 @Override
+                                 public void callback( final String result ) {
+                                     assertNull( result );
+                                 }
+                             } );
+        oracle.getSuperType( "t2p1.Bean2",
+                             new Callback<String>() {
+                                 @Override
+                                 public void callback( final String result ) {
+                                     assertEquals( "t2p1.Bean1",
+                                                   result );
+                                 }
+                             } );
+        oracle.getSuperType( "t2p2.Bean3",
+                             new Callback<String>() {
+                                 @Override
+                                 public void callback( final String result ) {
+                                     assertEquals( "t2p1.Bean1",
+                                                   result );
+                                 }
+                             } );
+        oracle.getSuperType( "t2p1.Bean4",
+                             new Callback<String>() {
+                                 @Override
+                                 public void callback( final String result ) {
+                                     assertEquals( "t2p2.Bean3",
+                                                   result );
+                                 }
+                             } );
     }
 
 }

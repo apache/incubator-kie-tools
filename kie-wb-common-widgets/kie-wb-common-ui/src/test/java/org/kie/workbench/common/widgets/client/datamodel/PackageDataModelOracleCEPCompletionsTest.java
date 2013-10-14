@@ -8,10 +8,13 @@ import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
@@ -53,7 +56,10 @@ public class PackageDataModelOracleCEPCompletionsTest {
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
 
         //Emulate server-to-client conversions
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl();
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( packageLoader.getPackageName() );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
@@ -72,76 +78,85 @@ public class PackageDataModelOracleCEPCompletionsTest {
         PackageDataModelOracleTestUtils.assertContains( "AnEvent",
                                                         types );
 
-        String[] notAnEventDateFieldOperators = oracle.getOperatorCompletions( "NotAnEvent",
-                                                                               "dateField" );
-        assertEquals( 13,
-                      notAnEventDateFieldOperators.length );
-        assertEquals( notAnEventDateFieldOperators[ 0 ],
-                      "==" );
-        assertEquals( notAnEventDateFieldOperators[ 1 ],
-                      "!=" );
-        assertEquals( notAnEventDateFieldOperators[ 2 ],
-                      "<" );
-        assertEquals( notAnEventDateFieldOperators[ 3 ],
-                      ">" );
-        assertEquals( notAnEventDateFieldOperators[ 4 ],
-                      "<=" );
-        assertEquals( notAnEventDateFieldOperators[ 5 ],
-                      ">=" );
-        assertEquals( notAnEventDateFieldOperators[ 6 ],
-                      "== null" );
-        assertEquals( notAnEventDateFieldOperators[ 7 ],
-                      "!= null" );
-        assertEquals( notAnEventDateFieldOperators[ 8 ],
-                      "in" );
-        assertEquals( notAnEventDateFieldOperators[ 9 ],
-                      "not in" );
-        assertEquals( notAnEventDateFieldOperators[ 10 ],
-                      "after" );
-        assertEquals( notAnEventDateFieldOperators[ 11 ],
-                      "before" );
-        assertEquals( notAnEventDateFieldOperators[ 12 ],
-                      "coincides" );
+        oracle.getOperatorCompletions( "NotAnEvent",
+                                       "dateField",
+                                       new Callback<String[]>() {
+                                           @Override
+                                           public void callback( final String[] notAnEventDateFieldOperators ) {
+                                               assertEquals( 13,
+                                                             notAnEventDateFieldOperators.length );
+                                               assertEquals( notAnEventDateFieldOperators[ 0 ],
+                                                             "==" );
+                                               assertEquals( notAnEventDateFieldOperators[ 1 ],
+                                                             "!=" );
+                                               assertEquals( notAnEventDateFieldOperators[ 2 ],
+                                                             "<" );
+                                               assertEquals( notAnEventDateFieldOperators[ 3 ],
+                                                             ">" );
+                                               assertEquals( notAnEventDateFieldOperators[ 4 ],
+                                                             "<=" );
+                                               assertEquals( notAnEventDateFieldOperators[ 5 ],
+                                                             ">=" );
+                                               assertEquals( notAnEventDateFieldOperators[ 6 ],
+                                                             "== null" );
+                                               assertEquals( notAnEventDateFieldOperators[ 7 ],
+                                                             "!= null" );
+                                               assertEquals( notAnEventDateFieldOperators[ 8 ],
+                                                             "in" );
+                                               assertEquals( notAnEventDateFieldOperators[ 9 ],
+                                                             "not in" );
+                                               assertEquals( notAnEventDateFieldOperators[ 10 ],
+                                                             "after" );
+                                               assertEquals( notAnEventDateFieldOperators[ 11 ],
+                                                             "before" );
+                                               assertEquals( notAnEventDateFieldOperators[ 12 ],
+                                                             "coincides" );
+                                           }
+                                       } );
 
-        String[] anEventThisOperators = oracle.getOperatorCompletions( "AnEvent",
-                                                                       "this" );
-        assertEquals( 17,
-                      anEventThisOperators.length );
-        assertEquals( anEventThisOperators[ 0 ],
-                      "==" );
-        assertEquals( anEventThisOperators[ 1 ],
-                      "!=" );
-        assertEquals( anEventThisOperators[ 2 ],
-                      "== null" );
-        assertEquals( anEventThisOperators[ 3 ],
-                      "!= null" );
-        assertEquals( anEventThisOperators[ 4 ],
-                      "after" );
-        assertEquals( anEventThisOperators[ 5 ],
-                      "before" );
-        assertEquals( anEventThisOperators[ 6 ],
-                      "coincides" );
-        assertEquals( anEventThisOperators[ 7 ],
-                      "during" );
-        assertEquals( anEventThisOperators[ 8 ],
-                      "finishes" );
-        assertEquals( anEventThisOperators[ 9 ],
-                      "finishedby" );
-        assertEquals( anEventThisOperators[ 10 ],
-                      "includes" );
-        assertEquals( anEventThisOperators[ 11 ],
-                      "meets" );
-        assertEquals( anEventThisOperators[ 12 ],
-                      "metby" );
-        assertEquals( anEventThisOperators[ 13 ],
-                      "overlaps" );
-        assertEquals( anEventThisOperators[ 14 ],
-                      "overlappedby" );
-        assertEquals( anEventThisOperators[ 15 ],
-                      "starts" );
-        assertEquals( anEventThisOperators[ 16 ],
-                      "startedby" );
-
+        oracle.getOperatorCompletions( "AnEvent",
+                                       "this",
+                                       new Callback<String[]>() {
+                                           @Override
+                                           public void callback( final String[] anEventThisOperators ) {
+                                               assertEquals( 17,
+                                                             anEventThisOperators.length );
+                                               assertEquals( anEventThisOperators[ 0 ],
+                                                             "==" );
+                                               assertEquals( anEventThisOperators[ 1 ],
+                                                             "!=" );
+                                               assertEquals( anEventThisOperators[ 2 ],
+                                                             "== null" );
+                                               assertEquals( anEventThisOperators[ 3 ],
+                                                             "!= null" );
+                                               assertEquals( anEventThisOperators[ 4 ],
+                                                             "after" );
+                                               assertEquals( anEventThisOperators[ 5 ],
+                                                             "before" );
+                                               assertEquals( anEventThisOperators[ 6 ],
+                                                             "coincides" );
+                                               assertEquals( anEventThisOperators[ 7 ],
+                                                             "during" );
+                                               assertEquals( anEventThisOperators[ 8 ],
+                                                             "finishes" );
+                                               assertEquals( anEventThisOperators[ 9 ],
+                                                             "finishedby" );
+                                               assertEquals( anEventThisOperators[ 10 ],
+                                                             "includes" );
+                                               assertEquals( anEventThisOperators[ 11 ],
+                                                             "meets" );
+                                               assertEquals( anEventThisOperators[ 12 ],
+                                                             "metby" );
+                                               assertEquals( anEventThisOperators[ 13 ],
+                                                             "overlaps" );
+                                               assertEquals( anEventThisOperators[ 14 ],
+                                                             "overlappedby" );
+                                               assertEquals( anEventThisOperators[ 15 ],
+                                                             "starts" );
+                                               assertEquals( anEventThisOperators[ 16 ],
+                                                             "startedby" );
+                                           }
+                                       } );
     }
 
     @Test
