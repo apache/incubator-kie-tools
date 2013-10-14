@@ -251,20 +251,20 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     /**
      * Returns fact's name from class type
-     * @param type
+     * @param factType
      * @return
      */
     @Override
-    public String getFactNameFromType( final String type ) {
-        if ( type == null ) {
+    public String getFactNameFromType( final String factType ) {
+        if ( factType == null ) {
             return null;
         }
-        if ( filteredModelFields.containsKey( type ) ) {
-            return type;
+        if ( filteredModelFields.containsKey( factType ) ) {
+            return factType;
         }
         for ( Map.Entry<String, ModelField[]> entry : filteredModelFields.entrySet() ) {
             for ( ModelField mf : entry.getValue() ) {
-                if ( DataType.TYPE_THIS.equals( mf.getName() ) && type.equals( mf.getClassName() ) ) {
+                if ( DataType.TYPE_THIS.equals( mf.getName() ) && factType.equals( mf.getClassName() ) ) {
                     return entry.getKey();
                 }
             }
@@ -290,6 +290,10 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public void isFactTypeAnEvent( final String factType,
                                    final Callback<Boolean> callback ) {
+        if ( factType == null ) {
+            callback.callback( false );
+            return;
+        }
         final Boolean isFactTypeAnEvent = filteredEventTypes.get( factType );
 
         //Load incremental content
