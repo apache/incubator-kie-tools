@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.template.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -28,6 +27,7 @@ import javax.inject.Named;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleModelVisitor;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -43,8 +43,6 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
@@ -53,6 +51,8 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -157,9 +157,10 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             final TemplateModel model = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        new HashSet<String>() );
+                                                        visitor.getConsumedModelClasses() );
 
             return new GuidedTemplateEditorContent( model,
                                                     dataModel );

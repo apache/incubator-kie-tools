@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -46,8 +45,6 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
@@ -56,6 +53,8 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -170,9 +169,10 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             final RuleModel model = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        new HashSet<String>() );
+                                                        visitor.getConsumedModelClasses() );
 
             return new GuidedEditorContent( model,
                                             dataModel );
@@ -187,7 +187,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
         final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.uberfire.java.nio.file.Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                            FILTER_DSLS );
+                                                                                                         FILTER_DSLS );
         for ( final org.uberfire.java.nio.file.Path dslPath : dslPaths ) {
             final String dslDefinition = ioService.readAllString( dslPath );
             dsls.add( dslDefinition );
@@ -201,7 +201,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
         final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         final Collection<org.uberfire.java.nio.file.Path> globalPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                               FILTER_GLOBALS );
+                                                                                                            FILTER_GLOBALS );
         for ( final org.uberfire.java.nio.file.Path globalPath : globalPaths ) {
             final String globalDefinition = ioService.readAllString( globalPath );
             globals.add( globalDefinition );
