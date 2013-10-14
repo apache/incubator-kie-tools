@@ -46,8 +46,6 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
@@ -56,6 +54,8 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -164,9 +164,10 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
             final GuidedDecisionTable52 model = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            final GuidedDecisionTableModelVisitor visitor = new GuidedDecisionTableModelVisitor( model );
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        new HashSet<String>() );
+                                                        visitor.getConsumedModelClasses() );
             final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
 
             return new GuidedDecisionTableEditorContent( model,
@@ -183,6 +184,7 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
         try {
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            //There are no classes to pre-load into the DMO when requesting a new Data Model only
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
                                                         new HashSet<String>() );
