@@ -21,8 +21,8 @@ import java.util.Set;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class GuidedDecisionTableEditorContent {

@@ -16,11 +16,10 @@
 
 package org.drools.workbench.screens.guided.rule.model;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class GuidedEditorContent {

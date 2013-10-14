@@ -2,8 +2,8 @@ package org.drools.workbench.screens.testscenario.model;
 
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class TestScenarioModelContent {

@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.template.model;
 
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Container for data needed to edit a Guided Template
