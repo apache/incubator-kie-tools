@@ -72,7 +72,7 @@ public class VerifyFactWidget extends Composite {
                                                HasHorizontalAlignment.ALIGN_CENTER,
                                                HasVerticalAlignment.ALIGN_MIDDLE );
         outer.setStyleName( "modeller-fact-pattern-Widget" ); //NON-NLS
-        this.oracle = this.oracle;
+        this.oracle = oracle;
         this.scenario = sc;
         this.executionTrace = executionTrace;
         HorizontalPanel ab = new HorizontalPanel();

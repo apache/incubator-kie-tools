@@ -233,9 +233,11 @@ public class ScenarioTestEditorServiceImpl
             final String packageName = projectService.resolvePackage( path ).getPackageName();
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+            final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor(dataModel,scenario);
+
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        new HashSet<String>() );
+                                                        visitor.visit());
 
             return new TestScenarioModelContent( scenario,
                                                  packageName,
