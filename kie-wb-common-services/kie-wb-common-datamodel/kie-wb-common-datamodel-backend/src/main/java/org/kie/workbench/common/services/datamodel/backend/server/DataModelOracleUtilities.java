@@ -192,7 +192,8 @@ public class DataModelOracleUtilities {
                                           final Set<String> usedFullyQualifiedClassNames ) {
         dataModel.setProjectName( oracle.getProjectName() );
         dataModel.setPackageName( oracle.getPackageName() );
-        dataModel.setModelFields( setupModelFields( oracle.getProjectModelFields() ) );
+        dataModel.setModelFields( setupModelFields( usedFullyQualifiedClassNames,
+                                                    oracle.getProjectModelFields() ) );
         dataModel.setFieldParametersType( filterFieldParametersTypes( usedFullyQualifiedClassNames,
                                                                       oracle.getProjectFieldParametersType() ) );
         dataModel.setEventTypes( filterEventTypes( usedFullyQualifiedClassNames,
@@ -244,12 +245,18 @@ public class DataModelOracleUtilities {
     }
 
     //Setup Model Fields for lazy loading client-side
-    private static Map<String, ModelField[]> setupModelFields( final Map<String, ModelField[]> projectModelFields ) {
+    private static Map<String, ModelField[]> setupModelFields( final Set<String> usedFullyQualifiedClassNames,
+                                                               final Map<String, ModelField[]> projectModelFields ) {
         final Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
         for ( Map.Entry<String, ModelField[]> e : projectModelFields.entrySet() ) {
             final String mfQualifiedType = e.getKey();
-            scopedModelFields.put( mfQualifiedType,
-                                   null );
+            if ( usedFullyQualifiedClassNames.contains( mfQualifiedType ) ) {
+                scopedModelFields.put( mfQualifiedType,
+                                       e.getValue() );
+            } else {
+                scopedModelFields.put( mfQualifiedType,
+                                       null );
+            }
         }
         return scopedModelFields;
     }
