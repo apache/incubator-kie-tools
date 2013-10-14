@@ -39,11 +39,11 @@ import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Default implementation of DataModelOracle

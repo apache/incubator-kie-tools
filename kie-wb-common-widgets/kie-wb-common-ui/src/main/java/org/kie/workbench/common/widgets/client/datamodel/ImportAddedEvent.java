@@ -1,7 +1,7 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import org.drools.workbench.models.datamodel.imports.Import;
-import org.kie.commons.validation.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * An event signalling adding an import

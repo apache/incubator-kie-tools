@@ -27,11 +27,11 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  *

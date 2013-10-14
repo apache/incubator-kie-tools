@@ -10,10 +10,10 @@ import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.fs.file.SimpleFileSystemProvider;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
@@ -52,7 +52,7 @@ public class ProjectDataModelDeclaredTypesTests {
                                                                                                cc );
 
         final URL packageUrl = this.getClass().getResource( "/DataModelBackendDeclaredTypesTest1/src/main/java/t1p1" );
-        final org.kie.commons.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
+        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
         final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );
