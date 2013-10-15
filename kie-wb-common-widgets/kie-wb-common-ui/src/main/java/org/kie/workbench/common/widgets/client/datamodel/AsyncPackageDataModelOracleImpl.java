@@ -256,7 +256,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      */
     @Override
     public String getFactNameFromType( final String factType ) {
-        if ( factType == null ) {
+        if ( factType == null || factType.isEmpty() ) {
             return null;
         }
         if ( filteredModelFields.containsKey( factType ) ) {
@@ -290,7 +290,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public void isFactTypeAnEvent( final String factType,
                                    final Callback<Boolean> callback ) {
-        if ( factType == null ) {
+        if ( factType == null || factType.isEmpty() ) {
             callback.callback( false );
             return;
         }
