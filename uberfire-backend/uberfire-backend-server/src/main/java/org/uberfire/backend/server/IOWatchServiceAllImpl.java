@@ -6,15 +6,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.java.nio.base.WatchContext;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.security.impl.IdentityImpl;
@@ -43,6 +44,7 @@ public class IOWatchServiceAllImpl implements IOWatchService {
     @Inject
     private Paths paths;
 
+    private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
     private boolean isDisposed = false;
 
@@ -53,7 +55,14 @@ public class IOWatchServiceAllImpl implements IOWatchService {
         }
     }
 
-    public void addWatchService( final WatchService ws ) {
+    @Override
+    public boolean hasWatchService( final FileSystem fs ) {
+        return fileSystems.contains( fs );
+    }
+
+    public void addWatchService( final FileSystem fs,
+                                 final WatchService ws ) {
+        fileSystems.add( fs );
         watchServices.add( ws );
 
         new Thread( "IOWatchServiceAllImpl(" + ws.toString() + ")" ) {

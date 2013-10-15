@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.uberfire.commons.lock.LockService;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOService;
 import org.uberfire.io.IOWatchService;
@@ -60,10 +61,9 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.commons.lock.LockService;
 
-import static org.uberfire.java.nio.file.StandardOpenOption.*;
 import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.java.nio.file.StandardOpenOption.*;
 
 public abstract class AbstractIOService implements IOService {
 
@@ -223,8 +223,8 @@ public abstract class AbstractIOService implements IOService {
             return fs;
         }
 
-        if ( ioWatchService != null ) {
-            ioWatchService.addWatchService( fs.newWatchService() );
+        if ( ioWatchService != null && !ioWatchService.hasWatchService( fs ) ) {
+            ioWatchService.addWatchService( fs, fs.newWatchService() );
         }
 
         synchronized ( this ) {
