@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;

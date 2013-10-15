@@ -18,7 +18,6 @@ package org.drools.workbench.screens.testscenario.client;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Fixture;

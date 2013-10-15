@@ -29,7 +29,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DeleteColumnAuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DeleteRowAuditLogEntry;

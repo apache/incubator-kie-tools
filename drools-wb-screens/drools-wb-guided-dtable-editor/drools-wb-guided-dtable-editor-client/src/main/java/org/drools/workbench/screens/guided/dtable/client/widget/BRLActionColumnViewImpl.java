@@ -22,7 +22,6 @@ import java.util.Map;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;

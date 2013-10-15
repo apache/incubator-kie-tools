@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;

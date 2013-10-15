@@ -17,7 +17,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;

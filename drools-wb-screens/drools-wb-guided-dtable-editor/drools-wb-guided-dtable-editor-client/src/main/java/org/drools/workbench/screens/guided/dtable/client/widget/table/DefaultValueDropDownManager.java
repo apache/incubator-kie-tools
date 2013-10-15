@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;

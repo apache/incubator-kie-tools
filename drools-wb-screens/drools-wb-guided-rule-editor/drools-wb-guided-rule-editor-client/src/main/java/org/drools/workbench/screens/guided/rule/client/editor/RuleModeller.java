@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
