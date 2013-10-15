@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
@@ -18,64 +17,56 @@ public class TestScenarioModelVisitor {
     private final Scenario scenario;
     private HashSet<String> fqcNames = new HashSet<String>();
 
-    public TestScenarioModelVisitor(PackageDataModelOracleBaselinePayload dmo,
-            Scenario scenario) {
+    public TestScenarioModelVisitor( PackageDataModelOracleBaselinePayload dmo,
+                                     Scenario scenario ) {
         this.dmo = dmo;
         this.scenario = scenario;
     }
 
     public HashSet<String> visit() {
 
-        visitImports();
-
-        visit(scenario.getFixtures());
+        visit( scenario.getFixtures() );
 
         return fqcNames;
 
     }
 
-    private void visit(List<Fixture> fixtures) {
-        for (Fixture fixture : fixtures) {
-            visit(fixture);
+    private void visit( List<Fixture> fixtures ) {
+        for ( Fixture fixture : fixtures ) {
+            visit( fixture );
         }
     }
 
-    private void visit(Fixture fixture) {
+    private void visit( Fixture fixture ) {
         //TODO: -Rikkola-
         //        /CallFixtureMap?
         // Expectation?
-        if (fixture instanceof FixtureList) {
-            for (Fixture child : ((FixtureList) fixture)) {
-                visit(child);
+        if ( fixture instanceof FixtureList ) {
+            for ( Fixture child : ( (FixtureList) fixture ) ) {
+                visit( child );
             }
-        } else if (fixture instanceof FixturesMap) {
-            for (Fixture child : ((FixturesMap) fixture).values()) {
-                visit(child);
+        } else if ( fixture instanceof FixturesMap ) {
+            for ( Fixture child : ( (FixturesMap) fixture ).values() ) {
+                visit( child );
             }
-        } else if (fixture instanceof FactData) {
-            convertToFullyQualifiedClassName(((FactData) fixture).getType());
+        } else if ( fixture instanceof FactData ) {
+            convertToFullyQualifiedClassName( ( (FactData) fixture ).getType() );
         }
 
-    }
-
-    private void visitImports() {
-        for (Import i : scenario.getImports().getImports()) {
-            fqcNames.add(i.getType());
-        }
     }
 
     //Get the fully qualified class name of the fact type
-    private void convertToFullyQualifiedClassName(final String factType) {
+    private void convertToFullyQualifiedClassName( final String factType ) {
         String fullyQualifiedClassName = null;
-        for (Import imp : scenario.getImports().getImports()) {
-            if (imp.getType().endsWith(factType)) {
+        for ( Import imp : scenario.getImports().getImports() ) {
+            if ( imp.getType().endsWith( factType ) ) {
                 fullyQualifiedClassName = imp.getType();
                 break;
             }
         }
-        if (fullyQualifiedClassName == null) {
+        if ( fullyQualifiedClassName == null ) {
             fullyQualifiedClassName = scenario.getPackageName() + "." + factType;
         }
-        fqcNames.add(fullyQualifiedClassName);
+        fqcNames.add( fullyQualifiedClassName );
     }
 }
