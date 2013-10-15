@@ -239,12 +239,8 @@ public class ProjectScreenPresenter
 
     private void makeMenuBar() {
         menus = MenuFactory
-                .newTopLevelMenu( CommonConstants.INSTANCE.File() )
-                .menus()
-                .menu( CommonConstants.INSTANCE.Save() )
+                .newTopLevelMenu( CommonConstants.INSTANCE.Save() )
                 .respondsWith( getSaveCommand() )
-                .endMenu()
-                .endMenus()
                 .endMenu()
                 .newTopLevelMenu( ProjectEditorResources.CONSTANTS.BuildAndDeploy() )
                 .respondsWith( new Command() {
