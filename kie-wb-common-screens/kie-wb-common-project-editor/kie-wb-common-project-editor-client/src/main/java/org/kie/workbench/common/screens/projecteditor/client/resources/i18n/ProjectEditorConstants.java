@@ -130,6 +130,12 @@ public interface ProjectEditorConstants
     
     String XMLMarkIsNotAllowed();
 
+    String GroupIdMissing();
+
+    String ArtifactIdMissing();
+
+    String VersionIdMissing();
+
     String ProjectScreen();
 
     String NewProject();
