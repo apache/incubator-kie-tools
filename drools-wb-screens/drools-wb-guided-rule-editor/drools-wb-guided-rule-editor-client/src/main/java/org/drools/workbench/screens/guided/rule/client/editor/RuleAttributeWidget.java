@@ -313,35 +313,6 @@ public class RuleAttributeWidget extends Composite {
         return box;
     }
 
-    private TextBox textBoxEditor( final RuleAttribute at,
-                                   final boolean isReadOnly ) {
-        final TextBox box = new TextBox();
-        box.setEnabled( !isReadOnly );
-        box.setVisibleLength( ( at.getValue().length() < 3 ) ? 3 : at.getValue().length() );
-        box.setText( at.getValue() );
-        box.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                at.setValue( box.getText() );
-            }
-        } );
-
-        if ( at.getAttributeName().equals( DATE_EFFECTIVE_ATTR ) || at.getAttributeName().equals( DATE_EXPIRES_ATTR ) ) {
-            if ( at.getValue() == null || "".equals( at.getValue() ) ) {
-                box.setText( "" );
-            }
-
-            box.setVisibleLength( 10 );
-        }
-
-        box.addKeyUpHandler( new KeyUpHandler() {
-            public void onKeyUp( KeyUpEvent event ) {
-                int length = box.getText().length();
-                box.setVisibleLength( length > 0 ? length : 1 );
-            }
-        } );
-        return box;
-    }
-
     private TextBox textBoxEditor( final RuleMetadata rm,
                                    final boolean isReadOnly ) {
         final TextBox box = new TextBox();

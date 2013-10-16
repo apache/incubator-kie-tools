@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -167,6 +168,26 @@ public class AttributeSelectorPopup extends FormStylePopup {
         addbutton.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
+
+                //Check MetaData has a name
+                final String metaData = box.getText().trim();
+                if ( metaData.isEmpty() ) {
+                    Window.alert( Constants.INSTANCE.MetadataNameEmpty() );
+                    return;
+                }
+
+                //Check MetaData is unique
+                boolean isUnique = true;
+                for ( RuleMetadata rm : model.metadataList ) {
+                    if ( rm.getAttributeName().equals( metaData ) ) {
+                        isUnique = false;
+                        break;
+                    }
+                }
+                if ( !isUnique ) {
+                    Window.alert( Constants.INSTANCE.MetadataNotUnique0( metaData ) );
+                    return;
+                }
 
                 model.addMetadata( new RuleMetadata( box.getText(),
                                                      "" ) );

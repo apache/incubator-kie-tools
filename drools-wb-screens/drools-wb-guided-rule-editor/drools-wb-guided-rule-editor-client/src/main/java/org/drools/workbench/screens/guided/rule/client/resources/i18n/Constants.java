@@ -320,4 +320,9 @@ public interface Constants
     String UseDSL();
 
     String EXTENDS();
+
+    String MetadataNameEmpty();
+
+    String MetadataNotUnique0( String metadata );
+
 }
