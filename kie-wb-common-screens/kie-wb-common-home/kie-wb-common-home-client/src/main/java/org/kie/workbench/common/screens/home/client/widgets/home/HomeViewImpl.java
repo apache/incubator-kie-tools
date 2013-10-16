@@ -118,7 +118,7 @@ public class HomeViewImpl extends Composite
         }
 
         int cols = columns.getWidgetCount();
-        int colSize = (1170 / cols);
+        int colSize = (cols > 0 ? (1170 / cols) : 1170);
 
         int index = 0;
         for (Iterator<Widget> it = columns.iterator(); it.hasNext();) {

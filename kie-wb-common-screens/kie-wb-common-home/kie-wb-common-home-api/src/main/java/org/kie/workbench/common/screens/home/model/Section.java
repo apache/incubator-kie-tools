@@ -17,6 +17,7 @@ public class Section implements RuntimeResource {
 
     private final String heading;
     private final List<SectionEntry> entries = new ArrayList<SectionEntry>();
+    private Collection<String> roles = new ArrayList<String>();
 
     public Section( final String heading ) {
         this.heading = PortablePreconditions.checkNotNull( "heading",
@@ -36,6 +37,10 @@ public class Section implements RuntimeResource {
         return Collections.unmodifiableList( entries );
     }
 
+    public void setRoles(Collection<String> roles) {
+        this.roles = PortablePreconditions.checkNotNull("roles", roles);
+    }
+
     @Override
     public String getSignatureId() {
         return getClass().getName() + "#" + heading;
@@ -43,7 +48,7 @@ public class Section implements RuntimeResource {
 
     @Override
     public Collection<String> getRoles() {
-        return emptyList();
+        return roles;
     }
 
     @Override
