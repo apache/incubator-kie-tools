@@ -18,34 +18,41 @@ package org.kie.workbench.common.screens.explorer.backend.server;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.collect.Lists;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Files;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
+import org.kie.workbench.common.screens.explorer.service.Option;
+import org.kie.workbench.common.screens.explorer.utils.Sorters;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.security.Identity;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import static java.util.Collections.*;
 
 @Service
 @ApplicationScoped
@@ -96,10 +103,13 @@ public class ExplorerServiceImpl
     public ProjectExplorerContent getContent( final OrganizationalUnit organizationalUnit,
                                               final Repository repository,
                                               final Project project,
-                                              final Package pkg ) {
+                                              final Package pkg,
+                                              final FolderItem item,
+                                              final Set<Option> options ) {
         OrganizationalUnit selectedOrganizationalUnit = organizationalUnit;
         Repository selectedRepository = repository;
         Project selectedProject = project;
+        FolderItem selectedItem = item;
         Package selectedPackage = pkg;
 
         final Set<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
@@ -117,27 +127,78 @@ public class ExplorerServiceImpl
             selectedProject = ( projects.isEmpty() ? null : projects.iterator().next() );
         }
 
-        final Set<Package> packages = getPackages( selectedProject );
-        if ( !packages.contains( selectedPackage ) ) {
-            selectedPackage = ( packages.isEmpty() ? null : packages.iterator().next() );
+        if ( selectedOrganizationalUnit == null || selectedRepository == null ||
+                selectedProject == null ) {
+            return new ProjectExplorerContent(
+                    new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER ) {{
+                        addAll( organizationalUnits );
+                    }},
+                    selectedOrganizationalUnit,
+                    new TreeSet<Repository>( Sorters.REPOSITORY_SORTER ) {{
+                        addAll( repositories );
+                    }},
+                    selectedRepository,
+                    new TreeSet<Project>( Sorters.PROJECT_SORTER ) {{
+                        addAll( projects );
+                    }},
+                    selectedProject,
+                    new FolderListing( null, Collections.<FolderItem>emptyList(), Collections.<FolderItem>emptyList() )
+            );
         }
 
-        final Collection<FolderItem> items = getItems( selectedPackage );
+        FolderListing folderListing = null;
+        if ( selectedItem == null ) {
+            final List<FolderItem> segments;
+            if ( options.contains( Option.BUSINESS_CONTENT ) ) {
+                final Package defautlPackage;
+                if ( pkg == null ) {
+                    defautlPackage = projectService.resolveDefaultPackage( selectedProject );
+                    segments = Collections.emptyList();
+                } else {
+                    defautlPackage = pkg;
+                    segments = getPackageSegments( pkg );
+                }
+                folderListing = new FolderListing( toFolderItem( defautlPackage ),
+                                                   getItems( defautlPackage ),
+                                                   segments );
+            } else {
+                folderListing = getFolderListing( selectedProject.getRootPath() );
+            }
+        } else {
+            folderListing = getFolderListing( selectedItem, options );
+        }
 
-        final ProjectExplorerContent content = new ProjectExplorerContent( organizationalUnits,
-                                                                           selectedOrganizationalUnit,
-                                                                           repositories,
-                                                                           selectedRepository,
-                                                                           projects,
-                                                                           selectedProject,
-                                                                           packages,
-                                                                           selectedPackage,
-                                                                           items );
-        return content;
+        if ( selectedPackage != null && folderListing == null ) {
+            folderListing = new FolderListing( toFolderItem( selectedPackage ),
+                                               getItems( selectedPackage ),
+                                               getPackageSegments( pkg ) );
+        }
+
+        return new ProjectExplorerContent(
+                new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER ) {{
+                    addAll( organizationalUnits );
+                }},
+                selectedOrganizationalUnit,
+                new TreeSet<Repository>( Sorters.REPOSITORY_SORTER ) {{
+                    addAll( repositories );
+                }},
+                selectedRepository,
+                new TreeSet<Project>( Sorters.PROJECT_SORTER ) {{
+                    addAll( projects );
+                }},
+                selectedProject,
+                folderListing
+        );
     }
 
-    @Override
-    public Set<OrganizationalUnit> getOrganizationalUnits() {
+    private FolderItem toFolderItem( final Package pkg ) {
+        if ( pkg == null ) {
+            return null;
+        }
+        return new FolderItem( pkg, pkg.getRelativeCaption(), FolderItemType.FOLDER );
+    }
+
+    private Set<OrganizationalUnit> getOrganizationalUnits() {
         final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
         final Set<OrganizationalUnit> authorizedOrganizationalUnits = new HashSet<OrganizationalUnit>();
         for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
@@ -149,8 +210,7 @@ public class ExplorerServiceImpl
         return authorizedOrganizationalUnits;
     }
 
-    @Override
-    public Set<Repository> getRepositories( final OrganizationalUnit organizationalUnit ) {
+    private Set<Repository> getRepositories( final OrganizationalUnit organizationalUnit ) {
         final Set<Repository> authorizedRepositories = new HashSet<Repository>();
         if ( organizationalUnit == null ) {
             return authorizedRepositories;
@@ -166,8 +226,7 @@ public class ExplorerServiceImpl
         return authorizedRepositories;
     }
 
-    @Override
-    public Set<Project> getProjects( final Repository repository ) {
+    private Set<Project> getProjects( final Repository repository ) {
         final Set<Project> authorizedProjects = new HashSet<Project>();
         if ( repository == null ) {
             return authorizedProjects;
@@ -189,30 +248,33 @@ public class ExplorerServiceImpl
         return authorizedProjects;
     }
 
-    @Override
-    public Set<Package> getPackages( final Project project ) {
-        return projectService.resolvePackages(project);
-    }
-
-    @Override
-    public Collection<FolderItem> getItems( final Package pkg ) {
-        final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
+    private List<FolderItem> getItems( final Package pkg ) {
+        final List<FolderItem> folderItems = new ArrayList<FolderItem>();
         if ( pkg == null ) {
-            return folderItems;
+            return emptyList();
         }
+
+        final Set<Package> childPackages = projectService.resolvePackages( pkg );
+        for ( final Package childPackage : childPackages ) {
+            folderItems.add( toFolderItem( childPackage ) );
+        }
+
         folderItems.addAll( getItems( pkg.getPackageMainSrcPath() ) );
         folderItems.addAll( getItems( pkg.getPackageTestSrcPath() ) );
         folderItems.addAll( getItems( pkg.getPackageMainResourcesPath() ) );
         folderItems.addAll( getItems( pkg.getPackageTestResourcesPath() ) );
+
+        Collections.sort( folderItems, Sorters.ITEM_SORTER );
+
         return folderItems;
     }
 
-    private Collection<FolderItem> getItems( final Path packagePath ) {
-        final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
+    private List<FolderItem> getItems( final Path packagePath ) {
+        final List<FolderItem> folderItems = new ArrayList<FolderItem>();
         final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
         if ( Files.exists( nioPackagePath ) ) {
             final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
-                                                                                                               dotFileFilter );
+                                                                                                            dotFileFilter );
             for ( org.uberfire.java.nio.file.Path nioPath : nioPaths ) {
                 if ( Files.isRegularFile( nioPath ) ) {
                     final org.uberfire.backend.vfs.Path path = paths.convert( nioPath );
@@ -223,14 +285,25 @@ public class ExplorerServiceImpl
                 }
             }
         }
+
         return folderItems;
     }
 
     @Override
-    public FolderListing getFolderListing( final Path path ) {
+    public FolderListing getFolderListing( final FolderItem item,
+                                           final Set<Option> options ) {
+        if ( item.getItem() instanceof Path ) {
+            return getFolderListing( (Path) item.getItem() );
+        } else if ( item.getItem() instanceof Package ) {
+            return getFolderListing( (Package) item.getItem() );
+        }
 
+        return null;
+    }
+
+    private FolderListing getFolderListing( final Path path ) {
         //Get list of files and folders contained in the path
-        final Collection<FolderItem> folderItems = new HashSet<FolderItem>();
+        final List<FolderItem> folderItems = new ArrayList<FolderItem>();
 
         //Scan upwards until the path exists (as the current path could have been deleted)
         org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
@@ -238,9 +311,8 @@ public class ExplorerServiceImpl
             nioPath = nioPath.getParent();
         }
         final Path basePath = paths.convert( nioPath );
-        final Path baseParentPath = paths.convert( nioPath.getParent() );
         final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath,
-                                                                                                           dotFileFilter );
+                                                                                                        dotFileFilter );
         for ( org.uberfire.java.nio.file.Path np : nioPaths ) {
             if ( Files.isRegularFile( np ) ) {
                 final org.uberfire.backend.vfs.Path p = paths.convert( np );
@@ -257,38 +329,79 @@ public class ExplorerServiceImpl
             }
         }
 
-        //Get Path segments from the given Path back to the root
-        final List<Path> segments = getPathSegments( basePath );
+        Collections.sort( folderItems, Sorters.ITEM_SORTER );
 
-        return new FolderListing( basePath,
-                                  baseParentPath,
+        return new FolderListing( toFolderItem( nioPath ),
                                   folderItems,
-                                  segments );
+                                  getPathSegments( basePath ) );
     }
 
-    private List<Path> getPathSegments( final Path path ) {
-        org.uberfire.java.nio.file.Path nioSegmentPath = paths.convert( path );
+    private FolderListing getFolderListing( final Package pkg ) {
+        return new FolderListing( toFolderItem( pkg ),
+                                  getItems( pkg ),
+                                  getPackageSegments( pkg ) );
+    }
+
+    private List<FolderItem> getPathSegments( final Path path ) {
+        org.uberfire.java.nio.file.Path nioSegmentPath = paths.convert( path ).getParent();
         //We're not interested in the terminal segment prior to root (i.e. the Project name)
-        final int segmentCount = nioSegmentPath.getNameCount() - 1;
+        final int segmentCount = nioSegmentPath.getNameCount();
         if ( segmentCount < 1 ) {
-            return new ArrayList<Path>();
+            return new ArrayList<FolderItem>();
         }
         //Order from root to leaf (as we use getParent from the leaf we add them in reverse order)
-        final Path[] segments = new Path[ segmentCount ];
+        final FolderItem[] segments = new FolderItem[ segmentCount ];
         for ( int idx = segmentCount; idx > 0; idx-- ) {
-            segments[ idx - 1 ] = paths.convert( nioSegmentPath );
+            segments[ idx - 1 ] = toFolderItem( nioSegmentPath );
             nioSegmentPath = nioSegmentPath.getParent();
         }
         return Arrays.asList( segments );
     }
 
+    private List<FolderItem> getPackageSegments( final Package _pkg ) {
+
+        List<FolderItem> result = new ArrayList<FolderItem>();
+        Package pkg = _pkg;
+        while ( pkg != null ) {
+            final Package parent = projectService.resolveParentPackage( pkg );
+            if ( parent != null ) {
+                result.add( toFolderItem( parent ) );
+            }
+            pkg = parent;
+        }
+
+        return Lists.reverse( result );
+    }
+
+    private FolderItem toFolderItem( final org.uberfire.java.nio.file.Path path ) {
+        if ( Files.isRegularFile( path ) ) {
+            final org.uberfire.backend.vfs.Path p = paths.convert( path );
+            return new FolderItem( p,
+                                   p.getFileName(),
+                                   FolderItemType.FILE );
+        } else if ( Files.isDirectory( path ) ) {
+            final org.uberfire.backend.vfs.Path p = paths.convert( path );
+            return new FolderItem( p,
+                                   p.getFileName(),
+                                   FolderItemType.FOLDER );
+        }
+
+        return null;
+    }
+
     @Override
-    public Package resolvePackage( final Path path ) {
-        if ( path == null ) {
+    public Package resolvePackage( final FolderItem item ) {
+        if ( item == null ) {
             return null;
         }
-        final Package pkg = projectService.resolvePackage( path );
-        return pkg;
+        if ( item.getItem() instanceof Package ) {
+            return (Package) item.getItem();
+        }
+        if ( item.getItem() instanceof Path ) {
+            return projectService.resolvePackage( (Path) item.getItem() );
+        }
+
+        return null;
     }
 
 }

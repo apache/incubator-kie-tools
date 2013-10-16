@@ -13,13 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.workbench.common.screens.explorer.client.utils;
+package org.kie.workbench.common.screens.explorer.utils;
 
 import java.util.Comparator;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.vfs.Path;
@@ -81,7 +82,24 @@ public class Sorters {
         @Override
         public int compare( final FolderItem o1,
                             final FolderItem o2 ) {
-            return toLowerCase( o1.getPath() ).compareTo( toLowerCase( o2.getPath() ) );
+
+            if ( o1.getItem() instanceof Package && o2.getItem() instanceof Path ) {
+                return -1;
+            } else if ( o1.getItem() instanceof Path && o2.getItem() instanceof Package ) {
+                return 1;
+            }
+
+            if ( o1.getItem() instanceof Path ) {
+                if ( !o1.getType().equals( o2.getType() ) ) {
+                    if ( o1.getType().equals( FolderItemType.FOLDER ) ) {
+                        return -1;
+                    }
+                    return 1;
+                }
+                return toLowerCase( (Path) o1.getItem() ).compareTo( toLowerCase( (Path) o2.getItem() ) );
+            }
+
+            return ( (Package) o1.getItem() ).getCaption().toLowerCase().compareTo( ( (Package) o2.getItem() ).getCaption().toLowerCase() );
         }
     };
 
@@ -125,7 +143,11 @@ public class Sorters {
 
         public int compareTo( final FolderItem o1,
                               final FolderItem o2 ) {
-            return toLowerCase( o1.getPath() ).compareTo( toLowerCase( o2.getPath() ) );
+            if ( o1.getItem() instanceof Path ) {
+                return toLowerCase( (Path) o1.getItem() ).compareTo( toLowerCase( (Path) o2.getItem() ) );
+            }
+
+            return ( (Package) o1.getItem() ).getCaption().toLowerCase().compareTo( ( (Package) o2.getItem() ).getCaption().toLowerCase() );
         }
 
     };

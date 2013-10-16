@@ -16,6 +16,7 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:w="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
@@ -25,22 +26,7 @@
   <g:HTMLPanel visible="true">
     <div ui:field="businessView">
       <b:Well styleName="{resources.CSS.viewContainer}">
-        <p>
-          <g:InlineLabel text="{i18n.organizationalUnitColon}" styleName="{resources.CSS.label}"/>
-          <b:SplitDropdownButton ui:field="ddOrganizationalUnits" icon="GROUP" size="MINI"/>
-        </p>
-        <p>
-          <g:InlineLabel text="{i18n.repositoryColon}" styleName="{resources.CSS.label}"/>
-          <b:SplitDropdownButton ui:field="ddRepositories" icon="BUILDING" size="MINI"/>
-        </p>
-        <p>
-          <g:InlineLabel text="{i18n.projectColon}" styleName="{resources.CSS.label}"/>
-          <b:SplitDropdownButton ui:field="ddProjects" icon="DESKTOP" size="MINI"/>
-        </p>
-        <p>
-          <g:InlineLabel text="{i18n.packageColon}" styleName="{resources.CSS.label}"/>
-          <b:SplitDropdownButton ui:field="ddPackages" icon="FOLDER_OPEN" size="MINI"/>
-        </p>
+        <w:Explorer ui:field="explorer"/>
         <hr/>
         <b:WellNavList ui:field="itemsContainer"/>
       </b:Well>

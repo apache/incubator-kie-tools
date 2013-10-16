@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 /**
@@ -87,12 +88,15 @@ public class Classifier {
     }
 
     private ClientResourceType findResourceType( final FolderItem folderItem ) {
-        for ( ClientResourceType resourceType : resourceTypes ) {
-            if ( resourceType.accept( folderItem.getPath() ) ) {
-                return resourceType;
+        if ( folderItem.getItem() instanceof Path ) {
+            for ( ClientResourceType resourceType : resourceTypes ) {
+                if ( resourceType.accept( (Path) folderItem.getItem() ) ) {
+                    return resourceType;
+                }
             }
+            throw new IllegalArgumentException( "Unable to find ResourceType for " + ( (Path) folderItem.getItem() ).toURI() + ". Is AnyResourceType on the classpath?" );
         }
-        throw new IllegalArgumentException( "Unable to find ResourceType for " + folderItem.getPath().toURI() + ". Is AnyResourceType on the classpath?" );
+        throw new IllegalArgumentException( "Invalid FolderItem type." );
     }
 
 }

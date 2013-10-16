@@ -13,19 +13,34 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.workbench.common.screens.explorer.client.widgets.business;
+package org.kie.workbench.common.screens.explorer.client.widgets;
 
+import java.util.Set;
+
+import com.google.gwt.user.client.ui.HasVisibility;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.service.Option;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 
 /**
- * Business View Presenter definition
+ * Base for the different views
  */
-public interface BusinessViewPresenter extends BaseViewPresenter {
+public interface ViewPresenter extends HasVisibility {
+
+    void update( final Set<Option> options );
+
+    void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit );
+
+    void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
+                                         final Repository repository );
+
+    void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
+                                         final Repository repository,
+                                         final Project project );
 
     void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
                                          final Repository repository,
@@ -38,10 +53,16 @@ public interface BusinessViewPresenter extends BaseViewPresenter {
 
     void projectSelected( final Project project );
 
-    void packageSelected( final Package pkg );
+    void activeFolderItemSelected( final FolderItem folderItem );
 
     void itemSelected( final FolderItem folderItem );
 
     void refresh();
 
+    void loadContent( final FolderItem item,
+                      final Set<Option> options );
+
+    Set<Option> getActiveOptions();
+
+    FolderListing getActiveContent();
 }

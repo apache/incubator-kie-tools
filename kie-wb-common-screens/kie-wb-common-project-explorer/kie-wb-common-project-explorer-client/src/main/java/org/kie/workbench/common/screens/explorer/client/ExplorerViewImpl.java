@@ -19,13 +19,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
@@ -45,15 +41,6 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     }
 
     private static ExplorerViewImplBinder uiBinder = GWT.create( ExplorerViewImplBinder.class );
-
-    @UiField
-    Button btnBusinessView;
-
-    @UiField
-    Button btnTechnicalView;
-
-    @UiField
-    Button btnRefresh;
 
     @Inject
     private BusinessViewWidget businessView;
@@ -83,22 +70,6 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     public TechnicalViewWidget getTechnicalView() {
         return this.technicalView;
     }
-
-    @UiHandler("btnBusinessView")
-    public void onClickBusinessViewButton( final ClickEvent event ) {
-        presenter.selectBusinessView();
-    }
-
-    @UiHandler("btnTechnicalView")
-    public void onClickTechnicalViewButton( final ClickEvent event ) {
-        presenter.selectTechnicalView();
-    }
-
-    @UiHandler("btnRefresh")
-    public void onClickRefreshButton( final ClickEvent event ) {
-        presenter.refresh();
-    }
-
 
     @Override
     public void showBusyIndicator( final String message ) {

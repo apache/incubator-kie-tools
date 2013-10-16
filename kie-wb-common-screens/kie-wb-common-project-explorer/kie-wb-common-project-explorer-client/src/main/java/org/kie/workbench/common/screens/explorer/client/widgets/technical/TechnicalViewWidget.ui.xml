@@ -17,6 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:w="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.navigator"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
@@ -24,11 +25,7 @@
 
   <g:HTMLPanel visible="false">
     <div ui:field="technicalView">
-      <b:Well ui:field="breadCrumbs" styleName="{resources.CSS.viewContainer}">
-        <b:Breadcrumbs ui:field="breadcrumbs"/>
-        <hr/>
-        <b:NavList ui:field="items"/>
-      </b:Well>
+      <w:Explorer ui:field="explorer"/>
     </div>
   </g:HTMLPanel>
 

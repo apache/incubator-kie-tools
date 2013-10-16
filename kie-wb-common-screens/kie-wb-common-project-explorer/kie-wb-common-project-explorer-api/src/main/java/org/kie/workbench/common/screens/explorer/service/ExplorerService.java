@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.explorer.service;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -26,7 +26,6 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.vfs.Path;
 
 /**
  * Service definition for Explorer editor
@@ -37,20 +36,13 @@ public interface ExplorerService {
     ProjectExplorerContent getContent( final OrganizationalUnit organizationalUnit,
                                        final Repository repository,
                                        final Project project,
-                                       final Package pkg );
+                                       final Package pkg,
+                                       final FolderItem item,
+                                       final Set<Option> options );
 
-    Collection<OrganizationalUnit> getOrganizationalUnits();
+    FolderListing getFolderListing( final FolderItem item,
+                                    final Set<Option> options );
 
-    Collection<Repository> getRepositories( final OrganizationalUnit organizationalUnit );
-
-    Collection<Project> getProjects( final Repository repository );
-
-    Collection<Package> getPackages( final Project project );
-
-    Collection<FolderItem> getItems( final Package pkg );
-
-    FolderListing getFolderListing( final Path path );
-
-    Package resolvePackage( final Path path );
+    Package resolvePackage( final FolderItem item );
 
 }

@@ -108,6 +108,20 @@ public class Utils {
         return !pkg.equals( activePackage );
     }
 
+    public static boolean hasFolderItemChanged( final FolderItem item,
+                                                final FolderItem activeItem ) {
+        if ( item == null && activeItem != null ) {
+            return true;
+        }
+        if ( item != null && activeItem == null ) {
+            return true;
+        }
+        if ( item == null && activeItem == null ) {
+            return false;
+        }
+        return !item.equals( activeItem );
+    }
+
     /**
      * Make a Folder Item representing a File
      * @param path
@@ -184,6 +198,22 @@ public class Utils {
         if ( Utils.isSibling( pkgTestResourcesPath,
                               projectRootPath ) ) {
             return true;
+        }
+        return false;
+    }
+
+    public static boolean isInFolderItem( final FolderItem folderItem,
+                                          final Path resource ) {
+        if ( folderItem == null || folderItem.getItem() == null ) {
+            return false;
+        }
+        if ( !folderItem.getType().equals( FolderItemType.FOLDER ) ) {
+            return false;
+        }
+        if ( folderItem.getItem() instanceof Path ) {
+            return isLeaf( resource, (Path) folderItem.getItem() );
+        } else if ( folderItem.getItem() instanceof Package ) {
+            return isInPackage( (Package) folderItem.getItem(), resource );
         }
         return false;
     }

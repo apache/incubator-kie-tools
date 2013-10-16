@@ -16,7 +16,6 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +31,6 @@ import com.github.gwtbootstrap.client.ui.Divider;
 import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.NavList;
-import com.github.gwtbootstrap.client.ui.SplitDropdownButton;
 import com.github.gwtbootstrap.client.ui.WellNavList;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,13 +40,19 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
-import org.kie.workbench.common.screens.explorer.client.utils.Sorters;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
+import org.kie.workbench.common.screens.explorer.client.widgets.View;
+import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
+import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.screens.explorer.service.Option;
+import org.kie.workbench.common.screens.explorer.utils.Sorters;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.BusyPopup;
@@ -59,7 +63,7 @@ import org.uberfire.client.workbench.type.ClientResourceType;
  * Business View implementation
  */
 @ApplicationScoped
-public class BusinessViewWidget extends Composite implements BusinessView {
+public class BusinessViewWidget extends Composite implements View {
 
     interface BusinessViewImplBinder
             extends
@@ -72,16 +76,7 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     private static final String MISCELLANEOUS = "Miscellaneous";
 
     @UiField
-    SplitDropdownButton ddOrganizationalUnits;
-
-    @UiField
-    SplitDropdownButton ddRepositories;
-
-    @UiField
-    SplitDropdownButton ddProjects;
-
-    @UiField
-    SplitDropdownButton ddPackages;
+    Explorer explorer;
 
     @UiField
     WellNavList itemsContainer;
@@ -90,13 +85,19 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     Classifier classifier;
 
     //TreeSet sorts members upon insertion
-    private final Set<OrganizationalUnit> sortedOrganizationalUnits = new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER );
-    private final Set<Repository> sortedRepositories = new TreeSet<Repository>( Sorters.REPOSITORY_SORTER );
-    private final Set<Project> sortedProjects = new TreeSet<Project>( Sorters.PROJECT_SORTER );
-    private final Set<Package> sortedPackages = new TreeSet<Package>( Sorters.PACKAGE_SORTER );
     private final Set<FolderItem> sortedFolderItems = new TreeSet<FolderItem>( Sorters.ITEM_SORTER );
 
-    private BusinessViewPresenter presenter;
+    private final NavigatorOptions businessOptions = new NavigatorOptions() {{
+        showFiles( false );
+        showHiddenFiles( false );
+        showDirectories( true );
+        allowUpLink( false );
+        showItemAge( false );
+        showItemMessage( false );
+        showItemLastUpdater( false );
+    }};
+
+    private ViewPresenter presenter;
 
     @PostConstruct
     public void init() {
@@ -105,8 +106,9 @@ public class BusinessViewWidget extends Composite implements BusinessView {
     }
 
     @Override
-    public void init( final BusinessViewPresenter presenter ) {
+    public void init( final ViewPresenter presenter ) {
         this.presenter = presenter;
+        explorer.init( Explorer.Mode.COLLAPSED, businessOptions, Explorer.NavType.TREE, presenter );
     }
 
     @Override
@@ -116,177 +118,25 @@ public class BusinessViewWidget extends Composite implements BusinessView {
                             final Repository repository,
                             final Set<Project> projects,
                             final Project project,
-                            final Set<Package> packages,
-                            final Package pkg,
-                            final Collection<FolderItem> items ) {
-        setOrganizationalUnits( organizationalUnits,
-                                organizationalUnit );
-        setRepositories( repositories,
-                         repository );
-        setProjects( projects,
-                     project );
-        setPackages( packages,
-                     pkg );
-        setItems( items );
-    }
-
-    private void setOrganizationalUnits( final Collection<OrganizationalUnit> organizationalUnits,
-                                         final OrganizationalUnit selectedOrganizationalUnit ) {
-        ddOrganizationalUnits.clear();
-        if ( !organizationalUnits.isEmpty() ) {
-            sortedOrganizationalUnits.clear();
-            sortedOrganizationalUnits.addAll( organizationalUnits );
-
-            for ( OrganizationalUnit organizationalUnit : sortedOrganizationalUnits ) {
-                ddOrganizationalUnits.add( makeOrganizationalUnitNavLink( organizationalUnit ) );
-            }
-
-            ddOrganizationalUnits.setText( selectedOrganizationalUnit.getName() );
-            ddOrganizationalUnits.getTriggerWidget().setEnabled( true );
-
-        } else {
-            setItems( Collections.EMPTY_LIST );
-            ddOrganizationalUnits.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddOrganizationalUnits.getTriggerWidget().setEnabled( false );
-            ddRepositories.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddRepositories.getTriggerWidget().setEnabled( false );
-            ddProjects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddProjects.getTriggerWidget().setEnabled( false );
-            ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddPackages.getTriggerWidget().setEnabled( false );
-        }
-    }
-
-    private IsWidget makeOrganizationalUnitNavLink( final OrganizationalUnit organizationalUnit ) {
-        final NavLink navLink = new NavLink( organizationalUnit.getName() );
-        navLink.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                ddOrganizationalUnits.setText( organizationalUnit.getName() );
-                presenter.organizationalUnitSelected( organizationalUnit );
-            }
-        } );
-        return navLink;
-    }
-
-    private void setRepositories( final Collection<Repository> repositories,
-                                  final Repository selectedRepository ) {
-        ddRepositories.clear();
-
-        if ( !repositories.isEmpty() ) {
-            sortedRepositories.clear();
-            sortedRepositories.addAll( repositories );
-
-            for ( Repository repository : sortedRepositories ) {
-                ddRepositories.add( makeRepositoryNavLink( repository ) );
-            }
-
-            ddRepositories.setText( selectedRepository.getAlias() );
-            ddRepositories.getTriggerWidget().setEnabled( true );
-
-        } else {
-            setItems( Collections.EMPTY_LIST );
-            ddRepositories.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddRepositories.getTriggerWidget().setEnabled( false );
-            ddProjects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddProjects.getTriggerWidget().setEnabled( false );
-            ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddPackages.getTriggerWidget().setEnabled( false );
-        }
-    }
-
-    private IsWidget makeRepositoryNavLink( final Repository repository ) {
-        final NavLink navLink = new NavLink( repository.getAlias() );
-        navLink.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                ddRepositories.setText( repository.getAlias() );
-                presenter.repositorySelected( repository );
-            }
-        } );
-        return navLink;
-    }
-
-    private void setProjects( final Collection<Project> projects,
-                              final Project selectedProject ) {
-        ddProjects.clear();
-
-        if ( !projects.isEmpty() ) {
-            sortedProjects.clear();
-            sortedProjects.addAll( projects );
-
-            for ( Project project : sortedProjects ) {
-                ddProjects.add( makeProjectNavLink( project ) );
-            }
-
-            ddProjects.setText( selectedProject.getProjectName() );
-            ddProjects.getTriggerWidget().setEnabled( true );
-
-        } else {
-            setItems( Collections.EMPTY_LIST );
-            ddProjects.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddProjects.getTriggerWidget().setEnabled( false );
-            ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddPackages.getTriggerWidget().setEnabled( false );
-        }
-    }
-
-    private IsWidget makeProjectNavLink( final Project project ) {
-        final NavLink navLink = new NavLink( project.getProjectName() );
-        navLink.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                ddProjects.setText( project.getProjectName() );
-                presenter.projectSelected( project );
-            }
-        } );
-        return navLink;
-    }
-
-    private void setPackages( final Collection<Package> packages,
-                              final Package selectedPackage ) {
-        ddPackages.clear();
-
-        if ( !packages.isEmpty() ) {
-            sortedPackages.clear();
-            sortedPackages.addAll( packages );
-
-            for ( Package pkg : sortedPackages ) {
-                ddPackages.add( makePackageNavLink( pkg ) );
-            }
-
-            ddPackages.setText( selectedPackage.getCaption() );
-            ddPackages.getTriggerWidget().setEnabled( true );
-
-        } else {
-            setItems( Collections.EMPTY_LIST );
-            ddPackages.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );
-            ddPackages.getTriggerWidget().setEnabled( false );
-        }
-    }
-
-    private IsWidget makePackageNavLink( final Package pkg ) {
-        final NavLink navLink = new NavLink( pkg.getCaption() );
-        navLink.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick( ClickEvent event ) {
-                ddPackages.setText( pkg.getCaption() );
-                presenter.packageSelected( pkg );
-            }
-        } );
-        return navLink;
+                            final FolderListing folderListing ) {
+        explorer.setupHeader( organizationalUnits, organizationalUnit,
+                              repositories, repository,
+                              projects, project );
+        explorer.loadContent( folderListing );
+        setItems( folderListing );
     }
 
     @Override
-    public void setItems( final Collection<FolderItem> folderItems ) {
+    public void setItems( final FolderListing folderListing ) {
         itemsContainer.clear();
         sortedFolderItems.clear();
-        sortedFolderItems.addAll( folderItems );
-        if ( !folderItems.isEmpty() ) {
+        for ( final FolderItem content : folderListing.getContent() ) {
+            if ( !content.getType().equals( FolderItemType.FOLDER ) ) {
+                sortedFolderItems.add( content );
+            }
+        }
+
+        if ( !sortedFolderItems.isEmpty() ) {
             final Map<ClientResourceType, Collection<FolderItem>> resourceTypeGroups = classifier.group( sortedFolderItems );
             final TreeMap<ClientResourceType, Collection<FolderItem>> sortedResourceTypeGroups = new TreeMap<ClientResourceType, Collection<FolderItem>>( Sorters.RESOURCE_TYPE_GROUP_SORTER );
             sortedResourceTypeGroups.putAll( resourceTypeGroups );
@@ -318,6 +168,20 @@ public class BusinessViewWidget extends Composite implements BusinessView {
         } else {
             itemsContainer.add( new Label( ProjectExplorerConstants.INSTANCE.noItemsExist() ) );
         }
+    }
+
+    @Override
+    public void setOptions( final Set<Option> options ) {
+        if ( options.contains( Option.TREE_NAVIGATOR ) ) {
+            explorer.setNavType( Explorer.NavType.TREE, businessOptions );
+        } else {
+            explorer.setNavType( Explorer.NavType.BREADCRUMB, businessOptions );
+        }
+    }
+
+    @Override
+    public Explorer getExplorer() {
+        return explorer;
     }
 
     private CollapseTrigger makeTriggerWidget( final ClientResourceType resourceType ) {

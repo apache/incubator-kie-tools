@@ -15,12 +15,11 @@
  */
 package org.kie.workbench.common.screens.explorer.model;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.backend.vfs.Path;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * The contents of a folder
@@ -28,43 +27,63 @@ import org.uberfire.backend.vfs.Path;
 @Portable
 public class FolderListing {
 
-    private Path path;
-    private Path parentPath;
-    private Collection<FolderItem> folderItems;
-    private List<Path> segments;
+    private FolderItem item;
+    private List<FolderItem> content;
+    private List<FolderItem> segments;
 
     public FolderListing() {
         //For Errai-marshalling
     }
 
-    public FolderListing( final Path path,
-                          final Path parentPath,
-                          final Collection<FolderItem> folderItems,
-                          final List<Path> segments ) {
-        this.path = PortablePreconditions.checkNotNull( "path",
-                                                        path );
-        this.parentPath = PortablePreconditions.checkNotNull( "parentPath",
-                                                              parentPath );
-        this.folderItems = PortablePreconditions.checkNotNull( "folderItems",
-                                                               folderItems );
-        this.segments = PortablePreconditions.checkNotNull( "segments",
-                                                            segments );
+    public FolderListing( final FolderItem item,
+                          final List<FolderItem> content,
+                          final List<FolderItem> segments ) {
+        this.item = item;
+        this.content = checkNotNull( "content", content );
+        this.segments = checkNotNull( "segments", segments );
     }
 
-    public Path getPath() {
-        return path;
+    public FolderItem getItem() {
+        return item;
     }
 
-    public Path getParentPath() {
-        return parentPath;
+    public List<FolderItem> getContent() {
+        return content;
     }
 
-    public Collection<FolderItem> getFolderItems() {
-        return folderItems;
-    }
-
-    public List<Path> getSegments() {
+    public List<FolderItem> getSegments() {
         return segments;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof FolderListing ) ) {
+            return false;
+        }
+
+        FolderListing that = (FolderListing) o;
+
+        if ( content != null ? !content.equals( that.content ) : that.content != null ) {
+            return false;
+        }
+        if ( item != null ? !item.equals( that.item ) : that.item != null ) {
+            return false;
+        }
+        if ( segments != null ? !segments.equals( that.segments ) : that.segments != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = item != null ? item.hashCode() : 0;
+        result = 31 * result + ( content != null ? content.hashCode() : 0 );
+        result = 31 * result + ( segments != null ? segments.hashCode() : 0 );
+        return result;
+    }
 }

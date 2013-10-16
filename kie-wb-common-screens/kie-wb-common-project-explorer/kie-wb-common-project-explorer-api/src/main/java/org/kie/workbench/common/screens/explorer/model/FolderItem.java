@@ -16,8 +16,8 @@
 package org.kie.workbench.common.screens.explorer.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.backend.vfs.Path;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An item in a package
@@ -25,31 +25,29 @@ import org.uberfire.backend.vfs.Path;
 @Portable
 public class FolderItem {
 
-    private Path path;
-    private String fileName;
+    private Object item;
+    private String itemName;
     private FolderItemType type;
+    private String age;
 
     public FolderItem() {
         //For Errai-marshalling
     }
 
-    public FolderItem( final Path path,
-                       final String fileName,
+    public FolderItem( final Object item,
+                       final String itemName,
                        final FolderItemType type ) {
-        this.path = PortablePreconditions.checkNotNull( "path",
-                                                        path );
-        this.fileName = PortablePreconditions.checkNotNull( "fileName",
-                                                            fileName );
-        this.type = PortablePreconditions.checkNotNull( "type",
-                                                        type );
+        this.item = checkNotNull( "item", item );
+        this.itemName = checkNotNull( "itemName", itemName );
+        this.type = checkNotNull( "type", type );
     }
 
-    public Path getPath() {
-        return this.path;
+    public Object getItem() {
+        return item;
     }
 
     public String getFileName() {
-        return this.fileName;
+        return this.itemName;
     }
 
     public FolderItemType getType() {
@@ -67,23 +65,21 @@ public class FolderItem {
 
         FolderItem folderItem = (FolderItem) o;
 
-        if ( !path.equals( folderItem.path ) ) {
-            return false;
-        }
-        if ( !fileName.equals( folderItem.fileName ) ) {
-            return false;
-        }
-        if ( !type.equals( folderItem.type ) ) {
+        if ( !item.equals( folderItem.item ) ) {
             return false;
         }
 
-        return true;
+        if ( !itemName.equals( folderItem.itemName ) ) {
+            return false;
+        }
+
+        return type.equals( folderItem.type );
     }
 
     @Override
     public int hashCode() {
-        int result = path.hashCode();
-        result = 31 * result + fileName.hashCode();
+        int result = item.hashCode();
+        result = 31 * result + itemName.hashCode();
         result = 31 * result + type.hashCode();
         return result;
     }

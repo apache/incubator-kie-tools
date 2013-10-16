@@ -17,21 +17,13 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:eb="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.business"
              xmlns:et="urn:import:org.kie.workbench.common.screens.explorer.client.widgets.technical">
 
   <ui:with field="resources" type="org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources"/>
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
 
   <g:HTMLPanel>
     <div style="padding: 5px">
-      <b:ButtonGroup toggle="radio">
-        <b:Button text="{i18n.businessView}" ui:field="btnBusinessView" active="true"/>
-        <b:Button text="{i18n.technicalView}" ui:field="btnTechnicalView"/>
-      </b:ButtonGroup>
-      <b:Button title="{i18n.refresh}" ui:field="btnRefresh" icon="REFRESH"/>
-      <hr/>
       <eb:BusinessViewWidget/>
       <et:TechnicalViewWidget/>
     </div>
