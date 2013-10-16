@@ -1,11 +1,14 @@
 package org.uberfire.client.tree;
 
+import java.util.Iterator;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -185,6 +188,15 @@ public class TreeItem extends Composite {
         return (TreeItem) content.getWidget( i );
     }
 
+    public Iterable<TreeItem> getChildren() {
+        return new Iterable<TreeItem>() {
+            @Override
+            public Iterator<TreeItem> iterator() {
+                return new TreeItemIterator( content );
+            }
+        };
+    }
+
     void setTree( final Tree tree ) {
         this.tree = tree;
     }
@@ -251,6 +263,38 @@ public class TreeItem extends Composite {
             } else {
                 item.removeStyleName( NavigatorResources.INSTANCE.css().treeSelected() );
             }
+        }
+    }
+
+    public boolean isEmpty() {
+        return content.getWidgetCount() == 0;
+    }
+
+    protected static class TreeItemIterator implements Iterator<TreeItem> {
+
+        private final ComplexPanel container;
+        private int index = 0;
+
+        TreeItemIterator( ComplexPanel container ) {
+            this.container = container;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if ( container == null ) {
+                return false;
+            }
+            return index < container.getWidgetCount();
+        }
+
+        @Override
+        public TreeItem next() {
+            return (TreeItem) container.getWidget( index++ );
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
         }
     }
 }

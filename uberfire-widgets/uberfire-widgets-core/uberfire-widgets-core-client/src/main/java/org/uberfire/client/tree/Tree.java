@@ -1,5 +1,7 @@
 package org.uberfire.client.tree;
 
+import java.util.Iterator;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -42,7 +44,7 @@ public class Tree extends Composite implements HasSelectionHandlers<TreeItem>,
         return addHandler( handler, SelectionEvent.getType() );
     }
 
-    public void clear(){
+    public void clear() {
         container.clear();
     }
 
@@ -102,5 +104,18 @@ public class Tree extends Composite implements HasSelectionHandlers<TreeItem>,
 
     public void removeItem( final TreeItem treeItem ) {
         container.remove( treeItem );
+    }
+
+    public Iterable<TreeItem> getItems() {
+        return new Iterable<TreeItem>() {
+            @Override
+            public Iterator<TreeItem> iterator() {
+                return new TreeItem.TreeItemIterator( container );
+            }
+        };
+    }
+
+    public boolean isEmpty() {
+        return container.getWidgetCount() == 0;
     }
 }
