@@ -20,6 +20,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -27,6 +30,7 @@ import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.m2repo.client.resources.i18n.Constants;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
@@ -45,6 +49,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.common.YesNoCancelPopup;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -246,22 +251,53 @@ public class ProjectScreenPresenter
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        if ( Window.confirm( ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy() ) ) {
-                            saveProject( new RemoteCallback<Void>() {
-                                @Override
-                                public void callback( Void v ) {
-                                    view.switchBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                                    notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
-                                            NotificationEvent.NotificationType.SUCCESS ) );
-                                    buildServiceCaller.call( getBuildSuccessCallback(),
-                                            new HasBusyIndicatorDefaultErrorCallback( view )).buildAndDeploy( project );
-                                }
-                            } );
-                        } else {
-                            view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                            buildServiceCaller.call( getBuildSuccessCallback(),
-                                    new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
-                        }
+                        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(
+                                org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Information(),
+                                ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
+                                // Yes
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        saveProject( new RemoteCallback<Void>() {
+                                            @Override
+                                            public void callback( Void v ) {
+                                                view.switchBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
+                                                notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
+                                                        NotificationEvent.NotificationType.SUCCESS ) );
+                                                buildServiceCaller.call( getBuildSuccessCallback(),
+                                                        new HasBusyIndicatorDefaultErrorCallback( view )).buildAndDeploy( project );
+                                            }
+                                        } );
+                                    }
+                                },
+                                org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.YES(),
+                                ButtonType.SUCCESS,
+                                IconType.THUMBS_UP,
+
+                                // No
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
+                                        buildServiceCaller.call( getBuildSuccessCallback(),
+                                                new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
+                                    }
+                                },
+                                org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.NO(),
+                                ButtonType.DANGER,
+                                IconType.THUMBS_DOWN,
+
+                                // Cancel
+                                new Command() {
+                                    @Override
+                                    public void execute() {;}
+                                },
+                                org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
+                                ButtonType.PRIMARY,
+                                IconType.SIGNOUT
+                        );
+                        yesNoCancelPopup.setCloseVisible(false);
+                        yesNoCancelPopup.show();
                     }
                 } )
                 .endMenu().build();
