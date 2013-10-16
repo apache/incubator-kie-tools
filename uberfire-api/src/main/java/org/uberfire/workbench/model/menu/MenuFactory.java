@@ -1,5 +1,6 @@
 package org.uberfire.workbench.model.menu;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.uberfire.mvp.Command;
@@ -98,8 +99,8 @@ public final class MenuFactory {
     public interface SecurityInfos<T> {
 
         T withRole( final String role );
-
         T withRoles( final String... roles );
+        T withRoles( final Collection<String> roles );
     }
 
     public interface CustomMenuBuilder {

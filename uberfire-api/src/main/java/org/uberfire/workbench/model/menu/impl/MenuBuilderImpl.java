@@ -1,13 +1,6 @@
 package org.uberfire.workbench.model.menu.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
@@ -18,8 +11,8 @@ import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static java.util.Collections.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static java.util.Collections.*;
 
 /**
  *
@@ -385,6 +378,16 @@ public final class MenuBuilderImpl
     @Override
     public MenuBuilderImpl withRole( final String role ) {
         ( (CurrentContext) context.peek() ).roles.add( role );
+
+        return this;
+    }
+
+    @Override
+    public MenuBuilderImpl withRoles( Collection roles ) {
+        for ( Iterator it = roles.iterator(); it.hasNext(); ) {
+            String role = (String) it.next();
+            ( (CurrentContext) context.peek() ).roles.add( role );
+        }
 
         return this;
     }
