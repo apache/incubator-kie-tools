@@ -56,8 +56,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCondit
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
-import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
+import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;

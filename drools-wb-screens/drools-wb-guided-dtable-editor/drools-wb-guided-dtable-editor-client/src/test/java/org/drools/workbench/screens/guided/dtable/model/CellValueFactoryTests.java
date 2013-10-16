@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.guided.dtable;
+package org.drools.workbench.screens.guided.dtable.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -35,7 +35,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
+import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.junit.Before;

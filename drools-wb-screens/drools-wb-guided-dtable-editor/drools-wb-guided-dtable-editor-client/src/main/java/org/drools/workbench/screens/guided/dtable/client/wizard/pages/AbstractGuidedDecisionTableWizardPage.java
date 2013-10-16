@@ -19,10 +19,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.DTCellValueUtilities;
+import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewAssetWizardContext;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
-import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.wizards.WizardPage;
 

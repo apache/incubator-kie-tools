@@ -38,7 +38,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.AnalysisCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupBoundPatternDropDownEditCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupValueListDropDownEditCell;
-import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;

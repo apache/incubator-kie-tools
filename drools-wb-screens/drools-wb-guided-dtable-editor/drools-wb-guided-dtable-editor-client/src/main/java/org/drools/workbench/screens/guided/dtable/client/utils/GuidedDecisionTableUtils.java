@@ -1,4 +1,4 @@
-package org.drools.workbench.screens.guided.dtable.model;
+package org.drools.workbench.screens.guided.dtable.client.utils;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;

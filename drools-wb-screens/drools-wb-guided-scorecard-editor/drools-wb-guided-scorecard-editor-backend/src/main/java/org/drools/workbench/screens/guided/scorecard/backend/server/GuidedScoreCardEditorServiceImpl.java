@@ -33,7 +33,6 @@ import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
@@ -74,9 +73,6 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
 
     @Inject
     private RenameService renameService;
-
-    @Inject
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;

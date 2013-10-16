@@ -18,7 +18,6 @@ package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -36,7 +35,6 @@ import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedFilter;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
@@ -89,9 +87,6 @@ public class ScenarioTestEditorServiceImpl
 
     @Inject
     private RenameService renameService;
-
-    @Inject
-    private Event<InvalidateDMOPackageCacheEvent> invalidatePackageDMOEvent;
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
@@ -166,9 +161,6 @@ public class ScenarioTestEditorServiceImpl
                                                               metadata ),
                              makeCommentedOption( comment ) );
 
-            //Invalidate Package-level DMO cache as Globals have changed.
-            invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
-
             return resource;
 
         } catch ( Exception e ) {
@@ -233,11 +225,11 @@ public class ScenarioTestEditorServiceImpl
             final String packageName = projectService.resolvePackage( path ).getPackageName();
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-            final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor(dataModel,scenario);
+            final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor( dataModel, scenario );
 
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        visitor.visit());
+                                                        visitor.visit() );
 
             return new TestScenarioModelContent( scenario,
                                                  packageName,
@@ -255,9 +247,9 @@ public class ScenarioTestEditorServiceImpl
 
             final Project project = projectService.resolveProject( path );
 
-            new ScenarioRunnerWrapper(testResultMessageEvent, getMaxRuleFirings()).run(
+            new ScenarioRunnerWrapper( testResultMessageEvent, getMaxRuleFirings() ).run(
                     scenario,
-                    sessionService.newKieSession(project));
+                    sessionService.newKieSession( project ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -269,8 +261,8 @@ public class ScenarioTestEditorServiceImpl
             if ( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
                 for ( ConfigItem item : editorConfigGroup.getItems() ) {
                     String itemName = item.getName();
-                    if(itemName.equals(ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS)){
-                        return (Integer)item.getValue();
+                    if ( itemName.equals( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS ) ) {
+                        return (Integer) item.getValue();
                     }
                 }
             }
@@ -296,10 +288,10 @@ public class ScenarioTestEditorServiceImpl
                 scenarios.add( s );
             }
 
-            new ScenarioRunnerWrapper(testResultMessageEvent, getMaxRuleFirings()).run(
+            new ScenarioRunnerWrapper( testResultMessageEvent, getMaxRuleFirings() ).run(
                     scenarios,
-                    sessionService.newKieSession(project)
-            );
+                    sessionService.newKieSession( project )
+                                                                                        );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

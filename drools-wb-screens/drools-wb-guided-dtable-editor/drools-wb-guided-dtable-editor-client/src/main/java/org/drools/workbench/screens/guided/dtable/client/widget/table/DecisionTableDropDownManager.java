@@ -37,6 +37,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.template.client.editor.RuleModelPeerVariableVisitor;
 import org.drools.workbench.screens.guided.template.client.editor.RuleModelPeerVariableVisitor.ValueHolder;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;

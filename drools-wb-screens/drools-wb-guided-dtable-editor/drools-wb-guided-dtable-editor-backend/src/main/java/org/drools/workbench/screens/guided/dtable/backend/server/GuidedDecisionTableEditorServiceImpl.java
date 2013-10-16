@@ -36,7 +36,6 @@ import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
@@ -85,9 +84,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
 
     @Inject
     private RenameService renameService;
-
-    @Inject
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;

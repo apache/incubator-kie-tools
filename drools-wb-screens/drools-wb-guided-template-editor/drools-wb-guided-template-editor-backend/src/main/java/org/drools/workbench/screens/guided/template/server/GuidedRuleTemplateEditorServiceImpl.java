@@ -33,7 +33,6 @@ import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEd
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
@@ -82,9 +81,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
 
     @Inject
     private RenameService renameService;
-
-    @Inject
-    private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;

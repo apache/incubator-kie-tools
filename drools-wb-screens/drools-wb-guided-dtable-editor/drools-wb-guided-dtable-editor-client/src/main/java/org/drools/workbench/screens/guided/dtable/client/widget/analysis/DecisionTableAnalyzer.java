@@ -53,7 +53,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.conditi
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericShortConditionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.StringConditionDetector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.UnrecognizedConditionDetector;
-import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class DecisionTableAnalyzer {
