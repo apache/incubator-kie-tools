@@ -33,7 +33,7 @@ public class FileNameValidationServiceImpl implements FileNameValidationService 
 
     public boolean isFileNameValid( final String fileName ) {
         //Null check
-        if ( fileName == null || fileName.isEmpty() ) {
+        if ( fileName == null || fileName.isEmpty() || fileName.trim().isEmpty() ) {
             return false;
         }
         //Illegal character check
