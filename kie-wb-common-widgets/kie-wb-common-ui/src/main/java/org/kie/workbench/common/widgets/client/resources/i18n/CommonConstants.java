@@ -229,4 +229,11 @@ public interface CommonConstants
     String NoneSelected();
 
     String LineNoneLine();
+
+    String UploadSelectAFile();
+
+    String UploadFileTypeNotSupported();
+
+    String UploadGenericError();
+
 }
