@@ -67,4 +67,6 @@ public interface Constants
     String CategoryWasNotSuccessfullyCreated();
 
     String CanNotHaveAnEmptyCategoryName();
+
+    String CategoriesEditor();
 }

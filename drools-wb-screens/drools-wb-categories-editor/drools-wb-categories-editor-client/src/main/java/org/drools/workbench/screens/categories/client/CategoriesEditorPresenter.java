@@ -17,17 +17,16 @@
 package org.drools.workbench.screens.categories.client;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.categories.client.resources.i18n.Constants;
 import org.drools.workbench.screens.categories.client.type.CategoryDefinitionResourceType;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -39,10 +38,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
@@ -50,82 +46,50 @@ import org.uberfire.workbench.type.FileNameUtil;
  *
  */
 @Dependent
-@WorkbenchEditor(identifier = "CategoryFileManager", supportedTypes = { CategoryDefinitionResourceType.class })
-public class CategoriesEditorPresenter {
-
-    @Inject
-    private CategoriesEditorView view;
+@WorkbenchEditor(identifier = "CategoryFileManager", supportedTypes = {CategoryDefinitionResourceType.class})
+public class CategoriesEditorPresenter
+        extends CategoriesEditorBasePresenter {
 
     @Inject
     private Caller<CategoriesService> categoryService;
-
-    @Inject
-    private Event<NotificationEvent> notification;
-
-    @Inject
-    private FileMenuBuilder menuBuilder;
 
     @Inject
     private CategoryDefinitionResourceType type;
 
     private Path path;
 
-    private Menus menus;
-
     @OnStartup
-    public void onStartup( final Path path ) {
+    public void onStartup(final Path path) {
         this.path = path;
         makeMenuBar();
 
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        categoryService.call( getModelSuccessCallback(),
-                              new HasBusyIndicatorDefaultErrorCallback( view ) ).getContent( path );
-    }
-
-    private void makeMenuBar() {
-        menus = menuBuilder.addSave( new Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        } ).build();
+        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        categoryService.call(getModelSuccessCallback(),
+                new HasBusyIndicatorDefaultErrorCallback(view)).getContent(path);
     }
 
     private RemoteCallback<Categories> getModelSuccessCallback() {
         return new RemoteCallback<Categories>() {
 
             @Override
-            public void callback( final Categories content ) {
-                view.setContent( content );
+            public void callback(final Categories content) {
+                view.setContent(content);
                 view.hideBusyIndicator();
             }
         };
     }
 
-    @OnSave
     public void onSave() {
-        new SaveOperationService().save( path,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 categoryService.call( getSaveSuccessCallback(),
-                                                                       new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                                                                view.getContent() );
-                                             }
-                                         } );
-    }
-
-    private RemoteCallback<Path> getSaveSuccessCallback() {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                view.setNotDirty();
-                view.hideBusyIndicator();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-            }
-        };
+        new SaveOperationService().save(path,
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute(final String commitMessage) {
+                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        categoryService.call(getSaveSuccessCallback(),
+                                new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
+                                view.getContent());
+                    }
+                });
     }
 
     @IsDirty
@@ -140,7 +104,7 @@ public class CategoriesEditorPresenter {
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if ( isDirty() ) {
+        if (isDirty()) {
             return view.confirmClose();
         }
         return true;
@@ -148,8 +112,8 @@ public class CategoriesEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Categories Editor [" + FileNameUtil.removeExtension( path,
-                                                                     type ) + "]";
+        return Constants.INSTANCE.CategoriesEditor() + " [" + FileNameUtil.removeExtension(path,
+                type) + "]";
     }
 
     @WorkbenchPartView
