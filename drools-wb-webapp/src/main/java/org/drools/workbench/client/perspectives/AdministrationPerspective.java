@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.client.perspectives;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -43,6 +45,7 @@ import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
@@ -57,7 +60,7 @@ import static org.uberfire.workbench.model.toolbar.IconType.*;
 @WorkbenchPerspective(identifier = "org.drools.workbench.client.perspectives.AdministrationPerspective")
 public class AdministrationPerspective {
 
-    private static String[] PERMISSIONS_ADMIN = new String[]{ AppRoles.ADMIN.getName() };
+    private static String[] PERMISSIONS_ADMIN = new String[]{AppRoles.ADMIN.getName()};
 
     @Inject
     private NewResourcePresenter newResourcePresenter;
@@ -103,16 +106,16 @@ public class AdministrationPerspective {
 
             @Override
             public void execute() {
-                final CloneRepositoryForm cloneRepositoryWizard = iocManager.lookupBean( CloneRepositoryForm.class ).getInstance();
+                final CloneRepositoryForm cloneRepositoryWizard = iocManager.lookupBean(CloneRepositoryForm.class).getInstance();
                 //When pop-up is closed destroy bean to avoid memory leak
-                cloneRepositoryWizard.addCloseHandler( new CloseHandler<PopupPanel>() {
+                cloneRepositoryWizard.addCloseHandler(new CloseHandler<PopupPanel>() {
 
                     @Override
-                    public void onClose( CloseEvent<PopupPanel> event ) {
-                        iocManager.destroyBean( cloneRepositoryWizard );
+                    public void onClose(CloseEvent<PopupPanel> event) {
+                        iocManager.destroyBean(cloneRepositoryWizard);
                     }
 
-                } );
+                });
                 cloneRepositoryWizard.show();
             }
 
@@ -121,14 +124,14 @@ public class AdministrationPerspective {
         this.newRepoCommand = new Command() {
             @Override
             public void execute() {
-                final CreateRepositoryForm newRepositoryWizard = iocManager.lookupBean( CreateRepositoryForm.class ).getInstance();
+                final CreateRepositoryForm newRepositoryWizard = iocManager.lookupBean(CreateRepositoryForm.class).getInstance();
                 //When pop-up is closed destroy bean to avoid memory leak
-                newRepositoryWizard.addCloseHandler( new CloseHandler<CreateRepositoryForm>() {
+                newRepositoryWizard.addCloseHandler(new CloseHandler<CreateRepositoryForm>() {
                     @Override
-                    public void onClose( CloseEvent<CreateRepositoryForm> event ) {
-                        iocManager.destroyBean( newRepositoryWizard );
+                    public void onClose(CloseEvent<CreateRepositoryForm> event) {
+                        iocManager.destroyBean(newRepositoryWizard);
                     }
-                } );
+                });
                 newRepositoryWizard.show();
             }
         };
@@ -136,84 +139,86 @@ public class AdministrationPerspective {
     }
 
     private void buildPerspective() {
-        this.perspective = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
-        this.perspective.setName( AppConstants.INSTANCE.AdministrationPerspectiveName() );
+        this.perspective = new PerspectiveDefinitionImpl(PanelType.ROOT_LIST);
+        this.perspective.setName(AppConstants.INSTANCE.AdministrationPerspectiveName());
 
-        this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
+        this.perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("RepositoriesEditor")));
 
-        final PanelDefinition west = new PanelDefinitionImpl( PanelType.MULTI_LIST );
-        west.setWidth( 300 );
-        west.setMinWidth( 200 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
+        final PanelDefinition west = new PanelDefinitionImpl(PanelType.MULTI_LIST);
+        west.setWidth(300);
+        west.setMinWidth(200);
+        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("FileExplorer")));
 
-        this.perspective.getRoot().insertChild( Position.WEST,
-                                                west );
+        this.perspective.getRoot().insertChild(Position.WEST,
+                west);
     }
 
     private void buildMenuBar() {
         this.menus = MenuFactory
-                .newTopLevelMenu( AppConstants.INSTANCE.MenuExplore() )
-                .menus()
-                .menu( AppConstants.INSTANCE.MenuExploreFiles() )
-                .withRoles( PERMISSIONS_ADMIN )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo( "FileExplorer" );
-                    }
-                } )
+                .newTopLevelMenu(AppConstants.INSTANCE.MenuExplore())
+                .withItems(getExploreMenuItems())
                 .endMenu()
-                .endMenus()
+                .newTopLevelMenu(AppConstants.INSTANCE.MenuOrganizationalUnits())
+                .withItems(getOrganizationalUnitsMenuItem())
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.MenuOrganizationalUnits() )
-                .menus()
-                .menu( AppConstants.INSTANCE.MenuManageOrganizationalUnits() )
-                .withRoles( PERMISSIONS_ADMIN )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
-                    }
-                } )
-                .endMenu()
-                .endMenus()
-                .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.MenuRepositories() )
-                .menus()
-                .menu( AppConstants.INSTANCE.MenuListRepositories() )
-                .withRoles( PERMISSIONS_ADMIN )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        placeManager.goTo( "RepositoriesEditor" );
-                    }
-                })
-                .endMenu()
-                .menu( AppConstants.INSTANCE.MenuCloneRepository() )
-                .withRoles( PERMISSIONS_ADMIN )
-                .respondsWith( cloneRepoCommand )
-                .endMenu()
-                .menu( AppConstants.INSTANCE.MenuNewRepository() )
-                .withRoles( PERMISSIONS_ADMIN )
-                .respondsWith( newRepoCommand )
-                .endMenu()
-                .endMenus()
+                .newTopLevelMenu(AppConstants.INSTANCE.MenuRepositories())
+                .withItems(getRepositoriesMenuItems())
                 .endMenu()
                 .build();
     }
 
+    private List<? extends MenuItem> getRepositoriesMenuItems() {
+        ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuListRepositories()).withRoles(PERMISSIONS_ADMIN).respondsWith(
+                new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo("RepositoriesEditor");
+                    }
+                }).endMenu().build().getItems().get(0));
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuCloneRepository()).withRoles(PERMISSIONS_ADMIN).respondsWith(
+                cloneRepoCommand).endMenu().build().getItems().get(0));
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuNewRepository()).withRoles(PERMISSIONS_ADMIN).respondsWith(
+                newRepoCommand).endMenu().build().getItems().get(0));
+        return menuItems;
+    }
+
+    private List<? extends MenuItem> getOrganizationalUnitsMenuItem() {
+        ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuManageOrganizationalUnits()).withRoles(PERMISSIONS_ADMIN).respondsWith(
+                new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo("org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager");
+                    }
+                }).endMenu().build().getItems().get(0));
+        return menuItems;
+    }
+
+    private List<? extends MenuItem> getExploreMenuItems() {
+        ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuExploreFiles()).withRoles(PERMISSIONS_ADMIN).respondsWith(
+                new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo("FileExplorer");
+                    }
+                }).endMenu().build().getItems().get(0));
+        return menuItems;
+    }
+
     private void buildToolBar() {
-        this.toolBar = new DefaultToolBar( "file.explorer" );
-        final DefaultToolBarItem i1 = new DefaultToolBarItem( FOLDER_CLOSE_ALT,
-                                                              AppConstants.INSTANCE.MenuNewRepository(),
-                                                              newRepoCommand );
-        final DefaultToolBarItem i2 = new DefaultToolBarItem( DOWNLOAD_ALT,
-                                                              AppConstants.INSTANCE.MenuCloneRepository(),
-                                                              cloneRepoCommand );
-        i1.setRoles( PERMISSIONS_ADMIN );
-        i2.setRoles( PERMISSIONS_ADMIN );
-        toolBar.addItem( i1 );
-        toolBar.addItem( i2 );
+        this.toolBar = new DefaultToolBar("file.explorer");
+        final DefaultToolBarItem i1 = new DefaultToolBarItem(FOLDER_CLOSE_ALT,
+                AppConstants.INSTANCE.MenuNewRepository(),
+                newRepoCommand);
+        final DefaultToolBarItem i2 = new DefaultToolBarItem(DOWNLOAD_ALT,
+                AppConstants.INSTANCE.MenuCloneRepository(),
+                cloneRepoCommand);
+        i1.setRoles(PERMISSIONS_ADMIN);
+        i2.setRoles(PERMISSIONS_ADMIN);
+        toolBar.addItem(i1);
+        toolBar.addItem(i2);
     }
 
 }

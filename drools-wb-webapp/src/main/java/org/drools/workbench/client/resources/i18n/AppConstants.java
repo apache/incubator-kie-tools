@@ -72,4 +72,6 @@ public interface AppConstants
     String New();
 
     String Project();
+
+    String Repository();
 }
