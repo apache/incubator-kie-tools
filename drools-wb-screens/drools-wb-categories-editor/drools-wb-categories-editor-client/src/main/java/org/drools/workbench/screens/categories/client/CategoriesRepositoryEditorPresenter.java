@@ -84,7 +84,7 @@ public class CategoriesRepositoryEditorPresenter {
 
         view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         categoryService.call(getModelSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).getContentByRoot(context.getActiveProject().getRootPath());
+                new HasBusyIndicatorDefaultErrorCallback(view)).getContentByRoot(context.getActiveRepository().getRoot());
     }
 
     private void makeMenuBar() {
