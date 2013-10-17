@@ -61,9 +61,6 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.config.ConfigGroup;
@@ -72,6 +69,8 @@ import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -218,8 +217,8 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
         final org.uberfire.java.nio.file.Path nioResourceParent = paths.convert( resourcePath ).getParent();
 
         final Collection<org.uberfire.java.nio.file.Path> imagePaths = fileDiscoveryService.discoverFiles( nioProjectPath,
-                                                                                                              imageFilter,
-                                                                                                              true );
+                                                                                                           imageFilter,
+                                                                                                           true );
         final List<String> images = new ArrayList<String>();
         for ( org.uberfire.java.nio.file.Path imagePath : imagePaths ) {
             final org.uberfire.java.nio.file.Path relativePath = nioResourceParent.relativize( imagePath );
@@ -319,9 +318,11 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     private List<ValidationMessage> doValidation( final Path path,
                                                   final String content ) {
         final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
+        final List<String> workItemDefinitions = new ArrayList<String>();
+        workItemDefinitions.add( content );
         try {
-            MVEL.eval( content,
-                       new HashMap() );
+            WorkDefinitionsParser.parse( workItemDefinitions );
+
         } catch ( Exception e ) {
             final ValidationMessage msg = new ValidationMessage();
             msg.setPath( path );

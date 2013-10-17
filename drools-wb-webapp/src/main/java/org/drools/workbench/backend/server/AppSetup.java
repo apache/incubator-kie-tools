@@ -25,8 +25,6 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
-import org.uberfire.commons.services.cdi.Startup;
-import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
@@ -36,6 +34,8 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.commons.services.cdi.StartupType;
 
 //This is a temporary solution when running in PROD-MODE as /webapp/.niogit/system.git folder
 //is not deployed to the Application Servers /bin folder. This will be remedied when an
@@ -115,11 +115,11 @@ public class AppSetup {
 
     private void defineEditorProperties() {
         List<ConfigGroup> editorConfigGroups = configurationService.getConfiguration( ConfigType.EDITOR );
-        defineWorkItemsProperties(editorConfigGroups);
-        defineTestScenarioProperties(editorConfigGroups);
+        defineWorkItemsProperties( editorConfigGroups );
+        defineTestScenarioProperties( editorConfigGroups );
     }
 
-    private void defineTestScenarioProperties(List<ConfigGroup> editorConfigGroups) {
+    private void defineTestScenarioProperties( List<ConfigGroup> editorConfigGroups ) {
         boolean settingsDefined = false;
         for ( ConfigGroup editorConfigGroup : editorConfigGroups ) {
             if ( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
@@ -137,8 +137,7 @@ public class AppSetup {
         }
     }
 
-
-    private void defineWorkItemsProperties(List<ConfigGroup> editorConfigGroups) {
+    private void defineWorkItemsProperties( List<ConfigGroup> editorConfigGroups ) {
         boolean settingsDefined = false;
         for ( ConfigGroup editorConfigGroup : editorConfigGroups ) {
             if ( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
@@ -173,12 +172,12 @@ public class AppSetup {
 
     private ConfigGroup getTestScenarioElementDefinitions() {
         final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.EDITOR,
-                ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS,
-                "" );
+                                                                       ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS,
+                                                                       "" );
 
         ConfigItem<Integer> configItem = new ConfigItem<Integer>();
-        configItem.setName(ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS);
-        configItem.setValue(10000);
+        configItem.setName( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS );
+        configItem.setValue( 10000 );
         group.addConfigItem( configItem );
 
         return group;
@@ -196,7 +195,11 @@ public class AppSetup {
                                                                        WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS,
                                                                        "" );
         group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DEFINITION,
-                                                                 "[\n" +
+                                                                 "import org.drools.core.process.core.datatype.impl.type.StringDataType;\n" +
+                                                                         "import org.drools.core.process.core.datatype.impl.type.ObjectDataType;\n" +
+                                                                         "\n" +
+                                                                         "[\n" +
+                                                                         "  [\n" +
                                                                          "    \"name\" : \"MyTask|\", \n" +
                                                                          "    \"parameters\" : [ \n" +
                                                                          "        \"MyFirstParam\" : new StringDataType(), \n" +
@@ -208,6 +211,7 @@ public class AppSetup {
                                                                          "    ], \n" +
                                                                          "    \"displayName\" : \"My Task\", \n" +
                                                                          "    \"icon\" : \"\" \n" +
+                                                                         "  ]\n" +
                                                                          "]" ) );
         group.addConfigItem( configurationFactory.newConfigItem( WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER,
                                                                  "\"MyParam|\" : new StringDataType()" ) );
