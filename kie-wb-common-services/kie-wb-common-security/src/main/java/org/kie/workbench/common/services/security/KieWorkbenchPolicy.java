@@ -25,10 +25,11 @@ public class KieWorkbenchPolicy extends HashMap<String,String> {
 
     public KieWorkbenchPolicy(String policy) {
         this();
-        buildFromMap(policy);
+        build(policy);
     }
 
-    public void buildFromMap(String policy) {
+    public void build(String policy) {
+
         String[] lines = policy.split("\n");
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];

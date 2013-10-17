@@ -15,9 +15,10 @@
  */
 package org.kie.workbench.shared.security;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+import java.io.InputStreamReader;
 import java.util.Set;
 
 import org.junit.Before;
@@ -39,35 +40,66 @@ public class KieWorkbenchPolicyTest {
     @Before
     public void setUp() throws Exception {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("workbench-policy.properties");
-        Properties props = new Properties();
-        props.load(is);
+        String policyStr = fromStream(is);
 
-        policy = new KieWorkbenchPolicy();
-        for (String key : props.stringPropertyNames()) {
-            policy.put(key, props.getProperty(key));
-        }
+        policy = new KieWorkbenchPolicy(policyStr);
         registry = new KieWorkbenchFeatureRegistry();
+
         acl = new KieWorkbenchACLImpl();
         acl.setFeatureRegistry(registry);
         acl.activatePolicy(policy);
     }
 
+
+    public static String fromStream(InputStream in) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder out = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            out.append(line).append("\n");
+        }
+        return out.toString();
+    }
+
     @Test
     public void testImply() {
-        KieWorkbenchFeature endUsers = registry.getFeature("wb_end_users");
+        KieWorkbenchFeature endUsers = registry.getFeature("wb_for_business_users");
         KieWorkbenchFeature admin = registry.getFeature("wb_administration");
         KieWorkbenchFeature tasks = registry.getFeature("wb_tasks");
+        assertThat(endUsers).isNotNull();
+        assertThat(admin).isNotNull();
+        assertThat(tasks).isNotNull();
         assertThat(endUsers.implies(tasks));
         assertThat(!endUsers.implies(admin));
     }
 
     @Test
+    public void testGranted() {
+        Set<String> roles = acl.getGrantedRoles("wb_administration");
+        assertThat(roles).contains("admin");
+
+        roles = acl.getGrantedRoles("wb_asset_repository");
+        assertThat(roles).contains("admin", "developer");
+
+        roles = acl.getGrantedRoles("wb_jobs");
+        assertThat(roles).contains("admin", "developer");
+
+        roles = acl.getGrantedRoles("wb_tasks");
+        assertThat(roles).contains("admin", "analyst", "developer", "user");
+
+        roles = acl.getGrantedRoles("wb_dashboard_builder");
+        assertThat(roles).contains("user", "manager");
+    }
+
+    @Test
     public void testDeny() {
-        Set<String> roles = acl.getGrantedRoles("wb_search");
-        assertThat(roles).doesNotContain("admin");
-        assertThat(roles).doesNotContain("analyst");
+        Set<String> roles = acl.getGrantedRoles("wb_administration");
+        assertThat(roles).doesNotContain("developer", "analyst", "user", "manager");
 
         roles = acl.getGrantedRoles("wb_jobs");
         assertThat(roles).doesNotContain("analyst");
+
+        roles = acl.getGrantedRoles("wb_deploy");
+        assertThat(roles).doesNotContain("manager");
     }
 }

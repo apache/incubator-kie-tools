@@ -22,10 +22,8 @@ import org.kie.workbench.common.services.security.KieWorkbenchPolicy;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -89,11 +87,12 @@ public class KieWorkbenchACLImpl implements KieWorkbenchACL {
     public void activatePolicy(KieWorkbenchPolicy policy) {
         if (policy == null) return;
 
+        grantedFeatures.clear();
         Map<String,String> toDeny = new HashMap<String,String>();
         for (String entry : policy.keySet()) {
             String featureId = getFeatureId(entry);
             if (featureRegistry.getFeature(featureId) == null) {
-                buildFeature(featureId, policy, toDeny);
+                activateFeature(featureId, policy, toDeny);
             }
         }
         for (String featureId : toDeny.keySet()) {
@@ -101,7 +100,7 @@ public class KieWorkbenchACLImpl implements KieWorkbenchACL {
         }
     }
 
-    protected KieWorkbenchFeature buildFeature(String featureId, KieWorkbenchPolicy policy, Map<String,String> toDeny) {
+    protected KieWorkbenchFeature activateFeature(String featureId, KieWorkbenchPolicy policy, Map<String, String> toDeny) {
         String descr = getDescription(featureId, policy);
         String[] roles = getRoles(featureId, policy);
         String[] children = getChildren(featureId, policy);
@@ -118,11 +117,11 @@ public class KieWorkbenchACLImpl implements KieWorkbenchACL {
                     child = child.substring(1);
                     noChildren.add(child);
                 } else {
-                    result.addChildren(buildFeature(child, policy, toDeny));
+                    result.addChildren(activateFeature(child, policy, toDeny));
                 }
             }
             for (String child : noChildren) {
-                result.removeChildren(buildFeature(child, policy, toDeny));
+                result.removeChildren(activateFeature(child, policy, toDeny));
             }
         }
         // For role constrained features access must be granted/denied.
