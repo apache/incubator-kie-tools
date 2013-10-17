@@ -128,10 +128,16 @@ public class TreeItem extends Composite {
     }
 
     public void setState( final State state ) {
-        setState( state, true );
+        setState( state, false, true );
     }
 
     public void setState( final State state,
+                          boolean fireEvents ) {
+        setState( state, false, fireEvents );
+    }
+
+    public void setState( final State state,
+                          boolean propagateParent,
                           boolean fireEvents ) {
         if ( notFolder() ) {
             return;
@@ -140,6 +146,9 @@ public class TreeItem extends Composite {
         if ( !this.state.equals( state ) ) {
             this.state = state;
             updateState( state );
+            if ( propagateParent && parent != null ) {
+                parent.setState( state, true, false );
+            }
 
             if ( fireEvents && tree != null ) {
                 tree.fireStateChanged( this, state );

@@ -238,6 +238,8 @@ public class ListBarWidget
         if ( isDndEnabled ) {
             dndManager.makeDraggable( view, title );
         }
+
+        scheduleResize();
     }
 
     private void updateBreadcrumb( final PartDefinition partDefinition ) {
@@ -337,6 +339,7 @@ public class ListBarWidget
         partContentView.remove( part );
         partTitle.remove( part );
         setupDropdown();
+        scheduleResize();
     }
 
     @Override
