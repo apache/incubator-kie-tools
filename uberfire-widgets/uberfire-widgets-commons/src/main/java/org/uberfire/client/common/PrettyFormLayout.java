@@ -16,10 +16,10 @@
 
 package org.uberfire.client.common;
 
+import com.github.gwtbootstrap.client.ui.Form;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -67,7 +67,7 @@ public class PrettyFormLayout extends Composite {
             h.add( edit );
         }
 
-        FormPanel f = newForm( null );
+        Form f = newForm( null );
 
         f.add( h );
         layout.add( f );
@@ -79,13 +79,13 @@ public class PrettyFormLayout extends Composite {
         h.add( img );
         h.add( new HTML( "&nbsp;" ) );
         h.add( content );
-        FormPanel f = newForm( null );
+        Form f = newForm( null );
         f.add( h );
         layout.add( f );
     }
 
-    private FormPanel newForm( final String hdr ) {
-        FormPanel fp = new FormPanel();
+    private Form newForm( final String hdr ) {
+        Form fp = new Form();
         fp.setWidth( "100%" );
         fp.addStyleName( "guvnor-FormPanel" );
         if ( hdr != null ) {
@@ -95,8 +95,7 @@ public class PrettyFormLayout extends Composite {
     }
 
     public void endSection() {
-
-        FormPanel f = newForm( this.sectionName );
+        Form f = newForm( this.sectionName );
 
         f.add( this.currentTable );
 
