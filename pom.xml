@@ -68,12 +68,4 @@
 
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.12</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
 </project>
