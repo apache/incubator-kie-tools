@@ -34,4 +34,6 @@ public interface ToolsMenuConstants
     String RenameProject();
 
     String CopyProject();
+
+    String CategoriesEditor();
 }

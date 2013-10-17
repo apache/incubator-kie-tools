@@ -3,6 +3,7 @@ package org.kie.workbench.common.screens.projecteditor.model;
 import org.guvnor.common.services.project.model.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -15,6 +16,8 @@ public class ProjectScreenModel {
     private Metadata KModuleMetaData;
     private ProjectImports projectImports;
     private Metadata projectImportsMetaData;
+    private Categories projectCategories;
+    private Metadata projectCategoriesMetaData;
 
     public POM getPOM() {
         return pom;
@@ -64,4 +67,19 @@ public class ProjectScreenModel {
         return projectImportsMetaData;
     }
 
+    public Categories getProjectCategories() {
+        return projectCategories;
+    }
+
+    public void setProjectCategories(Categories projectCategories) {
+        this.projectCategories = projectCategories;
+    }
+
+    public Metadata getProjectCategoriesMetaData() {
+        return projectCategoriesMetaData;
+    }
+
+    public void setProjectCategoriesMetaData(Metadata projectCategoriesMetaData) {
+        this.projectCategoriesMetaData = projectCategoriesMetaData;
+    }
 }

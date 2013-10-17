@@ -114,11 +114,13 @@ public class ProjectMenu {
                 }
             }).endMenu().build().getItems().get(0);
 
+
     public List<MenuItem> getMenuItems() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
 
         menuItems.add(projectScreen);
         menuItems.add(dataModelerScreen);
+
 //        menuItems.add(removeProject);
 //        menuItems.add(renameProject);
 //        menuItems.add(copyProject);
