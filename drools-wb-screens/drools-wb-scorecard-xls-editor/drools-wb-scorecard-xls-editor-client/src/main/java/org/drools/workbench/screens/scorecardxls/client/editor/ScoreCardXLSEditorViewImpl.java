@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEditorResources;
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
+import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -47,6 +48,8 @@ public class ScoreCardXLSEditorViewImpl
         extends Composite
         implements ScoreCardXLSEditorView {
 
+    private AttachmentFileWidget uploadWidget;
+
     private final Button uploadButton = new Button( ScoreCardXLSEditorConstants.INSTANCE.Upload() );
     private final Button downloadButton = new Button( ScoreCardXLSEditorConstants.INSTANCE.Download() );
 
@@ -55,17 +58,17 @@ public class ScoreCardXLSEditorViewImpl
                                                             ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
 
     @Inject
-    private AttachmentFileWidget uploadWidget;
-
-    @Inject
     private Event<NotificationEvent> notificationEvent;
 
-    private ScoreCardXLSEditorView.Presenter presenter;
+    @Inject
+    private ScoreCardXLSResourceType resourceType;
 
+    private ScoreCardXLSEditorView.Presenter presenter;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo;
 
     @PostConstruct
     public void init() {
+        uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() } );
         layout.setWidth( "100%" );
         layout.add( ts );
         initWidget( layout );
@@ -143,8 +146,7 @@ public class ScoreCardXLSEditorViewImpl
         } );
     }
 
-    private void submit( Path path ) {
-        String[] validExtensions = { "xls" };
+    private void submit( final Path path ) {
         uploadWidget.submit( path,
                              URLHelper.getServletUrl(),
                              new Command() {
@@ -163,8 +165,7 @@ public class ScoreCardXLSEditorViewImpl
                                      BusyPopup.close();
                                  }
 
-                             },
-                             validExtensions
+                             }
                            );
     }
 

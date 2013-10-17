@@ -14,7 +14,6 @@ import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEd
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.guvnor.common.services.project.model.Package;
-import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
@@ -22,6 +21,7 @@ import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
@@ -38,13 +38,13 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     private ScoreCardXLSResourceType resourceType;
 
     @Inject
-    private AttachmentFileWidget uploadWidget;
-
-    @Inject
     private BusyIndicatorView busyIndicatorView;
+
+    private AttachmentFileWidget uploadWidget;
 
     @PostConstruct
     private void setupExtensions() {
+        uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() } );
         extensions.add( new Pair<String, AttachmentFileWidget>( ScoreCardXLSEditorConstants.INSTANCE.Upload(),
                                                                 uploadWidget ) );
     }
@@ -77,7 +77,6 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
         final Path newPath = PathFactory.newPath( path.getFileSystem(),
                                                   fileName,
                                                   URL.encode( path.toURI() + "/" + fileName ) );
-
         uploadWidget.submit( path,
                              fileName,
                              URLHelper.getServletUrl(),

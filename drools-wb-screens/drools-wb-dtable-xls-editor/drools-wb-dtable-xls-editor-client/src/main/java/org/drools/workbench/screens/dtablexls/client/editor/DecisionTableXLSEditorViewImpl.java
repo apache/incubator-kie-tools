@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSResources;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
+import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -47,6 +48,8 @@ public class DecisionTableXLSEditorViewImpl
         extends Composite
         implements DecisionTableXLSEditorView {
 
+    private AttachmentFileWidget uploadWidget;
+
     private final Button uploadButton = new Button( DecisionTableXLSEditorConstants.INSTANCE.Upload() );
     private final Button downloadButton = new Button( DecisionTableXLSEditorConstants.INSTANCE.Download() );
 
@@ -55,16 +58,17 @@ public class DecisionTableXLSEditorViewImpl
                                                             DecisionTableXLSEditorConstants.INSTANCE.DecisionTable() );
 
     @Inject
-    private AttachmentFileWidget uploadWidget;
-
-    @Inject
     private Event<NotificationEvent> notificationEvent;
 
-    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
+    @Inject
+    private DecisionTableXLSResourceType resourceType;
+
     private DecisionTableXLSEditorView.Presenter presenter;
+    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     @PostConstruct
     public void init() {
+        uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() } );
         layout.setWidth( "100%" );
         layout.add( ts );
         initWidget( layout );
@@ -143,7 +147,7 @@ public class DecisionTableXLSEditorViewImpl
         } );
     }
 
-    private void submit( Path path ) {
+    private void submit( final Path path ) {
         uploadWidget.submit( path,
                              URLHelper.getServletUrl(),
                              new Command() {
