@@ -63,6 +63,7 @@ import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.util.FileUtils;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.message.MessageType;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
@@ -104,15 +105,14 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.util.Daemon;
 import org.uberfire.java.nio.fs.jgit.util.DaemonClient;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
-import org.uberfire.commons.message.MessageType;
 
 import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
 import static org.eclipse.jgit.lib.Constants.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.*;
 import static org.uberfire.java.nio.file.StandardOpenOption.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
-import static org.uberfire.commons.validation.Preconditions.*;
 
 public class JGitFileSystemProvider implements FileSystemProvider {
 
@@ -1240,10 +1240,16 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
         final V resultView = gPath.getAttrView( type );
 
-        if ( resultView == null && ( type == BasicFileAttributeView.class || type == VersionAttributeView.class || type == JGitVersionAttributeView.class ) ) {
-            final V newView = (V) new JGitVersionAttributeView( gPath );
-            gPath.addAttrView( newView );
-            return newView;
+        if ( resultView == null ) {
+            if ( type == BasicFileAttributeView.class || type == JGitBasicAttributeView.class ) {
+                final V newView = (V) new JGitBasicAttributeView( gPath );
+                gPath.addAttrView( newView );
+                return newView;
+            } else if (type == VersionAttributeView.class || type == JGitVersionAttributeView.class ) {
+                final V newView = (V) new JGitVersionAttributeView( gPath );
+                gPath.addAttrView( newView );
+                return newView;
+            }
         }
 
         return resultView;
@@ -1254,10 +1260,18 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                                                         final LinkOption... options ) {
         final ExtendedAttributeView view = path.getAttrView( name );
 
-        if ( view == null && ( name.equals( "basic" ) || name.equals( "version" ) ) ) {
-            final JGitVersionAttributeView newView = new JGitVersionAttributeView( path );
-            path.addAttrView( newView );
-            return newView;
+        if ( view == null ) {
+
+            if ( name.equals( "basic" ) ) {
+                final JGitBasicAttributeView newView = new JGitBasicAttributeView( path );
+                path.addAttrView( newView );
+                return newView;
+
+            } else if ( name.equals( "version" ) ) {
+                final JGitVersionAttributeView newView = new JGitVersionAttributeView( path );
+                path.addAttrView( newView );
+                return newView;
+            }
         }
         return view;
     }
@@ -1277,8 +1291,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             throw new NoSuchFileException( path.toString() );
         }
 
-        if ( type == BasicFileAttributesImpl.class || type == BasicFileAttributes.class || type == VersionAttributes.class ) {
+        if ( type == VersionAttributes.class ) {
             final JGitVersionAttributeView view = getFileAttributeView( path, JGitVersionAttributeView.class, options );
+            return (A) view.readAttributes();
+        } else if ( type == BasicFileAttributesImpl.class || type == BasicFileAttributes.class ) {
+            final JGitBasicAttributeView view = getFileAttributeView( path, JGitBasicAttributeView.class, options );
             return (A) view.readAttributes();
         }
 

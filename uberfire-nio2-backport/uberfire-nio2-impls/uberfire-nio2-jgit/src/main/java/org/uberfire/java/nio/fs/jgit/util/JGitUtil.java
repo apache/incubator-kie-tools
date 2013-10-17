@@ -79,6 +79,7 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
@@ -693,6 +694,104 @@ public final class JGitUtil {
                     return new FileTimeImpl( records.get( 0 ).date().getTime() );
                 }
                 return null;
+            }
+
+            @Override
+            public boolean isRegularFile() {
+                return pathInfo.getPathType().equals( PathType.FILE );
+            }
+
+            @Override
+            public boolean isDirectory() {
+                return pathInfo.getPathType().equals( PathType.DIRECTORY );
+            }
+
+            @Override
+            public boolean isSymbolicLink() {
+                return false;
+            }
+
+            @Override
+            public boolean isOther() {
+                return false;
+            }
+
+            @Override
+            public long size() {
+                return pathInfo.getSize();
+            }
+
+            @Override
+            public Object fileKey() {
+                return pathInfo.getObjectId() == null ? null : pathInfo.getObjectId().toString();
+            }
+        };
+    }
+
+    public static BasicFileAttributes buildBasicAttributes( final JGitFileSystem fs,
+                                                            final String branchName,
+                                                            final String path ) {
+        final JGitPathInfo pathInfo = resolvePath( fs.gitRepo(), branchName, path );
+
+        if ( pathInfo == null ) {
+            throw new NoSuchFileException( path );
+        }
+
+        final ObjectId id = resolveObjectId( fs.gitRepo(), branchName );
+        final String gPath = fixPath( path );
+
+        return new BasicFileAttributes() {
+
+            private long lastModifiedDate = -1;
+            private long creationDate = -1;
+
+            @Override
+            public FileTime lastModifiedTime() {
+                if ( lastModifiedDate == -1L ) {
+                    RevWalk revWalk = null;
+                    try {
+                        final LogCommand logCommand = fs.gitRepo().log().add( id ).setMaxCount( 1 );
+                        if ( !gPath.isEmpty() ) {
+                            logCommand.addPath( gPath );
+                        }
+                        revWalk = (RevWalk) logCommand.call();
+                        lastModifiedDate = revWalk.iterator().next().getCommitterIdent().getWhen().getTime();
+                    } catch ( Exception ex ) {
+                        lastModifiedDate = 0;
+                    } finally {
+                        if ( revWalk != null ) {
+                            revWalk.dispose();
+                        }
+                    }
+                }
+                return new FileTimeImpl( lastModifiedDate );
+            }
+
+            @Override
+            public FileTime lastAccessTime() {
+                return null;
+            }
+
+            @Override
+            public FileTime creationTime() {
+                if ( creationDate == -1L ) {
+                    RevWalk revWalk = null;
+                    try {
+                        final LogCommand logCommand = fs.gitRepo().log().add( id ).setMaxCount( 1 );
+                        if ( !gPath.isEmpty() ) {
+                            logCommand.addPath( gPath );
+                        }
+                        revWalk = (RevWalk) logCommand.call();
+                        creationDate = revWalk.iterator().next().getCommitterIdent().getWhen().getTime();
+                    } catch ( Exception ex ) {
+                        creationDate = 0;
+                    } finally {
+                        if ( revWalk != null ) {
+                            revWalk.dispose();
+                        }
+                    }
+                }
+                return new FileTimeImpl( creationDate );
             }
 
             @Override

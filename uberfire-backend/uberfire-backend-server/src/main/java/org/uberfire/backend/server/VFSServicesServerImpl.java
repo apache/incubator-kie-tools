@@ -17,6 +17,8 @@
 package org.uberfire.backend.server;
 
 import java.net.URI;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +28,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.DirectoryStream;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.impl.DirectoryStreamImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
@@ -35,11 +42,7 @@ import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.DirectoryStream;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.backend.vfs.impl.DirectoryStreamImpl;
+import org.uberfire.java.nio.file.attribute.FileTime;
 
 @Service
 @ApplicationScoped
@@ -104,7 +107,19 @@ public class VFSServicesServerImpl implements VFSService {
 
     @Override
     public Map<String, Object> readAttributes( final Path path ) throws UnsupportedOperationException, IllegalArgumentException, IOException {
-        return ioService.readAttributes( paths.convert( path ) );
+
+        final Map<String, Object> attributes = new HashMap<String, Object>( ioService.readAttributes( paths.convert( path ) ) );
+        final Object _lastModifiedTime = attributes.get( "lastModifiedTime" );
+        if ( _lastModifiedTime != null ) {
+            attributes.put( "lastModifiedTime", new Date( ( (FileTime) _lastModifiedTime ).toMillis() ) );
+        }
+
+        final Object _creationTime = attributes.get( "creationTime" );
+        if ( _creationTime != null ) {
+            attributes.put( "creationTime", new Date( ( (FileTime) _creationTime ).toMillis() ) );
+        }
+
+        return attributes;
     }
 
     @Override

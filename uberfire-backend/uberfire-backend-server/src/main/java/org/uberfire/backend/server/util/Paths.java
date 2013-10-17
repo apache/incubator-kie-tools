@@ -81,7 +81,7 @@ public class Paths {
     }
 
     public Path convert( final org.uberfire.java.nio.file.Path path ) {
-        return convert( path, true );
+        return convert( path, false );
     }
 
     public org.uberfire.java.nio.file.Path convert( final Path path ) {

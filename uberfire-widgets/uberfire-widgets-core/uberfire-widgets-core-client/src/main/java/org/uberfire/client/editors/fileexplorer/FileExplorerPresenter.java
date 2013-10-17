@@ -32,8 +32,6 @@ import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.backend.vfs.AttrsUtil;
-import org.uberfire.backend.vfs.BasicFileAttributes;
 import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -43,8 +41,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.lifecycle.OnFocus;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.PathChangeEvent;
@@ -134,8 +130,7 @@ public class FileExplorerPresenter {
                     vfsService.call( new RemoteCallback<Map>() {
                         @Override
                         public void callback( final Map response ) {
-                            final BasicFileAttributes attrs = AttrsUtil.toBasicFileAttributes( response );
-                            if ( attrs.isDirectory() ) {
+                            if ( isDirectory( response ) ) {
                                 item.addDirectory( child );
                             } else {
                                 item.addFile( child );
@@ -145,6 +140,14 @@ public class FileExplorerPresenter {
                 }
             }
         } ).newDirectoryStream( path );
+    }
+
+    private boolean isDirectory( final Map response ) {
+        return response != null && response.containsKey( "isDirectory" ) && (Boolean) response.get( "isDirectory" );
+    }
+
+    private boolean isRegularFile( final Map response ) {
+        return response != null && response.containsKey( "isRegularFile" ) && (Boolean) response.get( "isRegularFile" );
     }
 
     @WorkbenchPartTitle
@@ -166,8 +169,7 @@ public class FileExplorerPresenter {
         vfsService.call( new RemoteCallback<Map>() {
             @Override
             public void callback( final Map response ) {
-                final BasicFileAttributes attrs = AttrsUtil.toBasicFileAttributes( response );
-                if ( attrs.isRegularFile() ) {
+                if ( isRegularFile( response ) ) {
                     placeManager.goTo( path );
                 }
                 broadcastPathChange( path );

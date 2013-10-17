@@ -27,7 +27,7 @@ public class JGitVersionAttributeView extends VersionAttributeView<JGitPathImpl>
 
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
-        return new Class[]{ BasicFileAttributeView.class, VersionAttributeView.class, JGitVersionAttributeView.class };
+        return new Class[]{ VersionAttributeView.class, JGitVersionAttributeView.class };
     }
 
 }

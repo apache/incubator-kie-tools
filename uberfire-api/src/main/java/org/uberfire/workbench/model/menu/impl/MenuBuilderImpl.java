@@ -425,7 +425,8 @@ public final class MenuBuilderImpl
         if ( context.size() == 1 ) {
             menuItems.add( context.pop().build() );
         } else {
-            context.peek().push( context.pop() );
+            final MenuFactory.CustomMenuBuilder active = context.pop();
+            context.peek().push( active );
         }
 
         return this;

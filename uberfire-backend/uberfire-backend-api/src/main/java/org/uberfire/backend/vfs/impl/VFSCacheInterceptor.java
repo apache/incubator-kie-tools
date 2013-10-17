@@ -25,7 +25,7 @@ public class VFSCacheInterceptor implements RpcInterceptor {
     @Override
     public void aroundInvoke( final RemoteCallContext context ) {
         final Object o = context.getParameters()[ 0 ];
-        if ( o instanceof PathFactory.PathImpl ) {
+        if ( o instanceof PathFactory.PathImpl && ( (PathFactory.PathImpl) o ).getAttributes().size() > 0) {
             context.setResult( ( (PathFactory.PathImpl) o ).getAttributes() );
             return;
         }

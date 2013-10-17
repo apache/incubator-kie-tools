@@ -54,7 +54,24 @@ public class PespectiveContextMenusView
             return null;
         }
 
-        if ( item instanceof MenuItemCommand ) {
+        //Workaround af a dev mode bug that instanceOf doesn't seems to work with static inner classes
+        boolean isInstanceOfMenuItemCommand = false;
+        try {
+            final MenuItemCommand _x = (MenuItemCommand) item;
+            isInstanceOfMenuItemCommand = true;
+        } catch ( Exception ex ) {
+            isInstanceOfMenuItemCommand = false;
+        }
+
+        boolean isInstanceOfMenuGroup = false;
+        try {
+            final MenuGroup _x = (MenuGroup) item;
+            isInstanceOfMenuGroup = true;
+        } catch ( Exception ex ) {
+            isInstanceOfMenuGroup = false;
+        }
+
+        if ( isInstanceOfMenuItemCommand ) {
             final MenuItemCommand cmdItem = (MenuItemCommand) item;
             final Widget gwtItem;
 
@@ -76,7 +93,7 @@ public class PespectiveContextMenusView
 
             return gwtItem;
 
-        } else if ( item instanceof MenuGroup ) {
+        } else if ( isInstanceOfMenuGroup ) {
             final MenuGroup groups = (MenuGroup) item;
             final List<Widget> widgetList = new ArrayList<Widget>();
             for ( final MenuItem _item : groups.getItems() ) {
