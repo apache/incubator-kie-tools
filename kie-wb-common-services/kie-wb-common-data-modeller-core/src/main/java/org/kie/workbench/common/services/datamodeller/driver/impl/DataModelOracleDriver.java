@@ -28,6 +28,7 @@ import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.kie.workbench.common.services.datamodeller.driver.*;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
@@ -42,10 +43,6 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
-import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
-import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.DescriptionAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.LabelAnnotationDefinition;
@@ -111,18 +108,12 @@ public class DataModelOracleDriver implements ModelDriver {
     }
 
     @Override
-    public List<FileChangeDescriptor> generateModel( DataModel dataModel,
-                                                     IOService ioService,
-                                                     Path root,
-                                                     OpenOption option ) throws Exception {
+    public void generateModel( DataModel dataModel, ModelDriverListener generationListener) throws Exception {
 
         GenerationContext generationContext = new GenerationContext( dataModel );
-        OracleGenerationListener generationListener = new OracleGenerationListener( ioService, root, option );
         generationContext.setGenerationListener( generationListener );
-
         GenerationEngine generationEngine = GenerationEngine.getInstance();
         generationEngine.generate( generationContext );
-        return generationListener.getFileChanges();
     }
 
     @Override

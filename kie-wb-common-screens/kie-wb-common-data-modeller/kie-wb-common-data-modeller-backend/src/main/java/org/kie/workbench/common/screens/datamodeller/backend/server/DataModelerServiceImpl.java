@@ -16,23 +16,10 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import java.util.*;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.*;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -48,24 +35,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ChangeType;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.*;
+
 @Service
 @ApplicationScoped
 public class DataModelerServiceImpl implements DataModelerService {
 
     private static final Logger logger = LoggerFactory.getLogger( DataModelerServiceImpl.class );
-
-    private static final String MAIN_JAVA_PATH = "src/main/java";
-    private static final String MAIN_RESOURCES_PATH = "src/main/resources";
-    private static final String TEST_JAVA_PATH = "src/test/java";
-    private static final String TEST_RESOURCES_PATH = "src/test/resources";
-
-    private static final String DEFAULT_GUVNOR_PKG = "defaultpkg";
 
     @Inject
     @Named("ioStrategy")
@@ -84,7 +72,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     private DataModelService dataModelService;
 
     @Inject
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
+    ProjectResourceDriverListener generationListener;
 
     @Inject
     private Event<ResourceBatchChangesEvent> resourceBatchChangesEvent;
@@ -176,21 +164,22 @@ public class DataModelerServiceImpl implements DataModelerService {
             //calculate the files that needs to be deleted prior to model generation.
             List<Path> deleteableFiles = calculateDeleteableFiles( dataModel, javaPath );
 
-            //@wmedvede now the InvalidateDMOProjectCacheEvent will be fired in the DataModelResourceChangeObserver
-            //invalidate ProjectDataModelOracle for this project.
-            //invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( projectPath ) );
-
             //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
             //to it must be treated carefully.
-            CommentedOption option = makeCommentedOption("Data modeller");
+            CommentedOption option = makeCommentedOption("Data modeller generated action.");
             ioService.startBatch();
             onBatch = true;
 
             //delete removed data objects
-            cleanupFiles( deleteableFiles, option );
+            cleanupFiles(deleteableFiles, option);
             javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
-            driver.generateModel( dataModelDomain, ioService, javaPath , option);
+
+            generationListener.setCurrentProject(project);
+            generationListener.setOption(option);
+            generationListener.init();
+
+            driver.generateModel( dataModelDomain, generationListener);
 
             onBatch = false;
             ioService.endBatch();

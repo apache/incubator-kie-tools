@@ -20,7 +20,6 @@ package org.kie.workbench.common.screens.datamodeller.client;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
@@ -48,6 +47,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.YesNoCancelPopup;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -57,7 +57,6 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.client.resources.i18n.CommonConstants;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -271,11 +270,6 @@ public class DataModelerScreenPresenter {
     private void saveAndChangeProject(boolean overwrite, final Project changeProject) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_saving() );
-        if ( changeProject == null ) {
-            projectContextChangeEvent.fire( new ProjectContextChangeEvent( workbenchContext.getActiveOrganizationalUnit(),
-                    workbenchContext.getActiveRepository(),
-                    currentProject ) );
-        }
 
         modelerService.call(
             new RemoteCallback<GenerationResult>() {
@@ -297,6 +291,7 @@ public class DataModelerScreenPresenter {
                             getDataModel(),
                             oldDirtyStatus,
                             getContext().isDirty()));
+
                 }
             }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel(getDataModel(), currentProject, overwrite);
     }
@@ -412,23 +407,6 @@ public class DataModelerScreenPresenter {
             reload();
         }
     }
-
-    /*
-    private void onPackageAdded( @Observes final NewPackageEvent event ) {
-        //Projects are not cached so no need to do anything if this presenter is not active
-        if ( isOpen() ) {
-
-            final Package pkg = event.getPackage();
-            if ( pkg != null && isOnCurrentProject(pkg)) {
-                if (context != null) {
-                    List<Package> packages = new ArrayList<Package>();
-                    packages.add(pkg);
-                    context.appendPackages(packages);
-                }
-            }
-        }
-    }
-    */
 
     private boolean isOpen() {
         return open;

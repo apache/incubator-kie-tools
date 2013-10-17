@@ -214,6 +214,15 @@ public class GenerationTools {
         return type.toString();
     }
 
+    public boolean hasEquals(DataObject dataObject) {
+        if (!dataObject.getProperties().isEmpty()) {
+            for (ObjectProperty prop : dataObject.getProperties().values()) {
+                if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) return true;
+            }
+        }
+        return false;
+    }
+
     public String resolveEquals(DataObject dataObject, String indent) {
         
         StringBuilder head = new StringBuilder();
@@ -228,13 +237,13 @@ public class GenerationTools {
         end.append(indent + "}");
 
         StringBuilder sb = new StringBuilder();
-        Map<String, ObjectProperty> props = dataObject.getProperties();
+
+        List<ObjectProperty> props = sortedProperties(dataObject);
 
         boolean hasTerms = false;
         if (props != null && props.size() > 0) {
-            for(String propName : props.keySet()) {
-                ObjectProperty prop = props.get(propName);
-                String _propName = toJavaVar(propName);
+            for(ObjectProperty prop : props) {
+                String _propName = toJavaVar(prop.getName());
                 if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
                     // Construction: "if (<_propName> != null ? !<_propName>.equals(that.<_propName>) : that.<_propName> != null) return false;"
                     sb.append(indent + TAB + "if (");
@@ -268,13 +277,12 @@ public class GenerationTools {
         end.append(indent + "}");
 
         StringBuilder sb = new StringBuilder();
-        Map<String, ObjectProperty> props = dataObject.getProperties();
+        List<ObjectProperty> props = sortedProperties(dataObject);
 
         boolean hasTerms = false;
         if (props != null && props.size() > 0) {
-            for(String propName : props.keySet()) {
-                ObjectProperty prop = props.get(propName);
-                String _propName = toJavaVar(propName);
+            for(ObjectProperty prop : props) {
+                String _propName = toJavaVar(prop.getName());
                 if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
                     // Construction: "result = 13 * result + (<_propName> != null ? <_propName>.hashCode() : 0);"
                     sb.append(indent + TAB + "result = 13 * result + (").append(_propName).append(" != null ? ").append(_propName).append(".hashCode() : 0);");
@@ -298,7 +306,7 @@ public class GenerationTools {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
             sortedProperties.addAll(dataObject.getProperties().values());
-            return resolveConstructor(dataObject, sortByPosition(sortedProperties), indent);
+            return resolveConstructor(dataObject, sortByPosition(sortByName(sortedProperties)), indent);
         }
         return "";
     }
@@ -313,13 +321,76 @@ public class GenerationTools {
                 }
             }
             if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
-                return resolveConstructor(dataObject, sortByPosition(sortedProperties), indent);
+                return resolveConstructor(dataObject, sortByPosition(sortByName(sortedProperties)), indent);
             }
         }
         return "";
     }
 
-    private List<ObjectProperty> sortByPosition(List<ObjectProperty> properties) {
+    public List<Annotation> sortAnnotationsByName(List<Annotation> annotations) {
+        Collections.sort(annotations, new Comparator<Annotation>() {
+            public int compare(Annotation o1, Annotation o2) {
+
+                if (o1 == null && o2 == null) return 0;
+                if (o1 == null && o2 != null) return -1;
+                if (o1 != null && o2 == null) return 1;
+
+                Comparable key1 = o1.getName();
+                Comparable key2 = o2.getName();
+
+                if (key1 == null && key2 == null) return 0;
+                if (key1 != null && key2 != null) return key1.compareTo(key2);
+
+                if (key1 == null && key2 != null) return -1;
+
+                //if (key1 != null && key2 == null) return 1;
+                return 1;
+            }
+        } );
+        return annotations;
+
+    }
+
+    public List<Annotation> sortedAnnotations(HasAnnotations hasAnnotations) {
+        List<Annotation> sortedAnnotations = new ArrayList<Annotation>();
+        if (!hasAnnotations.getAnnotations().isEmpty()) {
+            sortedAnnotations.addAll(hasAnnotations.getAnnotations());
+        }
+        return sortAnnotationsByName(sortedAnnotations);
+    }
+
+    public List<ObjectProperty> sortedProperties(DataObject dataObject) {
+        List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
+        if (!dataObject.getProperties().isEmpty()) {
+            sortedProperties.addAll(dataObject.getProperties().values());
+        }
+        return sortByName(sortedProperties);
+    }
+
+    public List<ObjectProperty> sortByName(List<ObjectProperty> properties) {
+        Collections.sort(properties, new Comparator<ObjectProperty>() {
+            public int compare(ObjectProperty o1, ObjectProperty o2) {
+
+                if (o1 == null && o2 == null) return 0;
+                if (o1 == null && o2 != null) return -1;
+                if (o1 != null && o2 == null) return 1;
+
+                Comparable key1 = o1.getName();
+                Comparable key2 = o2.getName();
+
+                if (key1 == null && key2 == null) return 0;
+                if (key1 != null && key2 != null) return key1.compareTo(key2);
+
+                if (key1 == null && key2 != null) return -1;
+
+                //if (key1 != null && key2 == null) return 1;
+                return 1;
+            }
+        } );
+        return properties;
+    }
+
+    public List<ObjectProperty> sortByPosition(List<ObjectProperty> properties) {
         Collections.sort(properties, new Comparator<ObjectProperty>() {
             public int compare(ObjectProperty o1, ObjectProperty o2) {
 

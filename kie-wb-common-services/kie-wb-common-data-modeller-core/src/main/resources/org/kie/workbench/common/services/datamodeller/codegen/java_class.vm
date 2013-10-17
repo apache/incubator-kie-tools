@@ -1,10 +1,10 @@
 ##
 ## Template to generate a pojo.
 ##
-#set($attributes =  $context.currentDataObject.properties.values())
+#set($attributes =  $nameTool.sortedProperties($context.currentDataObject))
 #set($className =   $context.currentDataObject.name)
 #set($packageName = $context.currentDataObject.packageName)
-#set($typeAnnotations = $context.currentDataObject.annotations)
+#set($typeAnnotations = $nameTool.sortedAnnotations($context.currentDataObject))
 ##
 ##
 ##
@@ -38,8 +38,9 @@ $engine.generateConstructors($context, "java_constructors")
 #foreach( $attr in $attributes)
     $engine.generateSetterGetter($context, $attr, "java_setter_getter")
 #end
-## Generate equals
+## Generate equals and hasCode if needed
+#if ($nameTool.hasEquals($context.currentDataObject))
 $engine.generateEquals($context, "java_equals")
-## Generate hashCode
 $engine.generateHashCode($context, "java_hashCode")
+#end
 }

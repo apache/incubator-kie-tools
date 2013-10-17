@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
-import org.kie.workbench.common.services.datamodeller.annotations.Role;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
 

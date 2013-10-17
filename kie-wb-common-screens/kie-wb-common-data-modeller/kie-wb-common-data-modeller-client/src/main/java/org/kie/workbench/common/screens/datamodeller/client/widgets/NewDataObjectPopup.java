@@ -190,6 +190,20 @@ public class NewDataObjectPopup extends Modal {
         this.context = context;
         superclassSelector.setContext( context );
         packageSelector.setContext( context );
+
+        if (context != null && context.getCurrentProjectPackages() != null && context.getCurrentProjectPackages().size() > 0) {
+            r_newPackage.setValue(Boolean.FALSE);
+            r_existingPackage.setValue(Boolean.TRUE);
+
+            newPackageGroup.setVisible(Boolean.FALSE);
+            existingPackageGroup.setVisible(Boolean.TRUE);
+        } else {
+            r_newPackage.setValue(Boolean.TRUE);
+            r_existingPackage.setValue(Boolean.FALSE);
+
+            newPackageGroup.setVisible(Boolean.TRUE);
+            existingPackageGroup.setVisible(Boolean.FALSE);
+        }
     }
 
     private DataModelTO getDataModel() {
