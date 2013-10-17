@@ -7,8 +7,6 @@ import com.github.gwtbootstrap.client.ui.Paragraph;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.vfs.AttrsUtil;
-import org.uberfire.backend.vfs.BasicFileAttributes;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.VFSService;
@@ -32,8 +30,7 @@ public class PathLabel extends Paragraph {
             vfsService.call( new RemoteCallback<Map>() {
                 @Override
                 public void callback( final Map response ) {
-                    final BasicFileAttributes attrs = AttrsUtil.toBasicFileAttributes( response );
-                    if ( attrs.isRegularFile() ) {
+                    if ( isRegularFile( response ) ) {
                         activePath = stripFileName( path );
                         setText( activePath.toURI() );
                     } else {
@@ -48,6 +45,10 @@ public class PathLabel extends Paragraph {
             activePath = path;
             setText( activePath.toURI() );
         }
+    }
+
+    private boolean isRegularFile( final Map response ) {
+        return response != null && response.containsKey( "isRegularFile" ) && (Boolean) response.get( "isRegularFile" );
     }
 
     public Path getPath() {
