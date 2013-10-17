@@ -16,10 +16,11 @@
 
 package org.uberfire.server;
 
+import static org.mvel2.templates.TemplateCompiler.compileTemplate;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,8 +42,6 @@ import org.uberfire.security.Role;
 import org.uberfire.security.Subject;
 import org.uberfire.security.server.cdi.SecurityFactory;
 import org.uberfire.server.cdi.UberFireGeneralFactory;
-
-import static org.mvel2.templates.TemplateCompiler.*;
 
 public class UberfireServlet extends HttpServlet {
 
@@ -81,26 +81,24 @@ public class UberfireServlet extends HttpServlet {
     private String getFileContent( final String fileName ) {
         try {
             return getTemplateContent( new BufferedInputStream( new FileInputStream( fileName ) ) );
-        } catch ( FileNotFoundException e ) {
-            throw new IllegalStateException( "Template file not found.", e );
+        } catch ( IOException e ) {
+            throw new IllegalStateException( "Couldn't read template file: \"" + fileName + "\"", e );
         }
     }
 
     private String getResourceContent( final String resourceName ) {
-        return getTemplateContent( new BufferedInputStream( getClass().getClassLoader().getResourceAsStream( resourceName ) ) );
+        try {
+            return getTemplateContent( new BufferedInputStream( getClass().getClassLoader().getResourceAsStream( resourceName ) ) );
+        } catch (IOException e) {
+            throw new IllegalStateException( "Couldn't read template resource: \"" + resourceName + "\"", e );
+        }
     }
 
-    private String getTemplateContent( final BufferedInputStream content ) {
-        try {
-            final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-            IOUtils.copy( content, outContent );
-            content.close();
-
-            return outContent.toString();
-        } catch ( IOException ex ) {
-            throw new IllegalStateException( "Can't copy content.", ex );
-        }
-
+    private String getTemplateContent( final BufferedInputStream content ) throws IOException {
+        final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        IOUtils.copy( content, outContent );
+        content.close();
+        return outContent.toString();
     }
 
     private String getConfig( final ServletConfig config,
