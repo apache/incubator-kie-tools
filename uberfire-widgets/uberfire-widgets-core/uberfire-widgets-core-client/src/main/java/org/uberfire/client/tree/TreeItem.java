@@ -146,13 +146,13 @@ public class TreeItem extends Composite {
         if ( !this.state.equals( state ) ) {
             this.state = state;
             updateState( state );
-            if ( propagateParent && parent != null ) {
-                parent.setState( state, true, false );
-            }
 
             if ( fireEvents && tree != null ) {
                 tree.fireStateChanged( this, state );
             }
+        }
+        if ( propagateParent && parent != null ) {
+            parent.setState( state, true, false );
         }
     }
 
