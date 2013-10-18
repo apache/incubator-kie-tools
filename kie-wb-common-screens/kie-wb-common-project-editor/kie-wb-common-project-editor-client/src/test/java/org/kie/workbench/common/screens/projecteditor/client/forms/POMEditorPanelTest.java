@@ -41,7 +41,6 @@ public class POMEditorPanelTest {
 
         verify(view).setGAV(gavModel.getGav());
         verify(view).setTitleText("artifact");
-        verify(view).setDependencies(gavModel.getDependencies());
     }
 
     private POM createTestModel(String group, String artifact, String version) {

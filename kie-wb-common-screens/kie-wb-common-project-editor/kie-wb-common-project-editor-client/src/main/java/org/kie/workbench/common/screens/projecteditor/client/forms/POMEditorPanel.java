@@ -51,7 +51,6 @@ public class POMEditorPanel
             }
         });
         setTitle(model.getGav().getArtifactId());
-        view.setDependencies(POMEditorPanel.this.model.getDependencies());
     }
 
     private void setTitle(final String titleText) {

@@ -27,8 +27,5 @@
     <gwt:north size="100">
       <guvnor:GAVEditor ui:field="gavEditor"/>
     </gwt:north>
-    <gwt:center>
-      <guvnor:DependencyGrid ui:field="dependencyGrid"/>
-    </gwt:center>
   </gwt:DockLayoutPanel>
 </ui:UiBinder>

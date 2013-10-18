@@ -32,8 +32,6 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
     void showSaveSuccessful( String fileName );
 
-    void setDependencies( List<Dependency> dependencies );
-
     void setGAV( GAV gav );
 
     void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler );

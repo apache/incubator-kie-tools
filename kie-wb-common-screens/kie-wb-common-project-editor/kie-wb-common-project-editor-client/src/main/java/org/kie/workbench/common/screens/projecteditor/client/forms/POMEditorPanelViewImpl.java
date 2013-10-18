@@ -25,7 +25,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
@@ -51,15 +50,11 @@ public class POMEditorPanelViewImpl
     @UiField(provided = true)
     GAVEditor gavEditor;
 
-    @UiField(provided = true)
-    DependencyGrid dependencyGrid;
-
     @Inject
     public POMEditorPanelViewImpl( Event<NotificationEvent> notificationEvent,
                                    GAVEditor gavEditor,
                                    DependencyGrid dependencyGrid ) {
         this.gavEditor = gavEditor;
-        this.dependencyGrid = dependencyGrid;
         initWidget( uiBinder.createAndBindUi( this ) );
         this.notificationEvent = notificationEvent;
     }
@@ -75,11 +70,6 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
-    public void setDependencies( List<Dependency> dependencies ) {
-        dependencyGrid.fillList( dependencies );
-    }
-
-    @Override
     public void setGAV( GAV gav ) {
         gavEditor.setGAV( gav );
     }
@@ -92,8 +82,6 @@ public class POMEditorPanelViewImpl
     @Override
     public void setReadOnly() {
         gavEditor.setReadOnly();
-        dependencyGrid.setReadOnly();
-
     }
 
     @Override
