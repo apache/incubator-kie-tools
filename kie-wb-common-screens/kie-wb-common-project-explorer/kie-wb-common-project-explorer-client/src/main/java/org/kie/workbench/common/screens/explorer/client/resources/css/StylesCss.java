@@ -25,18 +25,8 @@ public interface StylesCss
         extends
         CssResource {
 
-    String container();
-
-    String item();
-
-    String breadCrumbsContainer();
-
-    String breadCrumbs();
-
-    String groupHeader();
-
-    String label();
-
     String viewContainer();
+
+    String triggerCaption();
 
 }

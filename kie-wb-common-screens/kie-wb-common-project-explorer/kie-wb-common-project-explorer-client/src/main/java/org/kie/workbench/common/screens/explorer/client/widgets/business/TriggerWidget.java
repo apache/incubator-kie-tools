@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 import com.github.gwtbootstrap.client.ui.NavHeader;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
+import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 
 /**
  * Trigger Widget for ResourceType groups
@@ -26,13 +26,19 @@ import com.google.gwt.user.client.ui.Label;
 public class TriggerWidget extends HorizontalPanel {
 
     public TriggerWidget( final String caption ) {
-        add( new NavHeader( caption ) );
+        add( makeNavHeader( caption ) );
     }
 
     public TriggerWidget( final IsWidget icon,
                           final String caption ) {
         add( icon );
-        add( new NavHeader( caption ) );
+        add( makeNavHeader( caption ) );
+    }
+
+    private NavHeader makeNavHeader( final String caption ) {
+        final NavHeader nh = new NavHeader( caption );
+        nh.addStyleName( ProjectExplorerResources.INSTANCE.CSS().triggerCaption() );
+        return nh;
     }
 
 }
