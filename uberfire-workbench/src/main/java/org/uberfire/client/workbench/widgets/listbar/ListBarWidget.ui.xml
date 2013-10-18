@@ -54,10 +54,10 @@
 
         <g:FlowPanel styleName="{style.pull-right} {style.better_margin}" ui:field="menuArea">
           <g:FlowPanel styleName="{style.inline} {style.better_margin}" ui:field="contextMenu"/>
-          <tb:ButtonGroup>
+          <tb:ButtonGroup ui:field="closeButtonContainer">
             <tb:Button ui:field="closeButton" size="MINI" icon="REMOVE"/>
           </tb:ButtonGroup>
-          <tb:ButtonGroup>
+          <tb:ButtonGroup ui:field="dropdownCaretContainer">
             <tb:DropdownButton ui:field="dropdownCaret" size="MINI"/>
           </tb:ButtonGroup>
         </g:FlowPanel>

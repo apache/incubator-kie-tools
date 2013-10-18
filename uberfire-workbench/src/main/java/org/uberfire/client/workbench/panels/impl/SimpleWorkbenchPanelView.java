@@ -17,6 +17,7 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.dom.client.Style;
@@ -39,11 +40,16 @@ import org.uberfire.workbench.model.PartDefinition;
 public class SimpleWorkbenchPanelView
         extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
+    @Inject
+    protected ListBarWidget listBar;
+
     protected RequiresResizeFlowPanel container = new RequiresResizeFlowPanel();
     protected ContextPanel contextWidget = new ContextPanel();
-    protected ListBarWidget listBar = new ListBarWidget( false, false );
 
-    public SimpleWorkbenchPanelView() {
+    @PostConstruct
+    private void setupDragAndDrop() {
+        listBar.setDndManager( dndManager );
+        listBar.setup( false, false );
 
         //When a tab is selected ensure content is resized and set focus
         listBar.addSelectionHandler( new SelectionHandler<PartDefinition>() {
@@ -65,11 +71,6 @@ public class SimpleWorkbenchPanelView
         container.add( contextWidget );
         container.add( listBar );
         initWidget( container );
-    }
-
-    @PostConstruct
-    private void setupDragAndDrop() {
-        listBar.setDndManager( dndManager );
     }
 
     public void enableDnd() {

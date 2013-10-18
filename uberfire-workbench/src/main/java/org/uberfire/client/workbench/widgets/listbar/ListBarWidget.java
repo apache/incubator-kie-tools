@@ -49,7 +49,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
@@ -57,6 +56,7 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.DragArea;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
@@ -115,6 +115,12 @@ public class ListBarWidget
     DropdownButton dropdownCaret;
 
     @UiField
+    ButtonGroup dropdownCaretContainer;
+
+    @UiField
+    ButtonGroup closeButtonContainer;
+
+    @UiField
     FlowPanel content;
 
     @UiField
@@ -134,15 +140,18 @@ public class ListBarWidget
     private Pair<PartDefinition, FlowPanel> currentPart;
 
     public ListBarWidget() {
-        this( true, true );
+
+        initWidget( uiBinder.createAndBindUi( this ) );
+
+        setup( true, true );
+
+        scheduleResize();
     }
 
-    public ListBarWidget( boolean isMultiPart,
-                          boolean isDndEnabled ) {
+    public void setup( boolean isMultiPart,
+                       boolean isDndEnabled ) {
         this.isMultiPart = isMultiPart;
         this.isDndEnabled = isDndEnabled;
-        initWidget( uiBinder.createAndBindUi( this ) );
-        menuArea.setVisible( false );
 
         if ( isMultiPart ) {
             closeButton.addClickHandler( new ClickHandler() {
@@ -154,8 +163,8 @@ public class ListBarWidget
                 }
             } );
         } else {
-            closeButton.setVisible( false );
-            dropdownCaret.setVisible( false );
+            dropdownCaretContainer.setVisible( false );
+            closeButtonContainer.setVisible( false );
         }
 
         container.addFocusHandler( new FocusHandler() {
@@ -170,8 +179,6 @@ public class ListBarWidget
         if ( UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) != null ) {
             contextDisplay.removeFromParent();
         }
-
-        scheduleResize();
     }
 
     public void enableDnd() {
@@ -221,10 +228,6 @@ public class ListBarWidget
         if ( parts.contains( partDefinition ) ) {
             selectPart( partDefinition );
             return;
-        }
-
-        if ( isMultiPart ) {
-            menuArea.setVisible( true );
         }
 
         parts.add( partDefinition );
@@ -304,10 +307,14 @@ public class ListBarWidget
     }
 
     private void setupDropdown() {
-        dropdownCaret.setRightDropdown( true );
-        dropdownCaret.clear();
-        customList = new CustomList();
-        dropdownCaret.add( customList );
+        if ( isMultiPart ) {
+            dropdownCaret.setRightDropdown( true );
+            dropdownCaret.clear();
+            customList = new CustomList();
+            dropdownCaret.add( customList );
+        } else {
+            dropdownCaretContainer.setVisible( false );
+        }
     }
 
     private void setupContextMenu() {
