@@ -17,7 +17,9 @@
 package org.uberfire.client.editors.fileexplorer;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -74,13 +76,15 @@ public class FileExplorerPresenter {
     @Inject
     private PlaceManager placeManager;
 
+    private Set<Repository> repositories = new HashSet<Repository>();
+
     public interface View
             extends
             UberView<FileExplorerPresenter> {
 
         void reset();
 
-        void removeIfExists( final Repository repo );
+        void removeRepository( final Repository repo );
 
         void addNewRepository( final Repository repo );
     }
@@ -102,13 +106,17 @@ public class FileExplorerPresenter {
     public void onStartup() {
 
         view.reset();
+        repositories.clear();
 
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
                                     @Override
                                     public void callback( Collection<Repository> response ) {
                                         for ( final Repository root : response ) {
-                                            view.removeIfExists( root );
+                                            if ( repositories.contains( root ) ) {
+                                                view.removeRepository( root );
+                                            }
                                             view.addNewRepository( root );
+                                            repositories.add( root );
                                         }
                                     }
                                 }, new ErrorCallback<Message>() {
@@ -188,12 +196,26 @@ public class FileExplorerPresenter {
     }
 
     public void newRootDirectory( @Observes NewRepositoryEvent event ) {
-        view.removeIfExists( event.getNewRepository() );
-        view.addNewRepository( event.getNewRepository() );
+        final Repository repository = event.getNewRepository();
+        if ( repository == null ) {
+            return;
+        }
+        if ( repositories.contains( repository ) ) {
+            view.removeRepository( repository );
+        }
+        view.addNewRepository( repository );
+        repositories.add( repository );
     }
 
     public void removeRootDirectory( @Observes RepositoryRemovedEvent event ) {
-        view.removeIfExists( event.getRepository() );
+        final Repository repository = event.getRepository();
+        if ( repository == null ) {
+            return;
+        }
+        if ( repositories.contains( repository ) ) {
+            view.removeRepository( repository );
+            repositories.remove( repository );
+        }
     }
 
     //Communicate change in context
@@ -208,27 +230,38 @@ public class FileExplorerPresenter {
 
     // Refresh when a Resource has been added
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
-        onStartup();
+        refreshView( event.getPath() );
     }
 
     // Refresh when a Resource has been deleted
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
-        onStartup();
+        refreshView( event.getPath() );
     }
 
     // Refresh when a Resource has been copied
     public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
-        onStartup();
+        refreshView( event.getDestinationPath() );
     }
 
     // Refresh when a Resource has been renamed
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
-        onStartup();
+        refreshView( event.getDestinationPath() );
     }
 
     // Refresh when a batch Resource change has occurred
     public void onBatchResourceChange( @Observes final ResourceBatchChangesEvent event ) {
         onStartup();
+    }
+
+    private void refreshView( final Path path ) {
+        final String pathUri = path.toURI();
+        for ( Repository repository : repositories ) {
+            final String repositoryUri = repository.getRoot().toURI();
+            if ( pathUri.startsWith( repositoryUri ) ) {
+                onStartup();
+                break;
+            }
+        }
     }
 
 }

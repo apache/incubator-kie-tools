@@ -16,6 +16,9 @@
 
 package org.uberfire.client.editors.fileexplorer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
@@ -36,7 +39,9 @@ public class FileExplorerView
 
     TreeItem rootTreeItem = null;
 
-    final Tree tree = new Tree();
+    private final Tree tree = new Tree();
+
+    private final Map<Repository, TreeItem> repositoryToTreeItemMap = new HashMap<Repository, TreeItem>();
 
     private static CoreImages images = GWT.create( CoreImages.class );
 
@@ -85,13 +90,17 @@ public class FileExplorerView
     public void reset() {
         rootTreeItem.setUserObject( REPOSITORY_ID );
         rootTreeItem.addItem( TreeItem.Type.LOADING, LAZY_LOAD );
-
         rootTreeItem.removeItems();
+        repositoryToTreeItemMap.clear();
     }
 
     @Override
-    public void removeIfExists( final Repository repo ) {
-        //TODO {porcelli} implement!
+    public void removeRepository( final Repository repo ) {
+        if ( !repositoryToTreeItemMap.containsKey( repo ) ) {
+            return;
+        }
+        final TreeItem repositoryRootItem = repositoryToTreeItemMap.remove( repo );
+        repositoryRootItem.remove();
     }
 
     @Override
@@ -100,6 +109,9 @@ public class FileExplorerView
         final TreeItem repositoryRootItem = rootTreeItem.addItem( TreeItem.Type.FOLDER, repo.getAlias() );
         repositoryRootItem.setState( TreeItem.State.OPEN );
         repositoryRootItem.setUserObject( repo );
+
+        repositoryToTreeItemMap.put( repo,
+                                     repositoryRootItem );
 
         presenter.loadDirectoryContent( new FileExplorerItemImpl( repositoryRootItem ), repo.getRoot() );
     }
