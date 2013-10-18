@@ -170,6 +170,8 @@ public class ListBarWidget
         if ( UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) != null ) {
             contextDisplay.removeFromParent();
         }
+
+        scheduleResize();
     }
 
     public void enableDnd() {
@@ -238,6 +240,8 @@ public class ListBarWidget
         if ( isDndEnabled ) {
             dndManager.makeDraggable( view, title );
         }
+
+        scheduleResize();
     }
 
     private void updateBreadcrumb( final PartDefinition partDefinition ) {
@@ -337,6 +341,8 @@ public class ListBarWidget
         partContentView.remove( part );
         partTitle.remove( part );
         setupDropdown();
+
+        scheduleResize();
     }
 
     @Override
@@ -369,8 +375,20 @@ public class ListBarWidget
     public void onResize() {
         final Widget parent = getParent();
         if ( parent != null ) {
-            final int width = parent.getParent().getParent().getOffsetWidth();
-            final int height = parent.getParent().getParent().getOffsetHeight();
+            final int width;
+            final int height;
+            if ( parent.getParent() != null ) {
+                if ( parent.getParent().getParent() != null ) {
+                    width = parent.getParent().getParent().getOffsetWidth();
+                    height = parent.getParent().getParent().getOffsetHeight();
+                } else {
+                    width = parent.getParent().getOffsetWidth();
+                    height = parent.getParent().getOffsetHeight();
+                }
+            } else {
+                width = parent.getOffsetWidth();
+                height = parent.getOffsetHeight();
+            }
             content.setPixelSize( width, height );
             header.setWidth( width + "px" );
 
