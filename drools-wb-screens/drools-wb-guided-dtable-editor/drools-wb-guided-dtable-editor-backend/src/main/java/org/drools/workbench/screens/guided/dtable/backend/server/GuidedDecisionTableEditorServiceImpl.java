@@ -36,6 +36,7 @@ import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
@@ -111,6 +112,9 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
 
     @Inject
     private GenericValidator genericValidator;
+
+    @Inject
+    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
 
     @Override
     public Path create( final Path context,
@@ -207,6 +211,8 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
+
+            invalidateDMOProjectCache.fire(new InvalidateDMOProjectCacheEvent(sessionInfo, projectService.resolveProject(resource), resource));
 
             return resource;
 
