@@ -162,7 +162,6 @@ public class RuleAttributeWidget extends Composite {
                 || attributeName.equals( TIMER_ATTR )
                 || attributeName.equals( CALENDARS_ATTR ) ) {
             final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
-            tb.setValue( at.getValue() );
             tb.setEnabled( !isReadOnly );
             if ( !isReadOnly ) {
                 tb.addValueChangeHandler( new ValueChangeHandler<String>() {
@@ -173,11 +172,11 @@ public class RuleAttributeWidget extends Composite {
 
                 } );
             }
+            tb.setValue( at.getValue() );
             editor = tb;
 
         } else if ( attributeName.equals( SALIENCE_ATTR ) ) {
             final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_INTEGER );
-            tb.setValue( at.getValue() );
             tb.setEnabled( !isReadOnly );
             if ( !isReadOnly ) {
                 tb.addValueChangeHandler( new ValueChangeHandler<String>() {
@@ -188,11 +187,11 @@ public class RuleAttributeWidget extends Composite {
 
                 } );
             }
+            tb.setValue( at.getValue() );
             editor = tb;
 
         } else if ( attributeName.equals( DURATION_ATTR ) ) {
             final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_LONG );
-            tb.setValue( at.getValue() );
             tb.setEnabled( !isReadOnly );
             if ( !isReadOnly ) {
                 tb.addValueChangeHandler( new ValueChangeHandler<String>() {
@@ -203,6 +202,7 @@ public class RuleAttributeWidget extends Composite {
 
                 } );
             }
+            tb.setValue( at.getValue() );
             editor = tb;
 
         } else if ( attributeName.equals( NO_LOOP_ATTR )
@@ -220,7 +220,6 @@ public class RuleAttributeWidget extends Composite {
                 tb.setEnabled( false );
             } else {
                 final PopupDatePicker dp = new PopupDatePicker( false );
-                dp.setValue( at.getValue() );
                 dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
 
                     public void onValueChange( ValueChangeEvent<Date> event ) {
@@ -228,6 +227,7 @@ public class RuleAttributeWidget extends Composite {
                     }
 
                 } );
+                dp.setValue( at.getValue() );
                 editor = dp;
             }
         } else if ( attributeName.equals( DIALECT_ATTR ) ) {
