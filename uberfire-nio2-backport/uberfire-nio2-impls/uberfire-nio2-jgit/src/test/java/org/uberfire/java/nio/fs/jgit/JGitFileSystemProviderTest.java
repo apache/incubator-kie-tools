@@ -1045,8 +1045,8 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         outStream3.write( "my cool content".getBytes() );
         outStream3.close();
 
-        assertThat( PROVIDER.readAttributes( path, "*" ) ).isNotNull().hasSize( 10 );
-        assertThat( PROVIDER.readAttributes( path, "basic:*" ) ).isNotNull().hasSize( 10 );
+        assertThat( PROVIDER.readAttributes( path, "*" ) ).isNotNull().hasSize( 9 );
+        assertThat( PROVIDER.readAttributes( path, "basic:*" ) ).isNotNull().hasSize( 9 );
         assertThat( PROVIDER.readAttributes( path, "basic:isRegularFile" ) ).isNotNull().hasSize( 1 );
         assertThat( PROVIDER.readAttributes( path, "basic:isRegularFile,isDirectory" ) ).isNotNull().hasSize( 2 );
         assertThat( PROVIDER.readAttributes( path, "basic:isRegularFile,isDirectory,someThing" ) ).isNotNull().hasSize( 2 );
@@ -1072,8 +1072,8 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         final Path rootPath = PROVIDER.getPath( URI.create( "git://user_branch@readattrsmap-test-repo/" ) );
 
-        assertThat( PROVIDER.readAttributes( rootPath, "*" ) ).isNotNull().hasSize( 10 );
-        assertThat( PROVIDER.readAttributes( rootPath, "basic:*" ) ).isNotNull().hasSize( 10 );
+        assertThat( PROVIDER.readAttributes( rootPath, "*" ) ).isNotNull().hasSize( 9 );
+        assertThat( PROVIDER.readAttributes( rootPath, "basic:*" ) ).isNotNull().hasSize( 9 );
         assertThat( PROVIDER.readAttributes( rootPath, "basic:isRegularFile" ) ).isNotNull().hasSize( 1 );
         assertThat( PROVIDER.readAttributes( rootPath, "basic:isRegularFile,isDirectory" ) ).isNotNull().hasSize( 2 );
         assertThat( PROVIDER.readAttributes( rootPath, "basic:isRegularFile,isDirectory,someThing" ) ).isNotNull().hasSize( 2 );
