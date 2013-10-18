@@ -98,6 +98,12 @@ public class Explorer extends Composite {
         activeNavigator.loadContent( presenter.getActiveContent() );
     }
 
+    public void clear() {
+        for ( final Navigator navigator : navigators.values() ) {
+            navigator.clear();
+        }
+    }
+
     public void setupHeader( final Set<OrganizationalUnit> organizationalUnits,
                              final OrganizationalUnit activeOrganizationalUnit,
                              final Set<Repository> repositories,
@@ -115,6 +121,7 @@ public class Explorer extends Composite {
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
+                            Explorer.this.clear();
                             presenter.organizationalUnitSelected( ou );
                         }
                     } );
@@ -132,6 +139,7 @@ public class Explorer extends Composite {
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
+                            Explorer.this.clear();
                             presenter.repositorySelected( repository );
                         }
                     } );
@@ -149,6 +157,7 @@ public class Explorer extends Composite {
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
+                            Explorer.this.clear();
                             presenter.projectSelected( project );
                         }
                     } );

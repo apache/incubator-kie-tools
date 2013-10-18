@@ -208,17 +208,20 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                          activeOrganizationalUnit ) ) {
                     signalChange = true;
                     activeOrganizationalUnit = content.getOrganizationalUnit();
+                    getView().getExplorer().clear();
                 }
                 if ( Utils.hasRepositoryChanged( content.getRepository(),
                                                  activeRepository ) ) {
                     signalChange = true;
                     activeRepository = content.getRepository();
+                    getView().getExplorer().clear();
                 }
                 if ( Utils.hasProjectChanged( content.getProject(),
                                               activeProject ) ) {
                     signalChange = true;
                     buildSelectedProject = true;
                     activeProject = content.getProject();
+                    getView().getExplorer().clear();
                 }
                 if ( Utils.hasFolderItemChanged( content.getFolderListing().getItem(),
                                                  activeFolderItem ) ) {

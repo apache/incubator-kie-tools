@@ -167,6 +167,7 @@ public class TreeNavigator extends Composite implements Navigator {
     @Override
     public void clear() {
         tree.clear();
+        activeContent = null;
     }
 
     @Override
