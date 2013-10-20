@@ -27,8 +27,8 @@
   <artifactId>uberfire-nio2-jgit</artifactId>
   <packaging>jar</packaging>
 
-  <name>KIE NIO.2 :: JGIT Impl</name>
-  <description>KIE NIO.2 :: JGIT Impl</description>
+  <name>UberFire NIO.2 :: JGIT Impl</name>
+  <description>UberFire NIO.2 :: JGIT Impl</description>
 
   <dependencies>
     <dependency>
