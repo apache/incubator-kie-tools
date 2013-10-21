@@ -22,23 +22,18 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.m2repo.client.resources.i18n.Constants;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.validation.KModuleValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
-import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
@@ -103,7 +98,7 @@ public class ProjectScreenPresenter
                                    PlaceManager placeManager,
                                    ObservablePath pathToPomXML,
                                    ObservablePath pathToKModule,
-                                   ObservablePath pathToImports) {
+                                   ObservablePath pathToImports ) {
         this.view = view;
         view.setPresenter( this );
 
@@ -112,7 +107,7 @@ public class ProjectScreenPresenter
         this.saveOperationService = saveOperationService;
         this.buildResultsEvent = buildResultsEvent;
         this.notificationEvent = notificationEvent;
-        this.changeTitleWidgetEvent=changeTitleWidgetEvent;
+        this.changeTitleWidgetEvent = changeTitleWidgetEvent;
         this.placeManager = placeManager;
 
         this.pathToPomXML = pathToPomXML;
@@ -129,7 +124,6 @@ public class ProjectScreenPresenter
         this.placeRequest = placeRequest;
     }
 
-
     public void selectedPathChanged( @Observes final ProjectContextChangeEvent event ) {
         showCurrentProjectInfoIfAny( event.getProject() );
     }
@@ -138,9 +132,9 @@ public class ProjectScreenPresenter
         if ( project != null && !project.equals( this.project ) ) {
             this.project = project;
 
-            this.pathToPomXML.wrap(project.getPomXMLPath());
-            this.pathToKModule.wrap(project.getKModuleXMLPath());
-            this.pathToImports.wrap(project.getImportsPath());
+            this.pathToPomXML.wrap( project.getPomXMLPath() );
+            this.pathToKModule.wrap( project.getKModuleXMLPath() );
+            this.pathToImports.wrap( project.getImportsPath() );
 
             init();
         }
@@ -174,60 +168,59 @@ public class ProjectScreenPresenter
                                         placeRequest,
                                         ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
                                                 model.getPOM().getGav().getArtifactId() + ":" +
-                                                model.getPOM().getGav().getGroupId() + ":" +
-                                                model.getPOM().getGav().getVersion()
-                                        )));
+                                                        model.getPOM().getGav().getGroupId() + ":" +
+                                                        model.getPOM().getGav().getVersion()
+                                                                                              ) ) );
                     }
                 },
-                new DefaultErrorCallback()
-                                 ).load( pathToPomXML );
+                new HasBusyIndicatorDefaultErrorCallback( view ) ).load( pathToPomXML );
 
         view.showGAVPanel();
     }
 
-    private void addPathListeners(ObservablePath pathToPomXML1) {
-        pathToPomXML1.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+    private void addPathListeners( ObservablePath pathToPomXML1 ) {
+        pathToPomXML1.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
-            public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
-                newConcurrentRename(info.getSource(),
-                        info.getTarget(),
-                        info.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                disableMenus();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                reload();
-                            }
-                        }
-                ).show();
+            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
+                newConcurrentRename( info.getSource(),
+                                     info.getTarget(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             reload();
+                                         }
+                                     }
+                                   ).show();
             }
-        });
+        } );
 
-        pathToPomXML.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+        pathToPomXML.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
             @Override
-            public void execute(final ObservablePath.OnConcurrentDelete info) {
-                newConcurrentDelete(info.getPath(),
-                        info.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                disableMenus();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.closePlace("projectScreen");
-                            }
-                        }
-                ).show();
+            public void execute( final ObservablePath.OnConcurrentDelete info ) {
+                newConcurrentDelete( info.getPath(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             placeManager.closePlace( "projectScreen" );
+                                         }
+                                     }
+                                   ).show();
             }
-        });
+        } );
     }
 
     private void disableMenus() {
@@ -263,9 +256,9 @@ public class ProjectScreenPresenter
                                             public void callback( Void v ) {
                                                 view.switchBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
                                                 notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
-                                                        NotificationEvent.NotificationType.SUCCESS ) );
+                                                                                               NotificationEvent.NotificationType.SUCCESS ) );
                                                 buildServiceCaller.call( getBuildSuccessCallback(),
-                                                        new HasBusyIndicatorDefaultErrorCallback( view )).buildAndDeploy( project );
+                                                                         new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
                                             }
                                         } );
                                     }
@@ -280,7 +273,7 @@ public class ProjectScreenPresenter
                                     public void execute() {
                                         view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
                                         buildServiceCaller.call( getBuildSuccessCallback(),
-                                                new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
+                                                                 new HasBusyIndicatorDefaultErrorCallback( view ) ).buildAndDeploy( project );
                                     }
                                 },
                                 org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.NO(),
@@ -290,13 +283,15 @@ public class ProjectScreenPresenter
                                 // Cancel
                                 new Command() {
                                     @Override
-                                    public void execute() {;}
+                                    public void execute() {
+                                        ;
+                                    }
                                 },
                                 org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
                                 ButtonType.PRIMARY,
                                 IconType.SIGNOUT
-                        );
-                        yesNoCancelPopup.setCloseVisible(false);
+                                                                                                );
+                        yesNoCancelPopup.setCloseVisible( false );
                         yesNoCancelPopup.show();
                     }
                 } )
@@ -313,7 +308,7 @@ public class ProjectScreenPresenter
                     public void callback( Void v ) {
                         view.hideBusyIndicator();
                         notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
-                                NotificationEvent.NotificationType.SUCCESS ) );
+                                                                       NotificationEvent.NotificationType.SUCCESS ) );
                     }
                 } );
             }
@@ -326,16 +321,17 @@ public class ProjectScreenPresenter
 
         if ( !kModuleValidator.hasErrors() ) {
             saveOperationService.save( pathToPomXML,
-                    new CommandWithCommitMessage() {
-                        @Override
-                        public void execute( final String comment ) {
+                                       new CommandWithCommitMessage() {
+                                           @Override
+                                           public void execute( final String comment ) {
 
-                            view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                               view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
-                            projectScreenService.call( callback ).save( pathToPomXML, model, comment );
+                                               projectScreenService.call( callback,
+                                                                          new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML, model, comment );
 
-                        }
-                    } );
+                                           }
+                                       } );
         } else {
             ErrorPopup.showMessage( kModuleValidator.getErrorsString() );
         }
