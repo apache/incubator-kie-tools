@@ -82,7 +82,7 @@
 
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
     <version.org.apache.helix>0.6.1-incubating</version.org.apache.helix>
-    <version.org.eclipse.jgit>2.1.0.201209190230-r</version.org.eclipse.jgit>
+    <version.org.eclipse.jgit>3.1.0.201310021548-r</version.org.eclipse.jgit>
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
 
   </properties>

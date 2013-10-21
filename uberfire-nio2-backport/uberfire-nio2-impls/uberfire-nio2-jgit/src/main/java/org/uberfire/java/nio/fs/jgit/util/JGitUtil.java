@@ -62,7 +62,7 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
@@ -200,7 +200,7 @@ public final class JGitUtil {
             final Repository repository;
             final Git git;
             if ( gitDir != null && gitDir.exists() ) {
-                repository = new FileRepository( gitDir );
+                repository = FileRepositoryBuilder.create( gitDir );
                 git = new Git( repository );
             } else {
                 git = Git.cloneRepository()
@@ -443,10 +443,11 @@ public final class JGitUtil {
 
     private static PersonIdent buildPersonIdent( final Git git,
                                                  final String name,
-                                                 final String email,
+                                                 final String _email,
                                                  final TimeZone timeZone,
                                                  final Date when ) {
         final TimeZone tz = timeZone == null ? TimeZone.getDefault() : timeZone;
+        final String email = _email == null ? "" : _email;
 
         if ( name != null ) {
             if ( when != null ) {
