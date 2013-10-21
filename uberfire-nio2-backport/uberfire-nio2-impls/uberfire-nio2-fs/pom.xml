@@ -11,8 +11,8 @@
   <artifactId>uberfire-nio2-fs</artifactId>
   <packaging>jar</packaging>
 
-  <name>KIE NIO.2 :: File System Impl</name>
-  <description>KIE NIO.2 :: File System Impl</description>
+  <name>UberFire NIO.2 :: File System Impl</name>
+  <description>UberFire NIO.2 :: File System Impl</description>
 
   <dependencies>
     <dependency>

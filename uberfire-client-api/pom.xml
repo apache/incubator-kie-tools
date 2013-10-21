@@ -16,22 +16,23 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.uberfire</groupId>
-		<artifactId>uberfire</artifactId>
-		<version>0.4.0-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire-parent-with-dependencies</artifactId>
+    <version>0.4.0-SNAPSHOT</version>
+    <relativePath>../uberfire-parent-with-dependencies/pom.xml</relativePath>
+  </parent>
 
-	<artifactId>uberfire-client-api</artifactId>
-	<packaging>jar</packaging>
+  <artifactId>uberfire-client-api</artifactId>
+  <packaging>jar</packaging>
 
-	<name>UberFire Client API</name>
-	<description>UberFire Client API</description>
+  <name>UberFire Client API</name>
+  <description>UberFire Client API</description>
 
-	<dependencies>
+  <dependencies>
 
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -39,45 +40,45 @@
     </dependency>
 
     <dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-api</artifactId>
-		</dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
 
     <dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
       <scope>provided</scope>
-		</dependency>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-javax-enterprise</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-javax-enterprise</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.jboss.errai</groupId>
-			<artifactId>errai-common</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-	</dependencies>
-	
-	<build>
-        <resources>
-            <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-            <resource>
-                <directory>src/main/java</directory>
-            </resource>
-            <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-    </build>
+  </dependencies>
+
+  <build>
+    <resources>
+      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
 
 </project>

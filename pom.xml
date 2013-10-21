@@ -25,13 +25,14 @@
   </parent>
 
   <groupId>org.uberfire</groupId>
-  <artifactId>uberfire</artifactId>
+  <artifactId>uberfire-parent-metadata</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>UberFire Multiproject</name>
+  <name>UberFire parent metadata</name>
   <description>
-    UberFire - Web RCP Framework.
+    The metadata parent contains all parent metadata (including plugins) except for dependency versions.
+    This is to avoid a chicken-and-egg problem with the boms.
   </description>
   <inceptionYear>2012</inceptionYear>
   <organization>
@@ -47,55 +48,63 @@
   </licenses>
 
   <properties>
-    <slf4j.version>1.7.2</slf4j.version>
-    <logback.version>1.0.9</logback.version>
-
-    <jetty.version>6.1.25</jetty.version>
-    <jetty-servlet.version>7.2.1.v20101111</jetty-servlet.version>
-
-    <javax.inject.version>1</javax.inject.version>
-    <cdi-api.version>1.0-SP4</cdi-api.version>
-    <weld-spi.version>1.1.Final</weld-spi.version>
-    <weld.version>1.1.13.Final</weld.version>
-
-    <servlet-api.version>3.0.1</servlet-api.version>
-    <jsp-api.version>2.0</jsp-api.version>
-    <jboss-ejb3-api.version>3.1.0</jboss-ejb3-api.version>
-    <xml-apis.version>1.3.04</xml-apis.version>
-
-    <errai.version>2.4.1.Final</errai.version>
-
-    <commons-httpclient.version>3.1</commons-httpclient.version>
-    <commons-io.version>2.1</commons-io.version>
-    <commons-codec.version>1.4</commons-codec.version>
-
-    <xstream.version>1.4.3</xstream.version>
-    <snakeyaml.version>1.8</snakeyaml.version>
-    <freemarker.version>2.3.19</freemarker.version>
-
-    <mvel.version>2.1.Beta8</mvel.version>
-
-    <gwt.version>2.5.0</gwt.version>
-    <gwt.maven.version>2.5.0</gwt.maven.version>
-    <bootstrap.version>2.2.1.0</bootstrap.version>
-    <gwt-dnd.version>3.1.2</gwt-dnd.version>
-    <gchart.version>2.6</gchart.version>
-
-    <jasypt.version>1.9.0</jasypt.version>
-    <jacc.version>1.4</jacc.version>
-    <javassist.version>3.15.0-GA</javassist.version>
-
-    <junit.version>4.11</junit.version>
-    <mockito-all.version>1.9.0</mockito-all.version>
-    <fest-assert-core.version>2.0M6</fest-assert-core.version>
-    <hamcrest.version>1.3</hamcrest.version>
-
-    <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
-    <version.org.apache.helix>0.6.1-incubating</version.org.apache.helix>
-    <version.org.eclipse.jgit>2.1.0.201209190230-r</version.org.eclipse.jgit>
+    <!-- IMPORTANT: Do not declare any external dependencies versions here! Declare them in kie-parent-with-dependencies. -->
+    <!-- Make build platform independent -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
-
   </properties>
+
+  <!-- Repositories -->
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>sonatype</id>
+      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>codehaus-public-repository</id>
+      <name>Codehaus Public Repository</name>
+      <url>https://nexus.codehaus.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
 
   <scm>
     <connection>scm:git:git@github.com:droolsjbpm/guvnorng.git</connection>
@@ -134,7 +143,9 @@
               <_removeheaders>Ignore-Package</_removeheaders>
               <_nouses>true</_nouses>
               <_snapshot>${osgi.snapshot.qualifier}</_snapshot>
-              <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+              <Bundle-Version>
+                ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+              </Bundle-Version>
             </instructions>
           </configuration>
         </plugin>
@@ -215,10 +226,14 @@
                   <manifestEntries>
                     <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
                     <Bundle-SymbolicName>${project.artifactId}.source</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Version>
+                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                    </Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                    <Eclipse-SourceBundle>
+                      ${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
+                    </Eclipse-SourceBundle>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -233,10 +248,14 @@
                   <manifestEntries>
                     <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
                     <Bundle-SymbolicName>${project.artifactId}.tests.source</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Version>
+                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                    </Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
+                    <Eclipse-SourceBundle>
+                      ${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
+                    </Eclipse-SourceBundle>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -325,7 +344,9 @@
                 <archive>
                   <manifestEntries>
                     <Bundle-SymbolicName>${project.artifactId}.tests</Bundle-SymbolicName>
-                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
+                    <Bundle-Version>
+                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                    </Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
                   </manifestEntries>
@@ -439,7 +460,23 @@
 
   </build>
 
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>uberfire-distro</module>
+      </modules>
+    </profile>
+  </profiles>
+
   <modules>
+    <module>uberfire-bom</module>
+    <module>uberfire-parent-with-dependencies</module>
     <module>uberfire-commons</module>
     <module>uberfire-nio2-backport</module>
     <module>uberfire-io</module>
@@ -455,616 +492,11 @@
     <module>uberfire-showcase</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-core</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers-common</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-codecs</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-queryparser</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit</artifactId>
-        <version>${version.org.eclipse.jgit}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.helix</groupId>
-        <artifactId>helix-core</artifactId>
-        <version>${version.org.apache.helix}</version>
-      </dependency>
-
-      <!-- Showcase WebApp -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-webapp</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-
-      <!-- Server -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-server</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Security -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-security-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-security-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-security-server</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Backend -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-backend-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-backend-server</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Formatting -->
-      <dependency>
-        <groupId>org.ocpsoft.prettytime</groupId>
-        <artifactId>prettytime</artifactId>
-        <version>3.0.2.Final</version>
-      </dependency>
-
-      <!-- Widgets -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Widgets Sandbox -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widget-markdown</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Annotations -->
-      <dependency>
-        <groupId>org.freemarker</groupId>
-        <artifactId>freemarker</artifactId>
-        <version>${freemarker.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
-        <version>${javax.inject.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-integration</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-      <!-- JUnit 4.1 comes with hamcrest-core 1.1 but we need 1.3 -->
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-core</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-
-      <!-- Workbench -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-client-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- JS Native Plugins -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-js</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- VFS: Service -->
-      <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>${commons-httpclient.version}</version>
-      </dependency>
-
-      <!-- Runtime / Container dependencies -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons-io.version}</version>
-      </dependency>
-
-      <!-- KIE Commons -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-io</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-io</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- KIE Commons VFS -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-nio2-model</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-nio2-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-nio2-fs</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-nio2-jgit</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-backend-lucene</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-commons-io</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Errai -->
-      <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>${cdi-api.version}</version>
-      </dependency>
-
-      <!-- Errai AS -->
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-jboss-as-support</artifactId>
-        <version>${errai.version}</version>
-      </dependency>
-
-      <!-- Errai Core -->
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-marshalling</artifactId>
-        <version>${errai.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-bus</artifactId>
-        <version>${errai.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-ioc</artifactId>
-        <version>${errai.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-common</artifactId>
-        <version>${errai.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mvel</groupId>
-        <artifactId>mvel2</artifactId>
-        <version>${mvel.version}</version>
-      </dependency>
-
-      <!-- CDI Integration Modules -->
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-cdi-client</artifactId>
-        <version>${errai.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-javax-enterprise</artifactId>
-        <version>${errai.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-weld-integration</artifactId>
-        <version>${errai.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-cdi-jetty</artifactId>
-        <version>${errai.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <!-- Weld Modules -->
-      <dependency>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-spi</artifactId>
-        <version>${weld-spi.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.weld.se</groupId>
-        <artifactId>weld-se-core</artifactId>
-        <version>${weld.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.weld.servlet</groupId>
-        <artifactId>weld-servlet-core</artifactId>
-        <version>${weld.version}</version>
-      </dependency>
-
-      <!-- CDI Development Utils -->
-      <!-- This must be placed above com.google.gwt:gwt-dev to override the
-         Jetty that is present there -->
-      <dependency>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty</artifactId>
-        <version>${jetty.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-plus</artifactId>
-        <version>${jetty.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-naming</artifactId>
-        <version>${jetty.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-servlet</artifactId>
-        <version>${jetty-servlet.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>${servlet-api.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>jsp-api</artifactId>
-        <version>${jsp-api.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.ejb3</groupId>
-        <artifactId>jboss-ejb3-api</artifactId>
-        <version>${jboss-ejb3-api.version}</version>
-      </dependency>
-
-      <!-- Bootstrap -->
-      <dependency>
-        <groupId>com.github.gwtbootstrap</groupId>
-        <artifactId>gwt-bootstrap</artifactId>
-        <version>${bootstrap.version}</version>
-      </dependency>
-
-      <!-- GWT and GWT Extensions -->
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>${gwt.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.allen-sauer.gwt.dnd</groupId>
-        <artifactId>gwt-dnd</artifactId>
-        <version>${gwt-dnd.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>xml-apis</groupId>
-        <artifactId>xml-apis</artifactId>
-        <version>${xml-apis.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.javassist</groupId>
-        <artifactId>javassist</artifactId>
-        <version>${javassist.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>${mockito-all.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.easytesting</groupId>
-        <artifactId>fest-assert-core</artifactId>
-        <version>${fest-assert-core.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.thoughtworks.xstream</groupId>
-        <artifactId>xstream</artifactId>
-        <version>${xstream.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>commons-codec</groupId>
-        <artifactId>commons-codec</artifactId>
-        <version>${commons-codec.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>${snakeyaml.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jasypt</groupId>
-        <artifactId>jasypt</artifactId>
-        <version>${jasypt.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.security.jacc</groupId>
-        <artifactId>javax.security.jacc-api</artifactId>
-        <version>${jacc.version}</version>
-        <scope>provided</scope>
-      </dependency>
-
-    </dependencies>
-  </dependencyManagement>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- this is a workaround due a bug introduced by maven-compiler-plugin v3 related to log4j dependency -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.12</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-  <!-- Repositories -->
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>sonatype</id>
-      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>codehaus-public-repository</id>
-      <name>Codehaus Public Repository</name>
-      <url>https://nexus.codehaus.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
+  <!-- IMPORTANT: Do not declare any dependencies here! Declare them in uberfire-parent-with-dependencies. -->
+  <!-- Intentionally empty -->
+  <dependencyManagement/>
+  <!-- Intentionally empty -->
+  <dependencies/>
 
   <!-- DistributionManagement -->
   <distributionManagement>
@@ -1080,19 +512,5 @@
       <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
-
-  <profiles>
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>uberfire-distro</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>
