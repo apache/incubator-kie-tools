@@ -23,16 +23,39 @@
 
     <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-    <gwt:HTMLPanel styleName="well container row-fluid " height="310px">
+    <!--gwt:HTMLPanel styleName="well container row-fluid " height="310px" -->
 
-        <table class="row-fluid span12"  style="padding: 2px;">
+    <gwt:HTMLPanel>
+
+        <style>
+            .propertiesTable2 {
+            min-height: 310px !Important;
+            min-width: 285px !Important;
+            overflow: hidden;
+            }
+
+            .propertiesTable2 textarea {
+            width: 185px !Important;
+            resize: none;
+            }
+
+            .propertiesTable2 select,
+            .propertiesTable2 input {
+            width: 185px !Important;
+            }
+
+        </style>
+
+        <div class="well propertiesTable2">
+
+        <table class="row-fluid span12"  style="padding: 4px;">
 
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="titleLabel" text="{i18n.objectEditor_nameLabel}"/>
+                    <gwt:Label ui:field="nameLabel" text="{i18n.objectEditor_nameLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
-                    <b:TextBox ui:field="name" styleName="span8"></b:TextBox>
+                    <b:TextBox ui:field="name" styleName="span10"></b:TextBox>
                 </td>
             </tr>
             <tr>
@@ -43,7 +66,7 @@
                     <gwt:Label ui:field="labelLabel" text="{i18n.objectEditor_labelLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
-                    <b:TextBox ui:field="label" styleName="span8"></b:TextBox>
+                    <b:TextBox ui:field="label" styleName="span10"></b:TextBox>
                 </td>
             </tr>
             <tr>
@@ -54,7 +77,7 @@
                     <gwt:Label ui:field="descriptionLabel" text="{i18n.objectEditor_descriptionLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
-                    <b:TextArea ui:field="description" styleName="span8"></b:TextArea>
+                    <b:TextArea ui:field="description" styleName="span10"></b:TextArea>
                 </td>
             </tr>
             <tr>
@@ -78,7 +101,7 @@
                     <gwt:Label ui:field="superclassLabel" text="{i18n.objectEditor_superclassLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
-                    <datamodeler:SuperclassSelector ui:field="superclassSelector"  styleName="span8"></datamodeler:SuperclassSelector>
+                    <datamodeler:SuperclassSelector ui:field="superclassSelector"  styleName="span10"></datamodeler:SuperclassSelector>
                 </td>
             </tr>
             <tr>
@@ -89,7 +112,7 @@
                     <gwt:Label ui:field="roleLabel" text="{i18n.objectEditor_roleLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
-                    <b:ListBox ui:field="roleSelector" styleName="span8"></b:ListBox>
+                    <b:ListBox ui:field="roleSelector" styleName="span10"></b:ListBox>
                     <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_roleLabel}" text="{i18n.objectEditor_roleHelp}">
                         <b:Icon ui:field="roleHelpIcon" type="QUESTION_SIGN"></b:Icon>
                     </b:Popover>
@@ -98,6 +121,7 @@
 
         </table>
 
+        </div>
     </gwt:HTMLPanel>
 
 </ui:UiBinder>

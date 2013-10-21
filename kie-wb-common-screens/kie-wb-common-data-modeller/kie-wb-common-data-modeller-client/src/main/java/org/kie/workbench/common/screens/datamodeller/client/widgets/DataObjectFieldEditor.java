@@ -73,8 +73,12 @@ public class DataObjectFieldEditor extends Composite {
 
     private static DataObjectFieldEditorUIBinder uiBinder = GWT.create(DataObjectFieldEditorUIBinder.class);
 
+    private static final String DEFAULT_LABEL_CLASS = "gwt-Label";
+
+    private static final String TEXT_ERROR_CLASS = "text-error";
+
     @UiField
-    Label titleLabel;
+    Label nameLabel;
 
     @UiField
     TextBox name;
@@ -268,11 +272,11 @@ public class DataObjectFieldEditor extends Composite {
     void nameChanged(ValueChangeEvent<String> event) {
         if (getObjectField() == null) return;
         // Set widgets to errorpopup for styling purposes etc.
-        titleLabel.setStyleName( null );
+        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
-                titleLabel.setStyleName( "text-error" );
+                nameLabel.setStyleName(TEXT_ERROR_CLASS);
                 name.selectAll();
             }
         };
@@ -283,7 +287,7 @@ public class DataObjectFieldEditor extends Composite {
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
         if (oldValue.equalsIgnoreCase(name.getValue())) {
             name.setText(oldValue);
-            titleLabel.setStyleName(null);
+            nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
             return;
         }
 
@@ -303,7 +307,7 @@ public class DataObjectFieldEditor extends Composite {
 
                     @Override
                     public void onSuccess() {
-                        titleLabel.setStyleName(null);
+                        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
                         objectField.setName(newValue);
                         notifyFieldChange("name", oldValue, newValue);
                     }
@@ -473,13 +477,13 @@ public class DataObjectFieldEditor extends Composite {
     }
 
     private void clean() {
-        titleLabel.setStyleName(null);
+        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
         name.setText(null);
         label.setText(null);
         description.setText(null);
         typeSelector.setSelectedValue(null);
         equalsSelector.setValue(Boolean.FALSE);
-        positionLabel.setStyleName(null);
+        positionLabel.setStyleName(DEFAULT_LABEL_CLASS);
         positionSelector.clear();
     }
 }

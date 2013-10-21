@@ -62,11 +62,15 @@ public class DataObjectEditor extends Composite {
 
     public static final String NOT_SELECTED = "NOT_SELECTED";
 
+    private static final String DEFAULT_LABEL_CLASS = "gwt-Label";
+    
+    private static final String TEXT_ERROR_CLASS = "text-error";
+            
     @UiField
     TextBox name;
 
     @UiField
-    Label titleLabel;
+    Label nameLabel;
 
     @UiField
     TextBox label;
@@ -232,11 +236,11 @@ public class DataObjectEditor extends Composite {
         }
 
         // Set widgets to errorpopup for styling purposes etc.
-        titleLabel.setStyleName( null );
+        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
-                titleLabel.setStyleName( "text-error" );
+                nameLabel.setStyleName(TEXT_ERROR_CLASS);
                 name.selectAll();
             }
         };
@@ -247,7 +251,7 @@ public class DataObjectEditor extends Composite {
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
         if ( oldValue.equalsIgnoreCase( newValue ) ) {
-            titleLabel.setStyleName( null );
+            nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
             return;
         }
         // Otherwise validate
@@ -267,7 +271,7 @@ public class DataObjectEditor extends Composite {
 
                     @Override
                     public void onSuccess() {
-                        titleLabel.setStyleName( null );
+                        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
                         dataObject.setName( newValue );
                         notifyObjectChange( "name", oldValue, newValue );
                     }
@@ -333,7 +337,7 @@ public class DataObjectEditor extends Composite {
         }
 
         // Set widgets to errorpopup for styling purposes etc.
-        packageNameLabel.setStyleName( null );
+        packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
 
         final String newPackageName = packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue() : null;
         final String oldPackageName = getDataObject().getPackageName();
@@ -342,7 +346,7 @@ public class DataObjectEditor extends Composite {
 
         if ( /*(newPackageName == null && oldPackageName == null) ||*/
                 (newPackageName != null && newPackageName.equalsIgnoreCase(oldPackageName)) ) {
-            packageNameLabel.setStyleName(null);
+            packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
             return;
 
         } else if (newPackageName == null) {
@@ -364,7 +368,7 @@ public class DataObjectEditor extends Composite {
                     ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_already_exists( getDataObject().getName(), newPackageName ), null, new Command() {
                         @Override
                         public void execute() {
-                            packageNameLabel.setStyleName( "text-error" );
+                            packageNameLabel.setStyleName(TEXT_ERROR_CLASS);
                             packageSelector.getPackageList().setFocus( true );
                         }
                     } );
@@ -372,7 +376,7 @@ public class DataObjectEditor extends Composite {
 
                 @Override
                 public void onSuccess() {
-                    packageNameLabel.setStyleName( null );
+                    packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
                     dataObject.setPackageName( newPackageName );
                     notifyObjectChange( "packageName", oldPackageName, newPackageName );
                 }
@@ -386,7 +390,7 @@ public class DataObjectEditor extends Composite {
         }
 
         // Set widgets to errorpopup for styling purposes etc.
-        superclassLabel.setStyleName( null );
+        superclassLabel.setStyleName(DEFAULT_LABEL_CLASS);
 
         final String newSuperClass = superclassSelector.getSuperclassList().getValue();
         final String oldSuperClass = getDataObject().getSuperClassName();
@@ -394,7 +398,7 @@ public class DataObjectEditor extends Composite {
         // No notification needed
         if ( ( ( "".equalsIgnoreCase( newSuperClass ) || SuperclassSelector.NOT_SELECTED.equals( newSuperClass ) ) && oldSuperClass == null ) ||
                 newSuperClass.equalsIgnoreCase( oldSuperClass ) ) {
-            superclassLabel.setStyleName( null );
+            superclassLabel.setStyleName( DEFAULT_LABEL_CLASS );
             return;
         }
 
@@ -405,7 +409,7 @@ public class DataObjectEditor extends Composite {
                     ErrorPopup.showMessage( Constants.INSTANCE.validation_error_cyclic_extension( getDataObject().getClassName(), newSuperClass ), null, new Command() {
                         @Override
                         public void execute() {
-                            superclassLabel.setStyleName( "text-error" );
+                            superclassLabel.setStyleName(TEXT_ERROR_CLASS);
                             superclassSelector.getSuperclassList().setFocus( true );
                         }
                     } );
@@ -455,11 +459,11 @@ public class DataObjectEditor extends Composite {
     }
 
     private void clean() {
-        titleLabel.setStyleName( null );
+        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
         name.setText( null );
         label.setText( null );
         description.setText( null );
-        packageNameLabel.setStyleName( null );
+        packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
         packageSelector.setDataObject( null );
         // TODO superclassLabel when its validation is put in place
         superclassSelector.setDataObject( null );
