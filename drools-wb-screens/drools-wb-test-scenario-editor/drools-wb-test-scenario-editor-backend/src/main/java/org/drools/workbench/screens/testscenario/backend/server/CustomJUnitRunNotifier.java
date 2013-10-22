@@ -20,84 +20,80 @@ public class CustomJUnitRunNotifier
 
     private final Event<TestResultMessage> testResultMessageEvent;
 
-    public CustomJUnitRunNotifier(final Event<TestResultMessage> testResultMessageEvent) {
+    public CustomJUnitRunNotifier( final Event<TestResultMessage> testResultMessageEvent ) {
 
         this.testResultMessageEvent = testResultMessageEvent;
 
-        addListener(new RunListener() {
+        addListener( new RunListener() {
 
             private boolean hasFailure = false;
 
-            public void testFinished(Description description) throws Exception {
-                if (!hasFailure) {
+            public void testFinished( final Description description ) throws Exception {
+                if ( !hasFailure ) {
                     reportTestSuccess();
                 }
             }
 
-            public void testFailure(Failure failure) throws Exception {
+            public void testFailure( final Failure failure ) throws Exception {
                 hasFailure = true;
-                reportTestFailure(failure);
+                reportTestFailure( failure );
             }
 
-            public void testAssumptionFailure(Failure failure) {
+            public void testAssumptionFailure( final Failure failure ) {
                 hasFailure = true;
-                reportTestFailure(failure);
+                reportTestFailure( failure );
             }
 
-            public void testRunFinished(Result result) throws Exception {
-                reportTestRunResult(result);
+            public void testRunFinished( final Result result ) throws Exception {
+                reportTestRunResult( result );
             }
-        });
+        } );
     }
 
-    private void reportTestRunResult(Result result) {
-        fireMessageEvent(new TestResultMessage(
-                result.wasSuccessful(),
-                result.getRunCount(),
-                result.getFailureCount(),
-                getFailures(result.getFailures())));
+    private void reportTestRunResult( final Result result ) {
+        fireMessageEvent( new TestResultMessage( result.wasSuccessful(),
+                                                 result.getRunCount(),
+                                                 result.getFailureCount(),
+                                                 getFailures( result.getFailures() ) ) );
     }
 
     private void reportTestSuccess() {
-        fireMessageEvent(new TestResultMessage(
-                true,
-                1,
-                1,
-                new ArrayList<org.drools.workbench.screens.testscenario.model.Failure>()));
+        fireMessageEvent( new TestResultMessage( true,
+                                                 1,
+                                                 1,
+                                                 new ArrayList<org.drools.workbench.screens.testscenario.model.Failure>() ) );
     }
 
-    private void reportTestFailure(Failure failure) {
+    private void reportTestFailure( final Failure failure ) {
         ArrayList<org.drools.workbench.screens.testscenario.model.Failure> failures = new ArrayList<org.drools.workbench.screens.testscenario.model.Failure>();
-        failures.add(failureToFailure(failure));
+        failures.add( failureToFailure( failure ) );
 
-        fireMessageEvent(new TestResultMessage(
-                false,
-                1,
-                1,
-                failures));
+        fireMessageEvent( new TestResultMessage( false,
+                                                 1,
+                                                 1,
+                                                 failures ) );
     }
 
-    private void fireMessageEvent(TestResultMessage testResultMessage) {
-        testResultMessageEvent.fire(testResultMessage);
+    private void fireMessageEvent( final TestResultMessage testResultMessage ) {
+        testResultMessageEvent.fire( testResultMessage );
     }
 
-    private List<org.drools.workbench.screens.testscenario.model.Failure> getFailures(List<Failure> failures) {
+    private List<org.drools.workbench.screens.testscenario.model.Failure> getFailures( final List<Failure> failures ) {
         ArrayList<org.drools.workbench.screens.testscenario.model.Failure> result = new ArrayList<org.drools.workbench.screens.testscenario.model.Failure>();
 
-        for (Failure failure : failures) {
-            result.add(failureToFailure(failure));
+        for ( Failure failure : failures ) {
+            result.add( failureToFailure( failure ) );
         }
 
         return result;
     }
 
-    private org.drools.workbench.screens.testscenario.model.Failure failureToFailure(Failure failure) {
-        return new org.drools.workbench.screens.testscenario.model.Failure(
-                getScenarioName(failure),
-                failure.getMessage());
+    private org.drools.workbench.screens.testscenario.model.Failure failureToFailure( final Failure failure ) {
+        return new org.drools.workbench.screens.testscenario.model.Failure( getScenarioName( failure ),
+                                                                            failure.getMessage() );
     }
 
-    private String getScenarioName(Failure failure) {
-        return failure.getDescription().getDisplayName().substring(0, failure.getDescription().getDisplayName().indexOf(".scenario"));
+    private String getScenarioName( final Failure failure ) {
+        return failure.getDescription().getDisplayName().substring( 0, failure.getDescription().getDisplayName().indexOf( ".scenario" ) );
     }
 }

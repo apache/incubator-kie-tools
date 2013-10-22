@@ -43,6 +43,7 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -246,10 +247,12 @@ public class ScenarioTestEditorServiceImpl
         try {
 
             final Project project = projectService.resolveProject( path );
+            final KieSession session = sessionService.newKieSession( project );
+            final ScenarioRunnerWrapper runner = new ScenarioRunnerWrapper( testResultMessageEvent,
+                                                                            getMaxRuleFirings() );
 
-            new ScenarioRunnerWrapper( testResultMessageEvent, getMaxRuleFirings() ).run(
-                    scenario,
-                    sessionService.newKieSession( project ) );
+            runner.run( scenario,
+                        session );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

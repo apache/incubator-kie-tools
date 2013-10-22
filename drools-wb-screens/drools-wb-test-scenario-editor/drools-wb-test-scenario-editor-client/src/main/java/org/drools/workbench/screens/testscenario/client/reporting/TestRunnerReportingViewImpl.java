@@ -106,7 +106,7 @@ public class TestRunnerReportingViewImpl
             private String makeMessage( Failure failure ) {
                 final String displayName = failure.getDisplayName();
                 final String message = failure.getMessage();
-                return displayName + ( !( message == null || message.isEmpty() ) ? message : "" );
+                return displayName + ( !( message == null || message.isEmpty() ) ? " : " + message : "" );
             }
         };
 
