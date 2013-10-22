@@ -122,7 +122,7 @@ public class ProjectScreenViewImpl
     @Override
     public void showGAVPanel() {
         deckPanel.showWidget(GAV_PANEL_INDEX);
-        setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.GroupArtifactVersion());
+        setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.ProjectGeneralSettings());
     }
 
     @Override
@@ -131,8 +131,8 @@ public class ProjectScreenViewImpl
         setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.Metadata());
     }
 
-    @UiHandler(value = "gavButton")
-    public void onGAVButtonClick(ClickEvent clickEvent) {
+    @UiHandler(value = "generalSettingsButton")
+    public void onGeneralSettingsButtonClick(ClickEvent clickEvent) {
         presenter.onGAVPanelSelected();
     }
 

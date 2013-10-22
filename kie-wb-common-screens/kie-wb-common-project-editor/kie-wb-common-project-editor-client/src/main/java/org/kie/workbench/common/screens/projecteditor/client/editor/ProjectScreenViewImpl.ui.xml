@@ -26,14 +26,14 @@
 
   <bootstrap:FluidContainer width="90%">
     <bootstrap:FluidRow addStyleNames="well">
-      <bootstrap:DropdownButton text="Project Settings: Group arfifact version" ui:field="dropDownButton">
+      <bootstrap:DropdownButton text="{i18n.ProjectSettings}" ui:field="dropDownButton">
 
         <bootstrap:NavList>
           <bootstrap:NavHeader>
             <ui:text from="{i18n.ProjectSettings}"/>
           </bootstrap:NavHeader>
-          <bootstrap:NavLink ui:field="gavButton">
-            <ui:text from="{i18n.GroupArtifactVersion}"/>
+          <bootstrap:NavLink ui:field="generalSettingsButton">
+            <ui:text from="{i18n.ProjectGeneralSettings}"/>
           </bootstrap:NavLink>
           <bootstrap:NavLink ui:field="dependenciesButton">
             <ui:text from="{i18n.Dependencies}"/>

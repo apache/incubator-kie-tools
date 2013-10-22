@@ -1,6 +1,8 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.google.gwt.dom.client.Style;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
@@ -28,6 +30,15 @@ public class GAVEditorViewImpl
     TextBox groupIdTextBox;
 
     @UiField
+    Icon gavHelpIcon;
+
+    @UiField
+    Icon gavHelpIcon2;
+
+    @UiField
+    Icon gavHelpIcon3;
+
+    @UiField
     TextBox artifactIdTextBox;
 
     @UiField
@@ -37,6 +48,13 @@ public class GAVEditorViewImpl
 
     public GAVEditorViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
+
+        gavHelpIcon.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
+        gavHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        gavHelpIcon2.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
+        gavHelpIcon2.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        gavHelpIcon3.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
+        gavHelpIcon3.getElement().getStyle().setCursor(Style.Cursor.POINTER);
     }
 
     @Override

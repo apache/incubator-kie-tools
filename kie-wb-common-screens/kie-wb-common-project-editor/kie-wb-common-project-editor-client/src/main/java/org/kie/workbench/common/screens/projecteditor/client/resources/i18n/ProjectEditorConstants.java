@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
-import com.google.gwt.user.cellview.client.Header;
 
 public interface ProjectEditorConstants
         extends
@@ -112,9 +110,23 @@ public interface ProjectEditorConstants
 
     String GroupID();
 
+    String GroupIdExample();
+
+    String GroupIdMoreInfo();
+
     String ArtifactID();
 
+    String ArtifactIDExample();
+
+    String ArtifactIDMoreInfo();
+
     String VersionID();
+
+    String VersionIDExample();
+
+    String VersionIDMoreInfo();
+
+    String MoreInfo();
 
     String Dependencies();
 
@@ -147,6 +159,16 @@ public interface ProjectEditorConstants
     String ImportSuggestionsMetadata();
 
     String ProjectSettings();
+
+    String ProjectGeneralSettings();
+
+    String ProjectName();
+
+    String ProjectNamePlaceHolder();
+
+    String ProjectDescription();
+
+    String ProjectDescriptionPlaceHolder();
 
     String GroupArtifactVersion();
 

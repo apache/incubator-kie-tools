@@ -16,21 +16,32 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 
 public interface POMEditorPanelView extends HasBusyIndicator,
                                             IsWidget {
 
+    interface Presenter {
+
+        void onNameChange(String name);
+
+        void onDescriptionChange(String description);
+
+    }
+
+    void setPresenter(Presenter presenter);
+
     String getTitleWidget();
 
     void setTitleText( String titleText );
 
     void showSaveSuccessful( String fileName );
+
+    void setName( String projectName );
+
+    void setDescription( String projectDescription );
 
     void setGAV( GAV gav );
 

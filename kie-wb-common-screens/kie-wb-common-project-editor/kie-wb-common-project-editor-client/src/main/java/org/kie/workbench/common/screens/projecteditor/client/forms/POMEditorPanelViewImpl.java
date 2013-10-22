@@ -16,23 +16,26 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import java.util.List;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.TextArea;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class POMEditorPanelViewImpl
-        extends ResizeComposite
+//        extends ResizeComposite
+        extends Composite
         implements POMEditorPanelView {
 
     private String tabTitleLabel = ProjectEditorResources.CONSTANTS.ProjectModel();
@@ -47,8 +50,16 @@ public class POMEditorPanelViewImpl
 
     private final Event<NotificationEvent> notificationEvent;
 
+    @UiField
+    TextBox pomNameTextBox;
+
+    @UiField
+    TextArea pomDescriptionTextArea;
+
     @UiField(provided = true)
     GAVEditor gavEditor;
+
+    private Presenter presenter;
 
     @Inject
     public POMEditorPanelViewImpl( Event<NotificationEvent> notificationEvent,
@@ -60,6 +71,11 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
     public void showSaveSuccessful( String fileName ) {
         notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( fileName ) ) );
     }
@@ -67,6 +83,16 @@ public class POMEditorPanelViewImpl
     @Override
     public String getTitleWidget() {
         return tabTitleLabel;
+    }
+
+    @Override
+    public void setName( String projectName ) {
+        pomNameTextBox.setText( projectName );
+    }
+
+    @Override
+    public void setDescription( String projectDescription ) {
+        pomDescriptionTextArea.setText( projectDescription );
     }
 
     @Override
@@ -90,13 +116,6 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
-    public void onResize() {
-        setPixelSize( getParent().getOffsetWidth(),
-                      getParent().getOffsetHeight() );
-        super.onResize();
-    }
-
-    @Override
     public void showBusyIndicator( final String message ) {
         BusyPopup.showMessage( message );
     }
@@ -106,4 +125,13 @@ public class POMEditorPanelViewImpl
         BusyPopup.close();
     }
 
+    @UiHandler("pomNameTextBox")
+    public void onNameChange(ValueChangeEvent<String> event) {
+        presenter.onNameChange(pomNameTextBox.getText());
+    }
+
+    @UiHandler("pomDescriptionTextArea")
+    public void onDescriptionChange(ValueChangeEvent<String> event) {
+        presenter.onDescriptionChange(pomDescriptionTextArea.getText());
+    }
 }

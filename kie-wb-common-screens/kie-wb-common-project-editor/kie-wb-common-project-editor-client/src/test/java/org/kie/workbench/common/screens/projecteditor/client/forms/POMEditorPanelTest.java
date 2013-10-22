@@ -41,9 +41,19 @@ public class POMEditorPanelTest {
 
         verify(view).setGAV(gavModel.getGav());
         verify(view).setTitleText("artifact");
+
+        gavModel = createTestModel("pomName", "pomDescription", "group", "artifact", "1.1.1");
+        panel.setPOM(gavModel, false);
+
+        verify(view).setName("pomName");
+        verify(view).setDescription("pomDescription");
     }
 
     private POM createTestModel(String group, String artifact, String version) {
         return new POM(new GAV(group, artifact, version));
+    }
+
+    private POM createTestModel(String name, String description, String group, String artifact, String version) {
+        return new POM(name, description, new GAV(group, artifact, version));
     }
 }

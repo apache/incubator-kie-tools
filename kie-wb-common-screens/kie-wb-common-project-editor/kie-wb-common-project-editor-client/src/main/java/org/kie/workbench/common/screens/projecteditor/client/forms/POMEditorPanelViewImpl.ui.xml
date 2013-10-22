@@ -18,14 +18,50 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:guvnor='urn:import:org.kie.workbench.common.screens.projecteditor.client.forms'>
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'
+             xmlns:guvnor='urn:import:org.kie.workbench.common.screens.projecteditor.client.forms'
+             xmlns:common="urn:import:org.uberfire.client.common">
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <gwt:DockLayoutPanel unit="PX" height="100%" width="100%">
-    <gwt:north size="100">
-      <guvnor:GAVEditor ui:field="gavEditor"/>
-    </gwt:north>
-  </gwt:DockLayoutPanel>
+
+        <gwt:HTMLPanel>
+
+            <style>
+                .ProjectEditorTextArea { border: solid 1px #CCC !Important; }
+            </style>
+
+            <bootstrap:Fieldset>
+                <bootstrap:Legend >
+                    <ui:text from="{i18n.ProjectGeneralSettings}"/>
+                </bootstrap:Legend>
+                <bootstrap:FluidRow>
+                    <bootstrap:Column size="2">
+                        <gwt:Label text="{i18n.ProjectName}" />
+                    </bootstrap:Column>
+                    <bootstrap:Column size="4">
+                        <bootstrap:TextBox ui:field="pomNameTextBox" placeholder="{i18n.ProjectNamePlaceHolder}"/>
+                    </bootstrap:Column>
+                </bootstrap:FluidRow>
+
+                <bootstrap:FluidRow>
+                    <bootstrap:Column size="2">
+                        <gwt:Label text="{i18n.ProjectDescription}"/>
+                    </bootstrap:Column>
+                    <bootstrap:Column size="10">
+                        <bootstrap:TextArea ui:field="pomDescriptionTextArea" styleName="ProjectEditorTextArea" height="200px" width="500px" placeholder="{i18n.ProjectDescriptionPlaceHolder}"/>
+                    </bootstrap:Column>
+                </bootstrap:FluidRow>
+            </bootstrap:Fieldset>
+
+            <bootstrap:Fieldset>
+                <bootstrap:Legend >
+                    <ui:text from="{i18n.GroupArtifactVersion}"/>
+                </bootstrap:Legend>
+                    <guvnor:GAVEditor ui:field="gavEditor"/>
+            </bootstrap:Fieldset>
+
+        </gwt:HTMLPanel>
+
 </ui:UiBinder>

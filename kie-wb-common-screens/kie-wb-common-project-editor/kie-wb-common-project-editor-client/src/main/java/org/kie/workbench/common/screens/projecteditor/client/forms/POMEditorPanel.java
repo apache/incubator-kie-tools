@@ -25,7 +25,8 @@ import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEd
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 public class POMEditorPanel
-        implements IsWidget {
+        implements POMEditorPanelView.Presenter,
+                   IsWidget {
 
     private final POMEditorPanelView view;
     private POM model;
@@ -33,7 +34,7 @@ public class POMEditorPanel
     @Inject
     public POMEditorPanel(final POMEditorPanelView view) {
         this.view = view;
-
+        view.setPresenter( this );
     }
 
     public void setPOM(POM model, boolean isReadOnly) {
@@ -43,6 +44,8 @@ public class POMEditorPanel
 
         this.model = model;
 
+        view.setName(model.getName());
+        view.setDescription(model.getDescription());
         view.setGAV(model.getGav());
         view.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
             @Override
@@ -59,6 +62,16 @@ public class POMEditorPanel
         } else {
             view.setTitleText(titleText);
         }
+    }
+
+    @Override
+    public void onNameChange( String name ) {
+        this.model.setName( name );
+    }
+
+    @Override
+    public void onDescriptionChange( String description ) {
+        this.model.setDescription( description );
     }
 
     @Override
