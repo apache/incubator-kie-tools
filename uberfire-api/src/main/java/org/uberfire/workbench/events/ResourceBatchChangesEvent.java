@@ -1,10 +1,14 @@
 package org.uberfire.workbench.events;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.rpc.SessionInfo;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a various changes to various Resources
@@ -12,19 +16,37 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public class ResourceBatchChangesEvent {
 
-    private Set<ResourceChange> batch = new HashSet<ResourceChange>();
+    private SessionInfo sessionInfo;
+    private Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>();
 
     public ResourceBatchChangesEvent() {
         //Empty constructor for Errai marshalling
     }
 
-    public ResourceBatchChangesEvent( final Set<ResourceChange> batch ) {
-        this.batch = PortablePreconditions.checkNotNull( "batch",
-                                                         batch );
+    public ResourceBatchChangesEvent( final Map<Path, Collection<ResourceChange>> batch,
+                                      final SessionInfo sessionInfo ) {
+        checkNotNull( "batch", batch );
+        this.batch.putAll( batch );
+        this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }
 
-    public Set<ResourceChange> getBatch() {
+    public Map<Path, Collection<ResourceChange>> getBatch() {
         return this.batch;
     }
 
+    public boolean containPath( final Path path ) {
+        return batch.containsKey( path );
+    }
+
+    public Collection<Path> getAffectedPaths() {
+        return batch.keySet();
+    }
+
+    public Collection<ResourceChange> getChanges( final Path path ) {
+        return batch.get( path );
+    }
+
+    public SessionInfo getSessionInfo() {
+        return sessionInfo;
+    }
 }

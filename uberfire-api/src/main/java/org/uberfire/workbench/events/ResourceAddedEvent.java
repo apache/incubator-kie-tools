@@ -4,13 +4,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been added
  */
 @Portable
-public class ResourceAddedEvent {
+public class ResourceAddedEvent extends ResourceAdded implements ResourceEvent {
 
     private Path path;
     private SessionInfo sessionInfo;
@@ -25,6 +25,7 @@ public class ResourceAddedEvent {
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }
 
+    @Override
     public Path getPath() {
         return this.path;
     }

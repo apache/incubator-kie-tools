@@ -10,7 +10,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
  * An Event indicating a Resource has been deleted
  */
 @Portable
-public class ResourceDeletedEvent {
+public class ResourceDeletedEvent extends ResourceDeleted implements ResourceEvent {
 
     private Path path;
     private SessionInfo sessionInfo;
@@ -25,6 +25,7 @@ public class ResourceDeletedEvent {
         this.sessionInfo = checkNotNull( "executedBy", sessionInfo );
     }
 
+    @Override
     public Path getPath() {
         return this.path;
     }

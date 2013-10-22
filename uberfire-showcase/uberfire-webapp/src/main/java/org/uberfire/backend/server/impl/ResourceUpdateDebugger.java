@@ -20,7 +20,7 @@ public class ResourceUpdateDebugger {
     }
 
     public void onRenameFile( @Observes ResourceRenamedEvent event ) {
-        System.err.println( "ResourceRenamedEvent:" + event.getSourcePath().toURI() + " -> " + event.getDestinationPath().toURI() );
+        System.err.println( "ResourceRenamedEvent:" + event.getPath().toURI() + " -> " + event.getDestinationPath().toURI() );
     }
 
     public void onDeleteFile( @Observes ResourceDeletedEvent event ) {

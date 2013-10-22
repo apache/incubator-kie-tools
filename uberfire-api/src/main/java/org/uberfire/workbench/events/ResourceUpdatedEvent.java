@@ -10,7 +10,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
  * An Event indicating a Resource has been updated
  */
 @Portable
-public class ResourceUpdatedEvent {
+public class ResourceUpdatedEvent extends ResourceUpdated implements ResourceEvent {
 
     private Path path;
     private SessionInfo sessionInfo;
@@ -25,6 +25,7 @@ public class ResourceUpdatedEvent {
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }
 
+    @Override
     public Path getPath() {
         return this.path;
     }

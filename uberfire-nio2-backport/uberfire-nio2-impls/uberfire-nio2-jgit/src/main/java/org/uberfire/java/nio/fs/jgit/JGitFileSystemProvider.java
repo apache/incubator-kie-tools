@@ -45,6 +45,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
@@ -70,6 +71,7 @@ import org.uberfire.java.nio.base.BasicFileAttributesImpl;
 import org.uberfire.java.nio.base.ExtendedAttributeView;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.SeekableByteChannelFileBasedImpl;
+import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.dotfiles.DotFileOption;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
@@ -97,6 +99,8 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardCopyOption;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.java.nio.file.StandardOpenOption;
+import org.uberfire.java.nio.file.StandardWatchEventKind;
+import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
@@ -160,6 +164,8 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
     }
 
+    private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
+
     public static void loadConfig() {
         final String bareReposDir = System.getProperty( "org.kie.nio.git.dir" );
         final String enabled = System.getProperty( "org.kie.nio.git.daemon.enabled" );
@@ -206,6 +212,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     public void onCloseFileSystem( final JGitFileSystem fileSystem ) {
         closedFileSystems.add( fileSystem );
+        oldHeadsOfPendingDiffs.remove( fileSystem );
         if ( daemonService != null && closedFileSystems.size() == fileSystems.size() ) {
             daemonService.stop();
         }
@@ -552,10 +559,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                         }
                     }
 
-                    JGitUtil.commit( gPath, sessionId, name, email, message, timeZone, when, amend(), new HashMap<String, File>() {{
+                    commit( gPath, sessionId, name, email, message, timeZone, when, new HashMap<String, File>() {{
                         put( gPath.getPath(), file );
                     }} );
-                    checkAmend();
                 }
             };
         } catch ( java.io.IOException e ) {
@@ -637,13 +643,12 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
                     final File dotfile = tempDot;
 
-                    JGitUtil.commit( gPath, sessionId, name, email, message, timeZone, when, amend(), new HashMap<String, File>() {{
+                    commit( gPath, sessionId, name, email, message, timeZone, when, new HashMap<String, File>() {{
                         put( gPath.getPath(), file );
                         if ( dotfile != null ) {
                             put( toPathImpl( dot( gPath ) ).getPath(), dotfile );
                         }
                     }} );
-                    checkAmend();
                 }
             };
         } catch ( java.io.IOException e ) {
@@ -888,8 +893,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             }
         }
 
-        JGitUtil.delete( path, sessionId, name, email, message, timeZone, when, amend() );
-        checkAmend();
+        delete( path, sessionId, name, email, message, timeZone, when );
     }
 
     private boolean deleteNonEmptyDirectory( final DeleteOption... options ) {
@@ -1245,7 +1249,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 final V newView = (V) new JGitBasicAttributeView( gPath );
                 gPath.addAttrView( newView );
                 return newView;
-            } else if (type == VersionAttributeView.class || type == JGitVersionAttributeView.class ) {
+            } else if ( type == VersionAttributeView.class || type == JGitVersionAttributeView.class ) {
                 final V newView = (V) new JGitVersionAttributeView( gPath );
                 gPath.addAttrView( newView );
                 return newView;
@@ -1333,11 +1337,15 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         checkNotEmpty( "attributes", attribute );
 
         if ( attribute.equals( FileSystemState.FILE_SYSTEM_STATE_ATTR ) ) {
+            final boolean isOriginalStateBatch = state.equals( FileSystemState.BATCH );
             try {
                 state = FileSystemState.valueOf( value.toString() );
                 FileSystemState.valueOf( value.toString() );
             } catch ( final Exception ex ) {
                 state = FileSystemState.NORMAL;
+            }
+            if ( isOriginalStateBatch && state.equals( FileSystemState.NORMAL ) ) {
+                notifyAllDiffs();
             }
             hadCommitOnBatchState = false;
             return;
@@ -1371,16 +1379,6 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             }
         }
 
-    }
-
-    private void checkAmend() {
-        if ( state == FileSystemState.BATCH && !hadCommitOnBatchState ) {
-            hadCommitOnBatchState = true;
-        }
-    }
-
-    private boolean amend() {
-        return state == FileSystemState.BATCH && hadCommitOnBatchState;
     }
 
     private String extractHost( final URI uri ) {
@@ -1497,5 +1495,152 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             return SCHEME_SIZE;
         }
         return DEFAULT_SCHEME_SIZE;
+    }
+
+    private void delete( final JGitPathImpl path,
+                         final String sessionId,
+                         final String name,
+                         final String email,
+                         final String message,
+                         final TimeZone timeZone,
+                         final Date when ) {
+        commit( path, sessionId, name, email, message, timeZone, when, new HashMap<String, File>() {{
+            put( path.getPath(), null );
+        }} );
+    }
+
+    private void commit( final JGitPathImpl path,
+                         final String sessionId,
+                         final String name,
+                         final String email,
+                         final String message,
+                         final TimeZone timeZone,
+                         final Date when,
+                         final Map<String, File> content ) {
+        final Git git = path.getFileSystem().gitRepo();
+        final String branchName = path.getRefTree();
+        final boolean batchState = state == FileSystemState.BATCH;
+        final boolean amend = batchState && hadCommitOnBatchState;
+
+        final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
+
+        JGitUtil.commit( git, branchName, name, email, message, timeZone, when, amend, content );
+
+        if ( !batchState ) {
+            final ObjectId newHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
+
+            notifyDiffs( path.getFileSystem(), branchName, sessionId, name, oldHead, newHead );
+        } else if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ||
+                !oldHeadsOfPendingDiffs.get( path.getFileSystem() ).containsKey( branchName ) ) {
+
+            if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ) {
+                oldHeadsOfPendingDiffs.put( path.getFileSystem(), new HashMap<String, NotificationModel>() );
+            }
+
+            oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, sessionId, name ) );
+        }
+
+        if ( state == FileSystemState.BATCH && !hadCommitOnBatchState ) {
+            hadCommitOnBatchState = true;
+        }
+    }
+
+    private void notifyAllDiffs() {
+        for ( Map.Entry<JGitFileSystem, Map<String, NotificationModel>> jGitFileSystemMapEntry : oldHeadsOfPendingDiffs.entrySet() ) {
+            for ( Map.Entry<String, NotificationModel> branchNameNotificationModelEntry : jGitFileSystemMapEntry.getValue().entrySet() ) {
+                final ObjectId newHead = JGitUtil.getTreeRefObjectId( jGitFileSystemMapEntry.getKey().gitRepo().getRepository(), branchNameNotificationModelEntry.getKey() );
+                notifyDiffs( jGitFileSystemMapEntry.getKey(),
+                             branchNameNotificationModelEntry.getKey(),
+                             branchNameNotificationModelEntry.getValue().getSessionId(),
+                             branchNameNotificationModelEntry.getValue().getUserName(),
+                             branchNameNotificationModelEntry.getValue().getOriginalHead(),
+                             newHead );
+            }
+        }
+        oldHeadsOfPendingDiffs.clear();
+    }
+
+    private void notifyDiffs( final JGitFileSystem fs,
+                              final String tree,
+                              final String sessionId,
+                              final String userName,
+                              final ObjectId oldHead,
+                              final ObjectId newHead ) {
+
+        final String host = tree + "@" + fs.getName();
+        final Path root = JGitPathImpl.createRoot( fs, "/", host, false );
+
+        final List<DiffEntry> diff = JGitUtil.getDiff( fs.gitRepo().getRepository(), oldHead, newHead );
+        final List<WatchEvent<?>> events = new ArrayList<WatchEvent<?>>( diff.size() );
+
+        for ( final DiffEntry diffEntry : diff ) {
+            final Path oldPath;
+            if ( !diffEntry.getOldPath().equals( DiffEntry.DEV_NULL ) ) {
+                oldPath = JGitPathImpl.create( fs, "/" + diffEntry.getOldPath(), host, null, false );
+            } else {
+                oldPath = null;
+            }
+
+            final Path newPath;
+            if ( !diffEntry.getNewPath().equals( DiffEntry.DEV_NULL ) ) {
+                JGitPathInfo pathInfo = resolvePath( fs.gitRepo(), tree, diffEntry.getNewPath() );
+                newPath = JGitPathImpl.create( fs, "/" + pathInfo.getPath(), host, pathInfo.getObjectId(), false );
+            } else {
+                newPath = null;
+            }
+
+            events.add( new WatchEvent() {
+                @Override
+                public Kind kind() {
+                    switch ( diffEntry.getChangeType() ) {
+                        case ADD:
+                        case COPY:
+                            return StandardWatchEventKind.ENTRY_CREATE;
+                        case DELETE:
+                            return StandardWatchEventKind.ENTRY_DELETE;
+                        case MODIFY:
+                            return StandardWatchEventKind.ENTRY_MODIFY;
+                        case RENAME:
+                            return StandardWatchEventKind.ENTRY_RENAME;
+                        default:
+                            throw new RuntimeException();
+                    }
+                }
+
+                @Override
+                public int count() {
+                    return 1;
+                }
+
+                @Override
+                public Object context() {
+                    return new WatchContext() {
+
+                        @Override
+                        public Path getPath() {
+                            return newPath;
+                        }
+
+                        @Override
+                        public Path getOldPath() {
+                            return oldPath;
+                        }
+
+                        @Override
+                        public String getSessionId() {
+                            return sessionId;
+                        }
+
+                        @Override
+                        public String getUser() {
+                            return userName;
+                        }
+                    };
+                }
+            } );
+        }
+        if ( !events.isEmpty() ) {
+            fs.publishEvents( root, events );
+        }
     }
 }

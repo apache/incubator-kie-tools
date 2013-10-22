@@ -71,18 +71,13 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileTimeImpl;
-import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.base.version.VersionHistory;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.NoSuchFileException;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.StandardWatchEventKind;
-import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
 import static java.util.Collections.*;
 import static org.apache.commons.io.FileUtils.*;
@@ -298,19 +293,6 @@ public final class JGitUtil {
         }
     }
 
-    public static void delete( final JGitPathImpl path,
-                               final String sessionId,
-                               final String name,
-                               final String email,
-                               final String message,
-                               final TimeZone timeZone,
-                               final Date when,
-                               final boolean amend ) {
-        commit( path, sessionId, name, email, message, timeZone, when, amend, new HashMap<String, File>() {{
-            put( path.getPath(), null );
-        }} );
-    }
-
     public static ObjectId getTreeRefObjectId( final Repository repo,
                                                final String treeRef ) {
         try {
@@ -337,27 +319,6 @@ public final class JGitUtil {
         } catch ( final Exception ex ) {
             throw new RuntimeException( ex );
         }
-    }
-
-    public static void commit( final JGitPathImpl path,
-                               final String sessionId,
-                               final String name,
-                               final String email,
-                               final String message,
-                               final TimeZone timeZone,
-                               final Date when,
-                               final boolean amend,
-                               final Map<String, File> content ) {
-
-        final Git git = path.getFileSystem().gitRepo();
-        final String branchName = path.getRefTree();
-        final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
-
-        commit( git, branchName, name, email, message, timeZone, when, amend, content );
-
-        final ObjectId newHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
-
-        notifyDiffs( path.getFileSystem(), branchName, sessionId, name, oldHead, newHead );
     }
 
     public static void commit( final Git git,
@@ -974,90 +935,6 @@ public final class JGitUtil {
         }
 
         return result;
-    }
-
-    public static void notifyDiffs( final JGitFileSystem fs,
-                                    final String tree,
-                                    final String sessionId,
-                                    final String userName,
-                                    final ObjectId oldHead,
-                                    final ObjectId newHead ) {
-
-        final String host = tree + "@" + fs.getName();
-        final Path root = JGitPathImpl.createRoot( fs, "/", host, false );
-
-        final List<DiffEntry> diff = getDiff( fs.gitRepo().getRepository(), oldHead, newHead );
-        final List<WatchEvent<?>> events = new ArrayList<WatchEvent<?>>( diff.size() );
-
-        for ( final DiffEntry diffEntry : diff ) {
-            final Path oldPath;
-            if ( !diffEntry.getOldPath().equals( DiffEntry.DEV_NULL ) ) {
-                oldPath = JGitPathImpl.create( fs, "/" + diffEntry.getOldPath(), host, null, false );
-            } else {
-                oldPath = null;
-            }
-
-            final Path newPath;
-            if ( !diffEntry.getNewPath().equals( DiffEntry.DEV_NULL ) ) {
-                JGitPathInfo pathInfo = resolvePath( fs.gitRepo(), tree, diffEntry.getNewPath() );
-                newPath = JGitPathImpl.create( fs, "/" + pathInfo.getPath(), host, pathInfo.getObjectId(), false );
-            } else {
-                newPath = null;
-            }
-
-            events.add( new WatchEvent() {
-                @Override
-                public Kind kind() {
-                    switch ( diffEntry.getChangeType() ) {
-                        case ADD:
-                        case COPY:
-                            return StandardWatchEventKind.ENTRY_CREATE;
-                        case DELETE:
-                            return StandardWatchEventKind.ENTRY_DELETE;
-                        case MODIFY:
-                            return StandardWatchEventKind.ENTRY_MODIFY;
-                        case RENAME:
-                            return StandardWatchEventKind.ENTRY_RENAME;
-                        default:
-                            throw new RuntimeException();
-                    }
-                }
-
-                @Override
-                public int count() {
-                    return 1;
-                }
-
-                @Override
-                public Object context() {
-                    return new WatchContext() {
-
-                        @Override
-                        public Path getPath() {
-                            return newPath;
-                        }
-
-                        @Override
-                        public Path getOldPath() {
-                            return oldPath;
-                        }
-
-                        @Override
-                        public String getSessionId() {
-                            return sessionId;
-                        }
-
-                        @Override
-                        public String getUser() {
-                            return userName;
-                        }
-                    };
-                }
-            } );
-        }
-        if ( !events.isEmpty() ) {
-            fs.publishEvents( root, events );
-        }
     }
 
 //    public static MergeResult mergeBranches( final Git git,

@@ -687,7 +687,7 @@ public abstract class AbstractPath<FS extends FileSystem>
 
     @Override
     public <V extends AttributeView> V getAttrView( final String name ) {
-        return attrsStorage.getAttrView( name );
+        return (V) attrsStorage.getAttrView( name );
     }
 
     public static class RootInfo {

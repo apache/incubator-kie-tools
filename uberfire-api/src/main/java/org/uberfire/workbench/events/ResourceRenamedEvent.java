@@ -10,10 +10,9 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
  * An Event indicating a Resource has been renamed
  */
 @Portable
-public class ResourceRenamedEvent {
+public class ResourceRenamedEvent extends ResourceRenamed implements ResourceEvent {
 
     private Path sourcePath;
-    private Path destinationPath;
     private SessionInfo sessionInfo;
 
     public ResourceRenamedEvent() {
@@ -23,20 +22,17 @@ public class ResourceRenamedEvent {
     public ResourceRenamedEvent( final Path sourcePath,
                                  final Path destinationPath,
                                  final SessionInfo sessionInfo ) {
+        super( destinationPath );
         this.sourcePath = checkNotNull( "sourcePath", sourcePath );
-        this.destinationPath = checkNotNull( "destinationPath", destinationPath );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
-    }
-
-    public Path getSourcePath() {
-        return this.sourcePath;
-    }
-
-    public Path getDestinationPath() {
-        return this.destinationPath;
     }
 
     public SessionInfo getSessionInfo() {
         return sessionInfo;
+    }
+
+    @Override
+    public Path getPath() {
+        return this.sourcePath;
     }
 }
