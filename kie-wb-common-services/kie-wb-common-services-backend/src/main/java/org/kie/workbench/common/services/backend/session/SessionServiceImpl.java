@@ -50,6 +50,11 @@ public class SessionServiceImpl
         try {
             kieContainer = builder.getKieContainer();
 
+            //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
+            if ( kieContainer == null ) {
+                return null;
+            }
+
             //We always need a pseudo clock
             final SessionConfiguration conf = new SessionConfiguration();
             conf.setClockType( ClockType.PSEUDO_CLOCK );
