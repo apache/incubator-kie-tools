@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -74,8 +76,8 @@ public class MockBuildServiceCaller
             }
 
             @Override
-            public IncrementalBuildResults applyBatchResourceChanges( Project project,
-                                                                      Set<ResourceChange> changes ) {
+            public IncrementalBuildResults applyBatchResourceChanges( final Project project,
+                                                                      final Map<Path, Collection<ResourceChange>> changes ) {
                 return new IncrementalBuildResults();
             }
         };

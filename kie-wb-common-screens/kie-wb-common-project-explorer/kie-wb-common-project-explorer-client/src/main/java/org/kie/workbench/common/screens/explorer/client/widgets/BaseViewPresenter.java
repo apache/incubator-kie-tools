@@ -521,7 +521,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( !getView().isVisible() ) {
             return;
         }
-        final Path sourcePath = event.getSourcePath();
+        final Path sourcePath = event.getPath();
         final Path destinationPath = event.getDestinationPath();
 
         boolean refresh = false;

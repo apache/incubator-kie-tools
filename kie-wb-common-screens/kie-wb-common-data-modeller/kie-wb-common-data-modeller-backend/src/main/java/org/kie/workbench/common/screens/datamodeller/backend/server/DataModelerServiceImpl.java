@@ -16,10 +16,25 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.screens.datamodeller.model.*;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -39,15 +54,11 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ChangeType;
+import org.uberfire.workbench.events.ResourceAdded;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.*;
+import org.uberfire.workbench.events.ResourceDeleted;
+import org.uberfire.workbench.events.ResourceUpdated;
 
 @Service
 @ApplicationScoped
@@ -127,19 +138,18 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-
     @Override
     public GenerationResult saveModel( DataModelTO dataModel,
                                        final Project project ) {
 
-        return saveModel(dataModel, project, false);
+        return saveModel( dataModel, project, false );
 
     }
 
     @Override
     public GenerationResult saveModel( DataModelTO dataModel,
                                        final Project project,
-                                       final boolean overwrite) {
+                                       final boolean overwrite ) {
 
         Path projectPath = project.getRootPath();
         Long startTime = System.currentTimeMillis();
@@ -149,14 +159,14 @@ public class DataModelerServiceImpl implements DataModelerService {
             //ensure java sources directory exists.
             org.uberfire.java.nio.file.Path javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
 
-            if (overwrite) {
-                mergeWithExistingModel(dataModel, project);
+            if ( overwrite ) {
+                mergeWithExistingModel( dataModel, project );
             }
 
             //convert to domain model
             DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain( dataModel );
 
-            if (!overwrite) {
+            if ( !overwrite ) {
                 //optimization remove unmodified data objects from the model in order to skip generation for unmodified objects.
                 removeUnmodifiedObjects( dataModelDomain, dataModel );
             }
@@ -166,20 +176,20 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
             //to it must be treated carefully.
-            CommentedOption option = makeCommentedOption("Data modeller generated action.");
+            CommentedOption option = makeCommentedOption( "Data modeller generated action." );
             ioService.startBatch();
             onBatch = true;
 
             //delete removed data objects
-            cleanupFiles(deleteableFiles, option);
+            cleanupFiles( deleteableFiles, option );
             javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
 
-            generationListener.setCurrentProject(project);
-            generationListener.setOption(option);
+            generationListener.setCurrentProject( project );
+            generationListener.setOption( option );
             generationListener.init();
 
-            driver.generateModel( dataModelDomain, generationListener);
+            driver.generateModel( dataModelDomain, generationListener );
 
             onBatch = false;
             ioService.endBatch();
@@ -196,36 +206,37 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         } catch ( Exception e ) {
             logger.error( "An error was produced during data model generation, dataModel: " + dataModel + ", path: " + projectPath, e );
-            if (onBatch) {
+            if ( onBatch ) {
                 try {
-                    logger.warn("IOService batch method is still on, trying to end batch processing.");
+                    logger.warn( "IOService batch method is still on, trying to end batch processing." );
                     ioService.endBatch();
-                    logger.warn("IOService batch method is was successfully finished. The user will still get the exception, but the batch processing was finished.");
-                } catch (Exception ex) {
-                    logger.error("An error was produced when the IOService.endBatch processing was executed.", ex);
+                    logger.warn( "IOService batch method is was successfully finished. The user will still get the exception, but the batch processing was finished." );
+                } catch ( Exception ex ) {
+                    logger.error( "An error was produced when the IOService.endBatch processing was executed.", ex );
                 }
             }
             throw new ServiceException( "Data model: " + dataModel.getParentProjectName() + ", couldn't be generated due to the following error. " + e );
         }
     }
 
-    private void mergeWithExistingModel(DataModelTO dataModel, Project project) {
+    private void mergeWithExistingModel( DataModelTO dataModel,
+                                         Project project ) {
 
         Map<String, DataObjectTO> deletedObjects = new HashMap<String, DataObjectTO>();
         Map<String, DataObjectTO> currentObjects = new HashMap<String, DataObjectTO>();
-        DataModelTO reloadedModel = loadModel(project);
+        DataModelTO reloadedModel = loadModel( project );
 
-        for (DataObjectTO dataObject : dataModel.getDataObjects()) {
-            currentObjects.put(dataObject.getClassName(), dataObject);
+        for ( DataObjectTO dataObject : dataModel.getDataObjects() ) {
+            currentObjects.put( dataObject.getClassName(), dataObject );
         }
 
-        for (DataObjectTO dataObject : dataModel.getDeletedDataObjects()) {
-            deletedObjects.put(dataObject.getClassName(), dataObject);
+        for ( DataObjectTO dataObject : dataModel.getDeletedDataObjects() ) {
+            deletedObjects.put( dataObject.getClassName(), dataObject );
         }
 
-        for (DataObjectTO reloadedDataObject : reloadedModel.getDataObjects() ) {
-            if (!currentObjects.containsKey(reloadedDataObject.getClassName()) && !deletedObjects.containsKey(reloadedDataObject.getClassName())) {
-                dataModel.getDeletedDataObjects().add(reloadedDataObject);
+        for ( DataObjectTO reloadedDataObject : reloadedModel.getDataObjects() ) {
+            if ( !currentObjects.containsKey( reloadedDataObject.getClassName() ) && !deletedObjects.containsKey( reloadedDataObject.getClassName() ) ) {
+                dataModel.getDeletedDataObjects().add( reloadedDataObject );
             }
         }
     }
@@ -234,10 +245,10 @@ public class DataModelerServiceImpl implements DataModelerService {
         final String name = identity.getName();
         final Date when = new Date();
         final CommentedOption option = new CommentedOption( sessionInfo.getId(),
-                name,
-                null,
-                commitMessage,
-                when );
+                                                            name,
+                                                            null,
+                                                            commitMessage,
+                                                            when );
         return option;
     }
 
@@ -265,38 +276,50 @@ public class DataModelerServiceImpl implements DataModelerService {
         return annotations;
     }
 
-    private void notifyFileChanges( List<Path> deleteableFiles,
-                                    List<FileChangeDescriptor> driverChanges ) {
+    private void notifyFileChanges( final List<Path> deleteableFiles,
+                                    final List<FileChangeDescriptor> driverChanges ) {
 
-        Set<ResourceChange> batchChanges = new HashSet<ResourceChange>();
+        final Map<Path, Collection<ResourceChange>> batchChanges = new HashMap<Path, Collection<ResourceChange>>();
 
-        for ( Path deleteableFile : deleteableFiles ) {
-            batchChanges.add( new ResourceChange( ChangeType.DELETE, deleteableFile, sessionInfo ) );
+        for ( final Path deleteableFile : deleteableFiles ) {
+            batchChanges.put( deleteableFile, new ArrayList<ResourceChange>() {{
+                add( new ResourceDeleted() );
+            }} );
         }
 
-        for ( FileChangeDescriptor driverChange : driverChanges ) {
+        for ( final FileChangeDescriptor driverChange : driverChanges ) {
+            final Path path = paths.convert( driverChange.getPath() );
             switch ( driverChange.getAction() ) {
                 case FileChangeDescriptor.ADD:
                     logger.debug( "Notifying file created: " + driverChange.getPath() );
-                    batchChanges.add( new ResourceChange( ChangeType.ADD, paths.convert( driverChange.getPath() ), sessionInfo ) );
+                    if ( !batchChanges.containsKey( path ) ) {
+                        batchChanges.put( path, new ArrayList<ResourceChange>() );
+                    }
+                    batchChanges.get( path ).add( new ResourceAdded() );
                     break;
                 case FileChangeDescriptor.DELETE:
                     logger.debug( "Notifying file deleted: " + driverChange.getPath() );
-                    batchChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( driverChange.getPath() ), sessionInfo ) );
+                    if ( !batchChanges.containsKey( path ) ) {
+                        batchChanges.put( path, new ArrayList<ResourceChange>() );
+                    }
+                    batchChanges.get( path ).add( new ResourceDeleted() );
                     break;
                 case FileChangeDescriptor.UPDATE:
                     logger.debug( "Notifying file updated: " + driverChange.getPath() );
-                    batchChanges.add( new ResourceChange( ChangeType.UPDATE, paths.convert( driverChange.getPath() ), sessionInfo ) );
+                    if ( !batchChanges.containsKey( path ) ) {
+                        batchChanges.put( path, new ArrayList<ResourceChange>() );
+                    }
+                    batchChanges.get( path ).add( new ResourceUpdated() );
                     break;
             }
         }
         if ( batchChanges.size() > 0 ) {
-            resourceBatchChangesEvent.fire( new ResourceBatchChangesEvent( batchChanges ) );
+            resourceBatchChangesEvent.fire( new ResourceBatchChangesEvent( batchChanges, sessionInfo ) );
         }
     }
 
-    private List<Path> calculateDeleteableFiles( DataModelTO dataModel,
-                                                 org.uberfire.java.nio.file.Path javaPath ) {
+    private List<Path> calculateDeleteableFiles( final DataModelTO dataModel,
+                                                 final org.uberfire.java.nio.file.Path javaPath ) {
 
         List<DataObjectTO> currentObjects = dataModel.getDataObjects();
         List<DataObjectTO> deletedObjects = dataModel.getDeletedDataObjects();
@@ -342,8 +365,8 @@ public class DataModelerServiceImpl implements DataModelerService {
         return deleteableFiles;
     }
 
-    private void removeUnmodifiedObjects( DataModel dataModelDomain,
-                                          DataModelTO dataModelTO ) throws Exception {
+    private void removeUnmodifiedObjects( final DataModel dataModelDomain,
+                                          final DataModelTO dataModelTO ) throws Exception {
         String newFingerPrint;
         for ( DataObjectTO dataObject : dataModelTO.getDataObjects() ) {
             newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint( dataObject.getStringId() );
@@ -354,62 +377,11 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    private void cleanupFiles( List<Path> deleteableFiles, CommentedOption option ) {
+    private void cleanupFiles( final List<Path> deleteableFiles,
+                               final CommentedOption option ) {
         for ( Path filePath : deleteableFiles ) {
-            ioService.deleteIfExists( paths.convert( filePath ) , option );
+            ioService.deleteIfExists( paths.convert( filePath ), option );
         }
-    }
-
-    /**
-     * This auxiliary method deletes the files that belongs to data objects that was removed in memory.
-     */
-    private List<ResourceChange> cleanupFiles( DataModelTO dataModel,
-                                               org.uberfire.java.nio.file.Path javaPath ) {
-
-        List<DataObjectTO> currentObjects = dataModel.getDataObjects();
-        List<DataObjectTO> deletedObjects = dataModel.getDeletedDataObjects();
-        List<ResourceChange> fileChanges = new ArrayList<ResourceChange>();
-        org.uberfire.java.nio.file.Path filePath;
-
-        //process deleted persistent objects.
-        for ( DataObjectTO dataObject : deletedObjects ) {
-            if ( dataObject.isPersistent() ) {
-                filePath = calculateFilePath( dataObject.getOriginalClassName(), javaPath );
-                if ( dataModel.getDataObjectByClassName( dataObject.getOriginalClassName() ) != null ) {
-                    //TODO check if we need to have this level of control or instead we remove this file directly.
-                    //very particular case a persistent object was deleted in memory and a new one with the same name
-                    //was created. At the end we will have a file update instead of a delete.
-
-                    //do nothing, the file generator will notify that the file changed.
-                    //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
-                } else {
-                    fileChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( filePath ), sessionInfo ) );
-                    ioService.delete( filePath );
-                }
-            }
-        }
-
-        //process package or class name changes for persistent objects.
-        for ( DataObjectTO dataObject : currentObjects ) {
-            if ( dataObject.isPersistent() && dataObject.classNameChanged() ) {
-                //if the className changes the old file needs to be removed
-                filePath = calculateFilePath( dataObject.getOriginalClassName(), javaPath );
-
-                if ( dataModel.getDataObjectByClassName( dataObject.getOriginalClassName() ) != null ) {
-                    //TODO check if we need to have this level of control or instead we remove this file directly.
-                    //very particular case of change, a persistent object changes the name to the name of another
-                    //object. A kind of name swapping...
-
-                    //do nothing, the file generator will notify that the file changed.
-                    //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
-                } else {
-                    fileChanges.add( new ResourceChange( ChangeType.DELETE, paths.convert( filePath ), sessionInfo ) );
-                    ioService.delete( filePath );
-                }
-            }
-        }
-
-        return fileChanges;
     }
 
     private void cleanupEmptyDirs( org.uberfire.java.nio.file.Path pojectPath ) {
@@ -448,7 +420,7 @@ public class DataModelerServiceImpl implements DataModelerService {
      * Given a className calculates the path to the java file allocating the corresponding pojo.
      */
     private org.uberfire.java.nio.file.Path calculateFilePath( String className,
-                                                                  org.uberfire.java.nio.file.Path javaPath ) {
+                                                               org.uberfire.java.nio.file.Path javaPath ) {
 
         String name = NamingUtils.getInstance().extractClassName( className );
         String packageName = NamingUtils.getInstance().extractPackageName( className );
