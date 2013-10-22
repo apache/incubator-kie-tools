@@ -85,7 +85,7 @@ public class NewProjectWizard
 
     @Override
     public int getPreferredWidth() {
-        return 500;
+        return 800;
     }
 
     @Override
