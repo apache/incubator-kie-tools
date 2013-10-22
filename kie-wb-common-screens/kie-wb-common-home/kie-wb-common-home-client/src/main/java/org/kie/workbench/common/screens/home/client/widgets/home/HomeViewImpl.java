@@ -109,8 +109,10 @@ public class HomeViewImpl extends Composite
                 final VerticalSectionWidget vs = new VerticalSectionWidget();
                 vs.setHeaderText( section.getHeading() );
                 for ( SectionEntry sectionEntry : section.getEntries() ) {
-                    vs.add( makeSectionEntry( sectionEntry.getCaption(),
-                                              sectionEntry.getOnClickCommand() ) );
+                    if (authzManager.authorize(sectionEntry, identity)) {
+                        vs.add( makeSectionEntry( sectionEntry.getCaption(),
+                                                  sectionEntry.getOnClickCommand() ) );
+                    }
                 }
                 vs.addStyleName("well");
                 this.columns.add( vs );

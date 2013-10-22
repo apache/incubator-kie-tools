@@ -36,12 +36,14 @@ public class KieWorkbenchSecurityServiceImpl implements KieWorkbenchSecurityServ
     public String loadPolicy() {
         try {
             InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("workbench-policy.properties");
-            String policy = fromStream(is);
-            return policy;
-        } catch (IOException e) {
+            if (is != null) {
+                String policy = fromStream(is);
+                return policy;
+            }
+        } catch (Exception e) {
             logger.error("Workbench security policy couldn't be loaded.", e);
-            return "";
         }
+        return "";
     }
 
     public static String fromStream(InputStream in) throws IOException {
