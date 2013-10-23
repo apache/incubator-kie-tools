@@ -59,7 +59,6 @@ public class NewProjectWizard
 
     @PostConstruct
     public void setupPages() {
-        pom = new POM();
         pages.add( gavWizardPage );
     }
 
@@ -80,7 +79,7 @@ public class NewProjectWizard
 
     @Override
     public int getPreferredHeight() {
-        return 300;
+        return 550;
     }
 
     @Override
@@ -128,7 +127,8 @@ public class NewProjectWizard
 
     public void setProjectName( final String projectName ) {
         this.projectName = projectName;
+        pom = new POM();
         pom.getGav().setArtifactId( projectName );
-        gavWizardPage.setGav( pom.getGav() );
+        gavWizardPage.setPom( pom );
     }
 }

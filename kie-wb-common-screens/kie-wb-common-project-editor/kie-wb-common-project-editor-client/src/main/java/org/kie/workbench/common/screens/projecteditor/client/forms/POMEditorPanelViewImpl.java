@@ -101,8 +101,18 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
+    public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
+        gavEditor.addGroupIdChangeHandler(changeHandler);
+    }
+
+    @Override
     public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
         gavEditor.addArtifactIdChangeHandler( changeHandler );
+    }
+
+    @Override
+    public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
+        gavEditor.addVersionChangeHandler(changeHandler);
     }
 
     @Override

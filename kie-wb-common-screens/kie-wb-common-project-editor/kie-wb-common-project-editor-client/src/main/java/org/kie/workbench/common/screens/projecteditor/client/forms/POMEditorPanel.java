@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.POM;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 
 public class POMEditorPanel
         implements POMEditorPanelView.Presenter,
@@ -62,6 +61,21 @@ public class POMEditorPanel
         } else {
             view.setTitleText(titleText);
         }
+    }
+
+    @Override
+    public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
+        this.view.addGroupIdChangeHandler(changeHandler);
+    }
+
+    @Override
+    public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
+        this.view.addArtifactIdChangeHandler(changeHandler);
+    }
+
+    @Override
+    public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
+        this.view.addVersionChangeHandler(changeHandler);
     }
 
     @Override

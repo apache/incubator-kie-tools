@@ -25,13 +25,19 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
     interface Presenter {
 
-        void onNameChange(String name);
+        void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler );
 
-        void onDescriptionChange(String description);
+        void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler );
+
+        void addVersionChangeHandler( VersionChangeHandler changeHandler );
+
+        void onNameChange( String name );
+
+        void onDescriptionChange( String description );
 
     }
 
-    void setPresenter(Presenter presenter);
+    void setPresenter( Presenter presenter );
 
     String getTitleWidget();
 
@@ -45,7 +51,11 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
     void setGAV( GAV gav );
 
+    void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler );
+
     void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler );
+
+    void addVersionChangeHandler( VersionChangeHandler changeHandler );
 
     void setReadOnly();
 }

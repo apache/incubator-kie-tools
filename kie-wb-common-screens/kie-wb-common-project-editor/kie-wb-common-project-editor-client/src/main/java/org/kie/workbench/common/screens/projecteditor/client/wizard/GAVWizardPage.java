@@ -5,12 +5,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.GAV;
-import org.kie.workbench.common.screens.projecteditor.client.forms.ArtifactIdChangeHandler;
-import org.kie.workbench.common.screens.projecteditor.client.forms.GAVEditor;
-import org.kie.workbench.common.screens.projecteditor.client.forms.GroupIdChangeHandler;
-import org.kie.workbench.common.screens.projecteditor.client.forms.VersionChangeHandler;
+import org.guvnor.common.services.project.model.POM;
+import org.kie.workbench.common.screens.projecteditor.client.forms.*;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
@@ -18,34 +15,35 @@ public class GAVWizardPage
         implements WizardPage {
 
     private GAV gav;
-    private final GAVEditor gavEditor;
+    private POMEditorPanel pomEditor;
     private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
 
     @Inject
-    public GAVWizardPage( GAVEditor gavEditor,
+    public GAVWizardPage( POMEditorPanel pomEditor,
                           Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
-        this.gavEditor = gavEditor;
+        this.pomEditor = pomEditor;
         this.wizardPageStatusChangeEvent = wizardPageStatusChangeEvent;
     }
 
-    public void setGav( GAV gav ) {
-        this.gav = gav;
-        this.gavEditor.setGAV( gav );
-        this.gavEditor.addGroupIdChangeHandler( new GroupIdChangeHandler() {
+    public void setPom( POM pom ) {
+        this.pomEditor.setPOM( pom, false );
+        this.gav = pom.getGav();
+        // changes are passed on from the pom editor through its view onto the underlying gav editor
+        this.pomEditor.addGroupIdChangeHandler( new GroupIdChangeHandler() {
             @Override
             public void onChange( String newGroupId ) {
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
                 wizardPageStatusChangeEvent.fire( event );
             }
         } );
-        this.gavEditor.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
+        this.pomEditor.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
             @Override
             public void onChange( String newArtifactId ) {
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
                 wizardPageStatusChangeEvent.fire( event );
             }
         } );
-        this.gavEditor.addVersionChangeHandler( new VersionChangeHandler() {
+        this.pomEditor.addVersionChangeHandler( new VersionChangeHandler() {
             @Override
             public void onChange( String newVersion ) {
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
@@ -79,6 +77,6 @@ public class GAVWizardPage
 
     @Override
     public Widget asWidget() {
-        return gavEditor.asWidget();
+        return pomEditor.asWidget();
     }
 }
