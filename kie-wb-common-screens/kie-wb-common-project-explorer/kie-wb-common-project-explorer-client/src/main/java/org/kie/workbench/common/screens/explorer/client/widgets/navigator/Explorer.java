@@ -121,7 +121,6 @@ public class Explorer extends Composite {
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
-                            Explorer.this.clear();
                             presenter.organizationalUnitSelected( ou );
                         }
                     } );
@@ -139,7 +138,6 @@ public class Explorer extends Composite {
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
-                            Explorer.this.clear();
                             presenter.repositorySelected( repository );
                         }
                     } );
@@ -157,7 +155,6 @@ public class Explorer extends Composite {
                     addClickHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
-                            Explorer.this.clear();
                             presenter.projectSelected( project );
                         }
                     } );

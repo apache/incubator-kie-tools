@@ -72,6 +72,7 @@ public class TreeNavigator extends Composite implements Navigator {
     @Override
     public void loadContent( final FolderListing content ) {
         if ( content == null || content.getItem() == null ) {
+            clear();
             return;
         }
         if ( content.equals( activeContent ) ) {

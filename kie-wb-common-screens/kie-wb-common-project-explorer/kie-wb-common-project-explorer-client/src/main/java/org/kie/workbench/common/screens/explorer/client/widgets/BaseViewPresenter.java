@@ -227,6 +227,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                  activeFolderItem ) ) {
                     signalChange = true;
                     activeFolderItem = content.getFolderListing().getItem();
+                    if ( activeFolderItem != null && activeFolderItem.getItem() != null && activeFolderItem.getItem() instanceof Package ) {
+                        activePackage = (Package) activeFolderItem.getItem();
+                    } else if ( activeFolderItem == null || activeFolderItem.getItem() == null ) {
+                        activePackage = null;
+                    }
                 }
 
                 if ( signalChange ) {
@@ -260,8 +265,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     private void fireContextChangeEvent() {
         if ( activeFolderItem == null ) {
+            contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
+                                                                     activeRepository,
+                                                                     activeProject ) );
             return;
         }
+
         if ( activeFolderItem.getItem() instanceof Package ) {
             activePackage = (Package) activeFolderItem.getItem();
             contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
@@ -279,6 +288,10 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                                                  activeRepository,
                                                                                  activeProject,
                                                                                  activePackage ) );
+                    } else {
+                        contextChangedEvent.fire( new ProjectContextChangeEvent( activeOrganizationalUnit,
+                                                                                 activeRepository,
+                                                                                 activeProject ) );
                     }
                 }
             } ).resolvePackage( activeFolderItem );
@@ -303,6 +316,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     public void organizationalUnitSelected( final OrganizationalUnit organizationalUnit ) {
         if ( Utils.hasOrganizationalUnitChanged( organizationalUnit,
                                                  activeOrganizationalUnit ) ) {
+            getView().getExplorer().clear();
             initialiseViewForActiveContext( organizationalUnit );
         }
     }
@@ -311,6 +325,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     public void repositorySelected( final Repository repository ) {
         if ( Utils.hasRepositoryChanged( repository,
                                          activeRepository ) ) {
+            getView().getExplorer().clear();
             initialiseViewForActiveContext( activeOrganizationalUnit,
                                             repository );
         }
@@ -320,6 +335,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     public void projectSelected( final Project project ) {
         if ( Utils.hasProjectChanged( project,
                                       activeProject ) ) {
+            getView().getExplorer().clear();
             initialiseViewForActiveContext( activeOrganizationalUnit,
                                             activeRepository,
                                             project );
