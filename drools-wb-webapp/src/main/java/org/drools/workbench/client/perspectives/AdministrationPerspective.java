@@ -144,7 +144,7 @@ public class AdministrationPerspective {
 
         this.perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("RepositoriesEditor")));
 
-        final PanelDefinition west = new PanelDefinitionImpl(PanelType.MULTI_LIST);
+        final PanelDefinition west = new PanelDefinitionImpl(PanelType.SIMPLE);
         west.setWidth(300);
         west.setMinWidth(200);
         west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("FileExplorer")));

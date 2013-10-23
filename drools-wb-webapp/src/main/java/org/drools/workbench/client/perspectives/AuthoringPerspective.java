@@ -102,9 +102,9 @@ public class AuthoringPerspective {
         this.perspective = new PerspectiveDefinitionImpl(PanelType.ROOT_LIST);
         this.perspective.setName("Author");
 
-        final PanelDefinition west = new PanelDefinitionImpl(PanelType.MULTI_LIST);
-        west.setWidth(300);
-        west.setMinWidth(200);
+        final PanelDefinition west = new PanelDefinitionImpl(PanelType.SIMPLE);
+        west.setWidth(400);
+        west.setMinWidth(350);
         west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("org.kie.guvnor.explorer")));
 
         this.perspective.getRoot().insertChild(Position.WEST,
