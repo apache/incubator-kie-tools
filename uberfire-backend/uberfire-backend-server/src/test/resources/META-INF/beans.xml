@@ -1,0 +1,10 @@
+<beans>
+  <alternatives>
+    <class>org.uberfire.backend.TestAppSetup</class>
+    <class>org.uberfire.backend.TestIdentityFactory</class>
+  </alternatives>
+  <scan>
+    <exclude name="org.uberfire.backend.server.plugin.RuntimePluginsServiceServerImpl"/>
+  </scan>
+
+</beans>

@@ -109,7 +109,6 @@ public class RepositoryServiceImpl implements RepositoryService {
         if ( configuredRepositories.containsKey( alias ) ) {
             throw new RepositoryAlreadyExistsException( alias );
         }
-
         final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
         repositoryConfig.addConfigItem( configurationFactory.newConfigItem( "security:roles", new ArrayList<String>() ) );
 

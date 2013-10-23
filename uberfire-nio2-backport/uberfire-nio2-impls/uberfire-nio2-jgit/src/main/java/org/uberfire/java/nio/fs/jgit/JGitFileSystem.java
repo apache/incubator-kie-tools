@@ -338,9 +338,6 @@ public class JGitFileSystem implements FileSystem,
 
         JGitFileSystem that = (JGitFileSystem) o;
 
-        if ( isClose != that.isClose ) {
-            return false;
-        }
         if ( fileStore != null ? !fileStore.equals( that.fileStore ) : that.fileStore != null ) {
             return false;
         }
@@ -373,7 +370,6 @@ public class JGitFileSystem implements FileSystem,
         int result = provider.hashCode();
         result = 31 * result + gitRepo.hashCode();
         result = 31 * result + ( listMode != null ? listMode.hashCode() : 0 );
-        result = 31 * result + ( isClose ? 1 : 0 );
         result = 31 * result + ( fileStore != null ? fileStore.hashCode() : 0 );
         result = 31 * result + name.hashCode();
         return result;

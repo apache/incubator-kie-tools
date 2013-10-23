@@ -152,6 +152,7 @@ public class ListBarWidget
                        boolean isDndEnabled ) {
         this.isMultiPart = isMultiPart;
         this.isDndEnabled = isDndEnabled;
+        this.menuArea.setVisible( false );
 
         if ( isMultiPart ) {
             closeButton.addClickHandler( new ClickHandler() {
@@ -230,6 +231,7 @@ public class ListBarWidget
             return;
         }
 
+        menuArea.setVisible( true );
         parts.add( partDefinition );
 
         final FlowPanel panel = new FlowPanel();

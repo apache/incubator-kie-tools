@@ -838,6 +838,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             FileUtils.delete( gitDir, FileUtils.RECURSIVE );
             closedFileSystems.remove( fileSystem );
             fileSystems.remove( ( (JGitFileSystem) fileSystem ).id() );
+            repoIndex.remove( ( (JGitFileSystem) fileSystem ).gitRepo().getRepository() );
             return true;
         } catch ( java.io.IOException e ) {
             throw new IOException( e );
