@@ -22,7 +22,6 @@ import java.util.Map;
 
 import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.github.gwtbootstrap.client.ui.SimplePager.TextLocation;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -30,12 +29,15 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Label;
@@ -56,13 +58,40 @@ public class AuditLogViewImpl extends Modal
 
     private final AuditLog auditLog;
 
+    /* The 100% width constant. */
+    private static final String P100_PERCENT = "100%";
+
+    /* The 500px width constant. */
+    private static final String P500 = "500px";
+
+    /** The page size constant value. */
+    private static final int PAGE_SIZE = 4;
+
     @UiField
     FlowPanel eventTypes;
 
     @UiField
     SimplePanel eventsContainer;
 
+    @UiField
+    SimplePager pager;
+
     private CellTable<AuditLogEntry> events;
+
+    /**
+     * Custom styles for audit log cell table.
+     *
+     * NOTE: BZ-996942
+     */
+    public interface AuditLogStyle extends CssResource {
+        String eventTypesTitle();
+        String eventsContainerInline();
+        String auitLogModalBody();
+        String eventTypesCheckbox();
+    }
+
+    @UiField
+    AuditLogStyle style;
 
     //The current user's security context (admins can see all records)
     private final Identity identity;
@@ -80,12 +109,12 @@ public class AuditLogViewImpl extends Modal
         this.auditLog = auditLog;
         this.identity = identity;
 
-        setTitle( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog() );
+        setTitle(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog());
         setBackdrop( BackdropType.STATIC );
         setKeyboard( true );
         setAnimation( true );
         setDynamicSafe( true );
-        setWidth( "900px" );
+        setMaxHeigth( P500 );
 
         add( uiBinder.createAndBindUi( this ) );
         add( new ModalFooterOKButton( new Command() {
@@ -100,6 +129,9 @@ public class AuditLogViewImpl extends Modal
 
     public void setup() {
 
+        // BZ-996942: Add a custom style for modal panel to set a fixed width.
+        addStyleName(style.auitLogModalBody());
+
         // BZ-996917: Use a the gwtboostrap style "row-fluid" to allow display some events in the same row.
         eventTypes.setStyleName(Constants.ROW_FLUID);
 
@@ -109,7 +141,11 @@ public class AuditLogViewImpl extends Modal
                                                    e.getValue() ) );
         }
 
+        // Create the GWT Cell Table as events container.
+        // BZ-996942: Set custom width and table css style.
         events = new CellTable<AuditLogEntry>();
+        events.setWidth(P100_PERCENT);
+        events.addStyleName(Constants.TABLE);
 
         final ListDataProvider<AuditLogEntry> dlp = new ListDataProvider<AuditLogEntry>( filterDeletedEntries( auditLog ) );
         dlp.addDataDisplay( events );
@@ -131,11 +167,11 @@ public class AuditLogViewImpl extends Modal
         if ( !identity.hasRole( AppRoles.ADMIN ) ) {
 
             AuditLogEntryDeleteCommentColumn deleteCommentColumn = new AuditLogEntryDeleteCommentColumn();
-            deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, ImageResource>() {
+            deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, SafeHtml>() {
 
                 public void update( int index,
                                     AuditLogEntry row,
-                                    ImageResource value ) {
+                                    SafeHtml value ) {
                     row.setDeleted( true );
                     dlp.setList( filterDeletedEntries( auditLog ) );
                     dlp.refresh();
@@ -154,18 +190,14 @@ public class AuditLogViewImpl extends Modal
         events.setEmptyTableWidget( new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
         events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
         events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
+        events.setPageSize( PAGE_SIZE );
 
-        SimplePager gsp = new SimplePager(TextLocation.LEFT);
-        gsp.setDisplay( events );
+        // Configure the simple pager.
+        pager.setDisplay(events);
+        pager.setPageSize( PAGE_SIZE );
 
-        events.setPageSize( 4 );
-        gsp.setPageSize( 4 );
-
-        VerticalPanel vp = new VerticalPanel();
-        vp.add( gsp );
-        vp.add( events );
-
-        eventsContainer.add( vp );
+        // Add the table to the container.
+        eventsContainer.add( events );
     }
 
     private Widget makeEventTypeCheckBox( final String eventType,
@@ -182,8 +214,9 @@ public class AuditLogViewImpl extends Modal
 
         } );
 
-        // BZ-996917: Use two layout columns for widget width and Set nowrap for while-space.
+        // BZ-996942: Use one column layout.
         chkEventType.addStyleName("span2");
+        chkEventType.addStyleName(style.eventTypesCheckbox());
         chkEventType.setWordWrap(false);
 
         return chkEventType;

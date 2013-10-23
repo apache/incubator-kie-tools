@@ -34,7 +34,7 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
             extends
             SafeHtmlTemplates {
 
-        @Template("<div class=\"auditLogSummary\">{0}</div><div class=\"auditLogDetailValue\">{1}</div>")
+        @Template("<div class=\"auditLogSummary\"><b>{0}</b></div><div class=\"auditLogDetailValue\">{1}</div>")
         SafeHtml entrySummary( String eventTypeDisplayText,
                                String whoWhenDisplayText );
     }

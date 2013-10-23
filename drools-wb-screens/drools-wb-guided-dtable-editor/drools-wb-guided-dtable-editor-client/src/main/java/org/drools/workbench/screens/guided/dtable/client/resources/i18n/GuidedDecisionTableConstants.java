@@ -347,6 +347,8 @@ public interface GuidedDecisionTableConstants
 
     String AreYouSureYouWantToRemoveThisItem();
 
+    String InsertYourCommentsHere();
+
     //Wizard
     String UseWizardToBuildAsset();
 

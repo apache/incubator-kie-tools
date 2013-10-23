@@ -19,16 +19,44 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
   xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
+  <!--
+     NOTE: BZ-996942: Added custom styles for audit log widget.
+  -->
+  <ui:style type='org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLogViewImpl.AuditLogStyle'>
+    .eventTypesTitle {
+      font-style: italic;
+    }
+    .eventsContainerInline {
+      width: 100%;
+      height: 300px;
+      display: inline-block;
+      overflow: auto;
+    }
+    .auitLogModalBody {
+      width: 750px;
+    }
+    .eventTypesCheckbox {
+      margin-left: 0px;
+    }
+  </ui:style>
+
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants" />
   <ui:with field="images" type="org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources" />
   <ui:with field="i18nCommon" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
 
-  <g:VerticalPanel width="100%">
+  <g:VerticalPanel width="100%" height="350px">
       <!-- BZ-996917: Changed dropdown menu with all events as menu item for a flow panel layout due to usability reasons. -->
+      <g:HTML addStyleNames="{style.eventTypesTitle}" text="{i18n.DecisionTableAuditLogEvents}:"/>
       <g:FlowPanel ui:field="eventTypes"/>
-      <b:Well>
-        <g:SimplePanel ui:field="eventsContainer" width="100%" height="300px"/>
-      </b:Well>
+      <g:VerticalPanel width="100%" height="300px" >
+        <g:SimplePanel ui:field="eventsContainer" addStyleNames="{style.eventsContainerInline}"/>
+      </g:VerticalPanel>
+      <g:VerticalPanel width="100%" height="50px" >
+        <g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE" height="100%">
+          <b:SimplePager ui:field="pager" location="CENTER" height="100%"/>
+        </g:cell>
+      </g:VerticalPanel>
+
   </g:VerticalPanel>
 
 </ui:UiBinder>
