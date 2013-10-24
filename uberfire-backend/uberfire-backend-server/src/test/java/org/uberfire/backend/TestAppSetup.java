@@ -16,19 +16,15 @@
 
 package org.uberfire.backend;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.uberfire.backend.repositories.Repository;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
-
-import static org.uberfire.backend.server.repositories.SystemRepository.*;
 
 @Singleton
 @Alternative
@@ -41,12 +37,6 @@ public class TestAppSetup {
     @Named("ioStrategy")
     public IOService ioService() {
         return ioService;
-    }
-
-    @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return SYSTEM_REPO;
     }
 
     @Produces

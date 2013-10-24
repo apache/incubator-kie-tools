@@ -17,15 +17,21 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.backend.repositories.Repository;
+import org.uberfire.java.nio.file.StandardWatchEventKind;
+import org.uberfire.java.nio.file.WatchEvent;
+import org.uberfire.java.nio.file.WatchKey;
+import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.security.Identity;
 
 @ApplicationScoped
@@ -33,7 +39,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private static final String LAST_MODIFIED_MARKER_FILE = ".lastmodified";
     private static final String MONITOR_DISABLED = "org.kie.sys.repo.monitor.disabled";
-    private static final String MONITOR_CHECK_INTERVAL = "org.kie.sys.repo.monitor.interval";
+    //    private static final String MONITOR_CHECK_INTERVAL = "org.kie.sys.repo.monitor.interval";
     // mainly for windows as *NIX is based on POSIX but escape always to keep it consistent
     private static final String INVALID_FILENAME_CHARS = "[\\,/,:,*,?,\",<,>,|]";
 
@@ -52,7 +58,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private long localLastModifiedValue = -1;
 
     @Inject
-    @Named("ioStrategy")
+    @Named("configIO")
     private IOService ioService;
 
     // monitor capabilities
@@ -61,19 +67,22 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private ExecutorService executorService;
     private CheckConfigurationUpdates configUpdates;
 
+    private FileSystem fs;
+
     @PostConstruct
     public void setup() {
         try {
-            ioService.newFileSystem( URI.create( systemRepository.getUri() ),
-                                     systemRepository.getEnvironment(),
-                                     FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE );
+            fs = ioService.newFileSystem( URI.create( systemRepository.getUri() ),
+                                          systemRepository.getEnvironment(),
+                                          FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE );
             updateLastModified();
         } catch ( FileSystemAlreadyExistsException e ) {
+            fs = ioService.getFileSystem( URI.create( systemRepository.getUri() ) );
         }
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
             executorService = Executors.newSingleThreadExecutor();
-            configUpdates = new CheckConfigurationUpdates();
+            configUpdates = new CheckConfigurationUpdates( fs.newWatchService() );
             executorService.execute( configUpdates );
         }
     }
@@ -131,11 +140,13 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                      "Created config " + filePath.getFileName() );
+        ioService.startBatch();
         ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
 
+        updateLastModified();
+        ioService.endBatch();
         //Invalidate cache if a new item has been created; otherwise cached value is stale
         configuration.remove( configGroup.getType() );
-        updateLastModified();
 
         return true;
     }
@@ -148,11 +159,13 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                      "Updated config " + filePath.getFileName() );
+        ioService.startBatch();
         ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
 
+        updateLastModified();
+        ioService.endBatch();
         //Invalidate cache if a new item has been created; otherwise cached value is stale
         configuration.remove( configGroup.getType() );
-        updateLastModified();
 
         return true;
     }
@@ -169,11 +182,12 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         if ( !ioService.exists( filePath ) ) {
             return true;
         }
+        ioService.startBatch();
         boolean result = ioService.deleteIfExists( filePath );
-
         if ( result ) {
             updateLastModified();
         }
+        ioService.endBatch();
 
         return result;
     }
@@ -204,25 +218,62 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private class CheckConfigurationUpdates implements Runnable {
 
+            private final WatchService ws;
         private boolean active = true;
+
+        public CheckConfigurationUpdates( final WatchService watchService ) {
+            this.ws = watchService;
+        }
 
         @Override
         public void run() {
 
             while ( active ) {
                 try {
-                    long currentValue = getLastModified();
-                    if ( currentValue > localLastModifiedValue ) {
-                        localLastModifiedValue = currentValue;
-                        // invalidate cached values as system repo has changed - for now only for deployments
-                        configuration.remove( ConfigType.DEPLOYMENT );
-                        changedEvent.fire( new SystemRepositoryChangedEvent() );
 
+                    final WatchKey wk = ws.take();
+                    if ( wk == null ) {
+                        continue;
                     }
 
-                    Thread.sleep( Long.parseLong( System.getProperty( MONITOR_CHECK_INTERVAL, "2000" ) ) );
-                } catch ( Exception e ) {
+                    final List<WatchEvent<?>> events = wk.pollEvents();
 
+                    boolean markerFileModified = false;
+                    for ( final WatchEvent<?> event : events ) {
+                        final WatchContext context = (WatchContext) event.context();
+                        if ( event.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
+                            if ( context.getOldPath().getFileName().toString().equals( LAST_MODIFIED_MARKER_FILE ) ) {
+                                markerFileModified = true;
+                                break;
+                            }
+                        } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
+                            if ( context.getPath().getFileName().toString().equals( LAST_MODIFIED_MARKER_FILE ) ) {
+                                markerFileModified = true;
+                                break;
+                            }
+                        } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
+                            if ( context.getOldPath().getFileName().toString().equals( LAST_MODIFIED_MARKER_FILE ) ) {
+                                markerFileModified = true;
+                                break;
+                            }
+                        } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
+                            if ( context.getOldPath().getFileName().toString().equals( LAST_MODIFIED_MARKER_FILE ) ) {
+                                markerFileModified = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ( markerFileModified ) {
+                        long currentValue = getLastModified();
+                        if ( currentValue > localLastModifiedValue ) {
+                            localLastModifiedValue = currentValue;
+                            // invalidate cached values as system repo has changed - for now only for deployments
+                            configuration.remove( ConfigType.DEPLOYMENT );
+                            changedEvent.fire( new SystemRepositoryChangedEvent() );
+                        }
+                    }
+                } catch ( final Exception ignored ) {
                 }
             }
         }

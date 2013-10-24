@@ -39,7 +39,7 @@ public class WorkbenchServicesImpl
         WorkbenchServices {
 
     @Inject
-    @Named("ioStrategy")
+    @Named("configIO")
     private IOService ioService;
 
     @Inject
@@ -49,10 +49,12 @@ public class WorkbenchServicesImpl
 
     @Override
     public void save( final PerspectiveDefinition perspective ) {
-        final String xml = xs.toXML( perspective );
-        final Path perspectivePath = userServices.buildPath( "perspectives",
-                                                             perspective.getName() + ".perspective" );
-        ioService.write( perspectivePath, xml );
+        if ( !perspective.isTransient() ) {
+            final String xml = xs.toXML( perspective );
+            final Path perspectivePath = userServices.buildPath( "perspectives",
+                                                                 perspective.getName() + ".perspective" );
+            ioService.write( perspectivePath, xml );
+        }
     }
 
     @Override

@@ -31,7 +31,7 @@ import static org.uberfire.io.FileSystemType.Bootstrap.*;
 public class UserServicesBackendImpl {
 
     @Inject
-    @Named("ioStrategy")
+    @Named("configIO")
     private IOService ioService;
 
     private Path bootstrapRoot = null;
@@ -52,9 +52,9 @@ public class UserServicesBackendImpl {
                            final String serviceType,
                            final String relativePath ) {
         if ( relativePath != null && !"".equals( relativePath ) ) {
-            return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType + "/." + relativePath );
+            return bootstrapRoot.getFileSystem().getPath( userName + "-user", serviceType, relativePath );
         } else {
-            return bootstrapRoot.resolve( "/.metadata/.users/" + userName + "/." + serviceType );
+            return bootstrapRoot.getFileSystem().getPath( userName + "-user", serviceType );
         }
     }
 }

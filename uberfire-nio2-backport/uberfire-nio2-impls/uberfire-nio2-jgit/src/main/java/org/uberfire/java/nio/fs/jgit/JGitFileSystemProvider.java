@@ -152,10 +152,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private final Map<String, JGitFileSystem> fileSystems = new ConcurrentHashMap<String, JGitFileSystem>();
     private final Set<JGitFileSystem> closedFileSystems = new HashSet<JGitFileSystem>();
     private final Map<Repository, JGitFileSystem> repoIndex = new ConcurrentHashMap<Repository, JGitFileSystem>();
+    private final Map<Repository, ClusterService> clusterMap = new ConcurrentHashMap<Repository, ClusterService>();
 
     private final String fullHostName;
-
-    private final Map<Repository, ClusterService> clusterMap = new ConcurrentHashMap<Repository, ClusterService>();
 
     private boolean isDefault;
 
@@ -635,17 +634,20 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                     }
 
                     File tempDot = null;
+                    final boolean hasDotContent;
                     if ( options != null && options.contains( new DotFileOption() ) ) {
                         deleteIfExists( dot( path ) );
                         tempDot = File.createTempFile( "meta", "dot" );
-                        buildDotFile( path, new FileOutputStream( tempDot ), attrs );
+                        hasDotContent = buildDotFile( path, new FileOutputStream( tempDot ), attrs );
+                    } else {
+                        hasDotContent = false;
                     }
 
                     final File dotfile = tempDot;
 
                     commit( gPath, sessionId, name, email, message, timeZone, when, new HashMap<String, File>() {{
                         put( gPath.getPath(), file );
-                        if ( dotfile != null ) {
+                        if ( hasDotContent ) {
                             put( toPathImpl( dot( gPath ) ).getPath(), dotfile );
                         }
                     }} );
@@ -1101,7 +1103,6 @@ public class JGitFileSystemProvider implements FileSystemProvider {
             while ( ( count = in.read( buffer ) ) > 0 ) {
                 out.write( ByteBuffer.wrap( buffer, 0, count ) );
             }
-            out.close();
         } catch ( Exception e ) {
             throw new IOException( e );
         } finally {

@@ -323,7 +323,7 @@ public abstract class CommonIOServiceDotFileTest {
         ioService().copy( sfile, tfile );
 
         assertTrue( ioService().exists( sfile ) );
-        assertTrue( ioService().exists( dot( tfile ) ) );
+        assertTrue( ioService().exists( dot( sfile ) ) );
         assertTrue( ioService().exists( tfile ) );
         assertTrue( ioService().exists( dot( tfile ) ) );
     }

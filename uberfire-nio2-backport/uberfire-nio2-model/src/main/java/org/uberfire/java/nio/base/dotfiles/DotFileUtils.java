@@ -20,22 +20,26 @@ public final class DotFileUtils {
 
     }
 
-    public static void buildDotFile( final Path path,
-                                     final OutputStream out,
-                                     final FileAttribute<?>... attrs ) {
+    public static boolean buildDotFile( final Path path,
+                                        final OutputStream out,
+                                        final FileAttribute<?>... attrs ) {
+        boolean hasContent = false;
         if ( attrs != null && attrs.length > 0 ) {
             final Properties properties = new Properties();
 
             for ( final FileAttribute<?> attr : attrs ) {
                 if ( attr.value() instanceof Serializable ) {
+                    hasContent = true;
                     properties.put( attr.name(), attr.value() );
                 }
             }
 
-            try {
-                properties.store( out );
-            } catch ( final Exception e ) {
-                throw new IOException( e );
+            if ( hasContent ) {
+                try {
+                    properties.store( out );
+                } catch ( final Exception e ) {
+                    throw new IOException( e );
+                }
             }
 
             if ( path instanceof AttrHolder ) {
@@ -44,6 +48,15 @@ public final class DotFileUtils {
         } else {
             path.getFileSystem().provider().deleteIfExists( dot( path ) );
         }
+
+        if ( !hasContent ) {
+            try {
+                out.close();
+            } catch ( java.io.IOException e ) {
+            }
+        }
+
+        return hasContent;
     }
 
     public static Path dot( final Path path ) {

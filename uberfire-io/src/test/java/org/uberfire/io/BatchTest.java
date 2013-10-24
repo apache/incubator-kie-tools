@@ -55,27 +55,19 @@ public class BatchTest {
         ioService.write( init, "init 2!", new CommentedOption( "User Tester", "message2" ) );
         {
             List<WatchEvent<?>> events = ws.poll().pollEvents();
-            assertEquals( 1, events.size() );//delete dotfile
-        }
-        {
-            List<WatchEvent<?>> events = ws.poll().pollEvents();
-            assertEquals( 2, events.size() ); //add dotfile &&  modify readme
+            assertEquals( 1, events.size() );//modify readme
         }
 
         final Path init2 = ioService.get( URI.create( "git://amend-repo-test/readme2.txt" ) );
         ioService.write( init2, "init 3!", new CommentedOption( "User Tester", "message3" ) );
         {
             List<WatchEvent<?>> events = ws.poll().pollEvents();
-            assertEquals( 2, events.size() ); // add dotfile and add file
+            assertEquals( 1, events.size() ); // add file
         }
         ioService.write( init2, "init 4!", new CommentedOption( "User Tester", "message4" ) );
         {
             List<WatchEvent<?>> events = ws.poll().pollEvents();
-            assertEquals( 1, events.size() );// delete dot
-        }
-        {
-            List<WatchEvent<?>> events = ws.poll().pollEvents();
-            assertEquals( 2, events.size() ); // add dotfile and modify file
+            assertEquals( 1, events.size() );// modify file
         }
 
         final VersionAttributeView vinit = ioService.getFileAttributeView( init, VersionAttributeView.class );
@@ -102,7 +94,7 @@ public class BatchTest {
         ioService.endBatch();
         {
             List<WatchEvent<?>> events = ws.poll().pollEvents();
-            assertEquals( 4, events.size() ); //adds files and dotfiles
+            assertEquals( 2, events.size() ); //adds files
         }
 
         final VersionAttributeView v = ioService.getFileAttributeView( path, VersionAttributeView.class );

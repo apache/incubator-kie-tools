@@ -23,14 +23,11 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
-
-import static org.uberfire.backend.server.repositories.SystemRepository.*;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
@@ -67,11 +64,4 @@ public class ApplicationScopedProducer {
     public IOService ioService() {
         return ioService;
     }
-
-    @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return SYSTEM_REPO;
-    }
-
 }

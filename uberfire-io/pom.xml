@@ -29,7 +29,7 @@
   <artifactId>uberfire-io</artifactId>
   <packaging>bundle</packaging>
 
-  <name>UberFire Commons I/O</name>
+  <name>UberFire I/O</name>
   <description>
     Set of utilities/facades for NIO.2
   </description>

@@ -339,60 +339,64 @@ public final class JGitUtil {
                 // Create the in-memory index of the new/updated issue.
                 final ObjectId headId = git.getRepository().resolve( branchName + "^{commit}" );
                 final DirCache index = createTemporaryIndex( git, headId, content );
-                final ObjectId indexTreeId = index.writeTree( odi );
+                if ( index != null ) {
+                    final ObjectId indexTreeId = index.writeTree( odi );
 
-                // Create a commit object
-                final CommitBuilder commit = new CommitBuilder();
-                commit.setAuthor( author );
-                commit.setCommitter( author );
-                commit.setEncoding( Constants.CHARACTER_ENCODING );
-                commit.setMessage( message );
-                //headId can be null if the repository has no commit yet
-                if ( headId != null ) {
-                    if ( amend ) {
-                        final List<ObjectId> parents = new LinkedList<ObjectId>();
-                        final RevCommit previousCommit = new RevWalk( git.getRepository() ).parseCommit( headId );
-                        final RevCommit[] p = previousCommit.getParents();
-                        for ( final RevCommit revCommit : p ) {
-                            parents.add( 0, revCommit.getId() );
+                    // Create a commit object
+                    final CommitBuilder commit = new CommitBuilder();
+                    commit.setAuthor( author );
+                    commit.setCommitter( author );
+                    commit.setEncoding( Constants.CHARACTER_ENCODING );
+                    commit.setMessage( message );
+                    //headId can be null if the repository has no commit yet
+                    if ( headId != null ) {
+                        if ( amend ) {
+                            final List<ObjectId> parents = new LinkedList<ObjectId>();
+                            final RevCommit previousCommit = new RevWalk( git.getRepository() ).parseCommit( headId );
+                            final RevCommit[] p = previousCommit.getParents();
+                            for ( final RevCommit revCommit : p ) {
+                                parents.add( 0, revCommit.getId() );
+                            }
+                            commit.setParentIds( parents );
+                        } else {
+                            commit.setParentId( headId );
                         }
-                        commit.setParentIds( parents );
-                    } else {
-                        commit.setParentId( headId );
                     }
-                }
-                commit.setTreeId( indexTreeId );
+                    commit.setTreeId( indexTreeId );
 
-                // Insert the commit into the repository
-                final ObjectId commitId = odi.insert( commit );
-                odi.flush();
+                    // Insert the commit into the repository
+                    final ObjectId commitId = odi.insert( commit );
+                    odi.flush();
 
-                final RevWalk revWalk = new RevWalk( git.getRepository() );
-                try {
-                    final RevCommit revCommit = revWalk.parseCommit( commitId );
-                    final RefUpdate ru = git.getRepository().updateRef( "refs/heads/" + branchName );
-                    if ( headId == null ) {
-                        ru.setExpectedOldObjectId( ObjectId.zeroId() );
-                    } else {
-                        ru.setExpectedOldObjectId( headId );
+                    final RevWalk revWalk = new RevWalk( git.getRepository() );
+                    try {
+                        final RevCommit revCommit = revWalk.parseCommit( commitId );
+                        final RefUpdate ru = git.getRepository().updateRef( "refs/heads/" + branchName );
+                        if ( headId == null ) {
+                            ru.setExpectedOldObjectId( ObjectId.zeroId() );
+                        } else {
+                            ru.setExpectedOldObjectId( headId );
+                        }
+                        ru.setNewObjectId( commitId );
+                        ru.setRefLogMessage( "commit: " + revCommit.getShortMessage(), false );
+                        final RefUpdate.Result rc = ru.forceUpdate();
+                        switch ( rc ) {
+                            case NEW:
+                            case FORCED:
+                            case FAST_FORWARD:
+                                break;
+                            case REJECTED:
+                            case LOCK_FAILURE:
+                                throw new ConcurrentRefUpdateException( JGitText.get().couldNotLockHEAD, ru.getRef(), rc );
+                            default:
+                                throw new JGitInternalException( MessageFormat.format( JGitText.get().updatingRefFailed, Constants.HEAD, commitId.toString(), rc ) );
+                        }
+
+                    } finally {
+                        revWalk.release();
                     }
-                    ru.setNewObjectId( commitId );
-                    ru.setRefLogMessage( "commit: " + revCommit.getShortMessage(), false );
-                    final RefUpdate.Result rc = ru.forceUpdate();
-                    switch ( rc ) {
-                        case NEW:
-                        case FORCED:
-                        case FAST_FORWARD:
-                            break;
-                        case REJECTED:
-                        case LOCK_FAILURE:
-                            throw new ConcurrentRefUpdateException( JGitText.get().couldNotLockHEAD, ru.getRef(), rc );
-                        default:
-                            throw new JGitInternalException( MessageFormat.format( JGitText.get().updatingRefFailed, Constants.HEAD, commitId.toString(), rc ) );
-                    }
-
-                } finally {
-                    revWalk.release();
+                } else {
+                    //empty commit
                 }
             } finally {
                 odi.release();
@@ -427,7 +431,7 @@ public final class JGitUtil {
                                                   final ObjectId headId,
                                                   final Map<String, File> content ) {
 
-        final Map<String, File> paths = new HashMap<String, File>( content.size() );
+        final Map<String, Pair<File, ObjectId>> paths = new HashMap<String, Pair<File, ObjectId>>( content.size() );
         final Set<String> path2delete = new HashSet<String>();
 
         final DirCache inCoreIndex = DirCache.newInCore();
@@ -437,7 +441,6 @@ public final class JGitUtil {
         try {
             for ( final Map.Entry<String, File> pathAndContent : content.entrySet() ) {
                 final String gPath = fixPath( pathAndContent.getKey() );
-                paths.put( gPath, pathAndContent.getValue() );
                 if ( pathAndContent.getValue() == null ) {
                     final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
                     treeWalk.addTree( new RevWalk( git.getRepository() ).parseTree( headId ) );
@@ -448,31 +451,18 @@ public final class JGitUtil {
                         path2delete.add( treeWalk.getPathString() );
                     }
                     treeWalk.release();
-                }
-            }
-
-            for ( final Map.Entry<String, File> pathAndContent : paths.entrySet() ) {
-                if ( pathAndContent.getValue() != null ) {
-                    editor.add( new DirCacheEditor.PathEdit( new DirCacheEntry( pathAndContent.getKey() ) ) {
-                        @Override
-                        public void apply( final DirCacheEntry ent ) {
-                            ent.setLength( pathAndContent.getValue().length() );
-                            ent.setLastModified( pathAndContent.getValue().lastModified() );
-                            ent.setFileMode( REGULAR_FILE );
-
-                            try {
-                                final InputStream inputStream = new FileInputStream( pathAndContent.getValue() );
-                                try {
-                                    final ObjectId objectId = inserter.insert( Constants.OBJ_BLOB, pathAndContent.getValue().length(), inputStream );
-                                    ent.setObjectId( objectId );
-                                } finally {
-                                    inputStream.close();
-                                }
-                            } catch ( final Exception ex ) {
-                                throw new RuntimeException( ex );
-                            }
+                } else {
+                    try {
+                        final InputStream inputStream = new FileInputStream( pathAndContent.getValue() );
+                        try {
+                            final ObjectId objectId = inserter.insert( Constants.OBJ_BLOB, pathAndContent.getValue().length(), inputStream );
+                            paths.put( gPath, Pair.newPair( pathAndContent.getValue(), objectId ) );
+                        } finally {
+                            inputStream.close();
                         }
-                    } );
+                    } catch ( final Exception ex ) {
+                        throw new RuntimeException( ex );
+                    }
                 }
             }
 
@@ -484,6 +474,10 @@ public final class JGitUtil {
                 while ( treeWalk.next() ) {
                     final String walkPath = treeWalk.getPathString();
                     final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
+
+                    if ( paths.containsKey( walkPath ) && paths.get( walkPath ).getK2().equals( hTree.getEntryObjectId() ) ) {
+                        paths.remove( walkPath );
+                    }
 
                     if ( paths.get( walkPath ) == null && !path2delete.contains( walkPath ) ) {
                         final DirCacheEntry dcEntry = new DirCacheEntry( walkPath );
@@ -503,11 +497,30 @@ public final class JGitUtil {
                 treeWalk.release();
             }
 
+            for ( final Map.Entry<String, Pair<File, ObjectId>> pathAndContent : paths.entrySet() ) {
+                if ( pathAndContent.getValue().getK1() != null ) {
+                    editor.add( new DirCacheEditor.PathEdit( new DirCacheEntry( pathAndContent.getKey() ) ) {
+                        @Override
+                        public void apply( final DirCacheEntry ent ) {
+                            ent.setLength( pathAndContent.getValue().getK1().length() );
+                            ent.setLastModified( pathAndContent.getValue().getK1().lastModified() );
+                            ent.setFileMode( REGULAR_FILE );
+                            ent.setObjectId( pathAndContent.getValue().getK2() );
+                        }
+                    } );
+                }
+            }
+
             editor.finish();
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         } finally {
             inserter.release();
+        }
+
+        if ( path2delete.isEmpty() && paths.isEmpty() ) {
+            //no changes!
+            return null;
         }
 
         return inCoreIndex;

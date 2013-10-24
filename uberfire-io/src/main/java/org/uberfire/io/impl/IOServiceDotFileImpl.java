@@ -151,7 +151,7 @@ public class IOServiceDotFileImpl
             Files.delete( dot( target ) );
         }
 
-        final Path result = Files.copy( source, target, buildOptions( options ) );
+        final Path result = Files.copy( source, target, options );
 
         return result;
     }
