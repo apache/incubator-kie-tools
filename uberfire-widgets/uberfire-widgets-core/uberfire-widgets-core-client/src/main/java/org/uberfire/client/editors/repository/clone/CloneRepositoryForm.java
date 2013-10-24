@@ -206,10 +206,10 @@ public class CloneRepositoryForm
         lockScreen();
 
         final String scheme = "git";
-        final String alias = nameTextBox.getText();
-        final String origin = gitURLTextBox.getText();
-        final String username = usernameTextBox.getText();
-        final String password = passwordTextBox.getText();
+        final String alias = nameTextBox.getText().trim();
+        final String origin = gitURLTextBox.getText().trim();
+        final String username = usernameTextBox.getText().trim();
+        final String password = passwordTextBox.getText().trim();
         final Map<String, Object> env = new HashMap<String, Object>( 3 );
         env.put( "username", username );
         env.put( "crypt:password", password );

@@ -171,7 +171,7 @@ public class CreateRepositoryForm
         }
 
         final String scheme = "git";
-        final String alias = nameTextBox.getText();
+        final String alias = nameTextBox.getText().trim();
         final Map<String, Object> env = new HashMap<String, Object>( 3 );
 
         repositoryService.call( new RemoteCallback<Repository>() {
