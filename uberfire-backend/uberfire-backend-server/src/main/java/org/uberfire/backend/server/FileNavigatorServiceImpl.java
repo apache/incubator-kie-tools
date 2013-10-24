@@ -9,15 +9,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.ocpsoft.prettytime.PrettyTime;
+import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
-import org.ocpsoft.prettytime.PrettyTime;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.navigator.DataContent;
 import org.uberfire.navigator.FileNavigatorService;
 import org.uberfire.navigator.NavigatorContent;
@@ -33,9 +33,6 @@ public class FileNavigatorServiceImpl implements FileNavigatorService {
     private IOService ioService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private RepositoryService repositoryService;
 
     private final PrettyTime p = new PrettyTime();
@@ -45,7 +42,7 @@ public class FileNavigatorServiceImpl implements FileNavigatorService {
         final ArrayList<DataContent> result = new ArrayList<DataContent>();
         final ArrayList<org.uberfire.backend.vfs.Path> breadcrumbs = new ArrayList<org.uberfire.backend.vfs.Path>();
 
-        Path path = paths.convert( _path );
+        Path path = Paths.convert( _path );
         final DirectoryStream<Path> stream = ioService.newDirectoryStream( path );
 
         for ( final Path activePath : stream ) {
@@ -57,7 +54,7 @@ public class FileNavigatorServiceImpl implements FileNavigatorService {
             final String comment = versionAttributeView.readAttributes().history().records().get( index ).comment();
 
             final String time = p.format( new Date( Files.getLastModifiedTime( activePath ).toMillis() ) );
-            result.add( new DataContent( Files.isDirectory( activePath ), comment, author, authorEmail, time, paths.convert( activePath ) ) );
+            result.add( new DataContent( Files.isDirectory( activePath ), comment, author, authorEmail, time, Paths.convert( activePath ) ) );
         }
 
         sort( result, new Comparator<DataContent>() {
@@ -86,12 +83,12 @@ public class FileNavigatorServiceImpl implements FileNavigatorService {
         if ( !path.equals( path.getRoot() ) ) {
             while ( !path.getParent().equals( path.getRoot() ) ) {
                 path = path.getParent();
-                breadcrumbs.add( paths.convert( path ) );
+                breadcrumbs.add( Paths.convert( path ) );
             }
 
             reverse( breadcrumbs );
         }
-        final org.uberfire.backend.vfs.Path root = paths.convert( path.getRoot() );
+        final org.uberfire.backend.vfs.Path root = Paths.convert( path.getRoot() );
 
         return new NavigatorContent( repositoryService.getRepository( root ).getAlias(), root, breadcrumbs, result );
     }

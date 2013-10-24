@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.io.IOWatchService;
@@ -35,6 +34,8 @@ import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdated;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
+import static org.uberfire.backend.server.util.Paths.*;
+
 public abstract class AbstractWatchService implements IOWatchService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( AbstractWatchService.class );
@@ -53,9 +54,6 @@ public abstract class AbstractWatchService implements IOWatchService {
 
     @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
-
-    @Inject
-    private Paths paths;
 
     private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
@@ -168,16 +166,16 @@ public abstract class AbstractWatchService implements IOWatchService {
         final Path _affectedPath;
         final T result;
         if ( event.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
-            _affectedPath = paths.convert( context.getOldPath() );
+            _affectedPath = convert( context.getOldPath() );
             result = (T) new ResourceUpdatedEvent( _affectedPath, sessionInfo( context ) );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
-            _affectedPath = paths.convert( context.getPath() );
+            _affectedPath = convert( context.getPath() );
             result = (T) new ResourceAddedEvent( _affectedPath, sessionInfo( context ) );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
-            _affectedPath = paths.convert( context.getOldPath() );
-            result = (T) new ResourceRenamedEvent( _affectedPath, paths.convert( context.getPath() ), sessionInfo( context ) );
+            _affectedPath = convert( context.getOldPath() );
+            result = (T) new ResourceRenamedEvent( _affectedPath, convert( context.getPath() ), sessionInfo( context ) );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
-            _affectedPath = paths.convert( context.getOldPath() );
+            _affectedPath = convert( context.getOldPath() );
             result = (T) new ResourceDeletedEvent( _affectedPath, sessionInfo( context ) );
         } else {
             _affectedPath = null;
@@ -196,16 +194,16 @@ public abstract class AbstractWatchService implements IOWatchService {
         final Path _affectedPath;
         final ResourceChange result;
         if ( event.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
-            _affectedPath = paths.convert( context.getOldPath() );
+            _affectedPath = convert( context.getOldPath() );
             result = new ResourceUpdated();
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
-            _affectedPath = paths.convert( context.getPath() );
+            _affectedPath = convert( context.getPath() );
             result = new ResourceAdded();
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
-            _affectedPath = paths.convert( context.getOldPath() );
-            result = new ResourceRenamed( paths.convert( context.getPath() ) );
+            _affectedPath = convert( context.getOldPath() );
+            result = new ResourceRenamed( convert( context.getPath() ) );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
-            _affectedPath = paths.convert( context.getOldPath() );
+            _affectedPath = convert( context.getOldPath() );
             result = new ResourceDeleted();
         } else {
             _affectedPath = null;

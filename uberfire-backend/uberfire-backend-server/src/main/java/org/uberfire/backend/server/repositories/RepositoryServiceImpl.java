@@ -12,8 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.NewRepositoryEvent;
@@ -25,11 +23,13 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 
 import static org.uberfire.backend.server.config.ConfigType.*;
 import static org.uberfire.backend.server.repositories.EnvironmentParameters.*;
+import static org.uberfire.backend.server.util.Paths.*;
 
 @Service
 @ApplicationScoped
@@ -38,9 +38,6 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private Paths paths;
 
     @Inject
     private ConfigurationService configurationService;
@@ -202,7 +199,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             final Repository repo = configuredRepositories.remove( alias );
             if ( repo != null ) {
                 rootToRepo.remove( repo.getRoot() );
-                ioService.delete( paths.convert( repo.getRoot() ).getFileSystem().getPath( null ) );
+                ioService.delete( convert( repo.getRoot() ).getFileSystem().getPath( null ) );
             }
         }
 
