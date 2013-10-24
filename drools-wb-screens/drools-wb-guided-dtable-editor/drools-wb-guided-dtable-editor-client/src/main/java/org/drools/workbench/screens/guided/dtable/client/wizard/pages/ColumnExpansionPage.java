@@ -52,6 +52,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
         view.setValidator( getValidator() );
         view.setChosenColumns( new ArrayList<ConditionCol52>() );
         content.setWidget( view );
+        columnsToExpand = null;
     }
 
     @Override

@@ -29,6 +29,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.handlers.NewGuidedDecisionTableHandler;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.AbstractGuidedDecisionTableWizardPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.ActionInsertFactFieldsPage;
@@ -115,7 +116,7 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
 
     @Override
     public String getTitle() {
-        return "Guided Decision Table Wizard"; // TODO: i18n
+        return GuidedDecisionTableConstants.INSTANCE.DecisionTableWizard();
     }
 
     @Override

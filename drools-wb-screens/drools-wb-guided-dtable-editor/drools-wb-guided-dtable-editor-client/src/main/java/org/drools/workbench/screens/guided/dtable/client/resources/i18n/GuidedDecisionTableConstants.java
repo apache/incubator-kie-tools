@@ -352,6 +352,8 @@ public interface GuidedDecisionTableConstants
     //Wizard
     String UseWizardToBuildAsset();
 
+    String DecisionTableWizard();
+
     String DecisionTableWizardSummary();
 
     String DecisionTableWizardFactPatterns();
