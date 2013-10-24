@@ -116,9 +116,6 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     private ProjectService projectService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -166,9 +163,8 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                                           "" );
 
             //Write file to VFS
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            final Path newPath = paths.convert( nioPath,
-                                                false );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+            final Path newPath = Paths.convert( nioPath );
 
             ioService.createFile( nioPath );
             ioService.write( nioPath,
@@ -185,7 +181,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     @Override
     public String load( final Path path ) {
         try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+            final String content = ioService.readAllString( Paths.convert( path ) );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
@@ -213,8 +209,8 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
 
     private List<String> loadWorkItemImages( final Path resourcePath ) {
         final Path projectRoot = projectService.resolveProject( resourcePath ).getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectPath = paths.convert( projectRoot );
-        final org.uberfire.java.nio.file.Path nioResourceParent = paths.convert( resourcePath ).getParent();
+        final org.uberfire.java.nio.file.Path nioProjectPath = Paths.convert( projectRoot );
+        final org.uberfire.java.nio.file.Path nioResourceParent = Paths.convert( resourcePath ).getParent();
 
         final Collection<org.uberfire.java.nio.file.Path> imagePaths = fileDiscoveryService.discoverFiles( nioProjectPath,
                                                                                                            imageFilter,
@@ -238,7 +234,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                       final Metadata metadata,
                       final String comment ) {
         try {
-            ioService.write( paths.convert( resource ),
+            ioService.write( Paths.convert( resource ),
                              content,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
@@ -299,7 +295,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     @Override
     public List<ValidationMessage> validate( final Path path ) {
         try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+            final String content = ioService.readAllString( Paths.convert( path ) );
             return validate( path,
                              content );
 

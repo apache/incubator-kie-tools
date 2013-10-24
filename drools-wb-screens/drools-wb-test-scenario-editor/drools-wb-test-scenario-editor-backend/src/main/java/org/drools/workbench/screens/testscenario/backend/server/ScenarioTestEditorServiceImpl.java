@@ -99,9 +99,6 @@ public class ScenarioTestEditorServiceImpl
     private DataModelService dataModelService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -116,9 +113,8 @@ public class ScenarioTestEditorServiceImpl
                         final Scenario content,
                         final String comment ) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            final Path newPath = paths.convert( nioPath,
-                                                false );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+            final Path newPath = Paths.convert( nioPath );
 
             ioService.createFile( nioPath );
             ioService.write( nioPath,
@@ -135,7 +131,7 @@ public class ScenarioTestEditorServiceImpl
     @Override
     public Scenario load( final Path path ) {
         try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+            final String content = ioService.readAllString( Paths.convert( path ) );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
@@ -156,7 +152,7 @@ public class ScenarioTestEditorServiceImpl
                       final Metadata metadata,
                       final String comment ) {
         try {
-            ioService.write( paths.convert( resource ),
+            ioService.write( Paths.convert( resource ),
                              ScenarioXMLPersistence.getInstance().marshal( content ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
@@ -305,12 +301,12 @@ public class ScenarioTestEditorServiceImpl
         try {
             // Check Path exists
             final List<Path> items = new ArrayList<Path>();
-            if ( !Files.exists( paths.convert( path ) ) ) {
+            if ( !Files.exists( Paths.convert( path ) ) ) {
                 return items;
             }
 
             // Ensure Path represents a Folder
-            org.uberfire.java.nio.file.Path pPath = paths.convert( path );
+            org.uberfire.java.nio.file.Path pPath = Paths.convert( path );
             if ( !Files.isDirectory( pPath ) ) {
                 pPath = pPath.getParent();
             }
@@ -325,15 +321,15 @@ public class ScenarioTestEditorServiceImpl
             for ( final org.uberfire.java.nio.file.Path p : directoryStream ) {
                 if ( filter.accept( p ) && fileExtensionFilter.accept( p ) ) {
                     if ( Files.isRegularFile( p ) ) {
-                        items.add( paths.convert( p ) );
+                        items.add( Paths.convert( p ) );
                     } else if ( Files.isDirectory( p ) ) {
-                        items.add( paths.convert( p ) );
+                        items.add( Paths.convert( p ) );
                     }
                 }
             }
 
             // Add ability to move up one level in the hierarchy
-            //items.add(new ParentPackageItem(paths.convert(pPath.getParent()), ".."));
+            //items.add(new ParentPackageItem(Paths.convert(pPath.getParent()), ".."));
 
             return items;
 

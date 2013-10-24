@@ -73,9 +73,7 @@ public class AssetMigrater {
     protected MetadataService metadataService;
     @Inject
     protected MigrationPathManager migrationPathManager;
-    @Inject
-    private Paths paths;
-    
+
     private String header = null;
 
    
@@ -250,7 +248,7 @@ public class AssetMigrater {
             return;
         }
         
-         //final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
+         //final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
         Metadata metadata = new Metadata();
         for(DiscussionRecord discussion: discussions) {
             metadata.addDiscussion( new org.guvnor.common.services.shared.metadata.model.DiscussionRecord( discussion.timestamp, discussion.author, discussion.note ) );

@@ -103,12 +103,6 @@ public class ApplicationScopedProducer {
     }
 
     @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return SYSTEM_REPO;
-    }
-
-    @Produces
     @Named("ioSearchStrategy")
     public IOSearchService ioSearchService() {
         return ioSearchService;

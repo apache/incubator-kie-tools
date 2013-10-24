@@ -90,9 +90,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -126,9 +123,8 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            final Path newPath = paths.convert( nioPath,
-                                                false );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+            final Path newPath = Paths.convert( nioPath );
 
             ioService.createFile( nioPath );
             ioService.write( nioPath,
@@ -145,7 +141,7 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     @Override
     public GuidedDecisionTable52 load( final Path path ) {
         try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+            final String content = ioService.readAllString( Paths.convert( path ) );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
@@ -206,13 +202,13 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             model.setPackageName( packageName );
 
-            ioService.write( paths.convert( resource ),
+            ioService.write( Paths.convert( resource ),
                              GuidedDTXMLPersistence.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
 
-            invalidateDMOProjectCache.fire(new InvalidateDMOProjectCacheEvent(sessionInfo, projectService.resolveProject(resource), resource));
+            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, projectService.resolveProject( resource ), resource ) );
 
             return resource;
 
@@ -265,7 +261,7 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     public String toSource( final Path path,
                             final GuidedDecisionTable52 model ) {
         try {
-            return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ),
+            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
                                                                                     model );
 
         } catch ( Exception e ) {

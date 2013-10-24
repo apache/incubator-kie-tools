@@ -91,9 +91,6 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     private DecisionTableXLSConversionService conversionService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -102,7 +99,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     public InputStream load( final Path path,
                              final String sessionId ) {
         try {
-            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+            final InputStream inputStream = ioService.newInputStream( Paths.convert( path ),
                                                                       StandardOpenOption.READ );
 
             //Signal opening to interested parties
@@ -156,7 +153,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                         e );
             }
  
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
@@ -168,7 +165,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
 
             
             //Read Path to ensure attributes have been set
-            final Path newPath = paths.convert( nioPath );
+            final Path newPath = Paths.convert( nioPath );
             
             return newPath;
         } catch ( Exception e ) {
@@ -193,7 +190,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
         log.info( "USER:" + identity.getName() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
                                                                                               comment ) );
@@ -203,7 +200,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
             outputStream.close();
 
             //Read Path to ensure attributes have been set
-            final Path newPath = paths.convert( nioPath );
+            final Path newPath = Paths.convert( nioPath );
 
             return newPath;
 
@@ -283,7 +280,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     public List<ValidationMessage> validate( final Path path,
                                              final Path resource ) {
         try {
-            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+            final InputStream inputStream = ioService.newInputStream( Paths.convert( path ),
                                                                       StandardOpenOption.READ );
             return genericValidator.validate( path,
                                               inputStream,

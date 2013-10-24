@@ -74,9 +74,6 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -91,9 +88,8 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
                         final String content,
                         final String comment ) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            final Path newPath = paths.convert( nioPath,
-                                                false );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+            final Path newPath = Paths.convert( nioPath );
 
             ioService.createFile( nioPath );
             ioService.write( nioPath,
@@ -110,7 +106,7 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     @Override
     public String load( final Path path ) {
         try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+            final String content = ioService.readAllString( Paths.convert( path ) );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
@@ -129,7 +125,7 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
                       final Metadata metadata,
                       final String comment ) {
         try {
-            ioService.write( paths.convert( resource ),
+            ioService.write( Paths.convert( resource ),
                              content,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
@@ -193,7 +189,7 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
     @Override
     public List<ValidationMessage> validate( final Path path ) {
         try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+            final String content = ioService.readAllString( Paths.convert( path ) );
             return validate( path,
                              content );
 

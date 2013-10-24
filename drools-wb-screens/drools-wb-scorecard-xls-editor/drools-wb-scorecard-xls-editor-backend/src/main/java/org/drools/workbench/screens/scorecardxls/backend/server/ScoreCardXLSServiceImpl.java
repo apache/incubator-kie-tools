@@ -79,9 +79,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -90,7 +87,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     public InputStream load( final Path path,
                              final String sessionId ) {
         try {
-            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+            final InputStream inputStream = ioService.newInputStream( Paths.convert( path ),
                                                                       StandardOpenOption.READ );
 
             //Signal opening to interested parties
@@ -121,7 +118,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
         log.info( "USER:" + identity.getName() + " CREATING asset [" + resource.getFileName() + "]" );
 
         try {
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
@@ -152,7 +149,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
         log.info( "USER:" + identity.getName() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( resource );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
                                                                                               comment ) );
@@ -219,7 +216,7 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     public List<ValidationMessage> validate( final Path path,
                                              final Path resource ) {
         try {
-            final InputStream inputStream = ioService.newInputStream( paths.convert( path ),
+            final InputStream inputStream = ioService.newInputStream( Paths.convert( path ),
                                                                       StandardOpenOption.READ );
             return genericValidator.validate( path,
                                               inputStream,

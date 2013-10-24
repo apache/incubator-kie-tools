@@ -47,12 +47,6 @@ public class TestAppSetup {
     }
 
     @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return SYSTEM_REPO;
-    }
-
-    @Produces
     public KModuleService makeKModuleService() {
         return mock( KModuleService.class );
     }

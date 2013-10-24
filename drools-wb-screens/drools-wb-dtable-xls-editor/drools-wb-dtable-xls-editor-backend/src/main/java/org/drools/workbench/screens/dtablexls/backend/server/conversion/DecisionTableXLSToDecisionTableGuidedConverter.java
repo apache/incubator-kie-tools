@@ -74,9 +74,6 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionTableXLSConversionService {
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -149,7 +146,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                                                                            result );
 
         //Root path for new resources is the same folder as the XLS file
-        final Path context = paths.convert( paths.convert( path ).getParent() );
+        final Path context = Paths.convert( Paths.convert( path ).getParent() );
 
         //Add Ancillary resources
         createNewImports( context,
@@ -187,7 +184,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         listeners.add( listener );
 
         final ExcelParser parser = new ExcelParser( listeners );
-        final InputStream stream = ioService.newInputStream( paths.convert( path ) );
+        final InputStream stream = ioService.newInputStream( Paths.convert( path ) );
 
         try {
             parser.parseFile( stream );
@@ -392,9 +389,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
         //Load existing PackageImports
         ProjectImports projectImports = new ProjectImports();
-        final org.uberfire.java.nio.file.Path nioExternalImportsPath = paths.convert( context ).resolve( "project.imports" );
-        final Path externalImportsPath = paths.convert( nioExternalImportsPath,
-                                                        false );
+        final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert( context ).resolve( "project.imports" );
+        final Path externalImportsPath = Paths.convert( nioExternalImportsPath );
         if ( Files.exists( nioExternalImportsPath ) ) {
             projectImports = projectService.load( externalImportsPath );
         }

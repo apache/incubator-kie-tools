@@ -40,9 +40,6 @@ public class DecisionTableXLSFileServlet extends AbstractFileServlet {
     private IOService ioService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private ExtendedDecisionTableXLSService decisionTableXLSService;
 
     @Override
@@ -78,14 +75,12 @@ public class DecisionTableXLSFileServlet extends AbstractFileServlet {
     protected Path convertPath( final String fileName,
                                 final String contextPath ) throws URISyntaxException {
         final org.uberfire.java.nio.file.Path path = ioService.get( new URI( contextPath ) );
-        return paths.convert( path.resolve( fileName ),
-                              false );
+        return Paths.convert( path.resolve( fileName ) );
     }
 
     @Override
     protected Path convertPath( final String fullPath ) throws URISyntaxException {
         final org.uberfire.java.nio.file.Path path = ioService.get( new URI( fullPath ) );
-        return paths.convert( path,
-                              false );
+        return Paths.convert( path );
     }
 }

@@ -27,9 +27,6 @@ public class PlainTextAssetMigrater {
     protected RepositoryAssetService jcrRepositoryAssetService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
@@ -40,7 +37,7 @@ public class PlainTextAssetMigrater {
                          AssetItem jcrAssetItem ) {
         Path path = migrationPathManager.generatePathForAsset( jcrModule,
                                                                jcrAssetItem );
-        final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
         if ( !Files.exists( nioPath ) ) {
             ioService.createFile( nioPath );
         }

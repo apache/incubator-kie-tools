@@ -44,9 +44,6 @@ public class ProjectResourceDispatcher {
     protected ProjectService projectService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioSystemService;
 
@@ -173,8 +170,7 @@ public class ProjectResourceDispatcher {
             pom.getGav().setVersion( "1.0" );
 
             try {
-                Project project = projectService.newProject( makeRepository( paths.convert( repositoryPath,
-                                                                                            false ) ),
+                Project project = projectService.newProject( makeRepository( Paths.convert( repositoryPath ) ),
                                                              projectName,
                                                              pom,
                                                              "/" );
@@ -217,7 +213,7 @@ public class ProjectResourceDispatcher {
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
             jobResultEvent.fire( result );
         } else {
-            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
+            Project project = projectService.resolveProject( Paths.convert( repositoryPath.resolve( projectName ) ) );
 
             if ( project == null ) {
                 result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -262,7 +258,7 @@ public class ProjectResourceDispatcher {
             jobResultEvent.fire( result );
             return;
         } else {
-            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
+            Project project = projectService.resolveProject( Paths.convert( repositoryPath.resolve( projectName ) ) );
 
             if ( project == null ) {
                 result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -314,7 +310,7 @@ public class ProjectResourceDispatcher {
             jobResultEvent.fire( result );
             return;
         } else {
-            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
+            Project project = projectService.resolveProject( Paths.convert( repositoryPath.resolve( projectName ) ) );
 
             if ( project == null ) {
                 result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -384,7 +380,7 @@ public class ProjectResourceDispatcher {
             jobResultEvent.fire( result );
             return;
         } else {
-            Project project = projectService.resolveProject( paths.convert( repositoryPath.resolve( projectName ), false ) );
+            Project project = projectService.resolveProject( Paths.convert( repositoryPath.resolve( projectName ) ) );
 
             if ( project == null ) {
                 result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
@@ -531,6 +527,6 @@ public class ProjectResourceDispatcher {
         if ( repo == null ) {
             return null;
         }
-        return paths.convert( repo.getRoot() );
+        return Paths.convert( repo.getRoot() );
     }
 }

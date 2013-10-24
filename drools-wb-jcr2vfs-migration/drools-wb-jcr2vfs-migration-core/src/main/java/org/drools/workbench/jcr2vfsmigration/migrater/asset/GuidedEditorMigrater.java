@@ -48,9 +48,6 @@ public class GuidedEditorMigrater {
     protected MigrationPathManager migrationPathManager;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
@@ -82,7 +79,7 @@ public class GuidedEditorMigrater {
                                                                   false );
             }
 
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
             if ( !Files.exists( nioPath ) ) {
                 ioService.createFile( nioPath );
             }

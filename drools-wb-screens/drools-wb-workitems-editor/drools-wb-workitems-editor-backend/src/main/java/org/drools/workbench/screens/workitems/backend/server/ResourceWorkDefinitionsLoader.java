@@ -37,9 +37,6 @@ import org.uberfire.backend.vfs.Path;
 public class ResourceWorkDefinitionsLoader {
 
     @Inject
-    private Paths paths;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
@@ -51,7 +48,7 @@ public class ResourceWorkDefinitionsLoader {
     public Map<String, WorkDefinition> loadWorkDefinitions( final Path projectRoot ) {
         //Find all WID files in the project
         final Map<String, WorkDefinition> workDefinitions = new HashMap<String, WorkDefinition>();
-        final org.uberfire.java.nio.file.Path nioProjectRoot = paths.convert( projectRoot );
+        final org.uberfire.java.nio.file.Path nioProjectRoot = Paths.convert( projectRoot );
         final Collection<org.uberfire.java.nio.file.Path> widPaths = fileDiscoveryService.discoverFiles( nioProjectRoot,
                                                                                                             widFilter,
                                                                                                             true );

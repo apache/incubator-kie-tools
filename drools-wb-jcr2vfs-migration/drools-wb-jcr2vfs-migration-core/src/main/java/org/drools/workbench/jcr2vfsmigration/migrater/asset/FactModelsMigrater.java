@@ -49,9 +49,6 @@ public class FactModelsMigrater {
     private IOService ioService;
     
     @Inject
-    private Paths paths;
-    
-    @Inject
     PackageImportHelper packageImportHelper;
 
     @Inject

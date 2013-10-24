@@ -47,8 +47,6 @@ import javax.ws.rs.core.UriInfo;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.resteasy.annotations.GZIP;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.FileSystem;
 import org.kie.workbench.common.services.shared.rest.AddRepositoryToOrganizationalUnitRequest;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
@@ -68,7 +66,8 @@ import org.kie.workbench.common.services.shared.rest.RepositoryResponse;
 import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.backend.server.util.Paths;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 
 @Path("/")
 @Named
@@ -87,9 +86,6 @@ public class ProjectResource {
 
 //    @Inject
 //    protected ScenarioTestEditorService scenarioTestEditorService;
-
-    @Inject
-    private Paths paths;
 
     @Inject
     @Named("ioStrategy")

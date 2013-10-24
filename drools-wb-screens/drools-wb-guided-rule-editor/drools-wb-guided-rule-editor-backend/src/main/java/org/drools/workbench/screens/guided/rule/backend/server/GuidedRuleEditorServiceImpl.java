@@ -88,9 +88,6 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -121,9 +118,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            final Path newPath = paths.convert( nioPath,
-                                                false );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+            final Path newPath = Paths.convert( nioPath );
 
             ioService.createFile( nioPath );
             ioService.write( nioPath,
@@ -141,7 +137,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     @Override
     public RuleModel load( final Path path ) {
         try {
-            final String drl = ioService.readAllString( paths.convert( path ) );
+            final String drl = ioService.readAllString( Paths.convert( path ) );
             final String[] dsls = loadDslsForPackage( path );
             final List<String> globals = loadGlobalsForPackage( path );
 
@@ -181,7 +177,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     private String[] loadDslsForPackage( final Path path ) {
         final List<String> dsls = new ArrayList<String>();
         final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
-        final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
         final Collection<org.uberfire.java.nio.file.Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
                                                                                                          FILTER_DSLS );
         for ( final org.uberfire.java.nio.file.Path dslPath : dslPaths ) {
@@ -195,7 +191,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     private List<String> loadGlobalsForPackage( final Path path ) {
         final List<String> globals = new ArrayList<String>();
         final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
-        final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
         final Collection<org.uberfire.java.nio.file.Path> globalPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
                                                                                                             FILTER_GLOBALS );
         for ( final org.uberfire.java.nio.file.Path globalPath : globalPaths ) {
@@ -215,7 +211,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             model.setPackageName( packageName );
 
-            ioService.write( paths.convert( resource ),
+            ioService.write( Paths.convert( resource ),
                              toSource( resource,
                                        model ),
                              metadataService.setUpAttributes( resource,
@@ -273,7 +269,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public String toSource( final Path path,
                             final RuleModel model ) {
         try {
-            return sourceServices.getServiceFor( paths.convert( path ) ).getSource( paths.convert( path ), model );
+            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

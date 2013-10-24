@@ -87,9 +87,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -113,9 +110,8 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
             final String drl = assertPackageName( content,
                                                   context );
 
-            final org.uberfire.java.nio.file.Path nioPath = paths.convert( context ).resolve( fileName );
-            final Path newPath = paths.convert( nioPath,
-                                                false );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+            final Path newPath = Paths.convert( nioPath );
 
             ioService.createFile( nioPath );
             ioService.write( nioPath,
@@ -132,7 +128,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     @Override
     public String load( final Path path ) {
         try {
-            final String content = ioService.readAllString( paths.convert( path ) );
+            final String content = ioService.readAllString( Paths.convert( path ) );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
@@ -183,7 +179,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
             final String drl = assertPackageName( content,
                                                   resource );
 
-            ioService.write( paths.convert( resource ),
+            ioService.write( Paths.convert( resource ),
                              drl,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),

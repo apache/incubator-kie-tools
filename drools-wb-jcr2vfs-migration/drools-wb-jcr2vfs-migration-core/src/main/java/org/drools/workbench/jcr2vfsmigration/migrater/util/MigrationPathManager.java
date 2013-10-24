@@ -21,8 +21,6 @@ import org.uberfire.backend.vfs.PathFactory;
  */
 @ApplicationScoped
 public class MigrationPathManager {
-    @Inject
-    private Paths paths;
 
     @Inject
     @Named("migrationFS")
@@ -37,16 +35,16 @@ public class MigrationPathManager {
 
         final org.uberfire.java.nio.file.Path _path = fs.getPath( "/" );
 
-        return paths.convert( _path, false);
+        return Paths.convert( _path );
 
-//        final Path path = PathFactory.newPath( paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
+//        final Path path = PathFactory.newPath( Paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
 //        return path;
     }
     
     public Path generatePathForModule( Module jcrModule ) {
         final org.uberfire.java.nio.file.Path modulePath = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) );
 
-        final Path path = PathFactory.newPath( paths.convert( modulePath.getFileSystem() ), modulePath.getFileName().toString(), modulePath.toUri().toString() );
+        final Path path = PathFactory.newPath( Paths.convert( modulePath.getFileSystem() ), modulePath.getFileName().toString(), modulePath.toUri().toString() );
 
         register( jcrModule.getUuid(), path );
         return path;
@@ -69,7 +67,7 @@ public class MigrationPathManager {
         
         //final org.uberfire.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) + "/" + escapePathEntry( jcrAsset.getName() ) + "." + jcrAsset.getFormat() );
 
-        final Path path = PathFactory.newPath( paths.convert( assetPath.getFileSystem() ), assetPath.getFileName().toString(), assetPath.toUri().toString() );
+        final Path path = PathFactory.newPath( Paths.convert( assetPath.getFileSystem() ), assetPath.getFileName().toString(), assetPath.toUri().toString() );
 
         register( jcrAsset.getUuid(), path );
         return path;
@@ -93,7 +91,7 @@ public class MigrationPathManager {
             assetPath = modulePath.resolve("src/main/resources/" + jcrAssetItem.getName() + "." + jcrAssetItem.getFormat());
         }
 
-        final Path path = PathFactory.newPath(paths.convert(assetPath.getFileSystem()), assetPath.getFileName().toString(), assetPath.toUri().toString());
+        final Path path = PathFactory.newPath(Paths.convert(assetPath.getFileSystem()), assetPath.getFileName().toString(), assetPath.toUri().toString());
 
         register(jcrAssetItem.getUUID(), path);
         return path;
@@ -104,7 +102,7 @@ public class MigrationPathManager {
     }
     
     private org.uberfire.java.nio.file.Path getPomDirectoryPath(final Path pathToPomXML) {
-        return paths.convert(pathToPomXML).getParent();
+        return Paths.convert(pathToPomXML).getParent();
     }
     
     // Helper methods
