@@ -42,9 +42,6 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
     private static final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> FILTER_DSLS = new DslFileFilter();
 
     @Inject
-    private Paths paths;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
@@ -147,7 +144,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     private void loadEnumsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
                                       final Package pkg ) {
-        final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( pkg.getPackageMainResourcesPath() );
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
         final Collection<org.uberfire.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
                                                                                                              FILTER_ENUMERATIONS );
         for ( final org.uberfire.java.nio.file.Path path : enumFiles ) {
@@ -158,7 +155,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     private void loadDslsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
                                      final Package pkg ) {
-        final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( pkg.getPackageMainResourcesPath() );
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
         final Collection<org.uberfire.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
                                                                                                             FILTER_DSLS );
         for ( final org.uberfire.java.nio.file.Path path : dslFiles ) {
@@ -169,7 +166,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     private void loadGlobalsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
                                         final Package pkg ) {
-        final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( pkg.getPackageMainResourcesPath() );
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
         final Collection<org.uberfire.java.nio.file.Path> globalFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
                                                                                                                FILTER_GLOBALS );
         for ( final org.uberfire.java.nio.file.Path path : globalFiles ) {

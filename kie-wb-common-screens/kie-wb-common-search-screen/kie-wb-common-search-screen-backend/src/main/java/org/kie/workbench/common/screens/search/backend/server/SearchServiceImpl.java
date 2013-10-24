@@ -16,18 +16,18 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOSearchService;
-import org.uberfire.io.IOService;
-import org.uberfire.io.attribute.DublinCoreView;
-import org.uberfire.java.nio.base.version.VersionAttributeView;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.search.DateRange;
 import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.io.IOSearchService;
+import org.uberfire.io.IOService;
+import org.uberfire.io.attribute.DublinCoreView;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.metadata.search.DateRange;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -45,9 +45,6 @@ public class SearchServiceImpl implements SearchService {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private Paths paths;
 
     private PageResponse<SearchPageRow> emptyResponse = null;
 
@@ -115,7 +112,7 @@ public class SearchServiceImpl implements SearchService {
                                                        final int startRow ) {
         final List<SearchPageRow> result = new ArrayList<SearchPageRow>( pathResult.size() );
         for ( final Path path : pathResult ) {
-            final SearchPageRow row = new SearchPageRow( paths.convert( path, false ) );
+            final SearchPageRow row = new SearchPageRow( Paths.convert( path ) );
 
             final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
             final OtherMetaView otherMetaView = ioService.getFileAttributeView( path, OtherMetaView.class );

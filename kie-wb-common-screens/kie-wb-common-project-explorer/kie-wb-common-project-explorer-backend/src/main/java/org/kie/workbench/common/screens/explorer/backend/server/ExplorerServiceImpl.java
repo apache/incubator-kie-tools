@@ -78,9 +78,6 @@ public class ExplorerServiceImpl
     @SessionScoped
     private Identity identity;
 
-    @Inject
-    private Paths paths;
-
     public ExplorerServiceImpl() {
         // Boilerplate sacrifice for Weld
     }
@@ -89,14 +86,12 @@ public class ExplorerServiceImpl
                                 final AuthorizationManager authorizationManager,
                                 final ProjectService projectService,
                                 final OrganizationalUnitService organizationalUnitService,
-                                final Identity identity,
-                                final Paths paths ) {
+                                final Identity identity ) {
         this.ioService = ioService;
         this.authorizationManager = authorizationManager;
         this.projectService = projectService;
         this.organizationalUnitService = organizationalUnitService;
         this.identity = identity;
-        this.paths = paths;
     }
 
     @Override
@@ -232,10 +227,10 @@ public class ExplorerServiceImpl
             return authorizedProjects;
         }
         final Path repositoryRoot = repository.getRoot();
-        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( paths.convert( repositoryRoot ) );
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream( Paths.convert( repositoryRoot ) );
         for ( org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths ) {
             if ( Files.isDirectory( nioRepositoryPath ) ) {
-                final org.uberfire.backend.vfs.Path projectPath = paths.convert( nioRepositoryPath );
+                final org.uberfire.backend.vfs.Path projectPath = Paths.convert( nioRepositoryPath );
                 final Project project = projectService.resolveProject( projectPath );
                 if ( project != null ) {
                     if ( authorizationManager.authorize( project,
@@ -271,13 +266,13 @@ public class ExplorerServiceImpl
 
     private List<FolderItem> getItems( final Path packagePath ) {
         final List<FolderItem> folderItems = new ArrayList<FolderItem>();
-        final org.uberfire.java.nio.file.Path nioPackagePath = paths.convert( packagePath );
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
         if ( Files.exists( nioPackagePath ) ) {
             final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
                                                                                                             dotFileFilter );
             for ( org.uberfire.java.nio.file.Path nioPath : nioPaths ) {
                 if ( Files.isRegularFile( nioPath ) ) {
-                    final org.uberfire.backend.vfs.Path path = paths.convert( nioPath );
+                    final org.uberfire.backend.vfs.Path path = Paths.convert( nioPath );
                     final FolderItem folderItem = new FolderItem( path,
                                                                   path.getFileName(),
                                                                   FolderItemType.FILE );
@@ -306,22 +301,22 @@ public class ExplorerServiceImpl
         final List<FolderItem> folderItems = new ArrayList<FolderItem>();
 
         //Scan upwards until the path exists (as the current path could have been deleted)
-        org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
+        org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
         while ( !Files.exists( nioPath ) ) {
             nioPath = nioPath.getParent();
         }
-        final Path basePath = paths.convert( nioPath );
+        final Path basePath = Paths.convert( nioPath );
         final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPath,
                                                                                                         dotFileFilter );
         for ( org.uberfire.java.nio.file.Path np : nioPaths ) {
             if ( Files.isRegularFile( np ) ) {
-                final org.uberfire.backend.vfs.Path p = paths.convert( np );
+                final org.uberfire.backend.vfs.Path p = Paths.convert( np );
                 final FolderItem folderItem = new FolderItem( p,
                                                               p.getFileName(),
                                                               FolderItemType.FILE );
                 folderItems.add( folderItem );
             } else if ( Files.isDirectory( np ) ) {
-                final org.uberfire.backend.vfs.Path p = paths.convert( np );
+                final org.uberfire.backend.vfs.Path p = Paths.convert( np );
                 final FolderItem folderItem = new FolderItem( p,
                                                               p.getFileName(),
                                                               FolderItemType.FOLDER );
@@ -343,7 +338,7 @@ public class ExplorerServiceImpl
     }
 
     private List<FolderItem> getPathSegments( final Path path ) {
-        org.uberfire.java.nio.file.Path nioSegmentPath = paths.convert( path ).getParent();
+        org.uberfire.java.nio.file.Path nioSegmentPath = Paths.convert( path ).getParent();
         //We're not interested in the terminal segment prior to root (i.e. the Project name)
         final int segmentCount = nioSegmentPath.getNameCount();
         if ( segmentCount < 1 ) {
@@ -375,12 +370,12 @@ public class ExplorerServiceImpl
 
     private FolderItem toFolderItem( final org.uberfire.java.nio.file.Path path ) {
         if ( Files.isRegularFile( path ) ) {
-            final org.uberfire.backend.vfs.Path p = paths.convert( path );
+            final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
                                    p.getFileName(),
                                    FolderItemType.FILE );
         } else if ( Files.isDirectory( path ) ) {
-            final org.uberfire.backend.vfs.Path p = paths.convert( path );
+            final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
                                    p.getFileName(),
                                    FolderItemType.FOLDER );

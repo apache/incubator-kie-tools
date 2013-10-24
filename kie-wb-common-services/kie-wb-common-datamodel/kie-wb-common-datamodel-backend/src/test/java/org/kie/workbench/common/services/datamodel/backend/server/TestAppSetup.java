@@ -43,12 +43,6 @@ public class TestAppSetup {
     }
 
     @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return SYSTEM_REPO;
-    }
-
-    @Produces
     @Alternative
     public M2RepoService m2RepoService() {
         return mock( M2RepoService.class );

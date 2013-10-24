@@ -50,9 +50,6 @@ public class DefaultEditorServiceImpl
     private MetadataService metadataService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private Identity identity;
 
     @Inject
@@ -64,7 +61,7 @@ public class DefaultEditorServiceImpl
                       final Metadata metadata,
                       final String comment ) {
         try {
-            ioService.write( paths.convert( resource ),
+            ioService.write( Paths.convert( resource ),
                              content,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),

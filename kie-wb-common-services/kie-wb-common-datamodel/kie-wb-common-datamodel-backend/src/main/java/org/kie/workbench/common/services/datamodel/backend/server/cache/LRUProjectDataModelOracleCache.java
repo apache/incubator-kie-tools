@@ -40,9 +40,6 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
     private final static String DEFAULTPKG = "defaultpkg";
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private POMService pomService;
 
     @Inject
@@ -108,9 +105,9 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         }
 
         //Add external imports. The availability of these classes is checked in Builder and failed fast. Here we load them into the DMO
-        final org.uberfire.java.nio.file.Path nioExternalImportsPath = paths.convert( project.getImportsPath() );
+        final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert( project.getImportsPath() );
         if ( Files.exists( nioExternalImportsPath ) ) {
-            final Path externalImportsPath = paths.convert( nioExternalImportsPath );
+            final Path externalImportsPath = Paths.convert( nioExternalImportsPath );
             final ProjectImports projectImports = projectService.load( externalImportsPath );
             final Imports imports = projectImports.getImports();
             for ( final Import item : imports.getImports() ) {

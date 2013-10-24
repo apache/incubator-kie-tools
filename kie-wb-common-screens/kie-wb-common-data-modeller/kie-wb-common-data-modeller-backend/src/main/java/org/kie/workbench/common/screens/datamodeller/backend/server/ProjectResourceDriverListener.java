@@ -46,9 +46,6 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
     @Named("ioStrategy")
     IOService ioService;
 
-    @Inject
-    private Paths paths;
-
     private OpenOption option;
 
     private Project currentProject;
@@ -82,7 +79,7 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
         StringTokenizer dirNames;
         Package subPackage;
 
-        subDirPath = paths.convert(defaultPackage.getPackageMainSrcPath());
+        subDirPath = Paths.convert(defaultPackage.getPackageMainSrcPath());
         subPackage = defaultPackage;
 
         int index = fileName.lastIndexOf( "/" );
@@ -102,7 +99,7 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
                     subPackage = projectService.newPackage(subPackage, subDirName);
                     //ioService.createDirectory( subDirPath );
                 } else {
-                    subPackage = projectService.resolvePackage( paths.convert(subDirPath) );
+                    subPackage = projectService.resolvePackage( Paths.convert(subDirPath) );
                 }
             }
         }

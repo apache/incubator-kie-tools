@@ -71,9 +71,6 @@ public class DataModelerServiceImpl implements DataModelerService {
     IOService ioService;
 
     @Inject
-    private Paths paths;
-
-    @Inject
     private SessionInfo sessionInfo;
 
     @Inject
@@ -157,7 +154,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         try {
             //ensure java sources directory exists.
-            org.uberfire.java.nio.file.Path javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
+            org.uberfire.java.nio.file.Path javaPath = ensureProjectJavaPath( Paths.convert( projectPath ) );
 
             if ( overwrite ) {
                 mergeWithExistingModel( dataModel, project );
@@ -182,7 +179,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             //delete removed data objects
             cleanupFiles( deleteableFiles, option );
-            javaPath = ensureProjectJavaPath( paths.convert( projectPath ) );
+            javaPath = ensureProjectJavaPath( Paths.convert( projectPath ) );
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
 
             generationListener.setCurrentProject( project );
@@ -288,7 +285,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         for ( final FileChangeDescriptor driverChange : driverChanges ) {
-            final Path path = paths.convert( driverChange.getPath() );
+            final Path path = Paths.convert( driverChange.getPath() );
             switch ( driverChange.getAction() ) {
                 case FileChangeDescriptor.ADD:
                     logger.debug( "Notifying file created: " + driverChange.getPath() );
@@ -336,9 +333,9 @@ public class DataModelerServiceImpl implements DataModelerService {
                     //was created. At the end we will have a file update instead of a delete.
 
                     //do nothing, the file generator will notify that the file changed.
-                    //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
+                    //fileChanges.add(new FileChangeDescriptor(Paths.convert(filePath), FileChangeDescriptor.UPDATE));
                 } else {
-                    deleteableFiles.add( paths.convert( filePath ) );
+                    deleteableFiles.add( Paths.convert( filePath ) );
                 }
             }
         }
@@ -355,9 +352,9 @@ public class DataModelerServiceImpl implements DataModelerService {
                     //object. A kind of name swapping...
 
                     //do nothing, the file generator will notify that the file changed.
-                    //fileChanges.add(new FileChangeDescriptor(paths.convert(filePath), FileChangeDescriptor.UPDATE));
+                    //fileChanges.add(new FileChangeDescriptor(Paths.convert(filePath), FileChangeDescriptor.UPDATE));
                 } else {
-                    deleteableFiles.add( paths.convert( filePath ) );
+                    deleteableFiles.add( Paths.convert( filePath ) );
                 }
             }
         }
@@ -380,7 +377,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     private void cleanupFiles( final List<Path> deleteableFiles,
                                final CommentedOption option ) {
         for ( Path filePath : deleteableFiles ) {
-            ioService.deleteIfExists( paths.convert( filePath ), option );
+            ioService.deleteIfExists( Paths.convert( filePath ), option );
         }
     }
 
