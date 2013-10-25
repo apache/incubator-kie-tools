@@ -38,8 +38,8 @@ import org.uberfire.security.Identity;
 public class ConfigurationServiceImpl implements ConfigurationService {
 
     private static final String LAST_MODIFIED_MARKER_FILE = ".lastmodified";
-    private static final String MONITOR_DISABLED = "org.kie.sys.repo.monitor.disabled";
-    //    private static final String MONITOR_CHECK_INTERVAL = "org.kie.sys.repo.monitor.interval";
+    private static final String MONITOR_DISABLED = "org.uberfire.sys.repo.monitor.disabled";
+    //    private static final String MONITOR_CHECK_INTERVAL = "org.uberfire.sys.repo.monitor.interval";
     // mainly for windows as *NIX is based on POSIX but escape always to keep it consistent
     private static final String INVALID_FILENAME_CHARS = "[\\,/,:,*,?,\",<,>,|]";
 

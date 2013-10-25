@@ -166,11 +166,11 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
 
     public static void loadConfig() {
-        final String bareReposDir = System.getProperty( "org.kie.nio.git.dir" );
-        final String enabled = System.getProperty( "org.kie.nio.git.daemon.enabled" );
-        final String host = System.getProperty( "org.kie.nio.git.daemon.host" );
-        final String port = System.getProperty( "org.kie.nio.git.daemon.port" );
-        final String upload = System.getProperty( "org.kie.nio.git.daemon.upload" );
+        final String bareReposDir = System.getProperty( "org.uberfire.nio.git.dir" );
+        final String enabled = System.getProperty( "org.uberfire.nio.git.daemon.enabled" );
+        final String host = System.getProperty( "org.uberfire.nio.git.daemon.host" );
+        final String port = System.getProperty( "org.uberfire.nio.git.daemon.port" );
+        final String upload = System.getProperty( "org.uberfire.nio.git.daemon.upload" );
         if ( bareReposDir == null || bareReposDir.trim().isEmpty() ) {
             FILE_REPOSITORIES_ROOT = new File( REPOSITORIES_ROOT_DIR );
         } else {

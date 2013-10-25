@@ -72,7 +72,7 @@ public class BatchIndexTest {
     @BeforeClass
     public static void setup() throws IOException {
         final String path = createTempDirectory().getAbsolutePath();
-        System.setProperty( "org.kie.nio.git.dir", path );
+        System.setProperty( "org.uberfire.nio.git.dir", path );
         System.out.println( ".niogit: " + path );
 
         final URI newRepo = URI.create( "git://temp-repo-test" );

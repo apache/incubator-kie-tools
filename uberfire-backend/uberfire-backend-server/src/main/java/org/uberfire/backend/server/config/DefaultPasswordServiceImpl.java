@@ -12,8 +12,8 @@ public class DefaultPasswordServiceImpl implements PasswordService {
 
     private static final Logger log = LoggerFactory.getLogger( DefaultPasswordServiceImpl.class );
 
-    private static final String SECURE_STRING = System.getProperty( "org.kie.secure.key", "org.kie.admin" );
-    private static final String SECURE_ALGORITHM = System.getProperty( "org.kie.secure.alg", "PBEWithMD5AndDES" );
+    private static final String SECURE_STRING = System.getProperty( "org.uberfire.secure.key", "org.uberfire.admin" );
+    private static final String SECURE_ALGORITHM = System.getProperty( "org.uberfire.secure.alg", "PBEWithMD5AndDES" );
 
     @Override
     public String encrypt( final String plainText ) {

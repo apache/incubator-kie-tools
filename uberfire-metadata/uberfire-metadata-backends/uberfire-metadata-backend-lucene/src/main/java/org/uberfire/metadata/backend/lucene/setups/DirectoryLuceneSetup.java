@@ -138,7 +138,7 @@ public class DirectoryLuceneSetup extends BaseLuceneSetup {
     }
 
     protected static File defaultFile() {
-        final String value = System.getProperty( "org.kie.kieora.index.dir" );
+        final String value = System.getProperty( "org.uberfire.metadata.index.dir" );
         if ( value == null || value.trim().isEmpty() ) {
             return new File( REPOSITORIES_ROOT_DIR );
         } else {

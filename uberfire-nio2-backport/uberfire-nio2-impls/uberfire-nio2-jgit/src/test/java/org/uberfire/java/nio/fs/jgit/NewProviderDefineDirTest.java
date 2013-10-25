@@ -71,7 +71,7 @@ public class NewProviderDefineDirTest {
     public void testUsingProvidedPath() throws IOException {
 
         final File dir = createTempDirectory();
-        System.setProperty("org.kie.nio.git.dir", dir.toString());
+        System.setProperty("org.uberfire.nio.git.dir", dir.toString());
         JGitFileSystemProvider.loadConfig();
 
         final JGitFileSystemProvider provider = new JGitFileSystemProvider();
@@ -88,7 +88,7 @@ public class NewProviderDefineDirTest {
 
         assertThat(repos).isNotEmpty().contains("repo-name.git");
 
-        System.setProperty("org.kie.nio.git.dir", "");
+        System.setProperty("org.uberfire.nio.git.dir", "");
     }
 
 }

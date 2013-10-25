@@ -366,7 +366,7 @@ public class IOServiceIndexedGitImplTest extends CommonIOExceptionsServiceDotFil
     public void setup() throws IOException {
         if ( !created ) {
             final String path = createTempDirectory().getAbsolutePath();
-            System.setProperty( "org.kie.nio.git.dir", path );
+            System.setProperty( "org.uberfire.nio.git.dir", path );
             System.out.println( ".niogit: " + path );
 
             final URI newRepo = URI.create( "git://indexed-repo-test" );

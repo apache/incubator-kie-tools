@@ -31,7 +31,7 @@ public class BatchTest {
     @Before
     public void setup() throws IOException {
         path = CommonIOServiceDotFileTest.createTempDirectory();
-        System.setProperty( "org.kie.nio.git.dir", path.getAbsolutePath() );
+        System.setProperty( "org.uberfire.nio.git.dir", path.getAbsolutePath() );
         System.out.println( ".niogit: " + path.getAbsolutePath() );
 
         final URI newRepo = URI.create( "git://amend-repo-test" );
