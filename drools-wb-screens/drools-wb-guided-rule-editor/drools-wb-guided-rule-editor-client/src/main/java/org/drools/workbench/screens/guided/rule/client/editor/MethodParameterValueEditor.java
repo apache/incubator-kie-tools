@@ -24,6 +24,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -196,10 +198,10 @@ public class MethodParameterValueEditor
             box.setVisibleLength( c.getValue().length() - 1 );
         }
 
-        box.addChangeHandler( new ChangeHandler() {
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-            public void onChange( ChangeEvent event ) {
-                c.setValue( box.getText() );
+            public void onValueChange( final ValueChangeEvent<String> event ) {
+                c.setValue( event.getValue() );
                 if ( onValueChangeCommand != null ) {
                     onValueChangeCommand.execute();
                 }

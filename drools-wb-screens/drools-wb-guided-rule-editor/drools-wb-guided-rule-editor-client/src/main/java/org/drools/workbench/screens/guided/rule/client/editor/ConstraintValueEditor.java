@@ -311,10 +311,10 @@ public class ConstraintValueEditor
         if ( OperatorsOracle.operatorRequiresList( operator ) ) {
             final TextBox box = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
             box.setStyleName( "constraint-value-Editor" );
-            box.addChangeHandler( new ChangeHandler() {
+            box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-                public void onChange( ChangeEvent event ) {
-                    constraint.setValue( box.getText() );
+                public void onValueChange( final ValueChangeEvent<String> event ) {
+                    constraint.setValue( event.getValue() );
                     executeOnValueChangeCommand();
                     makeDirty();
                 }
@@ -341,7 +341,7 @@ public class ConstraintValueEditor
             // Wire up update handler
             dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
 
-                public void onValueChange( ValueChangeEvent<Date> event ) {
+                public void onValueChange( final ValueChangeEvent<Date> event ) {
                     constraint.setValue( PopupDatePicker.convertToString( event ) );
                     executeOnValueChangeCommand();
                 }
@@ -355,10 +355,10 @@ public class ConstraintValueEditor
         //Default editor for all other literals
         final TextBox box = TextBoxFactory.getTextBox( fieldType );
         box.setStyleName( "constraint-value-Editor" );
-        box.addChangeHandler( new ChangeHandler() {
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-            public void onChange( ChangeEvent event ) {
-                constraint.setValue( box.getText() );
+            public void onValueChange( final ValueChangeEvent<String> event ) {
+                constraint.setValue( event.getValue() );
                 executeOnValueChangeCommand();
                 makeDirty();
             }
@@ -426,9 +426,9 @@ public class ConstraintValueEditor
         Image img = new Image( GuidedRuleEditorResources.INSTANCE.images().functionAssets() );
         img.setTitle( msg );
         box.setTitle( msg );
-        box.addChangeHandler( new ChangeHandler() {
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-            public void onChange( ChangeEvent event ) {
+            public void onValueChange( final ValueChangeEvent event ) {
                 executeOnValueChangeCommand();
             }
         } );
@@ -475,7 +475,7 @@ public class ConstraintValueEditor
         box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             @Override
-            public void onValueChange( ValueChangeEvent<String> event ) {
+            public void onValueChange( final ValueChangeEvent<String> event ) {
                 constraint.setValue( event.getValue() );
                 executeOnValueChangeCommand();
             }

@@ -17,6 +17,8 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
@@ -37,11 +39,11 @@ public abstract class AbstractCEPRestrictedEntryTextBox
 
     private void setup( final int index ) {
         this.setStyleName( GuidedRuleEditorResources.INSTANCE.css().parameter() );
-        this.addChangeHandler( new ChangeHandler() {
+        this.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-            public void onChange( ChangeEvent event ) {
+            public void onValueChange( final ValueChangeEvent<String> event ) {
                 hop.setParameter( Integer.toString( index ),
-                                  getText() );
+                                  event.getValue() );
             }
 
         } );

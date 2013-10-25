@@ -24,6 +24,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -215,10 +217,10 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         tb.setText( initialValue );
         String m = TestScenarioConstants.INSTANCE.ValueFor0( fieldName );
         tb.setTitle( m );
-        tb.addChangeHandler( new ChangeHandler() {
+        tb.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-            public void onChange( ChangeEvent event ) {
-                changed.valueChanged( tb.getText() );
+            public void onValueChange( final ValueChangeEvent<String> event ) {
+                changed.valueChanged( event.getValue() );
             }
         } );
 

@@ -286,10 +286,10 @@ public class ActionValueEditor
         //Default editor for all other literals
         final TextBox box = TextBoxFactory.getTextBox( value.getType() );
         box.setStyleName( "constraint-value-Editor" );
-        box.addChangeHandler( new ChangeHandler() {
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-            public void onChange( ChangeEvent event ) {
-                value.setValue( box.getText() );
+            public void onValueChange( final ValueChangeEvent<String> event ) {
+                value.setValue( event.getValue() );
                 executeOnChangeCommand();
                 makeDirty();
             }
