@@ -51,6 +51,7 @@ import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryAlreadyExistsException;
 import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.util.URIUtil;
@@ -119,9 +120,12 @@ public class CloneRepositoryForm
     ControlLabel ouLabel;
 
     private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
+    private boolean mandatoryOU = true;
 
     @PostConstruct
     public void init() {
+        mandatoryOU = UberFirePreferences.getProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable" ) == null;
+
         setWidget( uiBinder.createAndBindUi( this ) );
         popup.setDynamicSafe( true );
         nameTextBox.addKeyPressHandler( new KeyPressHandler() {
@@ -191,7 +195,7 @@ public class CloneRepositoryForm
             urlGroup.setType( ControlGroupType.NONE );
         }
         final String organizationalUnit = organizationalUnitDropdown.getValue( organizationalUnitDropdown.getSelectedIndex() );
-        if ( !availableOrganizationalUnits.isEmpty() && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
+        if ( mandatoryOU && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             organizationalUnitGroup.setType( ControlGroupType.ERROR );
             organizationalUnitHelpInline.setText( "Organizational Unit is mandatory" );
             hasError = true;
@@ -220,36 +224,13 @@ public class CloneRepositoryForm
                                     public void callback( Repository o ) {
                                         BusyPopup.close();
                                         Window.alert( "The repository is cloned successfully" );
-                                        if ( availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
-                                            organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
-                                                                                @Override
-                                                                                public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
-                                                                                    hide();
-                                                                                }
-                                                                            },
-                                                                            new ErrorCallback<Message>() {
-                                                                                @Override
-                                                                                public boolean error( final Message message,
-                                                                                                      final Throwable throwable ) {
-                                                                                    unlockScreen();
-
-                                                                                    ErrorPopup.showMessage( "Can't associate repository to an Organizational Unit." );
-
-                                                                                    return true;
-                                                                                }
-                                                                            }
-                                                                          ).addRepository( availableOrganizationalUnits.get( organizationalUnit ), o );
-
-                                        } else {
-                                            hide();
-                                        }
+                                        hide();
                                     }
                                 },
                                 new ErrorCallback<Message>() {
                                     @Override
                                     public boolean error( final Message message,
                                                           final Throwable throwable ) {
-                                        unlockScreen();
                                         try {
                                             throw throwable;
                                         } catch ( RepositoryAlreadyExistsException ex ) {
@@ -257,10 +238,11 @@ public class CloneRepositoryForm
                                         } catch ( Throwable ex ) {
                                             ErrorPopup.showMessage( "Can't clone repository. \n" + throwable.getMessage() );
                                         }
+                                        unlockScreen();
                                         return true;
                                     }
                                 }
-                              ).createRepository( scheme, alias, env );
+                              ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
     }
 
     private void lockScreen() {
@@ -268,6 +250,11 @@ public class CloneRepositoryForm
         popup.setCloseVisible( false );
         clone.setEnabled( false );
         cancel.setEnabled( false );
+        passwordTextBox.setEnabled( false );
+        usernameTextBox.setEnabled( false );
+        gitURLTextBox.setEnabled( false );
+        organizationalUnitDropdown.setEnabled( false );
+        nameTextBox.setEnabled( false );
     }
 
     private void unlockScreen() {
@@ -275,6 +262,11 @@ public class CloneRepositoryForm
         popup.setCloseVisible( true );
         clone.setEnabled( true );
         cancel.setEnabled( true );
+        passwordTextBox.setEnabled( true );
+        usernameTextBox.setEnabled( true );
+        gitURLTextBox.setEnabled( true );
+        organizationalUnitDropdown.setEnabled( true );
+        nameTextBox.setEnabled( true );
     }
 
     @UiHandler("cancel")

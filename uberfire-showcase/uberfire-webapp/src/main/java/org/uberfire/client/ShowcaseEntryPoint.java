@@ -88,6 +88,8 @@ public class ShowcaseEntryPoint {
 
     @AfterInitialization
     public void startApp() {
+        UberFirePreferences.setProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable", true );
+
         hideLoadingPopup();
     }
 
@@ -108,13 +110,13 @@ public class ShowcaseEntryPoint {
                         } )
                         .endMenu()
                         .newTopLevelMenu( "Perspectives" )
-                            .withItems( getPerspectives() )
+                        .withItems( getPerspectives() )
                         .endMenu()
                         .newTopLevelMenu( "Screens" )
-                            .withItems( getScreens() )
+                        .withItems( getScreens() )
                         .endMenu()
                         .newTopLevelMenu( "Logout" )
-                            .position( MenuPosition.RIGHT )
+                        .position( MenuPosition.RIGHT )
                         .respondsWith( new Command() {
                             @Override
                             public void execute() {

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
@@ -14,6 +15,11 @@ public interface RepositoryService {
     Repository getRepository( final Path root );
 
     Collection<Repository> getRepositories();
+
+    Repository createRepository( final OrganizationalUnit organizationalUnit,
+                                 final String scheme,
+                                 final String alias,
+                                 final Map<String, Object> env ) throws RepositoryAlreadyExistsException;
 
     Repository createRepository( final String scheme,
                                  final String alias,

@@ -99,6 +99,18 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
+    public Repository createRepository( final OrganizationalUnit organizationalUnit,
+                                        final String scheme,
+                                        final String alias,
+                                        final Map<String, Object> env ) throws RepositoryAlreadyExistsException {
+        final Repository repository = createRepository( scheme, alias, env );
+        if ( organizationalUnit != null ) {
+            organizationalUnitService.addRepository( organizationalUnit, repository );
+        }
+        return repository;
+    }
+
+    @Override
     public Repository createRepository( final String scheme,
                                         final String alias,
                                         final Map<String, Object> env ) {

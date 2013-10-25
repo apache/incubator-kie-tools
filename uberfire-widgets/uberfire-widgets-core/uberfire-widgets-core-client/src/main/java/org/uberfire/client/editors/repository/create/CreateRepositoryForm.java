@@ -53,6 +53,7 @@ import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryAlreadyExistsException;
 import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 @Dependent
@@ -99,9 +100,12 @@ public class CreateRepositoryForm
     ControlLabel ouLabel;
 
     private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
+    private boolean mandatoryOU = true;
 
     @PostConstruct
     public void init() {
+        mandatoryOU = UberFirePreferences.getProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable" ) == null;
+
         initWidget( uiBinder.createAndBindUi( this ) );
         popup.setDynamicSafe( true );
         nameTextBox.addKeyPressHandler( new KeyPressHandler() {
@@ -158,7 +162,7 @@ public class CreateRepositoryForm
         }
 
         final String organizationalUnit = organizationalUnitDropdown.getValue( organizationalUnitDropdown.getSelectedIndex() );
-        if ( !availableOrganizationalUnits.isEmpty() && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
+        if ( mandatoryOU && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             organizationalUnitGroup.setType( ControlGroupType.ERROR );
             organizationalUnitHelpInline.setText( "Organizational Unit is mandatory" );
             hasError = true;
@@ -178,27 +182,7 @@ public class CreateRepositoryForm
                                     @Override
                                     public void callback( Repository o ) {
                                         Window.alert( "The repository is created successfully" );
-                                        if ( availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
-                                            organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
-                                                                                @Override
-                                                                                public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
-                                                                                    hide();
-                                                                                }
-                                                                            },
-                                                                            new ErrorCallback<Message>() {
-                                                                                @Override
-                                                                                public boolean error( final Message message,
-                                                                                                      final Throwable throwable ) {
-                                                                                    ErrorPopup.showMessage( "Can't associate repository to an Organizational Unit." );
-
-                                                                                    return true;
-                                                                                }
-                                                                            }
-                                                                          ).addRepository( availableOrganizationalUnits.get( organizationalUnit ), o );
-
-                                        } else {
-                                            hide();
-                                        }
+                                        hide();
                                     }
                                 },
                                 new ErrorCallback<Message>() {
@@ -216,7 +200,7 @@ public class CreateRepositoryForm
                                         return true;
                                     }
                                 }
-                              ).createRepository( scheme, alias, env );
+                              ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
     }
 
     @UiHandler("cancel")
