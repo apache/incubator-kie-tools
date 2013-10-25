@@ -13,6 +13,7 @@ import org.uberfire.commons.message.MessageHandlerResolver;
 public class ClusterServiceFactoryProducer {
 
     private final ClusterServiceFactory factory;
+    private ClusterService clusterService = null;
 
     ClusterServiceFactoryProducer() {
         final String clusterName = System.getProperty( "org.uberfire.cluster.id", null );
@@ -24,8 +25,6 @@ public class ClusterServiceFactoryProducer {
             this.factory = null;
         } else {
             this.factory = new ClusterServiceFactory() {
-                private ClusterService clusterService;
-
                 @Override
                 public ClusterService build( final MessageHandlerResolver resolver ) {
                     if ( clusterService == null ) {
