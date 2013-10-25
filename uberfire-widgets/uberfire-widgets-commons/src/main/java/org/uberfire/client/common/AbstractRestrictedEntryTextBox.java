@@ -98,14 +98,56 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
 
     }
 
+    @Override
+    public void setText( final String text ) {
+        if ( !isValidValue( text,
+                            false ) ) {
+            final String validValue = makeValidValue( text );
+            super.setText( validValue );
+            ValueChangeEvent.fire( AbstractRestrictedEntryTextBox.this,
+                                   validValue );
+        } else {
+            super.setText( text );
+        }
+    }
+
+    @Override
+    public void setValue( final String value ) {
+        if ( !isValidValue( value,
+                            false ) ) {
+            final String validValue = makeValidValue( value );
+            super.setValue( validValue );
+            ValueChangeEvent.fire( AbstractRestrictedEntryTextBox.this,
+                                   validValue );
+        } else {
+            super.setValue( value );
+        }
+    }
+
+    @Override
+    public void setValue( final String value,
+                          final boolean fireEvents ) {
+        if ( !isValidValue( value,
+                            false ) ) {
+            final String validValue = makeValidValue( value );
+            super.setValue( validValue,
+                            fireEvents );
+            ValueChangeEvent.fire( AbstractRestrictedEntryTextBox.this,
+                                   validValue );
+        } else {
+            super.setValue( value,
+                            fireEvents );
+        }
+    }
+
     /**
      * Validate value of TextBox
      * @param value
      * @param isOnFocusLost Focus has been lost from the TextBox
      * @return True if valid
      */
-    public abstract boolean isValidValue( String value,
-                                          boolean isOnFocusLost );
+    public abstract boolean isValidValue( final String value,
+                                          final boolean isOnFocusLost );
 
     /**
      * If validation fails (e.g. as a result of a user pasting a value) when the
