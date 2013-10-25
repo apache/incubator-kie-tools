@@ -446,7 +446,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
-            refresh( false );
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                    activeRepository,
+                    project,
+                    null,
+                    null,
+                    false );
         }
     }
 
