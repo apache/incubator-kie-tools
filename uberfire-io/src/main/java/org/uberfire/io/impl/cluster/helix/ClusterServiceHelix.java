@@ -14,12 +14,13 @@ import org.apache.helix.messaging.handling.MessageHandlerFactory;
 import org.apache.helix.model.Message;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.io.impl.cluster.ClusterMessageType;
 import org.uberfire.commons.message.AsyncCallback;
 import org.uberfire.commons.message.MessageHandlerResolver;
 import org.uberfire.commons.message.MessageType;
+import org.uberfire.io.impl.cluster.ClusterMessageType;
 
 import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static java.util.UUID.*;
 import static org.apache.helix.HelixManagerFactory.*;
 
@@ -31,8 +32,8 @@ public class ClusterServiceHelix implements ClusterService {
     private final SimpleLock lock = new SimpleLock();
     private final String resourceName;
     private int stackSize = 0;
-    private final MessageHandlerResolver messageHandlerResolver;
-    private AtomicBoolean started = new AtomicBoolean(false);
+    private final Map<String, MessageHandlerResolver> messageHandlerResolver = new HashMap<String, MessageHandlerResolver>();
+    private AtomicBoolean started = new AtomicBoolean( false );
 
     public ClusterServiceHelix( final String clusterName,
                                 final String zkAddress,
@@ -42,13 +43,20 @@ public class ClusterServiceHelix implements ClusterService {
         this.clusterName = clusterName;
         this.instanceName = instanceName;
         this.resourceName = resourceName;
-        this.messageHandlerResolver = messageHandlerResolver;
+        this.messageHandlerResolver.put( messageHandlerResolver.getServiceId(), messageHandlerResolver );
 
         this.participantManager = getZKHelixManager( clusterName, instanceName, InstanceType.PARTICIPANT, zkAddress );
     }
+
+    //TODO {porcelli} quick hack for now, the real solution would have a cluster per repo
+    @Override
+    public void addMessageHandlerResolver( final MessageHandlerResolver resolver ) {
+        this.messageHandlerResolver.put( resolver.getServiceId(), resolver );
+    }
+
     @Override
     public void start() {
-        if (isStarted()) {
+        if ( isStarted() ) {
             return;
         }
         try {
@@ -56,7 +64,7 @@ public class ClusterServiceHelix implements ClusterService {
             disablePartition();
             this.participantManager.getStateMachineEngine().registerStateModelFactory( "LeaderStandby", new LockTransitionalFactory( lock ) );
             this.participantManager.getMessagingService().registerMessageHandlerFactory( Message.MessageType.USER_DEFINE_MSG.toString(), new MessageHandlerResolverWrapper( messageHandlerResolver ).convert() );
-            started.set(true);
+            started.set( true );
         } catch ( final Exception ex ) {
             throw new RuntimeException( ex );
         }
@@ -68,20 +76,20 @@ public class ClusterServiceHelix implements ClusterService {
 
     @Override
     public void dispose() {
-        if (this.participantManager != null) {
+        if ( this.participantManager != null && this.participantManager.isConnected() ) {
             this.participantManager.disconnect();
         }
     }
 
     private void enablePartition() {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return;
         }
         participantManager.getClusterManagmentTool().enablePartition( true, clusterName, instanceName, resourceName, asList( resourceName + "_0" ) );
     }
 
     private void disablePartition() {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return;
         }
         participantManager.getClusterManagmentTool().enablePartition( false, clusterName, instanceName, resourceName, asList( resourceName + "_0" ) );
@@ -89,7 +97,7 @@ public class ClusterServiceHelix implements ClusterService {
 
     @Override
     public void lock() {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return;
         }
         stackSize++;
@@ -108,7 +116,7 @@ public class ClusterServiceHelix implements ClusterService {
 
     @Override
     public void unlock() {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return;
         }
         stackSize--;
@@ -131,20 +139,21 @@ public class ClusterServiceHelix implements ClusterService {
 
     @Override
     public boolean isLocked() {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return true;
         }
         return lock.isLocked();
     }
 
     @Override
-    public void broadcastAndWait( MessageType type,
-                                  Map<String, String> content,
+    public void broadcastAndWait( final String serviceId,
+                                  final MessageType type,
+                                  final Map<String, String> content,
                                   int timeOut ) {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return;
         }
-        participantManager.getMessagingService().sendAndWait( buildCriteria(), buildMessage( type, content ), new org.apache.helix.messaging.AsyncCallback( timeOut ) {
+        participantManager.getMessagingService().sendAndWait( buildCriteria(), buildMessage( serviceId, type, content ), new org.apache.helix.messaging.AsyncCallback( timeOut ) {
             @Override
             public void onTimeOut() {
             }
@@ -156,14 +165,15 @@ public class ClusterServiceHelix implements ClusterService {
     }
 
     @Override
-    public void broadcastAndWait( final MessageType type,
+    public void broadcastAndWait( final String serviceId,
+                                  final MessageType type,
                                   final Map<String, String> content,
                                   final int timeOut,
                                   final AsyncCallback callback ) {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return;
         }
-        int msg = participantManager.getMessagingService().sendAndWait( buildCriteria(), buildMessage( type, content ), new org.apache.helix.messaging.AsyncCallback() {
+        int msg = participantManager.getMessagingService().sendAndWait( buildCriteria(), buildMessage( serviceId, type, content ), new org.apache.helix.messaging.AsyncCallback() {
             @Override
             public void onTimeOut() {
                 callback.onTimeOut();
@@ -183,23 +193,25 @@ public class ClusterServiceHelix implements ClusterService {
     }
 
     @Override
-    public void broadcast( final MessageType type,
+    public void broadcast( final String serviceId,
+                           final MessageType type,
                            final Map<String, String> content ) {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return;
         }
-        participantManager.getMessagingService().send( buildCriteria(), buildMessage( type, content ) );
+        participantManager.getMessagingService().send( buildCriteria(), buildMessage( serviceId, type, content ) );
     }
 
     @Override
-    public void broadcast( final MessageType type,
+    public void broadcast( final String serviceId,
+                           final MessageType type,
                            final Map<String, String> content,
                            final int timeOut,
                            final AsyncCallback callback ) {
-        if (!isStarted()) {
+        if ( !isStarted() ) {
             return;
         }
-        participantManager.getMessagingService().send( buildCriteria(), buildMessage( type, content ), new org.apache.helix.messaging.AsyncCallback() {
+        participantManager.getMessagingService().send( buildCriteria(), buildMessage( serviceId, type, content ), new org.apache.helix.messaging.AsyncCallback() {
             @Override
             public void onTimeOut() {
                 callback.onTimeOut();
@@ -216,13 +228,14 @@ public class ClusterServiceHelix implements ClusterService {
     }
 
     @Override
-    public void sendTo( String resourceId,
-                        MessageType type,
-                        Map<String, String> content ) {
-        if (!isStarted()) {
+    public void sendTo( final String serviceId,
+                        final String resourceId,
+                        final MessageType type,
+                        final Map<String, String> content ) {
+        if ( !isStarted() ) {
             return;
         }
-        participantManager.getMessagingService().send( buildCriteria( resourceId ), buildMessage( type, content ) );
+        participantManager.getMessagingService().send( buildCriteria( resourceId ), buildMessage( serviceId, type, content ) );
     }
 
     private Criteria buildCriteria( final String resourceId ) {
@@ -239,11 +252,13 @@ public class ClusterServiceHelix implements ClusterService {
         return buildCriteria( "%" );
     }
 
-    private Message buildMessage( final MessageType type,
+    private Message buildMessage( final String serviceId,
+                                  final MessageType type,
                                   final Map<String, String> content ) {
         return new Message( Message.MessageType.USER_DEFINE_MSG, randomUUID().toString() ) {{
             setMsgState( Message.MessageState.NEW );
             getRecord().setMapField( "content", content );
+            getRecord().setSimpleField( "serviceId", serviceId );
             getRecord().setSimpleField( "type", type.toString() );
             getRecord().setSimpleField( "origin", instanceName );
         }};
@@ -251,10 +266,10 @@ public class ClusterServiceHelix implements ClusterService {
 
     class MessageHandlerResolverWrapper {
 
-        private final MessageHandlerResolver resolver;
+        private final Map<String, MessageHandlerResolver> resolvers;
 
-        MessageHandlerResolverWrapper( final MessageHandlerResolver resolver ) {
-            this.resolver = resolver;
+        MessageHandlerResolverWrapper( final Map<String, MessageHandlerResolver> resolvers ) {
+            this.resolvers = unmodifiableMap( resolvers );
         }
 
         MessageHandlerFactory convert() {
@@ -267,10 +282,11 @@ public class ClusterServiceHelix implements ClusterService {
                     return new MessageHandler( message, context ) {
                         @Override
                         public HelixTaskResult handleMessage() throws InterruptedException {
+                            final String serviceId = _message.getRecord().getSimpleField( "serviceId" );
                             final MessageType type = buildMessageType( _message.getRecord().getSimpleField( "type" ) );
                             final Map<String, String> map = getMessageContent( _message );
 
-                            final Pair<MessageType, Map<String, String>> result = resolver.resolveHandler( type ).handleMessage( type, map );
+                            final Pair<MessageType, Map<String, String>> result = resolvers.get( serviceId ).resolveHandler( serviceId, type ).handleMessage( type, map );
 
                             if ( result == null ) {
                                 return new HelixTaskResult() {{
@@ -280,6 +296,7 @@ public class ClusterServiceHelix implements ClusterService {
 
                             return new HelixTaskResult() {{
                                 setSuccess( true );
+                                getTaskResultMap().put( "serviceId", serviceId );
                                 getTaskResultMap().put( "type", result.getK1().toString() );
                                 getTaskResultMap().put( "origin", instanceName );
                                 for ( Map.Entry<String, String> entry : result.getK2().entrySet() ) {
@@ -345,7 +362,7 @@ public class ClusterServiceHelix implements ClusterService {
     private Map<String, String> getMessageContentFromReply( final Message message ) {
         return new HashMap<String, String>() {{
             for ( final Map.Entry<String, String> field : message.getRecord().getMapField( Message.Attributes.MESSAGE_RESULT.toString() ).entrySet() ) {
-                if ( !field.getKey().equals( "origin" ) && !field.getKey().equals( "type" ) ) {
+                if ( !field.getKey().equals( "serviceId" ) && !field.getKey().equals( "origin" ) && !field.getKey().equals( "type" ) ) {
                     put( field.getKey(), field.getValue() );
                 }
             }

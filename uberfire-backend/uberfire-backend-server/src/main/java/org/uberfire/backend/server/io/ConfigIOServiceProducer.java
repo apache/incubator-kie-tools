@@ -27,9 +27,9 @@ public class ConfigIOServiceProducer {
     @PostConstruct
     public void setup() {
         if ( clusterServiceFactory == null ) {
-            configIOService = new IOServiceNio2WrapperImpl();
+            configIOService = new IOServiceNio2WrapperImpl( "config" );
         } else {
-            configIOService = new IOServiceClusterImpl( new IOServiceNio2WrapperImpl(), clusterServiceFactory );
+            configIOService = new IOServiceClusterImpl( new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory );
         }
     }
 

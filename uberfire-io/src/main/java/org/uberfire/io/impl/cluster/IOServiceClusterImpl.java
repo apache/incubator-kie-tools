@@ -21,9 +21,14 @@ import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.cluster.LockExecuteNotifySyncReleaseTemplate;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.lock.LockExecuteReleaseTemplate;
+import org.uberfire.commons.message.AsyncCallback;
+import org.uberfire.commons.message.MessageHandler;
+import org.uberfire.commons.message.MessageHandlerResolver;
+import org.uberfire.commons.message.MessageType;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOClusteredService;
-import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceIdentifiable;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SeekableByteChannelWrapperImpl;
@@ -46,29 +51,24 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.commons.lock.LockExecuteReleaseTemplate;
-import org.uberfire.commons.message.AsyncCallback;
-import org.uberfire.commons.message.MessageHandler;
-import org.uberfire.commons.message.MessageHandlerResolver;
-import org.uberfire.commons.message.MessageType;
 
-import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
 import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
 
 public class IOServiceClusterImpl implements IOClusteredService {
 
-    private final IOService service;
+    private final IOServiceIdentifiable service;
     private final ClusterService clusterService;
     private NewFileSystemListener newFileSystemListener = null;
 
-    public IOServiceClusterImpl( final IOService service,
-            final ClusterServiceFactory clusterServiceFactory ) {
-        this(service, clusterServiceFactory, true);
+    public IOServiceClusterImpl( final IOServiceIdentifiable service,
+                                 final ClusterServiceFactory clusterServiceFactory ) {
+        this( service, clusterServiceFactory, true );
     }
 
-    public IOServiceClusterImpl( final IOService service,
+    public IOServiceClusterImpl( final IOServiceIdentifiable service,
                                  final ClusterServiceFactory clusterServiceFactory,
-                                 final boolean autoStart) {
+                                 final boolean autoStart ) {
         checkNotNull( "clusterServiceFactory", clusterServiceFactory );
         this.service = checkNotNull( "service", service );
 
@@ -79,19 +79,31 @@ public class IOServiceClusterImpl implements IOClusteredService {
             final MessageHandler queryFs = new QueryFileSystemMessageHandler();
 
             @Override
-            public MessageHandler resolveHandler( final MessageType type ) {
-                if ( NEW_FS.equals( type ) ) {
-                    return newFs;
-                } else if ( SYNC_FS.equals( type ) ) {
-                    return syncFs;
-                } else if ( QUERY_FOR_FS.equals( type ) ) {
-                    return queryFs;
+            public String getServiceId() {
+                return service.getId();
+            }
+
+            @Override
+            public MessageHandler resolveHandler( final String serviceId,
+                                                  final MessageType type ) {
+
+                if ( serviceId.equals( service.getId() ) ) {
+                    if ( NEW_FS.equals( type ) ) {
+                        return newFs;
+                    } else if ( SYNC_FS.equals( type ) ) {
+                        return syncFs;
+                    } else if ( QUERY_FOR_FS.equals( type ) ) {
+                        return queryFs;
+                    }
                 }
 
                 return null;
             }
         } );
-        if ( autoStart ) {
+
+        if ( autoStart )
+
+        {
             start();
         }
 
@@ -112,7 +124,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
                 final Map<Integer, FileSystemInfo> fileSystems = new HashMap<Integer, FileSystemInfo>();
 
-                clusterService.broadcastAndWait( QUERY_FOR_FS, Collections.<String, String>emptyMap(), timeout, new AsyncCallback() {
+                clusterService.broadcastAndWait( service.getId(), QUERY_FOR_FS, Collections.<String, String>emptyMap(), timeout, new AsyncCallback() {
                     @Override
                     public void onTimeOut() {
                         msgAnsweredOrTimedout.set( true );
@@ -120,7 +132,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
                     @Override
                     public void onReply( final MessageType type,
-                            final Map<String, String> content ) {
+                                         final Map<String, String> content ) {
                         if ( msgAnsweredOrTimedout.get() || onSync.get() ) {
                             return;
                         }
@@ -236,6 +248,11 @@ public class IOServiceClusterImpl implements IOClusteredService {
             }
 
             @Override
+            public String getServiceId() {
+                return service.getId();
+            }
+
+            @Override
             public Map<String, String> buildContent() {
                 return new HashMap<String, String>() {{
                     put( "uri", uri.toString() );
@@ -268,6 +285,11 @@ public class IOServiceClusterImpl implements IOClusteredService {
             @Override
             public MessageType getMessageType() {
                 return NEW_FS;
+            }
+
+            @Override
+            public String getServiceId() {
+                return service.getId();
             }
 
             @Override
@@ -322,7 +344,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public Path createFile( final Path path,
                             final FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.createFile( path, attrs );
@@ -333,7 +355,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public Path createDirectory( final Path dir,
                                  final FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( dir.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), dir.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.createDirectory( dir, attrs );
@@ -344,7 +366,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public Path createDirectories( final Path dir,
                                    final FileAttribute<?>... attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( dir.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), dir.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.createDirectories( dir, attrs );
@@ -355,7 +377,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public Path createDirectory( final Path dir,
                                  final Map<String, ?> attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( dir.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), dir.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.createDirectory( dir, attrs );
@@ -366,7 +388,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public Path createDirectories( final Path dir,
                                    final Map<String, ?> attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( dir.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), dir.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.createDirectories( dir, attrs );
@@ -377,7 +399,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public void delete( final Path path,
                         final DeleteOption... options ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
-        new FileSystemSyncLock<Void>( path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
+        new FileSystemSyncLock<Void>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 service.delete( path, options );
@@ -389,7 +411,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public boolean deleteIfExists( final Path path,
                                    final DeleteOption... options ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
-        return new FileSystemSyncLock<Boolean>( path.getFileSystem() ).execute( clusterService, new FutureTask<Boolean>( new Callable<Boolean>() {
+        return new FileSystemSyncLock<Boolean>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Boolean>( new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return service.deleteIfExists( path, options );
@@ -429,7 +451,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     public Path copy( final Path source,
                       final Path target,
                       final CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( target.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), target.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.copy( source, target, options );
@@ -441,7 +463,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     public long copy( final InputStream in,
                       final Path target,
                       final CopyOption... options ) throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException, UnsupportedOperationException, SecurityException {
-        return new FileSystemSyncLock<Long>( target.getFileSystem() ).execute( clusterService, new FutureTask<Long>( new Callable<Long>() {
+        return new FileSystemSyncLock<Long>( service.getId(), target.getFileSystem() ).execute( clusterService, new FutureTask<Long>( new Callable<Long>() {
             @Override
             public Long call() throws Exception {
                 return service.copy( in, target, options );
@@ -459,10 +481,10 @@ public class IOServiceClusterImpl implements IOClusteredService {
     public Path move( final Path source,
                       final Path target,
                       final CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( source.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), source.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
-                return new FileSystemSyncLock<Path>( target.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+                return new FileSystemSyncLock<Path>( service.getId(), target.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
                     @Override
                     public Path call() throws Exception {
                         return service.move( source, target, options );
@@ -492,7 +514,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public Path setAttributes( final Path path,
                                final FileAttribute<?>... attrs ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.setAttributes( path, attrs );
@@ -503,7 +525,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     @Override
     public Path setAttributes( final Path path,
                                final Map<String, Object> attrs ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.setAttributes( path, attrs );
@@ -515,7 +537,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     public Path setAttribute( final Path path,
                               final String attribute,
                               final Object value ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.setAttribute( path, attribute, value );
@@ -592,7 +614,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     public Path write( final Path path,
                        final byte[] bytes,
                        final OpenOption... options ) throws IOException, UnsupportedOperationException, SecurityException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, bytes, options );
@@ -605,7 +627,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                        final byte[] bytes,
                        final Map<String, ?> attrs,
                        final OpenOption... options ) throws IOException, UnsupportedOperationException, SecurityException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, bytes, attrs, options );
@@ -618,7 +640,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                        final byte[] bytes,
                        final Set<? extends OpenOption> options,
                        final FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, bytes, options, attrs );
@@ -631,7 +653,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                        final Iterable<? extends CharSequence> lines,
                        final Charset cs,
                        final OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, lines, cs, options );
@@ -643,7 +665,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     public Path write( final Path path,
                        final String content,
                        final OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, content, options );
@@ -656,7 +678,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                        final String content,
                        final Charset cs,
                        final OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, content, cs, options );
@@ -669,7 +691,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                        final String content,
                        final Set<? extends OpenOption> options,
                        final FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, content, options, attrs );
@@ -683,7 +705,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                        final Charset cs,
                        final Set<? extends OpenOption> options,
                        final FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, content, cs, options, attrs );
@@ -696,7 +718,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                        final String content,
                        final Map<String, ?> attrs,
                        final OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, content, attrs, options );
@@ -710,7 +732,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                        final Charset cs,
                        final Map<String, ?> attrs,
                        final OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return new FileSystemSyncLock<Path>( path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
+        return new FileSystemSyncLock<Path>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Path>( new Callable<Path>() {
             @Override
             public Path call() throws Exception {
                 return service.write( path, content, cs, attrs, options );
@@ -730,7 +752,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
             @Override
             public void close() throws java.io.IOException {
-                new FileSystemSyncLock<Void>( path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
+                new FileSystemSyncLock<Void>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
                         out.close();
@@ -749,7 +771,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
         return new SeekableByteChannelWrapperImpl( sbc ) {
             @Override
             public void close() throws java.io.IOException {
-                new FileSystemSyncLock<Void>( path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
+                new FileSystemSyncLock<Void>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
                         sbc.close();
@@ -769,7 +791,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
         return new SeekableByteChannelWrapperImpl( sbc ) {
             @Override
             public void close() throws java.io.IOException {
-                new FileSystemSyncLock<Void>( path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
+                new FileSystemSyncLock<Void>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
                         sbc.close();
@@ -787,7 +809,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
         return new BufferedWriter( service.newBufferedWriter( path, cs, options ) ) {
             @Override
             public void close() throws java.io.IOException {
-                new FileSystemSyncLock<Void>( path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
+                new FileSystemSyncLock<Void>( service.getId(), path.getFileSystem() ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
                         superClose();

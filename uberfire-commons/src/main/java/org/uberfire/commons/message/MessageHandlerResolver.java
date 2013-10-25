@@ -2,6 +2,9 @@ package org.uberfire.commons.message;
 
 public interface MessageHandlerResolver {
 
-    public MessageHandler resolveHandler( final MessageType type );
+    String getServiceId();
+
+    public MessageHandler resolveHandler( final String serviceId,
+                                          final MessageType type );
 
 }

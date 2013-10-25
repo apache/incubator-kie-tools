@@ -120,6 +120,8 @@ import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
 
 public class JGitFileSystemProvider implements FileSystemProvider {
 
+    protected static final String DEFAULT_IO_SERVICE_NAME = "default";
+
     public static final String GIT_DEFAULT_REMOTE_NAME = DEFAULT_REMOTE_NAME;
     public static final String GIT_LIST_ROOT_BRANCH_MODE = "listMode";
 
@@ -309,7 +311,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                             notifyDiffs( fs, treeRef, "<system>", "<system>", oldHead, newHead );
 
                             if ( clusterService != null ) {
-                                clusterService.broadcast( new MessageType() {
+                                //TODO {porcelli} hack, that should be addressed in future
+                                clusterService.broadcast( DEFAULT_IO_SERVICE_NAME,
+                                                          new MessageType() {
 
                                                               @Override
                                                               public String toString() {

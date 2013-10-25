@@ -41,5 +41,7 @@ abstract class BaseLockExecuteNotifyReleaseTemplate<V> {
 
     public abstract MessageType getMessageType();
 
+    public abstract String getServiceId();
+
     public abstract Map<String, String> buildContent();
 }

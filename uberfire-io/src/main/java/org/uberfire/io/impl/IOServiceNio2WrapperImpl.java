@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.uberfire.commons.lock.LockService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.java.nio.IOException;
@@ -35,7 +36,6 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
-import org.uberfire.commons.lock.LockService;
 
 public class IOServiceNio2WrapperImpl
         extends AbstractIOService
@@ -45,13 +45,28 @@ public class IOServiceNio2WrapperImpl
         super();
     }
 
+    public IOServiceNio2WrapperImpl( final String id ) {
+        super( id );
+    }
+
     public IOServiceNio2WrapperImpl( final IOWatchService watchService ) {
         super( watchService );
+    }
+
+    public IOServiceNio2WrapperImpl( final String id,
+                                     final IOWatchService watchService ) {
+        super( id, watchService );
     }
 
     public IOServiceNio2WrapperImpl( final LockService lockService,
                                      final IOWatchService watchService ) {
         super( lockService, watchService );
+    }
+
+    public IOServiceNio2WrapperImpl( final String id,
+                                     final LockService lockService,
+                                     final IOWatchService watchService ) {
+        super( id, lockService, watchService );
     }
 
     @Override

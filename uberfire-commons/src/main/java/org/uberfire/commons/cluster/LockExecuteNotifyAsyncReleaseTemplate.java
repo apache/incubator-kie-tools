@@ -4,6 +4,6 @@ public abstract class LockExecuteNotifyAsyncReleaseTemplate<V> extends BaseLockE
 
     @Override
     public void sendMessage( final ClusterService clusterService ) {
-        clusterService.broadcast( getMessageType(), buildContent() );
+        clusterService.broadcast( getServiceId(), getMessageType(), buildContent() );
     }
 }

@@ -4,23 +4,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.uberfire.commons.cluster.LockExecuteNotifyAsyncReleaseTemplate;
+import org.uberfire.commons.message.MessageType;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.commons.message.MessageType;
 
 import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
 
 public class FileSystemSyncLock<V> extends LockExecuteNotifyAsyncReleaseTemplate<V> {
 
     private final FileSystem fileSystem;
+    private final String serviceId;
 
-    public FileSystemSyncLock( final FileSystem fileSystem ) {
+    public FileSystemSyncLock( final String serviceId,
+                               final FileSystem fileSystem ) {
+        this.serviceId = serviceId;
         this.fileSystem = fileSystem;
     }
 
     @Override
     public MessageType getMessageType() {
         return SYNC_FS;
+    }
+
+    @Override
+    public String getServiceId() {
+        return serviceId;
     }
 
     @Override

@@ -4,7 +4,7 @@ public abstract class LockExecuteNotifySyncReleaseTemplate<V> extends BaseLockEx
 
     @Override
     public void sendMessage( final ClusterService clusterService ) {
-        clusterService.broadcastAndWait( getMessageType(), buildContent(), timeOut() );
+        clusterService.broadcastAndWait( getServiceId(), getMessageType(), buildContent(), timeOut() );
     }
 
     public int timeOut() {

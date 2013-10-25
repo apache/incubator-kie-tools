@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.uberfire.commons.lock.LockService;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
@@ -51,12 +52,11 @@ import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
-import org.uberfire.commons.lock.LockService;
 import org.uberfire.metadata.engine.MetaIndexEngine;
 
+import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.*;
 import static org.uberfire.java.nio.file.StandardWatchEventKind.*;
-import static org.uberfire.commons.validation.Preconditions.*;
 
 public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
@@ -75,10 +75,29 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.views = views;
     }
 
+    public IOServiceIndexedImpl( final String id,
+                                 final MetaIndexEngine indexEngine,
+                                 Class<? extends FileAttributeView>... views ) {
+        super( id );
+        this.indexEngine = checkNotNull( "indexEngine", indexEngine );
+        this.batchIndex = new BatchIndex( indexEngine, this, views );
+        this.views = views;
+    }
+
     public IOServiceIndexedImpl( final IOWatchService watchService,
                                  final MetaIndexEngine indexEngine,
                                  Class<? extends FileAttributeView>... views ) {
         super( watchService );
+        this.indexEngine = checkNotNull( "indexEngine", indexEngine );
+        this.batchIndex = new BatchIndex( indexEngine, this, views );
+        this.views = views;
+    }
+
+    public IOServiceIndexedImpl( final String id,
+                                 final IOWatchService watchService,
+                                 final MetaIndexEngine indexEngine,
+                                 Class<? extends FileAttributeView>... views ) {
+        super( id, watchService );
         this.indexEngine = checkNotNull( "indexEngine", indexEngine );
         this.batchIndex = new BatchIndex( indexEngine, this, views );
         this.views = views;
@@ -89,6 +108,17 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                  final MetaIndexEngine indexEngine,
                                  Class<? extends FileAttributeView>... views ) {
         super( lockService, watchService );
+        this.indexEngine = checkNotNull( "indexEngine", indexEngine );
+        this.batchIndex = new BatchIndex( indexEngine, this, views );
+        this.views = views;
+    }
+
+    public IOServiceIndexedImpl( final String id,
+                                 final LockService lockService,
+                                 final IOWatchService watchService,
+                                 final MetaIndexEngine indexEngine,
+                                 Class<? extends FileAttributeView>... views ) {
+        super( id, lockService, watchService );
         this.indexEngine = checkNotNull( "indexEngine", indexEngine );
         this.batchIndex = new BatchIndex( indexEngine, this, views );
         this.views = views;

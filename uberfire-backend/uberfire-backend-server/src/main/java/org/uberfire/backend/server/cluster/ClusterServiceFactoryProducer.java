@@ -6,8 +6,8 @@ import javax.inject.Named;
 
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
-import org.uberfire.io.impl.cluster.helix.ClusterServiceHelix;
 import org.uberfire.commons.message.MessageHandlerResolver;
+import org.uberfire.io.impl.cluster.helix.ClusterServiceHelix;
 
 @ApplicationScoped
 public class ClusterServiceFactoryProducer {
@@ -29,12 +29,13 @@ public class ClusterServiceFactoryProducer {
                 public ClusterService build( final MessageHandlerResolver resolver ) {
                     if ( clusterService == null ) {
                         clusterService = new ClusterServiceHelix( clusterName, zkAddress, localId, resourceName, resolver );
+                    } else {
+                        clusterService.addMessageHandlerResolver( resolver );
                     }
                     return clusterService;
                 }
             };
         }
-
     }
 
     @Produces

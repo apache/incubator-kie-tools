@@ -56,13 +56,28 @@ public class IOServiceDotFileImpl
         super();
     }
 
+    public IOServiceDotFileImpl( final String serviceId ) {
+        super( serviceId );
+    }
+
     public IOServiceDotFileImpl( final IOWatchService watchService ) {
         super( watchService );
+    }
+
+    public IOServiceDotFileImpl( final String serviceId,
+                                 final IOWatchService watchService ) {
+        super( serviceId, watchService );
     }
 
     public IOServiceDotFileImpl( final LockService lockService,
                                  final IOWatchService watchService ) {
         super( lockService, watchService );
+    }
+
+    public IOServiceDotFileImpl( final String serviceId,
+                                 final LockService lockService,
+                                 final IOWatchService watchService ) {
+        super( serviceId, lockService, watchService );
     }
 
     @Override

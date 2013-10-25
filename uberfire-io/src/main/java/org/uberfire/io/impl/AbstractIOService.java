@@ -35,7 +35,6 @@ import java.util.Set;
 
 import org.uberfire.commons.lock.LockService;
 import org.uberfire.io.FileSystemType;
-import org.uberfire.io.IOService;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.io.impl.lock.ThreadLockServiceImpl;
 import org.uberfire.java.nio.IOException;
@@ -65,7 +64,9 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.java.nio.file.StandardOpenOption.*;
 
-public abstract class AbstractIOService implements IOService {
+public abstract class AbstractIOService implements IOServiceIdentifiable {
+
+    protected static final String DEFAULT_SERVICE_NAME = "default";
 
     private static final Set<StandardOpenOption> CREATE_NEW_FILE_OPTIONS = EnumSet.of( CREATE_NEW, WRITE );
 
@@ -86,19 +87,44 @@ public abstract class AbstractIOService implements IOService {
 
     protected NewFileSystemListener newFileSystemListener = null;
     protected boolean isDisposed = false;
+    private String id;
 
     public AbstractIOService() {
+        this.id = DEFAULT_SERVICE_NAME;
+        lockService = new ThreadLockServiceImpl();
+        ioWatchService = null;
+    }
+
+    public AbstractIOService( final String id ) {
+        this.id = id;
         lockService = new ThreadLockServiceImpl();
         ioWatchService = null;
     }
 
     public AbstractIOService( final IOWatchService watchService ) {
+        this.id = DEFAULT_SERVICE_NAME;
+        lockService = new ThreadLockServiceImpl();
+        ioWatchService = watchService;
+    }
+
+    public AbstractIOService( final String id,
+                              final IOWatchService watchService ) {
+        this.id = id;
         lockService = new ThreadLockServiceImpl();
         ioWatchService = watchService;
     }
 
     public AbstractIOService( final LockService lockService,
                               final IOWatchService watchService ) {
+        this.id = DEFAULT_SERVICE_NAME;
+        this.lockService = lockService;
+        this.ioWatchService = watchService;
+    }
+
+    public AbstractIOService( final String id,
+                              final LockService lockService,
+                              final IOWatchService watchService ) {
+        this.id = id;
         this.lockService = lockService;
         this.ioWatchService = watchService;
     }
@@ -612,4 +638,8 @@ public abstract class AbstractIOService implements IOService {
     protected abstract Set<? extends OpenOption> buildOptions( final Set<? extends OpenOption> options,
                                                                final OpenOption... other );
 
+    @Override
+    public String getId() {
+        return id;
+    }
 }
