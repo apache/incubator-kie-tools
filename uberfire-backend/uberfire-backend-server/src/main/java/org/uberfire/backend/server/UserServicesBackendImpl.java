@@ -15,7 +15,9 @@
  */
 package org.uberfire.backend.server;
 
+import java.text.Normalizer;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,6 +31,9 @@ import static org.uberfire.io.FileSystemType.Bootstrap.*;
 
 @ApplicationScoped
 public class UserServicesBackendImpl {
+
+    private static final Pattern nonASCII1 = Pattern.compile( "[^\\p{L}\\p{Nd}]" );
+    private static final Pattern nonASCII2 = Pattern.compile( "[^\\x00-\\x7f]" );
 
     @Inject
     @Named("configIO")
@@ -44,13 +49,16 @@ public class UserServicesBackendImpl {
         }
     }
 
-    public Path buildPath( final String userName,
+    public Path buildPath( final String _userName,
                            final String serviceType,
                            final String relativePath ) {
+
+        final String resultUserName = nonASCII2.matcher( nonASCII1.matcher( Normalizer.normalize( _userName, Normalizer.Form.NFD ) ).replaceAll( "" ) ).replaceAll( "" );
+
         if ( relativePath != null && !"".equals( relativePath ) ) {
-            return bootstrapRoot.getPath( userName.replaceAll( "/", "_" ).replaceAll( "@", "_" ) + "-uf-user", serviceType, relativePath );
+            return bootstrapRoot.getPath( resultUserName + "-uf-user", serviceType, relativePath );
         } else {
-            return bootstrapRoot.getPath( userName.replaceAll( "/", "_" ).replaceAll( "@", "_" ) + "-uf-user", serviceType );
+            return bootstrapRoot.getPath( resultUserName + "-uf-user", serviceType );
         }
     }
 }
