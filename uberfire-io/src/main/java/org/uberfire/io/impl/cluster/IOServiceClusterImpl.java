@@ -28,6 +28,7 @@ import org.uberfire.commons.message.MessageHandlerResolver;
 import org.uberfire.commons.message.MessageType;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOClusteredService;
+import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceIdentifiable;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
@@ -61,16 +62,16 @@ public class IOServiceClusterImpl implements IOClusteredService {
     private final ClusterService clusterService;
     private NewFileSystemListener newFileSystemListener = null;
 
-    public IOServiceClusterImpl( final IOServiceIdentifiable service,
+    public IOServiceClusterImpl( final IOService service,
                                  final ClusterServiceFactory clusterServiceFactory ) {
         this( service, clusterServiceFactory, true );
     }
 
-    public IOServiceClusterImpl( final IOServiceIdentifiable service,
+    public IOServiceClusterImpl( final IOService service,
                                  final ClusterServiceFactory clusterServiceFactory,
                                  final boolean autoStart ) {
         checkNotNull( "clusterServiceFactory", clusterServiceFactory );
-        this.service = checkNotNull( "service", service );
+        this.service = checkInstanceOf( "service", service, IOServiceIdentifiable.class );
 
         this.clusterService = clusterServiceFactory.build( new MessageHandlerResolver() {
 
@@ -80,14 +81,14 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
             @Override
             public String getServiceId() {
-                return service.getId();
+                return IOServiceClusterImpl.this.service.getId();
             }
 
             @Override
             public MessageHandler resolveHandler( final String serviceId,
                                                   final MessageType type ) {
 
-                if ( serviceId.equals( service.getId() ) ) {
+                if ( serviceId.equals( IOServiceClusterImpl.this.service.getId() ) ) {
                     if ( NEW_FS.equals( type ) ) {
                         return newFs;
                     } else if ( SYNC_FS.equals( type ) ) {
