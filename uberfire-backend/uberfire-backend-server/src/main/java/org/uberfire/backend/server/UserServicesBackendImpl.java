@@ -34,17 +34,13 @@ public class UserServicesBackendImpl {
     @Named("configIO")
     private IOService ioService;
 
-    private Path bootstrapRoot = null;
+    private FileSystem bootstrapRoot = null;
 
     @PostConstruct
     public void init() {
         final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
         if ( fsIterator.hasNext() ) {
-            final FileSystem bootstrap = fsIterator.next();
-            final Iterator<Path> rootIterator = bootstrap.getRootDirectories().iterator();
-            if ( rootIterator.hasNext() ) {
-                this.bootstrapRoot = rootIterator.next();
-            }
+            this.bootstrapRoot = fsIterator.next();
         }
     }
 
@@ -52,9 +48,9 @@ public class UserServicesBackendImpl {
                            final String serviceType,
                            final String relativePath ) {
         if ( relativePath != null && !"".equals( relativePath ) ) {
-            return bootstrapRoot.getFileSystem().getPath( userName + "-user", serviceType, relativePath );
+            return bootstrapRoot.getPath( userName.replaceAll( "/", "_" ).replaceAll( "@", "_" ) + "-uf-user", serviceType, relativePath );
         } else {
-            return bootstrapRoot.getFileSystem().getPath( userName + "-user", serviceType );
+            return bootstrapRoot.getPath( userName.replaceAll( "/", "_" ).replaceAll( "@", "_" ) + "-uf-user", serviceType );
         }
     }
 }
