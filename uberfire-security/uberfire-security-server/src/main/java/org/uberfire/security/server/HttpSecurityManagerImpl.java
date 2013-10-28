@@ -16,12 +16,19 @@
 
 package org.uberfire.security.server;
 
+import static java.util.Collections.emptyList;
+import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,12 +54,6 @@ import org.uberfire.security.server.auth.DefaultAuthenticationProvider;
 import org.uberfire.security.server.auth.HttpAuthenticationManager;
 import org.uberfire.security.server.auth.RememberMeCookieAuthProvider;
 import org.uberfire.security.server.authz.URLAccessDecisionManager;
-
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.commons.validation.Preconditions.*;
 
 public class HttpSecurityManagerImpl implements SecurityManager {
 
