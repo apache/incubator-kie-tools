@@ -548,7 +548,9 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     @Override
     public void dispose() {
         isDisposed = true;
-        ioWatchService.dispose();
+        if (ioWatchService != null) {
+            ioWatchService.dispose();
+        }
         for ( final FileSystem fileSystem : getFileSystems() ) {
             try {
                 fileSystem.close();

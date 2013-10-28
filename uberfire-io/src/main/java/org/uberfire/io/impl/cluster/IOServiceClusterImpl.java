@@ -17,6 +17,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.cluster.LockExecuteNotifySyncReleaseTemplate;
@@ -58,9 +60,12 @@ import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
 
 public class IOServiceClusterImpl implements IOClusteredService {
 
+    private static final Logger logger = LoggerFactory.getLogger(IOServiceClusterImpl.class);
+
     private final IOServiceIdentifiable service;
     private final ClusterService clusterService;
     private NewFileSystemListener newFileSystemListener = null;
+    private AtomicBoolean started = new AtomicBoolean(false);
 
     public IOServiceClusterImpl( final IOService service,
                                  final ClusterServiceFactory clusterServiceFactory ) {
@@ -71,8 +76,9 @@ public class IOServiceClusterImpl implements IOClusteredService {
                                  final ClusterServiceFactory clusterServiceFactory,
                                  final boolean autoStart ) {
         checkNotNull( "clusterServiceFactory", clusterServiceFactory );
-        this.service = checkInstanceOf( "service", service, IOServiceIdentifiable.class );
+        this.service = checkInstanceOf("service", service, IOServiceIdentifiable.class);
 
+        logger.debug("Creating instance of cluster service with auto start {}", autoStart);
         this.clusterService = clusterServiceFactory.build( new MessageHandlerResolver() {
 
             final MessageHandler newFs = new NewFileSystemMessageHandler();
@@ -102,17 +108,18 @@ public class IOServiceClusterImpl implements IOClusteredService {
             }
         } );
 
-        if ( autoStart )
-
-        {
+        if ( autoStart ) {
             start();
         }
 
     }
 
+
     @Override
     public void start() {
         this.clusterService.start();
+        started.set(true);
+        logger.debug("Starting cluster service {}", this);
         //New cluster members are executed within locked
         new LockExecuteReleaseTemplate<Void>().execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
             @Override

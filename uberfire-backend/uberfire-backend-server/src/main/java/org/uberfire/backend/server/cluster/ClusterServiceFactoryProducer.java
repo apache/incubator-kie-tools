@@ -1,16 +1,22 @@
 package org.uberfire.backend.server.cluster;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.message.MessageHandlerResolver;
+import org.uberfire.commons.services.cdi.ApplicationStarted;
 import org.uberfire.io.impl.cluster.helix.ClusterServiceHelix;
 
 @ApplicationScoped
 public class ClusterServiceFactoryProducer {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClusterServiceFactoryProducer.class);
 
     private final ClusterServiceFactory factory;
     private ClusterService clusterService = null;
@@ -20,6 +26,7 @@ public class ClusterServiceFactoryProducer {
         final String zkAddress = System.getProperty( "org.uberfire.cluster.zk", null );
         final String localId = System.getProperty( "org.uberfire.cluster.local.id", null );
         final String resourceName = System.getProperty( "org.uberfire.cluster.vfs.lock", null );
+        final boolean autostart = Boolean.parseBoolean(System.getProperty("org.uberfire.cluster.autostart", "true"));
 
         if ( clusterName == null || zkAddress == null || localId == null || resourceName == null ) {
             this.factory = null;
@@ -34,6 +41,11 @@ public class ClusterServiceFactoryProducer {
                     }
                     return clusterService;
                 }
+
+                @Override
+                public boolean isAutoStart() {
+                    return autostart;
+                }
             };
         }
     }
@@ -44,4 +56,12 @@ public class ClusterServiceFactoryProducer {
         return factory;
     }
 
+
+    public void startOnEvent(@Observes ApplicationStarted event) {
+        logger.debug("Received event for application started {}", clusterService);
+        if (clusterService != null) {
+            logger.debug("About to create cluster service...");
+            clusterService.start();
+        }
+    }
 }

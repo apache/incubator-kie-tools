@@ -29,7 +29,8 @@ public class ConfigIOServiceProducer {
         if ( clusterServiceFactory == null ) {
             configIOService = new IOServiceNio2WrapperImpl( "config" );
         } else {
-            configIOService = new IOServiceClusterImpl( new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory );
+            configIOService = new IOServiceClusterImpl(
+                    new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory, clusterServiceFactory.isAutoStart() );
         }
     }
 
