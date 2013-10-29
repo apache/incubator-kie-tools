@@ -293,6 +293,44 @@ public final class JGitUtil {
         }
     }
 
+    public static void pushRepository( final Git git,
+            final CredentialsProvider credentialsProvider,
+            final String origin,
+            boolean force )
+            throws InvalidRemoteException {
+
+        if ( origin != null && !origin.isEmpty() ) {
+
+            try {
+                final StoredConfig config = git.getRepository().getConfig();
+                config.setString( "remote", "upstream", "url", origin );
+                config.save();
+            } catch ( final Exception ex ) {
+                throw new RuntimeException( ex );
+            }
+
+            final List<RefSpec> specs = new ArrayList<RefSpec>();
+            specs.add( new RefSpec( "+refs/heads/*:refs/remotes/upstream/*" ) );
+            specs.add( new RefSpec( "+refs/tags/*:refs/tags/*" ) );
+            specs.add( new RefSpec( "+refs/notes/*:refs/notes/*" ) );
+
+            try {
+                git.push()
+                        .setCredentialsProvider( credentialsProvider )
+                        .setRefSpecs( specs )
+                        .setRemote( origin )
+                        .setForce(force)
+                        .setPushAll()
+                        .call();
+
+            } catch ( final InvalidRemoteException e ) {
+                throw e;
+            } catch ( final Exception ex ) {
+                throw new RuntimeException( ex );
+            }
+        }
+    }
+
     public static ObjectId getTreeRefObjectId( final Repository repo,
                                                final String treeRef ) {
         try {
