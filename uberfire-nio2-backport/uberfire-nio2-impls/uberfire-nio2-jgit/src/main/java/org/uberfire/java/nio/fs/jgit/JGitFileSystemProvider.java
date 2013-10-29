@@ -486,6 +486,14 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 throw new IOException( ex );
             }
         }
+        if (hasPushFlag( uri )) {
+            try {
+                final Map<String, String> params = getQueryParams( uri );
+                pushRepository( fileSystem.gitRepo(), fileSystem.getCredential(), params.get( "push" ), hasForceFlag( uri ) );
+            } catch ( final Exception ex ) {
+                throw new IOException( ex );
+            }
+        }
 
         return fileSystem;
     }
@@ -1426,6 +1434,16 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
         if ( uri.getQuery() != null ) {
             return uri.getQuery().contains( "force" );
+        }
+
+        return false;
+    }
+
+    private boolean hasPushFlag( final URI uri ) {
+        checkNotNull( "uri", uri );
+
+        if ( uri.getQuery() != null ) {
+            return uri.getQuery().contains( "push" );
         }
 
         return false;

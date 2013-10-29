@@ -212,6 +212,78 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
     }
 
     @Test
+    public void testNewFileSystemCloneAndPush() throws IOException {
+
+        final URI originRepo = URI.create( "git://my-simple-test-origin-repo" );
+
+        final JGitFileSystem origin = (JGitFileSystem) PROVIDER.newFileSystem( originRepo, new HashMap<String, Object>() {{
+            put( "listMode", "ALL" );
+        }} );
+
+        commit( origin.gitRepo(), "master", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
+            put( "file.txt", tempFile( "temp" ) );
+        }} );
+
+        final URI newRepo = URI.create( "git://my-repo" );
+
+        final Map<String, Object> env = new HashMap<String, Object>() {{
+            put( JGitFileSystemProvider.GIT_DEFAULT_REMOTE_NAME, "git://localhost:9418/my-simple-test-origin-repo" );
+            put( "listMode", "ALL" );
+        }};
+
+        final FileSystem fs = PROVIDER.newFileSystem( newRepo, env );
+
+        assertThat( fs ).isNotNull();
+
+        assertThat( fs.getRootDirectories() ).hasSize( 2 );
+
+        assertThat( fs.getPath( "file.txt" ).toFile() ).isNotNull().exists();
+
+        commit( ((JGitFileSystem)fs).gitRepo(), "master", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
+            put( "fileXXXXX.txt", tempFile( "temp" ) );
+        }} );
+
+        PROVIDER.getFileSystem( URI.create( "git://my-repo?push=git://localhost:9418/my-simple-test-origin-repo&force" ) );
+
+        assertThat( fs ).isNotNull();
+
+        assertThat( fs.getRootDirectories() ).hasSize( 2 );
+
+        for ( final Path root : fs.getRootDirectories() ) {
+            if ( root.toAbsolutePath().toUri().toString().contains( "upstream" ) ) {
+                assertThat( PROVIDER.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
+            } else if ( root.toAbsolutePath().toUri().toString().contains( "origin" ) ) {
+                assertThat( PROVIDER.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 1 );
+            } else {
+                assertThat( PROVIDER.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
+            }
+        }
+
+        final URI newRepo2 = URI.create( "git://my-repo2" );
+
+        final Map<String, Object> env2 = new HashMap<String, Object>() {{
+            put( JGitFileSystemProvider.GIT_DEFAULT_REMOTE_NAME, "git://localhost:9418/my-simple-test-origin-repo" );
+            put( "listMode", "ALL" );
+        }};
+
+        final FileSystem fs2 = PROVIDER.newFileSystem( newRepo2, env2 );
+
+        PROVIDER.getFileSystem( URI.create( "git://my-repo?sync=git://localhost:9418/my-simple-test-origin-repo&force" ) );
+
+        assertThat( fs2.getRootDirectories() ).hasSize( 2 );
+
+        for ( final Path root : fs2.getRootDirectories() ) {
+            if ( root.toAbsolutePath().toUri().toString().contains( "upstream" ) ) {
+                assertThat( PROVIDER.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
+            } else if ( root.toAbsolutePath().toUri().toString().contains( "origin" ) ) {
+                assertThat( PROVIDER.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
+            } else {
+                assertThat( PROVIDER.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
+            }
+        }
+    }
+
+    @Test
     public void testGetFileSystem() {
         final URI newRepo = URI.create( "git://new-repo-name" );
 
