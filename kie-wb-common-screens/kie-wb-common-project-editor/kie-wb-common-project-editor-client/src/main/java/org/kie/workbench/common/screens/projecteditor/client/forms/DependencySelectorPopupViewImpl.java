@@ -21,36 +21,35 @@ public class DependencySelectorPopupViewImpl
     private Presenter presenter;
 
     @Inject
-    public DependencySelectorPopupViewImpl(Caller<M2RepoService> m2RepoService) {
+    public DependencySelectorPopupViewImpl( Caller<M2RepoService> m2RepoService ) {
         this.m2RepoService = m2RepoService;
     }
 
     @Override
     public Widget getContent() {
-        PagedJarTable pagedJarTable = new PagedJarTable(m2RepoService);
+        PagedJarTable pagedJarTable = new PagedJarTable( m2RepoService );
         pagedJarTable.hideColumnPicker();
-        pagedJarTable.hideSelectionColumn();
 
-        Column<JarListPageRow, String> selectColumn = new Column<JarListPageRow, String>(new ButtonCell()) {
-            public String getValue(JarListPageRow row) {
+        Column<JarListPageRow, String> selectColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
+            public String getValue( JarListPageRow row ) {
                 return "Select";
             }
         };
-        selectColumn.setFieldUpdater(new FieldUpdater<JarListPageRow, String>() {
-            public void update(int index,
-                               JarListPageRow row,
-                               String value) {
-                presenter.onPathSelection(row.getPath());
+        selectColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
+            public void update( int index,
+                                JarListPageRow row,
+                                String value ) {
+                presenter.onPathSelection( row.getPath() );
             }
-        });
+        } );
 
-        pagedJarTable.addColumn(selectColumn, new TextHeader(""));
+        pagedJarTable.addColumn( selectColumn, new TextHeader( "" ) );
 
         return pagedJarTable;
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 }
