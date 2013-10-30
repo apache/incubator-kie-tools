@@ -90,7 +90,7 @@
     <!-- Note: The javadocs are not distributed at the moment -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-docs</artifactId>
+      <artifactId>drools-docs</artifactId>
       <type>jdocbook</type>
     </dependency>
   </dependencies>

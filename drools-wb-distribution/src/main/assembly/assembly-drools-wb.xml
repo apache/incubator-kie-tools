@@ -89,7 +89,7 @@
     <!-- Reference manual -->
     <dependencySet>
       <includes>
-        <include>org.drools:drools-wb-docs:jdocbook</include>
+        <include>org.drools:drools-docs:jdocbook</include>
       </includes>
       <outputDirectory>reference_manual</outputDirectory>
       <!-- Workaround for https://jira.codehaus.org/browse/MASSEMBLY-557 -->
