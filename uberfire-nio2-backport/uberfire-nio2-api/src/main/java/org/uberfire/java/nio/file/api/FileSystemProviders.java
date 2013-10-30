@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
@@ -36,40 +38,44 @@ import static org.uberfire.commons.validation.Preconditions.*;
  */
 public final class FileSystemProviders {
 
-    // for lazy init
-    private static class FileSystemProvidersHolder {
+    private static final Logger LOGGER = LoggerFactory.getLogger( FileSystemProviders.class );
 
-        static List<FileSystemProvider> installedProviders = buildProviders();
-        static Map<String, FileSystemProvider> mapOfinstalledProviders = buildProvidersMap();
+    private static List<FileSystemProvider> installedProviders;
+    private static Map<String, FileSystemProvider> mapOfinstalledProviders;
 
-        private synchronized static List<FileSystemProvider> buildProviders() {
-            final ServiceLoader<FileSystemProvider> providers = ServiceLoader.load(FileSystemProvider.class);
-            if (providers == null) {
-                return emptyList();
-            }
-            final List<FileSystemProvider> result = new ArrayList<FileSystemProvider>();
-
-            for (final FileSystemProvider provider : providers) {
-                result.add(provider);
-            }
-            return unmodifiableList(result);
-        }
-
-        private synchronized static Map<String, FileSystemProvider> buildProvidersMap() {
-            final Map<String, FileSystemProvider> result = new HashMap<String, FileSystemProvider>(installedProviders.size() + 1);
-            for (int i = 0; i < installedProviders.size(); i++) {
-                final FileSystemProvider provider = installedProviders.get(i);
-                if (i == 0) {
-                    provider.forceAsDefault();
-                    result.put("default", provider);
-                }
-                result.put(provider.getScheme(), provider);
-            }
-            return unmodifiableMap(result);
+    static {
+        try {
+            installedProviders = buildProviders();
+            mapOfinstalledProviders = buildProvidersMap();
+        } catch ( final Throwable ex ) {
+            LOGGER.error( "Can't initialize FileSystemProviders", ex );
         }
     }
 
-    private FileSystemProviders() {
+    private static synchronized List<FileSystemProvider> buildProviders() {
+        final ServiceLoader<FileSystemProvider> providers = ServiceLoader.load( FileSystemProvider.class );
+        if ( providers == null ) {
+            return emptyList();
+        }
+        final List<FileSystemProvider> result = new ArrayList<FileSystemProvider>();
+
+        for ( final FileSystemProvider provider : providers ) {
+            result.add( provider );
+        }
+        return unmodifiableList( result );
+    }
+
+    private static synchronized Map<String, FileSystemProvider> buildProvidersMap() {
+        final Map<String, FileSystemProvider> result = new HashMap<String, FileSystemProvider>( installedProviders.size() + 1 );
+        for ( int i = 0; i < installedProviders.size(); i++ ) {
+            final FileSystemProvider provider = installedProviders.get( i );
+            if ( i == 0 ) {
+                provider.forceAsDefault();
+                result.put( "default", provider );
+            }
+            result.put( provider.getScheme(), provider );
+        }
+        return unmodifiableMap( result );
     }
 
     /**
@@ -78,7 +84,7 @@ public final class FileSystemProviders {
      * @throws ServiceConfigurationError
      */
     public static FileSystemProvider getDefaultProvider() throws ServiceConfigurationError {
-        return FileSystemProvidersHolder.installedProviders.get(0);
+        return installedProviders.get( 0 );
     }
 
     /**
@@ -86,20 +92,20 @@ public final class FileSystemProviders {
      * @param uri the uri
      * @return the file system provider
      */
-    public static FileSystemProvider resolveProvider(final URI uri) {
-        checkNotNull("uri", uri);
+    public static FileSystemProvider resolveProvider( final URI uri ) {
+        checkNotNull( "uri", uri );
 
-        return getProvider(uri.getScheme());
+        return getProvider( uri.getScheme() );
     }
 
-    private static FileSystemProvider getProvider(final String scheme)
+    private static FileSystemProvider getProvider( final String scheme )
             throws FileSystemNotFoundException, ServiceConfigurationError {
-        checkNotEmpty("scheme", scheme);
+        checkNotEmpty( "scheme", scheme );
 
-        final FileSystemProvider fileSystemProvider = FileSystemProvidersHolder.mapOfinstalledProviders.get(scheme);
+        final FileSystemProvider fileSystemProvider = mapOfinstalledProviders.get( scheme );
 
-        if (fileSystemProvider == null) {
-            throw new FileSystemNotFoundException("Provider '" + scheme + "' not found");
+        if ( fileSystemProvider == null ) {
+            throw new FileSystemNotFoundException( "Provider '" + scheme + "' not found" );
         }
 
         return fileSystemProvider;
@@ -110,7 +116,7 @@ public final class FileSystemProviders {
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/spi/FileSystemProvider.html#installedProviders()">Original JavaDoc</a>
      */
     public static List<FileSystemProvider> installedProviders() throws ServiceConfigurationError {
-        return FileSystemProvidersHolder.installedProviders;
+        return installedProviders;
     }
 
 }

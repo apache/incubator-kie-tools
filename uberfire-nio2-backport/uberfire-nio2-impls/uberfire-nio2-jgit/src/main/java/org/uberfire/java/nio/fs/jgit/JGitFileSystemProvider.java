@@ -160,14 +160,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     private boolean isDefault;
 
-    static {
-        loadConfig();
-        CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
-    }
-
     private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
 
-    public static void loadConfig() {
+    private void loadConfig() {
         final String bareReposDir = System.getProperty( "org.uberfire.nio.git.dir" );
         final String enabled = System.getProperty( "org.uberfire.nio.git.daemon.enabled" );
         final String host = System.getProperty( "org.uberfire.nio.git.daemon.host" );
@@ -219,18 +214,13 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         }
     }
 
-    // for lazy init - basically for tests
-    private static class DefaultProviderHolder {
-
-        static final JGitFileSystemProvider provider = new JGitFileSystemProvider();
-
-        private static JGitFileSystemProvider getDefaultProvider() {
-            return provider;
-        }
-    }
+    private static JGitFileSystemProvider provider = null;
 
     public static JGitFileSystemProvider getInstance() {
-        return DefaultProviderHolder.getDefaultProvider();
+        if ( provider == null ) {
+            provider = new JGitFileSystemProvider();
+        }
+        return provider;
     }
 
     private final class RepositoryResolverImpl
@@ -251,6 +241,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     }
 
     public JGitFileSystemProvider() {
+        loadConfig();
+        CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
+
         fullHostName = DAEMON_ENABLED ? DAEMON_HOST + ":" + DAEMON_PORT : null;
 
         final String[] repos = FILE_REPOSITORIES_ROOT.list( new FilenameFilter() {

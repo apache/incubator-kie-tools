@@ -72,7 +72,6 @@ public class NewProviderDefineDirTest {
 
         final File dir = createTempDirectory();
         System.setProperty("org.uberfire.nio.git.dir", dir.toString());
-        JGitFileSystemProvider.loadConfig();
 
         final JGitFileSystemProvider provider = new JGitFileSystemProvider();
 
