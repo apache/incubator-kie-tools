@@ -9,11 +9,11 @@ import javax.inject.Named;
 import javax.servlet.ServletContext;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.plugin.RuntimePluginsService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
-import org.uberfire.backend.plugin.RuntimePluginsService;
 
 @Service
 @ApplicationScoped
@@ -66,7 +66,7 @@ public class RuntimePluginsServiceServerImpl implements RuntimePluginsService {
     }
 
     private String getRealPath( final String path ) {
-        return servletContext.getRealPath( path ).replaceAll( "\\\\", "/" );
+        return servletContext.getRealPath( path ).replaceAll( "\\\\", "/" ).replaceAll( " ", "%20" );
     }
 
 }
