@@ -222,7 +222,7 @@ public interface Constants
 
     String ChangeFieldValuesOf0( String varName );
 
-    String Retract0( String varName );
+    String Delete0( String varName );
 
     String Modify0( String varName );
 

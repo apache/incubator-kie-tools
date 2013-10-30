@@ -672,7 +672,7 @@ public class GuidedDecisionTableWidget extends Composite
                                 NewColumnTypes.ACTION_UPDATE_FACT_FIELD.name() );
                 choice.addItem( GuidedDecisionTableConstants.INSTANCE.SetTheValueOfAFieldOnANewFact(),
                                 NewColumnTypes.ACTION_INSERT_FACT_FIELD.name() );
-                choice.addItem( GuidedDecisionTableConstants.INSTANCE.RetractAnExistingFact(),
+                choice.addItem( GuidedDecisionTableConstants.INSTANCE.DeleteAnExistingFact(),
                                 NewColumnTypes.ACTION_RETRACT_FACT.name() );
 
                 //Checkbox to include Advanced Action types

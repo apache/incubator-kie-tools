@@ -257,7 +257,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
-            choices.addItem( Constants.INSTANCE.Retract0( v ),
+            choices.addItem( Constants.INSTANCE.Delete0( v ),
                              "RET" + v );
             cmds.put( "RET" + v,
                       new Command() {

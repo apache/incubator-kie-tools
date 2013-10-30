@@ -43,7 +43,7 @@ public interface GuidedDecisionTableConstants
 
     String negatedPattern();
 
-    String Retract();
+    String Delete();
 
     String WorkItemAction();
 
@@ -111,15 +111,15 @@ public interface GuidedDecisionTableConstants
 
     String LogicallyInsertANewFact();
 
-    String LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved();
+    String LogicallyAssertAFactTheFactWillBeDeletedWhenTheSupportingEvidenceIsRemoved();
 
     String Edit();
 
     String EditDisabled();
 
-    String ColumnConfigurationRetractAFact();
+    String ColumnConfigurationDeleteAFact();
 
-    String FactToRetractColon();
+    String FactToDeleteColon();
 
     String ColumnConfigurationSetAFieldOnAFact();
 
@@ -233,7 +233,7 @@ public interface GuidedDecisionTableConstants
 
     String SetTheValueOfAFieldOnANewFact();
 
-    String RetractAnExistingFact();
+    String DeleteAnExistingFact();
 
     String IncludeAdvancedOptions();
 

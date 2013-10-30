@@ -152,7 +152,7 @@ public interface TestScenarioConstants
 
     String ModifyAnExistingFactScenario();
 
-    String RetractAnExistingFactScenario();
+    String DeleteAnExistingFactScenario();
 
     String FactName();
 
@@ -160,9 +160,9 @@ public interface TestScenarioConstants
 
     String TheFactName0IsAlreadyInUsePleaseChooseAnotherName(String factName);
 
-    String RetractFacts();
+    String DeleteFacts();
 
-    String RemoveThisRetractStatement();
+    String RemoveThisDeleteStatement();
 
     String ExpectRules();
 

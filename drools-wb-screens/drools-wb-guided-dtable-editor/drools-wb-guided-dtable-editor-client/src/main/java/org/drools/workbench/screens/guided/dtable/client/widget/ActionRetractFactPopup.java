@@ -54,7 +54,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
         this.editingCol = cloneActionRetractColumn( col );
         this.model = model;
 
-        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationRetractAFact() );
+        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationDeleteAFact() );
         setModal( false );
 
         //Show available pattern bindings, if Limited Entry
@@ -74,7 +74,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
 
                 } );
             }
-            addAttribute( GuidedDecisionTableConstants.INSTANCE.FactToRetractColon(),
+            addAttribute( GuidedDecisionTableConstants.INSTANCE.FactToDeleteColon(),
                           patterns );
         }
 

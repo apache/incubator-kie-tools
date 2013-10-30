@@ -618,7 +618,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         }
         hp.add( cb );
         hp.add( new InfoPopup( GuidedDecisionTableConstants.INSTANCE.LogicallyInsertANewFact(),
-                               GuidedDecisionTableConstants.INSTANCE.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved() ) );
+                               GuidedDecisionTableConstants.INSTANCE.LogicallyAssertAFactTheFactWillBeDeletedWhenTheSupportingEvidenceIsRemoved() ) );
         return hp;
     }
 

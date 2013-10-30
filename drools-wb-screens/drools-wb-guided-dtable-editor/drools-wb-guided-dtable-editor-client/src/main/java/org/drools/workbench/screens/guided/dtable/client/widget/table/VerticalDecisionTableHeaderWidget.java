@@ -664,7 +664,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                                 label.append( "]" );
                             }
                         } else if ( ac instanceof ActionRetractFactCol52 ) {
-                            label.append( "[" + GuidedDecisionTableConstants.INSTANCE.Retract() + "]" );
+                            label.append( "[" + GuidedDecisionTableConstants.INSTANCE.Delete() + "]" );
                         } else if ( ac instanceof ActionWorkItemCol52 ) {
                             label.append( "[" + GuidedDecisionTableConstants.INSTANCE.WorkItemAction() + "]" );
                         } else if ( ac instanceof BRLActionVariableColumn ) {

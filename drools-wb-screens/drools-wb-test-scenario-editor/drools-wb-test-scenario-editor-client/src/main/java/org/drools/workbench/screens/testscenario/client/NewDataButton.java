@@ -80,7 +80,7 @@ public class NewDataButton extends TestScenarioButton {
                 addAttribute( TestScenarioConstants.INSTANCE.ModifyAnExistingFactScenario(),
                               new ModifyFactPanel( varsInScope ) );
 
-                addAttribute( TestScenarioConstants.INSTANCE.RetractAnExistingFactScenario(),
+                addAttribute( TestScenarioConstants.INSTANCE.DeleteAnExistingFactScenario(),
                               new ExtractFactPanel( varsInScope ) );
 
             }

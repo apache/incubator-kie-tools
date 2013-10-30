@@ -61,7 +61,7 @@ public class RetractWidget extends FlexTable {
         setStyleName( "modeller-fact-pattern-Widget" );
         setWidget( 0,
                    0,
-                   new SmallLabel( TestScenarioConstants.INSTANCE.RetractFacts() ) );
+                   new SmallLabel( TestScenarioConstants.INSTANCE.DeleteFacts() ) );
         getFlexCellFormatter().setColSpan( 0,
                                            0,
                                            2 );
@@ -87,7 +87,7 @@ public class RetractWidget extends FlexTable {
 
         public DeleteButton( final RetractFact retractFact ) {
             super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
-                   TestScenarioConstants.INSTANCE.RemoveThisRetractStatement() );
+                   TestScenarioConstants.INSTANCE.RemoveThisDeleteStatement() );
 
             addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {

@@ -82,7 +82,7 @@
           <c:InfoPopup styleName="{res.css.wizardDTableFields}" title="{i18n.BindingFact}" message="{i18n.BindingDescription}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-          <b:CheckBox ui:field="chkLogicalInsert" styleName="{res.css.wizardDTableFields}" text="{i18n.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved}"/>
+          <b:CheckBox ui:field="chkLogicalInsert" styleName="{res.css.wizardDTableFields}" text="{i18n.LogicallyAssertAFactTheFactWillBeDeletedWhenTheSupportingEvidenceIsRemoved}"/>
           <c:InfoPopup styleName="{res.css.wizardDTableFields}" title="{i18n.UpdateFact}" message="{i18n.UpdateDescription}"/>
         </gwt:HorizontalPanel>
       </gwt:VerticalPanel>
