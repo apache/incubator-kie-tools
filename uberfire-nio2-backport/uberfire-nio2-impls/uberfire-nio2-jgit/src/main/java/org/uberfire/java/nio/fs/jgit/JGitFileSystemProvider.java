@@ -403,7 +403,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
         final File repoDest;
         if ( outPath != null ) {
-            repoDest = new File( outPath );
+            repoDest = new File( outPath, name + DOT_GIT_EXT );
         } else {
             repoDest = new File( FILE_REPOSITORIES_ROOT, name + DOT_GIT_EXT );
         }
@@ -486,7 +486,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 throw new IOException( ex );
             }
         }
-        if (hasPushFlag( uri )) {
+        if ( hasPushFlag( uri ) ) {
             try {
                 final Map<String, String> params = getQueryParams( uri );
                 pushRepository( fileSystem.gitRepo(), fileSystem.getCredential(), params.get( "push" ), hasForceFlag( uri ) );
