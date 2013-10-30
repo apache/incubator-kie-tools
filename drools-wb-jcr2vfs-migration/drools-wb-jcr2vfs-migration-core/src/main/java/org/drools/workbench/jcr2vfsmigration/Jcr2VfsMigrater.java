@@ -29,6 +29,7 @@ import org.drools.workbench.jcr2vfsmigration.config.MigrationConfig;
 import org.drools.workbench.jcr2vfsmigration.migrater.AssetMigrater;
 import org.drools.workbench.jcr2vfsmigration.migrater.CategoryMigrater;
 import org.drools.workbench.jcr2vfsmigration.migrater.ModuleMigrater;
+import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class Jcr2VfsMigrater {
 
-    protected static final Logger logger = LoggerFactory.getLogger(Jcr2VfsMigrater.class);
+    protected static final Logger logger = LoggerFactory.getLogger( Jcr2VfsMigrater.class );
 
     @Inject
     protected MigrationConfig migrationConfig;
@@ -47,6 +48,10 @@ public class Jcr2VfsMigrater {
 
     @Inject
     protected ModuleMigrater moduleMigrater;
+
+    @Inject
+    protected MigrationPathManager migrationPathManager;
+
     @Inject
     protected AssetMigrater assetMigrater;
     @Inject
@@ -60,18 +65,19 @@ public class Jcr2VfsMigrater {
     protected BoundRequestContext requestContext;
     protected Map<String, Object> requestDataStore;
 
-    public boolean parseArgs(String[] args) {
-        return migrationConfig.parseArgs(args);
+    public boolean parseArgs( String[] args ) {
+        return migrationConfig.parseArgs( args );
     }
 
     public void migrateAll() {
-    	System.out.format("Migration started. Reading from inputJcrRepository ({%s}).\n",
-                migrationConfig.getInputJcrRepository().getAbsolutePath());
-    	
+        System.out.format( "Migration started. Reading from inputJcrRepository ({%s}).\n",
+                           migrationConfig.getInputJcrRepository().getAbsolutePath() );
+
         try {
+            migrationPathManager.setRepoName( migrationConfig.getOutputRepoName(), migrationConfig.getOutputVfsRepository().getCanonicalPath() );
             setupDirectories();
             startContexts();
-        
+
             //TO-DO-LIST:
             //1. Migrate globalArea: handle asset imported from globalArea. assetServiceJCR.findAssetPage will return assets imported from globalArea
             //(like a symbol link). Use Asset.getMetaData().getModuleName()=="globalArea" to determine if the asset is actually from globalArea.
@@ -86,27 +92,27 @@ public class Jcr2VfsMigrater {
 
             // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
             endContexts();
-        } catch (Throwable t) {
-        	//We print out whatever unexpected exceptions we got here 
-        	Jcr2VfsMigrationApp.hasErrors = true;
-        	t.printStackTrace();
+        } catch ( Throwable t ) {
+            //We print out whatever unexpected exceptions we got here
+            Jcr2VfsMigrationApp.hasErrors = true;
+            t.printStackTrace();
         }
-                
-        if (Jcr2VfsMigrationApp.hasWarnings) {
-            System.out.format("Migration ended with warnings. Written into outputVfsRepository ({%s}).\n",
-                    migrationConfig.getOutputVfsRepository().getAbsolutePath());  	
-        } else if (Jcr2VfsMigrationApp.hasErrors) {
-            System.out.format("Migration ended with errors. Written into outputVfsRepository ({%s}).\n",
-                    migrationConfig.getOutputVfsRepository().getAbsolutePath());  	       	
+
+        if ( Jcr2VfsMigrationApp.hasWarnings ) {
+            System.out.format( "Migration ended with warnings. Written into outputVfsRepository ({%s}).\n",
+                               migrationConfig.getOutputVfsRepository().getAbsolutePath() );
+        } else if ( Jcr2VfsMigrationApp.hasErrors ) {
+            System.out.format( "Migration ended with errors. Written into outputVfsRepository ({%s}).\n",
+                               migrationConfig.getOutputVfsRepository().getAbsolutePath() );
         } else {
-            System.out.format("Migration ended. Written into outputVfsRepository ({%s}).\n",
-                    migrationConfig.getOutputVfsRepository().getAbsolutePath());  	
+            System.out.format( "Migration ended. Written into outputVfsRepository ({%s}).\n",
+                               migrationConfig.getOutputVfsRepository().getAbsolutePath() );
         }
     }
 
     protected void setupDirectories() {
-        guvnorBootstrapConfiguration.getProperties().put("repository.root.directory",  determineJcrRepositoryRootDirectory());
-        System.setProperty("org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath());
+        guvnorBootstrapConfiguration.getProperties().put( "repository.root.directory", determineJcrRepositoryRootDirectory() );
+//        System.setProperty( "org.kie.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath() );
     }
 
     /**
@@ -141,46 +147,46 @@ public class Jcr2VfsMigrater {
      */
     protected String determineJcrRepositoryRootDirectory() {
         File inputJcrRepository = migrationConfig.getInputJcrRepository();
-        File repositoryXmlFile = new File(inputJcrRepository, "repository.xml");
-        if (!repositoryXmlFile.exists()) {
+        File repositoryXmlFile = new File( inputJcrRepository, "repository.xml" );
+        if ( !repositoryXmlFile.exists() ) {
             throw new IllegalStateException(
                     "The repositoryXmlFile (" + repositoryXmlFile.getAbsolutePath() + ") does not exist.\n"
-                    + "Check your inputJcrRepository (" + inputJcrRepository + ").");
+                            + "Check your inputJcrRepository (" + inputJcrRepository + ")." );
         }
-        File repositoryDir = new File(inputJcrRepository, "repository");
-        if (!repositoryDir.exists()) {
+        File repositoryDir = new File( inputJcrRepository, "repository" );
+        if ( !repositoryDir.exists() ) {
             // They are using a non-default repository.xml (for example with storage in a database)
             return inputJcrRepository.getAbsolutePath();
         }
-        File unnestedVersionDir = new File(inputJcrRepository, "version");
-        File nestedVersionDir = new File(repositoryDir, "version");
-        if (unnestedVersionDir.exists()) {
+        File unnestedVersionDir = new File( inputJcrRepository, "version" );
+        File nestedVersionDir = new File( repositoryDir, "version" );
+        if ( unnestedVersionDir.exists() ) {
             // repository.root.directory was specified
             return inputJcrRepository.getAbsolutePath();
-        } else if (nestedVersionDir.exists()) {
+        } else if ( nestedVersionDir.exists() ) {
             // repository.root.directory was not specified => HACK
             try {
-                FileUtils.copyFile(repositoryXmlFile, new File(repositoryDir, "repository.xml"));
-            } catch (IOException e) {
-                throw new IllegalStateException("Cannot copy repositoryXmlFile (" + repositoryXmlFile + ").", e);
+                FileUtils.copyFile( repositoryXmlFile, new File( repositoryDir, "repository.xml" ) );
+            } catch ( IOException e ) {
+                throw new IllegalStateException( "Cannot copy repositoryXmlFile (" + repositoryXmlFile + ").", e );
             }
             return inputJcrRepository.getAbsolutePath() + "/repository";
         } else {
-        	//the "version" dir does not exist if JCR is not using embedded db.  
+            //the "version" dir does not exist if JCR is not using embedded db.
 /*            throw new IllegalStateException(
                     "The unnestedVersionDir (" + unnestedVersionDir.getAbsolutePath()
                     + ") and the nestedVersionDir (" + nestedVersionDir.getAbsolutePath() + ") does not exist.");*/
         }
         return inputJcrRepository.getAbsolutePath();
-        
+
     }
 
     protected void startContexts() {
         sessionDataStore = new HashMap<String, Object>();
-        sessionContext.associate(sessionDataStore);
+        sessionContext.associate( sessionDataStore );
         sessionContext.activate();
         requestDataStore = new HashMap<String, Object>();
-        requestContext.associate(requestDataStore);
+        requestContext.associate( requestDataStore );
         requestContext.activate();
     }
 
@@ -189,13 +195,13 @@ public class Jcr2VfsMigrater {
             requestContext.invalidate();
             requestContext.deactivate();
         } finally {
-            requestContext.dissociate(requestDataStore);
+            requestContext.dissociate( requestDataStore );
         }
         try {
             sessionContext.invalidate();
             sessionContext.deactivate();
         } finally {
-            sessionContext.dissociate(sessionDataStore);
+            sessionContext.dissociate( sessionDataStore );
         }
     }
 

@@ -20,48 +20,59 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 
 public class Jcr2VfsMigrationApp {
+
     public static boolean hasErrors = false;
     public static boolean hasWarnings = false;
+    private Weld weld;
+    private WeldContainer weldContainer;
+    private Jcr2VfsMigrater migrater;
 
     /**
      * This method should not be called directly from Java code as it uses System.exit() which may cause problems
      * (e.g for surefire). Use 'new Jcr2VfsMigrationApp().run(String... args)' when using this class directly.
-     *
      * @param args application arguments, never null
      */
-    public static void main(String... args) {
-        // git daemon thread is not needed for migration tool, so disable it
-        System.setProperty("org.kie.nio.git.daemon.enabled", "false");
+    public static void main( String... args ) {
         try {
-            new Jcr2VfsMigrationApp().run(args);
-        } catch (Exception e) {
+            new Jcr2VfsMigrationApp().run( args );
+        } catch ( Exception e ) {
             // stacktrace should not be printed to stdout (the exception should be already logged)
-            System.exit(-1);
+            System.exit( -1 );
         }
     }
 
     /**
      * Use this method instead of #main() when you want to use the app directly from code. Method does not use System.exit()
      * and instead throws {@link RuntimeException} when an error occurs.
-     *
      * @param args application arguments - same as for #main() method
      */
-    public void run(String... args) {
-        Weld weld = new Weld();
+    public void run( String... args ) {
+        startUp();
         try {
-            WeldContainer weldContainer = weld.initialize();
-
-            Jcr2VfsMigrater migrater = weldContainer.instance().select(Jcr2VfsMigrater.class).get();
-            if (migrater.parseArgs(args)) {
-                migrater.migrateAll();
-            }
+            migrate( args );
         } finally {
-            weld.shutdown();
+            shutdown();
         }
 
-        if (hasErrors) {
-            throw new RuntimeException("Migration ended with errors - see log for more details.");
+        if ( hasErrors ) {
+            throw new RuntimeException( "Migration ended with errors - see log for more details." );
         }
     }
 
+    public void migrate( String... args ) {
+        if ( migrater.parseArgs( args ) ) {
+            migrater.migrateAll();
+        }
+    }
+
+    public void shutdown() {
+        weld.shutdown();
+    }
+
+    public void startUp() {
+        System.setProperty( "org.kie.nio.git.daemon.enabled", "false" );
+        weld = new Weld();
+        weldContainer = weld.initialize();
+        migrater = weldContainer.instance().select( Jcr2VfsMigrater.class ).get();
+    }
 }
