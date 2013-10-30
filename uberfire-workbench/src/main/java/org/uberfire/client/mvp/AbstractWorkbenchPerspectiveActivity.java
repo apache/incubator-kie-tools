@@ -154,7 +154,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
                         initialisePerspective( response );
                     }
                 }
-            } ).load( perspective.getName() );
+            } ).loadPerspective( perspective.getName() );
         }
     }
 

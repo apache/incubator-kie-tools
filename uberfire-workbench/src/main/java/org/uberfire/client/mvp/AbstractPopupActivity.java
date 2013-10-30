@@ -40,8 +40,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
-    @Inject
-    private PopupView popup;
+    private PopupView popup = new PopupView();
 
     public AbstractPopupActivity( final PlaceManager placeManager ) {
         super( placeManager );

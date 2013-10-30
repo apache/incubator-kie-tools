@@ -15,11 +15,11 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.events.NewPerspectiveEvent;
 import org.uberfire.workbench.events.NewWorkbenchScreenEvent;
 
@@ -42,6 +42,7 @@ public class ActivityBeansCache {
 
     private final Map<String, IOCBeanDef<Activity>> activitiesById = new HashMap<String, IOCBeanDef<Activity>>();
     private final List<ActivityAndMetaInfo> activities = new ArrayList<ActivityAndMetaInfo>();
+    private final List<SplashScreenActivity> splashScreens = new ArrayList<SplashScreenActivity>();
 
     @PostConstruct
     public void init() {
@@ -59,9 +60,13 @@ public class ActivityBeansCache {
 
             activitiesById.put( id, activityBean );
 
-            final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = getActivityMetaInfo( activityBean );
-            if ( metaInfo != null ) {
-                activities.add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
+            if ( isSplashScreen( activityBean.getQualifiers() ) ) {
+                splashScreens.add( (SplashScreenActivity) activityBean.getInstance() );
+            } else {
+                final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = getActivityMetaInfo( activityBean );
+                if ( metaInfo != null ) {
+                    activities.add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
+                }
             }
         }
 
@@ -79,6 +84,15 @@ public class ActivityBeansCache {
                 }
             }
         } );
+    }
+
+    private boolean isSplashScreen( final Set<Annotation> qualifiers ) {
+        for ( final Annotation qualifier : qualifiers ) {
+            if ( qualifier instanceof IsSplashScreen ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //Used for runtime plugins
@@ -103,6 +117,22 @@ public class ActivityBeansCache {
 
         activitiesById.put( id, activityBean );
         newPerspectiveEventEvent.fire( new NewPerspectiveEvent( id ) );
+    }
+
+    public void addNewSplashScreenActivity( final IOCBeanDef<Activity> activityBean ) {
+        final String id = activityBean.getName();
+
+        if ( activitiesById.keySet().contains( id ) ) {
+            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
+        }
+
+        activitiesById.put( id, activityBean );
+        splashScreens.add( (SplashScreenActivity) activityBean.getInstance() );
+//        newSplashScreenEvent.fire( new NewSplashScreenEvent( id ) );
+    }
+
+    public List<SplashScreenActivity> getSplashScreens() {
+        return splashScreens;
     }
 
     private Pair<Integer, List<Class<? extends ClientResourceType>>> getActivityMetaInfo( final IOCBeanDef<?> beanDefinition ) {

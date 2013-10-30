@@ -27,11 +27,10 @@ import org.uberfire.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
 import static org.mockito.Mockito.*;
-import static org.uberfire.workbench.model.PanelType.ROOT_SIMPLE;
+import static org.uberfire.workbench.model.PanelType.*;
 
 /**
  * Base class for tests requiring a dummy Workbench
@@ -79,10 +78,7 @@ public abstract class BaseWorkbenchTest {
         panelManager.setRoot( root );
 
         //Dummy Place Manager
-        placeManager = new PlaceManagerImpl( activityManager,
-                                             placeHistoryHandler,
-                                             selectWorkbenchPartEvent,
-                                             panelManager );
+        placeManager = new PlaceManagerImpl(  );
     }
 
 }

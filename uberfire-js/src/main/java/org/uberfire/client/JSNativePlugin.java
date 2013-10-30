@@ -9,19 +9,22 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.plugin.RuntimePluginsService;
+import org.uberfire.client.resources.CommonResources;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class JSNativePlugin {
 
     @Inject
-    private Caller<RuntimePluginsService> runtimePluginsService;
+    protected Caller<RuntimePluginsService> runtimePluginsService;
 
-    private JavaScriptObject obj;
-    private Element element = null;
+    protected JavaScriptObject obj;
+    protected Element element = null;
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
@@ -126,7 +129,7 @@ public class JSNativePlugin {
         return TRAITS;
     }
 
-    private void buildElement() {
+    protected void buildElement() {
         final String content;
         final String contentUrl;
         if ( hasMethod( obj, "templateUrl" ) ) {
@@ -146,6 +149,7 @@ public class JSNativePlugin {
             contentUrl = null;
         }
 
+        element = new SimplePanel( new Image( CommonResources.INSTANCE.images().spinner() ) ).getElement();
         if ( content != null ) {
             element = new HTML( new SafeHtmlBuilder().appendHtmlConstant( content ).toSafeHtml() ).getElement();
         } else if ( contentUrl != null ) {
@@ -176,6 +180,17 @@ public class JSNativePlugin {
     static native boolean hasStringProperty( final JavaScriptObject obj,
                                              final String propertyName )  /*-{
         return ((typeof obj[propertyName]) === "string");
+    }-*/;
+
+    static native boolean hasBooleanProperty( final JavaScriptObject obj,
+                                              final String propertyName )  /*-{
+        return ((typeof obj[propertyName]) === "boolean");
+    }-*/;
+
+    static native boolean hasArrayProperty( final JavaScriptObject obj,
+                                            final String propertyName )  /*-{
+        Window.show((obj[propertyName]) instanceof Array)
+        return ((obj[propertyName]) instanceof Array);
     }-*/;
 
     private static native String getTemplateUrlFunctionResult( final JavaScriptObject o ) /*-{

@@ -16,10 +16,12 @@
 package org.uberfire.client.mvp;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -29,9 +31,10 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -48,6 +51,7 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
+import static java.util.Collections.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @ApplicationScoped
@@ -58,11 +62,7 @@ public class PlaceManagerImpl
     private final Map<PlaceRequest, PartDefinition> existingWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
     private final Map<PlaceRequest, Command> onOpenCallbacks = new HashMap<PlaceRequest, Command>();
 
-    private final ActivityManager activityManager;
-
     private EventBus tempBus = null;
-
-    private final PanelManager panelManager;
 
     @Inject
     private Event<BeforeClosePlaceEvent> workbenchPartBeforeCloseEvent;
@@ -77,25 +77,26 @@ public class PlaceManagerImpl
     private Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
 
     @Inject
-    private DefaultPlaceResolver defaultPlaceResolver;
-
-    private final Event<SelectPlaceEvent> selectWorkbenchPartEvent;
-
-    private final PlaceHistoryHandler placeHistoryHandler;
+    private Event<NewSplashScreenActiveEvent> newSplashScreenActiveEvent;
 
     @Inject
-    public PlaceManagerImpl( final ActivityManager activityManager,
-                             final PlaceHistoryHandler placeHistoryHandler,
-                             final Event<SelectPlaceEvent> selectWorkbenchPartEvent,
-                             final PanelManager panelManager ) {
-        this.activityManager = activityManager;
-        this.placeHistoryHandler = placeHistoryHandler;
-        this.selectWorkbenchPartEvent = selectWorkbenchPartEvent;
-        this.panelManager = panelManager;
+    private DefaultPlaceResolver defaultPlaceResolver;
 
-        initPlaceHistoryHandler();
-    }
+    @Inject
+    private ActivityManager activityManager;
 
+    @Inject
+    private PlaceHistoryHandler placeHistoryHandler;
+
+    @Inject
+    private Event<SelectPlaceEvent> selectWorkbenchPartEvent;
+
+    @Inject
+    private PanelManager panelManager;
+
+    private Map<String, SplashScreenActivity> activeSplashScreens = new HashMap<String, SplashScreenActivity>();
+
+    @PostConstruct
     public void initPlaceHistoryHandler() {
         placeHistoryHandler.register( this,
                                       produceEventBus(),
@@ -370,6 +371,11 @@ public class PlaceManagerImpl
         }
     }
 
+    @Override
+    public Collection<SplashScreenActivity> getActiveSplashScreens() {
+        return unmodifiableCollection( activeSplashScreens.values() );
+    }
+
     private void launchActivity( final PlaceRequest place,
                                  final WorkbenchActivity activity,
                                  final Position position,
@@ -411,6 +417,8 @@ public class PlaceManagerImpl
                                     part );
         updateHistory( place );
 
+        final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
+
         //Reveal activity with call-back to attach to Workbench
         activity.launch( new AcceptItem() {
             public void add( final UIPart uiPart ) {
@@ -420,6 +428,11 @@ public class PlaceManagerImpl
                                                activity.getMenus(),
                                                uiPart,
                                                activity.contextId() );
+                if ( splashScreen != null ) {
+                    activeSplashScreens.put( place.getIdentifier(), splashScreen );
+                    newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
+                    splashScreen.launch( place, null );
+                }
             }
         }, place, callback );
     }
@@ -437,8 +450,15 @@ public class PlaceManagerImpl
     private void launchActivity( final PlaceRequest place,
                                  final PerspectiveActivity activity,
                                  final Command callback ) {
+        activeSplashScreens.clear();
         perspectiveChangeEvent.fire( new PerspectiveChange( activity.getPerspective(), activity.getMenus(), activity.getIdentifier() ) );
+        final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
         activity.launch( place, callback );
+        if ( splashScreen != null ) {
+            activeSplashScreens.put( place.getIdentifier(), splashScreen );
+            splashScreen.launch( place, null );
+        }
+        newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
     }
 
     public void updateHistory( PlaceRequest request ) {
@@ -455,6 +475,9 @@ public class PlaceManagerImpl
         if ( activity == null ) {
             return;
         }
+
+        activeSplashScreens.remove( place.getIdentifier() );
+
         if ( activity instanceof WorkbenchActivity ) {
             onWorkbenchPartBeforeClose( (WorkbenchActivity) activity, place );
         } else if ( activity instanceof PopupActivity ) {

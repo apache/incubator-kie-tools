@@ -27,6 +27,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.services.WorkbenchServices;
 
 /**
@@ -58,12 +59,34 @@ public class WorkbenchServicesImpl
     }
 
     @Override
-    public PerspectiveDefinition load( final String perspectiveName ) {
+    public void save( SplashScreenFilter splashFilter ) {
+        final String xml = xs.toXML( splashFilter );
+        final Path splashFilterPath = userServices.buildPath( "splash",
+                                                              splashFilter.getName() + ".filter" );
+        ioService.write( splashFilterPath, xml );
+
+    }
+
+    @Override
+    public PerspectiveDefinition loadPerspective( final String perspectiveName ) {
         final Path perspectivePath = userServices.buildPath( "perspectives",
                                                              perspectiveName + ".perspective" );
         if ( ioService.exists( perspectivePath ) ) {
             final String xml = ioService.readAllString( perspectivePath );
             return (PerspectiveDefinition) xs.fromXML( xml );
+        }
+
+        return null;
+    }
+
+    @Override
+    public SplashScreenFilter loadSplashScreenFilter( String filterName ) {
+        final Path splashFilterPath = userServices.buildPath( "splash",
+                                                              filterName + ".filter" );
+
+        if ( ioService.exists( splashFilterPath ) ) {
+            final String xml = ioService.readAllString( splashFilterPath );
+            return (SplashScreenFilter) xs.fromXML( xml );
         }
 
         return null;

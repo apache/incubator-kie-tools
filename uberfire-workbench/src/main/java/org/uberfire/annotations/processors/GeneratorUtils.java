@@ -38,6 +38,15 @@ import javax.lang.model.util.Types;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.DefaultPosition;
+import org.uberfire.client.annotations.Intercept;
+import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.SplashFilter;
+import org.uberfire.client.annotations.WorkbenchContextId;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnContextAttach;
@@ -48,13 +57,6 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.client.annotations.Perspective;
-import org.uberfire.client.annotations.WorkbenchContextId;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
@@ -437,9 +439,26 @@ public class GeneratorUtils {
      */
     public static String getPerspectiveMethodName( final TypeElement classElement,
                                                    final ProcessingEnvironment processingEnvironment ) throws GenerationException {
-        return getPerspectiveMethodName( classElement,
-                                         processingEnvironment,
-                                         Perspective.class );
+        return getMethodName( classElement,
+                              processingEnvironment,
+                              "org.uberfire.workbench.model.PerspectiveDefinition",
+                              Perspective.class );
+    }
+
+    public static String getSplashFilterMethodName( final TypeElement classElement,
+                                                    final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+        return getMethodName( classElement,
+                              processingEnvironment,
+                              "org.uberfire.workbench.model.SplashScreenFilter",
+                              SplashFilter.class );
+    }
+
+    public static String getInterceptMethodName( final TypeElement classElement,
+                                                 final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+        return getMethodName( classElement,
+                              processingEnvironment,
+                              "java.lang.Boolean",
+                              Intercept.class );
     }
 
     // Lookup a public method name with the given annotation. The method must be
@@ -880,12 +899,13 @@ public class GeneratorUtils {
     // public, non-static, have a return-type of PerspectiveDefinition and take zero
     // parameters.
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static String getPerspectiveMethodName( final TypeElement classElement,
-                                                    final ProcessingEnvironment processingEnvironment,
-                                                    final Class annotation ) throws GenerationException {
+    private static String getMethodName( final TypeElement classElement,
+                                         final ProcessingEnvironment processingEnvironment,
+                                         final String expectedReturnType,
+                                         final Class annotation ) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( "org.uberfire.workbench.model.PerspectiveDefinition" ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( expectedReturnType ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;

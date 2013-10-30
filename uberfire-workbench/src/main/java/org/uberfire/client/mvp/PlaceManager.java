@@ -16,6 +16,8 @@
 
 package org.uberfire.client.mvp;
 
+import java.util.Collection;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -70,23 +72,24 @@ public interface PlaceManager {
                final Command callback,
                final PanelDefinition panel );
 
-    public Activity getActivity( final PlaceRequest place );
+    Activity getActivity( final PlaceRequest place );
 
-    public PlaceStatus getStatus( final String id );
+    PlaceStatus getStatus( final String id );
 
-    public PlaceStatus getStatus( final PlaceRequest place );
+    PlaceStatus getStatus( final PlaceRequest place );
 
-    public void closePlace( final String id );
+    void closePlace( final String id );
 
-    public void closePlace( final PlaceRequest place );
+    void closePlace( final PlaceRequest place );
 
-    public void closeAllPlaces();
+    void closeAllPlaces();
 
-    public void registerOnOpenCallback( final PlaceRequest place,
-                                        final Command command );
+    void registerOnOpenCallback( final PlaceRequest place,
+                                 final Command command );
 
-    public void unregisterOnOpenCallback( final PlaceRequest place );
+    void unregisterOnOpenCallback( final PlaceRequest place );
 
-    public void executeOnOpenCallback( final PlaceRequest place );
+    void executeOnOpenCallback( final PlaceRequest place );
 
+    Collection<SplashScreenActivity> getActiveSplashScreens();
 }

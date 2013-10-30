@@ -55,6 +55,20 @@ public class ActivityManagerImpl implements ActivityManager {
     }
 
     @Override
+    public SplashScreenActivity getSplashScreenInterceptor( final PlaceRequest placeRequest ) {
+
+        SplashScreenActivity resultBean = null;
+        for ( SplashScreenActivity splashScreen : activityBeansCache.getSplashScreens() ) {
+            if ( splashScreen.intercept( placeRequest ) ) {
+                resultBean = splashScreen;
+                break;
+            }
+        }
+
+        return secure( resultBean );
+    }
+
+    @Override
     public Set<Activity> getActivities( final PlaceRequest placeRequest ) {
 
         final Collection<IOCBeanDef<Activity>> beans;
@@ -101,6 +115,18 @@ public class ActivityManagerImpl implements ActivityManager {
         }
 
         return activities;
+    }
+
+    public SplashScreenActivity secure( final SplashScreenActivity bean ) {
+        if ( bean == null ) {
+            return null;
+        }
+
+        if ( authzManager.authorize( bean, identity ) ) {
+            return bean;
+        }
+
+        return null;
     }
 
     /**

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.client.workbench.widgets.popup;
+package org.uberfire.client.workbench.widgets.splash;
 
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.github.gwtbootstrap.client.ui.event.HideEvent;
 import com.github.gwtbootstrap.client.ui.event.HideHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -25,28 +26,44 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.mvp.ParameterizedCommand;
 
 /**
- * Skeleton for popups
+ * Skeleton for splash screen
  */
-public class PopupView
+public class SplashView
         extends Composite
-        implements HasCloseHandlers<PopupView> {
+        implements HasCloseHandlers<SplashView> {
 
-    final Modal modal = new Modal( true, true );
+    private Boolean showAgain = null;
 
-    public PopupView() {
+    private final Modal modal = new Modal( true, true );
+    private final SplashModalFooter footer = new SplashModalFooter( new ParameterizedCommand<Boolean>() {
+        @Override
+        public void execute( final Boolean parameter ) {
+            showAgain = parameter;
+            hide();
+        }
+    } );
+
+    public SplashView() {
         final SimplePanel panel = new SimplePanel( modal );
 
         initWidget( panel );
     }
 
     public void setContent( final IsWidget widget ) {
+        showAgain = null;
         modal.add( widget );
+        modal.add( footer );
     }
 
     public void setTitle( final String title ) {
         modal.setTitle( title );
+    }
+
+    public Boolean showAgain() {
+        return showAgain;
     }
 
     public void show() {
@@ -61,14 +78,16 @@ public class PopupView
 
     public void hide() {
         modal.hide();
+        cleanup();
     }
 
     private void cleanup() {
         CloseEvent.fire( this, this, false );
+        ( (DivWidget) modal.getWidget( 1 ) ).clear();
     }
 
     @Override
-    public HandlerRegistration addCloseHandler( final CloseHandler<PopupView> handler ) {
+    public HandlerRegistration addCloseHandler( final CloseHandler<SplashView> handler ) {
         return addHandler( handler, CloseEvent.getType() );
     }
 

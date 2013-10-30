@@ -145,7 +145,7 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
                         initialisePerspective( response );
                     }
                 }
-            } ).load( perspective.getName() );
+            } ).loadPerspective( perspective.getName() );
         }
     }
 

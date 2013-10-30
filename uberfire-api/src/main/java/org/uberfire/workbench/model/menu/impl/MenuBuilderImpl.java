@@ -23,7 +23,8 @@ public final class MenuBuilderImpl
                    MenuFactory.TopLevelMenusBuilder,
                    MenuFactory.SubMenuBuilder,
                    MenuFactory.SubMenusBuilder,
-                   MenuFactory.TerminalMenu {
+                   MenuFactory.TerminalMenu,
+                   MenuFactory.TerminalCustomMenu {
 
     public enum MenuType {
         TOP_LEVEL, CONTRIBUTED, REGULAR, GROUP, CUSTOM
@@ -316,7 +317,7 @@ public final class MenuBuilderImpl
     }
 
     @Override
-    public MenuFactory.TerminalMenu newTopLevelCustomMenu( final MenuFactory.CustomMenuBuilder builder ) {
+    public MenuFactory.TerminalCustomMenu newTopLevelCustomMenu( final MenuFactory.CustomMenuBuilder builder ) {
         context.push( builder );
 
         return this;

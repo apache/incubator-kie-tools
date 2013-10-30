@@ -37,7 +37,7 @@ public final class MenuFactory {
 
         MenuBuilder<TopLevelMenusBuilder<T>> newTopLevelMenu( final String caption );
 
-        TerminalMenu<T> newTopLevelCustomMenu( final CustomMenuBuilder builder );
+        TerminalCustomMenu<TopLevelMenusBuilder<T>> newTopLevelCustomMenu( final CustomMenuBuilder builder );
     }
 
     public interface Builder {
@@ -96,10 +96,17 @@ public final class MenuFactory {
         T endMenu();
     }
 
+    public interface TerminalCustomMenu<T> {
+
+        T endMenu();
+    }
+
     public interface SecurityInfos<T> {
 
         T withRole( final String role );
+
         T withRoles( final String... roles );
+
         T withRoles( final Collection<String> roles );
     }
 

@@ -15,21 +15,35 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Set;
-
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.SplashScreenFilter;
 
-public interface ActivityManager {
+/**
+ * Splash Screen Activity life-cycles
+ */
+public interface SplashScreenActivity
+        extends
+        Activity {
 
-    <T extends Activity> Set<T> getActivities( final Class<T> abstractScreenActivityClass );
+    void forceShow();
 
-    SplashScreenActivity getSplashScreenInterceptor( PlaceRequest placeRequest );
+    void onStartup();
 
-    Set<Activity> getActivities( final PlaceRequest placeRequest );
+    void onStartup( final PlaceRequest place );
 
-    <T extends Activity> T getActivity( final Class<T> clazz,
-                                        final PlaceRequest placeRequest );
+    String getTitle();
 
-    void destroyActivity( final Activity activity );
+    IsWidget getTitleDecoration();
+
+    IsWidget getWidget();
+
+    void onClose();
+
+    void onShutdown();
+
+    SplashScreenFilter getFilter();
+
+    Boolean intercept( final PlaceRequest intercepted );
 
 }

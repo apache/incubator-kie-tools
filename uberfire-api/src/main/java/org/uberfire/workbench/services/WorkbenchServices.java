@@ -15,10 +15,11 @@
  */
 package org.uberfire.workbench.services;
 
+import java.util.Map;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-
-import java.util.Map;
+import org.uberfire.workbench.model.SplashScreenFilter;
 
 /**
  * Workbench services
@@ -26,11 +27,15 @@ import java.util.Map;
 @Remote
 public interface WorkbenchServices {
 
-    public void save(final PerspectiveDefinition perspective);
+    public void save( final PerspectiveDefinition perspective );
 
-    public PerspectiveDefinition load(final String perspectiveName);
+    public void save( final SplashScreenFilter splashFilter );
+
+    public PerspectiveDefinition loadPerspective( final String perspectiveName );
+
+    public SplashScreenFilter loadSplashScreenFilter( final String filterName );
 
     public Map<String, String> loadDefaultEditorsMap();
 
-    void saveDefaultEditors(Map<String, String> properties);
+    void saveDefaultEditors( Map<String, String> properties );
 }

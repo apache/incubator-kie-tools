@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
+import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
@@ -141,6 +142,10 @@ public class WorkbenchMenuBarView extends Composite
                     add( widget );
                 }
             }};
+        } else if ( item instanceof MenuCustom ) {
+            final MenuCustom custom = (MenuCustom) item;
+
+            return (Widget) custom.build();
         }
 
         final NavLink gwtItem = new NavLink( item.getCaption() ) {{

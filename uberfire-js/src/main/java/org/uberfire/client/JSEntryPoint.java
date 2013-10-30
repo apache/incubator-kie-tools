@@ -19,6 +19,7 @@ import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.ApplicationReadyEvent;
@@ -103,6 +104,26 @@ public class JSEntryPoint {
         }
     }
 
+    public static void registerSplashScreen( final Object _obj ) {
+        final JavaScriptObject obj = (JavaScriptObject) _obj;
+
+        if ( JSNativeSplashScreen.hasStringProperty( obj, "id" ) && JSNativeSplashScreen.hasTemplate( obj ) ) {
+            final SyncBeanManager beanManager = IOC.getBeanManager();
+            final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
+
+            final JSNativeSplashScreen newNativePlugin = beanManager.lookupBean( JSNativeSplashScreen.class ).getInstance();
+            newNativePlugin.build( obj );
+
+            final JSSplashScreenActivity activity = new JSSplashScreenActivity( newNativePlugin );
+
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) SplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSSplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+
+            activityBeansCache.addNewSplashScreenActivity( beanManager.lookupBeans( newNativePlugin.getId() ).iterator().next() );
+        }
+    }
+
     public static void goTo( final String place ) {
         final SyncBeanManager beanManager = IOC.getBeanManager();
         final PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
@@ -112,6 +133,7 @@ public class JSEntryPoint {
     // Alias registerPlugin with a global JS function.
     private native void publish() /*-{
         $wnd.$registerPlugin = @org.uberfire.client.JSEntryPoint::registerPlugin(Ljava/lang/Object;);
+        $wnd.$registerSplashScreen = @org.uberfire.client.JSEntryPoint::registerSplashScreen(Ljava/lang/Object;);
         $wnd.$registerPerspective = @org.uberfire.client.JSEntryPoint::registerPerspective(Ljava/lang/Object;);
         $wnd.$goToPlace = @org.uberfire.client.JSEntryPoint::goTo(Ljava/lang/String;);
     }-*/;
