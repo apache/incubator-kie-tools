@@ -210,9 +210,6 @@ public class BatchIndexTest {
 
             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-//            for ( ScoreDoc hit : hits ) {
-//                System.out.println( "doc:" + org.uberfire.metadata.backend.lucene.util.KObjectUtil.toKObject( searcher.doc( hit.doc ) ).getKey() );
-//            }
             assertEquals( 4, hits.length );
         }
 

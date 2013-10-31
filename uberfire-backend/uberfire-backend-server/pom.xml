@@ -116,6 +116,12 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-fs</artifactId>
       <scope>test</scope>
     </dependency>

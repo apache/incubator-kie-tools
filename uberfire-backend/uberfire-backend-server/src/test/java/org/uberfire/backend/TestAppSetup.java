@@ -16,13 +16,25 @@
 
 package org.uberfire.backend;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.io.attribute.DublinCoreView;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.metadata.backend.lucene.LuceneIndexEngine;
+import org.uberfire.metadata.backend.lucene.LuceneSetup;
+import org.uberfire.metadata.backend.lucene.fields.SimpleFieldFactory;
+import org.uberfire.metadata.backend.lucene.metamodels.InMemoryMetaModelStore;
+import org.uberfire.metadata.backend.lucene.setups.RAMLuceneSetup;
+import org.uberfire.metadata.engine.MetaIndexEngine;
+import org.uberfire.metadata.engine.MetaModelStore;
+import org.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 
@@ -30,8 +42,28 @@ import org.uberfire.rpc.impl.SessionInfoImpl;
 @Alternative
 public class TestAppSetup {
 
-    private final IOService ioService = new IOServiceDotFileImpl();
+    @Inject
+    private IOWatchServiceNonDotImpl watchService;
+
+    private final LuceneSetup luceneSetup = new RAMLuceneSetup();
+
     private SessionInfo sessionInfo = new SessionInfoImpl();
+
+    private IOService ioService;
+
+    @PostConstruct
+    public void init() {
+        final MetaModelStore metaModelStore = new InMemoryMetaModelStore();
+        final MetaIndexEngine indexEngine = new LuceneIndexEngine( metaModelStore,
+                                                                   luceneSetup,
+                                                                   new SimpleFieldFactory() );
+
+        ioService = new IOServiceIndexedImpl( watchService,
+                                              indexEngine,
+                                              DublinCoreView.class,
+                                              VersionAttributeView.class );
+
+    }
 
     @Produces
     @Named("ioStrategy")
