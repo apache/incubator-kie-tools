@@ -17,6 +17,7 @@
 package org.kie.workbench.common.services.datamodeller.codegen;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
@@ -173,7 +174,7 @@ public class GenerationTools {
             type.append(value);
         } else if (memberDefinition.isString()) {
             type.append("\"");
-            type.append(value);
+            type.append(escapeStringForJavaCode(value != null ? value.toString() : null));
             type.append("\"");
         } else if (memberDefinition.isPrimitiveType()) {
             //primitive types are wrapped by the java.lang.type.
@@ -469,5 +470,11 @@ public class GenerationTools {
         head.append(indent + "}");
 
         return head.toString();
+    }
+
+    public String escapeStringForJavaCode(String value) {
+        if (value == null) return value;
+        //we need to escape characters like this '\r\t', \n, and " to generate the code properly.
+        return StringEscapeUtils.escapeJava(value);
     }
 }
