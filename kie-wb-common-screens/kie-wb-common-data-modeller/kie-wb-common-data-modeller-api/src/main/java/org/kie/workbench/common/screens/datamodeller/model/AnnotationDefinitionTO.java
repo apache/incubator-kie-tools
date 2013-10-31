@@ -43,9 +43,9 @@ public class AnnotationDefinitionTO {
     
     public static final String POSITION_ANNOTATON = "org.kie.api.definition.type.Position";
 
-    public static final String LABEL_ANNOTATION = "org.kie.workbench.common.services.datamodeller.annotations.Label";
+    public static final String LABEL_ANNOTATION = "org.kie.api.definition.type.Label";
 
-    public static final String DESCRIPTION_ANNOTATION = "org.kie.workbench.common.services.datamodeller.annotations.Description";
+    public static final String DESCRIPTION_ANNOTATION = "org.kie.api.definition.type.Description";
 
     public static final String KEY_ANNOTATION = "org.kie.api.definition.type.Key";
     

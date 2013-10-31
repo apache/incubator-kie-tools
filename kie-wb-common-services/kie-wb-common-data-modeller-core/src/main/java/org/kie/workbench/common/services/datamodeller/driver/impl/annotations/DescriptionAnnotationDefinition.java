@@ -16,14 +16,13 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
-import org.kie.workbench.common.services.datamodeller.annotations.Description;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
 
 public class DescriptionAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public DescriptionAnnotationDefinition() {
-        super("@Description", Description.class.getName(), "Description", "Description annotation", true, true);
+        super("@Description",  org.kie.api.definition.type.Description.class.getName(), "Description", "Description annotation", true, true);
         addMember(new AnnotationMemberDefinitionImpl("value", String.class.getName(), false, "", "value", "value"));
     }
 
