@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.auditlog;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -40,7 +41,7 @@ import org.drools.workbench.models.guided.dtable.shared.auditlog.LimitedEntryAct
 import org.drools.workbench.models.guided.dtable.shared.auditlog.LimitedEntryConditionColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.MetadataColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.UpdateColumnAuditLogEntry;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.*;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 /**
@@ -71,6 +72,9 @@ public class AuditLogEntryCellHelper {
                                         String row2Value,
                                         String row3Label,
                                         String row3Value );
+
+        @Template("<div><ul><li>{0}: {1}</li><li>{2}: {3}</li><li>{4}: {5}</li></ul></div>")
+        SafeHtml updatedField( String lFieldName, String fieldName, String lOldValue, String oldValue, String lNewValue, String newValue );
 
     }
 
@@ -140,7 +144,9 @@ public class AuditLogEntryCellHelper {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         buildColumnDetailsUpdate( event.getDetails(),
                                   event.getOriginalDetails(),
+                                  event.getDiffs(),
                                   sb );
+
         return sb.toSafeHtml();
     }
 
@@ -253,38 +259,45 @@ public class AuditLogEntryCellHelper {
 
     private void buildColumnDetailsUpdate( final ColumnDetails details,
                                            final ColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
         if ( ( details instanceof ConditionColumnDetails ) && ( originalDetails instanceof ConditionColumnDetails ) ) {
             buildColumnDetailsUpdate( (ConditionColumnDetails) details,
                                       (ConditionColumnDetails) originalDetails,
+                                      diffs,
                                       sb );
         } else if ( ( details instanceof LimitedEntryConditionColumnDetails ) && ( originalDetails instanceof LimitedEntryConditionColumnDetails ) ) {
             buildColumnDetailsUpdate( (LimitedEntryConditionColumnDetails) details,
                                       (LimitedEntryConditionColumnDetails) originalDetails,
+                                      diffs,
                                       sb );
         } else if ( ( details instanceof ActionInsertFactColumnDetails ) && ( originalDetails instanceof ActionInsertFactColumnDetails ) ) {
             buildColumnDetailsUpdate( (ActionInsertFactColumnDetails) details,
                                       (ActionInsertFactColumnDetails) originalDetails,
+                                      diffs,
                                       sb );
         } else if ( ( details instanceof LimitedEntryActionInsertFactColumnDetails ) && ( originalDetails instanceof LimitedEntryActionInsertFactColumnDetails ) ) {
             buildColumnDetailsUpdate( (LimitedEntryActionInsertFactColumnDetails) details,
                                       (LimitedEntryActionInsertFactColumnDetails) originalDetails,
+                                      diffs,
                                       sb );
         } else if ( ( details instanceof ActionSetFieldColumnDetails ) && ( originalDetails instanceof ActionSetFieldColumnDetails ) ) {
             buildColumnDetailsUpdate( (ActionSetFieldColumnDetails) details,
                                       (ActionSetFieldColumnDetails) originalDetails,
+                                      diffs,
                                       sb );
         } else if ( ( details instanceof LimitedEntryActionSetFieldColumnDetails ) && ( originalDetails instanceof LimitedEntryActionSetFieldColumnDetails ) ) {
             buildColumnDetailsUpdate( (LimitedEntryActionSetFieldColumnDetails) details,
                                       (LimitedEntryActionSetFieldColumnDetails) originalDetails,
+                                      diffs,
                                       sb );
         } else if ( ( details instanceof AttributeColumnDetails ) && ( originalDetails instanceof AttributeColumnDetails ) ) {
             buildColumnDetailsUpdate( (AttributeColumnDetails) details,
                     (AttributeColumnDetails) originalDetails,
+                    diffs,
                     sb );
         } else {
-            sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateColumn0Was1( details.getColumnHeader(),
-                                                                                                          originalDetails.getColumnHeader() ) ) );
+            sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateColumn(details.getColumnHeader()) ) );
         }
     }
 
@@ -292,100 +305,190 @@ public class AuditLogEntryCellHelper {
      * BZ-996932: Added column update details for attribute columns.
      * @param details The new details column.
      * @param originalDetails The origin details column.
+     * @param diffs A part from the column details, the column fields update information must be present too.
      * @param sb The html bulder buffer.
      */
     private void buildColumnDetailsUpdate( final AttributeColumnDetails details,
                                            final AttributeColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
         sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAttribute( details.getAttribute()) ) );
+
+        // Show changed fields too.
+        if (diffs != null && !diffs.isEmpty()) {
+            sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.ColumnsUpdated()) );
+            for (BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                if (changedFieldName.equals(AttributeCol52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(AttributeCol52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(AttributeCol52.FIELD_REVERSE_ORDER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ReverseOrder(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(AttributeCol52.FIELD_USE_ROW_NUMBER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.UseRowNumber(), diff.getOldValue(), diff.getValue(), sb);
+            }
+        }
+
     }
 
 
     private void buildColumnDetailsUpdate( final ConditionColumnDetails details,
                                            final ConditionColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
-        sb.append( TEMPLATE.commentHeader2Details( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateCondition0Was1( details.getColumnHeader(),
-                                                                                                                 originalDetails.getColumnHeader() ),
-                                                   GuidedDecisionTableConstants.INSTANCE.FieldColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
-                                                                                                  nil( originalDetails.getFactField() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.OperatorColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getOperator() ),
-                                                                                                  nil( originalDetails.getOperator() ) ) ) );
+        sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateCondition(details.getColumnHeader()) ));
+
+        // Show changed fields too.
+        if (diffs != null && !diffs.isEmpty()) {
+            sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.ColumnsUpdated()) );
+            for (BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FieldColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_OPERATOR)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.OperatorColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_BINDING)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_CONSTRAINT_VALUE_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.CalculationType(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sb);
+            }
+        }
+
     }
 
     private void buildColumnDetailsUpdate( final LimitedEntryConditionColumnDetails details,
                                            final LimitedEntryConditionColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
-        sb.append( TEMPLATE.commentHeader3Details( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateCondition0Was1( details.getColumnHeader(),
-                                                                                                                 originalDetails.getColumnHeader() ),
-                                                   GuidedDecisionTableConstants.INSTANCE.FieldColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
-                                                                                                  nil( originalDetails.getFactField() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.OperatorColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getOperator() ),
-                                                                                                  nil( originalDetails.getOperator() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.ValueColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nilLimitedEntryValue( details.getValue() ),
-                                                                                                  nilLimitedEntryValue( originalDetails.getValue() ) ) ) );
+        sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateCondition(details.getColumnHeader())) );
+
+        // Show changed fields too.
+        if (diffs != null && !diffs.isEmpty()) {
+            sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.ColumnsUpdated()) );
+            for (BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(LimitedEntryConditionCol52.FIELD_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FieldColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_OPERATOR)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.OperatorColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_BINDING)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_CONSTRAINT_VALUE_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.CalculationType(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sb);
+            }
+        }
+
     }
 
     private void buildColumnDetailsUpdate( final ActionInsertFactColumnDetails details,
                                            final ActionInsertFactColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
-        sb.append( TEMPLATE.commentHeader2Details( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction0Was1( details.getColumnHeader(),
-                                                                                                              originalDetails.getColumnHeader() ),
-                                                   GuidedDecisionTableConstants.INSTANCE.FactTypeColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactType() ),
-                                                                                                  nil( originalDetails.getFactType() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.FieldColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
-                                                                                                  nil( originalDetails.getFactField() ) ) ) );
+        sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction(details.getColumnHeader())) );
+
+        // Show changed fields too.
+        if (diffs != null && !diffs.isEmpty()) {
+            sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.ColumnsUpdated()) );
+            for (BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
+                if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FactTypeColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FieldColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_IS_INSERT_LOGICAL)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.LogicallyInsertColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sb);
+            }
+        }
     }
 
     private void buildColumnDetailsUpdate( final LimitedEntryActionInsertFactColumnDetails details,
                                            final LimitedEntryActionInsertFactColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
-        sb.append( TEMPLATE.commentHeader3Details( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction0Was1( details.getColumnHeader(),
-                                                                                                              originalDetails.getColumnHeader() ),
-                                                   GuidedDecisionTableConstants.INSTANCE.FactTypeColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactType() ),
-                                                                                                  nil( originalDetails.getFactType() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.FieldColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
-                                                                                                  nil( originalDetails.getFactField() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.ValueColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nilLimitedEntryValue( details.getValue() ),
-                                                                                                  nilLimitedEntryValue( originalDetails.getValue() ) ) ) );
+        sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction(details.getColumnHeader())) );
+
+        // Show changed fields too.
+        if (diffs != null && !diffs.isEmpty()) {
+            sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.ColumnsUpdated()) );
+            for (BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
+                if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(LimitedEntryActionInsertFactCol52.FIELD_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FieldColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FactTypeColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_IS_INSERT_LOGICAL)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.LogicallyInsertColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sb);
+            }
+        }
+
+
     }
 
     private void buildColumnDetailsUpdate( final ActionSetFieldColumnDetails details,
                                            final ActionSetFieldColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
-        sb.append( TEMPLATE.commentHeader2Details( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction0Was1( details.getColumnHeader(),
-                                                                                                              originalDetails.getColumnHeader() ),
-                                                   GuidedDecisionTableConstants.INSTANCE.BoundVariableColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getBoundName() ),
-                                                                                                  nil( originalDetails.getBoundName() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.FieldColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
-                                                                                                  nil( originalDetails.getFactField() ) ) ) );
+        sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction(details.getColumnHeader())) );
+
+        // Show changed fields too.
+        if (diffs != null && !diffs.isEmpty()) {
+            sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.ColumnsUpdated()) );
+            for (BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
+                if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.BoundVariableColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FieldColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_IS_INSERT_LOGICAL)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.LogicallyInsertColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sb);
+            }
+        }
     }
 
     private void buildColumnDetailsUpdate( final LimitedEntryActionSetFieldColumnDetails details,
                                            final LimitedEntryActionSetFieldColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
-        sb.append( TEMPLATE.commentHeader3Details( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction0Was1( details.getColumnHeader(),
-                                                                                                              originalDetails.getColumnHeader() ),
-                                                   GuidedDecisionTableConstants.INSTANCE.BoundVariableColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getBoundName() ),
-                                                                                                  nil( originalDetails.getBoundName() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.FieldColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nil( details.getFactField() ),
-                                                                                                  nil( originalDetails.getFactField() ) ),
-                                                   GuidedDecisionTableConstants.INSTANCE.ValueColon(),
-                                                   GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog0Was1( nilLimitedEntryValue( details.getValue() ),
-                                                                                                  nilLimitedEntryValue( originalDetails.getValue() ) ) ) );
+        sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction(details.getColumnHeader())) );
+
+        // Show changed fields too.
+        if (diffs != null && !diffs.isEmpty()) {
+            sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.ColumnsUpdated()) );
+            for (BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
+                if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(LimitedEntryActionSetFieldCol52.FIELD_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.BoundVariableColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FieldColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_IS_INSERT_LOGICAL)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.LogicallyInsertColon(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sb);
+                else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sb);
+            }
+        }
+    }
+
+    /**
+     * BZ-996944: A part from the column details, the updated field values must be displayed.
+     */
+    private void buildColumnUpdateFields( String fieldName, Object oldValue, Object newValue, final SafeHtmlBuilder sb ) {
+        String _oldValue = oldValue != null ? oldValue.toString() : "";
+        String _newValue = newValue != null ? newValue.toString() : "";
+
+        sb.append( TEMPLATE.updatedField(
+                GuidedDecisionTableConstants.INSTANCE.FieldName(), fieldName,
+                GuidedDecisionTableConstants.INSTANCE.OldValue(), _oldValue,
+                GuidedDecisionTableConstants.INSTANCE.NewValue(), _newValue) );
     }
 
     private String nil( final String value ) {

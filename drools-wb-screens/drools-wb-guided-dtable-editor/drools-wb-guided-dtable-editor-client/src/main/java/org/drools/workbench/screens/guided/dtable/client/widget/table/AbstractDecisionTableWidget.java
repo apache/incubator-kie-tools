@@ -35,33 +35,7 @@ import org.drools.workbench.models.guided.dtable.shared.auditlog.DeleteRowAuditL
 import org.drools.workbench.models.guided.dtable.shared.auditlog.InsertColumnAuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.InsertRowAuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.UpdateColumnAuditLogEntry;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
-import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
-import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
-import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
-import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.*;
 import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.BoundFactsChangedEvent;
@@ -171,7 +145,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
-        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
+        //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists
         //for dependent enumerations. This needs to be called before the columns are created.
         this.dropDownManager = new DecisionTableDropDownManager( model,
                                                                  oracle );
@@ -625,79 +599,54 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bUpdateColumnData = false;
         boolean bUpdateColumnDefinition = false;
+        boolean isHideUpdated = false;
+        boolean isBoundNameUpdated = false;
+        boolean isFactTypeUpdated = false;
+        boolean isFactFieldUpdated = false;
+        boolean isValueListUpdated = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
 
-        // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
-            setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
             bUpdateColumnDefinition = true;
+            isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionInsertFactCol52.FIELD_HIDE_COLUMN, diffs);
+            isBoundNameUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionInsertFactCol52.FIELD_BOUND_NAME, diffs);
+            isFactTypeUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionInsertFactCol52.FIELD_FACT_TYPE, diffs);
+            isFactFieldUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionInsertFactCol52.FIELD_FACT_FIELD, diffs);
+            isValueListUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionInsertFactCol52.FIELD_VALUE_LIST, diffs);
+        }
+
+        // Update column's visibility
+        if ( isHideUpdated ) {
+            setColumnVisibility( origColumn,
+                    !editColumn.isHideColumn() );
         }
 
         // Change in column's binding forces an update and redraw if FactType or
         // FactField are different; otherwise only need to update and redraw if
         // the FactType or FieldType have changed
-        if ( !isEqualOrNull( origColumn.getBoundName(),
-                             editColumn.getBoundName() ) ) {
-            if ( !isEqualOrNull( origColumn.getFactType(),
-                                 editColumn.getFactType() )
-                    || !isEqualOrNull( origColumn.getFactField(),
-                                       editColumn.getFactField() ) ) {
-                bUpdateColumnData = true;
-                bUpdateColumnDefinition = true;
-            }
-
-        } else if ( !isEqualOrNull( origColumn.getFactType(),
-                                    editColumn.getFactType() )
-                || !isEqualOrNull( origColumn.getFactField(),
-                                   editColumn.getFactField() ) ) {
+        if ( !isBoundNameUpdated && ( isFactTypeUpdated  || isFactFieldUpdated ) ) {
             bUpdateColumnData = true;
-            bUpdateColumnDefinition = true;
+        } else if ( isFactTypeUpdated || isFactFieldUpdated ) {
+            bUpdateColumnData = true;
         }
 
         // Update column's cell content if the Optional Value list has changed
-        if ( !isEqualOrNull( origColumn.getValueList(),
-                             editColumn.getValueList() ) ) {
-            bUpdateColumnDefinition = true;
+        if (isValueListUpdated) {
             bUpdateColumnData = updateCellsForOptionValueList( editColumn,
-                                                               origColumn );
-        }
-
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update LimitedEntryValue in Header Widget
-        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
-            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
-            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
-            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
-                bUpdateColumnDefinition = true;
-            }
-        }
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's "logically insert" if it's changed.
-        if ( origColumn.isInsertLogical() != editColumn.isInsertLogical()) {
-            bUpdateColumnDefinition = true;
+                    origColumn );
         }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn, diffs ) );
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
-                             editColumn );
+                editColumn );
 
         //First remove merging if column data is being changed. This is necessary before we potentially update
         //the column's cell type as removing merging causes a redraw that needs the column's cell to be
@@ -711,14 +660,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( bUpdateColumnDefinition ) {
             DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  iCol );
+                    iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
         //Update Column data
         if ( bUpdateColumnData ) {
             UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
-                                                                                getColumnData( origColumn ) );
+                    getColumnData( origColumn ) );
             eventBus.fireEvent( updateColumnData );
         }
 
@@ -742,82 +691,52 @@ public abstract class AbstractDecisionTableWidget extends Composite
         boolean bUpdateColumnDefinition = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
 
+        boolean isHideUpdated = false;
+        boolean isBoundNameUpdated = false;
+        boolean isFactFieldUpdated = false;
+        boolean isValueListUpdated = false;
+
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
+            bUpdateColumnDefinition = true;
+            isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionSetFieldCol52.FIELD_HIDE_COLUMN, diffs);
+            isBoundNameUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionSetFieldCol52.FIELD_BOUND_NAME, diffs);
+            isFactFieldUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionSetFieldCol52.FIELD_FACT_FIELD, diffs);
+            isValueListUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionSetFieldCol52.FIELD_VALUE_LIST, diffs);
+
+        }
+
         // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+        if ( isHideUpdated ) {
             setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
+                    !editColumn.isHideColumn() );
         }
 
         // Change in column's binding forces an update and redraw if FactField
         // is different; otherwise only need to update and redraw if the
         // FieldType has changed
-        if ( !isEqualOrNull( origColumn.getBoundName(),
-                             editColumn.getBoundName() ) ) {
-            if ( !isEqualOrNull( origColumn.getFactField(),
-                                 editColumn.getFactField() ) ) {
-                bUpdateColumnData = true;
-                bUpdateColumnDefinition = true;
-            }
-
-        } else if ( !isEqualOrNull( origColumn.getFactField(),
-                                    editColumn.getFactField() ) ) {
+        if ( isBoundNameUpdated  &&  isFactFieldUpdated ) {
             bUpdateColumnData = true;
-            bUpdateColumnDefinition = true;
+        } else if ( isFactFieldUpdated ) {
+            bUpdateColumnData = true;
         }
 
         // Update column's cell content if the Optional Value list has changed
-        if ( !isEqualOrNull( origColumn.getValueList(),
-                             editColumn.getValueList() ) ) {
-            bUpdateColumnDefinition = true;
+        if ( isValueListUpdated ) {
             bUpdateColumnData = updateCellsForOptionValueList( editColumn,
-                                                               origColumn );
-        }
-
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update column field in Header Widget
-        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update LimitedEntryValue in Header Widget
-        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
-            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
-            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
-            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
-                bUpdateColumnDefinition = true;
-            }
-        }
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's hide value if it's changed.
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's "Update engine with changes" value if it's changed.
-        if ( origColumn.isUpdate() != editColumn.isUpdate() ) {
-            bUpdateColumnDefinition = true;
+                    origColumn );
         }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn, diffs ) );
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
-                             editColumn );
+                editColumn );
 
         //First remove merging if column data is being changed. This is necessary before we potentially update
         //the column's cell type as removing merging causes a redraw that needs the column's cell to be
@@ -831,14 +750,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( bUpdateColumnDefinition ) {
             DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  iCol );
+                    iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
         //Update Column data
         if ( bUpdateColumnData ) {
             UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
-                                                                                getColumnData( origColumn ) );
+                    getColumnData( origColumn ) );
             eventBus.fireEvent( updateColumnData );
         }
 
@@ -861,58 +780,41 @@ public abstract class AbstractDecisionTableWidget extends Composite
         boolean bUpdateColumnDefinition = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
 
+        boolean isHideUpdated = false;
+
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
+            bUpdateColumnDefinition = true;
+            isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionWorkItemSetFieldCol52.FIELD_HIDE_COLUMN, diffs);
+        }
+
         // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+        if ( isHideUpdated ) {
             setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
-        }
-
-        // Change in column's binding forces an update and redraw if FactField
-        // is different; otherwise only need to update and redraw if the
-        // FieldType has changed
-        if ( !isEqualOrNull( origColumn.getBoundName(),
-                             editColumn.getBoundName() ) ) {
-            if ( !isEqualOrNull( origColumn.getFactField(),
-                                 editColumn.getFactField() ) ) {
-                bUpdateColumnDefinition = true;
-            }
-
-        } else if ( !isEqualOrNull( origColumn.getFactField(),
-                                    editColumn.getFactField() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
+                    !editColumn.isHideColumn() );
         }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn, diffs ) );
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
-                             editColumn );
+                editColumn );
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
             DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  iCol );
+                    iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
     }
+
 
     /**
      * Update an ActionRetractFactCol52 column
@@ -931,49 +833,37 @@ public abstract class AbstractDecisionTableWidget extends Composite
         boolean bUpdateColumnDefinition = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
 
+
+        boolean isHideUpdated = false;
+
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
+            bUpdateColumnDefinition = true;
+            isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionRetractFactCol52.FIELD_HIDE_COLUMN, diffs);
+        }
+
         // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+        if ( isHideUpdated ) {
             setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update LimitedEntryValue in Header Widget
-        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
-            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
-            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
-            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
-                bUpdateColumnDefinition = true;
-            }
-        }
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
+                    !editColumn.isHideColumn() );
         }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn, diffs ) );
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
-                             editColumn );
+                editColumn );
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
             DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  iCol );
+                    iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
@@ -996,40 +886,36 @@ public abstract class AbstractDecisionTableWidget extends Composite
         boolean bUpdateColumnDefinition = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
 
+        boolean isHideUpdated = false;
+
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
+            bUpdateColumnDefinition = true;
+            isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ActionWorkItemCol52.FIELD_HIDE_COLUMN, diffs);
+        }
+
         // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+        if ( isHideUpdated ) {
             setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
+                    !editColumn.isHideColumn() );
         }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn, diffs ) );
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
-                             editColumn );
+                editColumn );
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
             DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  iCol );
+                    iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
@@ -1051,10 +937,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bUpdateColumnDefinition = false;
 
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
             bUpdateColumnDefinition = true;
         }
+
 
         //Copy existing data for re-use if applicable
         Map<String, List<DTCellValue52>> origColumnVariables = new HashMap<String, List<DTCellValue52>>();
@@ -1066,12 +953,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 columnData.add( row.get( iCol ) );
             }
             origColumnVariables.put( key,
-                                     columnData );
+                    columnData );
         }
 
         //Insert new variable columns setting data from that above, if applicable. Column visibility is handled here too.
         model.getActionCols().add( model.getActionCols().indexOf( origColumn ),
-                                   editColumn );
+                editColumn );
         final int index = model.getExpandedColumns().indexOf( editColumn.getChildColumns().get( 0 ) );
         final List<BaseColumn> columns = new ArrayList<BaseColumn>();
         final List<List<DTCellValue52>> columnsData = new ArrayList<List<DTCellValue52>>();
@@ -1086,9 +973,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             columnsData.add( columnData );
         }
         InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( columns,
-                                                                                 columnsData,
-                                                                                 index,
-                                                                                 true );
+                columnsData,
+                index,
+                true );
         eventBus.fireEvent( dce );
 
         //Delete columns for the original definition
@@ -1096,26 +983,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
         int firstColumnIndex = model.getExpandedColumns().indexOf( firstColumn );
         int numberOfColumns = origColumn.getChildColumns().size();
         deleteColumns( firstColumnIndex,
-                       numberOfColumns,
-                       true );
+                numberOfColumns,
+                true );
         model.getConditions().remove( origColumn );
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's "hide" if it's changed.
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn()) {
-            bUpdateColumnDefinition = true;
-        }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn, diffs ) );
         }
 
     }
@@ -1141,8 +1017,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bUpdateColumnDefinition = false;
 
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
             bUpdateColumnDefinition = true;
         }
 
@@ -1156,12 +1032,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 columnData.add( row.get( iCol ) );
             }
             origColumnVariables.put( key,
-                                     columnData );
+                    columnData );
         }
 
         //Insert new variable columns setting data from that above, if applicable. Column visibility is handled here too.
         model.getConditions().add( model.getConditions().indexOf( origColumn ),
-                                   editColumn );
+                editColumn );
         final int index = model.getExpandedColumns().indexOf( editColumn.getChildColumns().get( 0 ) );
         final List<BaseColumn> columns = new ArrayList<BaseColumn>();
         final List<List<DTCellValue52>> columnsData = new ArrayList<List<DTCellValue52>>();
@@ -1176,9 +1052,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             columnsData.add( columnData );
         }
         InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( columns,
-                                                                                 columnsData,
-                                                                                 index,
-                                                                                 true );
+                columnsData,
+                index,
+                true );
         eventBus.fireEvent( dce );
 
         //Delete columns for the original definition
@@ -1186,26 +1062,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
         int firstColumnIndex = model.getExpandedColumns().indexOf( firstColumn );
         int numberOfColumns = origColumn.getChildColumns().size();
         deleteColumns( firstColumnIndex,
-                       numberOfColumns,
-                       true );
+                numberOfColumns,
+                true );
         model.getConditions().remove( origColumn );
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's "hide" if it's changed.
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn()) {
-            bUpdateColumnDefinition = true;
-        }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn, diffs ) );
         }
 
         //Signal patterns changed event to Decision Table Widget
@@ -1235,40 +1100,36 @@ public abstract class AbstractDecisionTableWidget extends Composite
         boolean bUpdateColumnDefinition = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
 
+        boolean isHideUpdated = false;
+
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
+            bUpdateColumnDefinition = true;
+            isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(LimitedEntryBRLConditionColumn.FIELD_HIDE_COLUMN, diffs);
+        }
+
         // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+        if ( isHideUpdated ) {
             setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
+                    !editColumn.isHideColumn() );
         }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn ) );
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
-                             editColumn );
+                editColumn );
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
             DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  iCol );
+                    iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
@@ -1291,40 +1152,36 @@ public abstract class AbstractDecisionTableWidget extends Composite
         boolean bUpdateColumnDefinition = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
 
+        boolean isHideUpdated = false;
+
+        List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+        if (diffs != null && !diffs.isEmpty()) {
+            bUpdateColumnDefinition = true;
+            isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(LimitedEntryBRLActionColumn.FIELD_HIDE_COLUMN, diffs);
+        }
+
         // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+        if ( isHideUpdated ) {
             setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // BZ-996932: Update column's default value if it's changed.
-        if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                editColumn.getDefaultValue() ) ) {
-            bUpdateColumnDefinition = true;
+                    !editColumn.isHideColumn() );
         }
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn, diffs ) );
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
-                             editColumn );
+                editColumn );
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
             DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  iCol );
+                    iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
@@ -1368,7 +1225,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Change in bound name requires column to be repositioned
         if ( !isEqualOrNull( origPattern.getBoundName(),
-                             editPattern.getBoundName() ) ) {
+                editPattern.getBoundName() ) ) {
 
             editPattern.getChildColumns().add( editColumn );
             List<DTCellValue52> columnData = cellValueFactory.makeColumnData( editColumn );
@@ -1377,9 +1234,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             // If the FactType, FieldType and ConstraintValueType are unchanged
             // we can copy cell values from the old column into the new
             if ( isEqualOrNull( origPattern.getFactType(),
-                                editPattern.getFactType() )
+                    editPattern.getFactType() )
                     && isEqualOrNull( origColumn.getFactField(),
-                                      editColumn.getFactField() )
+                    editColumn.getFactField() )
                     && origColumn.getConstraintValueType() == editColumn.getConstraintValueType() ) {
 
                 columnData.clear();
@@ -1390,8 +1247,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
 
             addColumn( editColumn,
-                       columnData,
-                       true );
+                    columnData,
+                    true );
 
             // Delete old column
             origPattern.getChildColumns().remove( origColumn );
@@ -1404,104 +1261,75 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 eventBus.fireEvent( pce );
             }
             deleteColumn( origColumnIndex,
-                          true );
+                    true );
 
             //Log change to column definition
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                    origColumn,
-                                                                    editColumn ) );
+                    origColumn,
+                    editColumn ) );
 
         } else {
 
+            boolean isHideUpdated = false;
+            boolean isOperatorUpdated = false;
+            boolean isFieldTypeUpdated = false;
+            boolean isFactFieldUpdated = false;
+            boolean isFactTypeUpdated = false;
+            boolean isConstraintValueTypeUpdated = false;
+            boolean isValueListUpdated = false;
+
+
+            List<BaseColumnFieldDiff> diffs =  origColumn.diff(editColumn);
+            if (diffs != null && !diffs.isEmpty()) {
+                bUpdateColumnDefinition = true;
+                isHideUpdated = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_HIDE_COLUMN, diffs);
+                isOperatorUpdated = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_OPERATOR, diffs);
+                isFieldTypeUpdated = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_FIELD_TYPE, diffs);
+                isFactFieldUpdated = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_FACT_FIELD, diffs);
+                isFactTypeUpdated = BaseColumnFieldDiffImpl.hasChanged(Pattern52.FIELD_FACT_TYPE, diffs);
+                isConstraintValueTypeUpdated = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_VALUE_LIST, diffs);
+                isValueListUpdated = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_VALUE_LIST, diffs);
+            }
+
             // Update column's visibility
-            if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            if ( isHideUpdated ) {
                 setColumnVisibility( origColumn,
-                                     !editColumn.isHideColumn() );
-                bUpdateColumnDefinition = true;
+                        !editColumn.isHideColumn() );
             }
 
-            // Change in operator
-            if ( !isEqualOrNull( origColumn.getOperator(),
-                                 editColumn.getOperator() ) ) {
-                bUpdateColumnDefinition = true;
-
-                //Clear otherwise if column cannot accept them
-                if ( !canAcceptOtherwiseValues( editColumn ) ) {
-                    removeOtherwiseStates( origColumn );
-                    bUpdateColumnData = true;
-                }
+            //Clear otherwise if column cannot accept them
+            if ( isOperatorUpdated &&  !canAcceptOtherwiseValues( editColumn ) ) {
+                removeOtherwiseStates( origColumn );
+                bUpdateColumnData = true;
             }
 
-            // Update column's Cell type. Other than the obvious change in data-type if the 
+            // Update column's Cell type. Other than the obvious change in data-type if the
             // Operator changes to or from "not set" (possible for literal columns and formulae)
             // the column needs to be changed to or from Text.
-            if ( !isEqualOrNull( origPattern.getFactType(),
-                                 editPattern.getFactType() )
-                    || !isEqualOrNull( origColumn.getFactField(),
-                                       editColumn.getFactField() )
-                    || !isEqualOrNull( origColumn.getFieldType(),
-                                       editColumn.getFieldType() )
-                    || !isEqualOrNull( origColumn.getOperator(),
-                                       editColumn.getOperator() )
-                    || origColumn.getConstraintValueType() != editColumn.getConstraintValueType() ) {
+            if ( isFactTypeUpdated  || isFactFieldUpdated  || isFieldTypeUpdated || isOperatorUpdated || isConstraintValueTypeUpdated ) {
                 bUpdateColumnData = true;
-                bUpdateColumnDefinition = true;
             }
 
             // Update column's cell content if the Optional Value list has changed
-            if ( !isEqualOrNull( origColumn.getValueList(),
-                                 editColumn.getValueList() ) ) {
-                bUpdateColumnDefinition = true;
+            if ( isValueListUpdated ) {
                 bUpdateColumnData = updateCellsForOptionValueList( editColumn,
-                                                                   origColumn );
+                        origColumn );
             }
 
-            // Update column header in Header Widget
-            if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-                bUpdateColumnDefinition = true;
-            }
-
-            // Update column binding in Header Widget
-            if ( !origColumn.isBound() && editColumn.isBound() ) {
-                bUpdateColumnDefinition = true;
-            } else if ( origColumn.isBound() && !editColumn.isBound() ) {
-                bUpdateColumnDefinition = true;
-            } else if ( origColumn.isBound() && editColumn.isBound() && !origColumn.getBinding().equals( editColumn.getBinding() ) ) {
-                bUpdateColumnDefinition = true;
-            }
-
-            // Update LimitedEntryValue in Header Widget
-            if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
-                LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
-                LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
-                if ( !isEqualOrNull( lecOrig.getValue(),
-                                     lecEditing.getValue() ) ) {
-                    bUpdateColumnDefinition = true;
-                }
-            }
-
-            // BZ-996932: Update column's default value if it's changed.
-            if ( !isEqualOrNull( origColumn.getDefaultValue(),
-                    editColumn.getDefaultValue() ) ) {
-                bUpdateColumnDefinition = true;
-            }
-
-            // BZ-996932: Update column's entrypoint value if it's changed.
-            if ( !isEqualOrNull( origPattern.getEntryPointName(),
-                    editPattern.getEntryPointName() ) ) {
+            if ( origColumn.isBound() && editColumn.isBound() && !origColumn.getBinding().equals( editColumn.getBinding() ) ) {
                 bUpdateColumnDefinition = true;
             }
 
             //Log change to column definition
             if ( bUpdateColumnDefinition ) {
                 model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
-                                                                        origColumn,
-                                                                        editColumn ) );
+                        origColumn,
+                        editColumn, diffs ) );
             }
 
             // Copy new values into original column definition
             populateModelColumn( origColumn,
-                                 editColumn );
+                    editColumn );
         }
 
         //First remove merging if column data is being changed. This is necessary before we potentially update
@@ -1517,7 +1345,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             int iCol = model.getExpandedColumns().indexOf( origColumn );
             DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  iCol );
+                    iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
@@ -1525,11 +1353,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( bUpdateColumnData ) {
             int iCol = model.getExpandedColumns().indexOf( origColumn );
             UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
-                                                                                getColumnData( origColumn ) );
+                    getColumnData( origColumn ) );
             eventBus.fireEvent( updateColumnData );
         }
 
     }
+
 
     /**
      * Update values controlled by the decision table itself

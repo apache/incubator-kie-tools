@@ -331,23 +331,27 @@ public interface GuidedDecisionTableConstants
 
     String BoundVariableColon();
 
-    String DecisionTableAuditLog0Was1( String value,
-                                       String originalValue );
+    String DecisionTableAuditLogUpdateCondition( String value);
 
-    String DecisionTableAuditLogUpdateCondition0Was1( String value,
-                                                      String originalValue );
+    String DecisionTableAuditLogUpdateAction( String value);
 
-    String DecisionTableAuditLogUpdateAction0Was1( String value,
-                                                   String originalValue );
-
-    String DecisionTableAuditLogUpdateColumn0Was1( String value,
-                                                   String originalValue );
+    String DecisionTableAuditLogUpdateColumn( String value);
 
     String DecisionTableAuditLogUpdateAttribute( String value );
 
     String AreYouSureYouWantToRemoveThisItem();
 
     String InsertYourCommentsHere();
+
+    String ColumnHeader();
+
+    String ColumnsUpdated();
+
+    String FieldName();
+
+    String OldValue();
+
+    String NewValue();
 
     //Wizard
     String UseWizardToBuildAsset();
