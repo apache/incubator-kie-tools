@@ -44,7 +44,7 @@ public class PlainTextAssetMigrater {
 
         String content = jcrAssetItem.getContent();
 
-        // Support for # has been removed from Drools Expert
+        // Support for '#' has been removed from Drools Expert -> replace it with '//'
         if (AssetFormats.DSL.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
                 || AssetFormats.RULE_TEMPLATE.equals(jcrAssetItem.getFormat())

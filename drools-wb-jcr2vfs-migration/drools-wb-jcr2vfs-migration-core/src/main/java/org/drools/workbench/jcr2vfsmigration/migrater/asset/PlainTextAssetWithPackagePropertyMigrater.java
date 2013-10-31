@@ -9,6 +9,7 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
+import org.drools.workbench.jcr2vfsmigration.migrater.util.DRLMigrationUtils;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.uberfire.io.IOService;
@@ -61,10 +62,17 @@ public class PlainTextAssetWithPackagePropertyMigrater {
         sb.append( "\n" );
         sb.append( "end" );
 
-        //Support for # has been removed from Drools Expert
-        String content = sb.toString().replaceAll( "#",
-                                                   "//" );
-
+        String content = sb.toString();
+       
+        // Support for '#' has been removed from Drools Expert -> replace it with '//'
+        if (AssetFormats.DSL.equals(jcrAssetItem.getFormat())
+                || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
+                || AssetFormats.RULE_TEMPLATE.equals(jcrAssetItem.getFormat())
+                || AssetFormats.DRL.equals(jcrAssetItem.getFormat())
+                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
+            content = DRLMigrationUtils.migrateStartOfCommentChar(content);
+        }
+        
         String sourceWithImport = drlTextEditorServiceImpl.assertPackageName( content,
                                                                               path );
         sourceWithImport = packageImportHelper.assertPackageImportDRL( sourceWithImport,
