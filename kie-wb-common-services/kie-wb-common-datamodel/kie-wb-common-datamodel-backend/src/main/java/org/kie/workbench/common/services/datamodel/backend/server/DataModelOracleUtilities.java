@@ -30,6 +30,7 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 
@@ -260,10 +261,30 @@ public class DataModelOracleUtilities {
                                        e.getValue() );
             } else {
                 scopedModelFields.put( mfQualifiedType,
-                                       null );
+                                       makeLazyProxyModelField( e.getValue() ) );
             }
         }
         return scopedModelFields;
+    }
+
+    //AsyncPackageDataModelOracle.getFactNameFromType() uses THIS to determine the simple Type from a FQCN.
+    //Therefore ensure we provide this minimal information for every Type in the DMO to prevent getFactNameFromType()
+    //needing a callback to the server which makes things more complicated than really needed.
+    private static ModelField[] makeLazyProxyModelField( final ModelField[] modelFields ) {
+        for ( ModelField modelField : modelFields ) {
+            if ( DataType.TYPE_THIS.equals( modelField.getName() ) ) {
+                final ModelField[] result = new ModelField[ 1 ];
+                //LazyModelField is a place-holder to tell AsyncPackageDataModelOracle that it needs to load more information
+                result[ 0 ] = new LazyModelField( modelField.getName(),
+                                                  modelField.getClassName(),
+                                                  modelField.getClassType(),
+                                                  modelField.getOrigin(),
+                                                  modelField.getAccessorsAndMutators(),
+                                                  modelField.getType() );
+                return result;
+            }
+        }
+        return null;
     }
 
     //Filter Model Fields by the types used

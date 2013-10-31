@@ -27,6 +27,7 @@ import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 
 public class AsyncPackageDataModelOracleUtilities {
@@ -366,15 +367,33 @@ public class AsyncPackageDataModelOracleUtilities {
                                                                          imports ) ) {
                 mfType = mfType_TypeName;
             }
-            correctedModelFields.add( new ModelField( mf.getName(),
-                                                      mfClassName,
-                                                      mf.getClassType(),
-                                                      mf.getOrigin(),
-                                                      mf.getAccessorsAndMutators(),
-                                                      mfType ) );
+            correctedModelFields.add( cloneModelField( mf,
+                                                       mfClassName,
+                                                       mfType ) );
         }
         final ModelField[] result = new ModelField[ correctedModelFields.size() ];
         return correctedModelFields.toArray( result );
+    }
+
+    //Ensure we retain the LazyModelField information when filtering, as it's place-holder
+    //for AsyncPackageDataModelOracle to know whether it needs to load additional information
+    private static ModelField cloneModelField( final ModelField source,
+                                               final String mfClassName,
+                                               final String mfType ) {
+        if ( source instanceof LazyModelField ) {
+            return new LazyModelField( source.getName(),
+                                       mfClassName,
+                                       source.getClassType(),
+                                       source.getOrigin(),
+                                       source.getAccessorsAndMutators(),
+                                       mfType );
+        }
+        return new ModelField( source.getName(),
+                               mfClassName,
+                               source.getClassType(),
+                               source.getOrigin(),
+                               source.getAccessorsAndMutators(),
+                               mfType );
     }
 
     private static List<MethodInfo> correctMethodInformation( final String packageName,

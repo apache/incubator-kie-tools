@@ -39,6 +39,7 @@ import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.callbacks.Callback;
@@ -488,7 +489,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
         //If fields do not exist return null; so they can be incrementally loaded
         final ModelField[] fields = filteredModelFields.get( shortName );
-        if ( fields == null ) {
+        if ( isLazyProxy( fields ) ) {
             return null;
         }
 
@@ -533,7 +534,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
         //If fields do not exist return null; so they can be incrementally loaded
         final ModelField[] fields = filteredModelFields.get( shortName );
-        if ( fields == null ) {
+        if ( isLazyProxy( fields ) ) {
             return null;
         }
 
@@ -547,6 +548,16 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
             }
         }
         return applicableFields.toArray( new ModelField[ applicableFields.size() ] );
+    }
+
+    //Check whether the ModelField[] is a place-holder for more information
+    private boolean isLazyProxy( final ModelField[] modelFields ) {
+        if ( modelFields == null ) {
+            return false;
+        } else if ( modelFields.length != 1 ) {
+            return false;
+        }
+        return modelFields[ 0 ] instanceof LazyModelField;
     }
 
     @Override
