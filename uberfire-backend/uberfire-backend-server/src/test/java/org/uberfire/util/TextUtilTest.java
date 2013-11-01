@@ -12,6 +12,7 @@ public class TextUtilTest extends TestCase {
     private static final String BASE = "dUMmY";
     private StringBuilder sb = new StringBuilder( BASE );
 
+    String userNameIllegalChars ="ªº\\!|\"@·#$%&¬/()=?'¿¡€^`[*+]¨´{}<>,;:_~ .-";
     String repoNameIllegalChars ="ªº\\!|\"@·#$%&¬/()=?'¿¡€^`[*+]¨´{}<>,;:_~ ";
 
     // key: illegal char, value: expected char after normalization
@@ -29,6 +30,42 @@ public class TextUtilTest extends TestCase {
         additionalIllegal.put( 'Á', 'A' );
         additionalIllegal.put( 'À', 'A' );
         additionalIllegal.put( 'Ä', 'A' );
+    }
+
+    public void testNormalizeUserName() {
+        for (int i = 0; i < userNameIllegalChars.length(); i++) {
+            int index = 0;
+            assertEquals( BASE, TextUtil.normalizeUserName(sb.insert(index, userNameIllegalChars.charAt(i)).toString()) );
+            sb.deleteCharAt( index );
+
+            index = BASE.length()-3;
+            assertEquals( BASE, TextUtil.normalizeUserName( sb.insert( index, userNameIllegalChars.charAt(i) ).toString() ) );
+            sb.deleteCharAt( index );
+
+            index = BASE.length()-1;
+            assertEquals( BASE, TextUtil.normalizeUserName( sb.insert( index, userNameIllegalChars.charAt(i) ).toString() ) );
+            sb.deleteCharAt( index );
+        }
+
+        StringBuilder expected = new StringBuilder( BASE );
+        for (Iterator<Map.Entry<Character, Character>> it = additionalIllegal.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<Character, Character> entry = it.next();
+
+            int index = 0;
+            assertEquals( expected.insert( index, entry.getValue() ).toString(), TextUtil.normalizeUserName( sb.insert( index, entry.getKey() ).toString() ) );
+            sb.deleteCharAt( index );
+            expected.deleteCharAt( index );
+
+            index = BASE.length()-3;
+            assertEquals( expected.insert( index, entry.getValue() ).toString(), TextUtil.normalizeUserName( sb.insert( index, entry.getKey() ).toString() ) );
+            sb.deleteCharAt( index );
+            expected.deleteCharAt( index );
+
+            index = BASE.length()-1;
+            assertEquals( expected.insert( index, entry.getValue() ).toString(), TextUtil.normalizeUserName( sb.insert( index, entry.getKey() ).toString() ) );
+            sb.deleteCharAt(index);
+            expected.deleteCharAt( index );
+        }
     }
 
     public void testNormalizeRepositoryName() {
