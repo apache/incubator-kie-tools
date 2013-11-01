@@ -1,0 +1,132 @@
+UberFire Overview
+=================
+
+This document is a survey of the features and capabilities of the
+UberFire Rich Client Platform. If you are a software developer who's
+new to UberFire and you're wondering what it's all about, then you've
+come to the right place. If you're wondering whether UberFire is a fit
+for your new (or existing) web application, this is also the right
+place to start.
+
+What is UberFire?
+-----------------
+
+UberFire is a rich client platform that helps you build web
+applications. Both the client-side and server-side code are written in
+Java; the server-side code is deployed as a Java EE `.war` file, and
+the client-side code is deployed as precompiled JavaScript. No
+Java-to-JavaScript translation occurs at runtime.
+
+UberFire itself is built upon a general-purpose web framework called
+Errai. Errai's design helps you maximize the amount of code shared
+between the client and the server, leans toward a declarative (rather
+than procedural) style, and strives to help you take advantage of the
+type safety inherent to Java programs. Programs written in UberFire
+can use Errai features directly.
+
+Errai, in turn, is built on top of the Google Web Toolkit (GWT), which
+provides a subset of the Java SE library, a large standard library of
+user interface widgets, and most importantly, a highly optimized
+Java-to-JavaScript compiler. There is also a huge collection of
+third-party free and proprietary add-on libraries for GWT. UberFire
+applications can take advantage of most of these.
+
+UberFire makes it easy to include any or all of the following elements
+in your application:
+
+- User identity (login/logout) and authorization (access roles and permissions)
+- A modular, user-configurable user interface (the user can rearrange designated portions of the UI by drag-and-drop)
+  - The framework can remember an arbitrary number of such arrangements (each is called a Perspective)
+    and the user can switch between them
+- Nestable drop-down menus
+- Tool bars
+- Navigation through tree-structured collection of documents (a virtual filesystem or VFS)
+  - Each file in the VFS supports change tracking, revision control, and update notification
+
+To be clear, an application built with UberFire does not have to use
+all of the features listed above. If your app needs toolbars and a
+version-tracking VFS, but not a drag-and-drop layout or nested menus,
+UberFire may still be a good choice.
+
+
+UberFire Core Concepts
+~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the core `uberfire-api` module,
+footnote:[A few of these concepts actually come from Errai and GWT,
+but the distinction isn't important when getting started with
+UberFire.] so they permeate all parts of the UberFire framework:
+
+- Perspectives
+- Screens
+- Widgets
+- Places and PlaceRequests
+- Contexts
+- Panels
+- Parts
+- Widgets
+- Menus: items, groups, factories, commands, positions
+- Tool bars: items, icons, types
+- Resources
+- File Navigators
+- Identity
+- Marshalling
+
+
+UberFire Backend API Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-backend-api` module, which
+TODO: characterize this module; it's (mostly) not just for the server-side.
+
+- Deployment
+- Organizational Unit
+- Repository
+- Configuration (server-side only): ConfigGroup, ConfigItem, ConfigurationFactory
+- VFS (Virtual Filesystem)
+
+
+UberFire Client API Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-client-api` package,
+which defines an API that's only accessible to client-side
+(in-browser) code.
+
+- Default Position
+- Perspective
+- Workbench things: Context, Context ID, Editor, Menu, Title, TitleDecoration, View, Popup, Screen, Tool Bar
+- `UberView`, a way of injecting MVP presenters into views
+- `UberFirePreferences`, a public global map
+- Resource types: Any, Client, and Dot
+- Client Type Registry
+
+
+UberFire Commons Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-commons` package,
+which contains a mix of server-only definitions shared client/server definitions.
+
+- Clustering (server-only, see also UberFire I/O)
+- Pair, a generic 2-tuple (client + server)
+- Lock Service (server-only)
+- Cluster Messaging (server-only, for clustered deployments; distinct from Errai Bus messages)
+  - AsyncCallback, MessageHandler, MessageHandlerResolver, MessageService, MessageType
+- CDI Startup Beans (the @Startup annotation) (server-only)
+- PortablePreconditions (client + server), a collection of static methods for checking common preconditions (reference not null, list not empty, etc.)
+  - Note: Errai has a shared class called Assert which serves a similar purpose
+- Preconditions (server-only), precondition checks that are not GWT-translatable
+
+
+UberFire I/O Concepts
+~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-io` package,
+which contains mostly server-only code.
+
+- Dublin Core (TM) metadata
+- FileSystemType (client + server)
+- Clustering (see also UberFire Commons)
+- IO Services (Clustered service, Search Service, Watch Service)
+
