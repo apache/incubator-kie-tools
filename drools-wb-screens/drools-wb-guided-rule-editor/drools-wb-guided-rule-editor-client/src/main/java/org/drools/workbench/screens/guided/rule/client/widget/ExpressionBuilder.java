@@ -239,7 +239,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             return createStartPointWidget();
         }
 
-        ChangeHandler ch = new ChangeHandler() {
+        final ChangeHandler ch = new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
                 ListBox box = (ListBox) event.getSource();
                 panel.remove( box );
@@ -249,17 +249,25 @@ public class ExpressionBuilder extends RuleModellerWidget
             }
         };
 
-        ListBox lb = new ListBox();
+        final ListBox lb = new ListBox();
         lb.setVisibleItemCount( 1 );
         lb.addItem( Constants.INSTANCE.ChooseDotDotDot(),
                     "" );
         lb.addItem( "<==" + Constants.INSTANCE.DeleteItem(),
                     DELETE_VALUE );
-        for ( Map.Entry<String, String> entry : getCompletionsForCurrentType( expression.getParts().size() > 1 ).entrySet() ) {
-            lb.addItem( entry.getKey(),
-                        entry.getValue() );
-        }
-        lb.addChangeHandler( ch );
+
+        getCompletionsForCurrentType( expression.getParts().size() > 1,
+                                      new Callback<Map<String, String>>() {
+                                          @Override
+                                          public void callback( final Map<String, String> completions ) {
+                                              for ( Map.Entry<String, String> entry : completions.entrySet() ) {
+                                                  lb.addItem( entry.getKey(),
+                                                              entry.getValue() );
+                                              }
+                                              lb.addChangeHandler( ch );
+                                          }
+                                      } );
+
         return lb;
     }
 
@@ -376,14 +384,14 @@ public class ExpressionBuilder extends RuleModellerWidget
         fireExpressionTypeChangeEvent( oldType );
     }
 
-    private Map<String, String> getCompletionsForCurrentType( final boolean isNested ) {
+    private void getCompletionsForCurrentType( final boolean isNested,
+                                               final Callback<Map<String, String>> callback ) {
         final Map<String, String> completions = new LinkedHashMap<String, String>();
 
         if ( DataType.TYPE_FINAL_OBJECT.equals( getCurrentGenericType() ) ) {
-            return completions;
-        }
-
-        if ( DataType.TYPE_COLLECTION.equals( getCurrentGenericType() ) ) {
+            callback.callback( completions );
+            return;
+        } else if ( DataType.TYPE_COLLECTION.equals( getCurrentGenericType() ) ) {
             completions.put( "size()",
                              "size" );
             completions.put( "first()",
@@ -392,18 +400,16 @@ public class ExpressionBuilder extends RuleModellerWidget
                              "last" );
             completions.put( "isEmpty()",
                              "isEmpty" );
-            return completions;
-        }
-
-        if ( DataType.TYPE_STRING.equals( getCurrentGenericType() ) ) {
+            callback.callback( completions );
+            return;
+        } else if ( DataType.TYPE_STRING.equals( getCurrentGenericType() ) ) {
             completions.put( "size()",
                              "size" );
             completions.put( "isEmpty()",
                              "isEmpty" );
-            return completions;
-        }
-
-        if ( DataType.TYPE_BOOLEAN.equals( getCurrentGenericType() )
+            callback.callback( completions );
+            return;
+        } else if ( DataType.TYPE_BOOLEAN.equals( getCurrentGenericType() )
                 || DataType.TYPE_NUMERIC_BIGDECIMAL.equals( getCurrentGenericType() )
                 || DataType.TYPE_NUMERIC_BIGINTEGER.equals( getCurrentGenericType() )
                 || DataType.TYPE_NUMERIC_BYTE.equals( getCurrentGenericType() )
@@ -414,7 +420,8 @@ public class ExpressionBuilder extends RuleModellerWidget
                 || DataType.TYPE_NUMERIC_SHORT.equals( getCurrentGenericType() )
                 || DataType.TYPE_DATE.equals( getCurrentGenericType() )
                 || DataType.TYPE_OBJECT.equals( getCurrentGenericType() ) ) {
-            return completions;
+            callback.callback( completions );
+            return;
         }
 
         final String factName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
@@ -452,14 +459,16 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                                                                                    }
                                                                                                                }
                                                                                                            }
+                                                                                                           callback.callback( completions );
                                                                                                        }
                                                                                                    } );
                                                      }
                                                  } );
 
+        } else {
+            // else {We don't know anything about this type, so return empty map}
+            callback.callback( completions );
         }
-        // else {We don't know anything about this type, so return empty map}
-        return completions;
     }
 
     private RuleModel getRuleModel() {
