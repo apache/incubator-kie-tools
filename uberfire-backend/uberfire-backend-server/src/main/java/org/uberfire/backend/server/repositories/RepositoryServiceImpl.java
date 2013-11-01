@@ -23,6 +23,7 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -148,6 +149,11 @@ public class RepositoryServiceImpl implements RepositoryService {
         configuredRepositories.put( repository.getAlias(), repository );
         rootToRepo.put( repository.getRoot(), repository );
         return repository;
+    }
+
+    @Override
+    public String normalizeRepositoryName( String name ) {
+        return TextUtil.normalizeRepositoryName( name );
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

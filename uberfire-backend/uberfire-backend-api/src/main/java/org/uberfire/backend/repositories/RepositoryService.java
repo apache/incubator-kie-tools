@@ -25,6 +25,8 @@ public interface RepositoryService {
                                  final String alias,
                                  final Map<String, Object> env ) throws RepositoryAlreadyExistsException;
 
+    String normalizeRepositoryName ( final String name );
+
     void addRole( final Repository repository,
                   final String role );
 

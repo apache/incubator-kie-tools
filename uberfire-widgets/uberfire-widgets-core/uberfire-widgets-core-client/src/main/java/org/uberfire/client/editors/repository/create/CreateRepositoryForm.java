@@ -152,55 +152,59 @@ public class CreateRepositoryForm
     @UiHandler("create")
     public void onCreateClick( final ClickEvent e ) {
 
-        boolean hasError = false;
-        if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
-            nameGroup.setType( ControlGroupType.ERROR );
-            nameHelpInline.setText( "Repository Name is mandatory" );
-            hasError = true;
-        } else {
-            nameGroup.setType( ControlGroupType.NONE );
-        }
-
         final String organizationalUnit = organizationalUnitDropdown.getValue( organizationalUnitDropdown.getSelectedIndex() );
         if ( mandatoryOU && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             organizationalUnitGroup.setType( ControlGroupType.ERROR );
             organizationalUnitHelpInline.setText( "Organizational Unit is mandatory" );
-            hasError = true;
+            return;
         } else {
             organizationalUnitGroup.setType( ControlGroupType.NONE );
         }
 
-        if ( hasError ) {
+        if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
+            nameGroup.setType( ControlGroupType.ERROR );
+            nameHelpInline.setText( "Repository Name is mandatory" );
             return;
-        }
+        } else {
+            repositoryService.call( new RemoteCallback<String>() {
+                @Override
+                public void callback( String normalizedName ) {
+                    if ( !nameTextBox.getText().equals( normalizedName ) ) {
+                        if ( !Window.confirm( "Repository Name contained illegal characters and will be generated as \"" + normalizedName + "\". Do you agree?" ) ) return;
+                        nameTextBox.setText( normalizedName );
+                    }
 
-        final String scheme = "git";
-        final String alias = nameTextBox.getText().trim();
-        final Map<String, Object> env = new HashMap<String, Object>( 3 );
+                    final String scheme = "git";
+                    final String alias = nameTextBox.getText().trim();
+                    final Map<String, Object> env = new HashMap<String, Object>( 3 );
 
-        repositoryService.call( new RemoteCallback<Repository>() {
-                                    @Override
-                                    public void callback( Repository o ) {
-                                        Window.alert( "The repository is created successfully" );
-                                        hide();
+                    repositoryService.call( new RemoteCallback<Repository>() {
+                                                @Override
+                                                public void callback( Repository o ) {
+                                                    Window.alert( "The repository is created successfully" );
+                                                    hide();
+                                                }
+                                            },
+                            new ErrorCallback<Message>() {
+                                @Override
+                                public boolean error( final Message message,
+                                                      final Throwable throwable ) {
+                                    try {
+                                        throw throwable;
+                                    } catch ( RepositoryAlreadyExistsException ex ) {
+                                        ErrorPopup.showMessage( "Repository already exists." );
+                                    } catch ( Throwable ex ) {
+                                        ErrorPopup.showMessage( "Can't create repository. \n" + throwable.getMessage() );
                                     }
-                                },
-                                new ErrorCallback<Message>() {
-                                    @Override
-                                    public boolean error( final Message message,
-                                                          final Throwable throwable ) {
-                                        try {
-                                            throw throwable;
-                                        } catch ( RepositoryAlreadyExistsException ex ) {
-                                            ErrorPopup.showMessage( "Repository already exists." );
-                                        } catch ( Throwable ex ) {
-                                            ErrorPopup.showMessage( "Can't create repository. \n" + throwable.getMessage() );
-                                        }
 
-                                        return true;
-                                    }
+                                    return true;
                                 }
-                              ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
+                            }
+                    ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
+
+                }
+            }).normalizeRepositoryName( nameTextBox.getText() );
+        }
     }
 
     @UiHandler("cancel")

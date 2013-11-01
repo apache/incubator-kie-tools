@@ -174,23 +174,14 @@ public class CloneRepositoryForm
     @UiHandler("clone")
     public void onCloneClick( final ClickEvent e ) {
 
-        boolean hasError = false;
-        if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
-            nameGroup.setType( ControlGroupType.ERROR );
-            nameHelpInline.setText( "Repository Name is mandatory" );
-            hasError = true;
-        } else {
-            nameGroup.setType( ControlGroupType.NONE );
-        }
-
         if ( gitURLTextBox.getText() == null || gitURLTextBox.getText().trim().isEmpty() ) {
             urlGroup.setType( ControlGroupType.ERROR );
             urlHelpInline.setText( "URL is mandatory" );
-            hasError = true;
-        } else if ( !URIUtil.isValid( gitURLTextBox.getText().trim() ) ) {
+            return;
+        } else if ( !URIUtil.isValid(gitURLTextBox.getText().trim()) ) {
             urlGroup.setType( ControlGroupType.ERROR );
             urlHelpInline.setText( "Invalid URL format" );
-            hasError = true;
+            return;
         } else {
             urlGroup.setType( ControlGroupType.NONE );
         }
@@ -198,51 +189,64 @@ public class CloneRepositoryForm
         if ( mandatoryOU && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             organizationalUnitGroup.setType( ControlGroupType.ERROR );
             organizationalUnitHelpInline.setText( "Organizational Unit is mandatory" );
-            hasError = true;
+            return;
         } else {
             organizationalUnitGroup.setType( ControlGroupType.NONE );
         }
 
-        if ( hasError ) {
+        if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
+            nameGroup.setType( ControlGroupType.ERROR );
+            nameHelpInline.setText( "Repository Name is mandatory" );
             return;
-        }
+        } else {
+            repositoryService.call( new RemoteCallback<String>() {
+                @Override
+                public void callback( String normalizedName ) {
+                    if ( !nameTextBox.getText().equals( normalizedName ) ) {
+                        if ( !Window.confirm( "Repository Name contained illegal characters and will be generated as \"" + normalizedName + "\". Do you agree?" ) ) return;
+                        nameTextBox.setText( normalizedName );
+                    }
 
-        lockScreen();
+                    lockScreen();
 
-        final String scheme = "git";
-        final String alias = nameTextBox.getText().trim();
-        final String origin = gitURLTextBox.getText().trim();
-        final String username = usernameTextBox.getText().trim();
-        final String password = passwordTextBox.getText().trim();
-        final Map<String, Object> env = new HashMap<String, Object>( 3 );
-        env.put( "username", username );
-        env.put( "crypt:password", password );
-        env.put( "origin", origin );
+                    final String scheme = "git";
+                    final String alias = nameTextBox.getText().trim();
+                    final String origin = gitURLTextBox.getText().trim();
+                    final String username = usernameTextBox.getText().trim();
+                    final String password = passwordTextBox.getText().trim();
+                    final Map<String, Object> env = new HashMap<String, Object>( 3 );
+                    env.put( "username", username );
+                    env.put( "crypt:password", password );
+                    env.put( "origin", origin );
 
-        repositoryService.call( new RemoteCallback<Repository>() {
-                                    @Override
-                                    public void callback( Repository o ) {
-                                        BusyPopup.close();
-                                        Window.alert( "The repository is cloned successfully" );
-                                        hide();
+                    repositoryService.call( new RemoteCallback<Repository>() {
+                                                @Override
+                                                public void callback( Repository o ) {
+                                                    BusyPopup.close();
+                                                    Window.alert( "The repository is cloned successfully" );
+                                                    hide();
+                                                }
+                                            },
+                            new ErrorCallback<Message>() {
+                                @Override
+                                public boolean error( final Message message,
+                                                      final Throwable throwable ) {
+                                    try {
+                                        throw throwable;
+                                    } catch ( RepositoryAlreadyExistsException ex ) {
+                                        ErrorPopup.showMessage( "Repository already exists." );
+                                    } catch ( Throwable ex ) {
+                                        ErrorPopup.showMessage( "Can't clone repository. \n" + throwable.getMessage() );
                                     }
-                                },
-                                new ErrorCallback<Message>() {
-                                    @Override
-                                    public boolean error( final Message message,
-                                                          final Throwable throwable ) {
-                                        try {
-                                            throw throwable;
-                                        } catch ( RepositoryAlreadyExistsException ex ) {
-                                            ErrorPopup.showMessage( "Repository already exists." );
-                                        } catch ( Throwable ex ) {
-                                            ErrorPopup.showMessage( "Can't clone repository. \n" + throwable.getMessage() );
-                                        }
-                                        unlockScreen();
-                                        return true;
-                                    }
+                                    unlockScreen();
+                                    return true;
                                 }
-                              ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
+                            }
+                    ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
+
+                }
+            }).normalizeRepositoryName( nameTextBox.getText() );
+        }
     }
 
     private void lockScreen() {
