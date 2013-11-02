@@ -162,7 +162,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             public void callback( FolderListing fl ) {
                 getView().getExplorer().loadContent( fl );
             }
-        } ).getFolderListing( item, options );
+        } ).getFolderListing( activeOrganizationalUnit,
+                              activeRepository,
+                              activeProject,
+                              item,
+                              options );
     }
 
     @Override
@@ -358,7 +362,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                     getView().setItems( folderListing );
                     getView().hideBusyIndicator();
                 }
-            }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing( item, null );
+            }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing( activeOrganizationalUnit,
+                                                                                         activeRepository,
+                                                                                         activeProject,
+                                                                                         item,
+                                                                                         getActiveOptions() );
         }
     }
 
@@ -447,11 +455,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
             doInitialiseViewForActiveContext( activeOrganizationalUnit,
-                    activeRepository,
-                    project,
-                    null,
-                    null,
-                    false );
+                                              activeRepository,
+                                              project,
+                                              null,
+                                              null,
+                                              false );
         }
     }
 
@@ -490,7 +498,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             public void callback( final FolderListing folderListing ) {
                 getView().setItems( folderListing );
             }
-        }, new DefaultErrorCallback() ).getFolderListing( activeFolderItem, null );
+        }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
+                                                          activeRepository,
+                                                          activeProject,
+                                                          activeFolderItem,
+                                                          getActiveOptions() );
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
@@ -512,7 +524,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             public void callback( final FolderListing folderListing ) {
                 getView().setItems( folderListing );
             }
-        }, new DefaultErrorCallback() ).getFolderListing( activeFolderItem, null );
+        }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
+                                                          activeRepository,
+                                                          activeProject,
+                                                          activeFolderItem,
+                                                          getActiveOptions() );
     }
 
     // Refresh when a Resource has been copied, if it exists in the active package
@@ -534,7 +550,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             public void callback( final FolderListing folderListing ) {
                 getView().setItems( folderListing );
             }
-        }, new DefaultErrorCallback() ).getFolderListing( activeFolderItem, null );
+        }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
+                                                          activeRepository,
+                                                          activeProject,
+                                                          activeFolderItem,
+                                                          getActiveOptions() );
     }
 
     // Refresh when a Resource has been renamed, if it exists in the active package
@@ -560,7 +580,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 public void callback( final FolderListing folderListing ) {
                     getView().setItems( folderListing );
                 }
-            }, new DefaultErrorCallback() ).getFolderListing( activeFolderItem, null );
+            }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
+                                                              activeRepository,
+                                                              activeProject,
+                                                              activeFolderItem,
+                                                              getActiveOptions() );
         }
     }
 

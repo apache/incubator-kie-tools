@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Divider;
@@ -31,9 +30,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenterImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenterImpl;
+import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -55,7 +59,7 @@ import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 /**
  * Repository, Package, Folder and File explorer
  */
-@Dependent
+@ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.explorer")
 public class ExplorerPresenterImpl implements ExplorerPresenter {
 
@@ -71,16 +75,40 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @Inject
     private ProjectContext context;
 
-    private final NavLink businessView = new NavLink( "Business view" );
-    private final NavLink techView = new NavLink( "Tech view" );
-    private final NavLink treeExplorer = new NavLink( "Tree Explorer" );
-    private final NavLink breadcrumbExplorer = new NavLink( "Breadcrumb Explorer" );
-    private final NavLink hiddenFiles = new NavLink( "Display hidden items" );
+    @Inject
+    protected Caller<ExplorerService> explorerService;
+
+    private final NavLink businessView = new NavLink( "Project View" );
+    private final NavLink techView = new NavLink( "Repository View" );
+    private final NavLink treeExplorer = new NavLink( "Show as Links" );
+    private final NavLink breadcrumbExplorer = new NavLink( "Show as Folders" );
+//    private final NavLink hiddenFiles = new NavLink( "Display hidden items" );
 
     private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS ) );
 
-    @PostConstruct
+    @AfterInitialization
     public void init() {
+        explorerService.call( new RemoteCallback<Set<Option>>() {
+                                  @Override
+                                  public void callback( Set<Option> o ) {
+                                      if ( o != null && !o.isEmpty() ) {
+                                          options.clear();
+                                          options.addAll( o );
+                                      }
+                                      config();
+                                  }
+                              }, new ErrorCallback<Object>() {
+                                  @Override
+                                  public boolean error( Object o,
+                                                        Throwable throwable ) {
+                                      config();
+                                      return false;
+                                  }
+                              }
+                            ).getLastUserOptions();
+    }
+
+    private void config() {
         businessView.setIconSize( IconSize.SMALL );
         businessView.addClickHandler( new ClickHandler() {
             @Override
@@ -105,18 +133,18 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
             }
         } );
 
-        hiddenFiles.setIconSize( IconSize.SMALL );
-        hiddenFiles.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent clickEvent ) {
-                if ( options.contains( Option.EXCLUDE_HIDDEN_ITEMS ) ) {
-                    includeHiddenItems();
-                } else {
-                    excludeHiddenItems();
-                }
-                update();
-            }
-        } );
+//        hiddenFiles.setIconSize( IconSize.SMALL );
+//        hiddenFiles.addClickHandler( new ClickHandler() {
+//            @Override
+//            public void onClick( ClickEvent clickEvent ) {
+//                if ( options.contains( Option.EXCLUDE_HIDDEN_ITEMS ) ) {
+//                    includeHiddenItems();
+//                } else {
+//                    excludeHiddenItems();
+//                }
+//                update();
+//            }
+//        } );
 
         treeExplorer.setIconSize( IconSize.SMALL );
         treeExplorer.addClickHandler( new ClickHandler() {
@@ -188,7 +216,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         options.add( Option.TECHNICAL_CONTENT );
         techView.setIcon( IconType.ASTERISK );
         businessView.setIcon( null );
-        hiddenFiles.setDisabled( false );
+//        hiddenFiles.setDisabled( false );
     }
 
     private void activateBusinessView() {
@@ -196,19 +224,19 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         options.remove( Option.TECHNICAL_CONTENT );
         businessView.setIcon( IconType.ASTERISK );
         techView.setIcon( null );
-        hiddenFiles.setDisabled( true );
+//        hiddenFiles.setDisabled( true );
     }
 
     private void includeHiddenItems() {
         options.add( Option.INCLUDE_HIDDEN_ITEMS );
         options.remove( Option.EXCLUDE_HIDDEN_ITEMS );
-        hiddenFiles.setIcon( IconType.CHECK );
+//        hiddenFiles.setIcon( IconType.CHECK );
     }
 
     private void excludeHiddenItems() {
         options.remove( Option.INCLUDE_HIDDEN_ITEMS );
         options.add( Option.EXCLUDE_HIDDEN_ITEMS );
-        hiddenFiles.setIcon( null );
+//        hiddenFiles.setIcon( null );
     }
 
     @WorkbenchPartView
@@ -252,8 +280,8 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                         add( new Divider() );
                                         add( breadcrumbExplorer );
                                         add( treeExplorer );
-                                        add( new Divider() );
-                                        add( hiddenFiles );
+//                                        add( new Divider() );
+//                                        add( hiddenFiles );
                                     }
                                 };
                             }

@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.collect.Lists;
+import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -41,9 +42,12 @@ import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -59,11 +63,17 @@ import static java.util.Collections.*;
 public class ExplorerServiceImpl
         implements ExplorerService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger( ExplorerServiceImpl.class );
+
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    @Named("configIO")
+    private IOService ioServiceConfig;
 
     @Inject
     private ProjectService projectService;
@@ -77,6 +87,13 @@ public class ExplorerServiceImpl
     @Inject
     @SessionScoped
     private Identity identity;
+
+    @Inject
+    private UserServicesImpl userServices;
+
+    private XStream xs = new XStream();
+
+    private UserExplorerData content;
 
     public ExplorerServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -104,8 +121,47 @@ public class ExplorerServiceImpl
         OrganizationalUnit selectedOrganizationalUnit = organizationalUnit;
         Repository selectedRepository = repository;
         Project selectedProject = project;
-        FolderItem selectedItem = item;
         Package selectedPackage = pkg;
+        FolderItem selectedItem = item;
+
+        final UserExplorerLastData lastContent = getLastContent();
+        if ( !lastContent.isDataEmpty() ) {
+            if ( organizationalUnit == null && repository == null && project == null ) {
+                if ( options.contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
+                    selectedOrganizationalUnit = lastContent.getLastPackage().getOrganizationalUnit();
+                    selectedRepository = lastContent.getLastPackage().getRepository();
+                    selectedProject = lastContent.getLastPackage().getProject();
+                    selectedPackage = lastContent.getLastPackage().getPkg();
+                    selectedItem = null;
+                } else if ( options.contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
+                    selectedOrganizationalUnit = lastContent.getLastFolderItem().getOrganizationalUnit();
+                    selectedRepository = lastContent.getLastFolderItem().getRepository();
+                    selectedProject = lastContent.getLastFolderItem().getProject();
+                    selectedItem = lastContent.getLastFolderItem().getItem();
+                    selectedPackage = null;
+                }
+            } else if ( options.contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
+                if ( !organizationalUnit.equals( lastContent.getLastPackage().getOrganizationalUnit() ) ||
+                        repository != null && !repository.equals( lastContent.getLastPackage().getRepository() ) ||
+                        project != null && !project.equals( lastContent.getLastPackage().getProject() ) ) {
+                    selectedOrganizationalUnit = loadOrganizationalUnit( organizationalUnit );
+                    selectedRepository = loadRepository( selectedOrganizationalUnit, repository );
+                    selectedProject = loadProject( selectedOrganizationalUnit, selectedRepository, project );
+                    selectedPackage = loadPackage( selectedOrganizationalUnit, selectedRepository, selectedProject, pkg );
+                    selectedItem = null;
+                }
+            } else if ( options.contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
+                if ( !organizationalUnit.equals( lastContent.getLastFolderItem().getOrganizationalUnit() ) ||
+                        repository != null && !repository.equals( lastContent.getLastFolderItem().getRepository() ) ||
+                        project != null && !project.equals( lastContent.getLastFolderItem().getProject() ) ) {
+                    selectedOrganizationalUnit = loadOrganizationalUnit( organizationalUnit );
+                    selectedRepository = loadRepository( selectedOrganizationalUnit, repository );
+                    selectedProject = loadProject( selectedOrganizationalUnit, selectedRepository, project );
+                    selectedItem = loadFolderItem( selectedOrganizationalUnit, selectedRepository, selectedProject, item );
+                    selectedPackage = null;
+                }
+            }
+        }
 
         final Set<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
         if ( !organizationalUnits.contains( selectedOrganizationalUnit ) ) {
@@ -122,8 +178,7 @@ public class ExplorerServiceImpl
             selectedProject = ( projects.isEmpty() ? null : projects.iterator().next() );
         }
 
-        if ( selectedOrganizationalUnit == null || selectedRepository == null ||
-                selectedProject == null ) {
+        if ( selectedOrganizationalUnit == null || selectedRepository == null || selectedProject == null ) {
             return new ProjectExplorerContent(
                     new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER ) {{
                         addAll( organizationalUnits );
@@ -146,12 +201,12 @@ public class ExplorerServiceImpl
             final List<FolderItem> segments;
             if ( options.contains( Option.BUSINESS_CONTENT ) ) {
                 final Package defautlPackage;
-                if ( pkg == null ) {
+                if ( selectedPackage == null ) {
                     defautlPackage = projectService.resolveDefaultPackage( selectedProject );
                     segments = Collections.emptyList();
                 } else {
-                    defautlPackage = pkg;
-                    segments = getPackageSegments( pkg );
+                    defautlPackage = selectedPackage;
+                    segments = getPackageSegments( selectedPackage );
                 }
                 folderListing = new FolderListing( toFolderItem( defautlPackage ),
                                                    getItems( defautlPackage ),
@@ -160,14 +215,43 @@ public class ExplorerServiceImpl
                 folderListing = getFolderListing( selectedProject.getRootPath() );
             }
         } else {
-            folderListing = getFolderListing( selectedItem, options );
+            folderListing = getFolderListing( selectedItem );
         }
 
         if ( selectedPackage != null && folderListing == null ) {
             folderListing = new FolderListing( toFolderItem( selectedPackage ),
                                                getItems( selectedPackage ),
-                                               getPackageSegments( pkg ) );
+                                               getPackageSegments( selectedPackage ) );
         }
+
+        final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
+        final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );
+
+        final OrganizationalUnit _selectedOrganizationalUnit = selectedOrganizationalUnit;
+        final Repository _selectedRepository = selectedRepository;
+        final Project _selectedProject = selectedProject;
+        final FolderItem _selectedItem = folderListing.getItem();
+        final Package _selectedPackage;
+        if ( selectedPackage != null ) {
+            _selectedPackage = selectedPackage;
+        } else if ( folderListing.getItem().getItem() instanceof Package ) {
+            _selectedPackage = (Package) folderListing.getItem().getItem();
+        } else {
+            _selectedPackage = null;
+        }
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    store( userNavPath, lastUserNavPath, _selectedOrganizationalUnit,
+                           _selectedRepository, _selectedProject,
+                           _selectedPackage, _selectedItem, options );
+                } catch ( final Exception e ) {
+                    LOGGER.error( "Can't serialize user's state navigation", e );
+                }
+            }
+        }.start();
 
         return new ProjectExplorerContent(
                 new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER ) {{
@@ -184,6 +268,154 @@ public class ExplorerServiceImpl
                 selectedProject,
                 folderListing
         );
+    }
+
+    private OrganizationalUnit loadOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+        if ( organizationalUnit != null ) {
+            return organizationalUnit;
+        }
+
+        if ( content == null ) {
+            loadContent();
+        }
+        return content.getOrganizationalUnit();
+    }
+
+    private Repository loadRepository( final OrganizationalUnit organizationalUnit,
+                                       final Repository repository ) {
+        if ( organizationalUnit == null ) {
+            return null;
+        }
+        if ( repository != null ) {
+            return repository;
+        }
+
+        if ( content == null ) {
+            loadContent();
+        }
+        return content.get( organizationalUnit );
+    }
+
+    private Project loadProject( final OrganizationalUnit organizationalUnit,
+                                 final Repository repository,
+                                 final Project project ) {
+        if ( repository == null ) {
+            return null;
+        }
+        if ( project != null ) {
+            return project;
+        }
+
+        if ( content == null ) {
+            loadContent();
+        }
+        return content.get( organizationalUnit, repository );
+    }
+
+    private Package loadPackage( final OrganizationalUnit organizationalUnit,
+                                 final Repository repository,
+                                 final Project project,
+                                 final Package pkg ) {
+        if ( project == null ) {
+            return null;
+        }
+
+        if ( pkg != null ) {
+            return pkg;
+        }
+
+        if ( content == null ) {
+            loadContent();
+        }
+        return content.getPackage( organizationalUnit, repository, project );
+    }
+
+    private FolderItem loadFolderItem( final OrganizationalUnit organizationalUnit,
+                                       final Repository repository,
+                                       final Project project,
+                                       final FolderItem item ) {
+        if ( project == null ) {
+            return null;
+        }
+
+        if ( item != null ) {
+            return item;
+        }
+
+        if ( content == null ) {
+            loadContent();
+        }
+        return content.getFolderItem( organizationalUnit, repository, project );
+    }
+
+    private void loadContent() {
+        loadContent( userServices.buildPath( "explorer", "user.nav" ) );
+    }
+
+    private UserExplorerData loadContent( final org.uberfire.java.nio.file.Path path ) {
+        try {
+            if ( ioServiceConfig.exists( path ) ) {
+                final String xml = ioServiceConfig.readAllString( path );
+                content = (UserExplorerData) xs.fromXML( xml );
+            } else {
+                content = new UserExplorerData();
+            }
+        } catch ( final Exception e ) {
+            content = new UserExplorerData();
+        }
+        return content;
+    }
+
+    private UserExplorerLastData getLastContent() {
+        try {
+            final org.uberfire.java.nio.file.Path path = userServices.buildPath( "explorer", "last.user.nav" );
+            if ( ioServiceConfig.exists( path ) ) {
+                final String xml = ioServiceConfig.readAllString( path );
+                return (UserExplorerLastData) xs.fromXML( xml );
+            } else {
+                return new UserExplorerLastData();
+            }
+        } catch ( final Exception e ) {
+            return new UserExplorerLastData();
+        }
+    }
+
+    private void store( final org.uberfire.java.nio.file.Path userNav,
+                        final org.uberfire.java.nio.file.Path lastUserNav,
+                        final OrganizationalUnit organizationalUnit,
+                        final Repository repository,
+                        final Project project,
+                        final Package pkg,
+                        final FolderItem item,
+                        final Set<Option> options ) {
+        final UserExplorerData content = loadContent( userNav );
+        final UserExplorerLastData lastContent = new UserExplorerLastData();
+        if ( organizationalUnit != null ) {
+            content.setOrganizationalUnit( organizationalUnit );
+        }
+        if ( repository != null && organizationalUnit != null ) {
+            content.addRepository( organizationalUnit, repository );
+        }
+        if ( project != null && organizationalUnit != null && repository != null ) {
+            content.addProject( organizationalUnit, repository, project );
+        }
+        if ( item != null && organizationalUnit != null && repository != null && project != null ) {
+            lastContent.setFolderItem( organizationalUnit, repository, project, item );
+            content.addFolderItem( organizationalUnit, repository, project, item );
+        }
+        if ( pkg != null && organizationalUnit != null && repository != null && project != null ) {
+            lastContent.setPackage( organizationalUnit, repository, project, pkg );
+            content.addPackage( organizationalUnit, repository, project, pkg );
+        }
+        if ( options != null && !options.isEmpty() ) {
+            lastContent.setOptions( options );
+        }
+        if ( !content.isEmpty() ) {
+            ioServiceConfig.write( userNav,
+                                   xs.toXML( content ) );
+            ioServiceConfig.write( lastUserNav,
+                                   xs.toXML( lastContent ) );
+        }
     }
 
     private FolderItem toFolderItem( final Package pkg ) {
@@ -285,15 +517,48 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public FolderListing getFolderListing( final FolderItem item,
+    public FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
+                                           final Repository repository,
+                                           final Project project,
+                                           final FolderItem item,
                                            final Set<Option> options ) {
-        if ( item.getItem() instanceof Path ) {
-            return getFolderListing( (Path) item.getItem() );
-        } else if ( item.getItem() instanceof Package ) {
-            return getFolderListing( (Package) item.getItem() );
+        //TODO: BUSINESS_CONTENT, TECHNICAL_CONTENT
+        final FolderListing result = getFolderListing( item );
+
+        if ( result != null ) {
+            final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
+            final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );
+
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        Package pkg = null;
+                        if ( item.getItem() instanceof Package ) {
+                            pkg = (Package) item.getItem();
+                        }
+                        store( userNavPath, lastUserNavPath, organizationalUnit,
+                               repository, project, pkg, item, options );
+                    } catch ( final Exception e ) {
+                        LOGGER.error( "Can't serialize user's state navigation", e );
+                    }
+                }
+            }.start();
         }
 
-        return null;
+        return result;
+    }
+
+    private FolderListing getFolderListing( final FolderItem item ) {
+
+        FolderListing result = null;
+        if ( item.getItem() instanceof Path ) {
+            result = getFolderListing( (Path) item.getItem() );
+        } else if ( item.getItem() instanceof Package ) {
+            result = getFolderListing( (Package) item.getItem() );
+        }
+
+        return result;
     }
 
     private FolderListing getFolderListing( final Path path ) {
@@ -397,6 +662,11 @@ public class ExplorerServiceImpl
         }
 
         return null;
+    }
+
+    @Override
+    public Set<Option> getLastUserOptions() {
+        return getLastContent().getOptions();
     }
 
 }

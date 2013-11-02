@@ -27,6 +27,7 @@ import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.PanelManager;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
@@ -35,12 +36,17 @@ import org.uberfire.client.mvp.PlaceManager;
 @ApplicationScoped
 public class ProblemsService {
 
+    private static final String HOME_PERSPECTIVE = "Home";
+
     private final PlaceManager placeManager;
+    private final PanelManager panelManager;
     private final ListDataProvider<BuildMessage> dataProvider = new ListDataProvider<BuildMessage>();
 
     @Inject
-    public ProblemsService( PlaceManager placeManager ) {
+    public ProblemsService( final PlaceManager placeManager,
+                            final PanelManager panelManager ) {
         this.placeManager = placeManager;
+        this.panelManager = panelManager;
     }
 
     public void addBuildMessages( final @Observes BuildResults results ) {
@@ -49,7 +55,9 @@ public class ProblemsService {
         for ( BuildMessage buildMessage : results.getMessages() ) {
             list.add( buildMessage );
         }
-        placeManager.goTo( "org.kie.guvnor.Problems" );
+        if ( !panelManager.getPerspective().getName().equals( HOME_PERSPECTIVE ) ) {
+            placeManager.goTo( "org.kie.guvnor.Problems" );
+        }
     }
 
     public void addIncrementalBuildMessages( final @Observes IncrementalBuildResults results ) {
@@ -63,7 +71,9 @@ public class ProblemsService {
         for ( BuildMessage buildMessage : addedMessages ) {
             list.add( buildMessage );
         }
-        placeManager.goTo( "org.kie.guvnor.Problems" );
+        if ( !panelManager.getPerspective().getName().equals( HOME_PERSPECTIVE ) ) {
+            placeManager.goTo( "org.kie.guvnor.Problems" );
+        }
     }
 
     public void addDataDisplay( HasData<BuildMessage> display ) {

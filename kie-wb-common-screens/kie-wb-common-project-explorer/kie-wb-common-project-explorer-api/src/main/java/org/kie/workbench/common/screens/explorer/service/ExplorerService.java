@@ -40,9 +40,14 @@ public interface ExplorerService {
                                        final FolderItem item,
                                        final Set<Option> options );
 
-    FolderListing getFolderListing( final FolderItem item,
+    FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
+                                    final Repository repository,
+                                    final Project project,
+                                    final FolderItem item,
                                     final Set<Option> options );
 
     Package resolvePackage( final FolderItem item );
+
+    Set<Option> getLastUserOptions();
 
 }
