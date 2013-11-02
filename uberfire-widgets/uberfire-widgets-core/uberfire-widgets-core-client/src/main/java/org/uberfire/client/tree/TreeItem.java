@@ -217,7 +217,7 @@ public class TreeItem extends Composite {
     void updateState( final State state ) {
         // If the tree hasn't been set, there is no visual state to update.
         // If the tree is not attached, then update will be called on attach.
-        if ( tree == null || !tree.isAttached() ) {
+        if ( tree == null ) {
             return;
         }
 
