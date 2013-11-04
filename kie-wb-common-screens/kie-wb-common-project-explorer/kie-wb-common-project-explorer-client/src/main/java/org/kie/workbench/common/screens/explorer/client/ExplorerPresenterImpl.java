@@ -80,8 +80,8 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
 
     private final NavLink businessView = new NavLink( "Project View" );
     private final NavLink techView = new NavLink( "Repository View" );
-    private final NavLink treeExplorer = new NavLink( "Show as Links" );
-    private final NavLink breadcrumbExplorer = new NavLink( "Show as Folders" );
+    private final NavLink treeExplorer = new NavLink( "Show as Folders" );
+    private final NavLink breadcrumbExplorer = new NavLink( "Show as Links" );
 //    private final NavLink hiddenFiles = new NavLink( "Display hidden items" );
 
     private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS ) );
