@@ -38,15 +38,22 @@ in your application:
 - A modular, user-configurable user interface (the user can rearrange designated portions of the UI by drag-and-drop)
   - The framework can remember an arbitrary number of such arrangements (each is called a Perspective)
     and the user can switch between them
+  - The framework can limit visibility of UI elements (say, toolbar buttons and menu items)
+    based on security authorization
 - Nestable drop-down menus
 - Tool bars
 - Navigation through tree-structured collection of documents (a virtual filesystem or VFS)
   - Each file in the VFS supports change tracking, revision control, and update notification
+  - The contents of the VFS can also be searched using a performant full-text search engine
+    (TODO: is this correct? I think this is the purpose of uberfire-metadata)
 
 To be clear, an application built with UberFire does not have to use
 all of the features listed above. If your app needs toolbars and a
 version-tracking VFS, but not a drag-and-drop layout or nested menus,
 UberFire may still be a good choice.
+
+ALSO MENTION: js native plugins
+ALSO MENTION: CDI everywhere
 
 
 UberFire Core Concepts
@@ -130,3 +137,141 @@ which contains mostly server-only code.
 - Clustering (see also UberFire Commons)
 - IO Services (Clustered service, Search Service, Watch Service)
 
+
+UberFire JS Concepts
+~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-js` package, which
+exposes a JavaScript API for some aspects of the UberFire framework.
+This gives application developers the option to write UberFire
+applications partly or entirely in JavaScript.
+
+- JavaScript native plugin, with types representing
+  - Entry points
+  - Perspectives
+  - Plugins
+  - Workbench perspective activities
+  - Workbench screen activities
+  - Panel definitions
+  - Part definitions
+
+
+UberFire Metadata Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-metadata` package,
+which appears to be a full-text search and indexing feature (TODO: is this correct?)
+
+The UberFire Metadata module includes an API submodule which defines
+the following concepts, and one implementation of the API (a "metadata
+backend") that relies on Apache Lucene:
+
+- Metadata index engine
+- Metamodel store
+- "K" objects:
+  - KObject
+  - KObjectKey
+  - KObjectSimpleKey
+  - KProperty
+  - KPropertyBag
+- MetaObject
+- MetaProperty
+- MetaType
+- Cluster segment
+- Date range
+- Search index
+
+There is also a small submodule called `uberfire-metadata-commons-io`
+which introduces the following concepts:
+
+- Batch index
+- IO Search index
+
+
+UberFire NIO2 Concepts
+~~~~~~~~~~~~~~~~~~~~~~
+
+The `uberfire-nio2-backport` module includes a backport of the Java SE
+7 "new new IO" APIs to Java SE 6. The backport is repackaged under the
+org.uberfire.java.nio.* namespace. It also provides a couple of utility
+classes in the `org.apache.commons.io` package.
+
+The UberFire NIO2 API is only intended for use on the server side.
+
+UberFire includes NIO2 FileSystem implementations for the plain
+filesystem, for git repositories (via jgit), and for the Eclipse
+virtual filesystem.
+
+
+UberFire Security Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-security-api` package,
+and they are all available to both client- and server-side code.
+
+- Security interceptor annotations (for types and methods)
+  - `@All`
+  - `@Authorized`
+  - `@Deny`
+  - `@Roles({})`
+- Authenticated Storage
+- Authentication Manager
+- Authentication Provider
+- Authentication Result
+- Authentication Scheme
+- Authentication Source
+- Authentication Status
+- Credential
+- Principal
+- Role
+- Subject Properties
+- Authorization Manager
+- Decision Managers:
+  - Resource Decision Manager
+  - Role Decision Manager
+- Roles Resource
+- Runtime Resource
+- Voting Strategy
+- Crypt Provider
+- Identity
+- Resource
+- Resource Manager
+- Security Context
+- Security Manager
+- Subject
+
+There is an `uberfire-security-client` module, but it's just
+"plumbing:" it doesn't expose any concepts that are used directly in
+application code.
+
+These concepts are expressed in the `uberfire-security-server`
+package, which contains a variety of server-side implementations of
+the UberFire Security API types:
+
+- Authentication Managers: HTTP (servlets)
+- Authentication Schemes: Form, HttpBasic, JACC, "Remember Me" Cookie
+- Authenticated Storage: Cookie Storage, Http Session Storage
+- Authentication Providers: Default, "Remember Me" Cookie
+- Authentication Sources: Database (JDBC), JACC, users.properties file
+- Security Interceptors: Role-based, Trait-based
+- Crypt Providers: Default
+- Security Contexts: HTTP (servlets)
+- Security Managers: HTTP (servlets)
+- Voting Strategies: Affirmative, Consensus, Unanimous
+
+Plus some new concepts:
+
+- URL Resource
+- Ant Paths
+
+
+UberFire Server Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-server` package,
+which contains some server-side functionality.
+
+- UberFire Image Servlet
+  - UberFire Image Paths
+- UberFire Servlet
+  - App template, header template, footer template, user data template
