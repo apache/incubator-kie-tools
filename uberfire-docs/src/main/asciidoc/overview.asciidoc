@@ -34,17 +34,17 @@ applications can take advantage of most of these.
 UberFire makes it easy to include any or all of the following elements
 in your application:
 
-- User identity (login/logout) and authorization (access roles and permissions)
-- A modular, user-configurable user interface (the user can rearrange designated portions of the UI by drag-and-drop)
-  - The framework can remember an arbitrary number of such arrangements (each is called a Perspective)
+* User identity (login/logout) and authorization (access roles and permissions)
+* A modular, user-configurable user interface (the user can rearrange designated portions of the UI by drag-and-drop)
+** The framework can remember an arbitrary number of such arrangements (each is called a Perspective)
     and the user can switch between them
-  - The framework can limit visibility of UI elements (say, toolbar buttons and menu items)
+** The framework can limit visibility of UI elements (say, toolbar buttons and menu items)
     based on security authorization
-- Nestable drop-down menus
-- Tool bars
-- Navigation through tree-structured collection of documents (a virtual filesystem or VFS)
-  - Each file in the VFS supports change tracking, revision control, and update notification
-  - The contents of the VFS can also be searched using a performant full-text search engine
+* Nestable drop-down menus
+* Tool bars
+* Navigation through tree-structured collection of documents (a virtual filesystem or VFS)
+** Each file in the VFS supports change tracking, revision control, and update notification
+** The contents of the VFS can also be searched using a performant full-text search engine
     (TODO: is this correct? I think this is the purpose of uberfire-metadata)
 
 To be clear, an application built with UberFire does not have to use
@@ -64,20 +64,20 @@ footnote:[A few of these concepts actually come from Errai and GWT,
 but the distinction isn't important when getting started with
 UberFire.] so they permeate all parts of the UberFire framework:
 
-- Perspectives
-- Screens
-- Widgets
-- Places and PlaceRequests
-- Contexts
-- Panels
-- Parts
-- Widgets
-- Menus: items, groups, factories, commands, positions
-- Tool bars: items, icons, types
-- Resources
-- File Navigators
-- Identity
-- Marshalling
+* Perspectives
+* Screens
+* Widgets
+* Places and PlaceRequests
+* Contexts
+* Panels
+* Parts
+* Widgets
+* Menus: items, groups, factories, commands, positions
+* Tool bars: items, icons, types
+* Resources
+* File Navigators
+* Identity
+* Marshalling
 
 
 UberFire Backend API Concepts
@@ -86,11 +86,11 @@ UberFire Backend API Concepts
 These concepts are expressed in the `uberfire-backend-api` module, which
 TODO: characterize this module; it's (mostly) not just for the server-side.
 
-- Deployment
-- Organizational Unit
-- Repository
-- Configuration (server-side only): ConfigGroup, ConfigItem, ConfigurationFactory
-- VFS (Virtual Filesystem)
+* Deployment
+* Organizational Unit
+* Repository
+* Configuration (server-side only): ConfigGroup, ConfigItem, ConfigurationFactory
+* VFS (Virtual Filesystem)
 
 
 UberFire Client API Concepts
@@ -100,13 +100,13 @@ These concepts are expressed in the `uberfire-client-api` package,
 which defines an API that's only accessible to client-side
 (in-browser) code.
 
-- Default Position
-- Perspective
-- Workbench things: Context, Context ID, Editor, Menu, Title, TitleDecoration, View, Popup, Screen, Tool Bar
-- `UberView`, a way of injecting MVP presenters into views
-- `UberFirePreferences`, a public global map
-- Resource types: Any, Client, and Dot
-- Client Type Registry
+* Default Position
+* Perspective
+* Workbench things: Context, Context ID, Editor, Menu, Title, TitleDecoration, View, Popup, Screen, Tool Bar
+* `UberView`, a way of injecting MVP presenters into views
+* `UberFirePreferences`, a public global map
+* Resource types: Any, Client, and Dot
+* Client Type Registry
 
 
 UberFire Commons Concepts
@@ -115,15 +115,15 @@ UberFire Commons Concepts
 These concepts are expressed in the `uberfire-commons` package,
 which contains a mix of server-only definitions shared client/server definitions.
 
-- Clustering (server-only, see also UberFire I/O)
-- Pair, a generic 2-tuple (client + server)
-- Lock Service (server-only)
-- Cluster Messaging (server-only, for clustered deployments; distinct from Errai Bus messages)
-  - AsyncCallback, MessageHandler, MessageHandlerResolver, MessageService, MessageType
-- CDI Startup Beans (the @Startup annotation) (server-only)
-- PortablePreconditions (client + server), a collection of static methods for checking common preconditions (reference not null, list not empty, etc.)
-  - Note: Errai has a shared class called Assert which serves a similar purpose
-- Preconditions (server-only), precondition checks that are not GWT-translatable
+* Clustering (server-only, see also UberFire I/O)
+* Pair, a generic 2-tuple (client + server)
+* Lock Service (server-only)
+* Cluster Messaging (server-only, for clustered deployments; distinct from Errai Bus messages)
+** AsyncCallback, MessageHandler, MessageHandlerResolver, MessageService, MessageType
+* CDI Startup Beans (the @Startup annotation) (server-only)
+* PortablePreconditions (client + server), a collection of static methods for checking common preconditions (reference not null, list not empty, etc.)
+** Note: Errai has a shared class called Assert which serves a similar purpose
+* Preconditions (server-only), precondition checks that are not GWT-translatable
 
 
 UberFire I/O Concepts
@@ -132,10 +132,10 @@ UberFire I/O Concepts
 These concepts are expressed in the `uberfire-io` package,
 which contains mostly server-only code.
 
-- Dublin Core (TM) metadata
-- FileSystemType (client + server)
-- Clustering (see also UberFire Commons)
-- IO Services (Clustered service, Search Service, Watch Service)
+* Dublin Core (TM) metadata
+* FileSystemType (client + server)
+* Clustering (see also UberFire Commons)
+* IO Services (Clustered service, Search Service, Watch Service)
 
 
 UberFire JS Concepts
@@ -146,14 +146,14 @@ exposes a JavaScript API for some aspects of the UberFire framework.
 This gives application developers the option to write UberFire
 applications partly or entirely in JavaScript.
 
-- JavaScript native plugin, with types representing
-  - Entry points
-  - Perspectives
-  - Plugins
-  - Workbench perspective activities
-  - Workbench screen activities
-  - Panel definitions
-  - Part definitions
+* JavaScript native plugin, with types representing
+** Entry points
+** Perspectives
+** Plugins
+** Workbench perspective activities
+** Workbench screen activities
+** Panel definitions
+** Part definitions
 
 
 UberFire Metadata Concepts
@@ -166,26 +166,26 @@ The UberFire Metadata module includes an API submodule which defines
 the following concepts, and one implementation of the API (a "metadata
 backend") that relies on Apache Lucene:
 
-- Metadata index engine
-- Metamodel store
-- "K" objects:
-  - KObject
-  - KObjectKey
-  - KObjectSimpleKey
-  - KProperty
-  - KPropertyBag
-- MetaObject
-- MetaProperty
-- MetaType
-- Cluster segment
-- Date range
-- Search index
+* Metadata index engine
+* Metamodel store
+* "K" objects:
+** KObject
+** KObjectKey
+** KObjectSimpleKey
+** KProperty
+** KPropertyBag
+* MetaObject
+* MetaProperty
+* MetaType
+* Cluster segment
+* Date range
+* Search index
 
 There is also a small submodule called `uberfire-metadata-commons-io`
 which introduces the following concepts:
 
-- Batch index
-- IO Search index
+* Batch index
+* IO Search index
 
 
 UberFire NIO2 Concepts
@@ -209,36 +209,36 @@ UberFire Security Concepts
 These concepts are expressed in the `uberfire-security-api` package,
 and they are all available to both client- and server-side code.
 
-- Security interceptor annotations (for types and methods)
-  - `@All`
-  - `@Authorized`
-  - `@Deny`
-  - `@Roles({})`
-- Authenticated Storage
-- Authentication Manager
-- Authentication Provider
-- Authentication Result
-- Authentication Scheme
-- Authentication Source
-- Authentication Status
-- Credential
-- Principal
-- Role
-- Subject Properties
-- Authorization Manager
-- Decision Managers:
-  - Resource Decision Manager
-  - Role Decision Manager
-- Roles Resource
-- Runtime Resource
-- Voting Strategy
-- Crypt Provider
-- Identity
-- Resource
-- Resource Manager
-- Security Context
-- Security Manager
-- Subject
+* Security interceptor annotations (for types and methods)
+** `@All`
+** `@Authorized`
+** `@Deny`
+** `@Roles({})`
+* Authenticated Storage
+* Authentication Manager
+* Authentication Provider
+* Authentication Result
+* Authentication Scheme
+* Authentication Source
+* Authentication Status
+* Credential
+* Principal
+* Role
+* Subject Properties
+* Authorization Manager
+* Decision Managers:
+** Resource Decision Manager
+** Role Decision Manager
+* Roles Resource
+* Runtime Resource
+* Voting Strategy
+* Crypt Provider
+* Identity
+* Resource
+* Resource Manager
+* Security Context
+* Security Manager
+* Subject
 
 There is an `uberfire-security-client` module, but it's just
 "plumbing:" it doesn't expose any concepts that are used directly in
@@ -248,21 +248,21 @@ These concepts are expressed in the `uberfire-security-server`
 package, which contains a variety of server-side implementations of
 the UberFire Security API types:
 
-- Authentication Managers: HTTP (servlets)
-- Authentication Schemes: Form, HttpBasic, JACC, "Remember Me" Cookie
-- Authenticated Storage: Cookie Storage, Http Session Storage
-- Authentication Providers: Default, "Remember Me" Cookie
-- Authentication Sources: Database (JDBC), JACC, users.properties file
-- Security Interceptors: Role-based, Trait-based
-- Crypt Providers: Default
-- Security Contexts: HTTP (servlets)
-- Security Managers: HTTP (servlets)
-- Voting Strategies: Affirmative, Consensus, Unanimous
+* Authentication Managers: HTTP (servlets)
+* Authentication Schemes: Form, HttpBasic, JACC, "Remember Me" Cookie
+* Authenticated Storage: Cookie Storage, Http Session Storage
+* Authentication Providers: Default, "Remember Me" Cookie
+* Authentication Sources: Database (JDBC), JACC, users.properties file
+* Security Interceptors: Role-based, Trait-based
+* Crypt Providers: Default
+* Security Contexts: HTTP (servlets)
+* Security Managers: HTTP (servlets)
+* Voting Strategies: Affirmative, Consensus, Unanimous
 
 Plus some new concepts:
 
-- URL Resource
-- Ant Paths
+* URL Resource
+* Ant Paths
 
 
 UberFire Server Concepts
@@ -271,7 +271,84 @@ UberFire Server Concepts
 These concepts are expressed in the `uberfire-server` package,
 which contains some server-side functionality.
 
-- UberFire Image Servlet
-  - UberFire Image Paths
-- UberFire Servlet
-  - App template, header template, footer template, user data template
+* UberFire Image Servlet
+** UberFire Image Paths
+* UberFire Servlet
+** App template, header template, footer template, user data template
+
+
+UberFire Widgets Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+UberFire Widgets are packaged into three modules:
+`uberfire-widgets-commons`, `uberfire-widgets-core-client`, and
+`uberfire-widget-markdown`.
+
+The `uberfire-widgets-commons` module introduces the following concepts:
+
+* Fade in and Fade out animations
+* Sequenced Animations
+* Concurrent change popup
+* Lazy stack panel and the LoadContentCommand
+* Restricted entry text box
+* Busy popup
+* Clickable label
+* Context dropdown button
+* Decorated disclosure panel
+* Dirtyable: widgets, composites, containers, horizontal panes, vertical panes, and FlexTables
+* Editor widget
+* Form style layout
+* Form style popup
+* Pretty form layout
+* Image button
+* Info cube
+* Info popup
+* Modal Footer buttons
+* Multi-page editor
+* Numeric text boxes (for each Java numeric type from byte to BigDecimal)
+* Page
+* Popups
+* Resizable textarea
+* Small label
+* UberBreadcrumbs
+* Common resources: images, alted images, css, general resources
+* Simple and paged tables: cells, columns, titled cells; sortable headers, sort direction
+* Comparable image resources
+* A collection of built-in images (gif & png) for corners, pager buttons, dialog status icons, and more (see also uberfire-widgets-core-client)
+
+The `uberfire-widgets-core-client` module introduces the following concepts:
+
+* Navigator, Breadcrumb navigator, Tree navigator
+* Explorer
+* Tree, tree item
+* Components implemented as MVP:
+** File editor
+** File explorer
+** File navigator
+** Meta file editor
+** Clone repository form
+** Create repository form
+** Repository editor
+** Repositories and repositories item
+** Text editor
+** iframe screen
+** Multi-page wizards: wizard context, wizard page, assorted events
+** "Multipe activities found" popup
+** "Activity not found" popup
+* Core CSS resources
+* Core images
+* Core resources
+* Core constants
+* More built-in gif & png images (see also uberfire-widgets-commons)
+
+The `uberfire-widget-markdown` module introduces the following concepts:
+
+* Markdown
+* Markdown type
+* Markdown live editor (MVP)
+
+
+UberFire Workbench Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-workbench` package,
