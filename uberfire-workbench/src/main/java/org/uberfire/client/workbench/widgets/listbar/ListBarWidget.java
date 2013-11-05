@@ -382,21 +382,18 @@ public class ListBarWidget
 
     @Override
     public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null ) {
+        if ( !getParent().isAttached() ) {
+            return;
+        }
+        final Widget panel = getParent().getParent();
+        if ( panel != null ) {
             final int width;
             final int height;
-            if ( parent.getParent() != null ) {
-                if ( parent.getParent().getParent() != null ) {
-                    width = parent.getParent().getParent().getOffsetWidth();
-                    height = parent.getParent().getParent().getOffsetHeight();
-                } else {
-                    width = parent.getParent().getOffsetWidth();
-                    height = parent.getParent().getOffsetHeight();
-                }
-            } else {
-                width = parent.getOffsetWidth();
-                height = parent.getOffsetHeight();
+            width = panel.getOffsetWidth();
+            height = panel.getOffsetHeight();
+            if ( width == 0 && height == 0 ) {
+                scheduleResize();
+                return;
             }
             content.setPixelSize( width, height );
             header.setWidth( width + "px" );

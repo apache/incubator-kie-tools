@@ -2,6 +2,7 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.annotation.PostConstruct;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -95,9 +96,15 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWor
     @Override
     public void onResize() {
         final Widget parent = getParent();
-        if ( parent != null ) {
+        if ( parent != null && parent.isAttached() ) {
             final int width = parent.getOffsetWidth();
             final int height = parent.getOffsetHeight();
+            if ( width == 0 && height == 0 ) {
+                scheduleResize( this );
+                return;
+            }
+
+            setPixelSize( width, height );
             presenter.onResize( width, height );
             widget.onResize();
             super.onResize();

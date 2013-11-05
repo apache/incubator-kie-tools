@@ -2,6 +2,8 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.BeanFactory;
@@ -131,6 +133,15 @@ public abstract class BaseWorkbenchPanelView<P extends WorkbenchPanelPresenter>
     @Override
     public P getPresenter() {
         return this.presenter;
+    }
+
+    protected void scheduleResize( final RequiresResize widget ) {
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                widget.onResize();
+            }
+        } );
     }
 
 }
