@@ -31,6 +31,10 @@ Java-to-JavaScript compiler. There is also a huge collection of
 third-party free and proprietary add-on libraries for GWT. UberFire
 applications can take advantage of most of these.
 
+The overarching programming model in UberFire is CDI, the standard
+Dependency Injection and loosely-coupled eventing API that permeates
+Java EE 6 and newer. The CDI programming model is present throughout 
+
 UberFire makes it easy to include any or all of the following elements
 in your application:
 
@@ -44,15 +48,17 @@ in your application:
 * Tool bars
 * Navigation through tree-structured collection of documents (a virtual filesystem or VFS)
 ** Each file in the VFS supports change tracking, revision control, and update notification
+** File types can be associated with custom viewers and editors
 ** The contents of the VFS can also be searched using a performant full-text search engine
     (TODO: is this correct? I think this is the purpose of uberfire-metadata)
+* Application components can be written in Java or JavaScript. Components can interoperate
+  regardless of which language they are implemented in.
 
 To be clear, an application built with UberFire does not have to use
 all of the features listed above. If your app needs toolbars and a
 version-tracking VFS, but not a drag-and-drop layout or nested menus,
 UberFire may still be a good choice.
 
-ALSO MENTION: js native plugins
 ALSO MENTION: CDI everywhere
 
 
@@ -352,3 +358,64 @@ UberFire Workbench Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These concepts are expressed in the `uberfire-workbench` package,
+which provides annotation processors for the core annotations in
+`uberfire-client-api`, as well as the foundation for the client-side
+MVP (model, view, presenter) framework.
+
+* Annotation processors for `@WorkbenchPerspective`,
+  `@WorkbenchContext`, `@WorkbenchEditor`, `@WorkbenchPopup`,
+  `@WorkbenchScreen`, `@WorkbenchPerspective`, `@WorkbenchContext`,
+  `@WorkbenchEditor`, `@WorkbenchPopup`, and `@WorkbenchScreen`.
+* GWT Bootstrap and UberFireConfigurator
+** FontAwesome resources
+* Workbench Parts
+* The UberFire MVP framework
+** Places:
+*** Place Requests
+*** The Place Request History Mapper
+*** Place Status
+*** The Place Resolver
+*** Place History
+** Activities:
+*** Activities and the activity lifecycle
+*** The activity manager
+*** Popup Activities
+*** Workbench Activities
+*** Workbench Context Activities
+*** Workbench Editor Activities
+*** Workbench Perspective Activities
+*** Workbench Screen Activities
+*** The Acvitity Beans Cache
+*** The Activity Manager
+*** Context Activities
+*** Context-sensitive Activities
+** Panels and Layouts:
+*** The Panel Manager
+*** Workbench Panels
+*** Multi-part Workbench Panels
+*** Multi List Workbench Panels
+*** Multi Tab Workbench Panels
+*** Simple Workbench Panels
+*** Static Workbench Panels
+*** Split Panels
+*** Multi-part Widgets
+*** Panel Helpers (North, South, East, West)
+** Accept Items
+** Commands
+** Paged Tables
+* Associated Resources
+* The Bean Factory
+* Drag and Drop:
+** The Compass Widget
+** Drag Areas
+** The Drag and Drop Manager
+** The Drag Context
+* The List Bar Widget
+* The Workbench Menu Bar
+** Part Context Menus
+** Perspective Context Menus
+* Context Panels
+* Requires Resize Flow Panels
+* Requires Resize Focus Panels
+* Static Focused Resize Panels
+* Workbench Toolbars
