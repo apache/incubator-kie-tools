@@ -77,11 +77,6 @@ public class KSessionsPanel
 
     @Override
     public void onDefaultChanged(KSessionModel modelThatChanged) {
-        for(KSessionModel model : items){
-            if(!model.equals(modelThatChanged)){
-                model.setDefault(false);
-            }
-        }
         view.setItemList(items);
     }
 
