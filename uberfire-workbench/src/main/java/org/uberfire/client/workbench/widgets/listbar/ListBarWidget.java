@@ -139,8 +139,6 @@ public class ListBarWidget
     private boolean isDndEnabled = true;
     private Pair<PartDefinition, FlowPanel> currentPart;
 
-    private boolean alreadyScheduled = false;
-
     public ListBarWidget() {
 
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -215,7 +213,6 @@ public class ListBarWidget
         menuArea.setVisible( false );
         title.clear();
         content.clear();
-        alreadyScheduled = false;
 
         parts.clear();
         partContentView.clear();
@@ -573,15 +570,10 @@ public class ListBarWidget
     }
 
     private void scheduleResize() {
-        if ( alreadyScheduled ) {
-            return;
-        }
-        alreadyScheduled = true;
         Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
                 onResize();
-                alreadyScheduled = false;
             }
         } );
     }

@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.annotations.WorkbenchPosition;
+import org.uberfire.client.workbench.panels.SplitPanel;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelHelper;
@@ -135,11 +136,14 @@ public abstract class BaseWorkbenchPanelView<P extends WorkbenchPanelPresenter>
         return this.presenter;
     }
 
-    protected void resizeParent( final Widget parent ) {
-        if ( parent instanceof RequiresResize ) {
-            scheduleResize( (RequiresResize) parent );
-        } else if ( parent.getParent() != null ) {
-            resizeParent( parent.getParent() );
+    protected void resizeParent( final Widget widget ) {
+        if ( widget instanceof SplitPanel ) {
+            scheduleResize( (RequiresResize) widget );
+            return;
+        } else if ( widget.getParent() != null && widget.getParent() instanceof RequiresResize ) {
+            resizeParent( widget.getParent() );
+        } else if ( widget instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) widget );
         }
     }
 
