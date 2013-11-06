@@ -32,77 +32,77 @@ public class KieSessionAsyncJobRequestObserver {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.createOrCloneRepository( jobRequest.getJodId(), jobRequest.getRepository() );
+        projectResourceDispatcher.createOrCloneRepository( jobRequest.getJobId(), jobRequest.getRepository() );
     }
 
     public void onRemoveRepositoryRequest( final @Observes RemoveRepositoryRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.removeRepository( jobRequest.getJodId(), jobRequest.getRepositoryName() );
+        projectResourceDispatcher.removeRepository( jobRequest.getJobId(), jobRequest.getRepositoryName() );
     }
 
     public void onCreateProjectRequest( final @Observes CreateProjectRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.createProject( jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
+        projectResourceDispatcher.createProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
     }
 
     public void onCompileProjectRequest( final @Observes CompileProjectRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.compileProject( jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig() );
+        projectResourceDispatcher.compileProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
     }
 
     public void onInstallProjectRequest( final @Observes InstallProjectRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.installProject( jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig() );
+        projectResourceDispatcher.installProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
     }
 
     public void onTestProjectRequest( final @Observes TestProjectRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.testProject( jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig() );
+        projectResourceDispatcher.testProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig() );
     }
 
     public void onDeployProjectRequest( final @Observes DeployProjectRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.installProject( jobRequest.getJodId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig() );
+        projectResourceDispatcher.installProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
     }
 
     public void onCreateOrganizationalUnitRequest( final @Observes CreateOrganizationalUnitRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.createOrganizationalUnit( jobRequest.getJodId(), jobRequest.getOrganizationalUnitName(), jobRequest.getOwner(), jobRequest.getRepositories() );
+        projectResourceDispatcher.createOrganizationalUnit( jobRequest.getJobId(), jobRequest.getOrganizationalUnitName(), jobRequest.getOwner(), jobRequest.getRepositories() );
     }
 
     public void onAddRepositoryToOrganizationalUnitRequest( final @Observes AddRepositoryToOrganizationalUnitRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.addRepositoryToOrganizationalUnit( jobRequest.getJodId(), jobRequest.getOrganizationalUnitName(), jobRequest.getRepositoryName() );
+        projectResourceDispatcher.addRepositoryToOrganizationalUnit( jobRequest.getJobId(), jobRequest.getOrganizationalUnitName(), jobRequest.getRepositoryName() );
     }
 
     public void onAddRepositoryToOrganizationalUnitRequest( final @Observes RemoveRepositoryFromOrganizationalUnitRequest jobRequest ) {
         if ( !approveRequest( jobRequest ) ) {
             return;
         }
-        projectResourceDispatcher.removeRepositoryFromOrganizationalUnit( jobRequest.getJodId(), jobRequest.getOrganizationalUnitName(), jobRequest.getRepositoryName() );
+        projectResourceDispatcher.removeRepositoryFromOrganizationalUnit( jobRequest.getJobId(), jobRequest.getOrganizationalUnitName(), jobRequest.getRepositoryName() );
     }
 
     //Commented out for the time being, due to kssion problem.
     public boolean approveRequest( JobRequest jobRequest ) {
         if ( !defaultGuvnorApprover.requestApproval( jobRequest ) ) {
             JobResult result = new JobResult();
-            result.setJodId( jobRequest.getJodId() );
+            result.setJodId( jobRequest.getJobId() );
             result.setStatus( JobRequest.Status.DENIED );
             result.setResult( "The request is denied." );
             jobResultEvent.fire( result );

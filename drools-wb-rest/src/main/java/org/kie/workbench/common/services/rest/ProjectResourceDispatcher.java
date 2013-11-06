@@ -200,8 +200,7 @@ public class ProjectResourceDispatcher {
 
     public void compileProject( String jobId,
                                 String repositoryName,
-                                String projectName,
-                                BuildConfig mavenConfig ) {
+                                String projectName) {
         System.out.println( "-----ProjectResourceDispatcher:compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJodId( jobId );
@@ -244,8 +243,7 @@ public class ProjectResourceDispatcher {
 
     public void installProject( String jobId,
                                 String repositoryName,
-                                String projectName,
-                                BuildConfig mavenConfig ) {
+                                String projectName) {
         System.out.println( "-----ProjectResourceDispatcher:installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJodId( jobId );
@@ -366,8 +364,7 @@ public class ProjectResourceDispatcher {
 
     public void deployProject( String jobId,
                                String repositoryName,
-                               String projectName,
-                               BuildConfig config ) {
+                               String projectName ) {
         System.out.println( "-----ProjectResourceDispatcher:deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJodId( jobId );
