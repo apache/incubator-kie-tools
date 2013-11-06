@@ -56,10 +56,10 @@ public class SecurityFactory {
         return new IdentityImpl( subjects.get().getName(), subjects.get().getRoles(), subjects.get().getProperties() );
     }
 
-//    @Produces
-//    @ApplicationScoped
-//    public static AuthorizationManager getAuthzManager() {
-//        return authzManager;
-//    }
+    @Produces
+    @ApplicationScoped
+    public static AuthorizationManager getAuthzManager() {
+        return authzManager;
+    }
 
 }
