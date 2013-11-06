@@ -59,8 +59,6 @@ all of the features listed above. If your app needs toolbars and a
 version-tracking VFS, but not a drag-and-drop layout or nested menus,
 UberFire may still be a good choice.
 
-ALSO MENTION: CDI everywhere
-
 
 UberFire Core Concepts
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +68,7 @@ footnote:[A few of these concepts actually come from Errai and GWT,
 but the distinction isn't important when getting started with
 UberFire.] so they permeate all parts of the UberFire framework:
 
-* Perspectives
+* Perspectives: tie panels together
 * Screens
 * Widgets
 * Places and PlaceRequests
@@ -362,6 +360,7 @@ which provides annotation processors for the core annotations in
 `uberfire-client-api`, as well as the foundation for the client-side
 MVP (model, view, presenter) framework.
 
+* The Workbench widget hierarchy: App Widget < Workbench < Container < { Headers, Workbench Container < The Workbench Root Panel }
 * Annotation processors for `@WorkbenchPerspective`,
   `@WorkbenchContext`, `@WorkbenchEditor`, `@WorkbenchPopup`,
   `@WorkbenchScreen`, `@WorkbenchPerspective`, `@WorkbenchContext`,
