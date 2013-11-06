@@ -1,11 +1,20 @@
 package org.uberfire.backend.server.util;
 
 import java.text.Normalizer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TextUtil {
 
     private static final String EMPTY_STRING = "";
+
+    // Any character except unicode letters and digits 0-9
+    private static final Pattern nonASCIIp1 = Pattern.compile( "[^\\p{L}\\p{Nd}]" );
+    private static final Matcher nonASCIIm1 = nonASCIIp1.matcher( EMPTY_STRING );
+
+    // Any ASCII character except those between code point 0 (NULL) and 127 (DEL)
+    private static final Pattern nonASCIIp2 = Pattern.compile( "[^\\x00-\\x7f]" );
+    private static final Matcher nonASCIIm2 = nonASCIIp2.matcher( EMPTY_STRING );
 
     // Any character except unicode letters and digits 0-9, allowing '.' and '-'
     private static final Pattern repoP1 = Pattern.compile( "[^\\p{L}\\p{Nd}\\x2D\\x2E]" );
@@ -26,6 +35,11 @@ public class TextUtil {
                         repoP1.matcher( Normalizer.normalize( input, Normalizer.Form.NFD ) ).replaceAll( EMPTY_STRING )
                                   ).replaceAll( EMPTY_STRING )
                               ).replaceAll( EMPTY_STRING );
+    }
+
+    public static String normalizeUserName( String input ) {
+        nonASCIIm1.reset( Normalizer.normalize( input, Normalizer.Form.NFD) );
+        return nonASCIIm2.reset(nonASCIIm1.replaceAll(EMPTY_STRING)).replaceAll(EMPTY_STRING);
     }
 
 }
