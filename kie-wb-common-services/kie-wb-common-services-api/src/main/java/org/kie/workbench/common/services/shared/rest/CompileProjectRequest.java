@@ -6,7 +6,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class CompileProjectRequest extends JobRequest {
 	private String repositoryName;
 	private String projectName;
-    private BuildConfig buildConfig;
     
 	public String getRepositoryName() {
 		return repositoryName;
@@ -20,13 +19,5 @@ public class CompileProjectRequest extends JobRequest {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
-	public BuildConfig getBuildConfig() {
-		return buildConfig;
-	}
-	public void setBuildConfig(BuildConfig buildConfig) {
-		this.buildConfig = buildConfig;
-	}
-
-
 
 }

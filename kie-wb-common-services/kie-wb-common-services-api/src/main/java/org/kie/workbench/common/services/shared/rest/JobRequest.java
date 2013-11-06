@@ -15,15 +15,15 @@ public class JobRequest {
         FAIL,
         DENIED
     }
-    private String jodId;
+    private String jobId;
     private Status status;
 
     
-    public String getJodId() {
-        return jodId;
+    public String getJobId() {
+        return jobId;
     }
-    public void setJodId(String jodId) {
-        this.jodId = jodId;
+    public void setJobId(String jodId) {
+        this.jobId = jodId;
     }
 	public Status getStatus() {
 		return status;

@@ -20,11 +20,5 @@ public class DeployProjectRequest extends JobRequest {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
-	public BuildConfig getBuildConfig() {
-		return buildConfig;
-	}
-	public void setBuildConfig(BuildConfig buildConfig) {
-		this.buildConfig = buildConfig;
-	}
 
 }

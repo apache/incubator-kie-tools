@@ -10,7 +10,7 @@ import org.kie.workbench.common.services.shared.rest.JobRequest.Status;
 public class JobResult {
 
     private Status status;
-    private String jodId;
+    private String jobId;
     private String result;
     private long lastModified;
     private List<String> detailedResult;
@@ -22,10 +22,10 @@ public class JobResult {
         this.status = status;
     }
     public String getJodId() {
-        return jodId;
+        return jobId;
     }
     public void setJodId(String jodId) {
-        this.jodId = jodId;
+        this.jobId = jodId;
     }
 	public String getResult() {
 		return result;
