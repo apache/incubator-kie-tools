@@ -135,6 +135,14 @@ public abstract class BaseWorkbenchPanelView<P extends WorkbenchPanelPresenter>
         return this.presenter;
     }
 
+    protected void resizeParent( final Widget parent ) {
+        if ( parent instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) parent );
+        } else if ( parent.getParent() != null ) {
+            resizeParent( parent.getParent() );
+        }
+    }
+
     protected void scheduleResize( final RequiresResize widget ) {
         Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
             @Override
@@ -143,5 +151,4 @@ public abstract class BaseWorkbenchPanelView<P extends WorkbenchPanelPresenter>
             }
         } );
     }
-
 }

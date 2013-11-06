@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.UIPart;
@@ -100,14 +101,12 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWor
             final int width = parent.getOffsetWidth();
             final int height = parent.getOffsetHeight();
             if ( width == 0 && height == 0 ) {
-                scheduleResize( this );
+                resizeParent( parent );
                 return;
             }
 
-            setPixelSize( width, height );
             presenter.onResize( width, height );
             widget.onResize();
-            super.onResize();
         }
     }
 

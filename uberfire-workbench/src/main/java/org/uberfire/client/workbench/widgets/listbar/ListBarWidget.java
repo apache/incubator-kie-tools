@@ -139,6 +139,8 @@ public class ListBarWidget
     private boolean isDndEnabled = true;
     private Pair<PartDefinition, FlowPanel> currentPart;
 
+    private boolean alreadyScheduled = false;
+
     public ListBarWidget() {
 
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -213,6 +215,7 @@ public class ListBarWidget
         menuArea.setVisible( false );
         title.clear();
         content.clear();
+        alreadyScheduled = false;
 
         parts.clear();
         partContentView.clear();
@@ -382,19 +385,27 @@ public class ListBarWidget
 
     @Override
     public void onResize() {
-        if ( !getParent().isAttached() ) {
-            return;
-        }
-        final Widget panel = getParent().getParent();
-        if ( panel != null ) {
+        final Widget parent = getParent();
+        if ( parent != null && parent.isAttached() ) {
             final int width;
             final int height;
-            width = panel.getOffsetWidth();
-            height = panel.getOffsetHeight();
+            if ( parent.getParent() != null ) {
+                if ( parent.getParent().getParent() != null ) {
+                    width = parent.getParent().getParent().getOffsetWidth();
+                    height = parent.getParent().getParent().getOffsetHeight();
+                } else {
+                    width = parent.getParent().getOffsetWidth();
+                    height = parent.getParent().getOffsetHeight();
+                }
+            } else {
+                width = parent.getOffsetWidth();
+                height = parent.getOffsetHeight();
+            }
+
             if ( width == 0 && height == 0 ) {
-                scheduleResize();
                 return;
             }
+
             content.setPixelSize( width, height );
             header.setWidth( width + "px" );
 
@@ -414,15 +425,6 @@ public class ListBarWidget
 
     private int getHeaderHeight() {
         return header.getOffsetHeight();
-    }
-
-    private void scheduleResize() {
-        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                onResize();
-            }
-        } );
     }
 
     private Widget makeItem( final MenuItem item,
@@ -569,4 +571,19 @@ public class ListBarWidget
             panel.clear();
         }
     }
+
+    private void scheduleResize() {
+        if ( alreadyScheduled ) {
+            return;
+        }
+        alreadyScheduled = true;
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                onResize();
+                alreadyScheduled = false;
+            }
+        } );
+    }
+
 }

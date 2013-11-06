@@ -122,13 +122,14 @@ public class SimpleWorkbenchPanelView
     @Override
     public void onResize() {
         final Widget parent = getParent();
-        if ( parent != null && parent.isAttached() ) {
+        if ( parent != null ) {
             final int width = parent.getOffsetWidth();
             final int height = parent.getOffsetHeight();
             if ( width == 0 && height == 0 ) {
-                scheduleResize( this );
+                resizeParent( parent );
                 return;
             }
+
             setPixelSize( width, height );
             presenter.onResize( width, height );
 
