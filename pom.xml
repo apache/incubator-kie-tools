@@ -83,6 +83,10 @@
         <enabled>false</enabled>
       </releases>
     </repository>
+    <repository>
+      <id>jboss-maven2-release-repository</id>
+      <url>https://repository.jboss.org/nexus/content/groups/m2-proxy/</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
