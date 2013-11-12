@@ -25,6 +25,8 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
@@ -43,6 +45,8 @@ import org.uberfire.commons.services.cdi.StartupType;
 @Startup(StartupType.BOOTSTRAP)
 @ApplicationScoped
 public class AppSetup {
+
+    private static final Logger logger = LoggerFactory.getLogger( AppSetup.class );
 
     // default groups
     private static final String DROOLS_WB_ORGANIZATIONAL_UNIT1 = "demo";
@@ -73,24 +77,29 @@ public class AppSetup {
     @PostConstruct
     public void assertPlayground() {
         // TODO in case repo is not defined in system repository so we add default
-        Repository repository1 = repositoryService.getRepository( DROOLS_WB_PLAYGROUND_ALIAS );
-        if ( repository1 == null ) {
-            repository1 = repositoryService.createRepository( DROOLS_WB_PLAYGROUND_SCHEME, DROOLS_WB_PLAYGROUND_ALIAS,
-                                                              new HashMap<String, Object>() {{
-                                                                  put( "origin", DROOLS_WB_PLAYGROUND_ORIGIN );
-                                                                  put( "username", DROOLS_WB_PLAYGROUND_UID );
-                                                                  put( "crypt:password", DROOLS_WB_PLAYGROUND_PWD );
-                                                              }} );
-        }
+        try {
+            Repository repository1 = repositoryService.getRepository( DROOLS_WB_PLAYGROUND_ALIAS );
+            if ( repository1 == null ) {
+                repository1 = repositoryService.createRepository( DROOLS_WB_PLAYGROUND_SCHEME, DROOLS_WB_PLAYGROUND_ALIAS,
+                                                                  new HashMap<String, Object>() {{
+                                                                      put( "origin", DROOLS_WB_PLAYGROUND_ORIGIN );
+                                                                      put( "username", DROOLS_WB_PLAYGROUND_UID );
+                                                                      put( "crypt:password", DROOLS_WB_PLAYGROUND_PWD );
+                                                                  }} );
+            }
 
-        // TODO in case Organizational Units are not defined
-        OrganizationalUnit organizationalUnit1 = organizationalUnitService.getOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1 );
-        if ( organizationalUnit1 == null ) {
-            final List<Repository> repositories = new ArrayList<Repository>();
-            repositories.add( repository1 );
-            organizationalUnitService.createOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1,
-                                                                DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER,
-                                                                repositories );
+            // TODO in case Organizational Units are not defined
+            OrganizationalUnit organizationalUnit1 = organizationalUnitService.getOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1 );
+            if ( organizationalUnit1 == null ) {
+                final List<Repository> repositories = new ArrayList<Repository>();
+                repositories.add( repository1 );
+                organizationalUnitService.createOrganizationalUnit( DROOLS_WB_ORGANIZATIONAL_UNIT1,
+                                                                    DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER,
+                                                                    repositories );
+            }
+        } catch ( Exception e ) {
+            logger.error( "Failed to setup Repository '" + DROOLS_WB_PLAYGROUND_ALIAS + "'",
+                          e );
         }
 
         //Define mandatory properties
