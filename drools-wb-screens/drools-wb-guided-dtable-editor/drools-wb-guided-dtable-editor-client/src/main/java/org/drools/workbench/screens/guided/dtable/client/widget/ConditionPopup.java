@@ -883,6 +883,7 @@ public class ConditionPopup extends FormStylePopup {
 
                 //Clear Operator when field changes
                 editingCol.setOperator( null );
+                editingCol.setValueList( null );
 
                 //Setup UI
                 doFieldLabel();
