@@ -219,11 +219,11 @@ select {
 }
 
 .version-browser-Border {
-    border: 1px solid #aa9;
     -moz-border-radius: .7em;
     -webkit-border-radius: .7em;
     -khtml-border-radius: .7em;
     border-radius: .7em;
+    width: 100%;
 }
 
 .highlight {
