@@ -17,13 +17,15 @@
 package org.kie.workbench.common.screens.projecteditor.client.messages;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 
 public interface ProblemsScreenView
-        extends IsWidget {
+        extends HasBusyIndicator,
+                IsWidget {
 
     interface Presenter {
 
     }
 
-    void setPresenter(Presenter presenter);
+    void setPresenter( Presenter presenter );
 }

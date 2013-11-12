@@ -241,4 +241,9 @@ public interface ProjectEditorConstants
     String ThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName();
 
     String ProjectScreenWithName(String projectName);
+
+    String RefreshProblemsPanel();
+
+    String Refreshing();
+
 }

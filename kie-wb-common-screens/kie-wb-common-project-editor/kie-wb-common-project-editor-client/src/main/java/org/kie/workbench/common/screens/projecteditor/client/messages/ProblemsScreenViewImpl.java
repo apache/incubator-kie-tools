@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 
 public class ProblemsScreenViewImpl
@@ -181,4 +181,15 @@ public class ProblemsScreenViewImpl
     public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        BusyPopup.showMessage( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
+
 }
