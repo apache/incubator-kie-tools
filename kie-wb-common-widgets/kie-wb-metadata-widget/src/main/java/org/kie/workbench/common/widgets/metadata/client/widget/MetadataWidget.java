@@ -215,6 +215,7 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
 
     private void startSection( final String name ) {
         currentSection = new FormStyleLayout();
+        currentSection.setWidth( "95%" );
         currentSectionName = name;
     }
 

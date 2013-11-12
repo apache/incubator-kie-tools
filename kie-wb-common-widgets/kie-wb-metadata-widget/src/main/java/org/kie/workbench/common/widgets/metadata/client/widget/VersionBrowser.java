@@ -76,6 +76,8 @@ public class VersionBrowser extends Composite {
         };
 
         layout = new FlexTable();
+        layout.setWidth( "100%" );
+
         final ClickableLabel vh = new ClickableLabel( MetadataConstants.INSTANCE.VersionHistory1(), clickHandler );
         layout.setWidget( 0, 0, vh );
         layout.getCellFormatter().setStyleName( 0, 0, "metadata-Widget" );
@@ -84,18 +86,13 @@ public class VersionBrowser extends Composite {
         formatter.setHorizontalAlignment( 0, 0, ALIGN_LEFT );
 
         refresh = Images.INSTANCE.Refresh();
-
         refresh.addClickHandler( clickHandler );
 
         layout.setWidget( 0, 1, refresh );
         formatter.setHorizontalAlignment( 0, 1, ALIGN_RIGHT );
 
         wrapper.setStyleName( "version-browser-Border" );
-
         wrapper.add( layout );
-
-        layout.setWidth( "100%" );
-        wrapper.setWidth( "100%" );
 
         initWidget( wrapper );
 
@@ -114,14 +111,14 @@ public class VersionBrowser extends Composite {
         }
 
         final ListBox history = new ListBox( true );
-        history.setWidth("640px");
+        history.setWidth( "100%" );
 
-        for ( int i = versions.size() -1; i >= 0; i-- ) {
+        for ( int i = versions.size() - 1; i >= 0; i-- ) {
             final VersionRecord version = versions.get( i );
 
-            DateTimeFormat fmt = DateTimeFormat.getFormat("yyyy-MM-dd h:mm a");
+            DateTimeFormat fmt = DateTimeFormat.getFormat( "yyyy-MM-dd h:mm a" );
             final String s = MetadataConstants.INSTANCE.property0ModifiedOn1By23( String.valueOf( i + 1 ),
-                                                                                  fmt.format(version.date()),
+                                                                                  fmt.format( version.date() ),
                                                                                   version.author(),
                                                                                   version.comment() );
             history.addItem( s, version.uri() );
