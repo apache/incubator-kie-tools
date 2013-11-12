@@ -172,15 +172,12 @@ public class ConditionPopup extends FormStylePopup {
                 switch ( editingCol.getConstraintValueType() ) {
                     case BaseSingleFieldConstraint.TYPE_LITERAL:
                         literal.setValue( true );
-                        binding.setEnabled( !isReadOnly );
                         break;
                     case BaseSingleFieldConstraint.TYPE_RET_VALUE:
                         formula.setValue( true );
-                        binding.setEnabled( false );
                         break;
                     case BaseSingleFieldConstraint.TYPE_PREDICATE:
                         predicate.setValue( true );
-                        binding.setEnabled( false );
                 }
 
                 if ( !isReadOnly ) {
@@ -210,7 +207,6 @@ public class ConditionPopup extends FormStylePopup {
                     } );
                 }
 
-                doCalculationType();
                 break;
 
             case LIMITED_ENTRY:
@@ -335,7 +331,6 @@ public class ConditionPopup extends FormStylePopup {
             addAttribute( GuidedDecisionTableConstants.INSTANCE.optionalValueList(),
                           vl );
         }
-        doValueList();
 
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
@@ -366,6 +361,11 @@ public class ConditionPopup extends FormStylePopup {
         //Hide column tick-box
         addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
+
+        //Initialise view
+        doValueList();
+        doCalculationType();
+        initialiseViewForConstraintValueType( editingCol.getConstraintValueType() );
 
         //Apply button
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
@@ -539,9 +539,13 @@ public class ConditionPopup extends FormStylePopup {
                                                                   defaultValue ) );
     }
 
-    private void applyConsTypeChange( int newType ) {
-        editingCol.setConstraintValueType( newType );
-        binding.setEnabled( newType == BaseSingleFieldConstraint.TYPE_LITERAL && !isReadOnly );
+    private void applyConsTypeChange( int newConstraintValueType ) {
+        editingCol.setConstraintValueType( newConstraintValueType );
+        initialiseViewForConstraintValueType( newConstraintValueType );
+    }
+
+    private void initialiseViewForConstraintValueType( int constraintValueType ) {
+        binding.setEnabled( constraintValueType == BaseSingleFieldConstraint.TYPE_LITERAL && !isReadOnly );
         doFieldLabel();
         doValueList();
         doOperatorLabel();
