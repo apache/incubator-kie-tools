@@ -263,6 +263,30 @@ several plugins we'll need in order to get the project built.
     </resources>
 
     <plugins>
+      <!-- see below in this guide -->
+    </plugins>
+
+  </build>
+---------
+
+The `<resources>` section adds `src/main/java` as a resource
+directory, and reaffirms that `src/main/resources` is also a resource
+directory. The purpose of adding `src/main/java` as a resource
+directory is to ensure all the .java source files are included on the
+build path. The GWT compiler requires this. The reason we add
+`src/main/resources` redundantly is because the Maven integration in
+IntelliJ IDEA does not retain this default resource directory when you
+add a new one. Adding both provides maximum compatibility.
+
+Now, how do we teach Maven to perform the extra build steps that are
+unique to an UberFire-based project? That's where the plugins come in.
+
+Note that all of the following `<plugin>` elements go inside the
+`<plugins>` placeholder we defined in the previous step.
+
+First up, we'll define some settings for `maven-compiler-plugin`:
+
+---------
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -279,21 +303,42 @@ several plugins we'll need in order to get the project built.
           </dependency>
         </dependencies>
       </plugin>
+---------
 
+The `source` and `target` options set the compiler for Java 1.6
+compliance. This is the version of the Java language that GWT 2.5
+supports.
+
+The dependency on `uberfire-workbench` is the recommended way of
+hinting Eclipse's Maven integration that this module contains Java
+Annotation Processors that should be executed whenever an incremental
+build is performed. More on this later (TODO: link to m2e setup).
+
+Next up, the all-important `gwt-maven-plugin`.
+
+---------
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>${maven.gwt.plugin.version}</version>
         <configuration>
+
           <noServer>true</noServer>
-          <strict>true</strict> <!-- EEK. The HibernateValidator
-        module contains non-translatable code. Need to disable strict
-        compile. -->
-          <runTarget>http://localhost:8080/${project.artifactId}/</runTarget>
-          <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m
-        -XX:CompileThreshold=1000</extraJvmArgs>
+
+          <!-- Change to false if using client-side Bean Validation -->
+          <strict>true</strict>
+
+          <!-- If you can't use strict mode, diagnose mysterious
+               rebind errors by setting this to DEBUG -->
           <logLevel>INFO</logLevel>
+
+          <runTarget>http://localhost:8080/${project.artifactId}/</runTarget>
+
+          <!-- do not insert line breaks in this string; it breaks Windows compatibility -->
+          <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000</extraJvmArgs>
+
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
+
         </configuration>
         <executions>
           <execution>
@@ -312,7 +357,37 @@ several plugins we'll need in order to get the project built.
           </execution>
         </executions>
       </plugin>
+---------
 
+This is a lot to digest. Let's take it one step at a time.
+
+First, we configure `noServer` because we'll be doing our Dev Mode
+testing against a real JBoss EAP or WildFly instance. We don't want
+Dev Mode to start its embedded Jetty server.
+
+Next, we enable GWT's `strict` mode. This causes the build to fail
+with a helpful error message when you use Java APIs that aren't
+available in GWT's in-browser runtime environment. Without `strict`
+mode, these errors will show up later in the compile in a way that
+gives you no clue what happened. Unfortunately, as the comment notes,
+`strict` mode is not compatible with client-side Bean Validation, so
+you will have to turn it off when and if you start using Bean
+Validation in your app's client-side code. The inferior alternatve
+to `strict` mode is to set Dev Mode's `logLevel` to `DEBUG` and sift
+through the output for clues about non-translatable code. But we don't
+have to worry about that at this point.
+
+Moving on, we set `runTarget` to the location where your webapp will
+be served by the JBoss EAP or WildFly server on your workstation.
+
+The `extraJvmArgs` increases the memory limits for the Dev Mode JVM,
+and asks its JIT compiler to be more aggressive in generating native
+code. We've done some experimenting and found a compile threshold of
+1000 allows Dev Mode to start up a little faster.
+
+TODO: I don't think we need gwtFirstOn..Classpath. Check this.
+
+---------
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
