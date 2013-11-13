@@ -40,6 +40,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.UberFirePreferences;
+import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -126,6 +127,8 @@ public class DroolsWorkbenchEntryPoint {
                         placeManager.goTo( "FindForm" );
                     }
                 } )
+                .endMenu()
+                .newTopLevelCustomMenu( iocManager.lookupBean( CustomSplashHelp.class ).getInstance() )
                 .endMenu()
                 .build();
 

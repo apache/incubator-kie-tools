@@ -29,10 +29,10 @@ public class HomeProducer {
         model = new HomeModel( "The KIE Knowledge Development Cycle" );
         model.addCarouselEntry( ModelUtils.makeCarouselEntry( "Author",
                                                               "Formalize your Business Knowledge",
-                                                              url + "/images/flowers.jpg" ) );
+                                                              url + "/images/HandHome.jpg" ) );
         model.addCarouselEntry( ModelUtils.makeCarouselEntry( "Deploy",
                                                               "Learn how to configure your environment",
-                                                              url + "/images/flowers.jpg" ) );
+                                                              url + "/images/HandHome.jpg" ) );
         final Section s1 = new Section( "Discover and Author:" );
         s1.addEntry( ModelUtils.makeSectionEntry( "Author",
                                                   new Command() {
