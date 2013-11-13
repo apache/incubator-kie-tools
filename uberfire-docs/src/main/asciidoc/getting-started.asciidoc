@@ -23,7 +23,7 @@ on your computer:
 
 * http://www.oracle.com/technetwork/java/javase/downloads/index.html[A
   Java Development Kit (JDK) version 6 or newer]
-* http://maven.apache.org/[Maven 3.x]
+* http://maven.apache.org/download.cgi[Maven 3.x]
 * http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/keplersr1[Eclipse IDE for Java EE Developers]
   Kepler SR1 or newer, or whatever Java IDE you like better (NetBeans,
   IntelliJ IDEA)
@@ -66,8 +66,8 @@ with this:
 ---------
 
 Now, underneath the properties section, we'll import four Maven __BOM__
-files. BOM (short for Bill Of Materials) is a Maven pattern that allows
-frameworks to publish a comprehensive set of dependency versions that
+files. BOM (short for Bill Of Materials) is a Maven pattern where
+frameworks publish a comprehensive set of dependency versions that
 are known to work well with the framework. We'll import BOMs for
 UberFire, Errai, and the Java EE 6 APIs.
 
@@ -337,8 +337,6 @@ Next up, the all-important `gwt-maven-plugin`.
           <!-- do not insert line breaks in this string; it breaks Windows compatibility -->
           <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000</extraJvmArgs>
 
-          <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
-
         </configuration>
         <executions>
           <execution>
@@ -385,7 +383,8 @@ and asks its JIT compiler to be more aggressive in generating native
 code. We've done some experimenting and found a compile threshold of
 1000 allows Dev Mode to start up a little faster.
 
-TODO: I don't think we need gwtFirstOn..Classpath. Check this.
+Next up, we configure `maven-war-plugin`, which produces the .war file
+during the package phase of the build:
 
 ---------
       <plugin>
@@ -393,18 +392,38 @@ TODO: I don't think we need gwtFirstOn..Classpath. Check this.
         <artifactId>maven-war-plugin</artifactId>
         <version>${maven.war.plugin.version}</version>
         <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
           <warName>${project.artifactId}</warName>
 
-          <!-- Exclude GWT client local classes from the deployment,
-	  lest 
+          <!-- Exclude GWT client local classes from the deployment, lest 
             classpath scanners such as Hibernate and Weld get confused
-	  when the webapp 
-            is bootstrapping. -->
-          <packagingExcludes>**/javax/**/*.*,**/client/**/*.class</packagingExcludes>
+            when the webapp is bootstrapping. -->
+          <packagingExcludes>**/client/**/*.class</packagingExcludes>
         </configuration>
       </plugin>
+---------
 
+The first configuration tweak changes the name of the generated .war
+file to just __projectname__.war rather than the default
+__projectname__-__version__.war. We find this more convenient to work
+with, because the deployment URL remains stable that way. If you
+prefer keeping the version number in the .war file name, feel free to
+omit the `<warName>` setting.
+
+The `<packagingExcludes>` setting is vital, though: this keeps the
+client-side-only classes off the web server. Anything that scans your
+webapp for annotated classes or classes of a certain type (such as
+Hibernate and Weld) tends to trip over classes that refer to GWT types
+that only make sense in the client environment, such as Widgets and
+JavaScript Native Methods. We'll get to these topics later, but for
+now, just be sure to exclude your client-only classes from the .war
+file.
+
+The `<packagingExcludes>` setting accepts a comma-separated list of
+patterns, so if you need to exclude more stuff later on, you can.
+
+Now on to the clean configuration:
+
+---------
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
@@ -419,7 +438,10 @@ TODO: I don't think we need gwtFirstOn..Classpath. Check this.
                 <include>.errai/**</include>
                 <include>src/main/webapp/WEB-INF/deploy/**</include>
                 <include>src/main/webapp/WEB-INF/lib/**</include>
-                <include>src/main/webapp/App/**</include>
+
+                <!-- If you rename your GWT module, you MUST update this too -->
+                <include>src/main/webapp/UberFireTutorial/**</include>
+
                 <include>**/gwt-unitCache/**</include>
                 <include>**/*.JUnit/**</include>
                 <include>monitordb.*</include>
@@ -428,7 +450,23 @@ TODO: I don't think we need gwtFirstOn..Classpath. Check this.
           </filesets>
         </configuration>
       </plugin>
+---------
 
+So yeah, the GWT tools (compiler, Dev Mode, and the JUnit test
+harness) generate a lot of junk in a lot of places. Errai also
+generates junk, but it's a bit more polite and keeps it all under one
+.errai directory.
+
+The one thing to keep in mind here is the commented line: if you
+rename your GWT module (we'll talk about GWT modules in the next
+section) you will also have to update this line to match. If the `mvn
+clean` command fails to remove your generated GWT module directory,
+you will run into the dreaded 'Module __yourmodule__ may need to be
+(re)compiled' error.
+
+And now on to the resources plugin:
+
+---------
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -458,17 +496,29 @@ TODO: I don't think we need gwtFirstOn..Classpath. Check this.
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/target/classes</outputDirectory>
               <resources>
                 <resource>
                   <directory>target/generated-sources/annotations</directory>
                 </resource>
               </resources>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
             </configuration>
           </execution>
         </executions>
       </plugin>
+---------
 
+This configuration serves two purposes: firstly, it copies CSS files
+used by your Errai UI templates to a place where they will be
+accessible from the web when your .war file is deployed. Secondly, it
+copies .java source files that were generated by UberFire's annotation
+processors into a place where they'll be on the classpath when the GWT
+compiler runs. Yes, the GWT compiler needs the .java source file for
+every class you want it to compile to JavaScript.
+
+Last but not least, the `jboss-as-maven-plugin`:
+
+---------
       <plugin>
         <groupId>org.jboss.as.plugins</groupId>
         <artifactId>jboss-as-maven-plugin</artifactId>
@@ -477,12 +527,24 @@ TODO: I don't think we need gwtFirstOn..Classpath. Check this.
           <filename>${project.artifactId}.${project.packaging}</filename>
         </configuration>
       </plugin>
-    </plugins>
+---------
 
+The `jboss-as-maven-plugin` is a handy tool that lets you deploy and
+undeploy your project from JBoss AS 7, EAP 6, or WildFly 8. As long as
+one of those servers is running locally, you can deploy your app to it
+with the command `mvn jboss-as:deploy`.
+
+Phew! That's it for the `<plugins>` section. Just one more section to
+go, and you can skip it if nobody will even use Eclipse to develop
+your project.
+
+The `<pluginManagement>` section goes inside the `<build>` section
+(it's a sibling of <plugins>, not a child).
+
+---------
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e
-      settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -510,12 +572,51 @@ TODO: I don't think we need gwtFirstOn..Classpath. Check this.
         </plugin>
       </plugins>
     </pluginManagement>
-  </build>
 ---------
 
-=== UberFire and Errai BOMs
+As the comment says, this is actually some Eclipse-specific
+configuration that's stored in the POM. It doesn't have any effect on
+the build if you're not in Eclipse.
 
 === Directory structure
+
+Your UberFire project will follow the standard Maven project
+layout. Here's the structure:
+
+---------
+pom.xml
+src/main/java/
+src/main/java/com/mycompany/uftutorial/UberFireTutorial.gwt.xml
+src/main/java/com/mycompany/uftutorial/client/
+src/main/java/com/mycompany/uftutorial/client/css/
+src/main/java/com/mycompany/uftutorial/server/
+src/main/java/com/mycompany/uftutorial/shared/
+src/main/resources/
+src/main/resources/ErraiApp.properties
+src/main/resources/app.html.template
+src/main/resources/ErraiApp.properties
+src/main/resources/log4j.properties
+src/main/resources/login.config
+src/main/resources/META-INF/
+src/main/resources/META-INF/services
+src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension
+src/main/resources/META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider
+src/main/resources/META-INF/services/org.uberfire.security.auth.AuthenticationSource
+src/main/resources/org/uberfire/public/
+src/main/resources/org/uberfire/public/css/
+src/main/resources/org/uberfire/public/images/
+src/main/webapp/
+src/main/webapp/login.jsp
+src/main/webapp/WEB-INF/
+src/main/webapp/WEB-INF/beans.xml
+src/main/webapp/WEB-INF/web.xml
+target/
+---------
+
+TODO: explain all of the above
+
+==== .gitignore
+
 
 == Set up the web.xml
 
