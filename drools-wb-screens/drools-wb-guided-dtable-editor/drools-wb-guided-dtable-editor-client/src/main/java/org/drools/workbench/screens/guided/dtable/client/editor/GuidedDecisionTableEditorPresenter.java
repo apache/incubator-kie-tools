@@ -33,6 +33,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -105,6 +106,9 @@ public class GuidedDecisionTableEditorPresenter {
 
     @Inject
     private Caller<MetadataService> metadataService;
+
+    @Inject
+    private Caller<RuleNamesService> ruleNameService;
 
     @Inject
     private GuidedDTableResourceType type;
@@ -269,6 +273,7 @@ public class GuidedDecisionTableEditorPresenter {
                                  model,
                                  content.getWorkItemDefinitions(),
                                  oracle,
+                                 ruleNameService,
                                  isReadOnly );
                 importsWidget.setContent( oracle,
                                           model.getImports(),

@@ -34,6 +34,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -92,6 +93,9 @@ public class GuidedRuleEditorPresenter {
 
     @Inject
     private Caller<GuidedRuleEditorService> service;
+
+    @Inject
+    private Caller<RuleNamesService> ruleNamesService;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -271,6 +275,7 @@ public class GuidedRuleEditorPresenter {
                 view.setContent( path,
                                  model,
                                  oracle,
+                                 ruleNamesService,
                                  isReadOnly,
                                  isDSLEnabled );
                 importsWidget.setContent( oracle,

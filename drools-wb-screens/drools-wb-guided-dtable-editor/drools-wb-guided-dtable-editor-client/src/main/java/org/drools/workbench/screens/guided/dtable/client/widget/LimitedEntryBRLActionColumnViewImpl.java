@@ -30,6 +30,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
+import org.jboss.errai.common.client.api.Caller;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
@@ -45,6 +47,7 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
     public LimitedEntryBRLActionColumnViewImpl( final Path path,
                                                 final GuidedDecisionTable52 model,
                                                 final AsyncPackageDataModelOracle oracle,
+                                                final Caller<RuleNamesService> ruleNameService,
                                                 final LimitedEntryBRLActionColumn column,
                                                 final EventBus eventBus,
                                                 final boolean isNew,
@@ -52,6 +55,7 @@ public class LimitedEntryBRLActionColumnViewImpl extends AbstractLimitedEntryBRL
         super( path,
                model,
                oracle,
+               ruleNameService,
                column,
                eventBus,
                isNew,

@@ -27,6 +27,7 @@ import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -63,6 +64,7 @@ public class ScenarioEditorPresenter {
     private final Event<ChangeTitleWidgetEvent> changeTitleNotification;
     private final TestScenarioResourceType type;
     private final AsyncPackageDataModelOracleFactory oracleFactory;
+    private final Caller<RuleNamesService> ruleNameService;
 
     private Menus menus;
 
@@ -81,7 +83,8 @@ public class ScenarioEditorPresenter {
                                     final PlaceManager placeManager,
                                     final Event<ChangeTitleWidgetEvent> changeTitleNotification,
                                     final TestScenarioResourceType type,
-                                    final AsyncPackageDataModelOracleFactory oracleFactory ) {
+                                    final AsyncPackageDataModelOracleFactory oracleFactory,
+                                    final Caller<RuleNamesService> ruleNameService) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.service = service;
@@ -89,6 +92,7 @@ public class ScenarioEditorPresenter {
         this.changeTitleNotification = changeTitleNotification;
         this.type = type;
         this.oracleFactory = oracleFactory;
+        this.ruleNameService = ruleNameService;
     }
 
     @OnStartup
@@ -199,7 +203,8 @@ public class ScenarioEditorPresenter {
 
                 view.clear();
                 view.setScenario( scenario,
-                                  oracle );
+                                  oracle,
+                                  ruleNameService );
 
                 ifFixturesSizeZeroThenAddExecutionTrace();
 

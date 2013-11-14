@@ -16,12 +16,17 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.Collection;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
@@ -44,16 +49,28 @@ public class GuidedRuleEditorViewImpl
     public void setContent( final Path path,
                             final RuleModel model,
                             final AsyncPackageDataModelOracle oracle,
+                            final Caller<RuleNamesService> ruleNamesService,
                             final boolean isReadOnly,
                             final boolean isDSLEnabled ) {
-        modeller = new RuleModeller( path,
-                                     model,
-                                     oracle,
-                                     new RuleModellerWidgetFactory(),
-                                     localBus,
-                                     isReadOnly,
-                                     isDSLEnabled );
-        panel.setWidget( this.modeller );
+
+        ruleNamesService.call(new RemoteCallback<Collection<String>>() {
+            @Override
+            public void callback(Collection<String> ruleNames) {
+
+                modeller = new RuleModeller(
+                        path,
+                        model,
+                        oracle,
+                        ruleNames,
+                        new RuleModellerWidgetFactory(),
+                        localBus,
+                        isReadOnly,
+                        isDSLEnabled );
+                panel.setWidget( modeller );
+
+            }
+        }).getRuleNamesForPackage(model.getPackageName());
+
     }
 
     @Override

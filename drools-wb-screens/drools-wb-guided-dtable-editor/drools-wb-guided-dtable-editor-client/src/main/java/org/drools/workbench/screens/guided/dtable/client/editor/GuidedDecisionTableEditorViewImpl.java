@@ -25,6 +25,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.GuidedDecisionTableWidget;
+import org.jboss.errai.common.client.api.Caller;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
@@ -53,12 +55,14 @@ public class GuidedDecisionTableEditorViewImpl extends Composite implements Guid
                             final GuidedDecisionTable52 model,
                             final Set<PortableWorkDefinition> workItemDefinitions,
                             final AsyncPackageDataModelOracle oracle,
+                            final Caller<RuleNamesService> ruleNamesService,
                             final boolean isReadOnly ) {
         this.model = model;
         this.editor = new GuidedDecisionTableWidget( path,
                                                      model,
                                                      workItemDefinitions,
                                                      oracle,
+                                                     ruleNamesService,
                                                      identity,
                                                      isReadOnly );
         panel.setWidget( this.editor );

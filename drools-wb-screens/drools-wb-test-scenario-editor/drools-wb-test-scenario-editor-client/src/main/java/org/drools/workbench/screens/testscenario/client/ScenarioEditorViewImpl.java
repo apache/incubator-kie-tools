@@ -40,6 +40,7 @@ import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorServi
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -307,9 +308,11 @@ public class ScenarioEditorViewImpl
 
     @Override
     public void setScenario( final Scenario scenario,
-                             final AsyncPackageDataModelOracle oracle ) {
+                             final AsyncPackageDataModelOracle oracle,
+                             final Caller<RuleNamesService> ruleNameService ) {
         scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( this,
-                                                                             oracle );
+                                                                             oracle,
+                                                                             ruleNameService);
         scenarioWidgetComponentCreator.setScenario( scenario );
         scenarioWidgetComponentCreator.setShowResults( false );
     }

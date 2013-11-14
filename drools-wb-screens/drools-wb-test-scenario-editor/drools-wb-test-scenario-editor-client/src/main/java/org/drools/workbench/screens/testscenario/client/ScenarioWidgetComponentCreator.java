@@ -36,6 +36,9 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.uberfire.client.common.DirtyableFlexTable;
@@ -46,17 +49,25 @@ public class ScenarioWidgetComponentCreator {
     private final ScenarioParentWidget scenarioWidget;
     private final AsyncPackageDataModelOracle oracle;
 
-    private final String[] availableRules;
+    private String[] availableRules;
     private HandlerRegistration availableRulesHandlerRegistration;
 
     private boolean showResults;
     private Scenario scenario;
 
     protected ScenarioWidgetComponentCreator( final ScenarioParentWidget scenarioWidget,
-                                              final AsyncPackageDataModelOracle oracle ) {
+                                              final AsyncPackageDataModelOracle oracle,
+                                              final Caller<RuleNamesService> ruleNamesService ) {
         this.scenarioWidget = scenarioWidget;
         this.oracle = oracle;
-        this.availableRules = this.oracle.getRuleNames().toArray( new String[ this.oracle.getRuleNames().size() ] );
+
+        ruleNamesService.call(new RemoteCallback<List<String>>() {
+            @Override
+            public void callback(List<String> ruleNames) {
+                availableRules = ruleNames.toArray(new String[ruleNames.size()]);
+            }
+        }).getRuleNames();
+
     }
 
     protected GlobalPanel createGlobalPanel( final ScenarioHelper scenarioHelper,

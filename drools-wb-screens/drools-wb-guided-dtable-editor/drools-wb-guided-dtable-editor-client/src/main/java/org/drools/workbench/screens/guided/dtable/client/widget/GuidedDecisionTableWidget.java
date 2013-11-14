@@ -81,6 +81,9 @@ import org.drools.workbench.screens.guided.dtable.client.resources.images.Guided
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
@@ -118,6 +121,7 @@ public class GuidedDecisionTableWidget extends Composite
     private GuidedDecisionTable52 model;
     private GuidedDecisionTableUtils utils;
     private AsyncPackageDataModelOracle oracle;
+    private Caller<RuleNamesService> ruleNameService;
     private BRLRuleModel rm;
 
     private Path path;
@@ -159,10 +163,12 @@ public class GuidedDecisionTableWidget extends Composite
                                       final GuidedDecisionTable52 model,
                                       final Set<PortableWorkDefinition> workItemDefinitions,
                                       final AsyncPackageDataModelOracle oracle,
+                                      final Caller<RuleNamesService> ruleNameService,
                                       final Identity identity,
                                       final boolean isReadOnly ) {
         this.path = path;
         this.oracle = oracle;
+        this.ruleNameService = ruleNameService;
         this.model = model;
         this.identity = identity;
         this.workItemDefinitions = workItemDefinitions;
@@ -213,7 +219,12 @@ public class GuidedDecisionTableWidget extends Composite
         options.add( getAttributes() );
         config.add( options );
 
-        layout.add( getRuleInheritancePanel( model, oracle.getRuleNames() ) );
+        ruleNameService.call(new RemoteCallback<List<String>>() {
+            @Override
+            public void callback(List<String> ruleNames) {
+                layout.add(getRuleInheritancePanel(model, ruleNames));
+            }
+        }).getRuleNames();
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
         layout.add( dtableContainer );
@@ -457,6 +468,7 @@ public class GuidedDecisionTableWidget extends Composite
                                             LimitedEntryBRLActionColumnViewImpl popup = new LimitedEntryBRLActionColumnViewImpl( path,
                                                                                                                                  model,
                                                                                                                                  oracle,
+                                                                                                                                 ruleNameService,
                                                                                                                                  column,
                                                                                                                                  eventBus,
                                                                                                                                  false,
@@ -477,6 +489,7 @@ public class GuidedDecisionTableWidget extends Composite
                                             BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( path,
                                                                                                          model,
                                                                                                          oracle,
+                                                                                                         ruleNameService,
                                                                                                          column,
                                                                                                          eventBus,
                                                                                                          false,
@@ -869,6 +882,7 @@ public class GuidedDecisionTableWidget extends Composite
                                 BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( path,
                                                                                                    model,
                                                                                                    oracle,
+                                                                                                   ruleNameService,
                                                                                                    column,
                                                                                                    eventBus,
                                                                                                    true,
@@ -880,6 +894,7 @@ public class GuidedDecisionTableWidget extends Composite
                                 LimitedEntryBRLConditionColumnViewImpl limtedEntryPopup = new LimitedEntryBRLConditionColumnViewImpl( path,
                                                                                                                                       model,
                                                                                                                                       oracle,
+                                                                                                                                      ruleNameService,
                                                                                                                                       (LimitedEntryBRLConditionColumn) column,
                                                                                                                                       eventBus,
                                                                                                                                       true,
@@ -988,6 +1003,7 @@ public class GuidedDecisionTableWidget extends Composite
                                 BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( path,
                                                                                              model,
                                                                                              oracle,
+                                                                                             ruleNameService,
                                                                                              column,
                                                                                              eventBus,
                                                                                              true,
@@ -999,6 +1015,7 @@ public class GuidedDecisionTableWidget extends Composite
                                 LimitedEntryBRLActionColumnViewImpl limtedEntryPopup = new LimitedEntryBRLActionColumnViewImpl( path,
                                                                                                                                 model,
                                                                                                                                 oracle,
+                                                                                                                                ruleNameService,
                                                                                                                                 (LimitedEntryBRLActionColumn) column,
                                                                                                                                 eventBus,
                                                                                                                                 true,
@@ -1190,6 +1207,7 @@ public class GuidedDecisionTableWidget extends Composite
                                             LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl( path,
                                                                                                                                        model,
                                                                                                                                        oracle,
+                                                                                                                                       ruleNameService,
                                                                                                                                        (LimitedEntryBRLConditionColumn) origCol,
                                                                                                                                        eventBus,
                                                                                                                                        false,
@@ -1206,6 +1224,7 @@ public class GuidedDecisionTableWidget extends Composite
                                         BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( path,
                                                                                                            model,
                                                                                                            oracle,
+                                                                                                           ruleNameService,
                                                                                                            origCol,
                                                                                                            eventBus,
                                                                                                            false,

@@ -6,6 +6,7 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.vfs.Path;
@@ -28,7 +29,8 @@ public interface ScenarioEditorView
                           final boolean isReadOnly );
 
     void setScenario( final Scenario scenario,
-                      final AsyncPackageDataModelOracle oracle );
+                      final AsyncPackageDataModelOracle oracle,
+                      final Caller<RuleNamesService> ruleNamesService);
 
     void showSaveSuccessful();
 

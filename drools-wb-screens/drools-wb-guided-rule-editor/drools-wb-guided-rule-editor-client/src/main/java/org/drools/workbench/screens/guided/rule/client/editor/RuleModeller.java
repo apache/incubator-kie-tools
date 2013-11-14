@@ -41,6 +41,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
@@ -87,11 +88,13 @@ public class RuleModeller extends DirtyableComposite
             hasModifiedWidgets = true;
         }
     };
+    private Collection<String> ruleNames;
 
     //used by Guided Rule (DRL + DSLR)
     public RuleModeller( final Path path,
                          final RuleModel model,
                          final AsyncPackageDataModelOracle oracle,
+                         final Collection<String> ruleNames,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly,
@@ -99,6 +102,7 @@ public class RuleModeller extends DirtyableComposite
         this( path,
               model,
               oracle,
+              ruleNames,
               widgetFactory,
               RuleModellerConfiguration.getDefault(),
               eventBus,
@@ -110,12 +114,14 @@ public class RuleModeller extends DirtyableComposite
     public RuleModeller( final Path path,
                          final RuleModel model,
                          final AsyncPackageDataModelOracle oracle,
+                         final Collection<String> ruleNames,
                          final ModellerWidgetFactory widgetFactory,
                          final EventBus eventBus,
                          final boolean isReadOnly ) {
         this( path,
               model,
               oracle,
+              ruleNames,
               widgetFactory,
               eventBus,
               isReadOnly,
@@ -126,6 +132,7 @@ public class RuleModeller extends DirtyableComposite
     public RuleModeller( final Path path,
                          final RuleModel model,
                          final AsyncPackageDataModelOracle oracle,
+                         final Collection<String> ruleNames,
                          final ModellerWidgetFactory widgetFactory,
                          final RuleModellerConfiguration configuration,
                          final EventBus eventBus,
@@ -133,6 +140,7 @@ public class RuleModeller extends DirtyableComposite
         this.path = path;
         this.model = model;
         this.oracle = oracle;
+        this.ruleNames = ruleNames;
         this.widgetFactory = widgetFactory;
         this.configuration = configuration;
         this.eventBus = eventBus;
@@ -175,8 +183,8 @@ public class RuleModeller extends DirtyableComposite
         layout.getColumnFormatter().setWidth( 4,
                                               "64px" );
 
-        if ( this.showExtendedRuleDropdown() ) {
-            addExtendedRuleDropdown( oracle.getRuleNamesForPackage( model.getPackageName() ) );
+        if (this.showExtendedRuleDropdown()) {
+            addExtendedRuleDropdown(ruleNames);
         }
 
         if ( this.showLHS() ) {

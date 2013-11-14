@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
+import java.util.Collection;
+
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -38,6 +40,9 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModelEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerWidgetFactory;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.Popup;
@@ -90,6 +95,7 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
     public AbstractLimitedEntryBRLColumnViewImpl( final Path path,
                                                   final GuidedDecisionTable52 model,
                                                   final AsyncPackageDataModelOracle oracle,
+                                                  final Caller<RuleNamesService> ruleNameService,
                                                   final BRLColumn<T, C> column,
                                                   final EventBus eventBus,
                                                   final boolean isNew,
@@ -104,15 +110,24 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
         setModal( false );
 
         //Limited Entry decision tables do not permit field values to be defined with Template Keys
-        ModellerWidgetFactory widgetFactory = new RuleModellerWidgetFactory();
+        final ModellerWidgetFactory widgetFactory = new RuleModellerWidgetFactory();
 
-        this.ruleModeller = new RuleModeller( path,
+
+        ruleNameService.call(new RemoteCallback<Collection<String>>() {
+            @Override
+            public void callback(Collection<String> ruleNames) {
+
+                ruleModeller = new RuleModeller( path,
                                               ruleModel,
                                               oracle,
+                                              ruleNames,
                                               widgetFactory,
                                               getRuleModellerConfiguration(),
                                               eventBus,
                                               isReadOnly );
+
+            }
+        }).getRuleNamesForPackage(model.getPackageName());
 
         this.popupContent = uiBinder.createAndBindUi( this );
 

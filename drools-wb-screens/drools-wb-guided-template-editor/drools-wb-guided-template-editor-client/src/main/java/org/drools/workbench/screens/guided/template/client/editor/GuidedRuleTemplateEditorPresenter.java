@@ -35,6 +35,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -108,6 +109,9 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @Inject
     private Caller<MetadataService> metadataService;
+
+    @Inject
+    private Caller<RuleNamesService> ruleNamesService;
 
     @Inject
     private GuidedRuleTemplateResourceType type;
@@ -290,6 +294,7 @@ public class GuidedRuleTemplateEditorPresenter {
                 view.setContent( path,
                                  model,
                                  oracle,
+                                 ruleNamesService,
                                  eventBus,
                                  isReadOnly );
                 importsWidget.setContent( oracle,

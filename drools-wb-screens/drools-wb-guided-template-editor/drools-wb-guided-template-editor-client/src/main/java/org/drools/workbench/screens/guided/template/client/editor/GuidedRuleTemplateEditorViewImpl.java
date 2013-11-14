@@ -16,12 +16,17 @@
 
 package org.drools.workbench.screens.guided.template.client.editor;
 
+import java.util.Collection;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
@@ -44,16 +49,26 @@ public class GuidedRuleTemplateEditorViewImpl extends Composite implements Guide
     public void setContent( final Path path,
                             final TemplateModel model,
                             final AsyncPackageDataModelOracle oracle,
+                            final Caller<RuleNamesService> ruleNamesService,
                             final EventBus eventBus,
                             final boolean isReadOnly ) {
-        this.modeller = new RuleModeller( path,
-                                          model,
-                                          oracle,
-                                          new TemplateModellerWidgetFactory(),
-                                          eventBus,
-                                          isReadOnly );
-        panel.setWidget( this.modeller );
-    }
+
+        ruleNamesService.call(new RemoteCallback<Collection<String>>() {
+            @Override
+            public void callback(Collection<String> ruleNames) {
+
+                modeller = new RuleModeller(path,
+                        model,
+                        oracle,
+                        ruleNames,
+                        new TemplateModellerWidgetFactory(),
+                        eventBus,
+                        isReadOnly);
+                panel.setWidget(modeller);
+            }
+        }).getRuleNamesForPackage(model.getPackageName());
+
+        }
 
     @Override
     public TemplateModel getContent() {

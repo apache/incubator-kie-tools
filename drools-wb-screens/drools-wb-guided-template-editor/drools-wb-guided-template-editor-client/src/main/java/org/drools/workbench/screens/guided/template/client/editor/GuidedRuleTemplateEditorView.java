@@ -3,6 +3,8 @@ package org.drools.workbench.screens.guided.template.client.editor;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.jboss.errai.common.client.api.Caller;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.vfs.Path;
@@ -16,6 +18,7 @@ public interface GuidedRuleTemplateEditorView extends HasBusyIndicator,
     void setContent( final Path path,
                      final TemplateModel model,
                      final AsyncPackageDataModelOracle oracle,
+                     final Caller<RuleNamesService> ruleNamesService,
                      final EventBus eventBus,
                      final boolean isReadOnly );
 
