@@ -196,8 +196,6 @@ public interface ProjectEditorConstants
 
     String NewProjectWizard();
 
-    String AKModuleMustHaveAtLeastOneDefaultKBasePleaseAddOne();
-
     String IncludedKnowledgeBases();
 
     String Stateful();

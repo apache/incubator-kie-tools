@@ -31,7 +31,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.validation.KModuleValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -315,26 +314,19 @@ public class ProjectScreenPresenter
         };
     }
 
-    private void saveProject( final RemoteCallback callback ) {
-        KModuleValidator kModuleValidator = new KModuleValidator( ProjectEditorResources.CONSTANTS );
-        kModuleValidator.validate( model.getKModule() );
+    private void saveProject(final RemoteCallback callback) {
+        saveOperationService.save(pathToPomXML,
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute(final String comment) {
 
-        if ( !kModuleValidator.hasErrors() ) {
-            saveOperationService.save( pathToPomXML,
-                                       new CommandWithCommitMessage() {
-                                           @Override
-                                           public void execute( final String comment ) {
+                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
 
-                                               view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                        projectScreenService.call(callback,
+                                new HasBusyIndicatorDefaultErrorCallback(view)).save(pathToPomXML, model, comment);
 
-                                               projectScreenService.call( callback,
-                                                                          new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML, model, comment );
-
-                                           }
-                                       } );
-        } else {
-            ErrorPopup.showMessage( kModuleValidator.getErrorsString() );
-        }
+                    }
+                });
     }
 
     private RemoteCallback getBuildSuccessCallback() {
