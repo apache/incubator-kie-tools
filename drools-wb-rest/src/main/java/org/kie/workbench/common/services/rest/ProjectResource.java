@@ -48,23 +48,9 @@ import javax.ws.rs.core.UriInfo;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.resteasy.annotations.GZIP;
-import org.kie.workbench.common.services.shared.rest.AddRepositoryToOrganizationalUnitRequest;
-import org.kie.workbench.common.services.shared.rest.BuildConfig;
-import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
-import org.kie.workbench.common.services.shared.rest.CreateOrCloneRepositoryRequest;
-import org.kie.workbench.common.services.shared.rest.CreateOrganizationalUnitRequest;
-import org.kie.workbench.common.services.shared.rest.CreateProjectRequest;
-import org.kie.workbench.common.services.shared.rest.DeployProjectRequest;
-import org.kie.workbench.common.services.shared.rest.Entity;
-import org.kie.workbench.common.services.shared.rest.InstallProjectRequest;
-import org.kie.workbench.common.services.shared.rest.JobRequest;
-import org.kie.workbench.common.services.shared.rest.JobResult;
-import org.kie.workbench.common.services.shared.rest.OrganizationalUnit;
-import org.kie.workbench.common.services.shared.rest.RemoveRepositoryFromOrganizationalUnitRequest;
-import org.kie.workbench.common.services.shared.rest.RemoveRepositoryRequest;
-import org.kie.workbench.common.services.shared.rest.RepositoryRequest;
-import org.kie.workbench.common.services.shared.rest.RepositoryResponse;
-import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
+import org.kie.workbench.common.services.shared.rest.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryService;
@@ -151,16 +137,17 @@ public class ProjectResource {
     }
 
     public void onUpateJobStatus( final @Observes JobResult jobResult ) {
-        JobResult job = jobs.get( jobResult.getJodId() );
+        String jobId = jobResult.getJobId(); 
+        JobResult job = jobs.get( jobId );
 
         if ( job == null ) {
             //the job has gone probably because its done and has been removed.
-            System.out.println( "-----onUpateJobStatus--- , can not find jobId:" + jobResult.getJodId() + ", the job has gone probably because its done and has been removed." );
+            System.out.println( "-----onUpateJobStatus--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed." );
             return;
         }
 
         jobResult.setLastModified( System.currentTimeMillis() );
-        jobs.put( jobResult.getJodId(), jobResult );
+        jobs.put( jobId, jobResult );
     }
 
     @GET
@@ -236,7 +223,7 @@ public class ProjectResource {
         jobRequest.setRepository( repository );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -260,7 +247,7 @@ public class ProjectResource {
         jobRequest.setRepositoryName( repositoryName );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -287,7 +274,7 @@ public class ProjectResource {
         jobRequest.setDescription( project.getDescription() );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -310,12 +297,12 @@ public class ProjectResource {
 /*        String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateProjectRequest jobRequest = new CreateProjectRequest();
         jobRequest.setStatus(JobRequest.Status.ACCEPTED);
-        jobRequest.setJodId(id);
+        jobRequest.setJobId(id);
         jobRequest.setRepositoryName(repositoryName);
         jobRequest.setProjectName(projectName);
         
         JobResult jobResult = new JobResult();
-        jobResult.setJodId(id);
+        jobResult.setJobId(id);
         jobResult.setStatus(JobRequest.Status.ACCEPTED);
         jobs.put(id, jobResult);
         
@@ -341,7 +328,7 @@ public class ProjectResource {
         jobRequest.setProjectName( projectName );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -366,7 +353,7 @@ public class ProjectResource {
         jobRequest.setProjectName( projectName );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -394,7 +381,7 @@ public class ProjectResource {
         jobRequest.setBuildConfig( mavenConfig );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -420,7 +407,7 @@ public class ProjectResource {
         jobRequest.setProjectName( projectName );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -470,7 +457,7 @@ public class ProjectResource {
         jobRequest.setRepositories( organizationalUnit.getRepositories() );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -494,7 +481,7 @@ public class ProjectResource {
         jobRequest.setRepositoryName( repositoryName );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 
@@ -518,7 +505,7 @@ public class ProjectResource {
         jobRequest.setRepositoryName( repositoryName );
 
         JobResult jobResult = new JobResult();
-        jobResult.setJodId( id );
+        jobResult.setJobId( id );
         jobResult.setStatus( JobRequest.Status.ACCEPTED );
         jobs.put( id, jobResult );
 

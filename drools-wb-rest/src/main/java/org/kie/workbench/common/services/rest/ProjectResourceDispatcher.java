@@ -64,7 +64,7 @@ public class ProjectResourceDispatcher {
         System.out.println( "-----ProjectResourceDispatcher:createOrCloneRepository--- , repository name:" + repository.getName() );
 
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         if ( repository.getRequestType() == null || "".equals( repository.getRequestType() )
                 || !( "new".equals( repository.getRequestType() ) || ( "clone".equals( repository.getRequestType() ) ) ) ) {
@@ -136,7 +136,7 @@ public class ProjectResourceDispatcher {
         System.out.println( "-----removeRepository--- , repository name:" + repositoryName );
 
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         if ( repositoryName == null || "".equals( repositoryName ) ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
@@ -154,7 +154,7 @@ public class ProjectResourceDispatcher {
                                String projectName ) {
         System.out.println( "-----ProjectResourceDispatcher:createProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
@@ -203,7 +203,7 @@ public class ProjectResourceDispatcher {
                                 String projectName) {
         System.out.println( "-----ProjectResourceDispatcher:compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
@@ -246,7 +246,7 @@ public class ProjectResourceDispatcher {
                                 String projectName) {
         System.out.println( "-----ProjectResourceDispatcher:installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
@@ -298,7 +298,7 @@ public class ProjectResourceDispatcher {
                              BuildConfig config ) {
         System.out.println( "-----ProjectResourceDispatcher:testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         final JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
@@ -367,7 +367,7 @@ public class ProjectResourceDispatcher {
                                String projectName ) {
         System.out.println( "-----ProjectResourceDispatcher:deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
@@ -400,7 +400,7 @@ public class ProjectResourceDispatcher {
                                           List<String> repositoryNameList ) {
         System.out.println( "-----ProjectResourceDispatcher:createOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", OrganizationalUnit owner:" + organizationalUnitOwner );
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         if ( organizationalUnitName == null || organizationalUnitName == null ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
@@ -446,7 +446,7 @@ public class ProjectResourceDispatcher {
                                                    String repositoryName ) {
         System.out.println( "-----ProjectResourceDispatcher:addRepositoryToOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         if ( organizationalUnitName == null || repositoryName == null ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );
@@ -486,7 +486,7 @@ public class ProjectResourceDispatcher {
                                                         String repositoryName ) {
         System.out.println( "-----ProjectResourceDispatcher:removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
         JobResult result = new JobResult();
-        result.setJodId( jobId );
+        result.setJobId( jobId );
 
         if ( organizationalUnitName == null || repositoryName == null ) {
             result.setStatus( JobRequest.Status.BAD_REQUEST );

@@ -102,7 +102,7 @@ public class KieSessionAsyncJobRequestObserver {
     public boolean approveRequest( JobRequest jobRequest ) {
         if ( !defaultGuvnorApprover.requestApproval( jobRequest ) ) {
             JobResult result = new JobResult();
-            result.setJodId( jobRequest.getJobId() );
+            result.setJobId( jobRequest.getJobId() );
             result.setStatus( JobRequest.Status.DENIED );
             result.setResult( "The request is denied." );
             jobResultEvent.fire( result );
