@@ -4,6 +4,6 @@ $registerSplashScreen({
     title: function () {
         return "Help";
     },
-    display_next_time: true,
+    display_next_time: false,
     interception_points: ["org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective"]
 });
