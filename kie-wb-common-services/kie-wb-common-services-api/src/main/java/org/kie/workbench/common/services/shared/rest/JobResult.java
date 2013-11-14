@@ -21,11 +21,11 @@ public class JobResult {
     public void setStatus(Status status) {
         this.status = status;
     }
-    public String getJodId() {
+    public String getJobId() {
         return jobId;
     }
-    public void setJodId(String jodId) {
-        this.jobId = jodId;
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 	public String getResult() {
 		return result;

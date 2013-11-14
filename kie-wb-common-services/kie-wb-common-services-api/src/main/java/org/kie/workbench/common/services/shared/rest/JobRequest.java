@@ -22,8 +22,8 @@ public class JobRequest {
     public String getJobId() {
         return jobId;
     }
-    public void setJobId(String jodId) {
-        this.jobId = jodId;
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
     }
 	public Status getStatus() {
 		return status;
