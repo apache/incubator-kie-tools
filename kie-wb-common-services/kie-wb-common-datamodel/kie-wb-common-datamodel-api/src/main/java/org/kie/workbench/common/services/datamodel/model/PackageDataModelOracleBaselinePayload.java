@@ -82,9 +82,6 @@ public class PackageDataModelOracleBaselinePayload {
     // Package-level map of Globals {alias, class name}.
     private Map<String, String> globalTypes = new HashMap<String, String>();
 
-    // List of available rule names
-    private Map<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
-
     // List of available package names
     private List<String> packageNames = new ArrayList<String>();
 
@@ -214,14 +211,6 @@ public class PackageDataModelOracleBaselinePayload {
 
     public void setGlobalTypes( final Map<String, String> globalTypes ) {
         this.globalTypes = globalTypes;
-    }
-
-    public Map<String, Collection<String>> getRuleNames() {
-        return ruleNames;
-    }
-
-    public void setRuleNames( final Map<String, Collection<String>> ruleNames ) {
-        this.ruleNames = ruleNames;
     }
 
     public List<String> getPackageNames() {

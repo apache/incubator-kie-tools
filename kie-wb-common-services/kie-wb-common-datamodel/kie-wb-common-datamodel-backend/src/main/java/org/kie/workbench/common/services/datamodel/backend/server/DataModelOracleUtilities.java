@@ -217,7 +217,6 @@ public class DataModelOracleUtilities {
         dataModel.setDslConditionSentences( oracle.getPackageDslConditionSentences() );
         dataModel.setDslActionSentences( oracle.getPackageDslActionSentences() );
         dataModel.setGlobalTypes( oracle.getPackageGlobals() );
-        dataModel.setRuleNames( oracle.getProjectRuleNamesMap() );
         dataModel.setPackageNames( oracle.getProjectPackageNames() );
     }
 

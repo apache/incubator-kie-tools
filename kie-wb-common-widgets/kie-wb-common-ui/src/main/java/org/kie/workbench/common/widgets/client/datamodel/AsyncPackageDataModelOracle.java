@@ -46,13 +46,6 @@ public interface AsyncPackageDataModelOracle {
     //Package methods
     List<String> getPackageNames();
 
-    //Rule names methods - for "extends" use
-    Map<String, Collection<String>> getRuleNamesMap();
-
-    List<String> getRuleNames();
-
-    Collection<String> getRuleNamesForPackage( String packageName );
-
     //Fact related methods
     String[] getFactTypes();
 
@@ -173,8 +166,6 @@ public interface AsyncPackageDataModelOracle {
     void setPackageName( final String packageName );
 
     void addModelFields( final Map<String, ModelField[]> modelFields );
-
-    void addRuleNames( final Map<String, Collection<String>> ruleNames );
 
     void addFieldParametersType( final Map<String, String> fieldParametersType );
 

@@ -70,9 +70,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     // List of available package names
     private List<String> packageNames = new ArrayList<String>();
 
-    // List of available rule names
-    private Map<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
-
     // ####################################
     // Project Scope
     // ####################################
@@ -176,29 +173,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public List<String> getPackageNames() {
         return packageNames;
-    }
-
-    // ####################################
-    // Rule Names
-    // ####################################
-
-    @Override
-    public Map<String, Collection<String>> getRuleNamesMap() {
-        return ruleNames;
-    }
-
-    @Override
-    public List<String> getRuleNames() {
-        List<String> allTheRuleNames = new ArrayList<String>();
-        for ( String packageName : ruleNames.keySet() ) {
-            allTheRuleNames.addAll( ruleNames.get( packageName ) );
-        }
-        return allTheRuleNames;
-    }
-
-    @Override
-    public Collection<String> getRuleNamesForPackage( String packageName ) {
-        return ruleNames.get( packageName );
     }
 
     // ####################################
@@ -1273,11 +1247,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public void addModelFields( final Map<String, ModelField[]> modelFields ) {
         this.projectModelFields.putAll( modelFields );
-    }
-
-    @Override
-    public void addRuleNames( final Map<String, Collection<String>> ruleNames ) {
-        this.ruleNames.putAll( ruleNames );
     }
 
     @Override

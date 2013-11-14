@@ -123,27 +123,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
             }
         }
 
-        addAllRuleNames( builder, pdBuilder, project );
-
         return pdBuilder.build();
-    }
-
-    private void addAllRuleNames(
-            Builder builder,
-            ProjectDataModelOracleBuilder pdBuilder,
-            Project project) {
-
-        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(builder.getKieModuleIgnoringErrors());
-
-        for (org.guvnor.common.services.project.model.Package pkg : projectService.resolvePackages(project)) {
-            String packageName = pkg.getPackageName();
-            if (packageName.isEmpty()) {
-                packageName = DEFAULTPKG;
-            }
-             pdBuilder.addRuleNames( pkg.getPackageName(), kieModuleMetaData.getRuleNamesInPackage(packageName) );
-        }
-
-
     }
 }
 

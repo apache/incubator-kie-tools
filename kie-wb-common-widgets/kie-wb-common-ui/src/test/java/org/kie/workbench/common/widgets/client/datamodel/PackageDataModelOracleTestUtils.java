@@ -55,7 +55,6 @@ public class PackageDataModelOracleTestUtils {
                                   final PackageDataModelOracleBaselinePayload payload ) {
         oracle.setProjectName( payload.getProjectName() );
         oracle.addModelFields( payload.getModelFields() );
-        oracle.addRuleNames( payload.getRuleNames() );
         oracle.addFieldParametersType( payload.getFieldParametersType() );
         oracle.addEventTypes( payload.getEventTypes() );
         oracle.addTypeSources( payload.getTypeSources() );

@@ -58,7 +58,6 @@ public class AsyncPackageDataModelOracleFactory {
                            final PackageDataModelOracleBaselinePayload payload ) {
         oracle.setProjectName( payload.getProjectName() );
         oracle.addModelFields( payload.getModelFields() );
-        oracle.addRuleNames( payload.getRuleNames() );
         oracle.addFieldParametersType( payload.getFieldParametersType() );
         oracle.addEventTypes( payload.getEventTypes() );
         oracle.addTypeSources( payload.getTypeSources() );
@@ -68,7 +67,6 @@ public class AsyncPackageDataModelOracleFactory {
         oracle.addJavaEnumDefinitions( payload.getJavaEnumDefinitions() );
         oracle.addMethodInformation( payload.getMethodInformation() );
         oracle.addCollectionTypes( payload.getCollectionTypes() );
-        oracle.addPackageNames( payload.getPackageNames() );
 
         oracle.setPackageName( payload.getPackageName() );
         oracle.addWorkbenchEnumDefinitions( payload.getWorkbenchEnumDefinitions() );
