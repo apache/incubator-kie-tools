@@ -717,18 +717,131 @@ As the comment says, this is actually some Eclipse-specific
 configuration that's stored in the POM. It doesn't have any effect on
 the build if you're not in Eclipse.
 
-== Set up a .gitignore
+== Set up a .gitignore (or similar for your VCS)
 
+It's important to avoid tracking generated files in source
+control. When you accidentally check in a generated file, it will lead
+to bad things in the future: merge conflicts, confusion, and coworkers
+hitting you on the head with rubber chickens.
+
+Here's the set of files you want your version control system to
+ignore. This can be used as-is in a `.gitignore` file, but it should
+be easy to adapt to the VCS you're using:
+
+---------
+.classpath
+.project/
+.settings/
+.factorypath
+target/
+.errai/
+src/main/webapp/UberFireTutorial/
+src/main/webapp/WEB-INF/classes/
+src/main/webapp/WEB-INF/deploy/
+src/main/gwt-unitCache/
+war/
+gwt-unitCache/
+.apt_generated/
+---------
 
 == Set up the web.xml
 
-=== Errai servlet
+The `web.xml` file is the main and most fundamental configuration file
+for your web application. In Java EE talk, it's your ``deployment
+descriptor.''
 
-=== UberFire servlet
+Here's what you need in a typical UberFire `web.xml`. Create a file
+`src/main/webapp/WEB-INF/web.xml` and fill it with the following:
+
+[source,xml]
+---------
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+  <filter>
+    <filter-name>UberFire Security Filter</filter-name>
+    <filter-class>
+      org.uberfire.security.server.UberFireSecurityFilter
+    </filter-class>
+    <init-param>
+      <param-name>org.uberfire.cookie.id</param-name>
+      <param-value>errai-cdi-workbench-cookie</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>UberFire Security Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>UberFireServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UberFireServlet</servlet-name>
+    <url-pattern>/CdiWorkbench/Uberfire.html</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ErraiServlet</servlet-name>
+    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ErraiServlet</servlet-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+
+</web-app>
+---------
 
 === UberFire security filter
 
-== Set up UberFire security: users and roles
+The UberFireSecurityFilter is mapped to `/*` and so it is consulted
+for every request to a servlet or static resource in your web
+application. This filter makes an allow/deny decision for each of
+these requests.
+
+How do you control the behaviour of this filter? It depends.  The
+filter relies on a series of pluggable mechanisms to make its
+decisions about how users can identify themselves, which
+username+password combinations are valid, and which URLs anonymous and
+authenticated users are allowed to access.
+
+For this demo, we will control access using the defaults, which are:
+
+* Authentication Manager (controls login and logout): `HttpAuthenticationManager`
+* Authentication Schemes (extract provided credentials from HTTP requests):
+** HTTP BASIC
+** Forms (JAAS standard POST to j_security_check)
+** UberFire ``Remember Me'' cookies
+* Authentication Provider: TODO
+* Resource Manager: TODO
+* Authorization Manager: TODO
+* Voting Strategy: TODO
+* Resource Decision Manager: TODO
+* Role Decision Manager: TODO
+* Role Provider: TODO
+* Subject Properties Provider: TODO
+
+=== UberFire servlet
+
+=== Errai servlet
+
+
+== Set up UberFire security
+
+=== Define users and roles
+
+=== Create a login.jsp
 
 == Create a client-side entry point class
 
