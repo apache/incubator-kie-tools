@@ -1,5 +1,8 @@
-= Getting Started With UberFire
+= Getting Acquainted With UberFire
 Jonathan Fuerth <jfuerth@redhat.com>
+:toc:
+:source-highlighter: highlightjs
+:stylesheet: asciidoctor.css
 
 This guide will walk you through the process of setting up a new
 UberFire application. Starting from an empty directory, you will
@@ -28,12 +31,138 @@ on your computer:
   Kepler SR1 or newer, or whatever Java IDE you like better (NetBeans,
   IntelliJ IDEA)
 
+== Layout of a Typical UberFire Project
+
+Your UberFire project will follow the standard Maven project
+layout. Most open source Java projects follow this layout these days,
+so this should look familiar. Here's a rundown of the specific files
+and directories you'll find in every UberFire project. Don't get hung
+up on the details yet. We'll get to each of these in turn.
+
+pom.xml::
+ Maven build configuration. Tells Maven and Java IDEs how to build
+ your project.
+src/main/java/::
+ Java sources for both the server-side and client-side go here,
+ organized into subdirectories by package, just like all Java
+ projects require.
+src/main/java/__com/mycompany/uftutorial__/UberFireTutorial.gwt.xml::
+ GWT module declaration. Specifies GWT dependencies, which packages
+ contain code destined for the client side, and (optionally) more.
+src/main/java/__com/mycompany/uftutorial__/client/::
+ Java package containing code that will be compiled to JavaScript (as
+ configured in the `UberFireTutorial.gwt.xml` module descriptor) but
+ not deployed in the WAR file (as configured in the `pom.xml`).
+src/main/java/__com/mycompany/uftutorial__/client/css/::
+ Stylesheets referred to by Errai UI's HTML templates. Will be copied
+ into the webapp during the build.
+src/main/java/__com/mycompany/uftutorial__/server/::
+ Java package for code that will be deployed to the server but not
+ compiled to JavaScript.
+src/main/java/__com/mycompany/uftutorial__/shared/::
+ Java package for code that will be deployed to the server _and_
+ compiled to JavaScript for the client. Typically business model
+ classes and event classes go in the shared package.
+src/main/resources/::
+ Normal Maven project location for resources that should be on the
+ classpath. In GWT projects (which means UberFire projects too),
+ `src/main/java` and `src/main/resources` are both defined as resource
+ paths, so it's up to you whether you put resources here or under
+ `src/main/java`.
+src/main/resources/app.html.template::
+ This page is a FreeMarker template that contains the `<script>` tag
+ that loads your GWT application code. It's translated to HTML on
+ demand by `UberFireServlet`, and its as-served static contents are
+ what your users will see while the JavaScript code that makes up your
+ real application is downloading.
+
+ TODO: Why FreeMarker? Why not an Errai UI Template, a static HTML
+ file, or even a JSP?
+src/main/resources/ErraiApp.properties::
+ The Errai framework uses this file as a marker for classpath
+ locations that should be scanned for Errai-annotated classes.  It's
+ usually an empty file, but there are a number of
+ https://docs.jboss.org/author/display/ERRAI/ErraiApp.properties[Errai
+ framework settings] that can be placed here if necessary.
+src/main/resources/log4j.properties::
+ Standard log4j configuration file. You can use any logging framework
+ with UberFire, but in this tutorial we're using log4j.
+src/main/resources/login.config::
+ A JAAS configuration file that specifies which login module the
+ application is using.
+src/main/resources/users.properties::
+ List of application users and their roles. This is processed by
+ UberFire's PropertyUserSource, so if you are using a different source
+ of user and role information, your app won't need one of these.
+src/main/resources/url_filter.yaml::
+ List of URL patterns that are only accessible to authenticated users
+ who belong to certain roles. Also lists public resources that are
+ always served to any user. Processed by UberFire's
+ URLResourceManager, which is used by UberFireSecurityFilter to
+ control access to protected resources.
+
+ TODO: Why YAML? Why not web.xml security constraints?
+src/main/resources/META-INF/services/::
+ Standard directory where Java extensions are configured.
+src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension::
+ Contains a list of CDI Portable Extensions provided by the UberFire
+ framework. Affects the discovery and behaviour of server-side CDI
+ beans.
+
+ TODO: these should be declared in UberFire jars, not by the apps themselves.
+src/main/resources/META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider::
+ Contains the list of UberFire virtual filesystem (VFS) providers used in
+ the application, one per line. Each entry is the fully-qualified name
+ of a Java class that implements UberFire's `FileSystemProvider`
+ interface. The first VFS provider listed is the default.
+src/main/resources/META-INF/services/org.uberfire.security.auth.AuthenticationSource::
+ Contains the list of classes UberFire can use to authenticate login requests.
+ Each line is the fully-qualified name of a Java class that implements
+ UberFire's `AuthenticationSource` interface.
+src/main/resources/org/uberfire/public/::
+ All the files under this resource folder will be copied into a
+ publicly accessible location within the web application. The default
+ `app.html.template` file references images and CSS stored here.
+
+ TODO: find out what causes these to be copied into the webapp!
+src/main/webapp/::
+ This is the standard root directory for resources that will be
+ bundled in the `.war` file in a Maven-built web app project.
+src/main/webapp/login.jsp::
+ UberFire apps typically have a dedicated login page 
+
+ TODO: why couldn't the login be served by UberFireServlet instead, in
+ the same way the host page is served?
+
+src/main/webapp/WEB-INF/::
+ This is the standard directory where Java EE deployment descriptors,
+ compiled Java classes, and third-party libraries go. You can also put
+ your application's own non-public files under this directory. Files
+ under this directory can be read by server-side code at runtime, but
+ cannot be accessed by direct HTTP requests.
+src/main/webapp/WEB-INF/beans.xml::
+ This file declares that the web application is CDI-enabled. In
+ UberFire applications, `beans.xml` normally defines some CDI
+ interceptors that help enforce security rules.
+src/main/webapp/WEB-INF/web.xml::
+ The standard Java Servlets deployment descriptor. Defines the
+ UberFire servlet, the UberFire security filter, and the Errai Servlet
+ in addition to any servlets, security rules, and configuration
+ required by your application's own code.
+
+ TODO: we can eliminate the need for this file by annotating
+ UberFireServlet and UberFireSecurityFilter appropriately.
+target/::
+ Maven writes its output here. This directory and all its contents are
+ completely removed whenever you execute `mvn clean`.
+
 == Create the Maven POM
 
 The first thing you'll need is a Maven `pom.xml` file that describes
 all the dependencies and special build steps of your project. Start
 with this:
 
+[source,xml]
 ---------
 <?xml version="1.0" encoding="UTF-8"?>
 <project
@@ -78,6 +207,7 @@ dependencies you do add in the `<dependencies>` section further down.
 This section can be placed right below the properties section from the
 previous snippet:
 
+[source,xml]
 ---------
   <dependencyManagement>
     <dependencies>
@@ -119,6 +249,7 @@ previous snippet:
 So that takes care of managing all the dependency __versions__. Now
 let's declare the libraries we'll be using:
 
+[source,xml]
 ---------
   <dependencies>
   
@@ -250,6 +381,7 @@ to the project.
 Now on to the `<build>` section, where we define the behaviour of
 several plugins we'll need in order to get the project built.
 
+[source,xml]
 ---------
   <build>
 
@@ -286,6 +418,7 @@ Note that all of the following `<plugin>` elements go inside the
 
 First up, we'll define some settings for `maven-compiler-plugin`:
 
+[source,xml]
 ---------
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -316,6 +449,7 @@ build is performed. More on this later (TODO: link to m2e setup).
 
 Next up, the all-important `gwt-maven-plugin`.
 
+[source,xml]
 ---------
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -386,6 +520,7 @@ code. We've done some experimenting and found a compile threshold of
 Next up, we configure `maven-war-plugin`, which produces the .war file
 during the package phase of the build:
 
+[source,xml]
 ---------
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -423,6 +558,7 @@ patterns, so if you need to exclude more stuff later on, you can.
 
 Now on to the clean configuration:
 
+[source,xml]
 ---------
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -466,6 +602,7 @@ you will run into the dreaded 'Module __yourmodule__ may need to be
 
 And now on to the resources plugin:
 
+[source,xml]
 ---------
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -518,6 +655,7 @@ every class you want it to compile to JavaScript.
 
 Last but not least, the `jboss-as-maven-plugin`:
 
+[source,xml]
 ---------
       <plugin>
         <groupId>org.jboss.as.plugins</groupId>
@@ -541,6 +679,7 @@ your project.
 The `<pluginManagement>` section goes inside the `<build>` section
 (it's a sibling of <plugins>, not a child).
 
+[source,xml]
 ---------
     <pluginManagement>
       <plugins>
@@ -578,109 +717,22 @@ As the comment says, this is actually some Eclipse-specific
 configuration that's stored in the POM. It doesn't have any effect on
 the build if you're not in Eclipse.
 
-=== Directory structure
-
-Your UberFire project will follow the standard Maven project
-layout. Most open source Java projects follow this layout these days,
-so this should look familiar. Here's a rundown of the specific files
-and directories you'll find in every UberFire project:
-
-pom.xml::
- Maven build configuration. Tells Maven and Java IDEs how to build
- your project.
-src/main/java/::
- Java sources for both the server-side and client-side go here,
- organized into subdirectories by package, just like all Java
- projects require.
-src/main/java/com/mycompany/uftutorial/UberFireTutorial.gwt.xml::
- GWT module declaration. Specifies GWT dependencies, which packages
- contain code destined for the client side, and (optionally) more.
-src/main/java/com/mycompany/uftutorial/client/::
- Java package containing code that will be compiled to JavaScript (as
- configured in the `UberFireTutorial.gwt.xml` module descriptor) but
- not deployed in the WAR file (as configured in the `pom.xml`).
-src/main/java/com/mycompany/uftutorial/client/css/::
- Stylesheets referred to by Errai UI's HTML templates. Will be copied
- into the webapp during the build.
-src/main/java/com/mycompany/uftutorial/server/::
- Java package for code that will be deployed to the server but not
- compiled to JavaScript.
-src/main/java/com/mycompany/uftutorial/shared/::
- Java package for code that will be deployed to the server _and_
- compiled to JavaScript for the client. Typically business model
- classes and event classes go in the shared package.
-src/main/resources/::
- Normal Maven project location for resources that should be on the
- classpath. In GWT projects (which means UberFire projects too),
- `src/main/java` and `src/main/resources` are both defined as resource
- paths, so it's up to you whether you put resources here or under
- `src/main/java`.
-src/main/resources/app.html.template::
- Template for the page served by `UberFireServlet`. This page contains
- the `<script>` tag that loads your GWT application code, and its
- contents are what your users will see while that code is downloading.
-src/main/resources/ErraiApp.properties::
- The Errai framework uses this file as a marker for classpath
- locations that should be scanned for Errai-annotated classes.  It's
- usually an empty file, but there are a number of
- https://docs.jboss.org/author/display/ERRAI/ErraiApp.properties[Errai
- framework settings] that can be placed here if necessary.
-src/main/resources/log4j.properties::
- Standard log4j configuration file. You can use any logging framework
- with UberFire, but in this tutorial we're using log4j.
-src/main/resources/login.config::
- A JAAS configuration file that specifies which login module the
- application is using.
-src/main/resources/users.properties::
- List of application users and their roles. This is processed by
- UberFire's PropertyUserSource, so if you are using a different source
- of user and role information, your app won't need one of these.
-src/main/resources/url_filter.yaml::
- List of URL patterns that are only accessible to authenticated users
- who belong to certain roles. Also lists public resources that are
- always served to any user. Processed by UberFire's
- URLResourceManager, which is used by UberFireSecurityFilter to
- control access to protected resources.
-src/main/resources/META-INF/services/::
- Standard directory where Java extensions are configured.
-src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension::
- Contains a list of CDI Portable Extensions provided by the UberFire
- framework. Affects the discovery and behaviour of server-side CDI
- beans. TODO: these should be declared in UberFire jars, not by
- the apps themselves.
-src/main/resources/META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider::
- Contains the list of UberFire virtual filesystem (VFS) providers used in
- the application. The first VFS provider listed is the default.
-src/main/resources/META-INF/services/org.uberfire.security.auth.AuthenticationSource::
-
-TODO: explain the rest
-
-src/main/resources/org/uberfire/public/
-src/main/resources/org/uberfire/public/css/
-src/main/resources/org/uberfire/public/images/
-src/main/webapp/
-src/main/webapp/login.jsp
-src/main/webapp/WEB-INF/
-src/main/webapp/WEB-INF/beans.xml
-src/main/webapp/WEB-INF/web.xml
-target/
-
-
-
-==== .gitignore
+== Set up a .gitignore
 
 
 == Set up the web.xml
 
-=== Errai Servlet
+=== Errai servlet
 
-=== UberFire Servlet
+=== UberFire servlet
+
+=== UberFire security filter
 
 == Set up UberFire security: users and roles
 
-== Create an Entry Point class
+== Create a client-side entry point class
 
-== Create a Panel
+== Create a panel
 
 == Time to see it work!
 
