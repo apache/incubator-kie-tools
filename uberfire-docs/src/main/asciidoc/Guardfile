@@ -1,0 +1,23 @@
+# This Guardfile enables live refresh while editing the *.asciidoc
+# files in this directory. All you have to do is install some
+# Rubygems: guard, guard-shell, rb-inotify, and asciidoctor. This
+# command should work, assuming you already have Ruby installed:
+#
+# $ gem install guard guard-shell rb-inotify asciidoctor
+#
+# To activate live doc translation, start Guard in this directory:
+#
+# $ guard start
+#
+# For maximum fun, use this in conjunction with a live reload plugin
+# in your web browser. We find the LivePage extension for Chrome works
+# well.
+
+require 'asciidoctor'
+require 'erb'
+
+guard 'shell' do
+  watch(/^.*\.asciidoc$/) {|m|
+    Asciidoctor.render_file(m[0], :in_place => true)
+  }
+end
