@@ -37,7 +37,6 @@ import org.uberfire.backend.vfs.Path;
 public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDataModelOracle> {
 
     private static final Logger log = LoggerFactory.getLogger( LRUProjectDataModelOracleCache.class );
-    private final static String DEFAULTPKG = "defaultpkg";
 
     @Inject
     private POMService pomService;
