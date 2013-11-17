@@ -32,9 +32,20 @@ public class FileUpload
     @UiField
     InputElement fileText;
 
+    private boolean isDisabled = false;
+
     private static FileUploadBinder uiBinder = GWT.create( FileUploadBinder.class );
 
+    public FileUpload() {
+        this( null, false );
+    }
+
     public FileUpload( final Command command ) {
+        this( command, true );
+    }
+
+    public FileUpload( final Command command,
+                       boolean displayUploadButton ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         fileText.setReadOnly( true );
 
@@ -52,12 +63,22 @@ public class FileUpload
             }
         } );
 
-        DOM.sinkEvents( (Element) uploadButton.cast(), Event.ONCLICK );
-        DOM.setEventListener( (Element) uploadButton.cast(), new EventListener() {
-            public void onBrowserEvent( final Event event ) {
-                command.execute();
-            }
-        } );
+        if ( displayUploadButton ) {
+            DOM.sinkEvents( (Element) uploadButton.cast(), Event.ONCLICK );
+            DOM.setEventListener( (Element) uploadButton.cast(), new EventListener() {
+                public void onBrowserEvent( final Event event ) {
+                    if ( isDisabled ) {
+                        return;
+                    }
+                    if ( command != null ) {
+                        command.execute();
+                    }
+                }
+            } );
+        } else {
+            uploadButton.removeFromParent();
+            uploadButton = null;
+        }
     }
 
     public void setName( final String name ) {
@@ -67,4 +88,18 @@ public class FileUpload
     public String getFilename() {
         return file.getValue();
     }
+
+    public void setEnabled( boolean b ) {
+        if ( uploadButton == null ) {
+            return;
+        }
+        if ( !b ) {
+            isDisabled = true;
+            uploadButton.addClassName( "disabled" );
+        } else {
+            isDisabled = false;
+            uploadButton.removeClassName( "disabled" );
+        }
+    }
+
 }
