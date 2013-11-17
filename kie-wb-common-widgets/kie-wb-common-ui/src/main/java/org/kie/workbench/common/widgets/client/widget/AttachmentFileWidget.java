@@ -20,10 +20,10 @@ package org.kie.workbench.common.widgets.client.widget;
 
 import com.github.gwtbootstrap.client.ui.Form;
 import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -31,6 +31,7 @@ import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.guvnor.common.services.shared.file.upload.FileOperation;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.common.FileUpload;
 
 /**
  * This wraps a file uploader utility
@@ -38,7 +39,7 @@ import org.uberfire.backend.vfs.Path;
 public class AttachmentFileWidget extends Composite {
 
     private final Form form = new Form();
-    private final FileUpload up = new FileUpload();
+    private FileUpload up;
     private final HorizontalPanel fields = new HorizontalPanel();
 
     private final TextBox fieldFilePath = getHiddenField( FileManagerFields.FORM_FIELD_PATH,
@@ -54,16 +55,34 @@ public class AttachmentFileWidget extends Composite {
     private Command errorCallback;
     private String[] validFileExtensions;
 
+    private ClickHandler uploadButtonClickHanlder;
+
     public AttachmentFileWidget() {
-        setup();
+        setup( false );
     }
 
     public AttachmentFileWidget( final String[] validFileExtensions ) {
-        setup();
+        setup( false );
         setAccept( validFileExtensions );
     }
 
-    private void setup() {
+    public AttachmentFileWidget( final boolean addFileUpload ) {
+        setup( addFileUpload );
+    }
+
+    public AttachmentFileWidget( final String[] validFileExtensions,
+                                 final boolean addFileUpload ) {
+        setup( addFileUpload );
+        setAccept( validFileExtensions );
+    }
+
+    private void setup( boolean addFileUpload ) {
+        up = new FileUpload( new org.uberfire.mvp.Command() {
+            @Override
+            public void execute() {
+                uploadButtonClickHanlder.onClick( null );
+            }
+        }, addFileUpload );
         up.setName( FileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
@@ -205,5 +224,12 @@ public class AttachmentFileWidget extends Composite {
         return t;
     }
 
+    public void addClickHandler( final ClickHandler clickHandler ) {
+        this.uploadButtonClickHanlder = clickHandler;
+    }
+
+    public void setEnabled( boolean b ) {
+        up.setEnabled( b );
+    }
 }
 
