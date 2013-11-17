@@ -133,6 +133,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     public void startBatch( final Option... options ) {
         lockService.lock();
         if ( !fileSystems.isEmpty() ) {
+            cleanupClosedFileSystems();
             final Path path = fileSystems.values().iterator().next().get( 0 ).getRootDirectories().iterator().next();
             setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
         }
@@ -142,8 +143,19 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     public void endBatch( final Option... options ) {
         lockService.unlock();
         if ( !fileSystems.isEmpty() ) {
+            cleanupClosedFileSystems();
             final Path path = fileSystems.values().iterator().next().get( 0 ).getRootDirectories().iterator().next();
             setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
+        }
+    }
+
+    private void cleanupClosedFileSystems() {
+        for ( final Map.Entry<FileSystemType, List<FileSystem>> fileSystemTypeListEntry : fileSystems.entrySet() ) {
+            for ( final FileSystem fileSystem : fileSystemTypeListEntry.getValue() ) {
+                if ( !fileSystem.isOpen() ) {
+                    fileSystemTypeListEntry.getValue().remove( fileSystem );
+                }
+            }
         }
     }
 
@@ -548,7 +560,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     @Override
     public void dispose() {
         isDisposed = true;
-        if (ioWatchService != null) {
+        if ( ioWatchService != null ) {
             ioWatchService.dispose();
         }
         for ( final FileSystem fileSystem : getFileSystems() ) {
