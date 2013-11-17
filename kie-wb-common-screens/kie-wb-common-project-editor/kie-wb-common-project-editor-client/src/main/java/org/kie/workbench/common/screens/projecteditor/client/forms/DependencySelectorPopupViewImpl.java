@@ -1,56 +1,44 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import javax.inject.Inject;
+import javax.enterprise.context.Dependent;
 
-import com.google.gwt.cell.client.ButtonCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.m2repo.client.widgets.AbstractPagedJarTable;
-import org.guvnor.m2repo.model.JarListPageRow;
-import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.client.common.Popup;
+import com.github.gwtbootstrap.client.ui.Modal;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.uberfire.mvp.ParameterizedCommand;
 
+@Dependent
 public class DependencySelectorPopupViewImpl
-        extends Popup
+        extends Modal
         implements DependencySelectorPopupView {
 
-    private final Caller<M2RepoService> m2RepoService;
-    private Presenter presenter;
+    private DependencySelectorPresenter presenter;
+    private DependencyListWidget dependencyPagedJarTable;
 
-    @Inject
-    public DependencySelectorPopupViewImpl( final Caller<M2RepoService> m2RepoService ) {
-        this.m2RepoService = m2RepoService;
-    }
+    @AfterInitialization
+    public void init() {
+        dependencyPagedJarTable = IOC.getBeanManager().lookupBean( DependencyListWidget.class ).getInstance();
 
-    @Override
-    public Widget getContent() {
-        final AbstractPagedJarTable pagedJarTable = new DependencyPagedJarTable( m2RepoService );
-
-        final Column<JarListPageRow, String> selectColumn = new Column<JarListPageRow, String>( new ButtonCell() ) {
-            public String getValue( JarListPageRow row ) {
-                return "Select";
-            }
-        };
-        selectColumn.setFieldUpdater( new FieldUpdater<JarListPageRow, String>() {
-            public void update( final int index,
-                                final JarListPageRow row,
-                                final String value ) {
-                presenter.onPathSelection( row.getPath() );
+        dependencyPagedJarTable.addOnSelect( new ParameterizedCommand<String>() {
+            @Override
+            public void execute( String parameter ) {
+                presenter.onPathSelection( parameter );
             }
         } );
 
-        pagedJarTable.addColumn( selectColumn,
-                                 new TextHeader( "" ) );
-
-        return pagedJarTable;
+        setTitle( "Artifacts" );
+        add( dependencyPagedJarTable );
+        setPixelSize( 800, 500 );
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void init( final DependencySelectorPresenter presenter ) {
         this.presenter = presenter;
     }
 
+    @Override
+    public void show() {
+        dependencyPagedJarTable.refresh();
+        super.show();
+    }
 }

@@ -1,15 +1,10 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-public interface DependencySelectorPopupView {
+import org.uberfire.client.mvp.UberView;
 
-    interface Presenter {
-
-        void onPathSelection(String pathToDependency);
-    }
+public interface DependencySelectorPopupView extends UberView<DependencySelectorPresenter> {
 
     void show();
 
     void hide();
-
-    void setPresenter(Presenter presenter);
 }

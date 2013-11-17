@@ -18,5 +18,6 @@
 }
 
 .triggerCaption {
-    color: MenuText;
+    font-weight: bold;
+    color: #000000;
 }
