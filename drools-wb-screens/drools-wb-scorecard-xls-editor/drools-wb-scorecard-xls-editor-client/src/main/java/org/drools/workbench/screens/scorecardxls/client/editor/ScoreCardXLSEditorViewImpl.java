@@ -20,12 +20,12 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Well;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -50,7 +50,6 @@ public class ScoreCardXLSEditorViewImpl
 
     private AttachmentFileWidget uploadWidget;
 
-    private final Button uploadButton = new Button( ScoreCardXLSEditorConstants.INSTANCE.Upload() );
     private final Button downloadButton = new Button( ScoreCardXLSEditorConstants.INSTANCE.Download() );
 
     private final VerticalPanel layout = new VerticalPanel();
@@ -68,7 +67,7 @@ public class ScoreCardXLSEditorViewImpl
 
     @PostConstruct
     public void init() {
-        uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() } );
+        uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() }, true );
         layout.setWidth( "100%" );
         layout.add( ts );
         initWidget( layout );
@@ -91,11 +90,10 @@ public class ScoreCardXLSEditorViewImpl
         final HorizontalPanel uploadContainer = new HorizontalPanel();
         uploadContainer.add( new Label( ScoreCardXLSEditorConstants.INSTANCE.UploadNewVersion() + ":" ) );
         uploadContainer.add( uploadWidget );
-        uploadContainer.add( uploadButton );
         uploadWell.add( uploadContainer );
 
         ts.addRow( uploadWell );
-        uploadButton.addClickHandler( new ClickHandler() {
+        uploadWidget.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
                 BusyPopup.showMessage( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
@@ -171,7 +169,7 @@ public class ScoreCardXLSEditorViewImpl
 
     @Override
     public void setReadOnly( final boolean isReadOnly ) {
-        uploadButton.setEnabled( !isReadOnly );
+        uploadWidget.setEnabled( !isReadOnly );
     }
 
     private Image getIcon() {

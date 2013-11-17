@@ -323,37 +323,10 @@ select {
     cursor: pointer;
 }
 
-button {
-    border: 1px solid #ccc;
-    margin-right: 1px;
-    border-bottom: 1px solid #aaa;
-    border-top-color: #ddd;
-    background: #fff;
-}
-
-button:active, button:focus {
-    color: #FFF;
-    border: 1px solid #444;
-    background: #999;
-}
-
 .DatePicker .cell .gwt-HTML span {
     width: 100%;
     height: 100%;
     line-height: 2em;
-}
-
-textarea {
-    color: #666;
-    border: 1px solid #ccc !important;
-    padding: .3em;
-    background: #fefefe !important;
-}
-
-textarea:focus, textarea:active {
-    color: #000;
-    border-color: #000 !important;
-    background: #fff !important;
 }
 
 .DatePicker .today .gwt-HTML {
@@ -362,22 +335,6 @@ textarea:focus, textarea:active {
 
 .image-Button {
     cursor: pointer !important;
-}
-
-a, a:visited {
-    color: #00008B;
-}
-
-select:focus, input:focus, input:active, .constraint-value-Editor:focus, .constraint-value-Editor:active {
-    color: #000;
-    border-color: #000 !important;
-}
-
-input, .constraint-value-Editor {
-    border: 1px solid #aa9;
-    color: #666;
-    border-color: #ccc !important;
-    padding: 2px !important;
 }
 
 .ks-info, .ks-List .ks-SinkItem-selected a, .sinkitem {
