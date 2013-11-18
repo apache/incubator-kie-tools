@@ -16,3 +16,5 @@
 # Created by Zanata
 /org.uberfire
 
+# Live editing asciidoc leaves .html files behind in the source dir
+uberfire-docs/src/main/asciidoc/*.html
