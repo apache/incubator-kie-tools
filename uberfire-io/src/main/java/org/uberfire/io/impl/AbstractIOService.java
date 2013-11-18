@@ -151,11 +151,13 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
 
     private void cleanupClosedFileSystems() {
         for ( final Map.Entry<FileSystemType, List<FileSystem>> fileSystemTypeListEntry : fileSystems.entrySet() ) {
+            final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
             for ( final FileSystem fileSystem : fileSystemTypeListEntry.getValue() ) {
                 if ( !fileSystem.isOpen() ) {
-                    fileSystemTypeListEntry.getValue().remove( fileSystem );
+                    removeList.add( fileSystem );
                 }
             }
+            fileSystemTypeListEntry.getValue().removeAll( removeList );
         }
     }
 
