@@ -45,8 +45,16 @@ public class ModuleMigrater {
 
     private void migrate( Module jcrModule ) {
         //Set up project structure:
-        GAV gav = new GAV(jcrModule.getName(),
-                          jcrModule.getName(),
+        String [] nameSplit = jcrModule.getName().split("\\.");
+        String groupId=nameSplit[0];
+        String artifactId=nameSplit[nameSplit.length-1];
+
+        for(int i =1 ;i< nameSplit.length-1;i++){
+            groupId +="."+ nameSplit[i];
+        }
+
+        GAV gav = new GAV(groupId,
+                          artifactId,
                           "0.0.1");
         POM pom = new POM(gav);
 
