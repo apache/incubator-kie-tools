@@ -1062,8 +1062,102 @@ recognized by UberFireSecurityFilter as a login attempt.
 
 == Create a client-side entry point class
 
+Okay, enough mucking around with directory structure and configuration
+files! We went through all of that because it's important to
+understand everything you put into your web application, and doing
+something is the best way to learn it. In the future, you'll probably
+want to just start with a copy of a working demo app and delete the
+parts you don't need.
+
+An _entry point_ is a place where a program starts its execution. In
+JavaSE programs, the entry point is the famous `public static void
+main(String[] args)` method. In a Java EE environment, you typically
+have many entry points: every Servlet and JAX-RS resource method is an
+entry point into the application.
+
+In an UberFire application, there are typically _client side_
+components (the parts that are translated to JavaScript and execute in
+the browser) and _server side_ components (the parts that are compiled
+to class files and deplotyed in the war file.)
+
+Any class in a client-only package of your application can be a
+client-side entry point into your application. To designate a class as
+an entry point, annotate it with `@EntryPoint`. Put the following in
+`src/main/java/com/mycompany/uftutorial/client/ClientEntryPoint.java`:
+
+[source,java]
+---------
+@EntryPoint
+public class ClientEntryPoint {
+  private void start(@Observes final ApplicationReadyEvent event) {
+  }
+}
+---------
+
+The `@EntryPoint` annotation tells the framework that the class is a
+CDI Bean that should be instantiated when the page is loaded into the
+browser. You can name an entry point class anything you like. You can
+create as many `@EntryPoint` classes as you want, but you can't
+specify what order they will be instantiated in. It's unusual to have
+more than one.
+
+The `start()` method is a CDI observer method. The UberFire Workbench
+framework fires an `ApplicationReadyEvent` when the framework has
+finished initializing.
+
+NOTE: Since the entry point class is a CDI bean, it's tempting to use
+the CDI `@PostConstruct` annotation on the method that runs your
+initialization code. However, this does not work in practice because
+it's usually invoked too early: before many parts of the framework
+(including the Errai communication bus) have had a chance to
+initialize. Stick with observing `ApplicationReadyEvent` and you'll be
+fine.
+
+Right now, our entry point method is empty! What kind of stuff would
+you normally put in there for bootstrapping an UberFire app? Let's
+create a panel and come back to that question.
 
 == Create a panel
+
+UberFire interfaces are made up of a few fundamental building blocks:
+Widgets, Panels, Menu Bars, Tool Bars, and Perspectives. Panels
+can contain Widgets and other Panels, and Perspectives give end users
+the ability to rearrange Panels on the screen by dragging and dropping
+them. Use of Perspectives is optional, so we'll leave them for later.
+
+To create your first panel, create the file
+`src/main/java/com/mycompany/uftutorial/client/PanelOne.java`:
+
+[source,java]
+---------
+package com.mycompany.uftutorial.client;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+
+import com.google.gwt.user.client.ui.IsWidget;
+
+@Dependent
+@WorkbenchScreen(identifier="PanelOne")
+public class PanelOne {
+
+  private Label label = new Label("This is panel one");
+
+  @WorkbenchPartTitle
+  public String getName() {
+    return "Panel One!";
+  }
+
+  @WorkbenchPartView
+  public IsWidget getView() {
+    return label;
+  }
+}
+---------
 
 == Time to see it work!
 
