@@ -70,7 +70,7 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-bpmn2</artifactId>
-      <version>5.4.1-SNAPSHOT</version>
+      <version>${version.migrate.org.jbpm.bpmn2}</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
