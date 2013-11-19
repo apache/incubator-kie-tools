@@ -362,4 +362,11 @@ public class HttpSecurityManagerImpl implements SecurityManager {
         }
     }
 
+    @Override
+    public String toString() {
+      return "HttpSecurityManagerImpl [\n"
+              + "  Authentication Manager: " + authManager + ",\n"
+              + "  Authorization Managers: " + authzManagers + "]";
+    }
+
 }

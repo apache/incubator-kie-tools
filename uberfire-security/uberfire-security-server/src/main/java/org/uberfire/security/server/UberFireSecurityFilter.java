@@ -117,6 +117,7 @@ public class UberFireSecurityFilter implements Filter {
                 .loadAvailableAuthenticationSources()
                 .build( options );
 
+        LOG.debug("Starting security manager with the following configuration:\n" + securityManager);
         securityManager.start();
     }
 

@@ -16,6 +16,10 @@
 
 package org.uberfire.security.impl.authz;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.security.authz.AuthorizationResult.ACCESS_ABSTAIN;
+import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.security.Resource;
@@ -24,9 +28,6 @@ import org.uberfire.security.authz.AuthorizationException;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.security.authz.AuthorizationResult.*;
 
 @ApplicationScoped
 public class RuntimeAuthorizationManager implements AuthorizationManager {
@@ -57,4 +58,11 @@ public class RuntimeAuthorizationManager implements AuthorizationManager {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+      return "RuntimeAuthorizationManager [resourceManager=" + resourceManager + ", decisionManager=" + decisionManager
+              + ", roleDecisionManager=" + roleDecisionManager + "]";
+    }
+
 }

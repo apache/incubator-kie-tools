@@ -16,10 +16,18 @@
 
 package org.uberfire.security.server.auth;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
+import static org.uberfire.security.Role.ROLE_REMEMBER_ME;
+import static org.uberfire.security.auth.AuthenticationStatus.FAILED;
+import static org.uberfire.security.auth.AuthenticationStatus.SUCCESS;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.RequestDispatcher;
 
 import org.uberfire.security.ResourceManager;
@@ -197,4 +205,14 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         // hack for gwt hosted mode
         return originalRequest.contains( "gwt.codesvr" );
     }
+
+    @Override
+    public String toString() {
+      return "HttpAuthenticationManager [authSchemes=" + authSchemes + ", authProviders=" + authProviders
+              + ", roleProviders=" + roleProviders + ", subjectPropertiesProviders=" + subjectPropertiesProviders
+              + ", authStorageProviders=" + authStorageProviders + ", resourceManager=" + resourceManager
+              + ", requestCache=" + requestCache + ", forceURL=" + forceURL + "]";
+    }
+
+
 }
