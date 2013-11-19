@@ -128,7 +128,7 @@ src/main/resources/org/uberfire/public/::
 src/main/webapp/::
  This is the standard root directory for resources that will be
  bundled in the `.war` file in a Maven-built web app project.
-src/main/webapp/login.jsp::
+src/main/webapp/login.html::
  UberFire apps typically have a dedicated login page 
 
  TODO: why couldn't the login be served by UberFireServlet instead, in
@@ -529,10 +529,14 @@ during the package phase of the build:
         <configuration>
           <warName>${project.artifactId}</warName>
 
-          <!-- Exclude GWT client local classes from the deployment, lest 
-            classpath scanners such as Hibernate and Weld get confused
-            when the webapp is bootstrapping. -->
-          <packagingExcludes>**/client/**/*.class</packagingExcludes>
+          <!--
+            List of files to leave out of the .war file:
+            1. GWT client-only classes confuse Hibernate and Weld's
+            classpath scanners
+            2. The existence of log4j.properties interferes with JBoss
+            Logging configuration
+           -->
+          <packagingExcludes>**/client/**/*.class,**/log4j.properties</packagingExcludes>
         </configuration>
       </plugin>
 ---------
@@ -551,7 +555,8 @@ Hibernate and Weld) tends to trip over classes that refer to GWT types
 that only make sense in the client environment, such as Widgets and
 JavaScript Native Methods. We'll get to these topics later, but for
 now, just be sure to exclude your client-only classes from the .war
-file.
+file. We also omit the log4j.properties file from the .war file
+because it takes over JBoss Logging configuration.
 
 The `<packagingExcludes>` setting accepts a comma-separated list of
 patterns, so if you need to exclude more stuff later on, you can.
@@ -786,7 +791,7 @@ Here's what you need in a typical UberFire `web.xml`. Create a file
 
   <servlet-mapping>
     <servlet-name>UberFireServlet</servlet-name>
-    <url-pattern>/CdiWorkbench/Uberfire.html</url-pattern>
+    <url-pattern>/UberFireTutorial/UberFire.html</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -816,34 +821,247 @@ decisions about how users can identify themselves, which
 username+password combinations are valid, and which URLs anonymous and
 authenticated users are allowed to access.
 
-For this demo, we will control access using the defaults, which are:
+For this demo, we will control access using the default settings, which are:
 
 * Authentication Manager (controls login and logout): `HttpAuthenticationManager`
-* Authentication Schemes (extract provided credentials from HTTP requests):
-** HTTP BASIC
-** Forms (JAAS standard POST to j_security_check)
-** UberFire ``Remember Me'' cookies
-* Authentication Provider: TODO
-* Resource Manager: TODO
-* Authorization Manager: TODO
-* Voting Strategy: TODO
-* Resource Decision Manager: TODO
-* Role Decision Manager: TODO
-* Role Provider: TODO
-* Subject Properties Provider: TODO
+** Authentication Schemes (extract provided credentials from HTTP requests):
+*** HTTP BASIC (`HttpBasicAuthenticationScheme`)
+*** JAAS standard form authentication, i.e. POST to j_security_check (`FormAuthenticationScheme`)
+*** UberFire ``Remember Me'' cookies (`RememberMeCookieAuthScheme`)
+** Authentication Providers: `DefaultAuthenticationProvider` and `RememberMeCookieAuthProvider`
+** Authenticated Storage Providers: `HttpSessionStorage` and `CookieStorage`
+** Resource Manager: `URLResourceManager`
+** Role Providers: `PropertyUserSource` (read from the `users.properties` file)
+** Subject Properties Provider: Not used
+* Authorization Manager: `DefaultAuthorizationManager`
+** Voting Strategy: `ConsensusBasedVoter`
+** Role Decision Manager: DefaultRoleDecisionManager
+** Resource Manager: `URLResourceManager`
+** Resource Decision Managers: `URLAccessDecisionManager`
+
+TODO: define the terms used above: authentication, HTTP BASIC, JAAS,
+Authenticated Storage, Resource, Role, Subject, Subject Properties,
+Authorization, Decision Manager, Voting Strategy, and Consensus-based voting.
 
 === UberFire servlet
 
+The UberFireServlet is responsible for serving the application's GWT
+host page, which is mapped to the URL
+`/UberFireTutorial/UberFire.html`. Users are directed to this page
+after a successful login.
+
+The servlet works by processing the FreeMarker template
+`app.html.template` and serving the result to the client.
+
 === Errai servlet
 
+The ErraiServlet is responsible for the communication bus that allows
+two-way-push communication between the client and the server.
 
 == Set up UberFire security
 
 === Define users and roles
 
-=== Create a login.jsp
+Our application uses the `PropertyUserSource` for its list of users,
+passwords, and role memberships. This user source is mostly applicable
+to development and demo environments. It gets its user, password, and
+role membership information from the file
+`src/main/resources/users.properties`.
+
+You can define a default set of users by filling in
+`src/main/resources/users.properties` with something like this:
+
+---------
+admin=admin,ADMIN,USERS,DIRECTOR,MANAGER
+director=director,USERS,DIRECTOR,MANAGER
+user=user,USERS
+guest=guest
+---------
+
+The format of each line is `username=password[,ROLE1[,ROLE2[,...]]]`.
+The brackets indicate optional parts.
+
+=== Create a login.html
+
+Our application allows a variety of authentication mechanisms,
+including JAAS form authentication. This mechanism is specified in the
+Java Servlets specification: the web browser makes a POST request to
+the URL `j_security_check` and includes form parameters `j_username`
+and `j_password`. We'll create a `login.html` page that includes a form
+which submits the correct information to the correct URL.
+
+Place the following file in `src/main/webapp/login.html`:
+
+[source,html]
+---------
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>UberFire Tutorial</title>
+
+  <style type="text/css">
+    * {
+      font-family: Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      background:
+      url('UberFireTutorial/images/bg-login.png')
+      repeat #1b1b1b;
+      font-size: 14px;
+      text-shadow: #050505 0 -1px 0;
+      font-weight: bold;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    #dummy {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-bottom: solid 3px #777973;
+      height: 250px;
+      width: 100%;
+      background:
+      url('UberFireTutorial/images/bg-login-top.png')
+      repeat #fff;
+      z-index: 1;
+    }
+
+    #dummy2 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-bottom: solid 2px #545551;
+      height: 252px;
+      width: 100%;
+      background: transparent;
+      z-index: 2;
+    }
+
+    #login-wrapper {
+      margin: 0 0 0 -160px;
+      width: 320px;
+      text-align: center;
+      z-index: 99;
+      position: absolute;
+      top: 0;
+      left: 50%;
+    }
+
+    #login-top {
+      height: 120px;
+      width: 401px;
+      padding-top: 20px;
+      text-align: center;
+    }
+
+    #login-content {
+      margin-top: 120px;
+    }
+
+    label {
+      width: 70px;
+      float: left;
+      padding: 8px;
+      line-height: 14px;
+      margin-top: -4px;
+    }
+
+    input.text-input {
+      width: 200px;
+      float: right;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
+      border-radius: 4px;
+      background: #fff;
+      border: solid 1px transparent;
+      color: #555;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    input.button {
+      float: right;
+      padding: 6px 10px;
+      color: #fff;
+      font-size: 14px;
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#a4d04a), to(#459300));
+      text-shadow: #050505 0 -1px 0;
+      background-color: #459300;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
+      border-radius: 4px;
+      border: solid 1px transparent;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+
+    input.button:hover {
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#a4d04a), to(#a4d04a), color-stop(80%, #76b226));
+      text-shadow: #050505 0 -1px 2px;
+      background-color: #a4d04a;
+      color: #fff;
+    }
+
+    div.error {
+      padding: 8px;
+      background: rgba(52, 4, 0, 0.4);
+      -moz-border-radius: 8px;
+      -webkit-border-radius: 8px;
+      border-radius: 8px;
+      border: solid 1px transparent;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+
+<body id="login">
+
+<div id="login-wrapper" class="png_bg">
+  <div id="login-top">
+    <img src="UberFireTutorial/images/uf_logo.png" alt="UberFire Logo" title="Powered By UberFire"/>
+  </div>
+
+  <div id="login-content">
+    <form action="j_security_check" method="post">
+      <p>
+        <label>Username</label>
+        <input value="" name="j_username" class="text-input" type="text"/>
+        <br style="clear: both;"/>
+      </p>
+
+      <p>
+        <label>Password</label>
+        <input name="j_password" class="text-input" type="password"/>
+        <br style="clear: both;"/>
+      </p>
+
+      <p>
+        <input class="button" type="submit" value="Sign In"/>
+      </p>
+    </form>
+  </div>
+</div>
+<div id="dummy"></div>
+<div id="dummy2"></div>
+</body>
+</html>
+---------
+
+The important part of this file is the form that posts `j_username`
+and `j_password` to the `j_security_check` URL. This will be
+recognized by UberFireSecurityFilter as a login attempt.
 
 == Create a client-side entry point class
+
 
 == Create a panel
 
