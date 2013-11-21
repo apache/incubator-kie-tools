@@ -66,4 +66,6 @@ public interface SecurityConstants {
 
     final String ROLES_IN_CONTEXT_KEY = "org.uf.context.roles";
 
+    final String AUTH_DOMAIN_KEY = "org.uberfire.domain";
+
 }

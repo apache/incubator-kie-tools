@@ -1,4 +1,4 @@
-package org.uberfire.java.nio.fs.jgit.util;
+package org.uberfire.java.nio.fs.jgit.daemon.git;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

@@ -24,20 +24,32 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
+import org.uberfire.backend.server.io.IOSecurityAuth;
+import org.uberfire.backend.server.io.IOSecurityAuthz;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
+import org.uberfire.security.auth.AuthenticationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
 
     @Inject
-    IOWatchServiceNonDotImpl watchService;
+    private IOWatchServiceNonDotImpl watchService;
+
+    @Inject
+    @IOSecurityAuth
+    private AuthenticationManager authenticationManager;
+
+    @Inject
+    @IOSecurityAuthz
+    private AuthorizationManager authorizationManager;
 
     @Inject
     @Named("debug")
-    ResourceUpdateDebugger debug;
+    private ResourceUpdateDebugger debug;
 
     @Inject
     @Named("clusterServiceFactory")
@@ -52,6 +64,8 @@ public class ApplicationScopedProducer {
         } else {
             ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
         }
+        ioService.setAuthenticationManager( authenticationManager );
+        ioService.setAuthorizationManager( authorizationManager );
     }
 
     @PreDestroy

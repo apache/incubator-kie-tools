@@ -518,10 +518,10 @@
     <module>uberfire-bom</module>
     <module>uberfire-parent-with-dependencies</module>
     <module>uberfire-commons</module>
+    <module>uberfire-security</module>
     <module>uberfire-nio2-backport</module>
     <module>uberfire-io</module>
     <module>uberfire-metadata</module>
-    <module>uberfire-security</module>
     <module>uberfire-api</module>
     <module>uberfire-server</module>
     <module>uberfire-client-api</module>

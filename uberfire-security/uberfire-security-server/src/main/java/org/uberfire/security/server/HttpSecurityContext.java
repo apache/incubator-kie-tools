@@ -20,26 +20,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.uberfire.security.Resource;
-import org.uberfire.security.SecurityContext;
-import org.uberfire.security.Subject;
 
-public class HttpSecurityContext implements SecurityContext {
+public class HttpSecurityContext extends MapSecurityContext {
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
-    private final URLResource resource;
-    private Subject subject;
 
-    public HttpSecurityContext(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Object... objects) {
+    public HttpSecurityContext( final HttpServletRequest httpRequest,
+                                final HttpServletResponse httpResponse,
+                                final Object... objects ) {
+        super( buildResource( httpRequest ) );
         this.request = httpRequest;
         this.response = httpResponse;
+    }
 
-        final StringBuilder url = new StringBuilder(request.getServletPath());
-        if (request.getQueryString() != null) {
-            url.append("?").append(request.getQueryString());
+    private static Resource buildResource( HttpServletRequest request ) {
+        final StringBuilder url = new StringBuilder( request.getServletPath() );
+        if ( request.getQueryString() != null ) {
+            url.append( "?" ).append( request.getQueryString() );
         }
 
-        this.resource = new URLResource(url.toString());
+        return new URLResource( url.toString() );
     }
 
     public HttpServletRequest getRequest() {
@@ -53,18 +54,4 @@ public class HttpSecurityContext implements SecurityContext {
     public String getRequestURI() {
         return request.getRequestURI();
     }
-
-    @Override
-    public Resource getResource() {
-        return resource;
-    }
-
-    public Subject getCurrentSubject() {
-        return subject;
-    }
-
-    public void setCurrentSubject(final Subject subject) {
-        this.subject = subject;
-    }
-
 }

@@ -26,6 +26,7 @@
   <!-- GuvnorNG API common interfaces -->
   <inherits name="org.uberfire.UberfireClientAPI"/>
   <inherits name="org.uberfire.UberfireBackend"/>
+  <inherits name="org.uberfire.security.UberfireSecurityClient"/>
 
   <inherits name="com.github.gwtbootstrap.Bootstrap"/>
 

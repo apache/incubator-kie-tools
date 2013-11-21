@@ -19,6 +19,8 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name='org.jboss.errai.bus.ErraiBus'/>
+
   <script src="js/uri.min.js"/>
 
   <source path='lifecycle'/>

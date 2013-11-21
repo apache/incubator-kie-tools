@@ -1,10 +1,9 @@
-package org.uberfire.java.nio.fs.jgit.util;
+package org.uberfire.java.nio.fs.jgit.daemon.git;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,13 +11,10 @@ import java.net.SocketAddress;
 
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.internal.JGitText;
-import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.pack.PackConfig;
-import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.UploadPack;
-import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
@@ -54,8 +50,6 @@ public class Daemon {
 
     private volatile UploadPackFactory<DaemonClient> uploadPackFactory;
 
-    private volatile ReceivePackFactory<DaemonClient> receivePackFactory;
-
     private ServerSocket listenSock = null;
 
     /**
@@ -88,46 +82,9 @@ public class Daemon {
             }
         };
 
-        receivePackFactory = new ReceivePackFactory<DaemonClient>() {
-            public ReceivePack create( DaemonClient req,
-                                       Repository db )
-                    throws ServiceNotEnabledException,
-                    ServiceNotAuthorizedException {
-                ReceivePack rp = new ReceivePack( db );
-
-                InetAddress peer = req.getRemoteAddress();
-                String host = peer.getCanonicalHostName();
-                if ( host == null ) {
-                    host = peer.getHostAddress();
-                }
-                String name = "anonymous";
-                String email = name + "@" + host;
-                rp.setRefLogIdent( new PersonIdent( name, email ) );
-                rp.setTimeout( getTimeout() );
-
-                return rp;
-            }
-        };
-
-        services = new DaemonService[]{
-                new DaemonService( "upload-pack", "uploadpack" ) {
-                    {
-                        setEnabled( true );
-                    }
-
-                    @Override
-                    protected void execute( final DaemonClient dc,
-                                            final Repository db ) throws IOException,
-                            ServiceNotEnabledException,
-                            ServiceNotAuthorizedException {
-                        UploadPack up = uploadPackFactory.create( dc, db );
-                        InputStream in = dc.getInputStream();
-                        OutputStream out = dc.getOutputStream();
-                        up.upload( in, out, null );
-                    }
-                }, new DaemonService( "receive-pack", "receivepack" ) {
+        services = new DaemonService[]{ new DaemonService( "upload-pack", "uploadpack" ) {
             {
-                setEnabled( false );
+                setEnabled( true );
             }
 
             @Override
@@ -135,10 +92,10 @@ public class Daemon {
                                     final Repository db ) throws IOException,
                     ServiceNotEnabledException,
                     ServiceNotAuthorizedException {
-                ReceivePack rp = receivePackFactory.create( dc, db );
+                UploadPack up = uploadPackFactory.create( dc, db );
                 InputStream in = dc.getInputStream();
                 OutputStream out = dc.getOutputStream();
-                rp.receive( in, out, null );
+                up.upload( in, out, null );
             }
         } };
     }
@@ -220,19 +177,6 @@ public class Daemon {
             uploadPackFactory = factory;
         } else {
             uploadPackFactory = (UploadPackFactory<DaemonClient>) UploadPackFactory.DISABLED;
-        }
-    }
-
-    /**
-     * Set the factory to construct and configure per-request ReceivePack.
-     * @param factory the factory. If null receive-pack is disabled.
-     */
-    @SuppressWarnings("unchecked")
-    public void setReceivePackFactory( ReceivePackFactory<DaemonClient> factory ) {
-        if ( factory != null ) {
-            receivePackFactory = factory;
-        } else {
-            receivePackFactory = (ReceivePackFactory<DaemonClient>) ReceivePackFactory.DISABLED;
         }
     }
 

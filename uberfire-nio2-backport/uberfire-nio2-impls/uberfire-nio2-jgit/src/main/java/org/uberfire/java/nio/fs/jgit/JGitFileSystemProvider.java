@@ -106,9 +106,14 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.fs.jgit.util.Daemon;
-import org.uberfire.java.nio.fs.jgit.util.DaemonClient;
+import org.uberfire.java.nio.fs.jgit.daemon.git.Daemon;
+import org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient;
+import org.uberfire.java.nio.fs.jgit.daemon.ssh.BaseGitCommand;
+import org.uberfire.java.nio.fs.jgit.daemon.ssh.GitSSHService;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.security.SecurityAware;
+import org.uberfire.security.auth.AuthenticationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
 import static org.eclipse.jgit.lib.Constants.*;
@@ -118,7 +123,8 @@ import static org.uberfire.java.nio.file.StandardOpenOption.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
 
-public class JGitFileSystemProvider implements FileSystemProvider {
+public class JGitFileSystemProvider implements FileSystemProvider,
+                                               SecurityAware {
 
     protected static final String DEFAULT_IO_SERVICE_NAME = "default";
 
@@ -128,17 +134,24 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     private static final String SCHEME = "git";
 
     public static final String REPOSITORIES_ROOT_DIR = ".niogit";
+    public static final String SSH_FILE_CERT_ROOT_DIR = ".security";
+    public static final String DEFAULT_HOST = "localhost";
     public static final boolean DAEMON_DEFAULT_ENABLED = true;
     public static final int DAEMON_DEFAULT_PORT = 9418;
-    public static final String DAEMON_DEFAULT_HOST = "localhost";
-    public static final boolean DAEMON_DEFAULT_UPLOAD = true;
+    public static final boolean SSH_DEFAULT_ENABLED = true;
+    public static final int SSH_DEFAULT_PORT = 8001;
+
     private static final String GIT_ENV_PROP_DEST_PATH = "out-dir";
 
     public static File FILE_REPOSITORIES_ROOT;
     public static boolean DAEMON_ENABLED;
     public static int DAEMON_PORT;
-    public static boolean DAEMON_UPLOAD;
     private static String DAEMON_HOST;
+
+    private static boolean SSH_ENABLED;
+    private static int SSH_PORT;
+    private static String SSH_HOST;
+    private static File SSH_FILE_CERT_DIR;
 
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
@@ -147,7 +160,6 @@ public class JGitFileSystemProvider implements FileSystemProvider {
     public static final int SCHEME_SIZE = ( SCHEME + "://" ).length();
     public static final int DEFAULT_SCHEME_SIZE = ( "default://" ).length();
 
-    private Daemon daemonService = null;
     private FileSystemState state = FileSystemState.NORMAL;
     private boolean hadCommitOnBatchState = false;
 
@@ -162,12 +174,23 @@ public class JGitFileSystemProvider implements FileSystemProvider {
 
     private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
 
+    private AuthenticationManager authenticationManager = null;
+    private AuthorizationManager authorizationManager = null;
+
+    private Daemon daemonService = null;
+    private GitSSHService gitSSHService = null;
+
     private void loadConfig() {
         final String bareReposDir = System.getProperty( "org.uberfire.nio.git.dir" );
         final String enabled = System.getProperty( "org.uberfire.nio.git.daemon.enabled" );
         final String host = System.getProperty( "org.uberfire.nio.git.daemon.host" );
         final String port = System.getProperty( "org.uberfire.nio.git.daemon.port" );
-        final String upload = System.getProperty( "org.uberfire.nio.git.daemon.upload" );
+
+        final String sshEnabled = System.getProperty( "org.uberfire.nio.git.ssh.enabled" );
+        final String sshHost = System.getProperty( "org.uberfire.nio.git.ssh.host" );
+        final String sshPort = System.getProperty( "org.uberfire.nio.git.ssh.port" );
+        final String sshCertDir = System.getProperty( "org.uberfire.nio.git.ssh.cert.dir" );
+
         if ( bareReposDir == null || bareReposDir.trim().isEmpty() ) {
             FILE_REPOSITORIES_ROOT = new File( REPOSITORIES_ROOT_DIR );
         } else {
@@ -183,6 +206,7 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 DAEMON_ENABLED = DAEMON_DEFAULT_ENABLED;
             }
         }
+
         if ( DAEMON_ENABLED ) {
             if ( port == null || port.trim().isEmpty() ) {
                 DAEMON_PORT = DAEMON_DEFAULT_PORT;
@@ -190,27 +214,53 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 DAEMON_PORT = Integer.valueOf( port );
             }
             if ( host == null || host.trim().isEmpty() ) {
-                DAEMON_HOST = DAEMON_DEFAULT_HOST;
+                DAEMON_HOST = DEFAULT_HOST;
             } else {
                 DAEMON_HOST = host;
             }
-            if ( upload == null || upload.trim().isEmpty() ) {
-                DAEMON_UPLOAD = DAEMON_DEFAULT_UPLOAD;
-            } else {
-                try {
-                    DAEMON_UPLOAD = Boolean.valueOf( upload );
-                } catch ( Exception ex ) {
-                    DAEMON_UPLOAD = DAEMON_DEFAULT_UPLOAD;
-                }
+        }
+
+        if ( sshEnabled == null || sshEnabled.trim().isEmpty() ) {
+            SSH_ENABLED = SSH_DEFAULT_ENABLED;
+        } else {
+            try {
+                SSH_ENABLED = Boolean.valueOf( enabled );
+            } catch ( Exception ex ) {
+                SSH_ENABLED = SSH_DEFAULT_ENABLED;
             }
         }
+
+        if ( SSH_ENABLED ) {
+            if ( sshPort == null || sshPort.trim().isEmpty() ) {
+                SSH_PORT = SSH_DEFAULT_PORT;
+            } else {
+                SSH_PORT = Integer.valueOf( sshPort );
+            }
+            if ( sshHost == null || sshHost.trim().isEmpty() ) {
+                SSH_HOST = DEFAULT_HOST;
+            } else {
+                SSH_HOST = host;
+            }
+
+            if ( sshCertDir == null || sshCertDir.trim().isEmpty() ) {
+                SSH_FILE_CERT_DIR = new File( SSH_FILE_CERT_ROOT_DIR );
+            } else {
+                SSH_FILE_CERT_DIR = new File( sshCertDir.trim(), SSH_FILE_CERT_ROOT_DIR );
+            }
+        }
+
     }
 
     public void onCloseFileSystem( final JGitFileSystem fileSystem ) {
         closedFileSystems.add( fileSystem );
         oldHeadsOfPendingDiffs.remove( fileSystem );
-        if ( daemonService != null && closedFileSystems.size() == fileSystems.size() ) {
-            daemonService.stop();
+        if ( closedFileSystems.size() == fileSystems.size() ) {
+            if ( daemonService != null ) {
+                daemonService.stop();
+            }
+            if ( gitSSHService != null ) {
+                gitSSHService.stop();
+            }
         }
     }
 
@@ -223,11 +273,22 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         return provider;
     }
 
-    private final class RepositoryResolverImpl
-            implements RepositoryResolver<DaemonClient> {
+    @Override
+    public void setAuthenticationManager( final AuthenticationManager authenticationManager ) {
+        this.authenticationManager = authenticationManager;
+        gitSSHService.setAuthenticationManager( authenticationManager );
+    }
+
+    @Override
+    public void setAuthorizationManager( final AuthorizationManager authorizationManager ) {
+        this.authorizationManager = authorizationManager;
+        gitSSHService.setAuthorizationManager( authorizationManager );
+    }
+
+    public final class RepositoryResolverImpl<T> implements RepositoryResolver<T> {
 
         @Override
-        public Repository open( final DaemonClient client,
+        public Repository open( final T client,
                                 final String name )
                 throws RepositoryNotFoundException,
                 ServiceNotAuthorizedException, ServiceNotEnabledException,
@@ -237,6 +298,10 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                 throw new RepositoryNotFoundException( name );
             }
             return fs.gitRepo().getRepository();
+        }
+
+        public JGitFileSystem resolveFileSystem( final Repository repository ) {
+            return repoIndex.get( repository );
         }
     }
 
@@ -269,22 +334,24 @@ public class JGitFileSystemProvider implements FileSystemProvider {
         } else {
             daemonService = null;
         }
+
+        if ( SSH_ENABLED ) {
+            buildAndStartSSH();
+        } else {
+            gitSSHService = null;
+        }
     }
 
-    private void buildAndStartDaemon() {
-        daemonService = new Daemon( new InetSocketAddress( DAEMON_HOST, DAEMON_PORT ) );
-        daemonService.getService( "git-receive-pack" ).setEnabled( DAEMON_UPLOAD );
-        daemonService.setRepositoryResolver( new RepositoryResolverImpl() );
-        daemonService.setReceivePackFactory( new ReceivePackFactory<DaemonClient>() {
+    private void buildAndStartSSH() {
+        final ReceivePackFactory receivePackFactory = new ReceivePackFactory<BaseGitCommand>() {
             @Override
-            public ReceivePack create( final DaemonClient req,
+            public ReceivePack create( final BaseGitCommand req,
                                        final Repository db ) throws ServiceNotEnabledException, ServiceNotAuthorizedException {
 
                 return new ReceivePack( db ) {{
                     final ClusterService clusterService = clusterMap.get( db );
                     final JGitFileSystem fs = repoIndex.get( db );
-                    final String treeRef = "master";
-                    final ObjectId oldHead = JGitUtil.getTreeRefObjectId( db, treeRef );
+                    final Map<String, ObjectId> oldTreeRefs = new HashMap<String, ObjectId>();
 
                     setPreReceiveHook( new PreReceiveHook() {
                         @Override
@@ -293,6 +360,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                             if ( clusterService != null ) {
                                 clusterService.lock();
                             }
+                            for ( final ReceiveCommand command : commands ) {
+                                oldTreeRefs.put( command.getRefName(), JGitUtil.getTreeRefObjectId( db, command.getRefName() ) );
+                            }
                         }
                     } );
 
@@ -300,8 +370,9 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                         @Override
                         public void onPostReceive( final ReceivePack rp,
                                                    final Collection<ReceiveCommand> commands ) {
-                            final ObjectId newHead = JGitUtil.getTreeRefObjectId( db, treeRef );
-                            notifyDiffs( fs, treeRef, "<system>", "<system>", oldHead, newHead );
+                            for ( Map.Entry<String, ObjectId> oldTreeRef : oldTreeRefs.entrySet() ) {
+                                notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", req.getUser().getName(), oldTreeRef.getValue(), JGitUtil.getTreeRefObjectId( db, oldTreeRef.getKey() ) );
+                            }
 
                             if ( clusterService != null ) {
                                 //TODO {porcelli} hack, that should be addressed in future
@@ -331,13 +402,23 @@ public class JGitFileSystemProvider implements FileSystemProvider {
                     } );
                 }};
             }
-        } );
+        };
+
+        gitSSHService = new GitSSHService();
+
+        gitSSHService.setup( SSH_FILE_CERT_DIR, SSH_PORT, authenticationManager, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
+
+        gitSSHService.start();
+    }
+
+    private void buildAndStartDaemon() {
+        daemonService = new Daemon( new InetSocketAddress( DAEMON_HOST, DAEMON_PORT ) );
+        daemonService.setRepositoryResolver( new RepositoryResolverImpl<DaemonClient>() );
         try {
             daemonService.start();
         } catch ( java.io.IOException e ) {
             throw new IOException( e );
         }
-
     }
 
     @Override

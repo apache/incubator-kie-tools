@@ -47,11 +47,12 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.security.SecurityAware;
 
 /**
  *
  */
-public interface IOService {
+public interface IOService extends SecurityAware {
 
     public static Set<OpenOption> EMPTY_OPTIONS = new HashSet<OpenOption>();
 

@@ -121,6 +121,13 @@
         <version>${version.org.apache.lucene}</version>
       </dependency>
 
+
+      <dependency>
+        <groupId>org.apache.sshd</groupId>
+        <artifactId>sshd-core</artifactId>
+        <version>0.9.0</version>
+      </dependency>
+
       <dependency>
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>

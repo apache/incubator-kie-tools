@@ -48,6 +48,11 @@
       <artifactId>uberfire-security-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-server</artifactId>
+    </dependency>
+
     <!-- Formatting -->
     <dependency>
       <groupId>org.ocpsoft.prettytime</groupId>

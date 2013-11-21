@@ -61,85 +61,116 @@ public interface FileSystemProvider {
 
     String getScheme();
 
-    FileSystem newFileSystem(URI uri, Map<String, ?> env)
+    FileSystem newFileSystem( URI uri,
+                              Map<String, ?> env )
             throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException;
 
-    FileSystem getFileSystem(URI uri)
+    FileSystem getFileSystem( URI uri )
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException;
 
-    Path getPath(URI uri)
+    Path getPath( URI uri )
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException;
 
-    FileSystem newFileSystem(Path path, Map<String, ?> env)
+    FileSystem newFileSystem( Path path,
+                              Map<String, ?> env )
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException;
 
-    InputStream newInputStream(final Path path, final OpenOption... options)
+    InputStream newInputStream( final Path path,
+                                final OpenOption... options )
             throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException, SecurityException;
 
-    OutputStream newOutputStream(Path path, OpenOption... options)
+    OutputStream newOutputStream( Path path,
+                                  OpenOption... options )
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException;
 
-    FileChannel newFileChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs)
+    FileChannel newFileChannel( Path path,
+                                Set<? extends OpenOption> options,
+                                FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException;
 
-    AsynchronousFileChannel newAsynchronousFileChannel(Path path,
-            Set<? extends OpenOption> options, ExecutorService executor, FileAttribute<?>... attrs)
+    AsynchronousFileChannel newAsynchronousFileChannel( Path path,
+                                                        Set<? extends OpenOption> options,
+                                                        ExecutorService executor,
+                                                        FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException;
 
-    SeekableByteChannel newByteChannel(Path path,
-            Set<? extends OpenOption> options, FileAttribute<?>... attrs)
+    SeekableByteChannel newByteChannel( Path path,
+                                        Set<? extends OpenOption> options,
+                                        FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException;
 
-    DirectoryStream<Path> newDirectoryStream(Path dir, DirectoryStream.Filter<Path> filter)
+    DirectoryStream<Path> newDirectoryStream( Path dir,
+                                              DirectoryStream.Filter<Path> filter )
             throws NotDirectoryException, IOException, SecurityException;
 
-    void createDirectory(Path dir, FileAttribute<?>... attrs)
+    void createDirectory( Path dir,
+                          FileAttribute<?>... attrs )
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException;
 
-    void createSymbolicLink(Path link, Path target, FileAttribute<?>... attrs)
+    void createSymbolicLink( Path link,
+                             Path target,
+                             FileAttribute<?>... attrs )
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException;
 
-    void createLink(Path link, Path existing)
+    void createLink( Path link,
+                     Path existing )
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException;
 
-    void delete(Path path, DeleteOption... options)
+    void delete( Path path,
+                 DeleteOption... options )
             throws DirectoryNotEmptyException, NoSuchFileException, IOException, SecurityException;
 
-    boolean deleteIfExists(Path path, DeleteOption... options)
+    boolean deleteIfExists( Path path,
+                            DeleteOption... options )
             throws DirectoryNotEmptyException, IOException, SecurityException;
 
-    Path readSymbolicLink(Path link)
+    Path readSymbolicLink( Path link )
             throws UnsupportedOperationException, NotLinkException, IOException, SecurityException;
 
-    void copy(Path source, Path target, CopyOption... options)
+    void copy( Path source,
+               Path target,
+               CopyOption... options )
             throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException,
             IOException, SecurityException;
 
-    void move(Path source, Path target, CopyOption... options)
+    void move( Path source,
+               Path target,
+               CopyOption... options )
             throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException;
 
-    boolean isSameFile(Path path, Path path2)
+    boolean isSameFile( Path path,
+                        Path path2 )
             throws IOException, SecurityException;
 
-    boolean isHidden(Path path)
+    boolean isHidden( Path path )
             throws IllegalArgumentException, IOException, SecurityException;
 
-    FileStore getFileStore(Path path)
+    FileStore getFileStore( Path path )
             throws IOException, SecurityException;
 
-    void checkAccess(Path path, AccessMode... modes)
+    void checkAccess( Path path,
+                      AccessMode... modes )
             throws UnsupportedOperationException, NoSuchFileException, AccessDeniedException, IOException, SecurityException;
 
-    <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options)
+    <V extends FileAttributeView> V getFileAttributeView( Path path,
+                                                          Class<V> type,
+                                                          LinkOption... options )
             throws NoSuchFileException;
 
-    <A extends BasicFileAttributes> A readAttributes(Path path, Class<A> type, LinkOption... options)
+    <A extends BasicFileAttributes> A readAttributes( Path path,
+                                                      Class<A> type,
+                                                      LinkOption... options )
             throws NoSuchFileException, UnsupportedOperationException, IOException, SecurityException;
 
-    Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options)
+    Map<String, Object> readAttributes( Path path,
+                                        String attributes,
+                                        LinkOption... options )
             throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException;
 
-    void setAttribute(Path path, String attribute, Object value, LinkOption... options)
+    void setAttribute( Path path,
+                       String attribute,
+                       Object value,
+                       LinkOption... options )
             throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException;
 
 }

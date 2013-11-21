@@ -60,7 +60,6 @@ public class JACCAuthenticationSource implements AuthenticationSource,
                 }
             }
         } catch ( Exception e ) {
-            e.printStackTrace();
         }
         return false;
     }

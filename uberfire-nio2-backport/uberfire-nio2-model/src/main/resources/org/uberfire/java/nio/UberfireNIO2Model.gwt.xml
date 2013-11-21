@@ -19,6 +19,8 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name="org.uberfire.security.UberfireSecurityAPI"/>
+
   <source path='file'>
     <include name="**/*Exception*"/>
   </source>

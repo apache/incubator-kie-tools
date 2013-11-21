@@ -51,9 +51,14 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Option;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
+import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.file.spi.FileSystemProvider;
+import org.uberfire.java.nio.security.SecurityAware;
+import org.uberfire.security.auth.AuthenticationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
@@ -834,6 +839,24 @@ public class IOServiceClusterImpl implements IOClusteredService {
                 }
             }
         };
+    }
+
+    @Override
+    public void setAuthenticationManager( final AuthenticationManager authenticationManager ) {
+        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
+            if ( fileSystemProvider instanceof SecurityAware ) {
+                ( (SecurityAware) fileSystemProvider ).setAuthenticationManager( authenticationManager );
+            }
+        }
+    }
+
+    @Override
+    public void setAuthorizationManager( final AuthorizationManager authorizationManager ) {
+        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
+            if ( fileSystemProvider instanceof SecurityAware ) {
+                ( (SecurityAware) fileSystemProvider ).setAuthorizationManager( authorizationManager );
+            }
+        }
     }
 
     class NewFileSystemMessageHandler implements MessageHandler {

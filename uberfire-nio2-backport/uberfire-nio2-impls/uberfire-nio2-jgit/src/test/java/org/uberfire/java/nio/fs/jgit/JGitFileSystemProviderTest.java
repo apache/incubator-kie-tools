@@ -212,6 +212,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
     }
 
     @Test
+    @Ignore(value = "Can't push to git using git protocol, just ssh")
     public void testNewFileSystemCloneAndPush() throws IOException {
 
         final URI originRepo = URI.create( "git://my-simple-test-origin-repo" );

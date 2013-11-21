@@ -6,6 +6,7 @@ import java.util.Map;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.file.FileSystem;
 
 @Remote
 public interface RepositoryService {
@@ -25,7 +26,7 @@ public interface RepositoryService {
                                  final String alias,
                                  final Map<String, Object> env ) throws RepositoryAlreadyExistsException;
 
-    String normalizeRepositoryName ( final String name );
+    String normalizeRepositoryName( final String name );
 
     void addRole( final Repository repository,
                   final String role );

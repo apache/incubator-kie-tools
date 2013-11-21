@@ -40,7 +40,7 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-api</artifactId>
+      <artifactId>uberfire-security-client</artifactId>
     </dependency>
 
     <dependency>

@@ -23,6 +23,7 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -87,6 +88,20 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public Repository getRepository( final String alias ) {
         return configuredRepositories.get( alias );
+    }
+
+    public Repository getRepository( final FileSystem fs ) {
+        if ( fs == null ) {
+            return null;
+        }
+
+        for ( final Repository repository : configuredRepositories.values() ) {
+            if ( repository.getRoot().getFileSystem().equals( Paths.convert( fs ) ) ) {
+                return repository;
+            }
+        }
+
+        return null;
     }
 
     @Override

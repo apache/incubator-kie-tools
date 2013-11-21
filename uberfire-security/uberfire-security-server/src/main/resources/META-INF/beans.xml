@@ -1,0 +1,15 @@
+<beans xmlns="http://java.sun.com/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:weld="http://jboss.org/schema/weld/beans"
+       xsi:schemaLocation="
+          http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd
+          http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
+
+  <weld:scan>
+    <weld:exclude name="org.uberfire.security.server.auth.HttpAuthenticationManager"/>
+    <weld:exclude name="org.uberfire.security.server.auth.impl.JAASAuthenticationManager"/>
+    <weld:exclude name="org.uberfire.security.server.auth.impl.PropertyAuthenticationManager"/>
+    <weld:exclude name="org.uberfire.security.server.auth.impl.SimpleUserPassAuthenticationManager"/>
+    <weld:exclude name="org.uberfire.backend.server.security.RepositoryAuthorizationManager"/>
+  </weld:scan>
+</beans>

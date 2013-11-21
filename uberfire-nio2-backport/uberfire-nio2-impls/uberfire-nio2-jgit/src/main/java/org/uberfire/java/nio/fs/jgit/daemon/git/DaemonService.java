@@ -1,4 +1,4 @@
-package org.uberfire.java.nio.fs.jgit.util;
+package org.uberfire.java.nio.fs.jgit.daemon.git;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import org.eclipse.jgit.lib.Config;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.Config.SectionParser;
 import org.eclipse.jgit.transport.*;
+import org.eclipse.jgit.transport.DaemonClient;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 
@@ -88,7 +89,7 @@ public abstract class DaemonService {
                 && commandLine.startsWith( command );
     }
 
-    void execute( final DaemonClient client,
+    void execute( final org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient client,
                   final String commandLine )
             throws IOException, ServiceNotEnabledException,
             ServiceNotAuthorizedException {
@@ -122,7 +123,7 @@ public abstract class DaemonService {
         return isEnabled();
     }
 
-    abstract void execute( DaemonClient client,
+    abstract void execute( org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient client,
                            Repository db )
             throws IOException, ServiceNotEnabledException,
             ServiceNotAuthorizedException;
