@@ -11,13 +11,15 @@ dependencies, build up a simple application with client-side and
 server-side behaviour, and learn how everything works along the way.
 
 If you've never seen a full-blown working UberFire app before, why not
-check out our Jump Start Guide first, which helps you get UberFire's
-pre-made showcase application up and running on your system? This
-guide will be here waiting for you when you're ready to come back and
-build something yourself.
+check out our Jump Start Guide first? It will help you get UberFire's
+pre-made showcase application up and running on your system without
+getting bogged down in details.
 
-Otherwise, you're already familiar with UberFire's capabilities. So
-let's get started!
+This in-depth guide will be here waiting for you when you're ready to
+scratch the surface and build something of your own.
+
+So, assuming you're already familiar with what UberFire can do, let's
+get started!
 
 == Prerequisites
 
@@ -70,25 +72,25 @@ src/main/resources/::
  paths, so it's up to you whether you put resources here or under
  `src/main/java`.
 src/main/resources/app.html.template::
- This page is a FreeMarker template that contains the `<script>` tag
- that loads your GWT application code. It's translated to HTML on
- demand by `UberFireServlet`, and its as-served static contents are
- what your users will see while the JavaScript code that makes up your
- real application is downloading.
+ FreeMarker template that contains the `<script>` tag that loads your
+ GWT application code. It's translated to HTML on demand by
+ `UberFireServlet`, and its as-served static contents are what your
+ users will see while the JavaScript code that makes up your real
+ application is downloading.
 
  TODO: Why FreeMarker? Why not an Errai UI Template, a static HTML
  file, or even a JSP?
 src/main/resources/ErraiApp.properties::
- The Errai framework uses this file as a marker for classpath
- locations that should be scanned for Errai-annotated classes.  It's
- usually an empty file, but there are a number of
+ Marker file for the Errai framework. Errai uses this file to discover
+ classpath locations that need to be scanned for Errai-annotated
+ classes.  It's usually an empty file, but there are a number of
  https://docs.jboss.org/author/display/ERRAI/ErraiApp.properties[Errai
  framework settings] that can be placed here if necessary.
 src/main/resources/log4j.properties::
  Standard log4j configuration file. You can use any logging framework
  with UberFire, but in this tutorial we're using log4j.
 src/main/resources/login.config::
- A JAAS configuration file that specifies which login module the
+ JAAS configuration file that specifies which login module the
  application is using.
 src/main/resources/users.properties::
  List of application users and their roles. This is processed by
@@ -105,18 +107,18 @@ src/main/resources/url_filter.yaml::
 src/main/resources/META-INF/services/::
  Standard directory where Java extensions are configured.
 src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension::
- Contains a list of CDI Portable Extensions provided by the UberFire
+ The list of CDI Portable Extensions provided by the UberFire
  framework. Affects the discovery and behaviour of server-side CDI
  beans.
 
  TODO: these should be declared in UberFire jars, not by the apps themselves.
 src/main/resources/META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider::
- Contains the list of UberFire virtual filesystem (VFS) providers used in
- the application, one per line. Each entry is the fully-qualified name
- of a Java class that implements UberFire's `FileSystemProvider`
+ The list of UberFire virtual filesystem (VFS) providers used in the
+ application, one per line. Each entry is the fully-qualified name of
+ a Java class that implements UberFire's `FileSystemProvider`
  interface. The first VFS provider listed is the default.
 src/main/resources/META-INF/services/org.uberfire.security.auth.AuthenticationSource::
- Contains the list of classes UberFire can use to authenticate login requests.
+ The list of classes UberFire can use to authenticate login requests.
  Each line is the fully-qualified name of a Java class that implements
  UberFire's `AuthenticationSource` interface.
 src/main/resources/org/uberfire/public/::
@@ -126,59 +128,111 @@ src/main/resources/org/uberfire/public/::
 
  TODO: find out what causes these to be copied into the webapp!
 src/main/webapp/::
- This is the standard root directory for resources that will be
- bundled in the `.war` file in a Maven-built web app project.
+ The standard root directory for resources that will be bundled in the
+ WAR file in a Maven-built web app project.
 src/main/webapp/login.html::
- UberFire apps typically have a dedicated login page 
+ UberFire apps typically have a dedicated login page separate from the
+ GWT application. This is that page.
 
  TODO: why couldn't the login be served by UberFireServlet instead, in
  the same way the host page is served?
 
 src/main/webapp/WEB-INF/::
- This is the standard directory where Java EE deployment descriptors,
- compiled Java classes, and third-party libraries go. You can also put
- your application's own non-public files under this directory. Files
- under this directory can be read by server-side code at runtime, but
- cannot be accessed by direct HTTP requests.
+ The standard directory where Java EE deployment descriptors, compiled
+ Java classes, and third-party libraries go. You can also put your
+ application's own non-public files under this directory. Files under
+ this directory can be read by server-side code at runtime, but cannot
+ be accessed by direct HTTP requests.
 src/main/webapp/WEB-INF/beans.xml::
- This file declares that the web application is CDI-enabled. In
- UberFire applications, `beans.xml` normally defines some CDI
- interceptors that help enforce security rules.
+ Marker file for CDI. The existence of this file declares that the web
+ application is CDI-enabled. The `beans.xml` file is left empty in
+ simply CDI applications, but in UberFire applications, `beans.xml`
+ normally defines some CDI interceptors that help enforce security
+ rules.
 src/main/webapp/WEB-INF/web.xml::
- The standard Java Servlets deployment descriptor. Defines the
- UberFire servlet, the UberFire security filter, and the Errai Servlet
- in addition to any servlets, security rules, and configuration
- required by your application's own code.
+ Standard Java Servlets deployment descriptor. Defines the UberFire
+ servlet, the UberFire security filter, and the Errai Servlet in
+ addition to any servlets, security rules, and configuration required
+ by your application's own code.
 
  TODO: we can eliminate the need for this file by annotating
  UberFireServlet and UberFireSecurityFilter appropriately.
 target/::
- Maven writes its output here. This directory and all its contents are
- completely removed whenever you execute `mvn clean`.
+ Maven build steps write their output here. This directory and all its
+ contents are completely removed whenever you execute `mvn clean`.
 
-== Create the Maven POM
+== Create an empty project in your IDE
+
+Now that you've got an idea of what we're aiming for, let's get
+started by creating a new project in your IDE of choice. This guide
+provides instructions that were tested on Eclipse Kepler SR1, but if
+you're comfortable in a different IDE, follow along and perform
+similar steps in your own IDE.
+
+1. Create a new Maven project using the *File -> New Maven Project...*
+   menu. The ``New Maven Project'' wizard will appear.
+
+2. Ensure the checkbox *Create a simple project (skip archetype
+   selection)* is checked. Choose whatever location and working set
+   you like, then press *Next*.
+
+3. Enter the following values in the Artifact section of the form:
++
+[horizontal]
+Group Id::
+  Anything you like. For example, *com.mycompany.uftutorial*
+Artifact Id::
+  Anything you like. For example, *uberfire-tutorial*
+Version::
+  Anything you like, as long as it ends in ``-SNAPSHOT''. For example, *0.0.1-SNAPSHOT*
+Packaging::
+  *war*
+Name::
+  Anything you like. For example, *UberFire Tutorial Project*.
+Description::
+  Anything you like. For example, *A project I'm creating from
+  scratch in order to learn UberFire*
+
++
+Ensure the Parent Project section is blank, then press *Finish*.
+
+You should now have a project in your IDE workspace called
+`uberfire-tutorial` which contains a skeletal `pom.xml` file.
+
+== Fill in the Maven POM
 
 The first thing you'll need is a Maven `pom.xml` file that describes
-all the dependencies and special build steps of your project. Start
-with this:
+all the dependencies and special build steps of your project. If you
+followed the instructions for Eclipse in the previous section, you
+should have this:
 
 [source,xml]
 ---------
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-  http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+     http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-
-  <name>UberFire Tutorial</name>
-  <groupId>com.mycompany.sandbox</groupId>
-  <artifactId>uberfire-tutorial-workbench</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <groupId>com.mycompany.uftutorial</groupId>
+  <artifactId>uberfire-tutorial</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+  <name>UberFire Tutorial Project</name>
+  <description>A project I’m creating from scratch in order to learn UberFire</description>
 
+</project>
+---------
+
+Now let's define some properties that set up fundamental project
+settings, such as source encoding, built-in Maven plugin versions, and
+the version numbers of the UberFire and Errai frameworks we'll be
+using. Add this inside the `<project>` element, after the
+`<description>` tag:
+
+[source,xml]
+---------
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
@@ -189,22 +243,21 @@ with this:
     <jboss-as-maven-plugin.version>7.4.Final</jboss-as-maven-plugin.version>
     <uberfire.version>0.4.0-SNAPSHOT</uberfire.version>
     <errai.version>2.4.3-SNAPSHOT</errai.version>
+    <jboss.spec.version>3.0.2.Final</jboss.spec.version>
   </properties>
-
-</project>
 ---------
 
-Now, underneath the properties section, we'll import four Maven __BOM__
-files. BOM (short for Bill Of Materials) is a Maven pattern where
-frameworks publish a comprehensive set of dependency versions that
-are known to work well with the framework. We'll import BOMs for
-UberFire, Errai, and the Java EE 6 APIs.
+Now, after the properties section, we'll import four Maven _BOM_
+files. BOM (short for Bill Of Materials) is a Maven technique (usage
+pattern) where frameworks publish a comprehensive set of dependency
+versions that are known to work well with the framework. We'll import
+BOMs for UberFire, Errai, and the Java EE 6 API jars.
 
 Note that importing a BOM doesn't add any actual dependencies to your
 project; it simply manages the versions of the direct and transitive
 dependencies you do add in the `<dependencies>` section further down.
 
-This section can be placed right below the properties section from the
+This section can be placed right after the properties section from the
 previous snippet:
 
 [source,xml]
@@ -239,6 +292,7 @@ previous snippet:
       <dependency>
         <groupId>org.jboss.spec</groupId>
         <artifactId>jboss-javaee-6.0</artifactId>
+        <version>${jboss.spec.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -246,8 +300,9 @@ previous snippet:
   </dependencyManagement>
 ---------
 
-So that takes care of managing all the dependency __versions__. Now
-let's declare the libraries we'll be using:
+So that takes care of pinning all the sensitive dependency
+_versions_. Now let's declare the libraries we'll be using. Insert all
+of this after the `<dependencyManagement>` section:
 
 [source,xml]
 ---------
@@ -330,7 +385,7 @@ let's declare the libraries we'll be using:
       <scope>provided</scope>
     </dependency>
 
-    <!-- All of this stuff is supplied by the app server and must not be deployed with the .war file! -->
+    <!-- All of this stuff is supplied by the app server and must not be deployed with the WAR file! -->
     <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>log4j</groupId><artifactId>log4j</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>com.google.guava</groupId><artifactId>guava-gwt</artifactId><scope>provided</scope></dependency>
@@ -375,11 +430,17 @@ let's declare the libraries we'll be using:
   </dependencies>
 ---------
 
-So that takes care of adding UberFire, Errai, and the Java EE 6 APIs
-to the project.
+And that takes care of adding UberFire, Errai, and the Java EE 6 APIs
+to the project. The big ugly list of provided-scope dependencies
+toward the end is a necessary evil: these are the dependencies that we
+inherit transitively from UberFire, Errai, and GWT which must not be
+bundled in the WAR file. Maven does not provide a mechanism for
+inheriting provided-scope transitive dependencies, so we have to list
+them all here separately to ensure they are not bundled in the WAR.
 
 Now on to the `<build>` section, where we define the behaviour of
-several plugins we'll need in order to get the project built.
+several plugins we'll need in order to get the project built. The
+`<build>` section can be placed after the `<dependencies>` section.
 
 [source,xml]
 ---------
@@ -405,15 +466,17 @@ The `<resources>` section adds `src/main/java` as a resource
 directory, and reaffirms that `src/main/resources` is also a resource
 directory. The purpose of adding `src/main/java` as a resource
 directory is to ensure all the .java source files are included on the
-build path. The GWT compiler requires this. The reason we add
+classpath. The GWT compiler requires this. The reason we add
 `src/main/resources` redundantly is because the Maven integration in
 IntelliJ IDEA does not retain this default resource directory when you
-add a new one. Adding both provides maximum compatibility.
+add a new one. Adding both explicitly provides maximum compatibility.
 
-Now, how do we teach Maven to perform the extra build steps that are
-unique to an UberFire-based project? That's where the plugins come in.
+Now, speaking of the GWT compiler, we need to invoke it during our
+project's build. How do we teach Maven to do this and other build
+steps that are unique to an UberFire-based project? That's where Maven
+plugins come in.
 
-Note that all of the following `<plugin>` elements go inside the
+Note that all of the following `<plugin>` elements go _inside_ the
 `<plugins>` placeholder we defined in the previous step.
 
 First up, we'll define some settings for `maven-compiler-plugin`:
@@ -439,7 +502,7 @@ First up, we'll define some settings for `maven-compiler-plugin`:
 ---------
 
 The `source` and `target` options set the compiler for Java 1.6
-compliance. This is the version of the Java language that GWT 2.5
+compliance. This is the version of the Java language that GWT 2.5.x
 supports.
 
 The dependency on `uberfire-workbench` is the recommended way of
@@ -497,28 +560,30 @@ First, we configure `noServer` because we'll be doing our Dev Mode
 testing against a real JBoss EAP or WildFly instance. We don't want
 Dev Mode to start its embedded Jetty server.
 
-Next, we enable GWT's `strict` mode. This causes the build to fail
-with a helpful error message when you use Java APIs that aren't
-available in GWT's in-browser runtime environment. Without `strict`
-mode, these errors will show up later in the compile in a way that
-gives you no clue what happened. Unfortunately, as the comment notes,
-`strict` mode is not compatible with client-side Bean Validation, so
-you will have to turn it off when and if you start using Bean
-Validation in your app's client-side code. The inferior alternatve
-to `strict` mode is to set Dev Mode's `logLevel` to `DEBUG` and sift
-through the output for clues about non-translatable code. But we don't
-have to worry about that at this point.
+Next, we enable GWT's strict mode. This causes the build to fail with
+a helpful error message when you use Java APIs that aren't available
+in GWT's in-browser runtime environment (GWT calls this
+_non-translatable_ code). Without strict mode, these errors will show
+up later in the compile in a way that gives you no clue what happened.
 
-Moving on, we set `runTarget` to the location where your webapp will
+NOTE: There is a caveat to using strict mode: it is not compatible
+with client-side Bean Validation, so you will have to turn it off when
+and if you start using Bean Validation in your app's client-side
+code. The inferior alternatve to strict mode is to set Dev Mode's
+`logLevel` to `DEBUG` and sift through the output for clues about
+non-translatable code. But we don't have to worry about that at this
+point.
+
+Moving on, we set `runTarget` to the local URL where your webapp will
 be served by the JBoss EAP or WildFly server on your workstation.
 
-The `extraJvmArgs` increases the memory limits for the Dev Mode JVM,
-and asks its JIT compiler to be more aggressive in generating native
-code. We've done some experimenting and found a compile threshold of
-1000 allows Dev Mode to start up a little faster.
+The `extraJvmArgs` setting increases the memory limits for the Dev
+Mode JVM, and asks its JIT compiler to be more aggressive in
+generating native code. We've done some experimenting and found a
+compile threshold of 1000 allows Dev Mode to start up a little faster.
 
-Next up, we configure `maven-war-plugin`, which produces the .war file
-during the package phase of the build:
+Next up, we configure `maven-war-plugin`, which produces the WAR file
+during the build's _package_ phase:
 
 [source,xml]
 ---------
@@ -528,25 +593,33 @@ during the package phase of the build:
         <version>${maven.war.plugin.version}</version>
         <configuration>
           <warName>${project.artifactId}</warName>
+          <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
 
           <!--
-            List of files to leave out of the .war file:
+            List of files to leave out of the WAR file:
             1. GWT client-only classes confuse Hibernate and Weld's
-            classpath scanners
+               classpath scanners
             2. The existence of log4j.properties interferes with JBoss
-            Logging configuration
+               Logging configuration
            -->
           <packagingExcludes>**/client/**/*.class,**/log4j.properties</packagingExcludes>
         </configuration>
       </plugin>
 ---------
 
-The first configuration tweak changes the name of the generated .war
+The first configuration tweak changes the name of the generated WAR
 file to just __projectname__.war rather than the default
 __projectname__-__version__.war. We find this more convenient to work
 with, because the deployment URL remains stable that way. If you
-prefer keeping the version number in the .war file name, feel free to
+prefer to have the version number in the WAR file name, feel free to
 omit the `<warName>` setting.
+
+The `<outputFileNameMapping>` tells the WAR plugin exactly what names
+to give JAR files it copies into `target/WEB-INF/lib/`. This is
+necessary because Eclipse and Maven sometimes use slightly different
+names, and you end up with duplicate libraries on your classpath. This
+duplication can cause ``Ambiguous bean reference'' errors from Weld
+when your server-side app is starting up.
 
 The `<packagingExcludes>` setting is vital, though: this keeps the
 client-side-only classes off the web server. Anything that scans your
@@ -555,8 +628,8 @@ Hibernate and Weld) tends to trip over classes that refer to GWT types
 that only make sense in the client environment, such as Widgets and
 JavaScript Native Methods. We'll get to these topics later, but for
 now, just be sure to exclude your client-only classes from the .war
-file. We also omit the log4j.properties file from the .war file
-because it takes over JBoss Logging configuration.
+file. We also omit the `log4j.properties` file from the WAR file
+so it doesn't take over JBoss Logging configuration.
 
 The `<packagingExcludes>` setting accepts a comma-separated list of
 patterns, so if you need to exclude more stuff later on, you can.
@@ -599,11 +672,11 @@ generates junk, but it's a bit more polite and keeps it all under one
 .errai directory.
 
 The one thing to keep in mind here is the commented line: if you
-rename your GWT module (we'll talk about GWT modules in the next
-section) you will also have to update this line to match. If the `mvn
-clean` command fails to remove your generated GWT module directory,
-you will run into the dreaded 'Module __yourmodule__ may need to be
-(re)compiled' error.
+rename your GWT module (which we'll talk about in the next section)
+you will also have to update this line to match. If the `mvn clean`
+command fails to remove your generated GWT module directory, you will
+run into the dreaded ``Module _YourModule_ may need to be
+(re)compiled'' error.
 
 And now on to the resources plugin:
 
@@ -652,7 +725,7 @@ And now on to the resources plugin:
 
 This configuration serves two purposes: firstly, it copies CSS files
 used by your Errai UI templates to a place where they will be
-accessible from the web when your .war file is deployed. Secondly, it
+accessible from the web when your WAR file is deployed. Secondly, it
 copies .java source files that were generated by UberFire's annotation
 processors into a place where they'll be on the classpath when the GWT
 compiler runs. Yes, the GWT compiler needs the .java source file for
@@ -677,9 +750,10 @@ undeploy your project from JBoss AS 7, EAP 6, or WildFly 8. As long as
 one of those servers is running locally, you can deploy your app to it
 with the command `mvn jboss-as:deploy`.
 
-Phew! That's it for the `<plugins>` section. Just one more section to
-go, and you can skip it if nobody will even use Eclipse to develop
-your project.
+Phew! That's it for the `<plugins>` section.
+
+Just one more section to go, and you can skip it if nobody will even
+use Eclipse to develop your project.
 
 The `<pluginManagement>` section goes inside the `<build>` section
 (it's a sibling of <plugins>, not a child).
@@ -721,6 +795,31 @@ The `<pluginManagement>` section goes inside the `<build>` section
 As the comment says, this is actually some Eclipse-specific
 configuration that's stored in the POM. It doesn't have any effect on
 the build if you're not in Eclipse.
+
+If you plan on developing against Errai or UberFire snapshot releases
+(these are published continuously during the development cycle, and
+are the easiest way to get access to the latest features and fixes
+available), add this section after the end of the `<build>` section:
+
+[source,xml]
+---------
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+---------
 
 == Set up a .gitignore (or similar for your VCS)
 
@@ -808,12 +907,14 @@ Here's what you need in a typical UberFire `web.xml`. Create a file
 </web-app>
 ---------
 
+The following subsections examine the contents of `web.xml` in detail.
+
 === UberFire security filter
 
-The UberFireSecurityFilter is mapped to `/*` and so it is consulted
+The `UberFireSecurityFilter` is mapped to `/*` and so it is consulted
 for every request to a servlet or static resource in your web
-application. This filter makes an allow/deny decision for each of
-these requests.
+application. In other words, this filter makes an allow/deny decision
+for every HTTP request to your application.
 
 How do you control the behaviour of this filter? It depends.  The
 filter relies on a series of pluggable mechanisms to make its
@@ -845,17 +946,24 @@ Authorization, Decision Manager, Voting Strategy, and Consensus-based voting.
 
 === UberFire servlet
 
-The UberFireServlet is responsible for serving the application's GWT
-host page, which is mapped to the URL
-`/UberFireTutorial/UberFire.html`. Users are directed to this page
+The UberFireServlet is responsible for serving the application's _GWT
+host page_, and it's mapped to the URL
+`/UberFireTutorial/UberFire.html`. Users are directed to this location
 after a successful login.
 
 The servlet works by processing the FreeMarker template
 `app.html.template` and serving the result to the client.
 
+TIP: What's a GWT Host Page? That's a web page that links to the
+JavaScript payload that was produced by the GWT compiler at compile
+time. We'll name the GWT module in this app `UberFireTutorial`, so
+our `app.html.template` includes a `<script>` tag pointing to
+`UberFireTutorial/UberFireTutorial.nocache.js`, the file produced by
+the GWT compiler that ties all its output together.
+
 === Errai servlet
 
-The ErraiServlet is responsible for the communication bus that allows
+The ErraiServlet manages the communication bus that allows
 two-way-push communication between the client and the server.
 
 == Set up UberFire security
@@ -1060,6 +1168,39 @@ The important part of this file is the form that posts `j_username`
 and `j_password` to the `j_security_check` URL. This will be
 recognized by UberFireSecurityFilter as a login attempt.
 
+=== Create a url_filter.yaml
+
+If we refused to serve _anything_ to an unauthenticated user, nobody
+would be able to get to the beautiful login page we just created!
+Fortunately there's a way to ``punch a hole'' in the security filter
+so the login page and its linked assets (CSS, images) can be served.
+
+Create the file `src/main/resources/url_filter.yaml` and put this in
+it:
+
+[source,yaml]
+---------
+filter:
+   - pattern: /admin/**
+     access: ADMIN
+   - pattern: /config/**
+     access: ADMIN, USER
+   - pattern: /private/**
+
+exclude:
+   - /*.ico
+   - /UberFireTutorial/images/**
+   - /UberFireTutorial/css/**
+   - /css/**
+   - /plugins/**
+---------
+
+This example file shows you how to restrict certain URL paths to
+certain roles, and also how to exclude some paths from the
+authentication and authorization checks altogether.
+
+TODO: why doesn't login.html have to be in this list?
+
 == Create a client-side entry point class
 
 Okay, enough mucking around with directory structure and configuration
@@ -1115,15 +1256,17 @@ fine.
 
 Right now, our entry point method is empty! What kind of stuff would
 you normally put in there for bootstrapping an UberFire app? Let's
-create a panel and come back to that question.
+first create a panel and then come back to that question.
 
 == Create a panel
 
 UberFire interfaces are made up of a few fundamental building blocks:
-Widgets, Panels, Menu Bars, Tool Bars, and Perspectives. Panels
-can contain Widgets and other Panels, and Perspectives give end users
-the ability to rearrange Panels on the screen by dragging and dropping
-them. Use of Perspectives is optional, so we'll leave them for later.
+Widgets, Panels, Menu Bars, Tool Bars, and Perspectives. Panels can
+contain Widgets and other Panels, and Perspectives contain Panels, an
+optional Menu Bar, and an optional Tool Bar. Perspectives split up the
+screen into multiple resizeable regions, and end users can drag and
+drop Panels between these regions to customize their workspace. Use of
+Perspectives is optional, so we'll leave them for later.
 
 To create your first panel, create the file
 `src/main/java/com/mycompany/uftutorial/client/PanelOne.java`:
@@ -1140,6 +1283,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 
 @Dependent
 @WorkbenchScreen(identifier="PanelOne")
@@ -1159,7 +1303,116 @@ public class PanelOne {
 }
 ---------
 
+The class itself is quite simple: one private field and two public
+methods. But we're seeing a bunch of annotations for the first
+time. Let's examine them one by one.
+
+@Dependent::
+
+ Marks this class as a _dependent scoped CDI bean_ that should be
+ freshly instantiated every time a new instance is called
+ for. Contrast with `@ApplicationScoped`, which marks a CDI bean that
+ should be created only one time over the life of the application.
+
+@WorkbenchScreen::
+
+ Declares that the class defines a Workbench Panel in the application.
+
+@WorkbenchPartTitle::
+
+ Denotes the method that returns the Panel's title. Every Panel must
+ have a `@WorkbenchPartTitle` method.
+
+@WorkbenchPartView::
+
+ Denotes the method that returns the Panel's view. The view can be any
+ class that extends GWT's `Widget` class or implements GWT's
+ `IsWidget` interface. In this example, we're returning a GWT `Label`,
+ which is a GWT widget that represents `<div>` element with text in
+ it. Every Panel must have a `@WorkbenchPartView` method.
+
+.About Client-Side Scopes
+NOTE: CDI scopes in the client side are tied to the lifecycle of the
+web page in the browser, not the lifecycle of the server-side web
+application. In the client, the Application Scope begins when the page
+is first loaded, and ends when when the user navigates away from the
+page--either by visiting a different URL, or by closing the browser
+window/tab. Currently, the Session and Conversation scopes are not
+defined on the client side.
+
+== Define a GWT module
+
+So we created some client-side Java code, but how will the GWT
+compiler know where to find it? How can it tell what's supposed to be
+packaged up for running on the browser, and what it should ignore?
+That's where GWT modules come in.
+
+Create a file at
+`src/main/java/com/mycompany/uftutorial/UberFireTutorial.gwt.xml` and
+fill it with the following:
+
+[source,xml]
+---------
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5//EN"
+        "http://google-web-toolkit.googlecode.com/svn/releases/2.5/distro-source/core/src/gwt-module.dtd">
+
+<!-- If you rename the module, update the maven-clean-plugin
+     configuration in pom.xml and the .gitignore file. -->
+<module rename-to="UberFireTutorial">
+
+  <inherits name="org.jboss.errai.enterprise.All"/>
+
+  <inherits name="org.uberfire.UberfireJS"/>
+
+  <inherits name="org.uberfire.security.UberfireSecurityClient"/>
+
+  <inherits name="org.uberfire.UberfireWorkbench"/>
+  <inherits name="org.uberfire.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.UberfireBackend"/>
+
+  <source path="client"/>
+  <source path="shared"/>
+</module>
+---------
+
+What is all this? Let's step through it.
+
+The root element of a GWT module descriptor is `<module>`. The default
+name of a module is a fully-qualified name that includes the Java
+package it sits in. For example, this module's default name is
+`com.mycompany.uftutorial.UberFireTutorial`. When we're creating a GWT
+module for a deployable application, it's usually more convenient to
+give it a simple, unqualified name. So we use the optional `rename-to`
+attribute to give our module a simple, unqualified name.
+
+Next, we see a series of `<inherits>` elements. These tell GWT which
+other GWT modules our app depends on. Just like Maven dependencies,
+modules can depend on other modules, and when you inherit one you
+_transitively inherit_ all the modules it depends on.
+
+Finally, there are two `<source>` paths defined. This is how you tell
+GWT which packages it should translate to JavaScript. In our case, we
+want GWT to translate everything under the
+`com.mycompany.uftutorial.client` and
+`com.mycompany.uftutorial.shared` packages.
+
+.GWT does not manage the classpath!
+TIP: When you inherit a GWT module, you're only telling the GWT
+compiler that you intend to use code from that module--you're not
+telling it where to find that module. You are responsible for ensuring
+the module is on the classpath when the GWT compiler runs. So when you
+inherit a GWT module, make sure it's also a dependency in your
+pom.xml.
+
+
 == Time to see it work!
+
+We've come a long way since we started with that empty
+directory. Let's reward all the hard work by starting our app and
+seeing it do something!
+
+
 
 == Factor out the panel's contents
 
