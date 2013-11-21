@@ -24,6 +24,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
+import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
+import org.uberfire.backend.server.io.IOSecurityAuth;
+import org.uberfire.backend.server.io.IOSecurityAuthz;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOSearchService;
 import org.uberfire.io.IOService;
@@ -41,15 +44,21 @@ import org.uberfire.metadata.engine.MetaModelStore;
 import org.uberfire.metadata.io.IOSearchIndex;
 import org.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.metadata.search.SearchIndex;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
+import org.uberfire.security.auth.AuthenticationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.security.server.cdi.SecurityFactory;
 
-import static org.uberfire.backend.server.repositories.SystemRepository.*;
-
 @ApplicationScoped
 public class ApplicationScopedProducer {
+
+    @Inject
+    @IOSecurityAuth
+    private AuthenticationManager authenticationManager;
+
+    @Inject
+    @IOSecurityAuthz
+    private AuthorizationManager authorizationManager;
 
     @Inject
     private IOWatchServiceNonDotImpl watchService;
@@ -86,8 +95,10 @@ public class ApplicationScopedProducer {
             ioService = new IOServiceClusterImpl( service, clusterServiceFactory );
         }
 
-        this.ioSearchService = new IOSearchIndex( searchIndex, ioService );
+        ioService.setAuthenticationManager( authenticationManager );
+        ioService.setAuthorizationManager( authorizationManager );
 
+        ioSearchService = new IOSearchIndex( searchIndex, ioService );
     }
 
     @PreDestroy
