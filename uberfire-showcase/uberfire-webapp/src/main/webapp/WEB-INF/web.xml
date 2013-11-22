@@ -80,6 +80,25 @@ profile in pom.xml to use that. -->
     <url-pattern>*.erraiBus</url-pattern>
   </servlet-mapping>
 
+
+  <servlet>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/defaulteditor/upload</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>FileDownloadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileDownloadServlet</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/defaulteditor/download/*</url-pattern>
+  </servlet-mapping>
+
   <listener>
     <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
   </listener>

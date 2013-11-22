@@ -57,6 +57,7 @@
 
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <commons-io.version>2.1</commons-io.version>
+    <commons-fileupload.version>1.2.2</commons-fileupload.version>
     <commons-codec.version>1.4</commons-codec.version>
 
     <xstream.version>1.4.3</xstream.version>
@@ -206,6 +207,12 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>${commons-fileupload.version}</version>
       </dependency>
 
       <!-- Errai -->
