@@ -23,6 +23,7 @@ import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -78,6 +79,8 @@ public class AddImportPopup extends Modal {
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
 
+        importTypeListBox.getElement().getStyle().setWidth( 100.0,
+                                                            Style.Unit.PCT );
         importTypeListBox.addChangeHandler( new ChangeHandler() {
 
             @Override
