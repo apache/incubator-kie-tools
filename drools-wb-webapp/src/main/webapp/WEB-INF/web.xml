@@ -136,6 +136,24 @@ profile in pom.xml to use that. -->
     <url-pattern>/maven2/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>UberfireFileUploadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UberfireFileUploadServlet</servlet-name>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/defaulteditor/upload</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UberfireFileDownloadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UberfireFileDownloadServlet</servlet-name>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/defaulteditor/download/*</url-pattern>
+  </servlet-mapping>
+
 
   <resource-env-ref>
     <description>Object factory for the CDI Bean Manager</description>
