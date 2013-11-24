@@ -39,6 +39,7 @@ public class DefaultFileEditorPresenter {
     @OnStartup
     public void onStartup(final Path path) {
         this.path = path;
+        view.setPath(path);
     }
 
     @OnClose

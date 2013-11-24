@@ -1,15 +1,12 @@
 package org.uberfire.server;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletException;
@@ -23,11 +20,15 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
 public class FileUploadServlet
         extends HttpServlet {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadServlet.class);
 
     @Inject
     @Named("ioStrategy")
@@ -61,22 +62,26 @@ public class FileUploadServlet
             // SAVE
             File tempFile = File.createTempFile("uploadedFile", null);
             FileOutputStream tempFOS = new FileOutputStream(tempFile);
-            IOUtils.copy( uploadedItem.getInputStream(), tempFOS );
+            IOUtils.copy(uploadedItem.getInputStream(), tempFOS);
             tempFOS.flush();
             tempFOS.close();
 
-            ioService.createFile(path);
-            final OutputStream outputStream = ioService.newOutputStream( path );
-            IOUtils.copy(new FileInputStream(tempFile),
-                    outputStream);
+            if (!ioService.exists(path)) {
+                ioService.createFile(path);
+            }
+
+            ioService.write(path, IOUtils.toByteArray(uploadedItem.getInputStream()));
 
             uploadedItem.getInputStream().close();
 
         } catch (FileUploadException e) {
-            //TODO
-            //throw new RulesRepositoryException( e );
+            logError(e);
         } catch (URISyntaxException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logError(e);
         }
+    }
+
+    private void logError(Throwable e) {
+        logger.error("Failed to upload a file.", e);
     }
 }
