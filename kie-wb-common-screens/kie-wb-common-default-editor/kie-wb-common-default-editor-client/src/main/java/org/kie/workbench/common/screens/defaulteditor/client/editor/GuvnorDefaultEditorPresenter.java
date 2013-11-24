@@ -122,12 +122,6 @@ public class GuvnorDefaultEditorPresenter
             menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
             menus = menuBuilder
-                    .addSave( new Command() {
-                        @Override
-                        public void execute() {
-                            onSave();
-                        }
-                    } )
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
@@ -140,47 +134,9 @@ public class GuvnorDefaultEditorPresenter
         return menus;
     }
 
-    @OnSave
-    public void onSave() {
-        new SaveOperationService().save( path,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 defaultEditorService.call( getSaveSuccessCallback(),
-                                                                            new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
-                                                                                                                                                  view.getContent(),
-                                                                                                                                                  metadataWidget.getContent(),
-                                                                                                                                                  commitMessage );
-                                             }
-                                         } );
-    }
-
-    private RemoteCallback<Path> getSaveSuccessCallback() {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                busyIndicatorView.hideBusyIndicator();
-                view.setDirty( false );
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-            }
-        };
-    }
-
-    @IsDirty
-    public boolean isDirty() {
-        return super.isDirty();
-    }
-
     @OnClose
     public void onClose() {
         super.onClose();
-    }
-
-    @OnOpen
-    public void onOpen() {
-        super.onOpen();
     }
 
     @WorkbenchPartTitle
