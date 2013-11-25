@@ -152,7 +152,6 @@ public class NewDataObjectPopup extends Modal {
                     errorMessages.setText("");
                 }
                 existingPackageGroup.setType( ControlGroupType.NONE );
-                newPackage.setText(null);
                 packageSelector.getPackageList().setSelectedValue(null);
             }
         });
@@ -167,7 +166,6 @@ public class NewDataObjectPopup extends Modal {
                     errorMessages.setText("");
                 }
                 newPackageGroup.setType( ControlGroupType.NONE );
-                newPackage.setText(null);
                 packageSelector.getPackageList().setSelectedValue(null);
             }
         });
@@ -219,8 +217,8 @@ public class NewDataObjectPopup extends Modal {
 
         newName[ 0 ] = name.getText() != null ? name.getText().trim() : "";
         newLabel[ 0 ] = label.getText() != null ? label.getText().trim() : "";
-        packageName[ 0 ] = newPackage.getText() != null && !"".equals( newPackage.getText().trim() ) ? newPackage.getText().trim().toLowerCase() :
-                                packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue().trim().toLowerCase() : null ;
+        packageName[ 0 ] = r_newPackage.getValue() ?  ( newPackage.getText() != null ? newPackage.getText().trim().toLowerCase() : "" ) :
+                                                      ( packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue().trim().toLowerCase() : null );
 
         superClass[ 0 ] = superclassSelector.getSuperclassList().getValue();
         if ( SuperclassSelector.NOT_SELECTED.equals( superClass[ 0 ] ) ) {
