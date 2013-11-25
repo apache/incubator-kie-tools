@@ -3,7 +3,6 @@ package org.kie.workbench.common.screens.defaulteditor.client.editor;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
@@ -19,6 +18,7 @@ import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSucces
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
@@ -56,44 +56,46 @@ public class GuvnorTextEditorPresenter
     private MetadataWidget metadataWidget;
 
     private boolean isReadOnly;
+    private String version;
     protected Path path;
 
-    public void onStartup(final Path path,
-            final PlaceRequest place) {
-        super.onStartup(path);
+    public void onStartup( final Path path,
+                           final PlaceRequest place ) {
+        super.onStartup( path );
 
         this.path = path;
-        this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
 
         makeMenuBar();
 
-        if (isReadOnly) {
+        if ( isReadOnly ) {
             view.makeReadOnly();
         }
 
-        multiPage.addWidget(super.getWidget(),
-                CommonConstants.INSTANCE.EditTabTitle());
+        multiPage.addWidget( super.getWidget(),
+                             CommonConstants.INSTANCE.EditTabTitle() );
 
-        multiPage.addPage(new Page(metadataWidget,
-                CommonConstants.INSTANCE.MetadataTabTitle()) {
+        multiPage.addPage( new Page( metadataWidget,
+                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                metadataWidget.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-                metadataService.call(new MetadataSuccessCallback(metadataWidget,
-                        isReadOnly),
-                        new HasBusyIndicatorDefaultErrorCallback(metadataWidget)).getMetadata(path);
+                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                   isReadOnly ),
+                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
             }
 
             @Override
             public void onLostFocus() {
                 //Nothing to do
             }
-        });
+        } );
     }
 
     private void makeMenuBar() {
-        if (isReadOnly) {
-            menus = menuBuilder.addRestoreVersion(path).build();
+        if ( isReadOnly ) {
+            menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
             menus = menuBuilder
                     .addSave(
@@ -102,38 +104,38 @@ public class GuvnorTextEditorPresenter
                                 public void execute() {
                                     onSave();
                                 }
-                            })
-                    .addCopy(path)
-                    .addRename(path)
-                    .addDelete(path)
+                            } )
+                    .addCopy( path )
+                    .addRename( path )
+                    .addDelete( path )
                     .build();
         }
     }
 
     @OnSave
     public void onSave() {
-        new SaveOperationService().save(path,
-                new CommandWithCommitMessage() {
-                    @Override
-                    public void execute(final String commitMessage) {
-                        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-                        defaultEditorService.call(getSaveSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).save(path,
-                                view.getContent(),
-                                metadataWidget.getContent(),
-                                commitMessage);
-                    }
-                });
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 defaultEditorService.call( getSaveSuccessCallback(),
+                                                                            new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
+                                                                                                                                                  view.getContent(),
+                                                                                                                                                  metadataWidget.getContent(),
+                                                                                                                                                  commitMessage );
+                                             }
+                                         } );
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback(final Path path) {
+            public void callback( final Path path ) {
                 busyIndicatorView.hideBusyIndicator();
-                view.setDirty(false);
-                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                view.setDirty( false );
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
         };
     }
@@ -141,6 +143,15 @@ public class GuvnorTextEditorPresenter
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    @WorkbenchPartTitle
+    public String getTitle() {
+        String fileName = path.getFileName();
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+        return "Text Editor [" + fileName + "]";
     }
 
     @IsDirty

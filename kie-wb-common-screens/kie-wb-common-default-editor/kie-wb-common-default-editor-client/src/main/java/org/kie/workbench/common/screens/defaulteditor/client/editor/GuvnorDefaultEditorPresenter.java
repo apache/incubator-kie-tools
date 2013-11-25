@@ -23,23 +23,15 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
-import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.lifecycle.IsDirty;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnSave;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -48,7 +40,8 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.defaulteditor.DefaultFileEditorPresenter;
 import org.uberfire.client.workbench.type.AnyResourceType;
-import org.uberfire.mvp.Command;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -85,6 +78,7 @@ public class GuvnorDefaultEditorPresenter
     private MetadataWidget metadataWidget;
 
     private boolean isReadOnly;
+    private String version;
     private Path path;
 
     @OnStartup
@@ -94,6 +88,7 @@ public class GuvnorDefaultEditorPresenter
 
         this.path = path;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
 
         makeMenuBar();
 
@@ -141,7 +136,11 @@ public class GuvnorDefaultEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return super.getTitle();
+        String fileName = path.getFileName();
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+        return "Default Editor [" + fileName + "]";
     }
 
     @WorkbenchPartView

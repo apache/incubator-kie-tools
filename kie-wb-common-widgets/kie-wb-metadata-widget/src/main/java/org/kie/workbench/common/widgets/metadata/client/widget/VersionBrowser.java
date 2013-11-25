@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -135,7 +137,11 @@ public class VersionBrowser extends Composite {
 
             public void onClick( ClickEvent event ) {
                 final Path path = PathFactory.newPath( metadata.getPath().getFileSystem(), metadata.getPath().getFileName(), history.getValue( history.getSelectedIndex() ) );
-                placeManager().goTo( new ReadOnlyPathPlaceRequest( path ) );
+                final Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put( "version",
+                                String.valueOf( history.getItemCount() - history.getSelectedIndex() ) );
+                placeManager().goTo( new ReadOnlyPathPlaceRequest( path,
+                                                                   parameters ) );
             }
 
         } );

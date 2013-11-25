@@ -36,16 +36,13 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.type.FileNameUtil;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @WorkbenchEditor(identifier = "JavaEditor", supportedTypes = { JavaResourceType.class })
 public class JavaEditorPresenter {
-
-    protected Path path;
-
-    private boolean isReadOnly = true;
 
     @Inject
     private Caller<MetadataService> metadataService;
@@ -65,10 +62,15 @@ public class JavaEditorPresenter {
     @Inject
     private JavaResourceType type;
 
-    @OnStartup
-    public void init( final Path path ) {
-        this.path = checkNotNull( "path", path );
+    protected Path path;
+    private boolean isReadOnly = true;
+    private String version;
 
+    @OnStartup
+    public void init( final Path path,
+                      final PlaceRequest place ) {
+        this.path = checkNotNull( "path", path );
+        this.version = place.getParameter( "version", null );
 
         multiPage.addPage( new Page( sourceView,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
@@ -83,7 +85,7 @@ public class JavaEditorPresenter {
                             sourceView.setContent( response );
                         }
                     }
-                } ).readAllString(path);
+                } ).readAllString( path );
             }
 
             @Override
@@ -111,8 +113,12 @@ public class JavaEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Java Source View [" + FileNameUtil.removeExtension(path,
-                type) + "]";
+        String fileName = FileNameUtil.removeExtension( path,
+                                                        type );
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+        return "Java Source View [" + fileName + "]";
     }
 
     @WorkbenchPartView
