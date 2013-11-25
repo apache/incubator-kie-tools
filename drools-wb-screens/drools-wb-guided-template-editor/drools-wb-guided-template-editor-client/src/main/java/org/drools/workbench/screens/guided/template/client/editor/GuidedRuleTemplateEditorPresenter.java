@@ -31,11 +31,11 @@ import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTempla
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -132,6 +132,7 @@ public class GuidedRuleTemplateEditorPresenter {
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly = false;
+    private String version;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private TemplateModel model;
@@ -143,6 +144,7 @@ public class GuidedRuleTemplateEditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
 
         this.path.onRename( new Command() {
             @Override
@@ -442,8 +444,12 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Guided Template [" + FileNameUtil.removeExtension( path,
-                                                                   type ) + "]";
+        String fileName = FileNameUtil.removeExtension( path,
+                                                        type );
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+        return "Guided Template Editor [" + fileName + "]";
     }
 
     @WorkbenchPartView

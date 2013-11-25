@@ -121,6 +121,7 @@ public class GuidedScoreCardEditorPresenter {
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private String version;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private ScoreCardModel model;
@@ -135,6 +136,7 @@ public class GuidedScoreCardEditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
 
         this.path.onRename( new Command() {
             @Override
@@ -421,10 +423,14 @@ public class GuidedScoreCardEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        final String fileName = FileNameUtil.removeExtension( path,
-                                                              type );
+        String fileName = FileNameUtil.removeExtension( path,
+                                                        type );
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+
         if ( isReadOnly ) {
-            return "Read Only Score Card  Viewer [" + fileName + "]";
+            return "Read Only Score Card Viewer [" + fileName + "]";
         }
         return "Score Card Editor [" + fileName + "]";
     }

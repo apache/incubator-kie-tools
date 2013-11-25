@@ -101,6 +101,7 @@ public class ScoreCardXLSEditorPresenter
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private String version;
 
     @PostConstruct
     public void setup() {
@@ -113,6 +114,7 @@ public class ScoreCardXLSEditorPresenter
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
 
         this.path.onRename( new Command() {
             @Override
@@ -246,8 +248,12 @@ public class ScoreCardXLSEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "XLS Score Card Editor [" + FileNameUtil.removeExtension( path,
-                                                                         type ) + "]";
+        String fileName = FileNameUtil.removeExtension( path,
+                                                        type );
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+        return "XLS Score Card Editor [" + fileName + "]";
     }
 
     @WorkbenchPartView

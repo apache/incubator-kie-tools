@@ -110,6 +110,7 @@ public class EnumEditorPresenter {
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private String version;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     @OnStartup
@@ -118,6 +119,7 @@ public class EnumEditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
 
         this.path.onRename( new Command() {
             @Override
@@ -291,26 +293,26 @@ public class EnumEditorPresenter {
 
         if ( concurrentUpdateSessionInfo != null ) {
             newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                    concurrentUpdateSessionInfo.getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            save();
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel?
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            reload();
-                        }
-                    }
-            ).show();
+                                 concurrentUpdateSessionInfo.getIdentity(),
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         save();
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //cancel?
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         reload();
+                                     }
+                                 }
+                               ).show();
         } else {
             save();
         }
@@ -364,8 +366,12 @@ public class EnumEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Enum Editor [" + FileNameUtil.removeExtension( path,
-                                                               type ) + "]";
+        String fileName = FileNameUtil.removeExtension( path,
+                                                        type );
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+        return "Enum Editor [" + fileName + "]";
     }
 
     @WorkbenchPartView

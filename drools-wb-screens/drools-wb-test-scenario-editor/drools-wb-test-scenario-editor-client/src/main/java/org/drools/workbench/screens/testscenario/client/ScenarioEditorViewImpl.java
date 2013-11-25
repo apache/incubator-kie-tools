@@ -39,8 +39,8 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.common.client.api.Caller;
 import org.guvnor.common.services.shared.rulenames.RuleNamesService;
+import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -106,8 +106,14 @@ public class ScenarioEditorViewImpl
 
     }
 
-    public String getTitle( final String fileName ) {
-        return TestScenarioConstants.INSTANCE.TestScenarioParamFileName( fileName );
+    @Override
+    public String getTitle( final String fileName,
+                            final String version ) {
+        String versionedFilename = fileName;
+        if ( version != null ) {
+            versionedFilename = versionedFilename + " v" + version;
+        }
+        return TestScenarioConstants.INSTANCE.TestScenarioParamFileName( versionedFilename );
     }
 
     @Override
@@ -312,7 +318,7 @@ public class ScenarioEditorViewImpl
                              final Caller<RuleNamesService> ruleNameService ) {
         scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( this,
                                                                              oracle,
-                                                                             ruleNameService);
+                                                                             ruleNameService );
         scenarioWidgetComponentCreator.setScenario( scenario );
         scenarioWidgetComponentCreator.setShowResults( false );
     }

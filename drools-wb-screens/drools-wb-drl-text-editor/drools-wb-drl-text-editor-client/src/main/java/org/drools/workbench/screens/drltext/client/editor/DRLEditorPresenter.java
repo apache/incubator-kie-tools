@@ -109,6 +109,7 @@ public class DRLEditorPresenter {
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private String version;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     @PostConstruct
@@ -122,6 +123,7 @@ public class DRLEditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) != null;
+        this.version = place.getParameter( "version", null );
 
         this.path.onRename( new Command() {
             @Override
@@ -382,8 +384,12 @@ public class DRLEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "DRL Editor [" + FileNameUtil.removeExtension( path,
-                                                              type ) + "]";
+        String fileName = FileNameUtil.removeExtension( path,
+                                                        type );
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+        return "DRL Editor [" + fileName + "]";
     }
 
     @WorkbenchPartView

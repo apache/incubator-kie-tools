@@ -102,6 +102,7 @@ public class GlobalsEditorPresenter {
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private String version;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private GlobalsModel model;
@@ -112,6 +113,7 @@ public class GlobalsEditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
 
         this.path.onRename( new Command() {
             @Override
@@ -375,8 +377,12 @@ public class GlobalsEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        final String fileName = FileNameUtil.removeExtension( path,
-                                                              type );
+        String fileName = FileNameUtil.removeExtension( path,
+                                                        type );
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+
         if ( isReadOnly ) {
             return GlobalsEditorConstants.INSTANCE.globalsEditorReadOnlyTitle0( fileName );
         }

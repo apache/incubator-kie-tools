@@ -30,11 +30,11 @@ import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResour
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -129,6 +129,7 @@ public class GuidedRuleEditorPresenter {
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private String version;
     private boolean isDSLEnabled;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
@@ -141,6 +142,7 @@ public class GuidedRuleEditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
         this.isDSLEnabled = resourceTypeDSL.accept( path );
 
         this.path.onRename( new Command() {
@@ -423,14 +425,20 @@ public class GuidedRuleEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
+        String fileName = "";
         if ( resourceTypeDRL.accept( path ) ) {
-            return "Guided Editor [" + FileNameUtil.removeExtension( path,
-                                                                     resourceTypeDRL ) + "]";
+            fileName = FileNameUtil.removeExtension( path,
+                                                     resourceTypeDRL );
         } else if ( resourceTypeDSL.accept( path ) ) {
-            return "Guided Editor [" + FileNameUtil.removeExtension( path,
-                                                                     resourceTypeDSL ) + "]";
+            fileName = FileNameUtil.removeExtension( path,
+                                                     resourceTypeDSL );
         }
-        return path.getFileName();
+
+        if ( version != null ) {
+            fileName = fileName + " v" + version;
+        }
+
+        return "Guided Rule Editor [" + fileName + "]";
     }
 
     @WorkbenchPartView
