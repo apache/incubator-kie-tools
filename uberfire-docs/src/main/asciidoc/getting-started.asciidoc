@@ -3,6 +3,7 @@ Jonathan Fuerth <jfuerth@redhat.com>
 :toc:
 :source-highlighter: highlightjs
 :stylesheet: asciidoctor.css
+:link-suffix: .asciidoc
 
 This guide will walk you through the process of setting up a new
 UberFire application. Starting from an empty directory, you will
@@ -11,9 +12,9 @@ dependencies, build up a simple application with client-side and
 server-side behaviour, and learn how everything works along the way.
 
 If you've never seen a full-blown working UberFire app before, why not
-check out our Jump Start Guide first? It will help you get UberFire's
-pre-made showcase application up and running on your system without
-getting bogged down in details.
+check out our link:quick-start{link-suffix}[Quick Start Guide] first?
+It will help you get UberFire's pre-made showcase application up and
+running on your system without getting bogged down in details.
 
 This in-depth guide will be here waiting for you when you're ready to
 scratch the surface and build something of your own.
@@ -1201,6 +1202,52 @@ authentication and authorization checks altogether.
 
 TODO: why doesn't login.html have to be in this list?
 
+At this point, we have fully configured UberFire Security.
+
+== Create the GWT host page template
+
+As mentioned earlier, GWT apps need a _host page_ that points the
+browser at their main __ModuleName__.nocache.js file. In an UberFire
+application, UberFireServlet takes this responsibility, and it does so
+by processing a FreeMarker template called `app.html.template`.
+
+Create the file `src/main/resources/app.html.template` and fill it
+with this:
+
+[source,html]
+---------
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <title>UberFire Showcase</title>
+  <link rel="stylesheet" href="css/uberfire-loading.css">
+  <link rel="stylesheet" href="css/uberfire-showcase.css">
+  <link rel="stylesheet" href="css/ruleflow.css">
+</head>
+<body>
+
+  <script type="text/javascript">
+    var current_user = { name:"@{name}", roles:[@{roles}] }
+  </script>
+
+  <!-- loading indicator to display while the app is being loaded -->
+  <div id="loading">
+    <div class="loading-indicator">
+      <img src="images/loading-icon.gif" width="32" height="32"
+           style="margin-right: 8px; float: left; vertical-align: top;">
+        Please wait<br/>
+        <span id="loading-msg">Loading application...</span>
+    </div>
+  </div>
+
+  <!-- The GWT js file generated at compile time -->
+  <script type="text/javascript" src='UberFireTutorial.nocache.js'></script>
+</body>
+</html>
+---------
+
 == Create a client-side entry point class
 
 Okay, enough mucking around with directory structure and configuration
@@ -1342,10 +1389,10 @@ defined on the client side.
 
 == Define a GWT module
 
-So we created some client-side Java code, but how will the GWT
-compiler know where to find it? How can it tell what's supposed to be
-packaged up for running on the browser, and what it should ignore?
-That's where GWT modules come in.
+So we created some client-side Java code and some server-side Java
+code, but how will the GWT compiler know the difference? How can it
+tell what's supposed to be packaged up for running on the browser, and
+what it should ignore?  That's where GWT modules come in.
 
 Create a file at
 `src/main/java/com/mycompany/uftutorial/UberFireTutorial.gwt.xml` and
