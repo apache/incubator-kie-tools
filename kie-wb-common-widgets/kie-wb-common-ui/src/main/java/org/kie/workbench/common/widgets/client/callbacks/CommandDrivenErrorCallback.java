@@ -15,26 +15,37 @@
  */
 package org.kie.workbench.common.widgets.client.callbacks;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.mvp.Command;
 
 /**
- * Default Error handler for all views that support HasBusyIndicator
+ * Error Callback that allows Commands to be defined to handled Exceptions
  */
-public class HasBusyIndicatorDefaultErrorCallback extends DefaultErrorCallback {
+public class CommandDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCallback {
 
-    protected HasBusyIndicator view;
+    private final Map<Class<? extends Throwable>, Command> commands = new HashMap<Class<? extends Throwable>, Command>();
 
-    public HasBusyIndicatorDefaultErrorCallback( final HasBusyIndicator view ) {
-        this.view = PortablePreconditions.checkNotNull( "view",
-                                                        view );
+    public CommandDrivenErrorCallback( final HasBusyIndicator view,
+                                       final Map<Class<? extends Throwable>, Command> commands ) {
+        super( view );
+        this.commands.putAll( PortablePreconditions.checkNotNull( "commands",
+                                                                  commands ) );
     }
 
     @Override
     public boolean error( final Message message,
                           final Throwable throwable ) {
-        view.hideBusyIndicator();
+        for ( Map.Entry<Class<? extends Throwable>, Command> e : commands.entrySet() ) {
+            if ( e.getKey().getName().equals( throwable.getClass().getName() ) ) {
+                e.getValue().execute();
+                return false;
+            }
+        }
         return super.error( message,
                             throwable );
     }

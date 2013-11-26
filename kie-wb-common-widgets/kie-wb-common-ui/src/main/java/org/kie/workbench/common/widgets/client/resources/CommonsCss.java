@@ -28,4 +28,8 @@ public interface CommonsCss
 
     String greyBorderWithRoundCorners();
 
+    String noSuchFileContainer();
+
+    String noSuchFileContent();
+
 }

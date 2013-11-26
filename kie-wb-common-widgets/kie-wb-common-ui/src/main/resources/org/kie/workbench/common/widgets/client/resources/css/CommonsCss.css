@@ -22,4 +22,20 @@
     border: 1px solid rgb(204, 204, 204);
 }
 
+.noSuchFileContainer{
+    background: #E6F1F6;
+    margin: 10px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
 
+.noSuchFileContent {
+    margin-left: 200px;
+    margin-right: 200px;
+    color: #0088CC;
+    border-top: 1px solid #0088CC;
+    border-bottom: 1px solid #0088CC;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}

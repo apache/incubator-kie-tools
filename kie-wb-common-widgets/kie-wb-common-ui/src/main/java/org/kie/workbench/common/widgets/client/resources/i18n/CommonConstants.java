@@ -236,4 +236,8 @@ public interface CommonConstants
 
     String UploadGenericError();
 
+    String NoSuchFileTabTitle();
+
+    String NoSuchFileMessage();
+
 }
