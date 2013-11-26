@@ -35,6 +35,8 @@ import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.Callback;
+import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
+import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
@@ -185,25 +187,6 @@ public class DRLEditorPresenter {
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        multiPage.addWidget( view,
-                             DRLTextEditorConstants.INSTANCE.DRL() );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                //Nothing to do
-            }
-        } );
-
         loadContent();
     }
 
@@ -222,7 +205,9 @@ public class DRLEditorPresenter {
 
     private void loadContent() {
         drlTextEditorService.call( getLoadContentSuccessCallback(),
-                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
+                                   new CommandDrivenErrorCallback( view,
+                                                                   new CommandBuilder().addNoSuchFileException( view,
+                                                                                                                multiPage ).build() ) ).loadContent( path );
     }
 
     private RemoteCallback<DrlModelContent> getLoadContentSuccessCallback() {
@@ -230,6 +215,26 @@ public class DRLEditorPresenter {
 
             @Override
             public void callback( final DrlModelContent content ) {
+                multiPage.clear();
+                multiPage.addWidget( view,
+                                     DRLTextEditorConstants.INSTANCE.DRL() );
+
+                multiPage.addPage( new Page( metadataWidget,
+                                             CommonConstants.INSTANCE.MetadataTabTitle() ) {
+                    @Override
+                    public void onFocus() {
+                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                           isReadOnly ),
+                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                    }
+
+                    @Override
+                    public void onLostFocus() {
+                        //Nothing to do
+                    }
+                } );
+
                 final String drl = content.getDrl();
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
 

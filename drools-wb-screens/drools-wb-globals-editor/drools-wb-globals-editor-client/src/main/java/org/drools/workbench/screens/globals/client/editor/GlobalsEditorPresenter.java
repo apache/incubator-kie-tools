@@ -18,6 +18,8 @@ import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
+import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
@@ -175,41 +177,6 @@ public class GlobalsEditorPresenter {
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        multiPage.addWidget( view,
-                             CommonConstants.INSTANCE.EditTabTitle() );
-
-        multiPage.addPage( new Page( viewSource,
-                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
-            @Override
-            public void onFocus() {
-                viewSource.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                globalsEditorService.call( new ViewSourceSuccessCallback( viewSource ),
-                                           new HasBusyIndicatorDefaultErrorCallback( viewSource ) ).toSource( path,
-                                                                                                              model );
-            }
-
-            @Override
-            public void onLostFocus() {
-                viewSource.clear();
-            }
-        } );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                //Nothing to do
-            }
-        } );
-
         loadContent();
     }
 
@@ -228,7 +195,9 @@ public class GlobalsEditorPresenter {
 
     private void loadContent() {
         globalsEditorService.call( getModelSuccessCallback(),
-                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
+                                   new CommandDrivenErrorCallback( view,
+                                                                   new CommandBuilder().addNoSuchFileException( view,
+                                                                                                                multiPage ).build() ) ).loadContent( path );
     }
 
     private RemoteCallback<GlobalsEditorContent> getModelSuccessCallback() {
@@ -236,6 +205,42 @@ public class GlobalsEditorPresenter {
 
             @Override
             public void callback( final GlobalsEditorContent content ) {
+                multiPage.clear();
+                multiPage.addWidget( view,
+                                     CommonConstants.INSTANCE.EditTabTitle() );
+
+                multiPage.addPage( new Page( viewSource,
+                                             CommonConstants.INSTANCE.SourceTabTitle() ) {
+                    @Override
+                    public void onFocus() {
+                        viewSource.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                        globalsEditorService.call( new ViewSourceSuccessCallback( viewSource ),
+                                                   new HasBusyIndicatorDefaultErrorCallback( viewSource ) ).toSource( path,
+                                                                                                                      model );
+                    }
+
+                    @Override
+                    public void onLostFocus() {
+                        viewSource.clear();
+                    }
+                } );
+
+                multiPage.addPage( new Page( metadataWidget,
+                                             CommonConstants.INSTANCE.MetadataTabTitle() ) {
+                    @Override
+                    public void onFocus() {
+                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                           isReadOnly ),
+                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                    }
+
+                    @Override
+                    public void onLostFocus() {
+                        //Nothing to do
+                    }
+                } );
+
                 model = content.getModel();
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
 

@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.Map;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
@@ -29,6 +30,8 @@ import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
+import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
@@ -44,6 +47,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
@@ -165,13 +169,6 @@ public class ScenarioEditorPresenter {
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        if ( !isReadOnly ) {
-            view.addMetaDataPage( path,
-                                  isReadOnly );
-        }
-        view.addBulkRunTestScenarioPanel( path,
-                                          isReadOnly );
-
         loadContent();
     }
 
@@ -190,7 +187,21 @@ public class ScenarioEditorPresenter {
 
     private void loadContent() {
         service.call( getModelSuccessCallback(),
-                      new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( path );
+                      new CommandDrivenErrorCallback( view,
+                                                      makeNoSuchFileExceptionCommand() ) ).loadContent( path );
+    }
+
+    private Map<Class<? extends Throwable>, Command> makeNoSuchFileExceptionCommand() {
+        final CommandBuilder builder = new CommandBuilder();
+        builder.add( NoSuchFileException.class,
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             view.handleNoSuchFileException();
+                             view.hideBusyIndicator();
+                         }
+                     } );
+        return builder.build();
     }
 
     private RemoteCallback<TestScenarioModelContent> getModelSuccessCallback() {
@@ -198,29 +209,19 @@ public class ScenarioEditorPresenter {
             @Override
             public void callback( TestScenarioModelContent content ) {
                 scenario = content.getScenario();
+                ifFixturesSizeZeroThenAddExecutionTrace();
+
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
                 oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
                                                                         scenario,
                                                                         dataModel );
+                view.setContent( path,
+                                 isReadOnly,
+                                 scenario,
+                                 oracle,
+                                 ruleNameService,
+                                 service );
 
-                view.clear();
-                view.setScenario( scenario,
-                                  oracle,
-                                  ruleNameService );
-
-                ifFixturesSizeZeroThenAddExecutionTrace();
-
-                if ( !isReadOnly ) {
-                    view.addTestRunnerWidget( scenario,
-                                              service,
-                                              path );
-                }
-
-                view.renderEditor();
-
-                view.initImportsTab( oracle,
-                                     scenario.getImports(),
-                                     isReadOnly );
                 view.hideBusyIndicator();
             }
         };
