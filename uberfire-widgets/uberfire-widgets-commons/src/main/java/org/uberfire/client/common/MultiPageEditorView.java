@@ -16,8 +16,6 @@
 
 package org.uberfire.client.common;
 
-import javax.enterprise.context.Dependent;
-
 import com.github.gwtbootstrap.client.ui.DropdownTab;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabLink;
@@ -42,14 +40,14 @@ public class MultiPageEditorView
 
     final TabPanel tabPanel;
 
-    private int     maxDropdownTabLinkWidth = 0;
-    private boolean alreadyScheduled        = false;
+    private int maxDropdownTabLinkWidth = 0;
+    private boolean alreadyScheduled = false;
 
     public MultiPageEditorView() {
-        this(MultiPageEditor.TabPosition.BELOW);
+        this( MultiPageEditor.TabPosition.BELOW );
     }
 
-    public MultiPageEditorView(final MultiPageEditor.TabPosition tabPosition) {
+    public MultiPageEditorView( final MultiPageEditor.TabPosition tabPosition ) {
         tabPanel = new TabPanel() {{
             setTabPosition( tabPosition.getPosition() );
 
@@ -73,7 +71,7 @@ public class MultiPageEditorView
             } );
         }};
 
-        initWidget(tabPanel);
+        initWidget( tabPanel );
     }
 
     protected void scheduleResize( final Widget widget ) {
@@ -106,8 +104,12 @@ public class MultiPageEditorView
         } );
     }
 
-    public void selectPage(int index) {
-        tabPanel.selectTab(index);
+    public void selectPage( int index ) {
+        tabPanel.selectTab( index );
+    }
+
+    public void clear() {
+        tabPanel.clear();
     }
 
     public void shrinkTabBar() {
