@@ -142,7 +142,7 @@ profile in pom.xml to use that. -->
   </servlet>
   <servlet-mapping>
     <servlet-name>UberfireFileUploadServlet</servlet-name>
-    <url-pattern>/org.drools.workbench.DroolsWorkbench/defaulteditor/upload</url-pattern>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/defaulteditor/upload/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
