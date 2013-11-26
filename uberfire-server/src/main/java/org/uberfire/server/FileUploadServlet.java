@@ -1,12 +1,9 @@
 package org.uberfire.server;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletException;
@@ -37,48 +34,59 @@ public class FileUploadServlet
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        FileItemFactory factory = new DiskFileItemFactory();
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        upload.setHeaderEncoding("UTF-8");
-
         try {
+            if (request.getParameter("path") != null) {
+                writeFile(ioService.get(new URI(request.getParameter("path"))), getFileItem(request));
 
-            FileItem uploadedItem = null;
-            Path path = null;
+                writeResponse(response, "OK");
+            } else if (request.getParameter("folder") != null) {
+                writeFile(
+                        ioService.get(new URI(request.getParameter("folder") + "/" + request.getParameter("fileName"))),
+                        getFileItem(request));
 
-            List items = upload.parseRequest(request);
-            Iterator it = items.iterator();
-            while (it.hasNext()) {
-                FileItem item = (FileItem) it.next();
-                if (!item.isFormField()) {
-                    uploadedItem = item;
-                } else if (item.isFormField() && item.getFieldName().equals("path")) {
-
-                    path = ioService.get(new URI(item.getString()));
-                }
-
+                writeResponse(response, "OK");
             }
-
-            // SAVE
-            File tempFile = File.createTempFile("uploadedFile", null);
-            FileOutputStream tempFOS = new FileOutputStream(tempFile);
-            IOUtils.copy(uploadedItem.getInputStream(), tempFOS);
-            tempFOS.flush();
-            tempFOS.close();
-
-            if (!ioService.exists(path)) {
-                ioService.createFile(path);
-            }
-
-            ioService.write(path, IOUtils.toByteArray(uploadedItem.getInputStream()));
-
-            uploadedItem.getInputStream().close();
 
         } catch (FileUploadException e) {
             logError(e);
+            writeResponse(response, "FAIL");
         } catch (URISyntaxException e) {
             logError(e);
+            writeResponse(response, "FAIL");
         }
+    }
+
+    private FileItem getFileItem(HttpServletRequest request) throws FileUploadException {
+        Iterator iterator = getServletFileUpload().parseRequest(request).iterator();
+        while (iterator.hasNext()) {
+            FileItem item = (FileItem) iterator.next();
+            if (!item.isFormField()) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private void writeResponse(HttpServletResponse response, String ok) throws IOException {
+        response.setContentType("text/html");
+        response.getWriter().write(ok);
+    }
+
+    private ServletFileUpload getServletFileUpload() {
+        FileItemFactory factory = new DiskFileItemFactory();
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        upload.setHeaderEncoding("UTF-8");
+        return upload;
+    }
+
+    private void writeFile(Path path, FileItem uploadedItem) throws IOException {
+        if (!ioService.exists(path)) {
+            ioService.createFile(path);
+        }
+
+        ioService.write(path, IOUtils.toByteArray(uploadedItem.getInputStream()));
+
+        uploadedItem.getInputStream().close();
     }
 
     private void logError(Throwable e) {

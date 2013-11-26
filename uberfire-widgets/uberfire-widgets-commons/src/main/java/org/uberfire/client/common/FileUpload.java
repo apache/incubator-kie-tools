@@ -16,6 +16,8 @@ import org.uberfire.mvp.Command;
 public class FileUpload
         extends Composite {
 
+    private final Command command;
+
     interface FileUploadBinder extends UiBinder<Widget, FileUpload> {
 
     }
@@ -37,7 +39,7 @@ public class FileUpload
     private static FileUploadBinder uiBinder = GWT.create( FileUploadBinder.class );
 
     public FileUpload() {
-        this( null, false );
+        this(null, false);
     }
 
     public FileUpload( final Command command ) {
@@ -46,7 +48,8 @@ public class FileUpload
 
     public FileUpload( final Command command,
                        boolean displayUploadButton ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
+        this.command = command;
         fileText.setReadOnly( true );
 
         DOM.sinkEvents( (Element) file.cast(), Event.ONCHANGE );
@@ -83,6 +86,10 @@ public class FileUpload
 
     public void setName( final String name ) {
         file.setName( name );
+    }
+
+    public void upload() {
+        command.execute();
     }
 
     public String getFilename() {

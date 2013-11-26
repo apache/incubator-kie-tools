@@ -87,7 +87,7 @@ profile in pom.xml to use that. -->
   </servlet>
   <servlet-mapping>
     <servlet-name>FileUploadServlet</servlet-name>
-    <url-pattern>/org.uberfire.UberfireShowcase/defaulteditor/upload</url-pattern>
+    <url-pattern>/org.uberfire.UberfireShowcase/defaulteditor/upload/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

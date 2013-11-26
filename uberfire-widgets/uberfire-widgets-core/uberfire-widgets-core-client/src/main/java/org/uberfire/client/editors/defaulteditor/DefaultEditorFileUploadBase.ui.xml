@@ -18,33 +18,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:github="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:defaulteditor="urn:import:org.uberfire.client.editors.defaulteditor">
+             xmlns:common="urn:import:org.uberfire.client.common">
 
-  <ui:style>
-    .center {
-      margin-top: 50px;
-      text-align: center;
-      height: 200px;
-      width: 100%;
-    }
-
-    .topMargin {
-      margin-top: 50px;
-    }
-  </ui:style>
-
-  <g:ResizeLayoutPanel height="300px">
-    <github:Column size="4" styleName='{style.center}'>
-      <github:Row>
-        <github:Label text="Please select a file to upload"/>
-      </github:Row>
-      <github:Row>
-        <defaulteditor:DefaultEditorFileUpload ui:field="fileUpload"/>
-      </github:Row>
-      <github:Row styleName='{style.topMargin}'>
-        <github:Button ui:field="downloadButton" text="Download"/>
-      </github:Row>
-    </github:Column>
-  </g:ResizeLayoutPanel>
+  <g:FormPanel ui:field="form">
+    <common:FileUpload ui:field="fileUpload" name="fileUpload"/>
+  </g:FormPanel>
 
 </ui:UiBinder>
