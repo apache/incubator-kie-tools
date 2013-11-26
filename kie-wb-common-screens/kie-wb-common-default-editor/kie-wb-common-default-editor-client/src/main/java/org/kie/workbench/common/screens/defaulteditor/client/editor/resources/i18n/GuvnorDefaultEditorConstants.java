@@ -31,4 +31,8 @@ public interface GuvnorDefaultEditorConstants
     String MetaFileEditor(String fileName);
 
     String TextEditor(String fileName);
+
+    String NewFileDescription();
+
+    String Options();
 }
