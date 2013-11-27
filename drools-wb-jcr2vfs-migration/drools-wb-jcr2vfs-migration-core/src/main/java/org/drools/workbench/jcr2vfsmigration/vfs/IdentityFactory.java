@@ -20,13 +20,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 
 import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
 
-@Singleton
+@Alternative
 public class IdentityFactory {
 
     private Identity identity;
