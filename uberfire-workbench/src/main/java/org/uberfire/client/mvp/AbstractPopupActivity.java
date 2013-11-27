@@ -19,6 +19,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
@@ -44,6 +46,12 @@ public abstract class AbstractPopupActivity extends AbstractActivity
 
     public AbstractPopupActivity( final PlaceManager placeManager ) {
         super( placeManager );
+        popup.addCloseHandler( new CloseHandler<PopupView>() {
+            @Override
+            public void onClose( CloseEvent<PopupView> event ) {
+                closePlaceEvent.fire( new BeforeClosePlaceEvent( place ) );
+            }
+        } );
     }
 
     @Override
