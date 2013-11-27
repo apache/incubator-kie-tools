@@ -16,14 +16,6 @@
   <name>Drools Workbench</name>
   <description>Drools Workbench</description>
 
-  <modules>
-    <module>drools-wb-screens</module>
-    <module>drools-wb-rest</module>
-    <!--module>kie-wb-common-defaultapprover</module-->
-    <module>drools-wb-webapp</module>
-    <module>drools-wb-jcr2vfs-migration</module>
-  </modules>
-
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
@@ -43,6 +35,35 @@
   </repositories>
 
   <profiles>
+
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>default</name>
+        </property>
+      </activation>
+      <modules>
+        <module>drools-wb-rest</module>
+        <module>drools-wb-screens</module>
+        <module>drools-wb-webapp</module>
+        <module>drools-wb-jcr2vfs-migration</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>approver</id>
+      <activation>
+        <property>
+          <name>approver</name>
+        </property>
+      </activation>
+      <modules>
+        <module>drools-wb-rest-defaultapprover</module>
+      </modules>
+    </profile>
+
     <profile>
       <id>fullProfile</id>
       <activation>
@@ -51,6 +72,11 @@
         </property>
       </activation>
       <modules>
+        <module>drools-wb-rest-defaultapprover</module>
+        <module>drools-wb-rest</module>
+        <module>drools-wb-screens</module>
+        <module>drools-wb-webapp</module>
+        <module>drools-wb-jcr2vfs-migration</module>
         <module>drools-wb-distribution-wars</module>
         <module>drools-wb-distribution</module>
       </modules>

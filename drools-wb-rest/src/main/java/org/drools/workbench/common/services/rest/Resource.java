@@ -14,33 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.rest;
-/*
+package org.drools.workbench.common.services.rest;
 
-import org.drools.guvnor.server.*;
-import org.drools.guvnor.server.files.FileManagerService;
-import org.drools.guvnor.server.files.RepositoryServlet;
-import org.drools.guvnor.server.repository.Preferred;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.utils.AssetValidator;
-import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.Identity;*/
-
-//import javax.enterprise.context.RequestScoped;
-//import javax.inject.Inject;
-//import javax.inject.Named;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 //@RequestScoped
 @XmlRootElement
 public abstract class Resource {
-    
+
     @Context
     protected UriInfo uriInfo;
-
 
     // TODO HACK: the @Inject stuff doesn't actually work, but is faked in HackInjectCXFNonSpringJaxrsServlet
     protected void inject() {

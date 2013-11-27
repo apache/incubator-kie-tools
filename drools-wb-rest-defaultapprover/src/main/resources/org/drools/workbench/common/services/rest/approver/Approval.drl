@@ -1,0 +1,16 @@
+package org.drools.workbench.common.services.rest.approver;
+
+import org.kie.workbench.common.services.shared.rest.JobRequest;
+import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.JobStatus;
+
+//Approval all requests
+rule "approve"
+when
+  $request : JobRequest( )
+  $result : JobResult( status == JobStatus.ACCEPTED, jobId == $request.jobId )
+then
+  modify( $result ) {
+    setStatus( JobStatus.APPROVED );
+  }
+end

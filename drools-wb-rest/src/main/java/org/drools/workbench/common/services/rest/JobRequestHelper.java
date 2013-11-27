@@ -1,4 +1,19 @@
-package org.kie.workbench.common.services.rest;
+/*
+* Copyright 2013 JBoss Inc
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package org.drools.workbench.common.services.rest;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -21,11 +36,12 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.uberfire.io.IOService;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
-import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.JobStatus;
 import org.kie.workbench.common.services.shared.rest.RepositoryRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.organizationalunit.impl.OrganizationalUnitImpl;
@@ -33,9 +49,15 @@ import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 
+/**
+ * Utility class to perform various functions for the REST service involving backend services
+ */
 @ApplicationScoped
-public class ProjectResourceDispatcher {
+public class JobRequestHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger( JobRequestHelper.class );
 
     @Inject
     RepositoryService repositoryService;
@@ -51,7 +73,7 @@ public class ProjectResourceDispatcher {
     protected BuildService buildService;
 
     @Inject
-    OrganizationalUnitService organicationalUnitService;
+    OrganizationalUnitService organizationalUnitService;
 
     @Inject
     private Event<JobResult> jobResultEvent;
@@ -59,16 +81,16 @@ public class ProjectResourceDispatcher {
     @Inject
     protected ScenarioTestEditorService scenarioTestEditorService;
 
-    public void createOrCloneRepository( String jobId,
-                                         RepositoryRequest repository ) {
-        System.out.println( "-----ProjectResourceDispatcher:createOrCloneRepository--- , repository name:" + repository.getName() );
+    public void createOrCloneRepository( final String jobId,
+                                         final RepositoryRequest repository ) {
+        logger.info( "-----JobRequestHelper:createOrCloneRepository--- , repository name:" + repository.getName() );
 
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         if ( repository.getRequestType() == null || "".equals( repository.getRequestType() )
                 || !( "new".equals( repository.getRequestType() ) || ( "clone".equals( repository.getRequestType() ) ) ) ) {
-            result.setStatus( JobRequest.Status.BAD_REQUEST );
+            result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "Repository request type can only be new or clone." );
             jobResultEvent.fire( result );
             return;
@@ -78,7 +100,7 @@ public class ProjectResourceDispatcher {
 
         if ( "new".equals( repository.getRequestType() ) ) {
             if ( repository.getName() == null || "".equals( repository.getName() ) ) {
-                result.setStatus( JobRequest.Status.BAD_REQUEST );
+                result.setStatus( JobStatus.BAD_REQUEST );
                 result.setResult( "Repository name must be provided" );
                 jobResultEvent.fire( result );
                 return;
@@ -96,16 +118,16 @@ public class ProjectResourceDispatcher {
 
             org.uberfire.backend.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( scheme, repository.getName(), env );
             if ( newlyCreatedRepo != null ) {
-                result.setStatus( JobRequest.Status.SUCCESS );
+                result.setStatus( JobStatus.SUCCESS );
                 result.setResult( "Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri() );
             } else {
-                result.setStatus( JobRequest.Status.FAIL );
+                result.setStatus( JobStatus.FAIL );
             }
 
         } else if ( "clone".equals( repository.getRequestType() ) ) {
             if ( repository.getName() == null || "".equals( repository.getName() ) || repository.getGitURL() == null
                     || "".equals( repository.getGitURL() ) ) {
-                result.setStatus( JobRequest.Status.BAD_REQUEST );
+                result.setStatus( JobStatus.BAD_REQUEST );
                 result.setResult( "Repository name and GitURL must be provided" );
             }
 
@@ -121,45 +143,47 @@ public class ProjectResourceDispatcher {
 
             org.uberfire.backend.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( scheme, repository.getName(), env );
             if ( newlyCreatedRepo != null ) {
-                result.setStatus( JobRequest.Status.SUCCESS );
+                result.setStatus( JobStatus.SUCCESS );
                 result.setResult( "Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri() );
             } else {
-                result.setStatus( JobRequest.Status.FAIL );
+                result.setStatus( JobStatus.FAIL );
             }
         }
 
         jobResultEvent.fire( result );
     }
 
-    public void removeRepository( String jobId,
-                                  String repositoryName ) {
-        System.out.println( "-----removeRepository--- , repository name:" + repositoryName );
+    public void removeRepository( final String jobId,
+                                  final String repositoryName ) {
+        logger.info( "-----removeRepository--- , repository name:" + repositoryName );
 
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         if ( repositoryName == null || "".equals( repositoryName ) ) {
-            result.setStatus( JobRequest.Status.BAD_REQUEST );
+            result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "Repository name must be provided" );
+            jobResultEvent.fire( result );
+            return;
         }
 
         repositoryService.removeRepository( repositoryName );
 
-        result.setStatus( JobRequest.Status.SUCCESS );
+        result.setStatus( JobStatus.SUCCESS );
         jobResultEvent.fire( result );
     }
 
-    public void createProject( String jobId,
-                               String repositoryName,
-                               String projectName ) {
-        System.out.println( "-----ProjectResourceDispatcher:createProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public void createProject( final String jobId,
+                               final String repositoryName,
+                               final String projectName ) {
+        logger.info( "-----JobRequestHelper:createProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
-            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+            result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
             jobResultEvent.fire( result );
             return;
@@ -175,7 +199,7 @@ public class ProjectResourceDispatcher {
                                                              pom,
                                                              "/" );
             } catch ( org.uberfire.java.nio.file.FileAlreadyExistsException e ) {
-                result.setStatus( JobRequest.Status.DUPLICATE_RESOURCE );
+                result.setStatus( JobStatus.DUPLICATE_RESOURCE );
                 result.setResult( "Project [" + projectName + "] already exists" );
                 jobResultEvent.fire( result );
                 return;
@@ -183,7 +207,7 @@ public class ProjectResourceDispatcher {
 
             //TODO: handle errors, exceptions.
 
-            result.setStatus( JobRequest.Status.SUCCESS );
+            result.setStatus( JobStatus.SUCCESS );
             jobResultEvent.fire( result );
         }
     }
@@ -198,24 +222,24 @@ public class ProjectResourceDispatcher {
         };
     }
 
-    public void compileProject( String jobId,
-                                String repositoryName,
-                                String projectName) {
-        System.out.println( "-----ProjectResourceDispatcher:compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public void compileProject( final String jobId,
+                                final String repositoryName,
+                                final String projectName ) {
+        logger.info( "-----JobRequestHelper:compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
-            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+            result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
             jobResultEvent.fire( result );
         } else {
             Project project = projectService.resolveProject( Paths.convert( repositoryPath.resolve( projectName ) ) );
 
             if ( project == null ) {
-                result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+                result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
                 result.setResult( "Project [" + projectName + "] does not exist" );
                 jobResultEvent.fire( result );
                 return;
@@ -224,7 +248,7 @@ public class ProjectResourceDispatcher {
             BuildResults buildResults = buildService.build( project );
 
             result.setDetailedResult( buildResultsToDetailedStringMessages( buildResults.getMessages() ) );
-            result.setStatus( buildResults.getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL );
+            result.setStatus( buildResults.getMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
             jobResultEvent.fire( result );
         }
     }
@@ -241,17 +265,17 @@ public class ProjectResourceDispatcher {
         return result;
     }
 
-    public void installProject( String jobId,
-                                String repositoryName,
-                                String projectName) {
-        System.out.println( "-----ProjectResourceDispatcher:installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public void installProject( final String jobId,
+                                final String repositoryName,
+                                final String projectName ) {
+        logger.info( "-----JobRequestHelper:installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
-            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+            result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
             jobResultEvent.fire( result );
             return;
@@ -259,7 +283,7 @@ public class ProjectResourceDispatcher {
             Project project = projectService.resolveProject( Paths.convert( repositoryPath.resolve( projectName ) ) );
 
             if ( project == null ) {
-                result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+                result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
                 result.setResult( "Project [" + projectName + "] does not exist" );
                 jobResultEvent.fire( result );
                 return;
@@ -270,19 +294,19 @@ public class ProjectResourceDispatcher {
                 buildResults = buildService.buildAndDeploy( project );
 
                 result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
-                result.setStatus( buildResults.getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL );
-            } catch (Throwable t) {
+                result.setStatus( buildResults.getMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
+            } catch ( Throwable t ) {
                 List<String> errorResult = new ArrayList<String>();
-                errorResult.add( t.getMessage());
+                errorResult.add( t.getMessage() );
                 result.setDetailedResult( errorResult );
-                result.setStatus( JobRequest.Status.FAIL );           	
+                result.setStatus( JobStatus.FAIL );
             }
 
             jobResultEvent.fire( result );
         }
     }
 
-    private List<String> deployResultToDetailedStringMessages( BuildResults deployResult ) {
+    private List<String> deployResultToDetailedStringMessages( final BuildResults deployResult ) {
         GAV gav = deployResult.getGAV();
         List<String> result = buildResultsToDetailedStringMessages( deployResult.getMessages() );
         String detailedStringMessage = "artifactID:" + gav.getArtifactId() +
@@ -292,18 +316,18 @@ public class ProjectResourceDispatcher {
         return result;
     }
 
-    public void testProject( String jobId,
-                             String repositoryName,
-                             String projectName,
-                             BuildConfig config ) {
-        System.out.println( "-----ProjectResourceDispatcher:testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public void testProject( final String jobId,
+                             final String repositoryName,
+                             final String projectName,
+                             final BuildConfig config ) {
+        logger.info( "-----JobRequestHelper:testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         final JobResult result = new JobResult();
         result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
-            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+            result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
             jobResultEvent.fire( result );
             return;
@@ -311,7 +335,7 @@ public class ProjectResourceDispatcher {
             Project project = projectService.resolveProject( Paths.convert( repositoryPath.resolve( projectName ) ) );
 
             if ( project == null ) {
-                result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+                result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
                 result.setResult( "Project [" + projectName + "] does not exist" );
                 jobResultEvent.fire( result );
                 return;
@@ -322,7 +346,7 @@ public class ProjectResourceDispatcher {
                 @Override
                 public void fire( TestResultMessage event ) {
                     result.setDetailedResult( testResultMessageToDetailedStringMessages( event ) );
-                    result.setStatus( event.wasSuccessful() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL );
+                    result.setStatus( event.wasSuccessful() ? JobStatus.SUCCESS : JobStatus.FAIL );
                     jobResultEvent.fire( result );
                 }
 
@@ -351,7 +375,7 @@ public class ProjectResourceDispatcher {
         }
     }
 
-    private List<String> testResultMessageToDetailedStringMessages( TestResultMessage message ) {
+    private List<String> testResultMessageToDetailedStringMessages( final TestResultMessage message ) {
         List<String> result = new ArrayList<String>();
         result.add( "wasSuccessuful: " + message.wasSuccessful() );
         result.add( "RunCoun: " + message.getRunCount() );
@@ -362,17 +386,17 @@ public class ProjectResourceDispatcher {
         return result;
     }
 
-    public void deployProject( String jobId,
-                               String repositoryName,
-                               String projectName ) {
-        System.out.println( "-----ProjectResourceDispatcher:deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public void deployProject( final String jobId,
+                               final String repositoryName,
+                               final String projectName ) {
+        logger.info( "-----JobRequestHelper:deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
 
         if ( repositoryPath == null ) {
-            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+            result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
             jobResultEvent.fire( result );
             return;
@@ -380,7 +404,7 @@ public class ProjectResourceDispatcher {
             Project project = projectService.resolveProject( Paths.convert( repositoryPath.resolve( projectName ) ) );
 
             if ( project == null ) {
-                result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+                result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
                 result.setResult( "Project [" + projectName + "] does not exist" );
                 jobResultEvent.fire( result );
                 return;
@@ -389,21 +413,21 @@ public class ProjectResourceDispatcher {
             BuildResults buildResults = buildService.buildAndDeploy( project );
 
             result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
-            result.setStatus( buildResults.getMessages().isEmpty() ? JobRequest.Status.SUCCESS : JobRequest.Status.FAIL );
+            result.setStatus( buildResults.getMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
             jobResultEvent.fire( result );
         }
     }
 
-    public void createOrganizationalUnit( String jobId,
-                                          String organizationalUnitName,
-                                          String organizationalUnitOwner,
-                                          List<String> repositoryNameList ) {
-        System.out.println( "-----ProjectResourceDispatcher:createOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", OrganizationalUnit owner:" + organizationalUnitOwner );
+    public void createOrganizationalUnit( final String jobId,
+                                          final String organizationalUnitName,
+                                          final String organizationalUnitOwner,
+                                          final List<String> repositoryNameList ) {
+        logger.info( "-----JobRequestHelper:createOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", OrganizationalUnit owner:" + organizationalUnitOwner );
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         if ( organizationalUnitName == null || organizationalUnitName == null ) {
-            result.setStatus( JobRequest.Status.BAD_REQUEST );
+            result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit name and owner must be provided" );
             jobResultEvent.fire( result );
             return;
@@ -415,111 +439,111 @@ public class ProjectResourceDispatcher {
             for ( String repoName : repositoryNameList ) {
                 org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repoName );
 
-                if(repositoryPath == null) {
-                    result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+                if ( repositoryPath == null ) {
+                    result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
                     result.setResult( "Repository [" + repoName + "] does not exist" );
                     jobResultEvent.fire( result );
                     return;
-                } 
+                }
                 GitRepository repo = new GitRepository( repoName );
                 repositories.add( repo );
             }
-            organizationalUnit = organicationalUnitService.createOrganizationalUnit( organizationalUnitName,
+            organizationalUnit = organizationalUnitService.createOrganizationalUnit( organizationalUnitName,
                                                                                      organizationalUnitOwner,
                                                                                      repositories );
         } else {
-            organizationalUnit = organicationalUnitService.createOrganizationalUnit( organizationalUnitName,
+            organizationalUnit = organizationalUnitService.createOrganizationalUnit( organizationalUnitName,
                                                                                      organizationalUnitOwner );
         }
 
         if ( organizationalUnit != null ) {
             result.setResult( "OrganizationalUnit " + organizationalUnit.getName() + " is created successfully." );
-            result.setStatus( JobRequest.Status.SUCCESS );
+            result.setStatus( JobStatus.SUCCESS );
         } else {
-            result.setStatus( JobRequest.Status.FAIL );
+            result.setStatus( JobStatus.FAIL );
         }
         jobResultEvent.fire( result );
     }
 
-    public void addRepositoryToOrganizationalUnit( String jobId,
-                                                   String organizationalUnitName,
-                                                   String repositoryName ) {
-        System.out.println( "-----ProjectResourceDispatcher:addRepositoryToOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
+    public void addRepositoryToOrganizationalUnit( final String jobId,
+                                                   final String organizationalUnitName,
+                                                   final String repositoryName ) {
+        logger.info( "-----JobRequestHelper:addRepositoryToOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         if ( organizationalUnitName == null || repositoryName == null ) {
-            result.setStatus( JobRequest.Status.BAD_REQUEST );
+            result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit name and Repository name must be provided" );
             jobResultEvent.fire( result );
             return;
         }
-        
+
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-        if(repositoryPath == null) {
-            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+        if ( repositoryPath == null ) {
+            result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
             jobResultEvent.fire( result );
             return;
-        } 
-        
+        }
+
         OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName,
                                                                             null );
-       
-        GitRepository repo = new GitRepository( repositoryName );        
+
+        GitRepository repo = new GitRepository( repositoryName );
         try {
-            organicationalUnitService.addRepository( organizationalUnit,
+            organizationalUnitService.addRepository( organizationalUnit,
                                                      repo );
         } catch ( IllegalArgumentException e ) {
-            result.setStatus( JobRequest.Status.BAD_REQUEST );
+            result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
             jobResultEvent.fire( result );
             return;
         }
 
-        result.setStatus( JobRequest.Status.SUCCESS );
+        result.setStatus( JobStatus.SUCCESS );
         jobResultEvent.fire( result );
     }
 
-    public void removeRepositoryFromOrganizationalUnit( String jobId,
-                                                        String organizationalUnitName,
-                                                        String repositoryName ) {
-        System.out.println( "-----ProjectResourceDispatcher:removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
+    public void removeRepositoryFromOrganizationalUnit( final String jobId,
+                                                        final String organizationalUnitName,
+                                                        final String repositoryName ) {
+        logger.info( "-----JobRequestHelper:removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
         if ( organizationalUnitName == null || repositoryName == null ) {
-            result.setStatus( JobRequest.Status.BAD_REQUEST );
+            result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit name and Repository name must be provided" );
             jobResultEvent.fire( result );
             return;
         }
 
         org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repositoryName );
-        if(repositoryPath == null) {
-            result.setStatus( JobRequest.Status.RESOURCE_NOT_EXIST );
+        if ( repositoryPath == null ) {
+            result.setStatus( JobStatus.RESOURCE_NOT_EXIST );
             result.setResult( "Repository [" + repositoryName + "] does not exist" );
             jobResultEvent.fire( result );
             return;
-        } 
-        
+        }
+
         OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl( organizationalUnitName, null );
         GitRepository repo = new GitRepository( repositoryName );
         try {
-            organicationalUnitService.removeRepository( organizationalUnit,
+            organizationalUnitService.removeRepository( organizationalUnit,
                                                         repo );
         } catch ( IllegalArgumentException e ) {
-            result.setStatus( JobRequest.Status.BAD_REQUEST );
+            result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit " + organizationalUnit.getName() + " not found" );
             jobResultEvent.fire( result );
             return;
         }
 
-        result.setStatus( JobRequest.Status.SUCCESS );
+        result.setStatus( JobStatus.SUCCESS );
         jobResultEvent.fire( result );
     }
 
-    public org.uberfire.java.nio.file.Path getRepositoryRootPath( String repositoryName ) {
+    private org.uberfire.java.nio.file.Path getRepositoryRootPath( final String repositoryName ) {
         org.uberfire.backend.repositories.Repository repo = repositoryService.getRepository( repositoryName );
         if ( repo == null ) {
             return null;

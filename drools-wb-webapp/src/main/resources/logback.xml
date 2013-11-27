@@ -10,6 +10,7 @@
   </appender>
 
   <logger name="org.kie" level="info"/>
+  <logger name="org.drools" level="info"/>
 
   <root level="error">
     <appender-ref ref="consoleAppender" />
