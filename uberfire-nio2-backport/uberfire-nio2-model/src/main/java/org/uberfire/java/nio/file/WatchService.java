@@ -27,4 +27,6 @@ public interface WatchService extends Closeable {
     WatchKey poll(long timeout, TimeUnit unit) throws ClosedWatchServiceException, InterruptedException;
 
     WatchKey take() throws ClosedWatchServiceException, InterruptedException;
+
+    boolean isClose();
 }

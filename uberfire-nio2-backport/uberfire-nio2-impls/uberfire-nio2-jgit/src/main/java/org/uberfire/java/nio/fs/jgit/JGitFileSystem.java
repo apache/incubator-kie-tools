@@ -52,8 +52,8 @@ import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 import static org.eclipse.jgit.lib.Repository.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public class JGitFileSystem implements FileSystem,
                                        FileSystemId {
@@ -287,11 +287,14 @@ public class JGitFileSystem implements FileSystem,
             }
 
             @Override
+            public boolean isClose() {
+                return isClose;
+            }
+
+            @Override
             public void close() throws IOException {
                 wsClose = true;
-                if ( !isClose ) {
-                    watchServices.remove( this );
-                }
+                watchServices.remove( this );
             }
 
             @Override

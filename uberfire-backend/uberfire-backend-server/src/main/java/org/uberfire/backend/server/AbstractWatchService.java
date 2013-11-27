@@ -79,7 +79,7 @@ public abstract class AbstractWatchService implements IOWatchService {
         new Thread( this.getClass().getName() + "(" + ws.toString() + ")" ) {
             @Override
             public void run() {
-                while ( !isDisposed ) {
+                while ( !isDisposed && !ws.isClose() ) {
                     final WatchKey wk = ws.take();
                     if ( wk == null ) {
                         continue;
