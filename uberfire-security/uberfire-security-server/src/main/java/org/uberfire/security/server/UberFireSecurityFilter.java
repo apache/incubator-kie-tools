@@ -287,6 +287,9 @@ public class UberFireSecurityFilter implements Filter {
                 LOG.debug("Authentication failure. Sending HTTP 401 response.", e);
                 ( (HttpServletResponse) response ).sendError( 401, e.getMessage() );
             }
+            else {
+              LOG.debug("Authentication failure on already-committed response. NOT sending HTTP 401.", e);
+            }
         }
     }
 
