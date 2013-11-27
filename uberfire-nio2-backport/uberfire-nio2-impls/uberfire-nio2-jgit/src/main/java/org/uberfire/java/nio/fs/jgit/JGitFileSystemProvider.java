@@ -276,13 +276,17 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     @Override
     public void setAuthenticationManager( final AuthenticationManager authenticationManager ) {
         this.authenticationManager = authenticationManager;
-        gitSSHService.setAuthenticationManager( authenticationManager );
+        if ( gitSSHService != null ) {
+            gitSSHService.setAuthenticationManager( authenticationManager );
+        }
     }
 
     @Override
     public void setAuthorizationManager( final AuthorizationManager authorizationManager ) {
         this.authorizationManager = authorizationManager;
-        gitSSHService.setAuthorizationManager( authorizationManager );
+        if ( gitSSHService != null ) {
+            gitSSHService.setAuthorizationManager( authorizationManager );
+        }
     }
 
     public final class RepositoryResolverImpl<T> implements RepositoryResolver<T> {
