@@ -24,4 +24,5 @@ public interface Repository extends RuntimeResource {
 
     Path getRoot();
 
+    void setRoot( final Path root );
 }

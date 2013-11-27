@@ -45,6 +45,7 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheEditor;
 import org.eclipse.jgit.dircache.DirCacheEntry;
+import org.eclipse.jgit.errors.TransportException;
 import org.eclipse.jgit.internal.JGitText;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
@@ -65,9 +66,13 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.RemoteSession;
+import org.eclipse.jgit.transport.SshSessionFactory;
+import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.eclipse.jgit.util.FS;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileTimeImpl;
@@ -294,9 +299,9 @@ public final class JGitUtil {
     }
 
     public static void pushRepository( final Git git,
-            final CredentialsProvider credentialsProvider,
-            final String origin,
-            boolean force )
+                                       final CredentialsProvider credentialsProvider,
+                                       final String origin,
+                                       boolean force )
             throws InvalidRemoteException {
 
         if ( origin != null && !origin.isEmpty() ) {
@@ -319,7 +324,7 @@ public final class JGitUtil {
                         .setCredentialsProvider( credentialsProvider )
                         .setRefSpecs( specs )
                         .setRemote( origin )
-                        .setForce(force)
+                        .setForce( force )
                         .setPushAll()
                         .call();
 

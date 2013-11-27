@@ -34,6 +34,8 @@ import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.security.Identity;
 
+import static org.uberfire.backend.server.util.Paths.*;
+
 @ApplicationScoped
 public class ConfigurationServiceImpl implements ConfigurationService {
 
@@ -79,6 +81,17 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         } catch ( FileSystemAlreadyExistsException e ) {
             fs = ioService.getFileSystem( URI.create( systemRepository.getUri() ) );
         }
+
+        Path defaultRoot = fs.getRootDirectories().iterator().next();
+        for ( final Path path : fs.getRootDirectories() ) {
+            if ( path.toUri().toString().contains( "/master@" ) ) {
+                defaultRoot = path;
+                break;
+            }
+        }
+
+        systemRepository.setRoot( convert( defaultRoot ) );
+
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
             executorService = Executors.newSingleThreadExecutor();
@@ -218,7 +231,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     private class CheckConfigurationUpdates implements Runnable {
 
-            private final WatchService ws;
+        private final WatchService ws;
         private boolean active = true;
 
         public CheckConfigurationUpdates( final WatchService watchService ) {

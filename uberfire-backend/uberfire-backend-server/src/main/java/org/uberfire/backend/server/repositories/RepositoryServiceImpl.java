@@ -42,6 +42,10 @@ public class RepositoryServiceImpl implements RepositoryService {
     private IOService ioService;
 
     @Inject
+    @Named("system")
+    private Repository systemRepository;
+
+    @Inject
     private ConfigurationService configurationService;
 
     @Inject
@@ -95,10 +99,15 @@ public class RepositoryServiceImpl implements RepositoryService {
             return null;
         }
 
+        final org.uberfire.backend.vfs.FileSystem fsystem = Paths.convert( fs );
         for ( final Repository repository : configuredRepositories.values() ) {
-            if ( repository.getRoot().getFileSystem().equals( Paths.convert( fs ) ) ) {
+            if ( repository.getRoot().getFileSystem().equals( fsystem ) ) {
                 return repository;
             }
+        }
+
+        if ( systemRepository.getRoot().getFileSystem().equals( fsystem ) ) {
+            return systemRepository;
         }
 
         return null;

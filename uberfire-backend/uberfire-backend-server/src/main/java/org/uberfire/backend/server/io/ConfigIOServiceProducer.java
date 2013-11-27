@@ -57,7 +57,9 @@ public class ConfigIOServiceProducer {
             configIOService = new IOServiceClusterImpl(
                     new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory, clusterServiceFactory.isAutoStart() );
         }
-        this.authorizationManager = new RepositoryAuthorizationManager( repositoryService );
+        authorizationManager = new RepositoryAuthorizationManager( repositoryService );
+        configIOService.setAuthenticationManager( authenticationManager );
+        configIOService.setAuthorizationManager( authorizationManager );
     }
 
     @PreDestroy
