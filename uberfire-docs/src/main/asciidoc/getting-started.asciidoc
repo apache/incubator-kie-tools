@@ -698,7 +698,7 @@ And now on to the resources plugin:
             <configuration>
               <resources>
                 <resource>
-                  <directory>src/main/java/org/jboss/errai/cdiwb/client/css</directory>
+                  <directory>src/main/java/com/mycompany/uftutorial/client/css</directory>
                   <filtering>false</filtering>
                 </resource>
               </resources>
@@ -969,6 +969,48 @@ two-way-push communication between the client and the server.
 
 == Set up UberFire security
 
+=== Choose how users and roles are defined
+
+UberFire security is highly pluggable, and assumes very little by
+default. Before we set up a list of users, we need to tell the
+framework how we intend to access user information. Any class that
+implements UberFire's
+`org.uberfire.security.auth.AuthenticationSource` interface can tell
+the framework which credentials are valid and which are not.
+
+UberFire comes with a starter set of AuthenticationSource
+implementations. For production use, you will likely implement your
+own AuthenticationSource that ties your UberFire application into your
+corporate LDAP or Kerberos system. But for this tutorial, we'll use
+`org.uberfire.security.server.auth.source.PropertyUserSource`, a
+simple AuthenticationSource that reads usernames and passwords from a
+Java Properties file.
+
+UberFire uses Java's standard ServiceLoader facility to determine
+which AuthenticationSource implementations it should use.  To select a
+particular class as the authentication source for your application,
+you put its fully-qualified class name in the file
+`src/main/resources/META-INF/services/org.uberfire.security.auth.AuthenticationSource`.
+
+Create that file now, and paste this into it:
+
+---------
+org.uberfire.security.server.auth.source.PropertyUserSource
+---------
+
+UberFire Security can use more than one AuthenticationSource at a
+time. If you want more than one, list each fully-qualified class name
+on its own line in the file. You can also put comments in the file;
+ServiceLoader ignores everything after a `#` character on any line,
+and also ignores leading and trailing whitespace and empty lines.
+
+What about roles? Configuring role providers works differently, but in
+practice, most AuthenticationSource implementations (including
+PropertyUserSource) are also RoleProvider implementations. So we're
+already set for users and roles. Let's move on.
+
+TODO: the mechanism for configuring RoleProviders should not be different.
+
 === Define users and roles
 
 Our application uses the `PropertyUserSource` for its list of users,
@@ -987,19 +1029,22 @@ user=user,USERS
 guest=guest
 ---------
 
-The format of each line is `username=password[,ROLE1[,ROLE2[,...]]]`.
-The brackets indicate optional parts.
+The format of each line is `username=password[,ROLE1[,ROLE2[,...]]]`,
+where the parts in brackets are optional.
 
-=== Create a login.html
+=== Create a login.jsp
 
-Our application allows a variety of authentication mechanisms,
-including JAAS form authentication. This mechanism is specified in the
-Java Servlets specification: the web browser makes a POST request to
-the URL `j_security_check` and includes form parameters `j_username`
-and `j_password`. We'll create a `login.html` page that includes a form
-which submits the correct information to the correct URL.
+We've chosen a mechanism for representing users, passwords, and
+roles. But how do we initiate a login request?
 
-Place the following file in `src/main/webapp/login.html`:
+UberFire supports a variety of authentication mechanisms, including
+JAAS form authentication. This mechanism is part of the Java Servlets
+specification: a POST request to the URL `j_security_check` with form
+parameters `j_username` and `j_password` constitutes a login
+request. We'll create a `login.jsp` page with a form which submits
+the correct information to this special URL.
+
+Place the following file in `src/main/webapp/login.jsp`:
 
 [source,html]
 ---------
@@ -1169,6 +1214,9 @@ The important part of this file is the form that posts `j_username`
 and `j_password` to the `j_security_check` URL. This will be
 recognized by UberFireSecurityFilter as a login attempt.
 
+TODO: `/login.jsp` should not be a hardcoded path. Could rely mostly on
+the welcome-page setting in web.xml.
+
 === Create a url_filter.yaml
 
 If we refused to serve _anything_ to an unauthenticated user, nobody
@@ -1200,7 +1248,7 @@ This example file shows you how to restrict certain URL paths to
 certain roles, and also how to exclude some paths from the
 authentication and authorization checks altogether.
 
-TODO: why doesn't login.html have to be in this list?
+TODO: why doesn't login.jsp have to be in this list?
 
 At this point, we have fully configured UberFire Security.
 
