@@ -1353,25 +1353,24 @@ Right now, our entry point method is empty! What kind of stuff would
 you normally put in there for bootstrapping an UberFire app? Let's
 first create a panel and then come back to that question.
 
-== Create a panel
+== Create a Workbench Screen
 
 UberFire interfaces are made up of a few fundamental building blocks:
-Widgets, Panels, Menu Bars, Tool Bars, and Perspectives. Panels can
-contain Widgets and other Panels, and Perspectives contain Panels, an
-optional Menu Bar, and an optional Tool Bar. Perspectives split up the
-screen into multiple resizeable regions, and end users can drag and
-drop Panels between these regions to customize their workspace. Use of
-Perspectives is optional, so we'll leave them for later.
+Widgets, Layout Panels, Screens, Workbench Panels, Menu Bars, Tool
+Bars, and Perspectives. Layout Panels can contain Widgets and other
+Layout Panels, and Perspectives contain Workbench Panels, an optional
+Menu Bar, and an optional Tool Bar. Perspectives split up the screen
+into multiple resizeable regions, and end users can drag and drop
+Panels between these regions to customize their workspace.
 
-To create your first panel, create the file
-`src/main/java/com/mycompany/uftutorial/client/PanelOne.java`:
+To create your first screen, create the file
+`src/main/java/com/mycompany/uftutorial/client/HelloWorldScreen.java`:
 
 [source,java]
 ---------
 package com.mycompany.uftutorial.client;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -1381,14 +1380,14 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 
 @Dependent
-@WorkbenchScreen(identifier="PanelOne")
-public class PanelOne {
+@WorkbenchScreen(identifier = "com.mycompany.uftutorial.client.HelloWorldScreen")
+public class HelloWorldScreen {
 
-  private Label label = new Label("This is panel one");
+  private Label label = new Label("Hello UberFire!");
 
   @WorkbenchPartTitle
-  public String getName() {
-    return "Panel One!";
+  public String getTitle() {
+    return "Greetings";
   }
 
   @WorkbenchPartView
@@ -1411,11 +1410,11 @@ time. Let's examine them one by one.
 
 @WorkbenchScreen::
 
- Declares that the class defines a Workbench Panel in the application.
+ Declares that the class defines a Screen in the application.
 
 @WorkbenchPartTitle::
 
- Denotes the method that returns the Panel's title. Every Panel must
+ Denotes the method that returns the Screen's title. Every Screen must
  have a `@WorkbenchPartTitle` method.
 
 @WorkbenchPartView::
@@ -1423,8 +1422,8 @@ time. Let's examine them one by one.
  Denotes the method that returns the Panel's view. The view can be any
  class that extends GWT's `Widget` class or implements GWT's
  `IsWidget` interface. In this example, we're returning a GWT `Label`,
- which is a GWT widget that represents `<div>` element with text in
- it. Every Panel must have a `@WorkbenchPartView` method.
+ which is a GWT API for a `<div>` element with text in it. Every Screen
+ must have a `@WorkbenchPartView` method.
 
 .About Client-Side Scopes
 NOTE: CDI scopes in the client side are tied to the lifecycle of the
@@ -1434,6 +1433,51 @@ is first loaded, and ends when when the user navigates away from the
 page--either by visiting a different URL, or by closing the browser
 window/tab. Currently, the Session and Conversation scopes are not
 defined on the client side.
+
+== Define a perspective
+
+Now we have a Screen, but nowhere to put it. Remember, the UberFire
+workbench UI is arranged as Workbench -> Perspective -> Workbench
+Panel -> Screen. Perspectives dictate the position and size of
+Workbench Panels. We need to define a Perspective.
+
+Copy the following source code into the file
+`src/main/java/com/mycompany/uftutorial/client/HomePerspective.java`:
+
+[source,java]
+---------
+package com.mycompany.uftutorial.client;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.PanelType;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+
+@ApplicationScoped
+@WorkbenchPerspective(
+    identifier = "com.mycompany.uftutorial.client.HomePerspective",
+    isDefault = true)
+public class HomePerspective {
+
+  @Perspective
+  public PerspectiveDefinition getPerspective() {
+    final PerspectiveDefinition p = new
+  PerspectiveDefinitionImpl(PanelType.ROOT_STATIC);
+    p.setName(getClass().getName());
+    p.getRoot().addPart(
+            new PartDefinitionImpl(
+                    new DefaultPlaceRequest(HelloWorldScreen.class.getName())));
+    p.setTransient(true);
+    return p;
+  }
+
+}
+---------
 
 == Define a GWT module
 
@@ -1500,7 +1544,6 @@ the module is on the classpath when the GWT compiler runs. So when you
 inherit a GWT module, make sure it's also a dependency in your
 pom.xml.
 
-
 == Time to see it work!
 
 We've come a long way since we started with that empty
@@ -1519,4 +1562,4 @@ seeing it do something!
 
 == Add a toolbar
 
-== Define a perspective
+== Define a second perspective
