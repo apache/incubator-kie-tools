@@ -40,6 +40,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -54,13 +55,13 @@ public class ProjectImportsScreenPresenter
     private Caller<ProjectService> projectService;
     private Caller<MetadataService> metadataService;
 
-    private Event<NotificationEvent> notification;
-
     private FileMenuBuilder menuBuilder;
     private Menus menus;
 
     private Path path;
     private ImportsWidgetPresenter importsWidget;
+
+    private boolean isReadOnly;
 
     public ProjectImportsScreenPresenter() {
     }
@@ -70,21 +71,24 @@ public class ProjectImportsScreenPresenter
                                          @New FileMenuBuilder menuBuilder,
                                          @New ImportsWidgetPresenter importsWidget,
                                          Caller<ProjectService> projectService,
-                                         Caller<MetadataService> metadataService,
-                                         Event<NotificationEvent> notification) {
+                                         Caller<MetadataService> metadataService) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.importsWidget = importsWidget;
         this.projectService = projectService;
         this.metadataService = metadataService;
-        this.notification = notification;
+
+        view.setImports(importsWidget);
+
         view.setPresenter(this);
     }
 
     @OnStartup
-    public void init(final Path path) {
+    public void init(final Path path,
+                     final PlaceRequest place) {
         this.path = checkNotNull("path",
                 path);
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
 
         makeMenuBar();
 
@@ -99,13 +103,15 @@ public class ProjectImportsScreenPresenter
 
             @Override
             public void callback(final ProjectImports projectImports) {
-               importsWidget.setContent(projectImports, false);
+                importsWidget.setContent(projectImports, true);
             }
         };
     }
 
     private void makeMenuBar() {
-        menus = menuBuilder.addRestoreVersion(path).build();
+        if (isReadOnly) {
+            menus = menuBuilder.addRestoreVersion(path).build();
+        }
     }
 
     @WorkbenchPartTitle
