@@ -178,10 +178,10 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>Init:</div>" ) );
+                             new HTML( "<div class='form-field'>" + Constants.INSTANCE.Init() +":</div>" ) );
 
         final TextBox initField = new TextBox();
-        initField.setTitle( "init code" );
+        initField.setTitle( Constants.INSTANCE.InitCode() );
         initField.setText( getFromAccumulatePattern().getInitCode() );
         initField.setEnabled( !this.readOnly );
         codeTable.setWidget( codeTableRow++,
@@ -190,9 +190,9 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>Action:</div>" ) );
+                             new HTML( "<div class='form-field'>" + Constants.INSTANCE.Action() + ":</div>" ) );
         final TextBox actionField = new TextBox();
-        actionField.setTitle( "action code" );
+        actionField.setTitle( Constants.INSTANCE.ActionCode() );
         actionField.setText( getFromAccumulatePattern().getActionCode() );
         actionField.setEnabled( !this.readOnly );
         codeTable.setWidget( codeTableRow++,
@@ -201,9 +201,9 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>Reverse:</div>" ) );
+                             new HTML( "<div class='form-field'>" + Constants.INSTANCE.Reverse() + ":</div>" ) );
         final TextBox reverseField = new TextBox();
-        reverseField.setTitle( "reverse code." );
+        reverseField.setTitle( Constants.INSTANCE.ReverseCode() );
         reverseField.setText( getFromAccumulatePattern().getReverseCode() );
         reverseField.setEnabled( !this.readOnly );
         codeTable.setWidget( codeTableRow++,
@@ -212,9 +212,9 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>Result:</div>" ) );
+                             new HTML( "<div class='form-field'>" + Constants.INSTANCE.Result() + ":</div>" ) );
         final TextBox resultField = new TextBox();
-        resultField.setTitle( "result code" );
+        resultField.setTitle( Constants.INSTANCE.ResultCode() );
         resultField.setText( getFromAccumulatePattern().getResultCode() );
         resultField.setEnabled( !this.readOnly );
         codeTable.setWidget( codeTableRow++,
@@ -226,15 +226,15 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         codePanel.add( codeTable );
 
         tPanel.add( codePanel,
-                    "Custom Code" );
+                    Constants.INSTANCE.CustomCode() );
 
         DirtyableFlexTable functionTable = new DirtyableFlexTable();
 
         functionTable.setWidget( 0,
                                  0,
-                                 new HTML( "<div class='form-field'>Function:</div>" ) );
+                                 new HTML( "<div class='form-field'>" + Constants.INSTANCE.Function() + ":</div>" ) );
         final TextBox functionField = new TextBox();
-        functionField.setTitle( "function code" );
+        functionField.setTitle( Constants.INSTANCE.FunctionCode() );
         functionField.setText( getFromAccumulatePattern().getFunction() );
         functionField.setEnabled( !this.readOnly );
         functionTable.setWidget( 0,
@@ -247,7 +247,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         functionPanel.add( functionTable );
 
         tPanel.add( functionPanel,
-                    "Function" );
+                    Constants.INSTANCE.Function() );
         ChangeHandler changehandler = new ChangeHandler() {
 
             public void onChange( ChangeEvent event ) {

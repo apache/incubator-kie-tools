@@ -325,4 +325,25 @@ public interface Constants
 
     String MetadataNotUnique0( String metadata );
 
+    String CustomCode();
+
+    String FunctionCode();
+
+    String ResultCode();
+
+    String ReverseCode();
+
+    String ActionCode();
+
+    String InitCode();
+
+    String Function();
+
+    String Result();
+
+    String Reverse();
+
+    String Action();
+
+    String Init();
 }

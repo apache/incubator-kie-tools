@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
@@ -111,12 +112,15 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     @Override
     public Path create( final Path context,
                         final String fileName,
-                        final RuleModel content,
+                        final RuleModel model,
                         final String comment ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            content.setPackageName( packageName );
+            model.setPackageName(packageName);
+
+            // Temporal fix for https://bugzilla.redhat.com/show_bug.cgi?id=998922
+            model.getImports().addImport(new Import("java.lang.Number"));
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
             final Path newPath = Paths.convert( nioPath );
@@ -124,7 +128,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             ioService.createFile( nioPath );
             ioService.write( nioPath,
                              toSource( newPath,
-                                       content ),
+                                       model ),
                              makeCommentedOption( comment ) );
 
             return newPath;
@@ -159,6 +163,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public GuidedEditorContent loadContent( final Path path ) {
         try {
             final RuleModel model = load( path );
+
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
             final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
