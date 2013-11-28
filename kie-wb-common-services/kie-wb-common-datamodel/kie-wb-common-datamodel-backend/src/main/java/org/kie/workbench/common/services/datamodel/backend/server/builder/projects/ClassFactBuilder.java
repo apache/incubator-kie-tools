@@ -147,12 +147,14 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
                     final Class<?> returnType = m.returnType;
                     final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
+                    final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.NONE;
+
 
                     addField( new ModelField( fieldName,
                                               returnType.getName(),
                                               ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                               ModelField.FIELD_ORIGIN.DELEGATED,
-                                              methodSignatures.get( qualifiedName ).accessorAndMutator,
+                                              accessorAndMutator,
                                               genericReturnType ) );
 
                     addEnumsForField( factType,
@@ -173,12 +175,13 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
                 final Class<?> returnType = field.getType();
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
+                final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.NONE;
 
                 addField( new ModelField( fieldName,
                                           returnType.getName(),
                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                           declaredClassFields.contains( field ) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
-                                          methodSignatures.get( qualifiedName ).accessorAndMutator,
+                                          accessorAndMutator,
                                           genericReturnType ) );
 
                 addEnumsForField( factType,
