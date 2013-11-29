@@ -1252,6 +1252,54 @@ TODO: why doesn't login.jsp have to be in this list?
 
 At this point, we have fully configured UberFire Security.
 
+== Set up the VFS
+
+Before we turn to the client side of our application, there's one more
+server-side piece that needs to be configured: the Virtual File System
+(VFS) provider.
+
+UberFire's Workbench GUI module relies on the UberFire VFS for storing
+perspective definitions, perspective geometries, editor-to-filename
+associations, and more.
+
+You select the UberFire's VFS implementations the same way as you
+choose UberFire security components: using Java's Service Loader
+mechanism. So create the file
+`src/main/resources/META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider`
+and put the following line into it:
+
+---------
+org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider
+org.uberfire.java.nio.fs.file.SimpleFileSystemProvider
+---------
+
+This tells UberFire to use its git-based filesystem as the default VFS
+(because it is first in the list), and also registers the simple
+filesystem provider. The simple filesystem provider is not optional;
+it is required for temporary files.
+
+== Enable the UberFire CDI Extensions
+
+UberFire relies on two CDI Extensions to get its job done. CDI
+Extensions are enabled by Java's Service Loader, which should be
+pretty familiar by now.
+
+Create the file
+`src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension`
+and paste the following contents into it:
+
+---------
+org.uberfire.commons.services.cdi.StartupBeanExtension
+org.uberfire.security.server.cdi.SecurityExtension
+---------
+
+The StartupBeanExtension enables UberFire's `@Startup` annotation, and
+the SecurityExtension is a workaround that explicitly marks a type
+within the UberFire framework as "not a CDI bean."
+
+TODO: why doesn't UF enable these extensions in its own
+META-INF/services files?
+
 == Create the GWT host page template
 
 As mentioned earlier, GWT apps need a _host page_ that points the
