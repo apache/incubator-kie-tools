@@ -126,6 +126,7 @@ public class NewProjectWizard
         this.projectName = projectName;
         pom = new POM();
         pom.getGav().setArtifactId( projectName );
+        pom.getGav().setVersion("1.0");
         gavWizardPage.setPom( pom );
     }
 }
