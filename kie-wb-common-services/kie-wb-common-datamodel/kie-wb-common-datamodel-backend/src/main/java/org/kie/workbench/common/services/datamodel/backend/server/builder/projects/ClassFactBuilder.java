@@ -147,7 +147,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
                     final Class<?> returnType = m.returnType;
                     final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
-                    final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.NONE;
+                    final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.BOTH;
 
 
                     addField( new ModelField( fieldName,
@@ -175,7 +175,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
                 final Class<?> returnType = field.getType();
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
-                final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.NONE;
+                final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.BOTH;
 
                 addField( new ModelField( fieldName,
                                           returnType.getName(),
