@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.util;
 
+import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.MVEL;
 
 import java.util.ArrayList;
@@ -53,7 +54,8 @@ public class DataEnumLoader {
         }
         final Object mvelData;
         try {
-            mvelData = MVEL.eval( mvelSource, new HashMap<String, Object>() );
+            mvelData = MVELSafeHelper.getEvaluator().eval( mvelSource,
+                                                           new HashMap<String, Object>() );
         } catch ( RuntimeException e ) {
             addError( "Unable to load enumeration data." );
             addError( e.getMessage() );
