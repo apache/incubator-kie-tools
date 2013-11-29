@@ -23,13 +23,24 @@ import org.uberfire.mvp.PlaceRequest;
 public class BeforeClosePlaceEvent {
 
     private final PlaceRequest place;
+    private final boolean force;
 
     public BeforeClosePlaceEvent( final PlaceRequest place ) {
         this.place = place;
+        this.force = false;
+    }
+
+    public BeforeClosePlaceEvent( final PlaceRequest place,
+                                  final boolean force ) {
+        this.place = place;
+        this.force = force;
     }
 
     public PlaceRequest getPlace() {
         return place;
     }
 
+    public boolean isForce() {
+        return force;
+    }
 }

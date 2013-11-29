@@ -327,7 +327,7 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public void closePlace( String id ) {
+    public void closePlace( final String id ) {
         closePlace( new DefaultPlaceRequest( id ) );
     }
 
@@ -336,7 +336,20 @@ public class PlaceManagerImpl
         if ( placeToClose == null ) {
             return;
         }
-        workbenchPartBeforeCloseEvent.fire( new BeforeClosePlaceEvent( placeToClose ) );
+        workbenchPartBeforeCloseEvent.fire( new BeforeClosePlaceEvent( placeToClose, false ) );
+    }
+
+    @Override
+    public void forceClosePlace( final String id ) {
+        forceClosePlace( new DefaultPlaceRequest( id ) );
+    }
+
+    @Override
+    public void forceClosePlace( final PlaceRequest placeToClose ) {
+        if ( placeToClose == null ) {
+            return;
+        }
+        workbenchPartBeforeCloseEvent.fire( new BeforeClosePlaceEvent( placeToClose, true ) );
     }
 
     @Override
@@ -479,23 +492,25 @@ public class PlaceManagerImpl
         activeSplashScreens.remove( place.getIdentifier() );
 
         if ( activity instanceof WorkbenchActivity ) {
-            onWorkbenchPartBeforeClose( (WorkbenchActivity) activity, place );
+            onWorkbenchPartBeforeClose( (WorkbenchActivity) activity, place, event.isForce() );
         } else if ( activity instanceof PopupActivity ) {
-            onWorkbenchPartBeforeClose( (PopupActivity) activity, place );
+            onWorkbenchPartBeforeClose( (PopupActivity) activity, place, event.isForce() );
         }
     }
 
     private void onWorkbenchPartBeforeClose( final WorkbenchActivity activity,
-                                             final PlaceRequest place ) {
-        if ( activity.onMayClose() ) {
+                                             final PlaceRequest place,
+                                             final boolean force ) {
+        if ( force || activity.onMayClose() ) {
             activity.onClose();
             workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
         }
     }
 
     private void onWorkbenchPartBeforeClose( final PopupActivity activity,
-                                             final PlaceRequest place ) {
-        if ( activity.onMayClose() ) {
+                                             final PlaceRequest place,
+                                             final boolean force ) {
+        if ( force || activity.onMayClose() ) {
             activity.onClose();
             workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
         }

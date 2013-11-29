@@ -82,6 +82,10 @@ public interface PlaceManager {
 
     void closePlace( final PlaceRequest place );
 
+    void forceClosePlace( final String id );
+
+    void forceClosePlace( final PlaceRequest place );
+
     void closeAllPlaces();
 
     void registerOnOpenCallback( final PlaceRequest place,
