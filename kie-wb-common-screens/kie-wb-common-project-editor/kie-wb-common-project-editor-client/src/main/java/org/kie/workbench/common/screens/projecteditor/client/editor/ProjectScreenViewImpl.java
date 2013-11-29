@@ -42,6 +42,8 @@ import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.Proj
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.client.common.BusyPopup;
+import org.uberfire.client.common.InfoPopup;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 @ApplicationScoped
 public class ProjectScreenViewImpl
@@ -193,34 +195,6 @@ public class ProjectScreenViewImpl
         importsPageMetadata.setContent(projectImportsMetadata, false);
     }
 
-    //    @UiHandler(value = "categoriesButton")
-//    public void onCategoriesButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Categories());
-//    }
-//
-//    @UiHandler(value = "categoriedMetadataButton")
-//    public void onCategoriedMetadataButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Categories() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
-//    }
-//
-//    @UiHandler(value = "dslButton")
-//    public void onDslButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.DSL());
-//    }
-//
-//    @UiHandler(value = "metadataButton")
-//    public void onMetadataButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.DSL() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
-//    }
-//
-//    @UiHandler(value = "enumsButton")
-//    public void onEnumsButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Enums());
-//    }
-//
-//    @UiHandler(value = "enumsMetadataButton")
-//    public void onEnumsMetadataButtonClick(ClickEvent clickEvent) {
-//        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Enums() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
     @Override
     public void showDependenciesPanel() {
         dropDownButton.setText(ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList());
@@ -240,8 +214,6 @@ public class ProjectScreenViewImpl
         dropDownButton.setText(ProjectEditorResources.CONSTANTS.Imports() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
         deckPanel.showWidget(IMPORTS_METADATA_PANEL_INDEX);
     }
-
-//    }
 
     @Override
     public void showBusyIndicator(final String message) {
@@ -281,5 +253,10 @@ public class ProjectScreenViewImpl
     @Override
     public void switchBusyIndicator(String newMessage) {
         BusyPopup.showMessage(newMessage);
+    }
+
+    @Override
+    public void showABuildIsAlreadyRunning() {
+        ErrorPopup.showMessage(ProjectEditorResources.CONSTANTS.ABuildIsAlreadyRunning());
     }
 }

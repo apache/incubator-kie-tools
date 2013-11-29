@@ -30,6 +30,7 @@ public interface ProjectScreenView
         extends HasBusyIndicator,
         IsWidget {
 
+
     interface Presenter {
 
         void onGAVPanelSelected();
@@ -49,6 +50,7 @@ public interface ProjectScreenView
     }
 
     void setPresenter(Presenter projectScreenPresenter);
+
     void setPOM(POM pom);
 
     void setDependencies(List<Dependency> dependencies);
@@ -78,4 +80,6 @@ public interface ProjectScreenView
     void showKBaseMetadataPanel();
 
     void switchBusyIndicator(String newMessage);
+
+    void showABuildIsAlreadyRunning();
 }
