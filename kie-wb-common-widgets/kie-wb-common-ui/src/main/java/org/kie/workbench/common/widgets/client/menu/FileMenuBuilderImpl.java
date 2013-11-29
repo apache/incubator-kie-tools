@@ -29,7 +29,6 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithFileNameAndCommitMessage;
@@ -41,6 +40,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -126,7 +126,7 @@ public class FileMenuBuilderImpl
             public void callback( final Void response ) {
                 busyIndicatorView.hideBusyIndicator();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
-                placeManager.closePlace( new PathPlaceRequest( path ) );
+                placeManager.forceClosePlace( new PathPlaceRequest( path ) );
             }
         };
     }
