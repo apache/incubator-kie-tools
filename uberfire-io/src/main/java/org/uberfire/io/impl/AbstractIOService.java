@@ -36,7 +36,7 @@ import java.util.Set;
 import org.uberfire.commons.lock.LockService;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOWatchService;
-import org.uberfire.io.impl.lock.ThreadLockServiceImpl;
+import org.uberfire.commons.lock.impl.ThreadLockServiceImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.base.FileSystemState;

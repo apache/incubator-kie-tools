@@ -324,7 +324,7 @@ public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
             try {
                 PROVIDER.move( source, target );
             } catch ( org.uberfire.java.nio.IOException e ) {
-                assertThat( e.getCause() ).isInstanceOf( DirectoryNotEmptyException.class );
+                assertThat( e ).isInstanceOf( DirectoryNotEmptyException.class );
             }
         }
     }

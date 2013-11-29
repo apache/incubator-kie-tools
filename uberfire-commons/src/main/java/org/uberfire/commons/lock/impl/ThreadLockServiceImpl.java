@@ -1,4 +1,4 @@
-package org.uberfire.io.impl.lock;
+package org.uberfire.commons.lock.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;

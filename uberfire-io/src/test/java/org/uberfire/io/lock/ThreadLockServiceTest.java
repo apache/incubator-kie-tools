@@ -1,7 +1,7 @@
 package org.uberfire.io.lock;
 
 import org.junit.Test;
-import org.uberfire.io.impl.lock.ThreadLockServiceImpl;
+import org.uberfire.commons.lock.impl.ThreadLockServiceImpl;
 
 import static org.fest.assertions.api.Assertions.*;
 
