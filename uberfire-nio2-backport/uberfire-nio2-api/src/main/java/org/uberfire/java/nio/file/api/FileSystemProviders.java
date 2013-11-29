@@ -16,6 +16,12 @@
 
 package org.uberfire.java.nio.file.api;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,9 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.Preconditions.*;
 
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.
@@ -50,6 +53,9 @@ public final class FileSystemProviders {
         } catch ( final Throwable ex ) {
             LOGGER.error( "Can't initialize FileSystemProviders", ex );
         }
+        LOGGER.debug("Initialized FileSystemProviders.\n"
+                + "Installed Providers: " + installedProviders + "\n"
+                + "Provider Map: " + mapOfinstalledProviders);
     }
 
     private static synchronized List<FileSystemProvider> buildProviders() {
