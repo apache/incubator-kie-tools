@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
 @Service
@@ -51,7 +51,7 @@ public class EnumDropdownServiceImpl
                                                         context );
 
             // now we can eval it for real...
-            Object result = MVEL.eval( expression );
+            Object result = MVELSafeHelper.getEvaluator().eval( expression );
             if ( result instanceof String[] ) {
                 return (String[]) result;
             } else if ( result instanceof List ) {

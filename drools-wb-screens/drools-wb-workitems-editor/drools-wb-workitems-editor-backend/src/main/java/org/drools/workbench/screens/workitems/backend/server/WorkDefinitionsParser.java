@@ -35,6 +35,7 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.datatype.impl.type.UndefinedDataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
@@ -78,8 +79,8 @@ public class WorkDefinitionsParser {
 
             final Serializable compiled = MVEL.compileExpression( workItemDefinition,
                                                                   context );
-            final Object result = MVEL.executeExpression( compiled,
-                                                          new HashMap() );
+            final Object result = MVELSafeHelper.getEvaluator().executeExpression( compiled,
+                                                                                   new HashMap() );
             final List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) result;
 
             //Populate model
