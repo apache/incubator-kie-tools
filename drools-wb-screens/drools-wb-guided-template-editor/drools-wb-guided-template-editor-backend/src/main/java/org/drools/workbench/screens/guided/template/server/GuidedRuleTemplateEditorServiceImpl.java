@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.template.server;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +31,7 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleModelVisitor;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
+import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
@@ -102,6 +104,9 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
 
     @Inject
     private GenericValidator genericValidator;
+
+    @Inject
+    private GuidedRuleTemplateResourceTypeDefinition resourceTypeDefinition;
 
     public Path create( final Path context,
                         final String fileName,
@@ -236,18 +241,58 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path,
-                                             final TemplateModel content ) {
+    public boolean accepts( final Path path ) {
+        return resourceTypeDefinition.accept( path );
+    }
+
+    @Override
+    public List<ValidationMessage> validate( final Path path ) {
         try {
-            return genericValidator.validate( path,
-                                              new ByteArrayInputStream( RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( content ).getBytes() ),
-                                              FILTER_JAVA,
-                                              FILTER_GLOBALS,
-                                              FILTER_DSLS );
+            final String content = ioService.readAllString( Paths.convert( path ) );
+            final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
+            return validateTemplateVariables( path,
+                                              model );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public List<ValidationMessage> validate( final Path path,
+                                             final TemplateModel model ) {
+        try {
+            final List<ValidationMessage> messages = validateTemplateVariables( path,
+                                                                                model );
+            messages.addAll( genericValidator.validate( path,
+                                                        new ByteArrayInputStream( RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ).getBytes() ),
+                                                        FILTER_JAVA,
+                                                        FILTER_GLOBALS,
+                                                        FILTER_DSLS ) );
+            return messages;
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    private List<ValidationMessage> validateTemplateVariables( final Path path,
+                                                               final TemplateModel model ) {
+        final List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
+        if ( model.getInterpolationVariablesList().length > 0 && model.getRowsCount() == 0 ) {
+            messages.add( makeValidationMessages( path,
+                                                  "One or more Template Variables defined but no data has been entered." ) );
+        }
+        return messages;
+    }
+
+    private ValidationMessage makeValidationMessages( final Path path,
+                                                      final String message ) {
+        final ValidationMessage msg = new ValidationMessage();
+        msg.setPath( path );
+        msg.setLevel( ValidationMessage.Level.WARNING );
+        msg.setText( message );
+        return msg;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {

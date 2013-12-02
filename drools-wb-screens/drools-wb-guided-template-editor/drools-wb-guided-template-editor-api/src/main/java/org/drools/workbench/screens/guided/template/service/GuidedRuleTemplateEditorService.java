@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.template.service;
 
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
+import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
 import org.guvnor.common.services.shared.file.SupportsDelete;
@@ -32,6 +33,7 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface GuidedRuleTemplateEditorService
         extends
+        BuildValidationHelper,
         ViewSourceService<TemplateModel>,
         ValidationService<TemplateModel>,
         SupportsCreate<TemplateModel>,
