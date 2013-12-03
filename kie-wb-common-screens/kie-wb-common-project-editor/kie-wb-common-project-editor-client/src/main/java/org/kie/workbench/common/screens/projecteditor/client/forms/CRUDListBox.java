@@ -50,6 +50,7 @@ public class CRUDListBox
 
     @Override
     public void onAdd() {
+        newItemPopup.setOldName("");
         newItemPopup.show(new PopupSetFieldCommand() {
             @Override
             public void setName(String name) {
