@@ -22,6 +22,7 @@ public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
         baseTypes.add(new PropertyTypeImpl(Short.class.getSimpleName(), Short.class.getName()));
         baseTypes.add(new PropertyTypeImpl(Integer.class.getSimpleName(), Integer.class.getName()));
         baseTypes.add(new PropertyTypeImpl(Long.class.getSimpleName(), Long.class.getName()));
+        baseTypes.add(new PropertyTypeImpl(Byte.class.getSimpleName(), Byte.class.getName()));
 
         baseTypes.add(new PropertyTypeImpl(Float.class.getSimpleName(), Float.class.getName()));
         baseTypes.add(new PropertyTypeImpl(Double.class.getSimpleName(), Double.class.getName()));
