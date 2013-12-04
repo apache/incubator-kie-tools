@@ -1,7 +1,6 @@
 package org.kie.workbench.common.widgets.client.ruleselector;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.github.gwtbootstrap.client.ui.NavLink;
@@ -18,50 +17,45 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class RuleSelectorDropdown
         extends Composite
-        implements IsWidget, HasValueChangeHandlers<String> {
+        implements IsWidget,
+                   HasValueChangeHandlers<String> {
 
     private DropdownButton dropdownButton = new DropdownButton();
 
-    public RuleSelectorDropdown(Collection<String> ruleNames) {
-
+    public RuleSelectorDropdown() {
         addNoneSelectionToDropDown();
-        addRuleNamesToDropDown(ruleNames);
-
-        initWidget(dropdownButton);
+        initWidget( dropdownButton );
     }
 
     private void addNoneSelectionToDropDown() {
-        dropdownButton.add(makeNoneLabel());
+        dropdownButton.add( makeNoneLabel() );
     }
 
-    private void addRuleNamesToDropDown(Collection<String> ruleNames) {
-        for (final String ruleName : ruleNames) {
-            NavLink label = new NavLink(ruleName);
-
-            label.addClickHandler(new ClickHandler() {
+    public void setRuleNames( final Collection<String> ruleNames ) {
+        for ( final String ruleName : ruleNames ) {
+            NavLink label = new NavLink( ruleName );
+            label.addClickHandler( new ClickHandler() {
                 @Override
-                public void onClick(ClickEvent event) {
-                    ValueChangeEvent.fire(
-                            RuleSelectorDropdown.this,
-                            ruleName);
+                public void onClick( ClickEvent event ) {
+                    ValueChangeEvent.fire( RuleSelectorDropdown.this,
+                                           ruleName );
                 }
-            });
+            } );
 
-            dropdownButton.add(label);
+            dropdownButton.add( label );
         }
     }
 
     private NavLink makeNoneLabel() {
-        NavLink label = new NavLink(CommonConstants.INSTANCE.LineNoneLine());
-
-        label.addClickHandler(new ClickHandler() {
+        final NavLink label = new NavLink( CommonConstants.INSTANCE.LineNoneLine() );
+        label.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 ValueChangeEvent.fire(
                         RuleSelectorDropdown.this,
-                        "");
+                        "" );
             }
-        });
+        } );
 
         return label;
     }
@@ -72,8 +66,9 @@ public class RuleSelectorDropdown
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-        return addHandler(handler, ValueChangeEvent.getType());
+    public HandlerRegistration addValueChangeHandler( final ValueChangeHandler<String> handler ) {
+        return addHandler( handler,
+                           ValueChangeEvent.getType() );
     }
 
 }
