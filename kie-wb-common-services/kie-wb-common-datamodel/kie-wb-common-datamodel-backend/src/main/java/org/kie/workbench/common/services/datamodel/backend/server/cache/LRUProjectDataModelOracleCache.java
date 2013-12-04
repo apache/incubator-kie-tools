@@ -83,13 +83,13 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         final ProjectDataModelOracleBuilder pdBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
 
         // Add all packages
-        pdBuilder.addPackages(kieModuleMetaData.getPackages());
+        pdBuilder.addPackages( kieModuleMetaData.getPackages() );
 
         //Add all classes from the KieModule metaData
         for ( final String packageName : kieModuleMetaData.getPackages() ) {
             for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
                 final Class clazz = kieModuleMetaData.getClass( packageName,
-                                                       className );
+                                                                className );
                 final TypeMetaInfo typeMetaInfo = kieModuleMetaData.getTypeMetaInfo( clazz );
                 final TypeSource typeSource = builder.getClassSource( kieModuleMetaData,
                                                                       clazz );
@@ -112,7 +112,9 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
             for ( final Import item : imports.getImports() ) {
                 try {
                     Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
-                    pdBuilder.addClass( clazz );
+                    pdBuilder.addClass( clazz,
+                                        false,
+                                        TypeSource.JAVA_DEPENDENCY );
                 } catch ( ClassNotFoundException cnfe ) {
                     //This should not happen as Builder would have failed to load them and failed fast.
                     log.error( cnfe.getMessage() );
