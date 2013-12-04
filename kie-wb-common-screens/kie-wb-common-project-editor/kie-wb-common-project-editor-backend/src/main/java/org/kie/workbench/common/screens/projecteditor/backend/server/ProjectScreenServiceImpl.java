@@ -2,6 +2,7 @@ package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.KModuleService;
@@ -12,6 +13,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 
 @Service
 @ApplicationScoped
@@ -29,6 +31,10 @@ public class ProjectScreenServiceImpl
 
     @Inject
     private MetadataService metadataService;
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Override
     public ProjectScreenModel load( final Path pathToPom ) {
@@ -57,10 +63,11 @@ public class ProjectScreenServiceImpl
                       final String comment ) {
         final Project project = projectService.resolveProject( pathToPomXML );
 
-        pomService.save( pathToPomXML,
-                         model.getPOM(),
-                         model.getPOMMetaData(),
-                         comment );
+        ioService.startBatch();
+        pomService.save(pathToPomXML,
+                model.getPOM(),
+                model.getPOMMetaData(),
+                comment);
         kModuleService.save( project.getKModuleXMLPath(),
                              model.getKModule(),
                              model.getKModuleMetaData(),
@@ -69,5 +76,7 @@ public class ProjectScreenServiceImpl
                              model.getProjectImports(),
                              model.getProjectImportsMetaData(),
                              comment );
+        ioService.endBatch();
+
     }
 }
