@@ -50,9 +50,9 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.template.client.editor.TemplateModellerWidgetFactory;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.Popup;
@@ -122,23 +122,22 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
 
         final ModellerWidgetFactory widgetFactory = new TemplateModellerWidgetFactory();
 
-        ruleNameService.call(new RemoteCallback<Collection<String>>() {
-            @Override
-            public void callback(Collection<String> ruleNames) {
-
-                ruleModeller = new RuleModeller( path,
+        this.ruleModeller = new RuleModeller( path,
                                               ruleModel,
                                               oracle,
-                                              ruleNames,
                                               widgetFactory,
                                               getRuleModellerConfiguration(),
                                               eventBus,
                                               isReadOnly );
 
-            }
-        }).getRuleNamesForPackage(model.getPackageName());
-
         this.popupContent = uiBinder.createAndBindUi( this );
+
+        ruleNameService.call( new RemoteCallback<Collection<String>>() {
+            @Override
+            public void callback( Collection<String> ruleNames ) {
+                ruleModeller.setRuleNamesForPackage( ruleNames );
+            }
+        } ).getRuleNamesForPackage( model.getPackageName() );
 
         setHeight( getPopupHeight() + "px" );
         setWidth( getPopupWidth() + "px" );

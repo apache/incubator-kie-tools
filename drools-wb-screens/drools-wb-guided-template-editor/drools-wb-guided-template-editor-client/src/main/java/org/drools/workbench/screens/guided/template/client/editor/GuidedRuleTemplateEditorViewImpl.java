@@ -24,9 +24,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
@@ -52,23 +52,21 @@ public class GuidedRuleTemplateEditorViewImpl extends Composite implements Guide
                             final Caller<RuleNamesService> ruleNamesService,
                             final EventBus eventBus,
                             final boolean isReadOnly ) {
+        this.modeller = new RuleModeller( path,
+                                          model,
+                                          oracle,
+                                          new TemplateModellerWidgetFactory(),
+                                          eventBus,
+                                          isReadOnly );
+        panel.setWidget( modeller );
 
-        ruleNamesService.call(new RemoteCallback<Collection<String>>() {
+        ruleNamesService.call( new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback(Collection<String> ruleNames) {
-
-                modeller = new RuleModeller(path,
-                        model,
-                        oracle,
-                        ruleNames,
-                        new TemplateModellerWidgetFactory(),
-                        eventBus,
-                        isReadOnly);
-                panel.setWidget(modeller);
+            public void callback( Collection<String> ruleNames ) {
+                modeller.setRuleNamesForPackage( ruleNames );
             }
-        }).getRuleNamesForPackage(model.getPackageName());
-
-        }
+        } ).getRuleNamesForPackage( model.getPackageName() );
+    }
 
     @Override
     public TemplateModel getContent() {

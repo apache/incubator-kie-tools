@@ -24,9 +24,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
@@ -52,25 +52,21 @@ public class GuidedRuleEditorViewImpl
                             final Caller<RuleNamesService> ruleNamesService,
                             final boolean isReadOnly,
                             final boolean isDSLEnabled ) {
+        this.modeller = new RuleModeller( path,
+                                          model,
+                                          oracle,
+                                          new RuleModellerWidgetFactory(),
+                                          localBus,
+                                          isReadOnly,
+                                          isDSLEnabled );
+        panel.setWidget( modeller );
 
-        ruleNamesService.call(new RemoteCallback<Collection<String>>() {
+        ruleNamesService.call( new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback(Collection<String> ruleNames) {
-
-                modeller = new RuleModeller(
-                        path,
-                        model,
-                        oracle,
-                        ruleNames,
-                        new RuleModellerWidgetFactory(),
-                        localBus,
-                        isReadOnly,
-                        isDSLEnabled );
-                panel.setWidget( modeller );
-
+            public void callback( Collection<String> ruleNames ) {
+                modeller.setRuleNamesForPackage( ruleNames );
             }
-        }).getRuleNamesForPackage(model.getPackageName());
-
+        } ).getRuleNamesForPackage( model.getPackageName() );
     }
 
     @Override

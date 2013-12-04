@@ -78,12 +78,12 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
@@ -157,6 +157,8 @@ public class GuidedDecisionTableWidget extends Composite
 
     private final LimitedEntryBRLActionColumnView.Presenter LIMITED_ENTRY_BRL_ACTION_PRESENTER = this;
 
+    private final RuleSelector ruleSelector = new RuleSelector();
+
     private final boolean isReadOnly;
 
     public GuidedDecisionTableWidget( final Path path,
@@ -219,12 +221,15 @@ public class GuidedDecisionTableWidget extends Composite
         options.add( getAttributes() );
         config.add( options );
 
-        ruleNameService.call(new RemoteCallback<List<String>>() {
+        layout.add( getRuleInheritancePanel( model ) );
+
+        ruleNameService.call( new RemoteCallback<List<String>>() {
             @Override
-            public void callback(List<String> ruleNames) {
-                layout.add(getRuleInheritancePanel(model, ruleNames));
+            public void callback( List<String> ruleNames ) {
+                ruleSelector.setRuleNames( ruleNames );
             }
-        }).getRuleNames();
+        } ).getRuleNames();
+
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
         layout.add( dtableContainer );
@@ -232,13 +237,10 @@ public class GuidedDecisionTableWidget extends Composite
         initWidget( layout );
     }
 
-    private Widget getRuleInheritancePanel( final GuidedDecisionTable52 model,
-                                            List<String> ruleNames ) {
-
-        HorizontalPanel result = new HorizontalPanel();
+    private Widget getRuleInheritancePanel( final GuidedDecisionTable52 model ) {
+        final HorizontalPanel result = new HorizontalPanel();
         result.add( new Label( GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit() ) );
 
-        RuleSelector ruleSelector = new RuleSelector( ruleNames );
         ruleSelector.setRuleName( model.getParentName() );
         ruleSelector.addValueChangeHandler( new ValueChangeHandler<String>() {
             @Override
@@ -1326,7 +1328,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
-                    fireUpdateColumn(identity.getName(), at, at);
+                    fireUpdateColumn( identity.getName(), at, at );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1356,11 +1358,10 @@ public class GuidedDecisionTableWidget extends Composite
             final Widget defaultValue = DefaultValueWidgetFactory.getDefaultValueWidget( atc,
                                                                                          isReadOnly, new DefaultValueWidgetFactory.DefaultValueChangedEventHandler() {
                 @Override
-                public void onDefaultValueChanged(DefaultValueWidgetFactory.DefaultValueChangedEvent event) {
-                    fireUpdateColumn(identity.getName(), at, at);
+                public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
+                    fireUpdateColumn( identity.getName(), at, at );
                 }
-            });
-
+            } );
 
             if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1381,7 +1382,7 @@ public class GuidedDecisionTableWidget extends Composite
                         at.setUseRowNumber( useRowNumber.getValue() );
                         reverseOrder.setEnabled( useRowNumber.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        fireUpdateColumn(identity.getName(), at, at);
+                        fireUpdateColumn( identity.getName(), at, at );
                     }
                 } );
 
@@ -1389,7 +1390,7 @@ public class GuidedDecisionTableWidget extends Composite
                     public void onClick( ClickEvent sender ) {
                         at.setReverseOrder( reverseOrder.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        fireUpdateColumn(identity.getName(), at, at);
+                        fireUpdateColumn( identity.getName(), at, at );
                     }
                 } );
                 hp.add( reverseOrder );
@@ -1409,7 +1410,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
-                    fireUpdateColumn(identity.getName(), at, at);
+                    fireUpdateColumn( identity.getName(), at, at );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1427,8 +1428,10 @@ public class GuidedDecisionTableWidget extends Composite
      * @param originCol The source column.
      * @param newCol The new edited column.
      */
-    private void fireUpdateColumn(String userName, BaseColumn originCol, BaseColumn newCol) {
-        UpdateColumnAuditLogEntry entry = new UpdateColumnAuditLogEntry( userName, originCol, newCol);
+    private void fireUpdateColumn( String userName,
+                                   BaseColumn originCol,
+                                   BaseColumn newCol ) {
+        UpdateColumnAuditLogEntry entry = new UpdateColumnAuditLogEntry( userName, originCol, newCol );
         model.getAuditLog().add( entry );
     }
 
