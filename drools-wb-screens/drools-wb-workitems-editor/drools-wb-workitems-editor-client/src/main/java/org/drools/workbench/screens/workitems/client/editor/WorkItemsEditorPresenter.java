@@ -35,6 +35,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
+import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
@@ -270,8 +271,8 @@ public class WorkItemsEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( path,
-                              view.getContent() );
+                }, new DefaultErrorCallback() ).validate( path,
+                                                          view.getContent() );
             }
         };
     }

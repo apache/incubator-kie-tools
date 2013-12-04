@@ -34,6 +34,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -247,8 +248,8 @@ public class DecisionTableXLSEditorPresenter
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( path,
-                              path );
+                }, new DefaultErrorCallback() ).validate( path,
+                                                          path );
             }
         };
     }

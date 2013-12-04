@@ -37,6 +37,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
+import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
@@ -324,8 +325,8 @@ public class GuidedDecisionTableEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                } ).validate( path,
-                              view.getContent() );
+                }, new DefaultErrorCallback() ).validate( path,
+                                                          view.getContent() );
             }
         };
     }
