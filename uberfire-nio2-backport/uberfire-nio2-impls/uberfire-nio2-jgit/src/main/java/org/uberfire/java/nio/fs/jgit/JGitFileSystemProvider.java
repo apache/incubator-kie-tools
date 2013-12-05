@@ -23,8 +23,10 @@ import java.io.FilterOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -115,6 +117,7 @@ import org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient;
 import org.uberfire.java.nio.fs.jgit.daemon.ssh.BaseGitCommand;
 import org.uberfire.java.nio.fs.jgit.daemon.ssh.GitSSHService;
 import org.uberfire.java.nio.fs.jgit.util.CommitContent;
+import org.uberfire.java.nio.fs.jgit.util.CopyCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.DefaultCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
@@ -1100,6 +1103,36 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             throw new NoSuchFileException( target.toString() );
         }
 
+        if ( !source.getRefTree().equals( target.getRefTree() ) ) {
+            copyAssetContent( source, target, options );
+        } else {
+            final Map<JGitPathImpl, JGitPathImpl> sourceDest = new HashMap<JGitPathImpl, JGitPathImpl>();
+            if ( sourceResult.getK1() == DIRECTORY ) {
+                sourceDest.putAll( mapDirectoryContent( source, target, options ) );
+            } else {
+                sourceDest.put( source, target );
+            }
+
+            copyFiles( source, target, sourceDest, options );
+        }
+    }
+
+    private void copyAssetContent( final JGitPathImpl source,
+                                   final JGitPathImpl target,
+                                   final CopyOption... options ) {
+        final Pair<PathType, ObjectId> sourceResult = checkPath( source.getFileSystem().gitRepo(), source.getRefTree(), source.getPath() );
+        final Pair<PathType, ObjectId> targetResult = checkPath( target.getFileSystem().gitRepo(), target.getRefTree(), target.getPath() );
+
+        if ( !isRoot( target ) && targetResult.getK1() != NOT_FOUND ) {
+            if ( !contains( options, StandardCopyOption.REPLACE_EXISTING ) ) {
+                throw new FileAlreadyExistsException( target.toString() );
+            }
+        }
+
+        if ( sourceResult.getK1() == NOT_FOUND ) {
+            throw new NoSuchFileException( target.toString() );
+        }
+
         if ( sourceResult.getK1() == DIRECTORY ) {
             copyDirectory( source, target, options );
             return;
@@ -1142,9 +1175,17 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                                       final JGitPathImpl fileName,
                                       final CopyOption... options ) {
         if ( directory.getPath().endsWith( "/" ) ) {
-            return toPathImpl( getPath( URI.create( directory.toUri().toString() + fileName.toString( false ) ) ) );
+            return toPathImpl( getPath( URI.create( directory.toUri().toString() + uriEncode( fileName.toString( false ) ) ) ) );
         }
-        return toPathImpl( getPath( URI.create( directory.toUri().toString() + "/" + fileName.toString( false ) ) ) );
+        return toPathImpl( getPath( URI.create( directory.toUri().toString() + "/" + uriEncode( fileName.toString( false ) ) ) ) );
+    }
+
+    private String uriEncode( final String s ) {
+        try {
+            return URLEncoder.encode( s, "UTF-8" );
+        } catch ( UnsupportedEncodingException e ) {
+            return s;
+        }
     }
 
     private void copyFile( final JGitPathImpl source,
@@ -1276,7 +1317,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         } else {
             final Map<JGitPathImpl, JGitPathImpl> fromTo = new HashMap<JGitPathImpl, JGitPathImpl>();
             if ( sourceResult.getK1() == DIRECTORY ) {
-                fromTo.putAll( moveDirectory( source, target, options ) );
+                fromTo.putAll( mapDirectoryContent( source, target, options ) );
             } else {
                 fromTo.put( source, target );
             }
@@ -1285,15 +1326,15 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         }
     }
 
-    private Map<JGitPathImpl, JGitPathImpl> moveDirectory( final JGitPathImpl source,
-                                                           final JGitPathImpl target,
-                                                           final CopyOption... options ) {
+    private Map<JGitPathImpl, JGitPathImpl> mapDirectoryContent( final JGitPathImpl source,
+                                                                 final JGitPathImpl target,
+                                                                 final CopyOption... options ) {
         final Map<JGitPathImpl, JGitPathImpl> fromTo = new HashMap<JGitPathImpl, JGitPathImpl>();
         for ( final Path path : newDirectoryStream( source, null ) ) {
             final JGitPathImpl gPath = toPathImpl( path );
             final Pair<PathType, ObjectId> pathResult = checkPath( gPath.getFileSystem().gitRepo(), gPath.getRefTree(), gPath.getPath() );
             if ( pathResult.getK1() == DIRECTORY ) {
-                fromTo.putAll( moveDirectory( gPath, composePath( target, (JGitPathImpl) gPath.getFileName() ) ) );
+                fromTo.putAll( mapDirectoryContent( gPath, composePath( target, (JGitPathImpl) gPath.getFileName() ) ) );
             } else {
                 final JGitPathImpl gTarget = composePath( target, (JGitPathImpl) gPath.getFileName() );
                 fromTo.put( gPath, gTarget );
@@ -1312,6 +1353,17 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             result.put( fixPath( fromToEntry.getKey().getPath() ), fixPath( fromToEntry.getValue().getPath() ) );
         }
         commit( source, buildCommitInfo( "moving from {" + source.getPath() + "} to {" + target.getPath() + "}", Arrays.asList( options ) ), new MoveCommitContent( result ) );
+    }
+
+    private void copyFiles( final JGitPathImpl source,
+                            final JGitPathImpl target,
+                            final Map<JGitPathImpl, JGitPathImpl> sourceDest,
+                            final CopyOption... options ) {
+        final Map<String, String> result = new HashMap<String, String>( sourceDest.size() );
+        for ( final Map.Entry<JGitPathImpl, JGitPathImpl> sourceDestEntry : sourceDest.entrySet() ) {
+            result.put( fixPath( sourceDestEntry.getKey().getPath() ), fixPath( sourceDestEntry.getValue().getPath() ) );
+        }
+        commit( source, buildCommitInfo( "copy from {" + source.getPath() + "} to {" + target.getPath() + "}", Arrays.asList( options ) ), new CopyCommitContent( result ) );
     }
 
     @Override
@@ -1780,6 +1832,17 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                             return userName;
                         }
                     };
+                }
+
+                @Override
+                public String toString() {
+                    return "WatchEvent{" +
+                            "newPath=" + newPath +
+                            ", oldPath=" + oldPath +
+                            ", sessionId='" + sessionId + '\'' +
+                            ", userName='" + userName + '\'' +
+                            ", changeType=" + diffEntry.getChangeType() +
+                            '}';
                 }
             } );
         }

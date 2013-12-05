@@ -47,7 +47,8 @@ public class Pair<K1, K2> {
      * @param k2
      */
     public Pair(
-            final K1 k1, final K2 k2) {
+            final K1 k1,
+            final K2 k2 ) {
         this.k1 = k1;
         this.k2 = k2;
         this.equalsMode = PairEqualsMode.BOTH;
@@ -59,7 +60,9 @@ public class Pair<K1, K2> {
      * @param k2
      */
     public Pair(
-            final K1 k1, final K2 k2, final PairEqualsMode equalsMode) {
+            final K1 k1,
+            final K2 k2,
+            final PairEqualsMode equalsMode ) {
         this.k1 = k1;
         this.k2 = k2;
         this.equalsMode = equalsMode;
@@ -73,9 +76,9 @@ public class Pair<K1, K2> {
      * @param k2
      * @return
      */
-    public static <K1, K2> Pair<K1, K2> newPair(final K1 k1,
-            final K2 k2) {
-        return new Pair<K1, K2>(k1, k2, PairEqualsMode.BOTH);
+    public static <K1, K2> Pair<K1, K2> newPair( final K1 k1,
+                                                 final K2 k2 ) {
+        return new Pair<K1, K2>( k1, k2, PairEqualsMode.BOTH );
     }
 
     /**
@@ -86,30 +89,30 @@ public class Pair<K1, K2> {
      * @param k2
      * @return
      */
-    public static <K1, K2> Pair<K1, K2> newPair(final K1 k1,
-            final K2 k2,
-            final PairEqualsMode equalsMode) {
-        return new Pair<K1, K2>(k1, k2, equalsMode);
+    public static <K1, K2> Pair<K1, K2> newPair( final K1 k1,
+                                                 final K2 k2,
+                                                 final PairEqualsMode equalsMode ) {
+        return new Pair<K1, K2>( k1, k2, equalsMode );
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if ( o == null || getClass() != o.getClass() ) {
             return false;
         }
 
         final Pair<?, ?> pair = (Pair<?, ?>) o;
 
-        if (PairEqualsMode.BOTH.equals(equalsMode) || PairEqualsMode.K1.equals(equalsMode)) {
-            if (k1 != null ? !k1.equals(pair.k1) : pair.k1 != null) {
+        if ( PairEqualsMode.BOTH.equals( equalsMode ) || PairEqualsMode.K1.equals( equalsMode ) ) {
+            if ( k1 != null ? !k1.equals( pair.k1 ) : pair.k1 != null ) {
                 return false;
             }
         }
-        if (PairEqualsMode.BOTH.equals(equalsMode) || PairEqualsMode.K2.equals(equalsMode)) {
-            if (k2 != null ? !k2.equals(pair.k2) : pair.k2 != null) {
+        if ( PairEqualsMode.BOTH.equals( equalsMode ) || PairEqualsMode.K2.equals( equalsMode ) ) {
+            if ( k2 != null ? !k2.equals( pair.k2 ) : pair.k2 != null ) {
                 return false;
             }
         }
@@ -134,13 +137,20 @@ public class Pair<K1, K2> {
     @Override
     public int hashCode() {
         int result = 0;
-        if (PairEqualsMode.BOTH.equals(equalsMode) || PairEqualsMode.K1.equals(equalsMode)) {
+        if ( PairEqualsMode.BOTH.equals( equalsMode ) || PairEqualsMode.K1.equals( equalsMode ) ) {
             result = k1 != null ? k1.hashCode() : 0;
         }
-        if (PairEqualsMode.BOTH.equals(equalsMode) || PairEqualsMode.K2.equals(equalsMode)) {
-            result = 31 * result + (k2 != null ? k2.hashCode() : 0);
+        if ( PairEqualsMode.BOTH.equals( equalsMode ) || PairEqualsMode.K2.equals( equalsMode ) ) {
+            result = 31 * result + ( k2 != null ? k2.hashCode() : 0 );
         }
         return result;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getName() + "{" +
+                "k1=" + k1 +
+                ", k2=" + k2 +
+                '}';
+    }
 }

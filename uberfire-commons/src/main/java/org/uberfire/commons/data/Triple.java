@@ -97,4 +97,13 @@ public class Triple<K1, K2, K3> {
         result = 31 * result + ( k3 != null ? k3.hashCode() : 0 );
         return result;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + "{" +
+                "k1=" + k1 +
+                ", k2=" + k2 +
+                ", k3=" + k3 +
+                '}';
+    }
 }

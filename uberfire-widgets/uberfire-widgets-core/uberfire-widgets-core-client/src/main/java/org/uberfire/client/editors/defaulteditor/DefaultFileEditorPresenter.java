@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -37,7 +38,7 @@ public class DefaultFileEditorPresenter {
     private Path path;
 
     @OnStartup
-    public void onStartup(final Path path) {
+    public void onStartup( final ObservablePath path ) {
         this.path = path;
         view.setPath(path);
     }

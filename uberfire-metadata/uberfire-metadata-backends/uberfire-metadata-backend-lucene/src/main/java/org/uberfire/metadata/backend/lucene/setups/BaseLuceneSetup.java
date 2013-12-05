@@ -67,12 +67,14 @@ public abstract class BaseLuceneSetup implements LuceneSetup {
         final IndexSearcher searcher = nrtSearcher();
         try {
             int docId = lookupDocIdByPK( searcher, sourceId )[ 0 ];
-            final Document source = searcher.getIndexReader().document( docId );
+            if ( docId != -1 ) {
+                final Document source = searcher.getIndexReader().document( docId );
 
-            source.removeField( "id" );
-            source.add( new StringField( "id", targetId, Field.Store.YES ) );
+                source.removeField( "id" );
+                source.add( new StringField( "id", targetId, Field.Store.YES ) );
 
-            indexDocument( sourceId, source );
+                indexDocument( sourceId, source );
+            }
         } catch ( IOException ex ) {
         } finally {
             nrtRelease( searcher );

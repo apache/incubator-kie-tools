@@ -21,12 +21,9 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.workbench.type.DotResourceType;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnStartup;
 
@@ -36,13 +33,13 @@ public abstract class TextEditorPresenter {
             extends
             IsWidget {
 
-        void setContent(String content);
+        void setContent( String content );
 
         String getContent();
 
         void setFocus();
 
-        void setDirty(boolean dirty);
+        void setDirty( boolean dirty );
 
         boolean isDirty();
 
@@ -58,7 +55,7 @@ public abstract class TextEditorPresenter {
     protected Path path;
 
     @OnStartup
-    public void onStartup( final Path path ) {
+    public void onStartup( final ObservablePath path ) {
         this.path = path;
         vfsServices.call( new RemoteCallback<String>() {
             @Override
@@ -69,7 +66,7 @@ public abstract class TextEditorPresenter {
                     view.setContent( response );
                 }
             }
-        } ).readAllString(path);
+        } ).readAllString( path );
     }
 
     @IsDirty

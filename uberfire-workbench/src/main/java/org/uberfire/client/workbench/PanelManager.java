@@ -1,6 +1,5 @@
 package org.uberfire.client.workbench;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;

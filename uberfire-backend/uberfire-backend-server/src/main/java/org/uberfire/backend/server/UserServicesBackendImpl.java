@@ -15,6 +15,8 @@
  */
 package org.uberfire.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -57,4 +59,24 @@ public class UserServicesBackendImpl {
             return bootstrapRoot.getPath( resultUserName + "-uf-user", serviceType );
         }
     }
+
+    public Collection<Path> getAllUsersData( final String serviceType,
+                                             final String relativePath ) {
+        final Collection<Path> result = new ArrayList<Path>();
+
+        for ( final Path path : bootstrapRoot.getRootDirectories() ) {
+                final Path _path;
+                if ( relativePath != null && !"".equals( relativePath ) ) {
+                    _path = path.resolve( serviceType ).resolve( relativePath );
+                } else {
+                    _path = path.resolve( serviceType );
+                }
+                if ( ioService.exists( _path ) ) {
+                    result.add( _path );
+                }
+        }
+
+        return result;
+    }
+
 }

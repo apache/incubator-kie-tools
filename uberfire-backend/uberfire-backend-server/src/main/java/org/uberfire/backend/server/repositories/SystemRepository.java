@@ -1,9 +1,13 @@
 package org.uberfire.backend.server.repositories;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.uberfire.backend.repositories.impl.git.GitRepository;
+
+import static java.util.Collections.*;
 
 /**
  * Definition of the bootstrap repository
@@ -11,6 +15,10 @@ import org.uberfire.backend.repositories.impl.git.GitRepository;
 public class SystemRepository extends GitRepository {
 
     private static final String ALIAS = "system";
+
+    private static final Collection<String> roles = new ArrayList<String>( 1 ) {{
+        add( "admin" );
+    }};
 
     public static final SystemRepository SYSTEM_REPO = new SystemRepository( ALIAS );
 
@@ -42,4 +50,8 @@ public class SystemRepository extends GitRepository {
         return true;
     }
 
+    @Override
+    public Collection<String> getRoles() {
+        return unmodifiableCollection( roles );
+    }
 }

@@ -391,6 +391,8 @@ public final class JGitUtil {
                     index = createTemporaryIndex( git, headId, (DefaultCommitContent) content );
                 } else if ( content instanceof MoveCommitContent ) {
                     index = createTemporaryIndex( git, headId, (MoveCommitContent) content );
+                } else if ( content instanceof CopyCommitContent ) {
+                    index = createTemporaryIndex( git, headId, (CopyCommitContent) content );
                 } else {
                     index = null;
                 }
@@ -627,6 +629,64 @@ public final class JGitUtil {
                             public void apply( final DirCacheEntry ent ) {
                                 ent.setFileMode( _fileMode );
                                 ent.setObjectId( _objectId );
+                            }
+                        } );
+                    }
+                }
+                treeWalk.release();
+            }
+
+            editor.finish();
+        } catch ( final Exception e ) {
+            throw new RuntimeException( e );
+        }
+
+        return inCoreIndex;
+    }
+
+    private static DirCache createTemporaryIndex( final Git git,
+                                                  final ObjectId headId,
+                                                  final CopyCommitContent commitContent ) {
+        final Map<String, String> content = commitContent.getContent();
+
+        final DirCache inCoreIndex = DirCache.newInCore();
+        final DirCacheEditor editor = inCoreIndex.editor();
+
+        try {
+            if ( headId != null ) {
+                final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
+                final int hIdx = treeWalk.addTree( new RevWalk( git.getRepository() ).parseTree( headId ) );
+                treeWalk.setRecursive( true );
+
+                while ( treeWalk.next() ) {
+                    final String walkPath = treeWalk.getPathString();
+                    final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
+
+                    final String toPath = content.get( walkPath );
+
+                    final DirCacheEntry dcEntry = new DirCacheEntry( walkPath );
+                    final ObjectId _objectId = hTree.getEntryObjectId();
+                    final FileMode _fileMode = hTree.getEntryFileMode();
+
+                    // add to temporary in-core index
+                    editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
+                        @Override
+                        public void apply( final DirCacheEntry ent ) {
+                            ent.setObjectId( _objectId );
+                            ent.setFileMode( _fileMode );
+                        }
+                    } );
+
+                    if ( toPath != null ) {
+                        final DirCacheEntry newdcEntry = new DirCacheEntry( toPath );
+                        final ObjectId newObjectId = hTree.getEntryObjectId();
+                        final FileMode newFileMode = hTree.getEntryFileMode();
+
+                        editor.add( new DirCacheEditor.PathEdit( newdcEntry ) {
+                            @Override
+                            public void apply( final DirCacheEntry ent ) {
+                                ent.setFileMode( newFileMode );
+                                ent.setObjectId( newObjectId );
                             }
                         } );
                     }

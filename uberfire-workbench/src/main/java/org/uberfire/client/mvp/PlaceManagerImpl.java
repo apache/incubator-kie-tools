@@ -32,6 +32,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.commons.data.Pair;
@@ -389,6 +390,20 @@ public class PlaceManagerImpl
         return unmodifiableCollection( activeSplashScreens.values() );
     }
 
+    public Collection<PlaceRequest> getActivePlaceRequests() {
+        return existingWorkbenchActivities.keySet();
+    }
+
+    public Collection<PlaceRequest> getActivePlaceRequestsWithPath() {
+        return new ArrayList<PlaceRequest>( existingWorkbenchActivities.size() ) {{
+            for ( final PlaceRequest placeRequest : existingWorkbenchActivities.keySet() ) {
+                if ( placeRequest instanceof PathPlaceRequest ) {
+                    add( placeRequest );
+                }
+            }
+        }};
+    }
+
     private void launchActivity( final PlaceRequest place,
                                  final WorkbenchActivity activity,
                                  final Position position,
@@ -429,6 +444,7 @@ public class PlaceManagerImpl
         existingWorkbenchParts.put( place,
                                     part );
         updateHistory( place );
+        checkPathDelete( place );
 
         final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
 
@@ -450,12 +466,31 @@ public class PlaceManagerImpl
         }, place, callback );
     }
 
+    private void checkPathDelete( final PlaceRequest place ) {
+        if ( place == null ) {
+            return;
+        }
+        try {
+            if ( (Boolean) UberFirePreferences.getProperty( "org.uberfire.client.workbench.path.automatic.close.onDelete", true ) &&
+                    place instanceof PathPlaceRequest ) {
+                ( (PathPlaceRequest) place ).getPath().onDelete( new Command() {
+                    @Override
+                    public void execute() {
+                        forceClosePlace( place );
+                    }
+                } );
+            }
+        } catch ( final Exception ex ) {
+        }
+    }
+
     private void launchActivity( final PlaceRequest place,
                                  final PopupActivity activity,
                                  final Command callback ) {
         //Record new place\part\activity
         existingWorkbenchActivities.put( place, activity );
         updateHistory( place );
+        checkPathDelete( place );
 
         activity.launch( place, callback );
     }
