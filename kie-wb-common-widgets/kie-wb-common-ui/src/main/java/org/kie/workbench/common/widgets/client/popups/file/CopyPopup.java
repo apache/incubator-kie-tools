@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.widgets.client.popups.file;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.FormStylePopup;
@@ -80,8 +80,7 @@ public class CopyPopup extends FormStylePopup {
         } );
         hp.add( new HTML( "&nbsp" ) );
         hp.add( cancel );
-        addAttribute( "",
-                      hp );
+        addAttribute( "", hp );
 
     }
 

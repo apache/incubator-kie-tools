@@ -25,8 +25,10 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
@@ -463,6 +465,47 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
+    public void onProjectRename( @Observes final RenameProjectEvent event ) {
+        if ( !getView().isVisible() ) {
+            return;
+        }
+        if ( !Utils.isInRepository( activeRepository,
+                                    event.getOldProject() ) ) {
+            return;
+        }
+        if ( authorizationManager.authorize( event.getOldProject(),
+                                             identity ) ) {
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              event.getNewProject(),
+                                              null,
+                                              null,
+                                              true );
+        }
+    }
+
+    public void onProjectDelete( @Observes final DeleteProjectEvent event ) {
+        if ( !getView().isVisible() ) {
+            return;
+        }
+        if ( !Utils.isInRepository( activeRepository,
+                                    event.getProject() ) ) {
+            return;
+        }
+        if ( authorizationManager.authorize( event.getProject(),
+                                             identity ) ) {
+            if ( activeProject != null && activeProject.equals( event.getProject() ) ) {
+                activeProject = null;
+            }
+            doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                              activeRepository,
+                                              null,
+                                              null,
+                                              null,
+                                              true );
+        }
+    }
+
     public void onPackageAdded( @Observes final NewPackageEvent event ) {
         if ( !getView().isVisible() ) {
             return;
@@ -594,6 +637,16 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             return;
         }
 
-        refresh( false );
+        boolean projectChange = false;
+        for ( final Path path : resourceBatchChangesEvent.getBatch().keySet() ) {
+            if ( path.getFileName().equals( "pom.xml" ) ) {
+                projectChange = true;
+                break;
+            }
+        }
+
+        if ( !projectChange ) {
+            refresh( false );
+        }
     }
 }

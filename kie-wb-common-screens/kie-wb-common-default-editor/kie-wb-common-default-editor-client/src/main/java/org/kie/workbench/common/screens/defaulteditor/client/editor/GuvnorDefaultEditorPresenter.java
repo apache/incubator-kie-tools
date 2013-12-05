@@ -31,6 +31,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -82,7 +83,7 @@ public class GuvnorDefaultEditorPresenter
     private Path path;
 
     @OnStartup
-    public void onStartup( final Path path,
+    public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
         super.onStartup( path );
 

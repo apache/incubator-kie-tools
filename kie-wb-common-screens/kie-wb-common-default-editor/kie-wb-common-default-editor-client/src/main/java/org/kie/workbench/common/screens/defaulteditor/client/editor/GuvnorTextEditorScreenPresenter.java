@@ -31,14 +31,14 @@ public class GuvnorTextEditorScreenPresenter
     }
 
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
         super.onStartup( path, place );
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return GuvnorDefaultEditorConstants.INSTANCE.TextEditor(FileNameUtil.removeExtension(path, type) );
+        return GuvnorDefaultEditorConstants.INSTANCE.TextEditor( FileNameUtil.removeExtension( path, type ) );
     }
 
     @WorkbenchPartView

@@ -55,6 +55,19 @@ public class UserExplorerLastData {
         return options;
     }
 
+    public boolean deleteProject( final Project project ) {
+        boolean changed = false;
+        if ( lastPackage.getProject().equals( project ) ) {
+            lastPackage = null;
+            changed = true;
+        }
+        if ( lastFolderItem.getProject().equals( project ) ) {
+            lastFolderItem = null;
+            changed = true;
+        }
+        return changed;
+    }
+
     static class LastPackage {
 
         OrganizationalUnit organizationalUnit;

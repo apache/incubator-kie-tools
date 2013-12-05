@@ -1,7 +1,9 @@
 package org.kie.workbench.common.screens.explorer.backend.server;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -14,7 +16,11 @@ import org.uberfire.commons.data.Triple;
 public class UserExplorerData {
 
     private OrganizationalUnit organizationalUnit = null;
-    private Map<Object, Object> content = new HashMap<Object, Object>();
+    private Map<String, Object> content = new HashMap<String, Object>();
+
+    private Map<String, Set<String>> organizationalUnitKeys = new HashMap<String, Set<String>>();
+    private Map<String, Set<String>> repositoryKeys = new HashMap<String, Set<String>>();
+    private Map<String, Set<String>> projectKeys = new HashMap<String, Set<String>>();
 
     public UserExplorerData() {
     }
@@ -40,7 +46,7 @@ public class UserExplorerData {
             return null;
         }
 
-        final Object obj = content.get( Pair.newPair( organizationalUnit.getName(), repository.getAlias() ) );
+        final Object obj = content.get( Pair.newPair( organizationalUnit.getName(), repository.getAlias() ).toString() );
         if ( obj != null && obj instanceof Project ) {
             return (Project) obj;
         }
@@ -54,7 +60,7 @@ public class UserExplorerData {
             return null;
         }
 
-        final Object obj = content.get( new FolderItemKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ) );
+        final Object obj = content.get( new FolderItemKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ).toString() );
         if ( obj != null && obj instanceof FolderItem ) {
             return (FolderItem) obj;
         }
@@ -68,7 +74,7 @@ public class UserExplorerData {
             return null;
         }
 
-        final Object obj = content.get( new PackageKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ) );
+        final Object obj = content.get( new PackageKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ).toString() );
         if ( obj != null && obj instanceof Package ) {
             return (Package) obj;
         }
@@ -82,30 +88,111 @@ public class UserExplorerData {
     public void addRepository( final OrganizationalUnit organizationalUnit,
                                final Repository repository ) {
         content.put( organizationalUnit.getName(), repository );
+
+        indexOrganizationalUnit( organizationalUnit );
     }
 
     public void addProject( final OrganizationalUnit organizationalUnit,
                             final Repository repository,
                             final Project project ) {
-        content.put( Pair.newPair( organizationalUnit.getName(), repository.getAlias() ), project );
+        final String key = Pair.newPair( organizationalUnit.getName(), repository.getAlias() ).toString();
+        content.put( key, project );
+
+        indexOrganizationalUnit( organizationalUnit, key );
+        indexRepository( repository, key );
     }
 
     public void addFolderItem( final OrganizationalUnit organizationalUnit,
                                final Repository repository,
                                final Project project,
                                final FolderItem item ) {
-        content.put( new FolderItemKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ), item );
+        final String key = new FolderItemKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ).toString();
+        content.put( key, item );
+
+        indexOrganizationalUnit( organizationalUnit, key );
+        indexRepository( repository, key );
+        indexProject( project, key );
     }
 
     public void addPackage( final OrganizationalUnit organizationalUnit,
                             final Repository repository,
                             final Project project,
                             final Package pkg ) {
-        content.put( new PackageKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ), pkg );
+        final String key = new PackageKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ).toString();
+        content.put( key, pkg );
+
+        indexOrganizationalUnit( organizationalUnit, key );
+        indexRepository( repository, key );
+        indexProject( project, key );
+    }
+
+    private void indexOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
+        if ( !organizationalUnitKeys.containsKey( organizationalUnit.getName() ) ) {
+            organizationalUnitKeys.put( organizationalUnit.getName(), new HashSet<String>() );
+        }
+        organizationalUnitKeys.get( organizationalUnit.getName() ).add( organizationalUnit.getName() );
+    }
+
+    private void indexOrganizationalUnit( final OrganizationalUnit organizationalUnit,
+                                          final String key ) {
+        if ( !organizationalUnitKeys.containsKey( organizationalUnit.getName() ) ) {
+            organizationalUnitKeys.put( organizationalUnit.getName(), new HashSet<String>() );
+        }
+        organizationalUnitKeys.get( organizationalUnit.getName() ).add( key );
+    }
+
+    private void indexRepository( final Repository repository,
+                                  final String key ) {
+        if ( !repositoryKeys.containsKey( repository.getUri() ) ) {
+            repositoryKeys.put( repository.getUri(), new HashSet<String>() );
+        }
+        repositoryKeys.get( repository.getUri() ).add( key );
+
+    }
+
+    private void indexProject( final Project project,
+                               final String key ) {
+        final String projectRef = project.getPomXMLPath().toURI();
+        if ( !projectKeys.containsKey( projectRef ) ) {
+            projectKeys.put( projectRef, new HashSet<String>() );
+        }
+        projectKeys.get( projectRef ).add( key );
     }
 
     public boolean isEmpty() {
         return organizationalUnit == null && content.isEmpty();
+    }
+
+    public void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+        if ( this.organizationalUnit.equals( organizationalUnit ) ) {
+            this.organizationalUnit = null;
+        }
+        if ( organizationalUnitKeys.containsKey( organizationalUnit.getName() ) ) {
+            for ( final String key2Delete : organizationalUnitKeys.get( organizationalUnit.getName() ) ) {
+                content.remove( key2Delete );
+            }
+        }
+    }
+
+    public void deleteRepository( final Repository repository ) {
+        if ( repositoryKeys.containsKey( repository.getUri() ) ) {
+            for ( final String key2Delete : repositoryKeys.get( repository.getUri() ) ) {
+                content.remove( key2Delete );
+            }
+        }
+    }
+
+    public boolean deleteProject( final Project project ) {
+        boolean changed = false;
+        final String projectRef = project.getPomXMLPath().toURI();
+
+        if ( projectKeys.containsKey( projectRef ) ) {
+            changed = true;
+            for ( final String key2Delete : projectKeys.get( projectRef ) ) {
+                content.remove( key2Delete );
+            }
+        }
+        return changed;
     }
 
     private static class FolderItemKey extends Triple<String, String, String> {

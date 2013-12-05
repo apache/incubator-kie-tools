@@ -16,12 +16,14 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnSave;
 import org.uberfire.mvp.Command;
@@ -55,15 +57,26 @@ public class GuvnorTextEditorPresenter
     @Inject
     private MetadataWidget metadataWidget;
 
+    @Inject
+    private PlaceManager placeManager;
+
     private boolean isReadOnly;
     private String version;
-    protected Path path;
+    protected ObservablePath path;
 
-    public void onStartup( final Path path,
+    public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
         super.onStartup( path );
 
         this.path = path;
+
+        this.path.onDelete( new Command() {
+            @Override
+            public void execute() {
+                placeManager.forceClosePlace( place );
+            }
+        } );
+
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
         this.version = place.getParameter( "version", null );
 

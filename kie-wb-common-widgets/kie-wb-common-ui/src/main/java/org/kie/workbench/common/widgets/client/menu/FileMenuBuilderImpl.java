@@ -126,7 +126,6 @@ public class FileMenuBuilderImpl
             public void callback( final Void response ) {
                 busyIndicatorView.hideBusyIndicator();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
-                placeManager.forceClosePlace( new PathPlaceRequest( path ) );
             }
         };
     }

@@ -25,7 +25,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "KieMetaFileTextEditor", supportedTypes = {DotResourceType.class}, priority = Integer.MAX_VALUE - 1)
+@WorkbenchEditor(identifier = "KieMetaFileTextEditor", supportedTypes = { DotResourceType.class }, priority = Integer.MAX_VALUE - 1)
 public class KieMetaDataEditorPresenter
         extends GuvnorTextEditorPresenter {
 
@@ -41,22 +41,22 @@ public class KieMetaDataEditorPresenter
     }
 
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
-        if (!identity.hasRole(AppRoles.ADMIN)) {
-            makeReadOnly(place);
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        if ( !identity.hasRole( AppRoles.ADMIN ) ) {
+            makeReadOnly( place );
         }
 
-        super.onStartup(path, place);
+        super.onStartup( path, place );
     }
 
-    private void makeReadOnly(PlaceRequest place) {
-        place.getParameters().put("readOnly", "true");
+    private void makeReadOnly( PlaceRequest place ) {
+        place.getParameters().put( "readOnly", "true" );
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return GuvnorDefaultEditorConstants.INSTANCE.MetaFileEditor(path.getFileName());
+        return GuvnorDefaultEditorConstants.INSTANCE.MetaFileEditor( path.getFileName() );
     }
 
     @WorkbenchPartView

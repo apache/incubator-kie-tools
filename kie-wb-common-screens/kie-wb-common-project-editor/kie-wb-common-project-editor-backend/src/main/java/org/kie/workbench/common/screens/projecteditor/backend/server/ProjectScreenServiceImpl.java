@@ -53,7 +53,6 @@ public class ProjectScreenServiceImpl
         model.setProjectImports( projectService.load( pathToProjectImports ) );
         model.setProjectImportsMetaData( metadataService.getMetadata( pathToProjectImports ) );
 
-
         return model;
     }
 
@@ -78,5 +77,25 @@ public class ProjectScreenServiceImpl
                              comment );
         ioService.endBatch();
 
+    }
+
+    @Override
+    public ProjectScreenModel rename( final Path pathToPomXML,
+                                      final String newName,
+                                      final String comment ) {
+        return load( projectService.rename( pathToPomXML, newName, comment ) );
+    }
+
+    @Override
+    public void delete( final Path pathToPomXML,
+                        final String comment ) {
+        projectService.delete( pathToPomXML, comment );
+    }
+
+    @Override
+    public void copy( Path pathToPomXML,
+                      String newName,
+                      String comment ) {
+        projectService.copy( pathToPomXML, newName, comment );
     }
 }

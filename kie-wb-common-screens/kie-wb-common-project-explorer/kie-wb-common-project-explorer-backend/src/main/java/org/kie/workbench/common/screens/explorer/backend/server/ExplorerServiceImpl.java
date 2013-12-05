@@ -25,12 +25,15 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.collect.Lists;
 import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
+import org.guvnor.common.services.project.events.DeleteProjectEvent;
+import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -47,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -91,9 +95,10 @@ public class ExplorerServiceImpl
     @Inject
     private UserServicesImpl userServices;
 
-    private XStream xs = new XStream();
+    @Inject
+    private UserServicesBackendImpl userServicesBackend;
 
-    private UserExplorerData content;
+    private XStream xs = new XStream();
 
     public ExplorerServiceImpl() {
         // Boilerplate sacrifice for Weld
@@ -125,6 +130,8 @@ public class ExplorerServiceImpl
         FolderItem selectedItem = item;
 
         final UserExplorerLastData lastContent = getLastContent();
+        final UserExplorerData userContent = loadUserContent();
+
         if ( !lastContent.isDataEmpty() ) {
             if ( organizationalUnit == null && repository == null && project == null ) {
                 if ( options.contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
@@ -144,20 +151,20 @@ public class ExplorerServiceImpl
                 if ( !organizationalUnit.equals( lastContent.getLastPackage().getOrganizationalUnit() ) ||
                         repository != null && !repository.equals( lastContent.getLastPackage().getRepository() ) ||
                         project != null && !project.equals( lastContent.getLastPackage().getProject() ) ) {
-                    selectedOrganizationalUnit = loadOrganizationalUnit( organizationalUnit );
-                    selectedRepository = loadRepository( selectedOrganizationalUnit, repository );
-                    selectedProject = loadProject( selectedOrganizationalUnit, selectedRepository, project );
-                    selectedPackage = loadPackage( selectedOrganizationalUnit, selectedRepository, selectedProject, pkg );
+                    selectedOrganizationalUnit = loadOrganizationalUnit( organizationalUnit, userContent );
+                    selectedRepository = loadRepository( selectedOrganizationalUnit, repository, userContent );
+                    selectedProject = loadProject( selectedOrganizationalUnit, selectedRepository, project, userContent );
+                    selectedPackage = loadPackage( selectedOrganizationalUnit, selectedRepository, selectedProject, pkg, userContent );
                     selectedItem = null;
                 }
             } else if ( options.contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
                 if ( !organizationalUnit.equals( lastContent.getLastFolderItem().getOrganizationalUnit() ) ||
                         repository != null && !repository.equals( lastContent.getLastFolderItem().getRepository() ) ||
                         project != null && !project.equals( lastContent.getLastFolderItem().getProject() ) ) {
-                    selectedOrganizationalUnit = loadOrganizationalUnit( organizationalUnit );
-                    selectedRepository = loadRepository( selectedOrganizationalUnit, repository );
-                    selectedProject = loadProject( selectedOrganizationalUnit, selectedRepository, project );
-                    selectedItem = loadFolderItem( selectedOrganizationalUnit, selectedRepository, selectedProject, item );
+                    selectedOrganizationalUnit = loadOrganizationalUnit( organizationalUnit, userContent );
+                    selectedRepository = loadRepository( selectedOrganizationalUnit, repository, userContent );
+                    selectedProject = loadProject( selectedOrganizationalUnit, selectedRepository, project, userContent );
+                    selectedItem = loadFolderItem( selectedOrganizationalUnit, selectedRepository, selectedProject, item, userContent );
                     selectedPackage = null;
                 }
             }
@@ -270,19 +277,18 @@ public class ExplorerServiceImpl
         );
     }
 
-    private OrganizationalUnit loadOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+    private OrganizationalUnit loadOrganizationalUnit( final OrganizationalUnit organizationalUnit,
+                                                       final UserExplorerData content ) {
         if ( organizationalUnit != null ) {
             return organizationalUnit;
         }
 
-        if ( content == null ) {
-            loadContent();
-        }
         return content.getOrganizationalUnit();
     }
 
     private Repository loadRepository( final OrganizationalUnit organizationalUnit,
-                                       final Repository repository ) {
+                                       final Repository repository,
+                                       final UserExplorerData content ) {
         if ( organizationalUnit == null ) {
             return null;
         }
@@ -290,15 +296,13 @@ public class ExplorerServiceImpl
             return repository;
         }
 
-        if ( content == null ) {
-            loadContent();
-        }
         return content.get( organizationalUnit );
     }
 
     private Project loadProject( final OrganizationalUnit organizationalUnit,
                                  final Repository repository,
-                                 final Project project ) {
+                                 final Project project,
+                                 final UserExplorerData content ) {
         if ( repository == null ) {
             return null;
         }
@@ -306,16 +310,14 @@ public class ExplorerServiceImpl
             return project;
         }
 
-        if ( content == null ) {
-            loadContent();
-        }
         return content.get( organizationalUnit, repository );
     }
 
     private Package loadPackage( final OrganizationalUnit organizationalUnit,
                                  final Repository repository,
                                  final Project project,
-                                 final Package pkg ) {
+                                 final Package pkg,
+                                 final UserExplorerData content ) {
         if ( project == null ) {
             return null;
         }
@@ -324,16 +326,14 @@ public class ExplorerServiceImpl
             return pkg;
         }
 
-        if ( content == null ) {
-            loadContent();
-        }
         return content.getPackage( organizationalUnit, repository, project );
     }
 
     private FolderItem loadFolderItem( final OrganizationalUnit organizationalUnit,
                                        final Repository repository,
                                        final Project project,
-                                       final FolderItem item ) {
+                                       final FolderItem item,
+                                       final UserExplorerData content ) {
         if ( project == null ) {
             return null;
         }
@@ -342,42 +342,48 @@ public class ExplorerServiceImpl
             return item;
         }
 
-        if ( content == null ) {
-            loadContent();
-        }
         return content.getFolderItem( organizationalUnit, repository, project );
     }
 
-    private void loadContent() {
-        loadContent( userServices.buildPath( "explorer", "user.nav" ) );
+    private UserExplorerData loadUserContent() {
+        final UserExplorerData userExplorerData = loadUserContent( userServices.buildPath( "explorer", "user.nav" ) );
+        if ( userExplorerData != null ) {
+            return userExplorerData;
+        }
+        return new UserExplorerData();
     }
 
-    private UserExplorerData loadContent( final org.uberfire.java.nio.file.Path path ) {
+    private UserExplorerData loadUserContent( final org.uberfire.java.nio.file.Path path ) {
         try {
             if ( ioServiceConfig.exists( path ) ) {
                 final String xml = ioServiceConfig.readAllString( path );
-                content = (UserExplorerData) xs.fromXML( xml );
-            } else {
-                content = new UserExplorerData();
+                return (UserExplorerData) xs.fromXML( xml );
             }
         } catch ( final Exception e ) {
-            content = new UserExplorerData();
         }
-        return content;
+        return null;
     }
 
     private UserExplorerLastData getLastContent() {
         try {
-            final org.uberfire.java.nio.file.Path path = userServices.buildPath( "explorer", "last.user.nav" );
+            final UserExplorerLastData lastData = getLastContent( userServices.buildPath( "explorer", "last.user.nav" ) );
+            if ( lastData != null ) {
+                return lastData;
+            }
+        } catch ( final Exception e ) {
+        }
+        return new UserExplorerLastData();
+    }
+
+    private UserExplorerLastData getLastContent( final org.uberfire.java.nio.file.Path path ) {
+        try {
             if ( ioServiceConfig.exists( path ) ) {
                 final String xml = ioServiceConfig.readAllString( path );
                 return (UserExplorerLastData) xs.fromXML( xml );
-            } else {
-                return new UserExplorerLastData();
             }
         } catch ( final Exception e ) {
-            return new UserExplorerLastData();
         }
+        return null;
     }
 
     private void store( final org.uberfire.java.nio.file.Path userNav,
@@ -388,7 +394,13 @@ public class ExplorerServiceImpl
                         final Package pkg,
                         final FolderItem item,
                         final Set<Option> options ) {
-        final UserExplorerData content = loadContent( userNav );
+        final UserExplorerData content;
+        final UserExplorerData _content = loadUserContent( userNav );
+        if ( _content == null ) {
+            content = new UserExplorerData();
+        } else {
+            content = _content;
+        }
         final UserExplorerLastData lastContent = new UserExplorerLastData();
         if ( organizationalUnit != null ) {
             content.setOrganizationalUnit( organizationalUnit );
@@ -667,6 +679,38 @@ public class ExplorerServiceImpl
     @Override
     public Set<Option> getLastUserOptions() {
         return getLastContent().getOptions();
+    }
+
+    void onProjectRename( @Observes final RenameProjectEvent event ) {
+        cleanup( event.getOldProject() );
+    }
+
+    void onProjectDelete( @Observes final DeleteProjectEvent event ) {
+        cleanup( event.getProject() );
+    }
+
+    private void cleanup( final Project project ) {
+        final Collection<org.uberfire.java.nio.file.Path> lastNavs = userServicesBackend.getAllUsersData( "explorer", "last.user.nav" );
+        final Collection<org.uberfire.java.nio.file.Path> userNavs = userServicesBackend.getAllUsersData( "explorer", "user.nav" );
+
+        for ( org.uberfire.java.nio.file.Path path : userNavs ) {
+            final UserExplorerData userContent = loadUserContent( path );
+            if ( userContent != null ) {
+                if ( userContent.deleteProject( project ) ) {
+                    ioServiceConfig.write( path, xs.toXML( userContent ) );
+                }
+            }
+        }
+
+        for ( org.uberfire.java.nio.file.Path lastNav : lastNavs ) {
+            final UserExplorerLastData lastUserContent = getLastContent( lastNav );
+            if ( lastUserContent != null ) {
+                if ( lastUserContent.deleteProject( project ) ) {
+                    ioServiceConfig.write( lastNav, xs.toXML( lastUserContent ) );
+                }
+            }
+
+        }
     }
 
 }
