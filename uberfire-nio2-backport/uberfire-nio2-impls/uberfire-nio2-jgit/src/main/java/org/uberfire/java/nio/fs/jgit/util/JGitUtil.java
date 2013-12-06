@@ -778,12 +778,12 @@ public final class JGitUtil {
 
                         @Override
                         public String author() {
-                            return commit.getCommitterIdent().getName();
+                            return commit.getAuthorIdent().getName();
                         }
 
                         @Override
                         public String email() {
-                            return commit.getCommitterIdent().getEmailAddress();
+                            return commit.getAuthorIdent().getEmailAddress();
                         }
 
                         @Override
@@ -793,7 +793,7 @@ public final class JGitUtil {
 
                         @Override
                         public Date date() {
-                            return commit.getCommitterIdent().getWhen();
+                            return commit.getAuthorIdent().getWhen();
                         }
 
                         @Override
