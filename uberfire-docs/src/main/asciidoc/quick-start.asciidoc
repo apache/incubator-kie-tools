@@ -92,5 +92,5 @@ Once you're logged in, here are some things to try:
 
 Now that you've deployed an UberFire app and had some hands-on time
 with it, why not create your own from scratch? Our
-link:getting-started{link-suffix}[tutorial guide] provides a detailed
+link:tutorial{link-suffix}[tutorial guide] provides a detailed
 walkthrough of the entire project setup process.
