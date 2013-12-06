@@ -365,7 +365,6 @@
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core</artifactId>
         <version>${weld.version}</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>
