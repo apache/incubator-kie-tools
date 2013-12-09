@@ -454,6 +454,9 @@ several plugins we'll need in order to get the project built. The
       <resource>
         <directory>src/main/resources</directory>
       </resource>
+      <resource>
+        <directory>target/generated-sources/annotations</directory>
+      </resource>
     </resources>
 
     <plugins>
@@ -463,14 +466,21 @@ several plugins we'll need in order to get the project built. The
   </build>
 ---------
 
-The `<resources>` section adds `src/main/java` as a resource
-directory, and reaffirms that `src/main/resources` is also a resource
-directory. The purpose of adding `src/main/java` as a resource
-directory is to ensure all the .java source files are included on the
-classpath. The GWT compiler requires this. The reason we add
-`src/main/resources` redundantly is because the Maven integration in
-IntelliJ IDEA does not retain this default resource directory when you
-add a new one. Adding both explicitly provides maximum compatibility.
+The `<resources>` section adds `src/main/java` and
+`target/generated-sources/annotations` as resource directories, and
+reaffirms that `src/main/resources` is also a resource directory.
+
+The purpose of adding `src/main/java` as a resource directory is to
+ensure all the .java source files are included on the classpath. The
+GWT compiler requires this. Similarly, UberFire has an annotation
+processor that outputs Java source files under
+`target/generated-sources/annotations`, and we need to ensure these
+source files are on the classpath too.
+
+The reason we add `src/main/resources` redundantly is because the
+Maven integration in IntelliJ IDEA does not retain this default
+resource directory when you add a new one. Adding it explicitly
+provides maximum compatibility.
 
 Now, speaking of the GWT compiler, we need to invoke it during our
 project's build. How do we teach Maven to do this and other build
@@ -1371,10 +1381,49 @@ an entry point, annotate it with `@EntryPoint`. Put the following in
 
 [source,java]
 ---------
+package com.mycompany.uftutorial.client;
+
+import javax.enterprise.event.Observes;
+
+import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.uberfire.workbench.events.ApplicationReadyEvent;
+
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.RootPanel;
+
 @EntryPoint
 public class ClientEntryPoint {
-  private void start(@Observes final ApplicationReadyEvent event) {
+
+  /**
+   * Gets invoked when the UberFire framework has bootstrapped itself.
+   */
+  private void init(@Observes final ApplicationReadyEvent event) {
+    hideLoadingPopup();
   }
+
+  /**
+   * Fades out the "Loading application" pop-up which was included in
+   * the host page by UberFireServlet.
+   */
+  private void hideLoadingPopup() {
+      final Element e = RootPanel.get( "loading" ).getElement();
+
+      new Animation() {
+
+          @Override
+          protected void onUpdate( double progress ) {
+              e.getStyle().setOpacity( 1.0 - progress );
+          }
+
+          @Override
+          protected void onComplete() {
+              e.getStyle().setVisibility( Style.Visibility.HIDDEN );
+          }
+      }.run( 500 );
+  }
+
 }
 ---------
 
@@ -1382,10 +1431,10 @@ The `@EntryPoint` annotation tells the framework that the class is a
 CDI Bean that should be instantiated when the page is loaded into the
 browser. You can name an entry point class anything you like. You can
 create as many `@EntryPoint` classes as you want, but you can't
-specify what order they will be instantiated in. It's unusual to have
-more than one.
+specify what order they will be instantiated in. Usually, you'll just
+have one.
 
-The `start()` method is a CDI observer method. The UberFire Workbench
+The `init()` method is a CDI observer method. The UberFire Workbench
 framework fires an `ApplicationReadyEvent` when the framework has
 finished initializing.
 
@@ -1397,9 +1446,10 @@ it's usually invoked too early: before many parts of the framework
 initialize. Stick with observing `ApplicationReadyEvent` and you'll be
 fine.
 
-Right now, our entry point method is empty! What kind of stuff would
-you normally put in there for bootstrapping an UberFire app? Let's
-first create a panel and then come back to that question.
+Right now, our entry point method just hides a `<div>` element that
+was present in the host page template served by UberFireServlet. What
+else might we put in there for bootstrapping an UberFire app? Let's
+first create a panel and come back to that question later.
 
 == Create a Workbench Screen
 
@@ -1598,7 +1648,31 @@ We've come a long way since we started with that empty
 directory. Let's reward all the hard work by starting our app and
 seeing it do something!
 
+......
+$ mvn compile
+$ mvn gwt:run
+......
 
+Eventually, the GWT Development Mode GUI will pop up. Wait for the
+"Calculating..." button to change to "Launch in Default Browser," then
+press that button.
+
+=== Install the GWT Dev Mode browser plugin
+
+If you've never developed a GWT application before, you'll be looking
+at a prompt to install the Dev Mode plugin into your browser. Follow
+the prompts and restart your browser when prompted.
+
+=== Sign in
+
+If you copied the users.properties file as-is, you can sign in as user
+"admin" with password "admin". Otherwise, use the username and
+password you chose when creating that file. 
+
+=== Hello UberFire!
+
+Now you should see your label in the top left corner of the
+page. Congratulations!
 
 == Factor out the panel's contents
 
