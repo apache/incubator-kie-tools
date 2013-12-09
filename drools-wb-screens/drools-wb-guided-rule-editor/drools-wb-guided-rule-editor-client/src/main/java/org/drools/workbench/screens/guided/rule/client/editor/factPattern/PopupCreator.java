@@ -38,6 +38,7 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.workbench.common.widgets.client.callbacks.Callback;
@@ -133,7 +134,7 @@ public class PopupCreator {
             public void onClick( ClickEvent event ) {
                 String var = varName.getText();
                 if ( modeller.isVariableNameUsed( var ) ) {
-                    Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
+                    Window.alert( GuidedRuleEditorResources.CONSTANTS.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 con.setFieldBinding( var );
@@ -141,13 +142,13 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( Constants.INSTANCE.BindTheFieldCalled0ToAVariable( con.getFieldName() ),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.BindTheFieldCalled0ToAVariable( con.getFieldName() ),
                             vn );
 
         //Show the sub-field selector is there are applicable sub-fields
         if ( hasApplicableFields( fields ) ) {
-            Button sub = new Button( Constants.INSTANCE.ShowSubFields() );
-            popup.addAttribute( Constants.INSTANCE.ApplyAConstraintToASubFieldOf0( con.getFieldName() ),
+            Button sub = new Button( GuidedRuleEditorResources.CONSTANTS.ShowSubFields() );
+            popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.ApplyAConstraintToASubFieldOf0( con.getFieldName() ),
                                 sub );
             sub.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
@@ -183,7 +184,7 @@ public class PopupCreator {
     public void showPatternPopupForComposite( final Widget w,
                                               final HasConstraints hasConstraints ) {
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                         Constants.INSTANCE.AddFieldsToThisConstraint() );
+                GuidedRuleEditorResources.CONSTANTS.AddFieldsToThisConstraint() );
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -215,14 +216,14 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( Constants.INSTANCE.AddARestrictionOnAField(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.AddARestrictionOnAField(),
                             box );
 
         final ListBox composites = new ListBox();
         composites.addItem( "..." ); //NON-NLS
-        composites.addItem( Constants.INSTANCE.AllOfAnd(),
+        composites.addItem( GuidedRuleEditorResources.CONSTANTS.AllOfAnd(),
                             CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( Constants.INSTANCE.AnyOfOr(),
+        composites.addItem( GuidedRuleEditorResources.CONSTANTS.AnyOfOr(),
                             CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
 
@@ -236,18 +237,18 @@ public class PopupCreator {
             }
         } );
 
-        InfoPopup infoComp = new InfoPopup( Constants.INSTANCE.MultipleFieldConstraints(),
-                                            Constants.INSTANCE.MultipleConstraintsTip() );
+        InfoPopup infoComp = new InfoPopup( GuidedRuleEditorResources.CONSTANTS.MultipleFieldConstraints(),
+                GuidedRuleEditorResources.CONSTANTS.MultipleConstraintsTip() );
 
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( composites );
         horiz.add( infoComp );
-        popup.addAttribute( Constants.INSTANCE.MultipleFieldConstraint(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.MultipleFieldConstraint(),
                             horiz );
 
         //Include Expression Editor
-        popup.addRow( new SmallLabel( "<i>" + Constants.INSTANCE.AdvancedOptionsColon() + "</i>" ) );
-        Button ebBtn = new Button( Constants.INSTANCE.ExpressionEditor() );
+        popup.addRow( new SmallLabel( "<i>" + GuidedRuleEditorResources.CONSTANTS.AdvancedOptionsColon() + "</i>" ) );
+        Button ebBtn = new Button( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() );
 
         ebBtn.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
@@ -259,7 +260,7 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( Constants.INSTANCE.ExpressionEditor(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
                             ebBtn );
 
         popup.show();
@@ -278,7 +279,7 @@ public class PopupCreator {
         final String factType = getFactType( fp,
                                              con );
 
-        String title = ( con == null ) ? Constants.INSTANCE.ModifyConstraintsFor0( fp.getFactType() ) : Constants.INSTANCE.AddSubFieldConstraint();
+        String title = ( con == null ) ? GuidedRuleEditorResources.CONSTANTS.ModifyConstraintsFor0( fp.getFactType() ) : GuidedRuleEditorResources.CONSTANTS.AddSubFieldConstraint();
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          title );
 
@@ -317,14 +318,14 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( Constants.INSTANCE.AddARestrictionOnAField(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.AddARestrictionOnAField(),
                             box );
 
         final ListBox composites = new ListBox();
         composites.addItem( "..." );
-        composites.addItem( Constants.INSTANCE.AllOfAnd(),
+        composites.addItem( GuidedRuleEditorResources.CONSTANTS.AllOfAnd(),
                             CompositeFieldConstraint.COMPOSITE_TYPE_AND );
-        composites.addItem( Constants.INSTANCE.AnyOfOr(),
+        composites.addItem( GuidedRuleEditorResources.CONSTANTS.AnyOfOr(),
                             CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
 
@@ -338,21 +339,21 @@ public class PopupCreator {
             }
         } );
 
-        InfoPopup infoComp = new InfoPopup( Constants.INSTANCE.MultipleFieldConstraints(),
-                                            Constants.INSTANCE.MultipleConstraintsTip1() );
+        InfoPopup infoComp = new InfoPopup( GuidedRuleEditorResources.CONSTANTS.MultipleFieldConstraints(),
+                GuidedRuleEditorResources.CONSTANTS.MultipleConstraintsTip1() );
 
         HorizontalPanel horiz = new HorizontalPanel();
 
         horiz.add( composites );
         horiz.add( infoComp );
         if ( con == null ) {
-            popup.addAttribute( Constants.INSTANCE.MultipleFieldConstraint(),
+            popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.MultipleFieldConstraint(),
                                 horiz );
         }
 
         if ( con == null ) {
-            popup.addRow( new SmallLabel( "<i>" + Constants.INSTANCE.AdvancedOptionsColon() + "</i>" ) ); //NON-NLS
-            Button predicate = new Button( Constants.INSTANCE.NewFormula() );
+            popup.addRow( new SmallLabel( "<i>" + GuidedRuleEditorResources.CONSTANTS.AdvancedOptionsColon() + "</i>" ) ); //NON-NLS
+            Button predicate = new Button( GuidedRuleEditorResources.CONSTANTS.NewFormula() );
             predicate.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     SingleFieldConstraint con = new SingleFieldConstraint();
@@ -362,10 +363,10 @@ public class PopupCreator {
                     popup.hide();
                 }
             } );
-            popup.addAttribute( Constants.INSTANCE.AddANewFormulaStyleExpression(),
+            popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.AddANewFormulaStyleExpression(),
                                 predicate );
 
-            Button ebBtn = new Button( Constants.INSTANCE.ExpressionEditor() );
+            Button ebBtn = new Button( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() );
 
             ebBtn.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
@@ -377,7 +378,7 @@ public class PopupCreator {
                     popup.hide();
                 }
             } );
-            popup.addAttribute( Constants.INSTANCE.ExpressionEditor(),
+            popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
                                 ebBtn );
 
             doBindingEditor( popup );
@@ -425,7 +426,7 @@ public class PopupCreator {
                 public void onClick( ClickEvent event ) {
                     String var = varTxt.getText();
                     if ( modeller.isVariableNameUsed( var ) ) {
-                        Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
+                        Window.alert( GuidedRuleEditorResources.CONSTANTS.TheVariableName0IsAlreadyTaken( var ) );
                         return;
                     }
                     pattern.setBoundName( varTxt.getText() );
@@ -435,7 +436,7 @@ public class PopupCreator {
             } );
 
             varName.add( bindVar );
-            popup.addAttribute( Constants.INSTANCE.VariableName(),
+            popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.VariableName(),
                                 varName );
 
         }

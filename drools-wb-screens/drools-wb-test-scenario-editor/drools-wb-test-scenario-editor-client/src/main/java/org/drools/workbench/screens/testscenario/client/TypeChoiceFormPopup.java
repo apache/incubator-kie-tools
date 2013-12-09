@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
@@ -103,16 +104,16 @@ public class TypeChoiceFormPopup
     }
 
     private void addBoundVariableSelection() {
-        Button variable = new Button( Constants.INSTANCE.BoundVariable() );
+        Button variable = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
         variable.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
                 fireSelection( FieldData.TYPE_VARIABLE );
             }
         } );
-        addAttribute( Constants.INSTANCE.AVariable(),
+        addAttribute( GuidedRuleEditorResources.CONSTANTS.AVariable(),
                       widgets( variable,
-                               new InfoPopup( Constants.INSTANCE.ABoundVariable(),
-                                              Constants.INSTANCE.BoundVariableTip() ) ) );
+                               new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
+                                       GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
     }
 
     private void fireSelection( final int type ) {

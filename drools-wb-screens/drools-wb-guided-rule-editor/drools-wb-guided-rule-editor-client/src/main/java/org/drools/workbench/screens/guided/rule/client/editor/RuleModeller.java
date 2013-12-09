@@ -37,6 +37,7 @@ import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
@@ -164,7 +165,7 @@ public class RuleModeller extends DirtyableComposite
         currentLayoutRow = 0;
 
         Image addPattern = GuidedRuleEditorImages508.INSTANCE.NewItem();
-        addPattern.setTitle( Constants.INSTANCE.AddAConditionToThisRule() );
+        addPattern.setTitle( GuidedRuleEditorResources.CONSTANTS.AddAConditionToThisRule() );
         addPattern.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
@@ -188,7 +189,7 @@ public class RuleModeller extends DirtyableComposite
         if ( this.showLHS() ) {
             layout.setWidget( currentLayoutRow,
                               0,
-                              new SmallLabel( "<b>" + Constants.INSTANCE.WHEN() + "</b>" ) );
+                              new SmallLabel( "<b>" + GuidedRuleEditorResources.CONSTANTS.WHEN() + "</b>" ) );
             layout.getFlexCellFormatter().setColSpan( currentLayoutRow,
                                                       0,
                                                       4 );
@@ -206,13 +207,13 @@ public class RuleModeller extends DirtyableComposite
         if ( this.showRHS() ) {
             layout.setWidget( currentLayoutRow,
                               0,
-                              new SmallLabel( "<b>" + Constants.INSTANCE.THEN() + "</b>" ) );
+                              new SmallLabel( "<b>" + GuidedRuleEditorResources.CONSTANTS.THEN() + "</b>" ) );
             layout.getFlexCellFormatter().setColSpan( currentLayoutRow,
                                                       0,
                                                       4 );
 
             Image addAction = GuidedRuleEditorImages508.INSTANCE.NewItem();
-            addAction.setTitle( Constants.INSTANCE.AddAnActionToThisRule() );
+            addAction.setTitle( GuidedRuleEditorResources.CONSTANTS.AddAnActionToThisRule() );
             addAction.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
@@ -263,7 +264,7 @@ public class RuleModeller extends DirtyableComposite
     private void addExtendedRuleDropdown() {
         layout.setWidget( currentLayoutRow,
                           0,
-                          new SmallLabel( "<b>" + Constants.INSTANCE.EXTENDS() + "</b>" ) );
+                          new SmallLabel( "<b>" + GuidedRuleEditorResources.CONSTANTS.EXTENDS() + "</b>" ) );
 
         ruleSelector.setRuleName( model.parentName );
         ruleSelector.addValueChangeHandler( new ValueChangeHandler<String>() {
@@ -282,7 +283,7 @@ public class RuleModeller extends DirtyableComposite
     private void renderOptions( final int optionsRowIndex ) {
         layout.setWidget( optionsRowIndex,
                           2,
-                          new SmallLabel( Constants.INSTANCE.optionsRuleModeller() ) );
+                          new SmallLabel( GuidedRuleEditorResources.CONSTANTS.optionsRuleModeller() ) );
         if ( !isReadOnly ) {
             layout.setWidget( optionsRowIndex,
                               4,
@@ -354,7 +355,7 @@ public class RuleModeller extends DirtyableComposite
 
     private Widget getAddAttribute() {
         Image add = GuidedRuleEditorImages508.INSTANCE.NewItem();
-        add.setTitle( Constants.INSTANCE.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
+        add.setTitle( GuidedRuleEditorResources.CONSTANTS.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
 
         add.addClickHandler( new ClickHandler() {
 
@@ -436,7 +437,7 @@ public class RuleModeller extends DirtyableComposite
 
             if ( !w.isFactTypeKnown() ) {
                 final Image image = GuidedRuleEditorImages508.INSTANCE.Error();
-                image.setTitle( Constants.INSTANCE.InvalidPatternSectionDisabled() );
+                image.setTitle( GuidedRuleEditorResources.CONSTANTS.InvalidPatternSectionDisabled() );
                 this.addLineIcon( currentLayoutRow,
                                   0,
                                   image );
@@ -444,7 +445,7 @@ public class RuleModeller extends DirtyableComposite
 
             final int index = i;
             if ( !( this.lockRHS() || w.isReadOnly() ) ) {
-                this.addActionsButtonsToLayout( Constants.INSTANCE.AddAnActionBelow(),
+                this.addActionsButtonsToLayout( GuidedRuleEditorResources.CONSTANTS.AddAnActionBelow(),
                                                 new ClickHandler() {
 
                                                     public void onClick( ClickEvent event ) {
@@ -554,7 +555,7 @@ public class RuleModeller extends DirtyableComposite
 
             if ( !w.isFactTypeKnown() ) {
                 final Image image = GuidedRuleEditorImages508.INSTANCE.Error();
-                image.setTitle( Constants.INSTANCE.InvalidPatternSectionDisabled() );
+                image.setTitle( GuidedRuleEditorResources.CONSTANTS.InvalidPatternSectionDisabled() );
                 this.addLineIcon( currentLayoutRow,
                                   0,
                                   image );
@@ -562,7 +563,7 @@ public class RuleModeller extends DirtyableComposite
 
             final int index = i;
             if ( !( this.lockLHS() || w.isReadOnly() ) ) {
-                this.addActionsButtonsToLayout( Constants.INSTANCE.AddAConditionBelow(),
+                this.addActionsButtonsToLayout( GuidedRuleEditorResources.CONSTANTS.AddAConditionBelow(),
                                                 new ClickHandler() {
 
                                                     public void onClick( ClickEvent event ) {
@@ -618,12 +619,12 @@ public class RuleModeller extends DirtyableComposite
                                   RuleModellerWidget w ) {
         final DirtyableFlexTable wrapper = new DirtyableFlexTable();
         final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-        remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
+        remove.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                if ( Window.confirm( Constants.INSTANCE.RemoveThisEntireConditionQ() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisEntireConditionQ() ) ) {
                     if ( model.removeLhsItem( idx ) ) {
                         refreshWidget();
 
@@ -632,7 +633,7 @@ public class RuleModeller extends DirtyableComposite
                         eventBus.fireEventFromSource( tvce,
                                                       model );
                     } else {
-                        ErrorPopup.showMessage( Constants.INSTANCE.CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule() );
+                        ErrorPopup.showMessage( GuidedRuleEditorResources.CONSTANTS.CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule() );
                     }
                 }
             }
@@ -663,12 +664,12 @@ public class RuleModeller extends DirtyableComposite
                                   RuleModellerWidget w ) {
         final DirtyableFlexTable wrapper = new DirtyableFlexTable();
         final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-        remove.setTitle( Constants.INSTANCE.RemoveThisAction() );
+        remove.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisAction() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItem() ) ) {
                     model.removeRhsItem( idx );
                     refreshWidget();
 
@@ -746,11 +747,11 @@ public class RuleModeller extends DirtyableComposite
         addPattern.addClickHandler( addBelowListener );
 
         Image moveDown = CommonAltedImages.INSTANCE.MoveDown();
-        moveDown.setTitle( Constants.INSTANCE.MoveDown() );
+        moveDown.setTitle( GuidedRuleEditorResources.CONSTANTS.MoveDown() );
         moveDown.addClickHandler( moveDownListener );
 
         Image moveUp = CommonAltedImages.INSTANCE.MoveUp();
-        moveUp.setTitle( Constants.INSTANCE.MoveUp() );
+        moveUp.setTitle( GuidedRuleEditorResources.CONSTANTS.MoveUp() );
         moveUp.addClickHandler( moveUpListener );
 
         hp.add( addPattern );

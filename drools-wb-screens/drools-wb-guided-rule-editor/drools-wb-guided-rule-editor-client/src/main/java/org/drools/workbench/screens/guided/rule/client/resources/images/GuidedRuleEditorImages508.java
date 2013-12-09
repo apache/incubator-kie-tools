@@ -30,55 +30,55 @@ public class GuidedRuleEditorImages508 {
 
     public Image Wizard() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().newWiz() );
-        image.setAltText( Constants.INSTANCE.Wizard() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.Wizard() );
         return image;
     }
 
     public Image DeleteItemSmall() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.itemImages().deleteItemSmall() );
-        image.setAltText( Constants.INSTANCE.DeleteItem() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.DeleteItem() );
         return image;
     }
 
     public Image NewItem() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.itemImages().newItem() );
-        image.setAltText( Constants.INSTANCE.NewItem() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.NewItem() );
         return image;
     }
 
     public Image WarningSmall() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().warning() );
-        image.setAltText( Constants.INSTANCE.Warning() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.Warning() );
         return image;
     }
 
     public Image Error() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().error() );
-        image.setAltText( Constants.INSTANCE.Error() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.Error() );
         return image;
     }
 
     public Image EditDisabled() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().editDisabled() );
-        image.setAltText( Constants.INSTANCE.EditDisabled() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.EditDisabled() );
         return image;
     }
 
     public Image AddConnective() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().addConnective() );
-        image.setAltText( Constants.INSTANCE.AddMoreOptionsToThisFieldsValues() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.AddMoreOptionsToThisFieldsValues() );
         return image;
     }
 
     public Image AddFieldToFact() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().addFieldToFact() );
-        image.setAltText( Constants.INSTANCE.AddAFieldToThisExpectation() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.AddAFieldToThisExpectation() );
         return image;
     }
 
     public Image Edit() {
         Image image = new Image( CommonImages.INSTANCE.edit() );
-        image.setAltText( Constants.INSTANCE.Edit() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.Edit() );
         return image;
     }
 

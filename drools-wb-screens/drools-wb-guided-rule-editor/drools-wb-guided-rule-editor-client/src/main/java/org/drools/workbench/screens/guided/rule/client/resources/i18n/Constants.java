@@ -32,7 +32,6 @@ public interface Constants
         extends
         Messages {
 
-    Constants INSTANCE = GWT.create( Constants.class );
 
     String AddAnotherFieldToThisSoYouCanSetItsValue();
 
@@ -346,4 +345,6 @@ public interface Constants
     String Action();
 
     String Init();
+
+    String AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
 }

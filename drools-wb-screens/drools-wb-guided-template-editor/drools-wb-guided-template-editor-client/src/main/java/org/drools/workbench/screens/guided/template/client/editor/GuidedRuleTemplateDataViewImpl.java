@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
@@ -58,7 +59,7 @@ public class GuidedRuleTemplateDataViewImpl extends Composite implements GuidedR
                                                                                        oracle,
                                                                                        isReadOnly,
                                                                                        eventBus );
-                final Button btnAddRow = new Button( Constants.INSTANCE.AddRow(),
+                final Button btnAddRow = new Button( GuidedRuleEditorResources.CONSTANTS.AddRow(),
                                                      new ClickHandler() {
 
                                                          public void onClick( ClickEvent event ) {

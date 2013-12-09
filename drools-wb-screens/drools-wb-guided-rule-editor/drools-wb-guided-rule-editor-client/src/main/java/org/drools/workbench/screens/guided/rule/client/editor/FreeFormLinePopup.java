@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.client.common.Popup;
 
@@ -54,10 +55,10 @@ public class FreeFormLinePopup extends Popup {
     protected DynamicTextArea textArea = new DynamicTextArea();
 
     @UiField()
-    protected Button btnOK = new Button( Constants.INSTANCE.OK() );
+    protected Button btnOK = new Button( GuidedRuleEditorResources.CONSTANTS.OK() );
 
     @UiField()
-    protected Button btnCancel = new Button( Constants.INSTANCE.Cancel() );
+    protected Button btnCancel = new Button( GuidedRuleEditorResources.CONSTANTS.Cancel() );
 
     @UiField()
     protected VerticalPanel content = new VerticalPanel();

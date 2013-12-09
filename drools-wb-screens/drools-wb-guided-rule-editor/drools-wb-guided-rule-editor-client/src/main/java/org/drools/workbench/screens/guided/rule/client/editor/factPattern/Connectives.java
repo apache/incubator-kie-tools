@@ -35,6 +35,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdo
 import org.drools.workbench.screens.guided.rule.client.editor.ConstraintValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.workbench.common.widgets.client.callbacks.Callback;
@@ -90,8 +91,8 @@ public class Connectives {
 
                                                     if ( !isReadOnly ) {
                                                         Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-                                                        clear.setAltText( Constants.INSTANCE.RemoveThisRestriction() );
-                                                        clear.setTitle( Constants.INSTANCE.RemoveThisRestriction() );
+                                                        clear.setAltText( GuidedRuleEditorResources.CONSTANTS.RemoveThisRestriction() );
+                                                        clear.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisRestriction() );
                                                         clear.addClickHandler( createClickHandlerForClearImageButton( c,
                                                                                                                       index ) );
                                                         hp.add( clear );
@@ -143,7 +144,7 @@ public class Connectives {
                                                                         } );
 
         } else {
-            final SmallLabel w = new SmallLabel( "<b>" + ( cc.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() ) ) + "</b>" );
+            final SmallLabel w = new SmallLabel( "<b>" + ( cc.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName( cc.getOperator() ) ) + "</b>" );
             callback.callback( w );
         }
     }
@@ -153,7 +154,7 @@ public class Connectives {
         return new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItem() ) ) {
                     sfc.removeConnective( index );
                     modeller.makeDirty();
                     modeller.refreshWidget();

@@ -38,6 +38,7 @@ import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
@@ -105,7 +106,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         if ( pattern.getFactPattern() == null ) {
             panel.setWidget( r++,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPatterns() + "</font>",
                                                  leftPatternclick,
                                                  !this.readOnly ) );
         }
@@ -117,7 +118,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         if ( this.getFromCollectPattern().getRightPattern() == null ) {
             panel.setWidget( r++,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPatterns() + "</font>",
                                                  rightPatternclick,
                                                  !this.readOnly ) );
         } else {
@@ -177,7 +178,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                               new ClickHandler() {
 
                                                   public void onClick( ClickEvent event ) {
-                                                      if ( Window.confirm( Constants.INSTANCE.RemoveThisBlockOfData() ) ) {
+                                                      if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisBlockOfData() ) ) {
                                                           setModified( true );
                                                           getFromCollectPattern().setRightPattern( null );
                                                           getModeller().refreshWidget();
@@ -193,11 +194,11 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     protected void showFactTypeSelector( final Widget w ) {
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
+        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
 
         final ListBox box = new ListBox();
 
-        box.addItem( Constants.INSTANCE.Choose() );
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
 
         for ( Map.Entry<String, String> entry : this.getExtraLeftSidePatternFactTypes().entrySet() ) {
             box.addItem( entry.getKey(),
@@ -218,7 +219,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             }
         } );
 
-        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
 
         popup.show();
@@ -232,15 +233,15 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
 
-        box.addItem( Constants.INSTANCE.Choose() );
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[ i ] );
         }
         box.setSelectedIndex( 0 );
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
-        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
+        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
@@ -253,7 +254,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
             }
         } );
 
-        final Button freeFormDRLBtn = new Button( Constants.INSTANCE.FreeFormDrl() );
+        final Button freeFormDRLBtn = new Button( GuidedRuleEditorResources.CONSTANTS.FreeFormDrl() );
         final Button fromBtn = new Button( HumanReadableConstants.INSTANCE.From() );
         final Button fromAccumulateBtn = new Button( HumanReadableConstants.INSTANCE.FromAccumulate() );
         final Button fromCollectBtn = new Button( HumanReadableConstants.INSTANCE.FromCollect() );

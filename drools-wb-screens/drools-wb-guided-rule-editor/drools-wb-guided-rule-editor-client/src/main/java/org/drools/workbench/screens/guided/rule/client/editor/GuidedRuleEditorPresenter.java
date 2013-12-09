@@ -23,8 +23,12 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.editor.validator.GuidedRuleEditorValidator;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
@@ -62,6 +66,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.IsDirty;
@@ -383,18 +388,24 @@ public class GuidedRuleEditorPresenter {
     }
 
     private void save() {
-        new SaveOperationService().save( path,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 service.call( getSaveSuccessCallback(),
-                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                                                        view.getContent(),
-                                                                                                                        metadataWidget.getContent(),
-                                                                                                                        commitMessage );
-                                             }
-                                         } );
+        GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator(model, GuidedRuleEditorResources.CONSTANTS);
+
+        if (validator.isValid()) {
+            new SaveOperationService().save(path,
+                    new CommandWithCommitMessage() {
+                        @Override
+                        public void execute(final String commitMessage) {
+                            view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                            service.call(getSaveSuccessCallback(),
+                                    new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
+                                    view.getContent(),
+                                    metadataWidget.getContent(),
+                                    commitMessage);
+                        }
+                    });
+        } else {
+            ErrorPopup.showMessage(validator.getErrorMessage());
+        }
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {

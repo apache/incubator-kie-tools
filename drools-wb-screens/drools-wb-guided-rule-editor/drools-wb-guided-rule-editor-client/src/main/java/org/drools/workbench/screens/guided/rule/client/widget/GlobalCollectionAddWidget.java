@@ -20,6 +20,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
@@ -69,7 +70,7 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
         SimplePanel sp = new SimplePanel();
         sp.setStyleName( "model-builderInner-Background" ); //NON-NLS
-        sp.add( new SmallLabel( "&nbsp;" + Constants.INSTANCE.AddXToListY( gca.getFactName(),
+        sp.add( new SmallLabel( "&nbsp;" + GuidedRuleEditorResources.CONSTANTS.AddXToListY( gca.getFactName(),
                                                                            gca.getGlobalName() ) ) );
 
         if ( this.readOnly ) {

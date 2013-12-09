@@ -238,7 +238,7 @@ public class CEPOperatorsDropdown extends Composite
         String selectedText = "";
         box = new ListBox();
 
-        box.addItem( Constants.INSTANCE.pleaseChoose(),
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
                      "" );
         for ( int i = 0; i < operators.length; i++ ) {
             String op = operators[ i ];

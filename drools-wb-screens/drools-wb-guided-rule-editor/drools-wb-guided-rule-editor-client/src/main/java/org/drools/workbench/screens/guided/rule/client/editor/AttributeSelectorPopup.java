@@ -46,7 +46,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                    boolean lockRHS,
                                    final Command refresh ) {
         super( getImage(),
-               Constants.INSTANCE.AddAnOptionToTheRule() );
+                GuidedRuleEditorResources.CONSTANTS.AddAnOptionToTheRule() );
 
         setTextBox( model,
                     refresh );
@@ -63,7 +63,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
 
     private static Image getImage() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().config() );
-        image.setAltText( Constants.INSTANCE.Config() );
+        image.setAltText( GuidedRuleEditorResources.CONSTANTS.Config() );
         return image;
     }
 
@@ -77,7 +77,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                  refresh,
                                  box ) );
 
-        addAttribute( Constants.INSTANCE.Metadata3(),
+        addAttribute( GuidedRuleEditorResources.CONSTANTS.Metadata3(),
                       horiz );
 
     }
@@ -113,7 +113,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                 hide();
             }
         } );
-        addAttribute( Constants.INSTANCE.Attribute1(),
+        addAttribute( GuidedRuleEditorResources.CONSTANTS.Attribute1(),
                       list );
 
     }
@@ -122,7 +122,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                  boolean lockLHS,
                                  boolean lockRHS,
                                  final Command refresh ) {
-        Button freezeConditions = new Button( Constants.INSTANCE.Conditions() );
+        Button freezeConditions = new Button( GuidedRuleEditorResources.CONSTANTS.Conditions() );
         freezeConditions.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
@@ -132,7 +132,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                 hide();
             }
         } );
-        Button freezeActions = new Button( Constants.INSTANCE.Actions() );
+        Button freezeActions = new Button( GuidedRuleEditorResources.CONSTANTS.Actions() );
         freezeActions.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
@@ -149,11 +149,11 @@ public class AttributeSelectorPopup extends FormStylePopup {
         if ( !lockRHS ) {
             hz.add( freezeActions );
         }
-        hz.add( new InfoPopup( Constants.INSTANCE.FrozenAreas(),
-                               Constants.INSTANCE.FrozenExplanation() ) );
+        hz.add( new InfoPopup( GuidedRuleEditorResources.CONSTANTS.FrozenAreas(),
+                GuidedRuleEditorResources.CONSTANTS.FrozenExplanation() ) );
 
         if ( hz.getWidgetCount() > 1 ) {
-            addAttribute( Constants.INSTANCE.FreezeAreasForEditing(),
+            addAttribute( GuidedRuleEditorResources.CONSTANTS.FreezeAreasForEditing(),
                           hz );
         }
     }
@@ -162,8 +162,8 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                 final Command refresh,
                                 final TextBox box ) {
         final Image addbutton = GuidedRuleEditorImages508.INSTANCE.NewItem();
-        addbutton.setAltText( Constants.INSTANCE.AddMetadataToTheRule() );
-        addbutton.setTitle( Constants.INSTANCE.AddMetadataToTheRule() );
+        addbutton.setAltText( GuidedRuleEditorResources.CONSTANTS.AddMetadataToTheRule() );
+        addbutton.setTitle( GuidedRuleEditorResources.CONSTANTS.AddMetadataToTheRule() );
 
         addbutton.addClickHandler( new ClickHandler() {
 
@@ -172,7 +172,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                 //Check MetaData has a name
                 final String metaData = box.getText().trim();
                 if ( metaData.isEmpty() ) {
-                    Window.alert( Constants.INSTANCE.MetadataNameEmpty() );
+                    Window.alert( GuidedRuleEditorResources.CONSTANTS.MetadataNameEmpty() );
                     return;
                 }
 
@@ -185,7 +185,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                     }
                 }
                 if ( !isUnique ) {
-                    Window.alert( Constants.INSTANCE.MetadataNotUnique0( metaData ) );
+                    Window.alert( GuidedRuleEditorResources.CONSTANTS.MetadataNotUnique0( metaData ) );
                     return;
                 }
 

@@ -35,6 +35,7 @@ import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPatter
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -135,12 +136,12 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
         final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-        remove.setTitle( Constants.INSTANCE.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
+        remove.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                if ( Window.confirm( Constants.INSTANCE.RemoveThisEntireConditionQ() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisEntireConditionQ() ) ) {
                     if ( pattern.removeFactPattern( idx ) ) {
                         getModeller().refreshWidget();
                     }
@@ -209,7 +210,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         String lbl = HumanReadable.getCEDisplayName( pattern.getType() );
 
         if ( pattern.getPatterns() == null || pattern.getPatterns().length == 0 ) {
-            lbl += " <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>";
+            lbl += " <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPatterns() + "</font>";
         }
 
         return new ClickableLabel( lbl + ":",
@@ -225,15 +226,15 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
 
-        box.addItem( Constants.INSTANCE.Choose() );
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[ i ] );
         }
         box.setSelectedIndex( 0 );
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
-        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
+        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 

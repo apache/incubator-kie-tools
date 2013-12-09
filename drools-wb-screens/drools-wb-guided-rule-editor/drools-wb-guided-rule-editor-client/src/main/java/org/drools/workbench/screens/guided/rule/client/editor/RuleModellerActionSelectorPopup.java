@@ -42,6 +42,7 @@ import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -64,18 +65,18 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     @Override
     protected String getPopupTitle() {
-        return Constants.INSTANCE.AddANewAction();
+        return GuidedRuleEditorResources.CONSTANTS.AddANewAction();
     }
 
     @Override
     public Widget getContent() {
         if ( position == null ) {
-            positionCbo.addItem( Constants.INSTANCE.Bottom(),
+            positionCbo.addItem( GuidedRuleEditorResources.CONSTANTS.Bottom(),
                                  String.valueOf( this.model.rhs.length ) );
-            positionCbo.addItem( Constants.INSTANCE.Top(),
+            positionCbo.addItem( GuidedRuleEditorResources.CONSTANTS.Top(),
                                  "0" );
             for ( int i = 1; i < model.rhs.length; i++ ) {
-                positionCbo.addItem( Constants.INSTANCE.Line0( i ),
+                positionCbo.addItem( GuidedRuleEditorResources.CONSTANTS.Line0( i ),
                                      String.valueOf( i ) );
             }
         } else {
@@ -85,16 +86,16 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         }
 
         if ( oracle.getDSLConditions().size() == 0 && oracle.getFactTypes().length == 0 ) {
-            layoutPanel.addRow( new HTML( "<div class='highlight'>" + Constants.INSTANCE.NoModelTip() + "</div>" ) );
+            layoutPanel.addRow( new HTML( "<div class='highlight'>" + GuidedRuleEditorResources.CONSTANTS.NoModelTip() + "</div>" ) );
         }
 
         //only show the drop down if we are not using fixed position.
         if ( position == null ) {
             HorizontalPanel hp0 = new HorizontalPanel();
-            hp0.add( new HTML( Constants.INSTANCE.PositionColon() ) );
+            hp0.add( new HTML( GuidedRuleEditorResources.CONSTANTS.PositionColon() ) );
             hp0.add( positionCbo );
-            hp0.add( new InfoPopup( Constants.INSTANCE.PositionColon(),
-                                    Constants.INSTANCE.ActionPositionExplanation() ) );
+            hp0.add( new InfoPopup( GuidedRuleEditorResources.CONSTANTS.PositionColon(),
+                    GuidedRuleEditorResources.CONSTANTS.ActionPositionExplanation() ) );
             layoutPanel.addRow( hp0 );
         }
 
@@ -103,7 +104,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         layoutPanel.addRow( choicesPanel );
 
         HorizontalPanel hp = new HorizontalPanel();
-        Button ok = new Button( Constants.INSTANCE.OK() );
+        Button ok = new Button( GuidedRuleEditorResources.CONSTANTS.OK() );
         hp.add( ok );
         ok.addClickHandler( new ClickHandler() {
 
@@ -112,7 +113,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
         } );
 
-        Button cancel = new Button( Constants.INSTANCE.Cancel() );
+        Button cancel = new Button( GuidedRuleEditorResources.CONSTANTS.Cancel() );
         hp.add( cancel );
         cancel.addClickHandler( new ClickHandler() {
 
@@ -122,7 +123,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         } );
 
         CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
-        chkOnlyDisplayDSLConditions.setText( Constants.INSTANCE.OnlyDisplayDSLActions() );
+        chkOnlyDisplayDSLConditions.setText( GuidedRuleEditorResources.CONSTANTS.OnlyDisplayDSLActions() );
         chkOnlyDisplayDSLConditions.setValue( bOnlyShowDSLConditions );
         chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
@@ -210,7 +211,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
 
-            choices.addItem( Constants.INSTANCE.ChangeFieldValuesOf0( v ),
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.ChangeFieldValuesOf0( v ),
                              "VAR" + v );
             cmds.put( "VAR" + v,
                       new Command() {
@@ -234,7 +235,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( int i = 0; i < globals.length; i++ ) {
             final String v = globals[ i ];
-            choices.addItem( Constants.INSTANCE.ChangeFieldValuesOf0( v ),
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.ChangeFieldValuesOf0( v ),
                              "GLOBVAR" + v );
             cmds.put( "GLOBVAR" + v,
                       new Command() {
@@ -257,7 +258,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
-            choices.addItem( Constants.INSTANCE.Delete0( v ),
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.Delete0( v ),
                              "RET" + v );
             cmds.put( "RET" + v,
                       new Command() {
@@ -281,7 +282,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
 
-            choices.addItem( Constants.INSTANCE.Modify0( v ),
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.Modify0( v ),
                              "MOD" + v );
             cmds.put( "MOD" + v,
                       new Command() {
@@ -303,7 +304,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
             final String item = oracle.getFactTypes()[ i ];
-            choices.addItem( Constants.INSTANCE.InsertFact0( item ),
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.InsertFact0( item ),
                              "INS" + item );
             cmds.put( "INS" + item,
                       new Command() {
@@ -325,7 +326,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.addItem( SECTION_SEPARATOR );
         for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
             final String item = oracle.getFactTypes()[ i ];
-            choices.addItem( Constants.INSTANCE.LogicallyInsertFact0( item ),
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.LogicallyInsertFact0( item ),
                              "LINS" + item );
             cmds.put( "LINS" + item,
                       new Command() {
@@ -353,7 +354,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             for ( int i = 0; i < oracle.getGlobalCollections().length; i++ ) {
                 final String glob = oracle.getGlobalCollections()[ i ];
                 final String var = bf;
-                choices.addItem( Constants.INSTANCE.Append0ToList1( var,
+                choices.addItem( GuidedRuleEditorResources.CONSTANTS.Append0ToList1( var,
                                                                     glob ),
                                  "GLOBCOL" + glob + var );
                 cmds.put( "GLOBCOL" + glob + var,
@@ -380,7 +381,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
         if ( UserCapabilities.canSeeModulesTree() ) {
             choices.addItem( SECTION_SEPARATOR );
-            choices.addItem( Constants.INSTANCE.AddFreeFormDrl(),
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.AddFreeFormDrl(),
                              "FF" );
             cmds.put( "FF",
                       new Command() {
@@ -398,7 +399,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
             for ( int i = 0; i < globals.length; i++ ) {
                 final String v = globals[ i ];
-                choices.addItem( Constants.INSTANCE.CallMethodOn0( v ),
+                choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
                                  "GLOBCALL" + v );
                 cmds.put( "GLOBCALL" + v,
                           new Command() {
@@ -419,7 +420,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             for ( Iterator<String> iter = lhsVars.iterator(); iter.hasNext(); ) {
                 final String v = iter.next();
 
-                choices.addItem( Constants.INSTANCE.CallMethodOn0( v ),
+                choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
                                  "CALL" + v );
                 cmds.put( "CALL" + v,
                           new Command() {
@@ -439,7 +440,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             for ( Iterator<String> iter = rhsVars.iterator(); iter.hasNext(); ) {
                 final String v = iter.next();
 
-                choices.addItem( Constants.INSTANCE.CallMethodOn0( v ),
+                choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
                                  "CALL" + v );
                 cmds.put( "CALL" + v,
                           new Command() {

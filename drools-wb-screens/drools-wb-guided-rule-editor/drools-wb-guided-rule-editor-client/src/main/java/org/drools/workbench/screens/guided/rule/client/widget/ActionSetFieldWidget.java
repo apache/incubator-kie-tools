@@ -37,6 +37,7 @@ import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
 import org.drools.workbench.screens.guided.rule.client.editor.ActionValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
@@ -118,7 +119,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         if ( this.variableClass == null ) {
             readOnly = true;
-            ErrorPopup.showMessage( Constants.INSTANCE.CouldNotFindTheTypeForVariable0( set.getVariable() ) );
+            ErrorPopup.showMessage( GuidedRuleEditorResources.CONSTANTS.CouldNotFindTheTypeForVariable0( set.getVariable() ) );
         }
 
         this.isFactTypeKnown = oracle.isFactTypeRecognized( this.variableClass );
@@ -157,7 +158,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
-                    if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
+                    if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItem() ) ) {
                         model.removeField( idx );
                         setModified( true );
                         getModeller().refreshWidget();
@@ -182,8 +183,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
                 Image image = GuidedRuleEditorImages508.INSTANCE.Edit();
-                image.setAltText( Constants.INSTANCE.AddFirstNewField() );
-                image.setTitle( Constants.INSTANCE.AddFirstNewField() );
+                image.setAltText( GuidedRuleEditorResources.CONSTANTS.AddFirstNewField() );
+                image.setTitle( GuidedRuleEditorResources.CONSTANTS.AddFirstNewField() );
                 image.addClickHandler( new ClickHandler() {
 
                     public void onClick( ClickEvent sender ) {
@@ -220,7 +221,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         String descFact = ( type != null ) ? type + " <b>[" + model.getVariable() + "]</b>" : model.getVariable();
 
-        String sl = Constants.INSTANCE.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
+        String sl = GuidedRuleEditorResources.CONSTANTS.setterLabel( HumanReadable.getActionDisplayName( modifyType ),
                                                     descFact );
         return new ClickableLabel( sl,
                                    clk,
@@ -230,7 +231,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     protected void showAddFieldPopup( ClickEvent w ) {
         final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                         Constants.INSTANCE.AddAField() );
+                GuidedRuleEditorResources.CONSTANTS.AddAField() );
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -241,7 +242,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( Constants.INSTANCE.AddField(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.AddField(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 

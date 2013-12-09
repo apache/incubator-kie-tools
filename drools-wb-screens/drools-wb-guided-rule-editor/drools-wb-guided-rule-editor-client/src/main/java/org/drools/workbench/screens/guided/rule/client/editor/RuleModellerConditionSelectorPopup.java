@@ -37,6 +37,7 @@ import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPatter
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -60,18 +61,18 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     @Override
     protected String getPopupTitle() {
-        return Constants.INSTANCE.AddAConditionToTheRule();
+        return GuidedRuleEditorResources.CONSTANTS.AddAConditionToTheRule();
     }
 
     @Override
     public Widget getContent() {
         if ( position == null ) {
-            positionCbo.addItem( Constants.INSTANCE.Bottom(),
+            positionCbo.addItem( GuidedRuleEditorResources.CONSTANTS.Bottom(),
                                  String.valueOf( this.model.lhs.length ) );
-            positionCbo.addItem( Constants.INSTANCE.Top(),
+            positionCbo.addItem( GuidedRuleEditorResources.CONSTANTS.Top(),
                                  "0" );
             for ( int i = 1; i < model.lhs.length; i++ ) {
-                positionCbo.addItem( Constants.INSTANCE.Line0( i ),
+                positionCbo.addItem( GuidedRuleEditorResources.CONSTANTS.Line0( i ),
                                      String.valueOf( i ) );
             }
         } else {
@@ -81,16 +82,16 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
         }
 
         if ( oracle.getDSLConditions().size() == 0 && oracle.getFactTypes().length == 0 ) {
-            layoutPanel.addRow( new HTML( "<div class='highlight'>" + Constants.INSTANCE.NoModelTip() + "</div>" ) );
+            layoutPanel.addRow( new HTML( "<div class='highlight'>" + GuidedRuleEditorResources.CONSTANTS.NoModelTip() + "</div>" ) );
         }
 
         //only show the drop down if we are not using fixed position.
         if ( position == null ) {
             HorizontalPanel hp0 = new HorizontalPanel();
-            hp0.add( new HTML( Constants.INSTANCE.PositionColon() ) );
+            hp0.add( new HTML( GuidedRuleEditorResources.CONSTANTS.PositionColon() ) );
             hp0.add( positionCbo );
-            hp0.add( new InfoPopup( Constants.INSTANCE.PositionColon(),
-                                    Constants.INSTANCE.ConditionPositionExplanation() ) );
+            hp0.add( new InfoPopup( GuidedRuleEditorResources.CONSTANTS.PositionColon(),
+                    GuidedRuleEditorResources.CONSTANTS.ConditionPositionExplanation() ) );
             layoutPanel.addRow( hp0 );
         }
 
@@ -99,7 +100,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
         layoutPanel.addRow( choicesPanel );
 
         HorizontalPanel hp = new HorizontalPanel();
-        Button ok = new Button( Constants.INSTANCE.OK() );
+        Button ok = new Button( GuidedRuleEditorResources.CONSTANTS.OK() );
         hp.add( ok );
         ok.addClickHandler( new ClickHandler() {
 
@@ -108,7 +109,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             }
         } );
 
-        Button cancel = new Button( Constants.INSTANCE.Cancel() );
+        Button cancel = new Button( GuidedRuleEditorResources.CONSTANTS.Cancel() );
         hp.add( cancel );
         cancel.addClickHandler( new ClickHandler() {
 
@@ -118,7 +119,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
         } );
 
         CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
-        chkOnlyDisplayDSLConditions.setText( Constants.INSTANCE.OnlyDisplayDSLConditions() );
+        chkOnlyDisplayDSLConditions.setText( GuidedRuleEditorResources.CONSTANTS.OnlyDisplayDSLConditions() );
         chkOnlyDisplayDSLConditions.setValue( bOnlyShowDSLConditions );
         chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
@@ -264,7 +265,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
     private void addFreeFormDrl() {
         if ( UserCapabilities.canSeeModulesTree() ) {
             choices.addItem( SECTION_SEPARATOR );
-            choices.addItem( Constants.INSTANCE.FreeFormDrl(),
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.FreeFormDrl(),
                              "FF" );
             cmds.put( "FF",
                       new Command() {

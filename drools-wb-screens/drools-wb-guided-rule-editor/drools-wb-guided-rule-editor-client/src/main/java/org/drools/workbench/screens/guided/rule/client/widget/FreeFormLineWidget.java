@@ -107,7 +107,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
     }
 
     private Widget createTextBox() {
-        textArea.setTitle( Constants.INSTANCE.ThisIsADrlExpressionFreeForm() );
+        textArea.setTitle( GuidedRuleEditorResources.CONSTANTS.ThisIsADrlExpressionFreeForm() );
         textArea.setText( this.action.getText() );
         textArea.addValueChangeHandler( new ValueChangeHandler<String>() {
 
@@ -128,7 +128,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
             btn.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
-                    final FreeFormLinePopup popup = new FreeFormLinePopup( Constants.INSTANCE.FreeFormDrl(),
+                    final FreeFormLinePopup popup = new FreeFormLinePopup( GuidedRuleEditorResources.CONSTANTS.FreeFormDrl(),
                                                                            action.getText() );
                     popup.addOKClickHandler( new ClickHandler() {
 

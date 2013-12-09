@@ -43,6 +43,7 @@ import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldNature;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
@@ -233,8 +234,8 @@ public class MethodParameterValueEditor
 
     protected void showTypeChoice( Widget w ) {
         final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                        Constants.INSTANCE.FieldValue() );
-        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
+                GuidedRuleEditorResources.CONSTANTS.FieldValue() );
+        Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
@@ -247,12 +248,12 @@ public class MethodParameterValueEditor
 
         } );
 
-        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
+        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
                            widgets( lit,
-                                    new InfoPopup( Constants.INSTANCE.Literal(),
-                                                   Constants.INSTANCE.LiteralValTip() ) ) );
+                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
+                                            GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedSection() ) );
+        form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
 
         /*
          * If there is a bound variable that is the same type of the current
@@ -265,7 +266,7 @@ public class MethodParameterValueEditor
         }
         for ( String v : vars ) {
             boolean createButton = false;
-            Button variable = new Button( Constants.INSTANCE.BoundVariable() );
+            Button variable = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
             if ( vars2.contains( v ) == false ) {
                 FactPattern factPattern = model.getModel().getLHSBoundFact( v );
                 if ( factPattern.getFactType().equals( this.parameterType ) ) {
@@ -278,7 +279,7 @@ public class MethodParameterValueEditor
                 }
             }
             if ( createButton == true ) {
-                form.addAttribute( Constants.INSTANCE.BoundVariable() + ":",
+                form.addAttribute( GuidedRuleEditorResources.CONSTANTS.BoundVariable() + ":",
                                    variable );
                 variable.addClickHandler( new ClickHandler() {
 

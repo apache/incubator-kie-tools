@@ -53,6 +53,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.ExpressionTypeChan
 import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionChangeHandlers;
 import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionTypeChangeHandlers;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -148,7 +149,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         ListBox startPoint = new ListBox();
         panel.add( startPoint );
 
-        startPoint.addItem( Constants.INSTANCE.ChooseDotDotDot(),
+        startPoint.addItem( GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
                             "" );
 
         // TODO {baunax} uncomment when global collections is implemented.
@@ -251,9 +252,9 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         final ListBox lb = new ListBox();
         lb.setVisibleItemCount( 1 );
-        lb.addItem( Constants.INSTANCE.ChooseDotDotDot(),
+        lb.addItem( GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
                     "" );
-        lb.addItem( "<==" + Constants.INSTANCE.DeleteItem(),
+        lb.addItem( "<==" + GuidedRuleEditorResources.CONSTANTS.DeleteItem(),
                     DELETE_VALUE );
 
         getCompletionsForCurrentType( expression.getParts().size() > 1,
@@ -540,7 +541,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
         Button ok = new Button( HumanReadableConstants.INSTANCE.Set() );
-        vn.add( new Label( Constants.INSTANCE.BindTheExpressionToAVariable() ) );
+        vn.add( new Label( GuidedRuleEditorResources.CONSTANTS.BindTheExpressionToAVariable() ) );
         vn.add( varName );
         vn.add( ok );
 
@@ -548,7 +549,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             public void onClick( ClickEvent event ) {
                 String var = varName.getText();
                 if ( getModeller().isVariableNameUsed( var ) ) {
-                    Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
+                    Window.alert( GuidedRuleEditorResources.CONSTANTS.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 expression.setBinding( var );

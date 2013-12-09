@@ -36,6 +36,7 @@ import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.MethodParameterValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
@@ -193,8 +194,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         if ( model.getState() == ActionCallMethod.TYPE_UNDEFINED ) {
             Image edit = GuidedRuleEditorImages508.INSTANCE.AddFieldToFact();
-            edit.setAltText( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
-            edit.setTitle( Constants.INSTANCE.AddAnotherFieldToThisSoYouCanSetItsValue() );
+            edit.setAltText( GuidedRuleEditorResources.CONSTANTS.AddAnotherFieldToThisSoYouCanSetItsValue() );
+            edit.setTitle( GuidedRuleEditorResources.CONSTANTS.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
@@ -219,7 +220,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                         Constants.INSTANCE.ChooseAMethodToInvoke() );
+                GuidedRuleEditorResources.CONSTANTS.ChooseAMethodToInvoke() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -230,7 +231,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( Constants.INSTANCE.ChooseAMethodToInvoke(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.ChooseAMethodToInvoke(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 

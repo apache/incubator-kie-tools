@@ -38,6 +38,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.resources.ItemImages;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
@@ -97,7 +98,7 @@ public class RuleAttributeWidget extends Composite {
         RuleMetadata[] meta = model.metadataList;
         if ( meta.length > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
-            hp.add( new SmallLabel( Constants.INSTANCE.Metadata2() ) );
+            hp.add( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.Metadata2() ) );
             layout.addRow( hp );
         }
         for ( int i = 0; i < meta.length; i++ ) {
@@ -110,7 +111,7 @@ public class RuleAttributeWidget extends Composite {
         RuleAttribute[] attrs = model.attributes;
         if ( attrs.length > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
-            hp.add( new SmallLabel( Constants.INSTANCE.Attributes1() ) );
+            hp.add( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.Attributes1() ) );
             layout.addRow( hp );
         }
         for ( int i = 0; i < attrs.length; i++ ) {
@@ -130,7 +131,7 @@ public class RuleAttributeWidget extends Composite {
      */
     public static ListBox getAttributeList() {
         ListBox list = new ListBox();
-        list.addItem( Constants.INSTANCE.Choose() );
+        list.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
 
         list.addItem( SALIENCE_ATTR );
         list.addItem( ENABLED_ATTR );
@@ -278,8 +279,8 @@ public class RuleAttributeWidget extends Composite {
         Widget editor;
 
         if ( rm.getAttributeName().equals( LOCK_LHS ) || rm.getAttributeName().equals( LOCK_RHS ) ) {
-            editor = new InfoPopup( Constants.INSTANCE.FrozenAreas(),
-                                    Constants.INSTANCE.FrozenExplanation() );
+            editor = new InfoPopup( GuidedRuleEditorResources.CONSTANTS.FrozenAreas(),
+                    GuidedRuleEditorResources.CONSTANTS.FrozenExplanation() );
         } else {
             editor = textBoxEditor( rm,
                                     isReadOnly );
@@ -337,7 +338,7 @@ public class RuleAttributeWidget extends Composite {
         Image remove = new Image( ItemImages.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisRuleOption() ) ) {
                     model.removeAttribute( idx );
                     parent.refreshWidget();
                 }
@@ -350,7 +351,7 @@ public class RuleAttributeWidget extends Composite {
         Image remove = new Image( ItemImages.INSTANCE.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                if ( Window.confirm( Constants.INSTANCE.RemoveThisRuleOption() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisRuleOption() ) ) {
                     model.removeMetadata( idx );
                     parent.refreshWidget();
                 }

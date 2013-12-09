@@ -50,6 +50,7 @@ import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
@@ -158,13 +159,13 @@ public class ActionValueEditor
     private Widget wrap( Widget w ) {
         HorizontalPanel wrapper = new HorizontalPanel();
         Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-        clear.setAltText( Constants.INSTANCE.RemoveActionValueDefinition() );
-        clear.setTitle( Constants.INSTANCE.RemoveActionValueDefinition() );
+        clear.setAltText( GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinition() );
+        clear.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
                 //Reset Constraint's value and value type
-                if ( Window.confirm( Constants.INSTANCE.RemoveActionValueDefinitionQuestion() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinitionQuestion() ) ) {
                     value.setNature( FieldNatureType.TYPE_UNDEFINED );
                     value.setValue( null );
                     doTypeChosen();
@@ -197,7 +198,7 @@ public class ActionValueEditor
     private Widget boundVariable() {
         // If there is a bound variable that is the same type of the current variable type, then display a list
         ListBox listVariable = new ListBox();
-        listVariable.addItem( Constants.INSTANCE.Choose() );
+        listVariable.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
         List<String> bindings = getApplicableBindings();
         for ( String v : bindings ) {
             listVariable.addItem( v );
@@ -379,8 +380,8 @@ public class ActionValueEditor
 
     protected void showTypeChoice( Widget w ) {
         final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                        Constants.INSTANCE.FieldValue() );
-        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
+                GuidedRuleEditorResources.CONSTANTS.FieldValue() );
+        Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
@@ -390,13 +391,13 @@ public class ActionValueEditor
             }
         } );
 
-        form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
+        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
                            widgets( lit,
-                                    new InfoPopup( Constants.INSTANCE.Literal(),
-                                                   Constants.INSTANCE.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
+                                            GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
 
         if ( modeller.isTemplate() ) {
-            Button templateButton = new Button( Constants.INSTANCE.TemplateKey() );
+            Button templateButton = new Button( GuidedRuleEditorResources.CONSTANTS.TemplateKey() );
             templateButton.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     value.setNature( FieldNatureType.TYPE_TEMPLATE );
@@ -404,16 +405,16 @@ public class ActionValueEditor
                     doTypeChosen( form );
                 }
             } );
-            form.addAttribute( Constants.INSTANCE.TemplateKey() + ":",
+            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.TemplateKey() + ":",
                                widgets( templateButton,
-                                        new InfoPopup( Constants.INSTANCE.Literal(),
-                                                       Constants.INSTANCE.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+                                        new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
+                                                GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
         }
 
         form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedSection() ) );
+        form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
 
-        Button formula = new Button( Constants.INSTANCE.Formula() );
+        Button formula = new Button( GuidedRuleEditorResources.CONSTANTS.Formula() );
         formula.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
@@ -425,8 +426,8 @@ public class ActionValueEditor
         // If there is a bound Facts or Fields that are of the same type as the current variable type, then show a button
         List<String> bindings = getApplicableBindings();
         if ( bindings.size() > 0 ) {
-            Button variable = new Button( Constants.INSTANCE.BoundVariable() );
-            form.addAttribute( Constants.INSTANCE.BoundVariable() + ":",
+            Button variable = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
+            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.BoundVariable() + ":",
                                variable );
             variable.addClickHandler( new ClickHandler() {
 
@@ -438,10 +439,10 @@ public class ActionValueEditor
             } );
         }
 
-        form.addAttribute( Constants.INSTANCE.Formula() + ":",
+        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.Formula() + ":",
                            widgets( formula,
-                                    new InfoPopup( Constants.INSTANCE.Formula(),
-                                                   Constants.INSTANCE.FormulaTip() ) ) );
+                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Formula(),
+                                                   GuidedRuleEditorResources.CONSTANTS.FormulaTip() ) ) );
 
         form.show();
     }

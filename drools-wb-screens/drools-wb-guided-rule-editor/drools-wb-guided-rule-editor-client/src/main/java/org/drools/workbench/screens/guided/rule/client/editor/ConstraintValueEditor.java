@@ -177,7 +177,7 @@ public class ConstraintValueEditor
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
             ImageButton clickme = new ImageButton( GuidedRuleEditorImages508.INSTANCE.Edit(),
                                                    GuidedRuleEditorImages508.INSTANCE.EditDisabled(),
-                                                   Constants.INSTANCE.Edit(),
+                                                   GuidedRuleEditorResources.CONSTANTS.Edit(),
                                                    new ClickHandler() {
                                                        public void onClick( ClickEvent event ) {
                                                            showTypeChoice( (Widget) event.getSource(),
@@ -220,12 +220,12 @@ public class ConstraintValueEditor
         }
         HorizontalPanel wrapper = new HorizontalPanel();
         Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-        clear.setTitle( Constants.INSTANCE.RemoveConstraintValueDefinition() );
+        clear.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveConstraintValueDefinition() );
         clear.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
                 //Reset Constraint's value and value type
-                if ( Window.confirm( Constants.INSTANCE.RemoveConstraintValueDefinitionQuestion() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveConstraintValueDefinitionQuestion() ) ) {
                     constraint.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
                     constraint.setValue( null );
                     constraint.clearParameters();
@@ -376,7 +376,7 @@ public class ConstraintValueEditor
         }
 
         final ListBox box = new ListBox();
-        box.addItem( Constants.INSTANCE.Choose() );
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
 
         List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
 
@@ -422,7 +422,7 @@ public class ConstraintValueEditor
             return new SmallLabel( box.getText() );
         }
 
-        String msg = Constants.INSTANCE.FormulaEvaluateToAValue();
+        String msg = GuidedRuleEditorResources.CONSTANTS.FormulaEvaluateToAValue();
         Image img = new Image( GuidedRuleEditorResources.INSTANCE.images().functionAssets() );
         img.setTitle( msg );
         box.setTitle( msg );
@@ -517,7 +517,7 @@ public class ConstraintValueEditor
                 return;
             }
             final CustomFormPopUp customFormPopUp = new CustomFormPopUp( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                                         Constants.INSTANCE.FieldValue(),
+                                                                         GuidedRuleEditorResources.CONSTANTS.FieldValue(),
                                                                          customFormConfiguration );
 
             final SingleFieldConstraint sfc = (SingleFieldConstraint) con;
@@ -538,9 +538,9 @@ public class ConstraintValueEditor
         }
 
         final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                        Constants.INSTANCE.FieldValue() );
+                GuidedRuleEditorResources.CONSTANTS.FieldValue() );
 
-        Button lit = new Button( Constants.INSTANCE.LiteralValue() );
+        Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
                 con.setConstraintValueType( isDropDownDataEnum && dropDownData != null ? SingleFieldConstraint.TYPE_ENUM : SingleFieldConstraint.TYPE_LITERAL );
@@ -571,15 +571,15 @@ public class ConstraintValueEditor
 
         //Literal value selector
         if ( showLiteralSelector ) {
-            form.addAttribute( Constants.INSTANCE.LiteralValue() + ":",
+            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
                                widgets( lit,
-                                        new InfoPopup( Constants.INSTANCE.LiteralValue(),
-                                                       Constants.INSTANCE.LiteralValTip() ) ) );
+                                        new InfoPopup( GuidedRuleEditorResources.CONSTANTS.LiteralValue(),
+                                                GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
         }
 
         //Template key selector
         if ( modeller.isTemplate() ) {
-            String templateKeyLabel = Constants.INSTANCE.TemplateKey();
+            String templateKeyLabel = GuidedRuleEditorResources.CONSTANTS.TemplateKey();
             Button templateKeyButton = new Button( templateKeyLabel );
             templateKeyButton.addClickHandler( new ClickHandler() {
 
@@ -592,13 +592,13 @@ public class ConstraintValueEditor
             form.addAttribute( templateKeyLabel + ":",
                                widgets( templateKeyButton,
                                         new InfoPopup( templateKeyLabel,
-                                                       Constants.INSTANCE.LiteralValTip() ) ) );
+                                                GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
         }
 
         //Divider, if we have any advanced options
         if ( showVariableSelector || showFormulaSelector || showExpressionSelector ) {
             form.addRow( new HTML( "<hr/>" ) );
-            form.addRow( new SmallLabel( Constants.INSTANCE.AdvancedOptions() ) );
+            form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedOptions() ) );
         }
 
         //Show variables selector, if there are any variables in scope
@@ -606,7 +606,7 @@ public class ConstraintValueEditor
             List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
             if ( bindingsInScope.size() > 0 || DataType.TYPE_COLLECTION.equals( this.fieldType ) ) {
 
-                final Button bindingButton = new Button( Constants.INSTANCE.BoundVariable() );
+                final Button bindingButton = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
 
                 //This Set is used as a flag to know whether the button has been added; due to use of callbacks
                 final Set<Button> bindingButtonContainer = new HashSet<Button>();
@@ -626,10 +626,10 @@ public class ConstraintValueEditor
                                                                          doTypeChosen( form );
                                                                      }
                                                                  } );
-                                                                 form.addAttribute( Constants.INSTANCE.AVariable(),
+                                                                 form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AVariable(),
                                                                                     widgets( bindingButton,
-                                                                                             new InfoPopup( Constants.INSTANCE.ABoundVariable(),
-                                                                                                            Constants.INSTANCE.BoundVariableTip() ) ) );
+                                                                                             new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
+                                                                                                     GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
                                                              }
                                                          }
                                                      }
@@ -641,7 +641,7 @@ public class ConstraintValueEditor
 
         //Formula selector
         if ( showFormulaSelector ) {
-            Button formula = new Button( Constants.INSTANCE.NewFormula() );
+            Button formula = new Button( GuidedRuleEditorResources.CONSTANTS.NewFormula() );
             formula.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
@@ -650,15 +650,15 @@ public class ConstraintValueEditor
                 }
             } );
 
-            form.addAttribute( Constants.INSTANCE.AFormula() + ":",
+            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AFormula() + ":",
                                widgets( formula,
-                                        new InfoPopup( Constants.INSTANCE.AFormula(),
-                                                       Constants.INSTANCE.FormulaExpressionTip() ) ) );
+                                        new InfoPopup( GuidedRuleEditorResources.CONSTANTS.AFormula(),
+                                                GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip() ) ) );
         }
 
         //Expression selector
         if ( showExpressionSelector ) {
-            Button expression = new Button( Constants.INSTANCE.ExpressionEditor() );
+            Button expression = new Button( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() );
             expression.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
@@ -667,10 +667,10 @@ public class ConstraintValueEditor
                 }
             } );
 
-            form.addAttribute( Constants.INSTANCE.ExpressionEditor() + ":",
+            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() + ":",
                                widgets( expression,
-                                        new InfoPopup( Constants.INSTANCE.ExpressionEditor(),
-                                                       Constants.INSTANCE.ExpressionEditor() ) ) );
+                                        new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
+                                                GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() ) ) );
         }
 
         form.show();

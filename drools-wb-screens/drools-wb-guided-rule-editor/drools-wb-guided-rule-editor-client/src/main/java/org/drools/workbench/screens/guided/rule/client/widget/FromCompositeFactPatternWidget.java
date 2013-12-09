@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -132,7 +133,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         return new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                if ( Window.confirm( Constants.INSTANCE.RemoveThisEntireConditionQ() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisEntireConditionQ() ) ) {
                     setModified( true );
                     pattern.setFactPattern( null );
                     getModeller().refreshWidget();
@@ -161,7 +162,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         if ( pattern.getFactPattern() == null ) {
             panel.setWidget( r,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPatterns() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPatterns() + "</font>",
                                                  click,
                                                  !this.readOnly ) );
             r++;
@@ -194,7 +195,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         final ListBox box = new ListBox();
         String[] facts = oracle.getFactTypes();
 
-        box.addItem( Constants.INSTANCE.Choose() );
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
 
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[ i ] );
@@ -202,8 +203,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         box.setSelectedIndex( 0 );
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
-        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
+        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
@@ -223,8 +224,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
         final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-        remove.setAltText( Constants.INSTANCE.RemoveThisBlockOfData() );
-        remove.setTitle( Constants.INSTANCE.RemoveThisBlockOfData() );
+        remove.setAltText( GuidedRuleEditorResources.CONSTANTS.RemoveThisBlockOfData() );
+        remove.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisBlockOfData() );
         remove.addClickHandler( listener );
 
         horiz.setWidth( "100%" );

@@ -212,7 +212,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             //now the clear icon
             final int currentRow = i;
             Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-            clear.setTitle( Constants.INSTANCE.RemoveThisWholeRestriction() );
+            clear.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisWholeRestriction() );
             clear.addClickHandler( createClickHandlerForClearImageButton( currentRow ) );
 
             if ( !this.readOnly ) {
@@ -229,7 +229,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         return new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
+                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItem() ) ) {
                     setModified( true );
                     pattern.removeConstraint( currentRow );
                     getModeller().refreshWidget();
@@ -372,9 +372,9 @@ public class FactPatternWidget extends RuleModellerWidget {
         };
 
         if ( constraint.getCompositeJunctionType().equals( CompositeFieldConstraint.COMPOSITE_TYPE_AND ) ) {
-            desc = Constants.INSTANCE.AllOf() + ":";
+            desc = GuidedRuleEditorResources.CONSTANTS.AllOf() + ":";
         } else {
-            desc = Constants.INSTANCE.AnyOf() + ":";
+            desc = GuidedRuleEditorResources.CONSTANTS.AnyOf() + ":";
         }
 
         t.setWidget( 0,
@@ -399,11 +399,11 @@ public class FactPatternWidget extends RuleModellerWidget {
                 //add in remove icon here...
                 final int currentRow = i;
                 Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-                clear.setTitle( Constants.INSTANCE.RemoveThisNestedRestriction() );
+                clear.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisNestedRestriction() );
                 clear.addClickHandler( new ClickHandler() {
 
                     public void onClick( ClickEvent event ) {
-                        if ( Window.confirm( Constants.INSTANCE.RemoveThisItemFromNestedConstraint() ) ) {
+                        if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItemFromNestedConstraint() ) ) {
                             setModified( true );
                             constraint.removeConstraint( currentRow );
                             getModeller().refreshWidget();
@@ -506,7 +506,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     private Image createAddConnectiveImageButton( final RuleModeller modeller,
                                                   final SingleFieldConstraint constraint ) {
         Image addConnective = GuidedRuleEditorImages508.INSTANCE.AddConnective();
-        addConnective.setTitle( Constants.INSTANCE.AddMoreOptionsToThisFieldsValues() );
+        addConnective.setTitle( GuidedRuleEditorResources.CONSTANTS.AddMoreOptionsToThisFieldsValues() );
         addConnective.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
@@ -593,7 +593,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         HorizontalPanel pred = new HorizontalPanel();
         pred.setWidth( "100%" );
         Image img = new Image( GuidedRuleEditorResources.INSTANCE.images().functionAssets() );
-        img.setTitle( Constants.INSTANCE.FormulaBooleanTip() );
+        img.setTitle( GuidedRuleEditorResources.CONSTANTS.FormulaBooleanTip() );
 
         pred.add( img );
         if ( c.getValue() == null ) {
@@ -639,12 +639,12 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         String desc;
         if ( isAll0WithLabel ) {
-            desc = Constants.INSTANCE.All0with( patternName );
+            desc = GuidedRuleEditorResources.CONSTANTS.All0with( patternName );
         } else {
             if ( pattern.getNumberOfConstraints() > 0 ) {
-                desc = Constants.INSTANCE.ThereIsAAn0With( patternName );
+                desc = GuidedRuleEditorResources.CONSTANTS.ThereIsAAn0With( patternName );
             } else {
-                desc = Constants.INSTANCE.ThereIsAAn0( patternName );
+                desc = GuidedRuleEditorResources.CONSTANTS.ThereIsAAn0( patternName );
             }
             desc = anA( desc,
                         patternName );
@@ -786,7 +786,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                                      } );
 
         } else {
-            final SmallLabel sl = new SmallLabel( "<b>" + ( c.getOperator() == null ? Constants.INSTANCE.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() ) ) + "</b>" );
+            final SmallLabel sl = new SmallLabel( "<b>" + ( c.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() ) ) + "</b>" );
             hp.add( sl );
         }
         return hp;

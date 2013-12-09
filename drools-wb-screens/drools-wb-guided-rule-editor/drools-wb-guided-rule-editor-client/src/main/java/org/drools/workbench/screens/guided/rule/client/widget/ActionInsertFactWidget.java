@@ -39,6 +39,7 @@ import org.drools.workbench.models.datamodel.rule.ActionInsertLogicalFact;
 import org.drools.workbench.screens.guided.rule.client.editor.ActionValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
@@ -132,7 +133,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
             remove.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
-                    if ( Window.confirm( Constants.INSTANCE.RemoveThisItem() ) ) {
+                    if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItem() ) ) {
                         model.removeField( idx );
                         setModified( true );
                         getModeller().refreshWidget();
@@ -214,7 +215,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                         Constants.INSTANCE.AddAField() );
+                GuidedRuleEditorResources.CONSTANTS.AddAField() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -224,7 +225,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
         box.setSelectedIndex( 0 );
 
-        popup.addAttribute( Constants.INSTANCE.AddField(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.AddField(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
@@ -255,7 +256,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             public void onClick( ClickEvent event ) {
                 String var = varName.getText();
                 if ( getModeller().isVariableNameUsed( var ) && ( ( model.getBoundName() != null && model.getBoundName().equals( var ) == false ) || model.getBoundName() == null ) ) {
-                    Window.alert( Constants.INSTANCE.TheVariableName0IsAlreadyTaken( var ) );
+                    Window.alert( GuidedRuleEditorResources.CONSTANTS.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 model.setBoundName( var );
@@ -265,7 +266,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             }
         } );
 
-        popup.addAttribute( Constants.INSTANCE.BoundVariable(),
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.BoundVariable(),
                             vn );
         popup.show();
 

@@ -37,6 +37,7 @@ import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
@@ -91,7 +92,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         if ( pattern.getFactPattern() == null ) {
             panel.setWidget( r++,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPattern() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPattern() + "</font>",
                                                  leftPatternclick,
                                                  !this.readOnly ) );
         }
@@ -103,7 +104,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         if ( this.getFromAccumulatePattern().getSourcePattern() == null ) {
             panel.setWidget( r++,
                              0,
-                             new ClickableLabel( "<br> <font color='red'>" + Constants.INSTANCE.clickToAddPattern() + "</font>",
+                             new ClickableLabel( "<br> <font color='red'>" + GuidedRuleEditorResources.CONSTANTS.clickToAddPattern() + "</font>",
                                                  sourcePatternClick,
                                                  !this.readOnly ) );
         } else {
@@ -158,7 +159,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                                               new ClickHandler() {
 
                                                   public void onClick( ClickEvent event ) {
-                                                      if ( Window.confirm( Constants.INSTANCE.RemoveThisBlockOfData() ) ) {
+                                                      if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisBlockOfData() ) ) {
                                                           setModified( true );
                                                           getFromAccumulatePattern().setSourcePattern( null );
                                                           getModeller().refreshWidget();
@@ -178,10 +179,10 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>" + Constants.INSTANCE.Init() +":</div>" ) );
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Init() +":</div>" ) );
 
         final TextBox initField = new TextBox();
-        initField.setTitle( Constants.INSTANCE.InitCode() );
+        initField.setTitle( GuidedRuleEditorResources.CONSTANTS.InitCode() );
         initField.setText( getFromAccumulatePattern().getInitCode() );
         initField.setEnabled( !this.readOnly );
         codeTable.setWidget( codeTableRow++,
@@ -190,9 +191,9 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>" + Constants.INSTANCE.Action() + ":</div>" ) );
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Action() + ":</div>" ) );
         final TextBox actionField = new TextBox();
-        actionField.setTitle( Constants.INSTANCE.ActionCode() );
+        actionField.setTitle( GuidedRuleEditorResources.CONSTANTS.ActionCode() );
         actionField.setText( getFromAccumulatePattern().getActionCode() );
         actionField.setEnabled( !this.readOnly );
         codeTable.setWidget( codeTableRow++,
@@ -201,9 +202,9 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>" + Constants.INSTANCE.Reverse() + ":</div>" ) );
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Reverse() + ":</div>" ) );
         final TextBox reverseField = new TextBox();
-        reverseField.setTitle( Constants.INSTANCE.ReverseCode() );
+        reverseField.setTitle( GuidedRuleEditorResources.CONSTANTS.ReverseCode() );
         reverseField.setText( getFromAccumulatePattern().getReverseCode() );
         reverseField.setEnabled( !this.readOnly );
         codeTable.setWidget( codeTableRow++,
@@ -212,9 +213,9 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>" + Constants.INSTANCE.Result() + ":</div>" ) );
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Result() + ":</div>" ) );
         final TextBox resultField = new TextBox();
-        resultField.setTitle( Constants.INSTANCE.ResultCode() );
+        resultField.setTitle( GuidedRuleEditorResources.CONSTANTS.ResultCode() );
         resultField.setText( getFromAccumulatePattern().getResultCode() );
         resultField.setEnabled( !this.readOnly );
         codeTable.setWidget( codeTableRow++,
@@ -226,15 +227,15 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         codePanel.add( codeTable );
 
         tPanel.add( codePanel,
-                    Constants.INSTANCE.CustomCode() );
+                GuidedRuleEditorResources.CONSTANTS.CustomCode() );
 
         DirtyableFlexTable functionTable = new DirtyableFlexTable();
 
         functionTable.setWidget( 0,
                                  0,
-                                 new HTML( "<div class='form-field'>" + Constants.INSTANCE.Function() + ":</div>" ) );
+                                 new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Function() + ":</div>" ) );
         final TextBox functionField = new TextBox();
-        functionField.setTitle( Constants.INSTANCE.FunctionCode() );
+        functionField.setTitle( GuidedRuleEditorResources.CONSTANTS.FunctionCode() );
         functionField.setText( getFromAccumulatePattern().getFunction() );
         functionField.setEnabled( !this.readOnly );
         functionTable.setWidget( 0,
@@ -247,7 +248,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         functionPanel.add( functionTable );
 
         tPanel.add( functionPanel,
-                    Constants.INSTANCE.Function() );
+                GuidedRuleEditorResources.CONSTANTS.Function() );
         ChangeHandler changehandler = new ChangeHandler() {
 
             public void onChange( ChangeEvent event ) {
@@ -308,7 +309,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
 
-        box.addItem( Constants.INSTANCE.Choose() );
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
 
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[ i ] );
@@ -316,8 +317,8 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         box.setSelectedIndex( 0 );
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
-        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
+        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 
@@ -339,15 +340,15 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
 
-        box.addItem( Constants.INSTANCE.Choose() );
+        box.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
         for ( int i = 0; i < facts.length; i++ ) {
             box.addItem( facts[ i ] );
         }
         box.setSelectedIndex( 0 );
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( Constants.INSTANCE.NewFactPattern() );
-        popup.addAttribute( Constants.INSTANCE.chooseFactType(),
+        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
 

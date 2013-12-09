@@ -41,6 +41,7 @@ import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
 import org.drools.workbench.screens.guided.rule.client.editor.CustomFormPopUp;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
@@ -391,7 +392,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                     TextBox otherBox = (TextBox) event.getSource();
 
                     if ( !regex.equals( "" ) && !otherBox.getText().matches( regex ) ) {
-                        Window.alert( Constants.INSTANCE.TheValue0IsNotValidForThisField( otherBox.getText() ) );
+                        Window.alert( GuidedRuleEditorResources.CONSTANTS.TheValue0IsNotValidForThisField( otherBox.getText() ) );
                         box.setText( oldValue );
                     } else {
                         oldValue = otherBox.getText();
@@ -543,7 +544,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                     public void onClick( ClickEvent event ) {
                         final CustomFormPopUp customFormPopUp =
                                 new CustomFormPopUp( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                     Constants.INSTANCE.FieldValue(),
+                                                     GuidedRuleEditorResources.CONSTANTS.FieldValue(),
                                                      DSLCustomFormButton.this.customFormConfiguration );
 
                         customFormPopUp.addOkButtonHandler( new ClickHandler() {
