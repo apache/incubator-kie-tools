@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="gwt:property" content="locale=@{locale}">
 
     <title>Drools Workbench</title>
     <link rel="shortcut icon" href="images/drools.gif" type="image/gif"/>
