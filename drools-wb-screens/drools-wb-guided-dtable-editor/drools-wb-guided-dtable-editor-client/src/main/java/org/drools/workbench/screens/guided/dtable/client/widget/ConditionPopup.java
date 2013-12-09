@@ -534,6 +534,12 @@ public class ConditionPopup extends FormStylePopup {
                                                                    editingCol );
         utilities.assertDTCellValue( dataType,
                                      defaultValue );
+
+        //Correct comma-separated Default Value if operator does not support it
+        if ( !validator.doesOperatorAcceptCommaSeparatedValues( editingCol ) ) {
+            utilities.removeCommaSeparatedValue( defaultValue );
+        }
+
         defaultValueWidgetContainer.setWidget( factory.getWidget( editingPattern,
                                                                   editingCol,
                                                                   defaultValue ) );
@@ -559,9 +565,6 @@ public class ConditionPopup extends FormStylePopup {
         boolean enableOp = !( nil( editingCol.getFactField() ) || constraintType == BaseSingleFieldConstraint.TYPE_PREDICATE || isReadOnly );
         this.editField.setEnabled( enableField );
         this.editOp.setEnabled( enableOp );
-
-//        this.editField.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE && !isReadOnly );
-//        this.editOp.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE && !isReadOnly );
     }
 
     private boolean isBindingUnique( String binding ) {
@@ -657,6 +660,8 @@ public class ConditionPopup extends FormStylePopup {
         valueListWidget.setEnabled( enableValueList );
         if ( !enableValueList ) {
             valueListWidget.setText( "" );
+        } else {
+            valueListWidget.setText( editingCol.getValueList() );
         }
     }
 
@@ -731,13 +736,6 @@ public class ConditionPopup extends FormStylePopup {
             filteredOps.add( op );
         }
         if ( BaseSingleFieldConstraint.TYPE_LITERAL != this.editingCol.getConstraintValueType() ) {
-            filteredOps.remove( "in" );
-            filteredOps.remove( "not in" );
-        }
-
-        //Remove "in" and "not in" if the Fact\Field is enumerated
-        if ( oracle.hasEnums( factType,
-                              factField ) ) {
             filteredOps.remove( "in" );
             filteredOps.remove( "not in" );
         }

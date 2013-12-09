@@ -17,7 +17,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +35,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
@@ -43,9 +46,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DefaultValueDropDownManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
@@ -407,9 +410,11 @@ public class DTCellValueWidgetFactory {
     private ListBox makeListBox( final String[] completions,
                                  final Pattern52 basePattern,
                                  final ConditionCol52 baseCondition,
-                                 final DTCellValue52 value ) {
+                                 final DTCellValue52 dcv ) {
+        final boolean isMultipleSelect = isExplicitListOperator( baseCondition.getOperator() );
         final ListBox lb = makeListBox( completions,
-                                        value );
+                                        isMultipleSelect,
+                                        dcv );
 
         // Wire up update handler
         lb.setEnabled( !isReadOnly );
@@ -417,31 +422,48 @@ public class DTCellValueWidgetFactory {
             lb.addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
-                    int index = lb.getSelectedIndex();
-                    if ( index > -1 ) {
-                        //Set base column value
-                        value.setStringValue( lb.getValue( index ) );
-
-                        //Update any dependent enumerations
-                        final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context( basePattern,
-                                                                                                                     baseCondition );
-                        Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes( context );
-                        for ( Integer iCol : dependentColumnIndexes ) {
-                            BaseColumn column = model.getExpandedColumns().get( iCol );
-                            if ( column instanceof LimitedEntryCol ) {
-                                ( (LimitedEntryCol) column ).setValue( null );
-                            } else if ( column instanceof DTColumnConfig52 ) {
-                                ( (DTColumnConfig52) column ).setDefaultValue( null );
+                    String value = null;
+                    if ( lb.isMultipleSelect() ) {
+                        for ( int i = 0; i < lb.getItemCount(); i++ ) {
+                            if ( lb.isItemSelected( i ) ) {
+                                if ( value == null ) {
+                                    value = lb.getValue( i );
+                                } else {
+                                    value = value + "," + lb.getValue( i );
+                                }
                             }
                         }
                     } else {
-                        value.setStringValue( null );
+                        int index = lb.getSelectedIndex();
+                        if ( index > -1 ) {
+                            //Set base column value
+                            value = lb.getValue( index );
+                        }
+                    }
+
+                    dcv.setStringValue( value );
+
+                    //Update any dependent enumerations
+                    final LimitedEntryDropDownManager.Context context = new LimitedEntryDropDownManager.Context( basePattern,
+                                                                                                                 baseCondition );
+                    Set<Integer> dependentColumnIndexes = dropDownManager.getDependentColumnIndexes( context );
+                    for ( Integer iCol : dependentColumnIndexes ) {
+                        BaseColumn column = model.getExpandedColumns().get( iCol );
+                        if ( column instanceof LimitedEntryCol ) {
+                            ( (LimitedEntryCol) column ).setValue( null );
+                        } else if ( column instanceof DTColumnConfig52 ) {
+                            ( (DTColumnConfig52) column ).setDefaultValue( null );
+                        }
                     }
                 }
-
             } );
         }
         return lb;
+    }
+
+    private boolean isExplicitListOperator( final String operator ) {
+        final List<String> ops = Arrays.asList( OperatorsOracle.EXPLICIT_LIST_OPERATORS );
+        return ops.contains( operator );
     }
 
     private ListBox makeListBox( final String[] completions,
@@ -524,25 +546,33 @@ public class DTCellValueWidgetFactory {
 
     private ListBox makeListBox( final String[] completions,
                                  final DTCellValue52 value ) {
+        return makeListBox( completions,
+                            false,
+                            value );
+    }
+
+    private ListBox makeListBox( final String[] completions,
+                                 final boolean isMultipleSelect,
+                                 final DTCellValue52 value ) {
         int selectedIndex = -1;
-        final ListBox lb = new ListBox();
+        final ListBox lb = new ListBox( isMultipleSelect );
 
         if ( allowEmptyValues ) {
             lb.addItem( GuidedDecisionTableConstants.INSTANCE.Choose(),
                         "" );
         }
 
-        String currentItem = value.getStringValue();
+        String currentItem = value.getStringValue() == null ? "" : value.getStringValue();
+        List<String> currentItems = Arrays.asList( currentItem.split( "," ) );
         int selectedIndexOffset = ( allowEmptyValues ? 1 : 0 );
         for ( int i = 0; i < completions.length; i++ ) {
             String item = completions[ i ].trim();
             String[] splut = ConstraintValueEditorHelper.splitValue( item );
             lb.addItem( splut[ 1 ],
                         splut[ 0 ] );
-            if ( splut[ 0 ].equals( currentItem ) ) {
-                lb.setSelectedIndex( i + selectedIndexOffset );
-                selectedIndex = i + selectedIndexOffset;
-            }
+            lb.setItemSelected( i + selectedIndexOffset,
+                                currentItems.contains( splut[ 0 ] ) );
+            selectedIndex = i + selectedIndexOffset;
         }
 
         //If nothing has been selected, select the first value

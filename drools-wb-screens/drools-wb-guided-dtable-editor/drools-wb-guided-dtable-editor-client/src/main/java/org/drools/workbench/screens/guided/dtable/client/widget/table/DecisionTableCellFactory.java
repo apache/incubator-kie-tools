@@ -15,8 +15,13 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -35,10 +40,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.AnalysisCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupBoundPatternDropDownEditCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupValueListDropDownEditCell;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
@@ -189,8 +194,10 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
         } else if ( oracle.hasEnums( factType,
                                      fieldName ) ) {
+            final boolean isMultipleSelect = isExplicitListOperator( col.getOperator() );
             return makeEnumCell( factType,
-                                 fieldName );
+                                 fieldName,
+                                 isMultipleSelect );
         }
 
         return derieveCellFromModel( col );
@@ -204,8 +211,10 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         final String fieldName = col.getFactField();
         if ( oracle.hasEnums( factType,
                               fieldName ) ) {
+            final boolean isMultipleSelect = isExplicitListOperator( col.getOperator() );
             return makeEnumCell( factType,
-                                 fieldName );
+                                 fieldName,
+                                 isMultipleSelect );
         }
 
         return derieveCellFromModel( col );
@@ -342,8 +351,24 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     }
 
     //Get a cell for a Value List
-    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeValueListCell( DTColumnConfig52 col ) {
+    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeValueListCell( final ConditionCol52 col ) {
+        // Columns with "Value Lists" are always Text (for now)
+        final boolean isMultipleSelect = isExplicitListOperator( col.getOperator() );
+        PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( utils.getValueList( col ),
+                                                                                  isMultipleSelect,
+                                                                                  isReadOnly );
+        DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
+                                                                                                                 eventBus );
+        return cell;
+    }
 
+    private boolean isExplicitListOperator( final String operator ) {
+        final List<String> ops = Arrays.asList( OperatorsOracle.EXPLICIT_LIST_OPERATORS );
+        return ops.contains( operator );
+    }
+
+    //Get a cell for a Value List
+    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeValueListCell( final ActionCol52 col ) {
         // Columns with "Value Lists" are always Text (for now)
         PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( utils.getValueList( col ),
                                                                                   isReadOnly );
@@ -355,12 +380,21 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     //Get a cell for a Value List
     private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeEnumCell( String factType,
                                                                                  String fieldName ) {
+        return makeEnumCell( factType,
+                             fieldName,
+                             false );
+    }
 
+    //Get a cell for a Value List
+    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeEnumCell( String factType,
+                                                                                 String fieldName,
+                                                                                 boolean isMultipleSelect ) {
         // Columns with enumerations are always Text
         PopupDropDownEditCell pudd = new PopupDropDownEditCell( factType,
                                                                 fieldName,
                                                                 oracle,
                                                                 dropDownManager,
+                                                                isMultipleSelect,
                                                                 isReadOnly );
         DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                                                                                  eventBus );

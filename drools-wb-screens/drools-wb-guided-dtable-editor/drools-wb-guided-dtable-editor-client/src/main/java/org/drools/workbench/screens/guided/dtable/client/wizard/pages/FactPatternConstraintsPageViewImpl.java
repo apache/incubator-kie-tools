@@ -53,11 +53,13 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
@@ -80,6 +82,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private Presenter presenter;
 
     private Validator validator;
+    private DTCellValueUtilities cellUtils;
 
     private List<Pattern52> availablePatterns;
     private Pattern52 availablePatternsSelection;
@@ -221,6 +224,11 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         this.validator = validator;
         this.availableConditionsCell.setValidator( validator );
         this.chosenConditionsCell.setValidator( validator );
+    }
+
+    @Override
+    public void setDTCellValueUtilities( final DTCellValueUtilities cellUtils ) {
+        this.cellUtils = cellUtils;
     }
 
     private void initialiseAvailablePatterns() {
@@ -383,6 +391,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                                 txtValueList.setEnabled( requiresValueList );
                                 if ( !requiresValueList ) {
                                     txtValueList.setText( "" );
+                                } else {
+                                    txtValueList.setText( chosenConditionsSelection.getValueList() );
                                 }
                                 presenter.stateChanged();
                                 validateConditionOperator();
@@ -455,12 +465,20 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     }
 
     private void makeDefaultValueWidget() {
-        if ( chosenConditionsSelection.getDefaultValue() == null ) {
-            chosenConditionsSelection.setDefaultValue( factory.makeNewValue( chosenConditionsSelection ) );
+        DTCellValue52 defaultValue = chosenConditionsSelection.getDefaultValue();
+        if ( defaultValue == null ) {
+            defaultValue = factory.makeNewValue( chosenConditionsSelection );
+            chosenConditionsSelection.setDefaultValue( defaultValue );
         }
+
+        //Correct comma-separated Default Value if operator does not support it
+        if ( !validator.doesOperatorAcceptCommaSeparatedValues( chosenConditionsSelection ) ) {
+            cellUtils.removeCommaSeparatedValue( defaultValue );
+        }
+
         defaultValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
                                                                   chosenConditionsSelection,
-                                                                  chosenConditionsSelection.getDefaultValue() ) );
+                                                                  defaultValue ) );
     }
 
     private void validateConditionHeader() {

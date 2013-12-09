@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,7 +211,12 @@ public class Validator {
         if ( operator == null || operator.equals( "" ) ) {
             return false;
         }
-        return !( OperatorsOracle.operatorRequiresList( operator ) || operator.equals( "== null" ) || operator.equals( "!= null" ) );
+        return !( operator.equals( "== null" ) || operator.equals( "!= null" ) );
+    }
+
+    public boolean doesOperatorAcceptCommaSeparatedValues( ConditionCol52 c ) {
+        final List<String> ops = Arrays.asList( OperatorsOracle.EXPLICIT_LIST_OPERATORS );
+        return ops.contains( c.getOperator() );
     }
 
     public boolean isConditionLimitedEntryValueValid( ConditionCol52 c ) {

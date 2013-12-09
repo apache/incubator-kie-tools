@@ -15,6 +15,9 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.cells;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -38,9 +41,17 @@ public class PopupValueListDropDownEditCell extends
 
     public PopupValueListDropDownEditCell( final String[] items,
                                            final boolean isReadOnly ) {
+        this( items,
+              false,
+              isReadOnly );
+    }
+
+    public PopupValueListDropDownEditCell( final String[] items,
+                                           final boolean isMultipleSelect,
+                                           final boolean isReadOnly ) {
         super( isReadOnly );
 
-        this.listBox = new ListBox();
+        this.listBox = new ListBox( isMultipleSelect );
         setItems( items );
 
         // Tabbing out of the ListBox commits changes
@@ -109,10 +120,24 @@ public class PopupValueListDropDownEditCell extends
 
         // Update value
         String value = null;
-        int selectedIndex = listBox.getSelectedIndex();
-        if ( selectedIndex >= 0 ) {
-            value = listBox.getValue( selectedIndex );
+        if ( listBox.isMultipleSelect() ) {
+            for ( int i = 0; i < listBox.getItemCount(); i++ ) {
+                if ( listBox.isItemSelected( i ) ) {
+                    if ( value == null ) {
+                        value = listBox.getValue( i );
+                    } else {
+                        value = value + "," + listBox.getValue( i );
+                    }
+                }
+            }
+
+        } else {
+            int selectedIndex = listBox.getSelectedIndex();
+            if ( selectedIndex >= 0 ) {
+                value = listBox.getValue( selectedIndex );
+            }
         }
+
         setValue( lastContext,
                   lastParent,
                   value );
@@ -134,10 +159,19 @@ public class PopupValueListDropDownEditCell extends
         if ( emptyValue ) {
             listBox.setSelectedIndex( 0 );
         } else {
-            for ( int i = 0; i < listBox.getItemCount(); i++ ) {
-                if ( listBox.getValue( i ).equals( value ) ) {
-                    listBox.setSelectedIndex( i );
-                    break;
+            if ( listBox.isMultipleSelect() ) {
+                final List<String> values = Arrays.asList( value.split( "," ) );
+                for ( int i = 0; i < listBox.getItemCount(); i++ ) {
+                    listBox.setItemSelected( i,
+                                             values.contains( listBox.getValue( i ) ) );
+                }
+
+            } else {
+                for ( int i = 0; i < listBox.getItemCount(); i++ ) {
+                    if ( listBox.getValue( i ).equals( value ) ) {
+                        listBox.setSelectedIndex( i );
+                        break;
+                    }
                 }
             }
         }

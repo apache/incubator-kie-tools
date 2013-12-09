@@ -31,7 +31,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 /**
@@ -205,6 +204,23 @@ public class DTCellValueUtilities {
                 return convertShortValueToString( dcv );
         }
         return convertStringValueToString( dcv );
+    }
+
+    /**
+     * Remove a comma-separated value, replacing the comma-separated value with the first in the comma-separated list
+     * @param dcv
+     */
+    public void removeCommaSeparatedValue( DTCellValue52 dcv ) {
+        if ( dcv == null ) {
+            return;
+        }
+        if ( dcv.getStringValue() == null ) {
+            return;
+        }
+        String[] values = dcv.getStringValue().split( "," );
+        if ( values.length > 0 ) {
+            dcv.setStringValue( values[ 0 ] );
+        }
     }
 
     //Convert a Boolean value to a String

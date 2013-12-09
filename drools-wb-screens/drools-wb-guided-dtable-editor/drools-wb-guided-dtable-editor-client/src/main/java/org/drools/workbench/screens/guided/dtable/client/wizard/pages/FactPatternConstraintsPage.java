@@ -65,6 +65,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     public void initialise() {
         view.init( this );
         view.setValidator( getValidator() );
+        view.setDTCellValueUtilities( cellUtils );
 
         view.setChosenConditions( new ArrayList<ConditionCol52>() );
 
@@ -177,12 +178,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
                                                     }
                                                     if ( BaseSingleFieldConstraint.TYPE_LITERAL != selectedCondition.getConstraintValueType() ) {
                                                         filteredOps.remove( "in" );
-                                                    }
-
-                                                    //But remove "in" if the Fact\Field is enumerated
-                                                    if ( oracle.hasEnums( factType,
-                                                                          factField ) ) {
-                                                        filteredOps.remove( "in" );
+                                                        filteredOps.remove( "not in" );
                                                     }
 
                                                     final String[] displayOps = new String[ filteredOps.size() ];
