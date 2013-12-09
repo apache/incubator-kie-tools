@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -122,9 +123,11 @@ public class UberfireServlet extends HttpServlet {
         response.setCharacterEncoding( "UTF-8" );
 
         final PrintWriter writer = response.getWriter();
+        final Locale locale = request.getLocale();
 
         if ( appTemplate != null ) {
-            loadApp( writer );
+            loadApp( writer,
+                     locale );
         } else {
             loadHeader( writer );
             loadUserInfo( writer );
@@ -139,13 +142,16 @@ public class UberfireServlet extends HttpServlet {
         doGet( req, resp );
     }
 
-    private void loadApp( PrintWriter writer ) {
+    private void loadApp( PrintWriter writer,
+                          Locale locale ) {
         final Subject subject = SecurityFactory.getIdentity();
+        final String localeTag = locale.getLanguage() + "_" + locale.getCountry();
 
         final Map<String, String> map = new HashMap<String, String>() {{
             put( "name", subject.getName() );
             put( "roles", collectionAsString( subject.getRoles() ) );
             put( "properties", mapAsString( subject.getProperties() ) );
+            put( "locale", localeTag );
         }};
 
         final String content = TemplateRuntime.execute( appTemplate, map ).toString();
