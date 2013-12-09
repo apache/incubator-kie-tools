@@ -119,7 +119,6 @@ public class AttachmentFileWidget extends Composite {
 
             @Override
             public void onSubmitComplete( final Form.SubmitCompleteEvent event ) {
-                reset();
                 if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
                     executeCallback( successCallback );
                     Window.alert( CommonConstants.INSTANCE.UploadSuccess() );
@@ -136,6 +135,7 @@ public class AttachmentFileWidget extends Composite {
                         //ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( event.getResults() ) );
                     }
                 }
+                reset();
             }
 
         } );
