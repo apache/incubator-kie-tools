@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -49,13 +52,27 @@ public class PopupDropDownEditCell extends
                                   final AsyncPackageDataModelOracle dmo,
                                   final CellTableDropDownDataValueMapProvider dropDownManager,
                                   final boolean isReadOnly ) {
+        this( factType,
+              factField,
+              dmo,
+              dropDownManager,
+              false,
+              isReadOnly );
+    }
+
+    public PopupDropDownEditCell( final String factType,
+                                  final String factField,
+                                  final AsyncPackageDataModelOracle dmo,
+                                  final CellTableDropDownDataValueMapProvider dropDownManager,
+                                  final boolean isMultipleSelect,
+                                  final boolean isReadOnly ) {
         super( isReadOnly );
         this.factType = factType;
         this.factField = factField;
         this.dropDownManager = dropDownManager;
         this.dmo = dmo;
 
-        this.listBox = new ListBox();
+        this.listBox = new ListBox( isMultipleSelect );
 
         // Tabbing out of the ListBox commits changes
         listBox.addKeyDownHandler( new KeyDownHandler() {
@@ -134,10 +151,24 @@ public class PopupDropDownEditCell extends
 
         // Update value
         String value = null;
-        int selectedIndex = listBox.getSelectedIndex();
-        if ( selectedIndex >= 0 ) {
-            value = listBox.getValue( selectedIndex );
+        if ( listBox.isMultipleSelect() ) {
+            for ( int i = 0; i < listBox.getItemCount(); i++ ) {
+                if ( listBox.isItemSelected( i ) ) {
+                    if ( value == null ) {
+                        value = listBox.getValue( i );
+                    } else {
+                        value = value + "," + listBox.getValue( i );
+                    }
+                }
+            }
+
+        } else {
+            int selectedIndex = listBox.getSelectedIndex();
+            if ( selectedIndex >= 0 ) {
+                value = listBox.getValue( selectedIndex );
+            }
         }
+
         setValue( lastContext,
                   lastParent,
                   value );
@@ -145,7 +176,6 @@ public class PopupDropDownEditCell extends
             valueUpdater.update( value );
         }
         panel.hide();
-
     }
 
     // Start editing the cell
@@ -170,10 +200,19 @@ public class PopupDropDownEditCell extends
         if ( emptyValue ) {
             listBox.setSelectedIndex( 0 );
         } else {
-            for ( int i = 0; i < listBox.getItemCount(); i++ ) {
-                if ( listBox.getValue( i ).equals( value ) ) {
-                    listBox.setSelectedIndex( i );
-                    break;
+            if ( listBox.isMultipleSelect() ) {
+                final List<String> values = Arrays.asList( value.split( "," ) );
+                for ( int i = 0; i < listBox.getItemCount(); i++ ) {
+                    listBox.setItemSelected( i,
+                                             values.contains( listBox.getValue( i ) ) );
+                }
+
+            } else {
+                for ( int i = 0; i < listBox.getItemCount(); i++ ) {
+                    if ( listBox.getValue( i ).equals( value ) ) {
+                        listBox.setSelectedIndex( i );
+                        break;
+                    }
                 }
             }
         }
