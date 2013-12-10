@@ -85,6 +85,11 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
     }
 
     @Override
+    public Integer getBodyHeight() {
+        return nativeSplashScreen.getBodyHeight();
+    }
+
+    @Override
     public SplashScreenFilter getFilter() {
         return splashFilter;
     }
@@ -105,7 +110,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
         final IsWidget widget = getWidget();
 
-        splash.setContent( widget );
+        splash.setContent( widget, getBodyHeight() );
         splash.setTitle( getTitle() );
         splash.show();
         splash.addCloseHandler( new CloseHandler<SplashView>() {

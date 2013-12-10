@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.github.gwtbootstrap.client.ui.base.TextNode;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.annotations.SplashBodySize;
 import org.uberfire.client.annotations.SplashFilter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -30,6 +31,11 @@ public class FileExplorerSplashScreen {
     @SplashFilter
     public SplashScreenFilter getFilter() {
         return new SplashScreenFilterImpl( "fileExplorer.splash", true, Arrays.asList( "FileExplorerPerspective", "FileExplorer" ) );
+    }
+
+    @SplashBodySize
+    public Integer getBodySize() {
+        return 40;
     }
 
 }

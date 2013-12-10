@@ -15,7 +15,6 @@
  */
 package org.uberfire.client.workbench.widgets.splash;
 
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.github.gwtbootstrap.client.ui.event.HideEvent;
 import com.github.gwtbootstrap.client.ui.event.HideHandler;
@@ -26,6 +25,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.client.common.Modal;
 import org.uberfire.mvp.ParameterizedCommand;
 
 /**
@@ -52,10 +52,14 @@ public class SplashView
         initWidget( panel );
     }
 
-    public void setContent( final IsWidget widget ) {
+    public void setContent( final IsWidget widget,
+                            final Integer height ) {
         showAgain = null;
         modal.add( widget );
         modal.add( footer );
+        if ( height != null ) {
+            modal.setBodyHeigth( height );
+        }
     }
 
     public void setTitle( final String title ) {

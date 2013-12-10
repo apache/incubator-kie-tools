@@ -40,6 +40,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.Intercept;
 import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.SplashBodySize;
 import org.uberfire.client.annotations.SplashFilter;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -451,6 +452,14 @@ public class GeneratorUtils {
                               processingEnvironment,
                               "org.uberfire.workbench.model.SplashScreenFilter",
                               SplashFilter.class );
+    }
+
+    public static String getBodyHeightMethodName( TypeElement classElement,
+                                                  ProcessingEnvironment processingEnvironment ) throws GenerationException {
+        return getMethodName( classElement,
+                              processingEnvironment,
+                              "java.lang.Integer",
+                              SplashBodySize.class );
     }
 
     public static String getInterceptMethodName( final TypeElement classElement,
@@ -1029,5 +1038,4 @@ public class GeneratorUtils {
 
         return sb.toString();
     }
-
 }

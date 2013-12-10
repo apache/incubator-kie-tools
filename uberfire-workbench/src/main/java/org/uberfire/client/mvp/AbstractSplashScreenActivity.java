@@ -101,6 +101,11 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity
     public abstract IsWidget getWidget();
 
     @Override
+    public Integer getBodyHeight() {
+        return null;
+    }
+
+    @Override
     public abstract SplashScreenFilter getFilter();
 
     @Override
@@ -114,7 +119,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity
 
         final IsWidget widget = getWidget();
 
-        splash.setContent( widget );
+        splash.setContent( widget, getBodyHeight() );
         splash.setTitle( getTitle() );
         splash.show();
         splash.addCloseHandler( new CloseHandler<SplashView>() {

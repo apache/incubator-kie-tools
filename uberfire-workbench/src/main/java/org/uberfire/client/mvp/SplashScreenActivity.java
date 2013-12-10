@@ -38,6 +38,8 @@ public interface SplashScreenActivity
 
     IsWidget getWidget();
 
+    Integer getBodyHeight();
+
     void onClose();
 
     void onShutdown();

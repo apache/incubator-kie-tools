@@ -80,6 +80,8 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
 
         final String getSplashFilterMethodName = GeneratorUtils.getSplashFilterMethodName( classElement,
                                                                                            processingEnvironment );
+        final String getBodyHeightMethodName = GeneratorUtils.getBodyHeightMethodName( classElement,
+                                                                                       processingEnvironment );
         final String getInterceptMethodName = GeneratorUtils.getInterceptMethodName( classElement,
                                                                                      processingEnvironment );
 
@@ -102,6 +104,7 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
 
         logger.debug( "getSplashFilterMethodName: " + getSplashFilterMethodName );
         logger.debug( "getInterceptMethodName: " + getInterceptMethodName );
+        logger.debug( "getBodyHeightMethodName: " + getBodyHeightMethodName );
 
         logger.debug( "securityTraitList: " + securityTraitList );
         logger.debug( "rolesList: " + rolesList );
@@ -134,7 +137,6 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
         if ( getSplashFilterMethodName == null ) {
             throw new GenerationException( "The WorkbenchSplashScreen must provide a @SplashFilter annotated method to return a org.uberfire.workbench.model.SplashScreenFilter.", packageName + "." + className );
         }
-
 
         //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();
@@ -170,6 +172,8 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
                   getSplashFilterMethodName );
         root.put( "getInterceptMethodName",
                   getInterceptMethodName );
+        root.put( "getBodyHeightMethodName",
+                  getBodyHeightMethodName );
         root.put( "securityTraitList",
                   securityTraitList );
         root.put( "rolesList",

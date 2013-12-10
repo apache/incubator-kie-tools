@@ -141,6 +141,13 @@ public class ${className} extends AbstractSplashScreenActivity {
     }
 
     </#if>
+    <#if getBodyHeightMethodName??>
+    @Override
+    public Integer getBodyHeight() {
+        return realPresenter.${getBodyHeightMethodName}();
+    }
+
+    </#if>
     <#if getSplashFilterMethodName??>
     @Override
     public SplashScreenFilter getFilter() {

@@ -182,6 +182,11 @@ public class JSNativePlugin {
         return ((typeof obj[propertyName]) === "string");
     }-*/;
 
+    static native boolean hasIntProperty( final JavaScriptObject obj,
+                                          final String propertyName )  /*-{
+        return (obj[propertyName] === parseInt(obj[propertyName]));
+    }-*/;
+
     static native boolean hasBooleanProperty( final JavaScriptObject obj,
                                               final String propertyName )  /*-{
         return ((typeof obj[propertyName]) === "boolean");

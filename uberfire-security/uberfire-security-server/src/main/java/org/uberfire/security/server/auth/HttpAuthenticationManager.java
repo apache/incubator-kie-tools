@@ -47,7 +47,6 @@ import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.security.Role.*;
 import static org.uberfire.security.auth.AuthenticationStatus.*;
 
-//TODO {porcelli} support for jaas!
 public class HttpAuthenticationManager implements AuthenticationManager {
 
     private final List<AuthenticationScheme> authSchemes;

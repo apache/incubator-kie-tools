@@ -17,11 +17,27 @@ import static java.util.Collections.*;
 @Dependent
 public class JSNativeSplashScreen extends JSNativePlugin {
 
+    private Integer bodyHeight = null;
+
     @Inject
     private Caller<WorkbenchServices> wbServices;
 
     public Caller<WorkbenchServices> getWbServices() {
         return wbServices;
+    }
+
+    protected void buildElement() {
+        super.buildElement();
+
+        if ( hasIntProperty( obj, "body_height" ) ) {
+            bodyHeight = getBodyHeight( obj );
+        } else {
+            bodyHeight = null;
+        }
+    }
+
+    public Integer getBodyHeight() {
+        return bodyHeight;
     }
 
     public SplashScreenFilter buildFilter() {
@@ -78,6 +94,10 @@ public class JSNativeSplashScreen extends JSNativePlugin {
 
     private static native JsArrayString getInterceptionPoints( final JavaScriptObject o ) /*-{
         return o.interception_points;
+    }-*/;
+
+    private static native int getBodyHeight( final JavaScriptObject o ) /*-{
+        return o.body_height;
     }-*/;
 
 }
