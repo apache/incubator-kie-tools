@@ -77,7 +77,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( GuidedDecisionTableResources.INSTANCE.images().guidedDecisionTableIcon() );
+        return new Image( GuidedDecisionTableResources.INSTANCE.images().typeGuidedDecisionTable() );
     }
 
     @Override

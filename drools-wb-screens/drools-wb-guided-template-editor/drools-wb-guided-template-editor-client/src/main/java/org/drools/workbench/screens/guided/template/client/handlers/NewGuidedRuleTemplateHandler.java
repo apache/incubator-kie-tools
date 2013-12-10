@@ -44,7 +44,7 @@ public class NewGuidedRuleTemplateHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( GuidedTemplateEditorResources.INSTANCE.images().guidedRuleTemplateIcon() );
+        return new Image( GuidedTemplateEditorResources.INSTANCE.images().typeGuidedRuleTemplate() );
     }
 
     @Override

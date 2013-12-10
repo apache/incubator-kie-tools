@@ -62,7 +62,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( DecisionTableXLSResources.INSTANCE.images().decisionTableIcon() );
+        return new Image( DecisionTableXLSResources.INSTANCE.images().typeXLSDecisionTable() );
     }
 
     @Override

@@ -13,7 +13,7 @@ public class DRLResourceType
         extends DRLResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( DRLTextEditorResources.INSTANCE.images().DRLIcon() );
+    private static final Image IMAGE = new Image( DRLTextEditorResources.INSTANCE.images().typeDRL() );
 
     @Override
     public IsWidget getIcon() {

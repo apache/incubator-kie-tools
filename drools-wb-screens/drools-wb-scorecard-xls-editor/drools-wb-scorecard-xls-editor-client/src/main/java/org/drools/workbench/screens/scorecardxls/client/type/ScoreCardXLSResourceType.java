@@ -13,7 +13,7 @@ public class ScoreCardXLSResourceType
         extends ScoreCardXLSResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( ScoreCardXLSEditorResources.INSTANCE.images().scoreCardIcon() );
+    private static final Image IMAGE = new Image( ScoreCardXLSEditorResources.INSTANCE.images().typeXLSScoreCard() );
 
     @Override
     public IsWidget getIcon() {

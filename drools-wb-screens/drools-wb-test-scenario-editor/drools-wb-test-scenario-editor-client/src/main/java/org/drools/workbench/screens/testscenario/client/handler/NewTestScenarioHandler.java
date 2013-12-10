@@ -41,7 +41,7 @@ public class NewTestScenarioHandler
 
     @Override
     public IsWidget getIcon() {
-        return TestScenarioAltedImages.INSTANCE.TestScenario();
+        return TestScenarioAltedImages.INSTANCE.typeTestScenario();
     }
 
     @Override

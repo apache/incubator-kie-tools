@@ -23,7 +23,7 @@ public interface GlobalsEditorImageResources
         extends
         ClientBundle {
 
-    @Source("globalsIcon.gif")
-    ImageResource globalsIcon();
+    @Source("BPM_FileIcons_global.png")
+    ImageResource typeGlobalVariable();
 
 }

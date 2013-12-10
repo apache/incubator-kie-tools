@@ -23,6 +23,6 @@ public interface GuidedScoreCardImageResources
         extends
         ClientBundle {
 
-    @Source("scoreCardIcon.gif")
-    ImageResource scoreCardIcon();
+    @Source("BPM_FileIcons_guidedscorecard.png")
+    ImageResource typeGuidedScoreCard();
 }

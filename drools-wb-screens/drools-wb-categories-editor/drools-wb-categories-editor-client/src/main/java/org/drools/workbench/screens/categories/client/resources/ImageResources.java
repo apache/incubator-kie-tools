@@ -37,4 +37,7 @@ public interface ImageResources extends
     @Source("images/edit_category.gif")
     ImageResource editCategory();
 
+    @Source("images/BPM_FileIcons_tag.png")
+    ImageResource typeCategories();
+
 }

@@ -13,7 +13,7 @@ public class GlobalResourceType
         extends GlobalResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( GlobalsEditorResources.INSTANCE.images().globalsIcon() );
+    private static final Image IMAGE = new Image( GlobalsEditorResources.INSTANCE.images().typeGlobalVariable() );
 
     @Override
     public IsWidget getIcon() {

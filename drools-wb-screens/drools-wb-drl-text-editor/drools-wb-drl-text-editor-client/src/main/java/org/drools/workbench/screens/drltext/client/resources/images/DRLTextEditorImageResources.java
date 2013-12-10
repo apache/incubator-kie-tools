@@ -23,8 +23,8 @@ public interface DRLTextEditorImageResources
         extends
         ClientBundle {
 
-    @Source("drlIcon.gif")
-    ImageResource DRLIcon();
+    @Source("BPM_FileIcons_drl.png")
+    ImageResource typeDRL();
 
     @Source("class.gif")
     ImageResource classImage();

@@ -23,7 +23,7 @@ public interface EnumEditorImageResources
         extends
         ClientBundle {
 
-    @Source("enumsIcon.gif")
-    ImageResource enumsIcon();
+    @Source("BPM_FileIcons_enum.png")
+    ImageResource typeEnumeration();
 
 }

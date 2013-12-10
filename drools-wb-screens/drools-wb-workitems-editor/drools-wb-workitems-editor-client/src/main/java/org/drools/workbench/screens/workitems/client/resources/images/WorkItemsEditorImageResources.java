@@ -23,7 +23,7 @@ public interface WorkItemsEditorImageResources
         extends
         ClientBundle {
 
-    @Source("workitemIcon.gif")
-    ImageResource workitemIcon();
+    @Source("BPM_FileIcons_workitems.png")
+    ImageResource typeWorkItem();
 
 }

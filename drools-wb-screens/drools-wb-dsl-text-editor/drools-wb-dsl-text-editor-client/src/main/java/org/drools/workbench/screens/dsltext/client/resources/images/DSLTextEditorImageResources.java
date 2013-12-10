@@ -23,7 +23,7 @@ public interface DSLTextEditorImageResources
         extends
         ClientBundle {
 
-    @Source("dslIcon.gif")
-    ImageResource DSLIcon();
+    @Source("BPM_FileIcons_drl.png")
+    ImageResource typeDSL();
 
 }

@@ -43,7 +43,7 @@ public class NewDslTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( DSLTextEditorResources.INSTANCE.images().DSLIcon() );
+        return new Image( DSLTextEditorResources.INSTANCE.images().typeDSL() );
     }
 
     @Override

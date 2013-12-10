@@ -13,7 +13,7 @@ public class GuidedDTableResourceType
         extends GuidedDTableResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( GuidedDecisionTableResources.INSTANCE.images().guidedDecisionTableIcon() );
+    private static final Image IMAGE = new Image( GuidedDecisionTableResources.INSTANCE.images().typeGuidedDecisionTable() );
 
     @Override
     public IsWidget getIcon() {

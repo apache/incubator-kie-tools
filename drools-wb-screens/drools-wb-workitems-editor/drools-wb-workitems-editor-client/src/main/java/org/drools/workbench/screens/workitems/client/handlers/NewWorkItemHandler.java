@@ -43,7 +43,7 @@ public class NewWorkItemHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        //return new Image( WorkItemsEditorResources.INSTANCE.images().workitemIcon() );
+        //return new Image( WorkItemsEditorResources.INSTANCE.images().typeWorkItem() );
         return null;
     }
 

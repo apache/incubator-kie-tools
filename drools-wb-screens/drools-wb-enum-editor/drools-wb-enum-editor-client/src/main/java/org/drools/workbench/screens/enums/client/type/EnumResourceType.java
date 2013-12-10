@@ -13,7 +13,7 @@ public class EnumResourceType
         extends EnumResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( EnumEditorResources.INSTANCE.images().enumsIcon() );
+    private static final Image IMAGE = new Image( EnumEditorResources.INSTANCE.images().typeEnumeration() );
 
     @Override
     public IsWidget getIcon() {

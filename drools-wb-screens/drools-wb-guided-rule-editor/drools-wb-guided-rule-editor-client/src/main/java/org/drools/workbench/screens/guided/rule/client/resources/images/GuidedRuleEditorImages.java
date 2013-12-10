@@ -42,11 +42,8 @@ public interface GuidedRuleEditorImages extends
     @ClientBundle.Source("fact.gif")
     ImageResource fact();
 
-    @ClientBundle.Source("guidedRuleIcon.gif")
-    ImageResource guidedRuleIcon();
-
-    @ClientBundle.Source("guidedRuleTemplateIcon.gif")
-    ImageResource guidedRuleTemplateIcon();
+    @ClientBundle.Source("BPM_FileIcons_guidedrule.png")
+    ImageResource typeGuidedRule();
 
     @ClientBundle.Source("clock.png")
     ImageResource clock();

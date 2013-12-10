@@ -53,8 +53,8 @@ public interface GuidedDecisionTableImageResources
     @Source("config.png")
     ImageResource config();
 
-    @Source("guidedDecisionTableIcon.gif")
-    ImageResource guidedDecisionTableIcon();
+    @Source("BPM_FileIcons_guideddtable.png")
+    ImageResource typeGuidedDecisionTable();
 
     @ClientBundle.Source("shuffle_down.gif")
     ImageResource shuffleDown();

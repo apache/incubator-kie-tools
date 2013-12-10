@@ -43,7 +43,7 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( DRLTextEditorResources.INSTANCE.images().DRLIcon() );
+        return new Image( DRLTextEditorResources.INSTANCE.images().typeDRL() );
     }
 
     @Override

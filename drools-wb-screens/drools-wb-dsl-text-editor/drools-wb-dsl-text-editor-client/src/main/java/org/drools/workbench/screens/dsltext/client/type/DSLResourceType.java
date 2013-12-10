@@ -13,7 +13,7 @@ public class DSLResourceType
         extends DSLResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( DSLTextEditorResources.INSTANCE.images().DSLIcon() );
+    private static final Image IMAGE = new Image( DSLTextEditorResources.INSTANCE.images().typeDSL() );
 
     @Override
     public IsWidget getIcon() {

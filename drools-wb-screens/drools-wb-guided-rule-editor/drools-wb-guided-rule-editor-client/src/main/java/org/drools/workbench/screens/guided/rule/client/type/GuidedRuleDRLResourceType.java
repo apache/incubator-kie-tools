@@ -13,7 +13,7 @@ public class GuidedRuleDRLResourceType
         extends GuidedRuleDRLResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( GuidedRuleEditorResources.INSTANCE.images().guidedRuleIcon() );
+    private static final Image IMAGE = new Image( GuidedRuleEditorResources.INSTANCE.images().typeGuidedRule() );
 
     @Override
     public IsWidget getIcon() {

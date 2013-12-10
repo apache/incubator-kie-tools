@@ -43,7 +43,7 @@ public class NewEnumHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( EnumEditorResources.INSTANCE.images().enumsIcon() );
+        return new Image( EnumEditorResources.INSTANCE.images().typeEnumeration() );
     }
 
     @Override

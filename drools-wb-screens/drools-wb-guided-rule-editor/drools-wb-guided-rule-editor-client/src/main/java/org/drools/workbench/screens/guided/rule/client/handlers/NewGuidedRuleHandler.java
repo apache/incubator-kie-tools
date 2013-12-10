@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
@@ -60,7 +59,7 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( GuidedRuleEditorResources.INSTANCE.images().guidedRuleIcon() );
+        return new Image( GuidedRuleEditorResources.INSTANCE.images().typeGuidedRule() );
     }
 
     @Override

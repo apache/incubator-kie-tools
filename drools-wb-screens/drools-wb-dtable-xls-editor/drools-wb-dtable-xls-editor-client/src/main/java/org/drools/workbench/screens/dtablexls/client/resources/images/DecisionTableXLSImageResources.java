@@ -23,8 +23,8 @@ public interface DecisionTableXLSImageResources
         extends
         ClientBundle {
 
-    @Source("decisionTableIcon.gif")
-    ImageResource decisionTableIcon();
+    @Source("BPM_FileIcons_decisiontablexls.png")
+    ImageResource typeXLSDecisionTable();
 
     @Source("decisionTableIconLarge.png")
     ImageResource decisionTableIconLarge();

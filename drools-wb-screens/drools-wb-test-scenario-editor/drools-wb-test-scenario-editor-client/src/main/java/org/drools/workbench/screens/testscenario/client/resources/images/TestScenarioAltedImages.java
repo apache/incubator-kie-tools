@@ -27,8 +27,8 @@ public class TestScenarioAltedImages {
     }
 
 
-    public Image TestScenario() {
-        Image image = new Image(TestScenarioImages.INSTANCE.testManager());
+    public Image typeTestScenario() {
+        Image image = new Image(TestScenarioImages.INSTANCE.typeTestScenario());
         image.setAltText(TestScenarioConstants.INSTANCE.TestScenario());
         return image;
     }

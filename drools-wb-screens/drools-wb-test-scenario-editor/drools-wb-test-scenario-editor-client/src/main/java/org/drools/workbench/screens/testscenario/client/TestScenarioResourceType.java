@@ -13,7 +13,7 @@ public class TestScenarioResourceType
         extends TestScenarioResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = TestScenarioAltedImages.INSTANCE.TestScenario();
+    private static final Image IMAGE = TestScenarioAltedImages.INSTANCE.typeTestScenario();
 
     @Override
     public IsWidget getIcon() {

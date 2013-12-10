@@ -44,7 +44,7 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( GlobalsEditorResources.INSTANCE.images().globalsIcon() );
+        return new Image( GlobalsEditorResources.INSTANCE.images().typeGlobalVariable() );
     }
 
     @Override

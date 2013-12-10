@@ -13,11 +13,11 @@ public class DecisionTableXLSResourceType
         extends DecisionTableXLSResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( DecisionTableXLSResources.INSTANCE.images().decisionTableIcon() );
+    private static final Image IMAGE = new Image( DecisionTableXLSResources.INSTANCE.images().typeXLSDecisionTable() );
 
     @Override
     public IsWidget getIcon() {
-        return null;
+        return IMAGE;
     }
 
 }

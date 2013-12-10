@@ -23,8 +23,8 @@ public interface ScoreCardXLSEditorImageResources
         extends
         ClientBundle {
 
-    @Source("scoreCardIcon.gif")
-    ImageResource scoreCardIcon();
+    @Source("BPM_FileIcons_scorecardxls.png")
+    ImageResource typeXLSScoreCard();
 
     @Source("scoreCardIconLarge.png")
     ImageResource scoreCardIconLarge();

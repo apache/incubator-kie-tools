@@ -13,7 +13,7 @@ public class GuidedScoreCardResourceType
         extends GuidedScoreCardResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( GuidedScoreCardResources.INSTANCE.images().scoreCardIcon() );
+    private static final Image IMAGE = new Image( GuidedScoreCardResources.INSTANCE.images().typeGuidedScoreCard() );
 
     @Override
     public IsWidget getIcon() {

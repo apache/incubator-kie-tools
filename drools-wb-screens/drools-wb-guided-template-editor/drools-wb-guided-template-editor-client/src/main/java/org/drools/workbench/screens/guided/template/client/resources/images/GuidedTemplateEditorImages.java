@@ -9,8 +9,8 @@ import com.google.gwt.resources.client.ImageResource;
 public interface GuidedTemplateEditorImages extends
                                             ClientBundle {
 
-    @ClientBundle.Source("guidedRuleTemplateIcon.gif")
-    ImageResource guidedRuleTemplateIcon();
+    @ClientBundle.Source("BPM_FileIcons_guidedrule.png")
+    ImageResource typeGuidedRuleTemplate();
 
     @ClientBundle.Source("emptyArrow.png")
     ImageResource arrowSpacerIcon();

@@ -62,7 +62,7 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ScoreCardXLSEditorResources.INSTANCE.images().scoreCardIcon() );
+        return new Image( ScoreCardXLSEditorResources.INSTANCE.images().typeXLSScoreCard() );
     }
 
     @Override

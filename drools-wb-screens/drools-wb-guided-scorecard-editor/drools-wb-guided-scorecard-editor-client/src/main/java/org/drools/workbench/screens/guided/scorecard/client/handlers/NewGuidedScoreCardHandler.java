@@ -40,7 +40,7 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( GuidedScoreCardResources.INSTANCE.images().scoreCardIcon() );
+        return new Image( GuidedScoreCardResources.INSTANCE.images().typeGuidedScoreCard() );
     }
 
     @Override
