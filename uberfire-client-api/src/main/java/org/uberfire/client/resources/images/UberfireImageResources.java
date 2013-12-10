@@ -14,38 +14,16 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.resources;
+package org.uberfire.client.resources.images;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface CoreImages
+public interface UberfireImageResources
         extends
         ClientBundle {
 
-    CoreImages INSTANCE = GWT.create( CoreImages.class );
-
-    @Source("images/open_folder.gif")
-    ImageResource openedFolder();
-
-    @Source("images/package.gif")
-    ImageResource packageIcon();
-
-    @Source("images/file.gif")
-    ImageResource file();
-
-    @Source("images/backup_large.png")
-    ImageResource backupLarge();
-
-    //A warning triangle
-    @Source("images/warning-large.png")
-    ImageResource warningLarge();
-
-    @Source("images/tick.png")
-    ImageResource tick();
-
-    @Source("images/BPM_FileIcons_text.png")
-    ImageResource typeTextFile();
+    @Source("BPM_FileIcons_genericfile.png")
+    ImageResource typeGenericFile();
 
 }
