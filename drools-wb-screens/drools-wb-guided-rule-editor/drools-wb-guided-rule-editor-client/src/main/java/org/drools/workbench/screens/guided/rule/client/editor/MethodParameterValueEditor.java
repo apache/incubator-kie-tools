@@ -103,7 +103,7 @@ public class MethodParameterValueEditor
                                         enums ) );
         } else {
 
-            if ( methodParameter.getNature() == FieldNatureType.TYPE_UNDEFINED ) {
+            if ( methodParameter.getNature() == FieldNatureType.TYPE_UNDEFINED && methodParameter.getValue() == null ) {
                 // we have a blank slate..
                 // have to give them a choice
                 root.add( choice() );
