@@ -74,9 +74,6 @@ public class Tree extends Composite implements HasSelectionHandlers<TreeItem>,
     void onSelection( final TreeItem item,
                       final boolean fireEvents ) {
         if ( curSelection != null ) {
-            if ( curSelection.equals( item ) ) {
-                return;
-            }
             curSelection.setSelected( false );
         }
         curSelection = item;
