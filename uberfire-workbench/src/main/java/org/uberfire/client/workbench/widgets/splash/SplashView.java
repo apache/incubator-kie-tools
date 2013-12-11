@@ -75,6 +75,7 @@ public class SplashView
         modal.addHideHandler( new HideHandler() {
             @Override
             public void onHide( final HideEvent hideEvent ) {
+                showAgain = footer.getShowAgain();
                 cleanup();
             }
         } );

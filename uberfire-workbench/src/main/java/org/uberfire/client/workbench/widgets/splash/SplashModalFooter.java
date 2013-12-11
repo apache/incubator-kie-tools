@@ -58,4 +58,9 @@ public class SplashModalFooter extends ModalFooter {
     public void onOKButtonClick( final ClickEvent e ) {
         closeCommand.execute( !dontShowAgain.getValue() );
     }
+
+    public boolean getShowAgain() {
+        return !dontShowAgain.getValue();
+    }
+
 }
