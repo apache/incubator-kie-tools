@@ -59,18 +59,17 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.guided.rule.client.widget.ExpressionBuilder;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.FormStylePopup;
@@ -538,7 +537,7 @@ public class ConstraintValueEditor
         }
 
         final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                GuidedRuleEditorResources.CONSTANTS.FieldValue() );
+                                                        GuidedRuleEditorResources.CONSTANTS.FieldValue() );
 
         Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
@@ -574,7 +573,7 @@ public class ConstraintValueEditor
             form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
                                widgets( lit,
                                         new InfoPopup( GuidedRuleEditorResources.CONSTANTS.LiteralValue(),
-                                                GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
+                                                       GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
         }
 
         //Template key selector
@@ -592,7 +591,7 @@ public class ConstraintValueEditor
             form.addAttribute( templateKeyLabel + ":",
                                widgets( templateKeyButton,
                                         new InfoPopup( templateKeyLabel,
-                                                GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
+                                                       GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
         }
 
         //Divider, if we have any advanced options
@@ -629,7 +628,7 @@ public class ConstraintValueEditor
                                                                  form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AVariable(),
                                                                                     widgets( bindingButton,
                                                                                              new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
-                                                                                                     GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
+                                                                                                            GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
                                                              }
                                                          }
                                                      }
@@ -653,7 +652,7 @@ public class ConstraintValueEditor
             form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AFormula() + ":",
                                widgets( formula,
                                         new InfoPopup( GuidedRuleEditorResources.CONSTANTS.AFormula(),
-                                                GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip() ) ) );
+                                                       GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip() ) ) );
         }
 
         //Expression selector
@@ -670,7 +669,7 @@ public class ConstraintValueEditor
             form.addAttribute( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() + ":",
                                widgets( expression,
                                         new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
-                                                GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() ) ) );
+                                                       GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() ) ) );
         }
 
         form.show();

@@ -39,11 +39,10 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSid
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.InfoPopup;
 import org.uberfire.client.common.SmallLabel;
@@ -184,7 +183,7 @@ public class PopupCreator {
     public void showPatternPopupForComposite( final Widget w,
                                               final HasConstraints hasConstraints ) {
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                GuidedRuleEditorResources.CONSTANTS.AddFieldsToThisConstraint() );
+                                                         GuidedRuleEditorResources.CONSTANTS.AddFieldsToThisConstraint() );
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -238,7 +237,7 @@ public class PopupCreator {
         } );
 
         InfoPopup infoComp = new InfoPopup( GuidedRuleEditorResources.CONSTANTS.MultipleFieldConstraints(),
-                GuidedRuleEditorResources.CONSTANTS.MultipleConstraintsTip() );
+                                            GuidedRuleEditorResources.CONSTANTS.MultipleConstraintsTip() );
 
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( composites );
@@ -340,7 +339,7 @@ public class PopupCreator {
         } );
 
         InfoPopup infoComp = new InfoPopup( GuidedRuleEditorResources.CONSTANTS.MultipleFieldConstraints(),
-                GuidedRuleEditorResources.CONSTANTS.MultipleConstraintsTip1() );
+                                            GuidedRuleEditorResources.CONSTANTS.MultipleConstraintsTip1() );
 
         HorizontalPanel horiz = new HorizontalPanel();
 

@@ -28,9 +28,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
@@ -76,8 +76,7 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public boolean isComplete() {
-
+    public void isComplete( final Callback<Boolean> callback ) {
         //Are the patterns valid?
         final boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
 
@@ -85,7 +84,7 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
         final DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
         duplicatePatternsEvent.fire( event );
 
-        return arePatternBindingsUnique;
+        callback.callback( arePatternBindingsUnique );
     }
 
     public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {

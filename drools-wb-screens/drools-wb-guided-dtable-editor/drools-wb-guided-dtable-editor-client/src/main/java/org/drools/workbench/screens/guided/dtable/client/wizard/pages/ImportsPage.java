@@ -28,6 +28,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
+import org.uberfire.client.callbacks.Callback;
 
 /**
  * A page for the guided Decision Table Wizard to define imports
@@ -80,9 +81,9 @@ public class ImportsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public boolean isComplete() {
+    public void isComplete( final Callback<Boolean> callback ) {
         //Imports are optional
-        return true;
+        callback.callback( true );
     }
 
     @Override

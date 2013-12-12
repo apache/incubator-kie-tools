@@ -53,9 +53,9 @@ import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.common.DecoratedDisclosurePanel;
 import org.uberfire.client.common.DirtyableFlexTable;
 

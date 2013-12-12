@@ -37,10 +37,10 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
@@ -134,8 +134,7 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     }
 
     @Override
-    public boolean isComplete() {
-
+    public void isComplete( final Callback<Boolean> callback ) {
         //Do all Patterns have unique bindings?
         final boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
 
@@ -158,7 +157,7 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         final ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent( areActionInsertFieldsDefined );
         actionInsertFactFieldsDefinedEvent.fire( eventFactFields );
 
-        return arePatternBindingsUnique && areActionInsertFieldsDefined;
+        callback.callback( arePatternBindingsUnique && areActionInsertFieldsDefined );
     }
 
     public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {

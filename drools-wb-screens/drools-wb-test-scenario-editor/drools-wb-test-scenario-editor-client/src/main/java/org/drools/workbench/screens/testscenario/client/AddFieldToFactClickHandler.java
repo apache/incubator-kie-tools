@@ -20,8 +20,8 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.client.callbacks.Callback;
 
 public class AddFieldToFactClickHandler
         extends AddFieldClickHandler {

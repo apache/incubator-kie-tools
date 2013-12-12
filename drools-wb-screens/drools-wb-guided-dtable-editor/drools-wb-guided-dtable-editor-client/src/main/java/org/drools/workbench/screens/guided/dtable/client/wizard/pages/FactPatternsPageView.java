@@ -16,11 +16,11 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
-import org.uberfire.client.mvp.UberView;
-
 import java.util.List;
+
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.mvp.UberView;
 
 /**
  * View and Presenter definitions for the Fact Patterns page

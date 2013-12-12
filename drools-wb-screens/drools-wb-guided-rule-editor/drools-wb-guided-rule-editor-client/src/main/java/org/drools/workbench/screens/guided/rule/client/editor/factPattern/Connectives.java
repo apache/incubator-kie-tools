@@ -36,11 +36,10 @@ import org.drools.workbench.screens.guided.rule.client.editor.ConstraintValueEdi
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.common.SmallLabel;
 
 public class Connectives {

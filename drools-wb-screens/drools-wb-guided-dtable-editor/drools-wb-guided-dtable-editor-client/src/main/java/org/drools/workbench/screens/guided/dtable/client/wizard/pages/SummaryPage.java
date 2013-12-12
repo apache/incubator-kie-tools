@@ -24,6 +24,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisio
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
@@ -51,8 +52,8 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public boolean isComplete() {
-        return isBaseFileNameValid;
+    public void isComplete( final Callback<Boolean> callback ) {
+        callback.callback( isBaseFileNameValid );
     }
 
     @Override

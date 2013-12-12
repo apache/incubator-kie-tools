@@ -42,6 +42,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.RowExpande
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.SummaryPage;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPresenter;
@@ -143,13 +144,20 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
     }
 
     @Override
-    public boolean isComplete() {
+    public void isComplete( final Callback<Boolean> callback ) {
+        //Assume complete
+        callback.callback( true );
+
         for ( WizardPage page : this.pages ) {
-            if ( !page.isComplete() ) {
-                return false;
-            }
+            page.isComplete( new Callback<Boolean>() {
+                @Override
+                public void callback( final Boolean result ) {
+                    if ( Boolean.FALSE.equals( result ) ) {
+                        callback.callback( false );
+                    }
+                }
+            } );
         }
-        return true;
     }
 
     @Override

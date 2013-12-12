@@ -26,6 +26,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
+import org.uberfire.client.callbacks.Callback;
 
 /**
  * A page for the guided Decision Table Wizard to define which columns will be
@@ -92,9 +93,9 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public boolean isComplete() {
+    public void isComplete( final Callback<Boolean> callback ) {
         //Expansion can involve zero or more columns, so the page is always complete
-        return true;
+        callback.callback( true );
     }
 
     public void onConditionsDefined( final @Observes ConditionsDefinedEvent event ) {

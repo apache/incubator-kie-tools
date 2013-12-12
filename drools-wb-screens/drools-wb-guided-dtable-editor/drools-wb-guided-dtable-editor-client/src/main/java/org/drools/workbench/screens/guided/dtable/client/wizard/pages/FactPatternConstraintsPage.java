@@ -34,8 +34,8 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ConditionsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
@@ -84,8 +84,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     }
 
     @Override
-    public boolean isComplete() {
-
+    public void isComplete( final Callback<Boolean> callback ) {
         //Have all patterns conditions been defined?
         boolean areConditionsDefined = true;
         for ( Pattern52 p : model.getPatterns() ) {
@@ -101,7 +100,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         final ConditionsDefinedEvent event = new ConditionsDefinedEvent( areConditionsDefined );
         conditionsDefinedEvent.fire( event );
 
-        return areConditionsDefined;
+        callback.callback( areConditionsDefined );
     }
 
     public void onDuplicatePatterns( final @Observes DuplicatePatternsEvent event ) {

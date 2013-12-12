@@ -47,8 +47,8 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.common.FormStylePopup;
 import org.uberfire.client.common.ImageButton;
 import org.uberfire.client.common.InfoPopup;

@@ -38,8 +38,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidge
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.ActionSetFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
@@ -124,8 +124,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public boolean isComplete() {
-
+    public void isComplete( final Callback<Boolean> callback ) {
         //Have all Actions been defined?
         boolean areActionSetFieldsDefined = true;
         for ( List<ActionSetFieldCol52> actions : patternToActionsMap.values() ) {
@@ -141,7 +140,7 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         final ActionSetFieldsDefinedEvent event = new ActionSetFieldsDefinedEvent( areActionSetFieldsDefined );
         actionSetFieldsDefinedEvent.fire( event );
 
-        return areActionSetFieldsDefined;
+        callback.callback( areActionSetFieldsDefined );
     }
 
     //See comments about use of IdentityHashMap in instance member declaration section

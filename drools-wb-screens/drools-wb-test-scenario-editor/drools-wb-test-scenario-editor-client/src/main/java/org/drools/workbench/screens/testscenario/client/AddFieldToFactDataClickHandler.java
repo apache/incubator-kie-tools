@@ -6,8 +6,8 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.client.callbacks.Callback;
 
 class AddFieldToFactDataClickHandler
         extends AddFieldClickHandler {

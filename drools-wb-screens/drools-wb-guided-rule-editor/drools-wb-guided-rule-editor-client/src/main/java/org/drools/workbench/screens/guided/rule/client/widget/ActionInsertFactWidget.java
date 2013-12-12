@@ -40,13 +40,12 @@ import org.drools.workbench.screens.guided.rule.client.editor.ActionValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.FormStylePopup;
@@ -215,7 +214,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                GuidedRuleEditorResources.CONSTANTS.AddAField() );
+                                                         GuidedRuleEditorResources.CONSTANTS.AddAField() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
 

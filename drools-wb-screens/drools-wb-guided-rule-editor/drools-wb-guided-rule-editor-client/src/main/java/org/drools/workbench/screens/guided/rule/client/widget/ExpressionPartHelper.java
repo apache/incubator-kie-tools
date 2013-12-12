@@ -23,8 +23,8 @@ import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionGlobalVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.client.callbacks.Callback;
 
 public class ExpressionPartHelper {
 
