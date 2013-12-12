@@ -1757,11 +1757,18 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     }
 
     private void notifyDiffs( final JGitFileSystem fs,
-                              final String tree,
+                              final String _tree,
                               final String sessionId,
                               final String userName,
                               final ObjectId oldHead,
                               final ObjectId newHead ) {
+
+        final String tree;
+        if ( _tree.startsWith( "refs/" ) ) {
+            tree = _tree.substring( _tree.lastIndexOf( "/" ) + 1 );
+        } else {
+            tree = _tree;
+        }
 
         final String host = tree + "@" + fs.getName();
         final Path root = JGitPathImpl.createRoot( fs, "/", host, false );
