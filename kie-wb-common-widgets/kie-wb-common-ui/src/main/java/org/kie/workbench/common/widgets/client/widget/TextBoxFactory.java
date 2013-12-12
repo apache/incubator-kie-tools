@@ -64,16 +64,7 @@ public class TextBoxFactory {
         } else if ( DataType.TYPE_NUMERIC_SHORT.equals( dataType ) ) {
             return new NumericShortTextBox();
         } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
-            final TextBox textBox = new TextBox();
-            textBox.addKeyPressHandler(new KeyPressHandler() {
-                @Override
-                public void onKeyPress(KeyPressEvent event) {
-                    if (  '\\' == event.getCharCode() || '\"' == event.getCharCode() ) {
-                        ((TextBox) event.getSource()).cancelKey();
-                    }
-                }
-            });
-            return textBox;
+            return new LiteralTextBox();
         } else {
             return new TextBox();
         }
