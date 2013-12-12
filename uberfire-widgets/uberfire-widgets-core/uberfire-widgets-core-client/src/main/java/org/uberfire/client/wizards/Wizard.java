@@ -18,6 +18,7 @@ package org.uberfire.client.wizards;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.callbacks.Callback;
 
 /**
  * Things a Wizard needs to implement
@@ -56,13 +57,13 @@ public interface Wizard<T extends WizardContext> {
     int getPreferredWidth();
 
     /**
-     * Is the page complete; i.e. has all the necessary information for the page
-     * been captured. What constitutes necessary data is up to the Wizard
-     * implementation, but a login page might consider the User ID and Password
-     * as necessary.
-     * @return True if the page is considered complete
+     * Is the Wizard complete; i.e. has all the necessary information for all
+     * pages in the Wizard been captured. What constitutes necessary data is up to
+     * the Wizard implementation, but a login page might consider the User ID and
+     * Password as necessary.
+     * @param callback True if the page is complete
      */
-    boolean isComplete();
+    void isComplete( Callback<Boolean> callback );
 
     /**
      * The Wizard has been completed

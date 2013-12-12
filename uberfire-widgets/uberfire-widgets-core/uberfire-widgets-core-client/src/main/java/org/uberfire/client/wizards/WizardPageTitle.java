@@ -30,6 +30,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.mvp.Command;
 
 /**
  * A widget containing the page title of a Wizard page, along with an indicator
@@ -51,6 +53,20 @@ public class WizardPageTitle extends Composite {
     @Inject
     private Event<WizardPageSelectedEvent> selectPageEvent;
 
+    private final Command isCompleteCommand = new Command() {
+        @Override
+        public void execute() {
+            setComplete( true );
+        }
+    };
+
+    private final Command isIncompleteCommand = new Command() {
+        @Override
+        public void execute() {
+            setComplete( false );
+        }
+    };
+
     interface WizardPageTitleViewBinder
             extends
             UiBinder<Widget, WizardPageTitle> {
@@ -64,12 +80,18 @@ public class WizardPageTitle extends Composite {
     }
 
     public void setContent( final WizardPage page ) {
-        lblTitle.setText(page.getTitle());
-        setComplete(page.isComplete());
+        lblTitle.setText( page.getTitle() );
+        page.isComplete( new Callback<Boolean>() {
+            @Override
+            public void callback( final Boolean result ) {
+                setComplete( Boolean.TRUE.equals( result ) );
+            }
+        } );
+
         container.addDomHandler( new ClickHandler() {
 
             public void onClick( final ClickEvent event ) {
-                selectPageEvent.fire(new WizardPageSelectedEvent(page));
+                selectPageEvent.fire( new WizardPageSelectedEvent( page ) );
             }
 
         },

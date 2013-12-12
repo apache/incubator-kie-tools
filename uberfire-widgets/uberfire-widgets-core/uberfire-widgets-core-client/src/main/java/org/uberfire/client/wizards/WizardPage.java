@@ -16,6 +16,7 @@
 package org.uberfire.client.wizards;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.callbacks.Callback;
 
 /**
  * A page for a Wizard
@@ -31,10 +32,12 @@ public interface WizardPage
     String getTitle();
 
     /**
-     * Is the page completed
-     * @return
+     * Is the page; i.e. has all the necessary information been captured. What
+     * constitutes necessary data is up to the Wizard implementation, but a login
+     * page might consider the User ID and Password as necessary.
+     * @param callback True if the page is complete
      */
-    boolean isComplete();
+    void isComplete( Callback<Boolean> callback );
 
     /**
      * Initialise the page with things that don't change between page visits
