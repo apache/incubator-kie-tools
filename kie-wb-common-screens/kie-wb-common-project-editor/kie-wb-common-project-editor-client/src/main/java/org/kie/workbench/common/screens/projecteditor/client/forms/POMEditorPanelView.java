@@ -25,6 +25,8 @@ public interface POMEditorPanelView extends HasBusyIndicator,
 
     interface Presenter {
 
+        void addNameChangeHandler( NameChangeHandler changeHandler );
+
         void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler );
 
         void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler );

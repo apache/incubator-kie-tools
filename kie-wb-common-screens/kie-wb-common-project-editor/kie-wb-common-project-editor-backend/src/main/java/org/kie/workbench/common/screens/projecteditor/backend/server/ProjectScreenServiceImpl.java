@@ -4,6 +4,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang.StringUtils;
+import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.common.services.project.service.POMService;
@@ -12,7 +15,10 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
+import org.kie.workbench.common.services.shared.validation.java.IdentifierValidationService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 
 @Service
@@ -31,6 +37,12 @@ public class ProjectScreenServiceImpl
 
     @Inject
     private MetadataService metadataService;
+
+    @Inject
+    private IdentifierValidationService identifierValidationService;
+
+    @Inject
+    private FileNameValidationService fileNameValidationService;
 
     @Inject
     @Named("ioStrategy")
@@ -63,10 +75,10 @@ public class ProjectScreenServiceImpl
         final Project project = projectService.resolveProject( pathToPomXML );
 
         ioService.startBatch();
-        pomService.save(pathToPomXML,
-                model.getPOM(),
-                model.getPOMMetaData(),
-                comment);
+        pomService.save( pathToPomXML,
+                         model.getPOM(),
+                         model.getPOMMetaData(),
+                         comment );
         kModuleService.save( project.getKModuleXMLPath(),
                              model.getKModule(),
                              model.getKModuleMetaData(),
@@ -98,4 +110,38 @@ public class ProjectScreenServiceImpl
                       String comment ) {
         projectService.copy( pathToPomXML, newName, comment );
     }
+
+    @Override
+    public String sanitizeArtifactId( final String artifactId ) {
+        PortablePreconditions.checkNotNull( "artifactId",
+                                            artifactId );
+        final String[] sanitizedArtifactIdComponents = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( artifactId.split( "\\.",
+                                                                                                                                 -1 ) );
+        final String sanitizedArtifactId = StringUtils.join( sanitizedArtifactIdComponents,
+                                                             "." );
+        return sanitizedArtifactId;
+    }
+
+    @Override
+    public boolean validate( final POM pom ) {
+        PortablePreconditions.checkNotNull( "pom",
+                                            pom );
+        final String name = pom.getName();
+        final String groupId = pom.getGav().getGroupId();
+        final String artifactId = pom.getGav().getArtifactId();
+        final String version = pom.getGav().getVersion();
+
+        final String[] groupIdComponents = ( groupId == null ? new String[]{ } : groupId.split( "\\.",
+                                                                                                -1 ) );
+        final String[] artifactIdComponents = ( artifactId == null ? new String[]{ } : artifactId.split( "\\.",
+                                                                                                         -1 ) );
+
+        final boolean validName = !( name == null || name.isEmpty() ) && fileNameValidationService.isFileNameValid( name );
+        final boolean validGroupId = !( groupIdComponents.length == 0 || identifierValidationService.evaluateIdentifiers( groupIdComponents ).containsValue( Boolean.FALSE ) );
+        final boolean validArtifactId = !( artifactIdComponents.length == 0 || identifierValidationService.evaluateIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ) );
+        final boolean validVersion = !( version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ) );
+
+        return validName && validGroupId && validArtifactId && validVersion;
+    }
+
 }

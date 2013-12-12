@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.widgets.client.datamodel;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,8 +27,8 @@ import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
 
 public interface AsyncPackageDataModelOracle {
 

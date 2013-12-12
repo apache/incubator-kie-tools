@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -71,7 +72,7 @@ public class POMEditorPanelViewImpl
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -102,7 +103,7 @@ public class POMEditorPanelViewImpl
 
     @Override
     public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
-        gavEditor.addGroupIdChangeHandler(changeHandler);
+        gavEditor.addGroupIdChangeHandler( changeHandler );
     }
 
     @Override
@@ -112,7 +113,7 @@ public class POMEditorPanelViewImpl
 
     @Override
     public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
-        gavEditor.addVersionChangeHandler(changeHandler);
+        gavEditor.addVersionChangeHandler( changeHandler );
     }
 
     @Override
@@ -136,12 +137,13 @@ public class POMEditorPanelViewImpl
     }
 
     @UiHandler("pomNameTextBox")
-    public void onNameChange(ValueChangeEvent<String> event) {
-        presenter.onNameChange(pomNameTextBox.getText());
+    //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
+    public void onNameChange( KeyUpEvent event ) {
+        presenter.onNameChange( pomNameTextBox.getText() );
     }
 
     @UiHandler("pomDescriptionTextArea")
-    public void onDescriptionChange(ValueChangeEvent<String> event) {
-        presenter.onDescriptionChange(pomDescriptionTextArea.getText());
+    public void onDescriptionChange( ValueChangeEvent<String> event ) {
+        presenter.onDescriptionChange( pomDescriptionTextArea.getText() );
     }
 }

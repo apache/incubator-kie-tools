@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import java.util.ArrayList;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -27,60 +28,70 @@ public class POMEditorPanel
         implements POMEditorPanelView.Presenter,
                    IsWidget {
 
+    private final ArrayList<NameChangeHandler> nameChangeHandlers = new ArrayList<NameChangeHandler>();
     private final POMEditorPanelView view;
     private POM model;
 
     @Inject
-    public POMEditorPanel(final POMEditorPanelView view) {
+    public POMEditorPanel( final POMEditorPanelView view ) {
         this.view = view;
         view.setPresenter( this );
     }
 
-    public void setPOM(POM model, boolean isReadOnly) {
-        if (isReadOnly) {
+    public void setPOM( POM model,
+                        boolean isReadOnly ) {
+        if ( isReadOnly ) {
             view.setReadOnly();
         }
 
         this.model = model;
 
-        view.setName(model.getName());
-        view.setDescription(model.getDescription());
-        view.setGAV(model.getGav());
-        view.addArtifactIdChangeHandler(new ArtifactIdChangeHandler() {
+        view.setName( model.getName() );
+        view.setDescription( model.getDescription() );
+        view.setGAV( model.getGav() );
+        view.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
             @Override
-            public void onChange(String newArtifactId) {
-                setTitle(newArtifactId);
+            public void onChange( String newArtifactId ) {
+                setTitle( newArtifactId );
             }
-        });
-        setTitle(model.getGav().getArtifactId());
+        } );
+        setTitle( model.getGav().getArtifactId() );
     }
 
-    private void setTitle(final String titleText) {
-        if (titleText == null || titleText.isEmpty()) {
-            view.setTitleText(ProjectEditorResources.CONSTANTS.ProjectModel());
+    private void setTitle( final String titleText ) {
+        if ( titleText == null || titleText.isEmpty() ) {
+            view.setTitleText( ProjectEditorResources.CONSTANTS.ProjectModel() );
         } else {
-            view.setTitleText(titleText);
+            view.setTitleText( titleText );
         }
     }
 
     @Override
+    public void addNameChangeHandler( NameChangeHandler changeHandler ) {
+        nameChangeHandlers.add( changeHandler );
+    }
+
+    @Override
     public void addGroupIdChangeHandler( GroupIdChangeHandler changeHandler ) {
-        this.view.addGroupIdChangeHandler(changeHandler);
+        this.view.addGroupIdChangeHandler( changeHandler );
     }
 
     @Override
     public void addArtifactIdChangeHandler( ArtifactIdChangeHandler changeHandler ) {
-        this.view.addArtifactIdChangeHandler(changeHandler);
+        this.view.addArtifactIdChangeHandler( changeHandler );
     }
 
     @Override
     public void addVersionChangeHandler( VersionChangeHandler changeHandler ) {
-        this.view.addVersionChangeHandler(changeHandler);
+        this.view.addVersionChangeHandler( changeHandler );
     }
 
     @Override
     public void onNameChange( String name ) {
         this.model.setName( name );
+        for ( NameChangeHandler changeHandler : nameChangeHandlers ) {
+            changeHandler.onChange( name );
+        }
     }
 
     @Override

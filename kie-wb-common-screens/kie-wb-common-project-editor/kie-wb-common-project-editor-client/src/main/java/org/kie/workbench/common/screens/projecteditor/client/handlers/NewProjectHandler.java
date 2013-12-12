@@ -11,10 +11,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.uberfire.commons.data.Pair;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.PathLabel;
@@ -22,6 +24,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.wizards.WizardPresenter;
+import org.uberfire.commons.data.Pair;
 
 /**
  * Handler for the creation of new Projects
@@ -39,6 +42,9 @@ public class NewProjectHandler
 
     @Inject
     private WizardPresenter wizardPresenter;
+
+    @Inject
+    protected Caller<FileNameValidationService> fileNameValidationService;
 
     @Inject
     private ProjectContext context;
@@ -83,8 +89,22 @@ public class NewProjectHandler
     @Override
     public void validate( final String fileName,
                           final ValidatorWithReasonCallback callback ) {
-        //Project names are always valid
-        callback.onSuccess();
+        if ( pathLabel.getPath() == null ) {
+            ErrorPopup.showMessage( CommonConstants.INSTANCE.MissingPath() );
+            callback.onFailure();
+            return;
+        }
+
+        fileNameValidationService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( final Boolean response ) {
+                if ( Boolean.TRUE.equals( response ) ) {
+                    callback.onSuccess();
+                } else {
+                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( fileName ) );
+                }
+            }
+        } ).isFileNameValid( fileName );
     }
 
     @Override

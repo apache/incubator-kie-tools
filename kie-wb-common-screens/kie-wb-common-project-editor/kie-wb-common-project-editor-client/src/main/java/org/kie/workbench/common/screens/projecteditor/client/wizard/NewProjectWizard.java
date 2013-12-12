@@ -16,9 +16,11 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
@@ -50,11 +52,13 @@ public class NewProjectWizard
     private Caller<ProjectService> projectServiceCaller;
 
     @Inject
+    private Caller<ProjectScreenService> projectScreenService;
+
+    @Inject
     private ProjectContext context;
 
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
-    private POM pom;
-    private String projectName;
+    private POM pom = new POM();
 
     @PostConstruct
     public void setupPages() {
@@ -87,13 +91,9 @@ public class NewProjectWizard
     }
 
     @Override
-    public boolean isComplete() {
-        for ( WizardPage page : this.pages ) {
-            if ( !page.isComplete() ) {
-                return false;
-            }
-        }
-        return true;
+    public void isComplete( final Callback<Boolean> callback ) {
+        //We only have one page; this is simple!
+        gavWizardPage.isComplete( callback );
     }
 
     @Override
@@ -104,7 +104,7 @@ public class NewProjectWizard
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         projectServiceCaller.call( getSuccessCallback(),
                                    new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).newProject( context.getActiveRepository(),
-                                                                                                               projectName,
+                                                                                                               pom.getName(),
                                                                                                                pom,
                                                                                                                baseUrl );
     }
@@ -115,7 +115,7 @@ public class NewProjectWizard
             @Override
             public void callback( final Project project ) {
                 busyIndicatorView.hideBusyIndicator();
-                notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCreatedSuccessfully()));
+                notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
                 newProjectEvent.fire( new NewProjectEvent( project ) );
                 placeManager.goTo( "projectScreen" );
             }
@@ -123,10 +123,23 @@ public class NewProjectWizard
     }
 
     public void setProjectName( final String projectName ) {
-        this.projectName = projectName;
+        //Initially use an empty POM. The real POM is set asynchronously
         pom = new POM();
-        pom.getGav().setArtifactId( projectName );
-        pom.getGav().setVersion("1.0");
         gavWizardPage.setPom( pom );
+
+        // Sanitize the ArtifactID which is initially based on the Project Name. The Project Name
+        // is used to generate the folder name and hence is only checked to be a valid file name.
+        // The ArtifactID is used to construct the default workspace and hence package names.
+        // Consequentially ArtifactIDs need to be further validated.
+        projectScreenService.call( new RemoteCallback<String>() {
+            @Override
+            public void callback( final String sanitizedArtifactId ) {
+                pom = new POM();
+                pom.setName( projectName );
+                pom.getGav().setArtifactId( sanitizedArtifactId );
+                pom.getGav().setVersion( "1.0" );
+                gavWizardPage.setPom( pom );
+            }
+        } ).sanitizeArtifactId( projectName );
     }
 }

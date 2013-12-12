@@ -1,5 +1,6 @@
 package org.kie.workbench.common.screens.projecteditor.service;
 
+import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.uberfire.backend.vfs.Path;
@@ -23,4 +24,9 @@ public interface ProjectScreenService {
     void copy( final Path pomXMLPath,
                final String newFileName,
                final String commitMessage );
+
+    String sanitizeArtifactId( final String artifactId );
+
+    boolean validate( final POM pom );
+
 }

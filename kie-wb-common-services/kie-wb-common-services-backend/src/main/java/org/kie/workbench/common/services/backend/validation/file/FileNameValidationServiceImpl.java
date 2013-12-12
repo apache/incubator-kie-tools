@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
 
@@ -33,9 +34,15 @@ public class FileNameValidationServiceImpl implements FileNameValidationService 
 
     public boolean isFileNameValid( final String fileName ) {
         //Null check
-        if ( fileName == null || fileName.isEmpty() || fileName.trim().isEmpty() ) {
+        if ( StringUtils.isBlank( fileName ) ) {
             return false;
         }
+
+        //Prefix and suffix "." causes issues
+        if ( fileName.startsWith( "." ) || fileName.endsWith( "." ) ) {
+            return false;
+        }
+
         //Illegal character check
         for ( Character c : ILLEGAL_CHARACTERS ) {
             if ( fileName.contains( c.toString() ) ) {

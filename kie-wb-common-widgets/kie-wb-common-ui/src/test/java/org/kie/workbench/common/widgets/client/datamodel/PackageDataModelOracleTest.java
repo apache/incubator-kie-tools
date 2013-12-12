@@ -13,12 +13,12 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.packag
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
-import org.kie.workbench.common.widgets.client.callbacks.Callback;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestDataTypes;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestDelegatedClass;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSubClass;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSuperClass;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
