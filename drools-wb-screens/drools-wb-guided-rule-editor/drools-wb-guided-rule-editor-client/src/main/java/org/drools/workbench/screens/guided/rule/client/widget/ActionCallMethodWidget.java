@@ -250,7 +250,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                                                 int i = 0;
                                                 for ( String methodParameter : methodParameters ) {
                                                     model.addFieldValue( new ActionFieldFunction( methodName,
-                                                                                                  String.valueOf( i ),
+                                                                                                  null,
                                                                                                   methodParameter ) );
                                                     i++;
                                                 }
