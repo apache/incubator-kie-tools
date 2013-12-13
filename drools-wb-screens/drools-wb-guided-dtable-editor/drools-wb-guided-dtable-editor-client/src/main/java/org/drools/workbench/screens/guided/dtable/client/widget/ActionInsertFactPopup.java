@@ -127,7 +127,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         ImageButton editField = createEditFieldButton();
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
                       field );
         doFieldLabel();
 
@@ -196,7 +196,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
 
         //Default Value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            defaultValueWidgetContainerIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.DefaultValue(),
+            defaultValueWidgetContainerIndex = addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.DefaultValue()).append(GuidedDecisionTableConstants.COLON).toString(),
                                                              defaultValueWidgetContainer );
             makeDefaultValueWidget();
         }
@@ -209,11 +209,11 @@ public class ActionInsertFactPopup extends FormStylePopup {
         }
 
         //Logical insertion
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.LogicallyInsertColon(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.LogicallyInsert()).append(GuidedDecisionTableConstants.COLON).toString(),
                       doInsertLogical() );
 
         //Hide column tick-box
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
@@ -460,7 +460,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
                                                  }
                                              }
                                          } );
-        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
+        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
@@ -546,7 +546,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.FactType(),
                           types );
         final TextBox binding = new BindingTextBox();
-        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Binding(),
+        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Binding()).append(GuidedDecisionTableConstants.COLON).toString(),
                           binding );
 
         Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );

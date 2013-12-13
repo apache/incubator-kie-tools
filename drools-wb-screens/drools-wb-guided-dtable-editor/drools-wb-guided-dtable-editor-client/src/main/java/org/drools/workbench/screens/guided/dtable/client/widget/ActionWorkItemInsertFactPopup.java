@@ -136,7 +136,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                                  } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
                       field );
         doFieldLabel();
 
@@ -155,7 +155,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                       header );
 
         //Logical insertion
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.LogicallyInsertColon(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.LogicallyInsert()).append(GuidedDecisionTableConstants.COLON).toString(),
                       doInsertLogical() );
 
         //Bind field to a WorkItem result parameter
@@ -179,7 +179,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         }
 
         //Hide column tick-box
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
@@ -313,7 +313,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                              }
                                          } );
 
-        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
+        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
@@ -395,7 +395,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.FactType(),
                           types );
         final TextBox binding = new BindingTextBox();
-        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Binding(),
+        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Binding()).append(GuidedDecisionTableConstants.COLON).toString(),
                           binding );
 
         Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );

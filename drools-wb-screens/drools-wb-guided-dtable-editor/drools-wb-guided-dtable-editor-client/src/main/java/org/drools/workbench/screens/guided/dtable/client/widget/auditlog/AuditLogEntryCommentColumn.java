@@ -60,11 +60,11 @@ public class AuditLogEntryCommentColumn extends Column<AuditLogEntry, String> {
      */
      interface TextAreaTemplate extends SafeHtmlTemplates {
         /** Tempate when textarea has value .*/
-        @Template("<textarea style=\"width: 99% !important; resize: none;\" class=\"{1}\" rows=\"{2}\" cols=\"{3}\">{0}</textarea>")
+        @Template("<textarea style=\"width: 98% !important; resize: none;\" class=\"{1}\" rows=\"{2}\" cols=\"{3}\">{0}</textarea>")
         SafeHtml textarea(SafeHtml value, String className, String rows, String cols);
 
         /** Tempate when textarea is empty.*/
-        @Template("<textarea style=\"width: 99% !important; resize: none;\" class=\"{0}\" rows=\"{1}\" cols=\"{2}\" placeholder=\"{3}\"></textarea>")
+        @Template("<textarea style=\"width: 98% !important; resize: none;\" class=\"{0}\" rows=\"{1}\" cols=\"{2}\" placeholder=\"{3}\"></textarea>")
         SafeHtml textareaEmpty(String className, String rows, String cols, String placeholder);
     }
 

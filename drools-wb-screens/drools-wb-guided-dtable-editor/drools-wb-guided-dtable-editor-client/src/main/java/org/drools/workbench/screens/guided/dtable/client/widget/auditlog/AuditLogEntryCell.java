@@ -45,9 +45,21 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
 
     private final AuditLogEntryCellHelper helper;
 
+    // The CSS classes for generated html templates.
+    private String labelClass;
+    private String valueClass;
+
+
     public AuditLogEntryCell( final DateTimeFormat format ) {
         this.helper = new AuditLogEntryCellHelper( format );
         this.format = format;
+    }
+
+    public AuditLogEntryCell( final DateTimeFormat format, String labelClass, String valueClass ) {
+        this.helper = new AuditLogEntryCellHelper( format, labelClass, valueClass );
+        this.format = format;
+        this.labelClass = labelClass;
+        this.valueClass = valueClass;
     }
 
     @Override

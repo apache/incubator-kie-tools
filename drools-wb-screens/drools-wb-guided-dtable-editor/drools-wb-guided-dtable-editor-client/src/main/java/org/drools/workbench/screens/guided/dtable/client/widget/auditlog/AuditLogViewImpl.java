@@ -58,8 +58,8 @@ public class AuditLogViewImpl extends Modal
 
     private final AuditLog auditLog;
 
-    /* The 100% width constant. */
-    private static final String P100_PERCENT = "100%";
+    /* The 700px constant. */
+    private static final String P700 = "700px";
 
     /* The 500px width constant. */
     private static final String P500 = "500px";
@@ -88,6 +88,8 @@ public class AuditLogViewImpl extends Modal
         String eventsContainerInline();
         String auitLogModalBody();
         String eventTypesCheckbox();
+        String auditLogDetailLabel();
+        String auditLogDetailValue();
     }
 
     @UiField
@@ -144,13 +146,13 @@ public class AuditLogViewImpl extends Modal
         // Create the GWT Cell Table as events container.
         // BZ-996942: Set custom width and table css style.
         events = new CellTable<AuditLogEntry>();
-        events.setWidth(P100_PERCENT);
+        events.setWidth(P700);
         events.addStyleName(Constants.TABLE);
 
         final ListDataProvider<AuditLogEntry> dlp = new ListDataProvider<AuditLogEntry>( filterDeletedEntries( auditLog ) );
         dlp.addDataDisplay( events );
 
-        AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn();
+        AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn(style.auditLogDetailLabel(), style.auditLogDetailValue());
         AuditLogEntryCommentColumn commentColumn = new AuditLogEntryCommentColumn();
 
         events.addColumn( summaryColumn );

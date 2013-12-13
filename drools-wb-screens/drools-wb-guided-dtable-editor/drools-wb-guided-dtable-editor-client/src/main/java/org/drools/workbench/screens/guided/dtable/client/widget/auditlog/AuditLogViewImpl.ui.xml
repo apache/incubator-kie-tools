@@ -38,6 +38,12 @@
     .eventTypesCheckbox {
       margin-left: 0px;
     }
+    .auditLogDetailLabel {
+      max-width: 300px;
+    }
+    .auditLogDetailValue {
+      max-width: 300px;
+    }
   </ui:style>
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants" />

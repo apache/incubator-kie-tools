@@ -123,7 +123,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
                         workItemDefinitions );
 
         //Hide column tick-box
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );

@@ -70,7 +70,7 @@
       </gwt:HorizontalPanel>
       <gwt:VerticalPanel ui:field="conditionDefinition" visible="false">
         <gwt:HorizontalPanel ui:field="calculationType" styleName="{res.css.wizardDTableFieldContainerValid">
-          <gwt:Label text="{i18n.CalculationType}" styleName="{res.css.wizardDTableFields}" />
+          <gwt:Label text="{i18n.CalculationType}:" styleName="{res.css.wizardDTableFields}" />
           <b:RadioButton name="calculationType" text="{i18n.LiteralValue}" ui:field="optLiteral" enabled="false" styleName="{res.css.wizardDTableFields}" />
           <b:RadioButton name="calculationType" text="{i18n.Formula}" ui:field="optFormula" enabled="false" styleName="{res.css.wizardDTableFields}" />
           <b:RadioButton name="calculationType" text="{i18n.Predicate}" ui:field="optPredicate" enabled="false" styleName="{res.css.wizardDTableFields}" />
@@ -97,7 +97,7 @@
             <c:InfoPopup styleName="{res.css.wizardDTableFields}" title="{i18n.ValueList}" message="{i18n.ValueListsExplanation}"/>
           </gwt:HorizontalPanel>
           <gwt:HorizontalPanel ui:field="defaultValueContainer" styleName="{res.css.wizardDTableFieldContainerValid}">
-            <gwt:Label text="{i18n.DefaultValue}" styleName="{res.css.wizardDTableFields}" />
+            <gwt:Label text="{i18n.DefaultValue}:" styleName="{res.css.wizardDTableFields}" />
             <gwt:SimplePanel ui:field="defaultValueWidgetContainer" styleName="{res.css.wizardDTableFields}" />
           </gwt:HorizontalPanel>
         </gwt:VerticalPanel>

@@ -120,7 +120,8 @@ public class ConditionPopup extends FormStylePopup {
                            final boolean isNew,
                            final boolean isReadOnly ) {
         this.rm = new BRLRuleModel( model );
-        this.editingPattern = model.getPattern( col );
+        Pattern52 originalPattern = model.getPattern( col );
+        this.editingPattern = originalPattern != null ? originalPattern.clonePattern() : null;
         this.editingCol = cloneConditionColumn( col );
         this.model = model;
         this.oracle = oracle;
@@ -166,7 +167,7 @@ public class ConditionPopup extends FormStylePopup {
                 valueTypes.add( literal );
                 valueTypes.add( formula );
                 valueTypes.add( predicate );
-                addAttribute( GuidedDecisionTableConstants.INSTANCE.CalculationType(),
+                addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.CalculationType()).append(GuidedDecisionTableConstants.COLON).toString(),
                               valueTypes );
 
                 switch ( editingCol.getConstraintValueType() ) {
@@ -228,7 +229,7 @@ public class ConditionPopup extends FormStylePopup {
                                           } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
                       field );
         doFieldLabel();
 
@@ -266,7 +267,7 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.DTLabelFromEntryPoint(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.DTLabelFromEntryPoint()).append(GuidedDecisionTableConstants.COLON).toString(),
                       entryPointName );
 
         //Column header
@@ -334,7 +335,7 @@ public class ConditionPopup extends FormStylePopup {
 
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            defaultValueWidgetContainerIndex = addAttribute( GuidedDecisionTableConstants.INSTANCE.DefaultValue(),
+            defaultValueWidgetContainerIndex = addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.DefaultValue()).append(GuidedDecisionTableConstants.COLON).toString(),
                                                              defaultValueWidgetContainer );
             makeDefaultValueWidget();
         }
@@ -355,11 +356,11 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.Binding(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Binding()).append(GuidedDecisionTableConstants.COLON).toString(),
                       binding );
 
         //Hide column tick-box
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         //Initialise view
@@ -872,7 +873,7 @@ public class ConditionPopup extends FormStylePopup {
                                              }
                                          } );
 
-        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
+        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
@@ -918,7 +919,7 @@ public class ConditionPopup extends FormStylePopup {
                                                             "" ) );
             }
         } );
-        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Binding(),
+        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Binding()).append(GuidedDecisionTableConstants.COLON).toString(),
                           binding );
 
         //Patterns can be negated, i.e. "not Pattern(...)"

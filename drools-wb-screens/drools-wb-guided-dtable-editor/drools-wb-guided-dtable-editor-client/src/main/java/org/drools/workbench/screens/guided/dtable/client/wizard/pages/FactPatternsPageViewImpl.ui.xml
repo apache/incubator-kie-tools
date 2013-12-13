@@ -58,12 +58,12 @@
       </gwt:HorizontalPanel>
       <gwt:VerticalPanel ui:field="patternDefinition" visible="false">
         <gwt:HorizontalPanel ui:field="bindingContainer" styleName="{res.css.wizardDTableFieldContainerValid}">
-          <gwt:Label text="{i18n.Binding}" styleName="{res.css.wizardDTableFields}" />
+          <gwt:Label text="{i18n.Binding}:" styleName="{res.css.wizardDTableFields}" />
           <guvnor:BindingTextBox ui:field="txtBinding" enabled="false" styleName="{res.css.wizardDTableFields}"></guvnor:BindingTextBox>
           <c:InfoPopup styleName="{res.css.wizardDTableFields}" title="{i18n.BindingFact}" message="{i18n.BindingDescription}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-          <gwt:Label text="{i18n.DTLabelFromEntryPoint}" styleName="{res.css.wizardDTableFields}" />
+          <gwt:Label text="{i18n.DTLabelFromEntryPoint}:" styleName="{res.css.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtEntryPoint" enabled="false" styleName="{res.css.wizardDTableFields}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel ui:field="cepWindowContainer" styleName="{res.css.wizardDTableFieldContainerValid}" visible="false">

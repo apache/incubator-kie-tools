@@ -129,7 +129,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         ImageButton editField = createEditField();
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
                       field );
         doFieldLabel();
 
@@ -172,7 +172,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         }
 
         //Hide column tick-box
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
@@ -463,7 +463,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                                                  }
                                              }
                                          } );
-        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Field(),
+        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",

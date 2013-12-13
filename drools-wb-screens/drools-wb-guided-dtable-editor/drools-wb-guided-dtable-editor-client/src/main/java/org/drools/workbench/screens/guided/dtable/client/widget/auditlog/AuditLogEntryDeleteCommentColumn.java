@@ -40,7 +40,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 public class AuditLogEntryDeleteCommentColumn extends Column<AuditLogEntry, SafeHtml> {
 
     /** BZ-996942: Replaced old icon for the icon trash (using bootstrap style icon-trash). */
-    private static final SafeHtml safeHtml = SafeHtmlUtils.fromTrustedString("<div class=\"icon-trash\"></div>");
+    private static final SafeHtml safeHtml = SafeHtmlUtils.fromTrustedString("<div style=\"cursor: pointer\" class=\"icon-trash\"></div>");
 
     private static final SafeHtmlCell cell = new SafeHtmlCell() {
 

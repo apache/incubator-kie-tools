@@ -27,6 +27,7 @@ public interface GuidedDecisionTableConstants
         Messages {
 
     public static final GuidedDecisionTableConstants INSTANCE = GWT.create( GuidedDecisionTableConstants.class );
+    public static final String COLON = ":";
 
     //Decision Table
     String NoPatternBindingsAvailable();
@@ -77,7 +78,7 @@ public interface GuidedDecisionTableConstants
 
     String LimitedEntryValue();
 
-    String LogicallyInsertColon();
+    String LogicallyInsert();
 
     String YouMustEnterAColumnPattern();
 
@@ -321,15 +322,9 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableAuditLogNoEntries();
 
-    String FactTypeColon();
+    String Value();
 
-    String FieldColon();
-
-    String OperatorColon();
-
-    String ValueColon();
-
-    String BoundVariableColon();
+    String BoundVariable();
 
     String DecisionTableAuditLogUpdateCondition( String value);
 
@@ -344,14 +339,6 @@ public interface GuidedDecisionTableConstants
     String InsertYourCommentsHere();
 
     String ColumnHeader();
-
-    String ColumnsUpdated();
-
-    String FieldName();
-
-    String OldValue();
-
-    String NewValue();
 
     //Wizard
     String UseWizardToBuildAsset();

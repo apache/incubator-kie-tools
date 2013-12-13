@@ -1240,13 +1240,37 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
+        List<BaseColumnFieldDiff> patternDiff = null;
+
+        boolean existPattern = false;
+        if (model.getConditions() != null && !model.getConditions().isEmpty()) {
+            for (CompositeColumn<? extends BaseColumn> col : model.getConditions()) {
+                // In this case only check for Pattern52 class instances.
+                try {
+                    Pattern52 existingCol = (Pattern52) col;
+                    if (existingCol.getBoundName().equals(editPattern.getBoundName())) {
+                        existPattern = true;
+                        break;
+                    }
+                } catch (ClassCastException e) {
+                    // Do nothing.
+                }
+            }
+        }
+
         //Add pattern to model, if applicable
-        if ( !model.getConditions().contains( editPattern ) ) {
+        if ( ! existPattern ) {
             model.getConditions().add( editPattern );
 
             //Signal patterns changed event
             BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
             eventBus.fireEvent( pce );
+        } else {
+            // Calculate the diffs between original and edit pattern
+            patternDiff = origPattern.diff(editPattern);
+
+            // Update the original pattern properties with new values.
+            origPattern.update(editPattern);
         }
 
         boolean bUpdateColumnData = false;
@@ -1317,6 +1341,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 isFactTypeUpdated = BaseColumnFieldDiffImpl.hasChanged( Pattern52.FIELD_FACT_TYPE, diffs );
                 isConstraintValueTypeUpdated = BaseColumnFieldDiffImpl.hasChanged( ConditionCol52.FIELD_VALUE_LIST, diffs );
                 isValueListUpdated = BaseColumnFieldDiffImpl.hasChanged( ConditionCol52.FIELD_VALUE_LIST, diffs );
+            }
+
+            if (patternDiff != null && !patternDiff.isEmpty()) {
+                if (diffs == null) diffs = new ArrayList<BaseColumnFieldDiff>(patternDiff.size());
+                diffs.addAll(patternDiff);
+                bUpdateColumnDefinition = true; // Force firing the audit log change event.
             }
 
             // Update column's visibility

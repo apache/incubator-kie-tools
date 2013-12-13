@@ -30,7 +30,7 @@
       <gwt:TextBox ui:field="txtColumnHeader" styleName="{wizardResources.css.wizardDTableFields}"/>
     </gwt:HorizontalPanel>
     <gwt:HorizontalPanel styleName="{wizardResources.css.wizardDTableFieldContainerValid}">
-      <gwt:Label text="{i18n.HideThisColumn}" styleName="{wizardResources.css.wizardDTableFields}"/>
+      <gwt:Label text="{i18n.HideThisColumn}:" styleName="{wizardResources.css.wizardDTableFields}"/>
       <b:CheckBox ui:field="chkHideColumn" styleName="{wizardResources.css.wizardDTableFields}"/>
     </gwt:HorizontalPanel>
     <gwt:ScrollPanel ui:field="brlEditorContainer" styleName="{wizardResources.css.scrollPanel}">

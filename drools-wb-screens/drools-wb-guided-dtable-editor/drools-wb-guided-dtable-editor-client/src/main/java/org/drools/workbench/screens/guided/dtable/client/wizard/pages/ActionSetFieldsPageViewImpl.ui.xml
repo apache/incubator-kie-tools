@@ -77,7 +77,7 @@
             <c:InfoPopup styleName="{res.css.wizardDTableFields}" title="{i18n.ValueList}" message="{i18n.ValueListsExplanation}"/>
           </gwt:HorizontalPanel>
           <gwt:HorizontalPanel ui:field="defaultValueContainer" styleName="{res.css.wizardDTableFieldContainerValid}">
-            <gwt:Label text="{i18n.DefaultValue}" styleName="{res.css.wizardDTableFields}" />
+            <gwt:Label text="{i18n.DefaultValue}:" styleName="{res.css.wizardDTableFields}" />
             <gwt:SimplePanel ui:field="defaultValueWidgetContainer" styleName="{res.css.wizardDTableFields}" />
           </gwt:HorizontalPanel>
         </gwt:VerticalPanel>

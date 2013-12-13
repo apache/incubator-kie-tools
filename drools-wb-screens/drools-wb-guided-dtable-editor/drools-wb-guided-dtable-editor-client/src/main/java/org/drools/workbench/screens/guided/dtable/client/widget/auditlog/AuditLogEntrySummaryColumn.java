@@ -29,11 +29,18 @@ public class AuditLogEntrySummaryColumn extends Column<AuditLogEntry, AuditLogEn
 
     private static final DateTimeFormat format = DateTimeFormat.getFormat( DATE_TIME_FORMAT );
 
-    private static final AuditLogEntryCell cell = new AuditLogEntryCell( format );
+    private static AuditLogEntryCell cell = null;
+
+
+    public AuditLogEntrySummaryColumn(String labelClass, String valueClass) {
+        super( cell = new AuditLogEntryCell( format, labelClass, valueClass ) );
+    }
 
     public AuditLogEntrySummaryColumn() {
-        super( cell );
+        super( cell = new AuditLogEntryCell( format ) );
     }
+
+
 
     @Override
     public AuditLogEntry getValue( AuditLogEntry object ) {
