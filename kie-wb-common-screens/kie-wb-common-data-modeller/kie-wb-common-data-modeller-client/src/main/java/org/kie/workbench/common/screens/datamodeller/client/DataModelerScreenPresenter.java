@@ -496,7 +496,9 @@ public class DataModelerScreenPresenter {
         //filter if the event is related to current project
         if (currentProject != null && currentProject.getRootPath().equals( evt.getProject().getRootPath() ) && sessionInfo != null ) {
 
-            if (!sessionInfo.equals(evt.getSessionInfo()) || evt.getResourcePath().getFileName().equals("pom.xml")) {
+            if (!sessionInfo.equals(evt.getSessionInfo())
+                    || (evt.getResourcePath().getFileName().equals("pom.xml") ||
+                        evt.getResourcePath().getFileName().endsWith(".drl")) ) {
                 //the project data model oracle was changed because of another user different than me OR
                 //the modification was done by me, executing in the same session but saving the project
                 //likely in the project editor.
