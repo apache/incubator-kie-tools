@@ -35,7 +35,6 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
@@ -81,9 +80,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     private RenameService renameService;
 
     @Inject
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
-
-    @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
@@ -113,7 +109,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
             final Path newPath = Paths.convert( nioPath );
 
-            ioService.createFile( nioPath );
             ioService.write( nioPath,
                              drl,
                              makeCommentedOption( comment ) );
@@ -184,11 +179,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
-
-            //Invalidate Project-level DMO cache in case user added a Declarative Type to their DRL. Tssk, Tssk.
-            //@wmedvede TODO review this event throwing, now the DataModelResourceChangeObserver takes care of
-            //throwing this event.
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, projectService.resolveProject( resource ), resource ) );
 
             return resource;
 

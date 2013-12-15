@@ -377,7 +377,7 @@ public class DRLEditorPresenter {
 
     @OnClose
     public void onClose() {
-        this.path.dispose();
+        this.path = null;
     }
 
     @OnMayClose
