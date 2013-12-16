@@ -62,7 +62,7 @@ import org.uberfire.client.common.DirtyableFlexTable;
 public class GuidedScoreCardEditor extends Composite {
 
     private static final String[] reasonCodeAlgorithms = new String[]{ "none", "pointsAbove", "pointsBelow" };
-    private static final String[] typesForAttributes = new String[]{ "String", "int", "double", "boolean" };
+    private static final String[] typesForAttributes = new String[]{ "String", "int", "double", "boolean", "Integer" };
     private static final String[] typesForScore = new String[]{ "double" };
     private static final String[] typesForRC = new String[]{ "List" };
 
