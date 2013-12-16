@@ -15,8 +15,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-maven-plugin</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
         <version>${drools.version}</version>
         <extensions>true</extensions>
       </plugin>
