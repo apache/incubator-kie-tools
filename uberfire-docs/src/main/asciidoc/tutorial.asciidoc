@@ -844,19 +844,15 @@ ignore. This can be used as-is in a `.gitignore` file, but it should
 be easy to adapt to the VCS you're using:
 
 ---------
-.classpath
-.project/
-.settings/
-.factorypath
-target/
-.errai/
-src/main/webapp/UberFireTutorial/
-src/main/webapp/WEB-INF/classes/
-src/main/webapp/WEB-INF/deploy/
-src/main/gwt-unitCache/
-war/
-gwt-unitCache/
 .apt_generated/
+.classpath
+.errai/
+.factorypath
+.niogit/
+.project
+.settings/
+target/
+war/
 ---------
 
 == Set up the web.xml
@@ -1671,14 +1667,226 @@ password you chose when creating that file.
 
 === Hello UberFire!
 
-Now you should see your label in the top left corner of the
-page. Congratulations!
+Now you should see your ``Hello UberFire'' label in the top left
+corner of the page. Congratulations!
 
-== Factor out the panel's contents
+[TIP]
+.Not Working?
+======
+At this point, your project should be more-or-less identical to the
+Tutorial project at the
+link:https://github.com/uberfire/uberfire-tutorial/tree/checkpoint-1[checkpoint-1
+tag]. If your project isn't working at this point, grab that one and
+compare yours with it.
+
+......
+$ git clone https://github.com/uberfire/uberfire-tutorial.git
+$ cd uberfire-tutorial
+$ git checkout checkpoint-1
+......
+
+Or grab link:https://github.com/uberfire/uberfire-tutorial/archive/checkpoint-1.zip[a zipfile of the sources].
+======
 
 == Create a second panel
 
-== Link the two panels
+Let's create a second panel so we can get a better feel for how
+workbench perspectives and panels fit together.
+
+This time, we'll create a screen backed by a simple model class to
+demonstrate how you'd typically separate model from view in an
+UberFire application. The model class will be called `Mood`, and it
+will represent how the current user is feeling at the moment. The view
+will be called `MoodScreen` and it will allow the user to update their
+current mood.
+
+=== Create the data model class
+
+The data model in an UberFire app is typically represented by _Plain
+Old Java Objects_, (_POJOs_). This leaves you the flexibility to use
+them in other frameworks that like POJOs such as JPA, JAXB, Errai Data
+Binding, and much more by adorning them with annotations. For now, our
+extremely simple data model will just be an unadorned POJO.
+
+Create the following file:
+
+.src/main/java/com/mycompany/uftutorial/shared/Mood.java
+[source,java]
+------
+package com.mycompany.uftutorial.shared;
+
+/**
+ * Model class representing a user's mood.
+ */
+public class Mood {
+
+  private final String text;
+
+  public Mood(String text) {
+    this.text = text;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  @Override
+  public String toString() {
+    return text;
+  }
+}
+------
+
+=== Create MoodScreen, a Templated Widget
+
+For MoodScreen, let's use the Errai UI Template system. This approach
+is similar to GWT UiBinder, but it lets you create the template in a
+plain HTML 5 template file rather than a specialized UiBinder XML
+file.
+
+First, create the template file:
+
+.Create src/main/java/com/mycompany/uftutorial/client/MoodScreen.html
+[source,html]
+------
+<!DOCTYPE html>
+<div>
+  <input data-field=moodTextBox type=text placeholder="How do you
+  feel?">
+</div>
+------
+
+This file will be used as a client-side template for the new
+MoodScreen widget. Here's what that looks like:
+
+.Create src/main/java/com/mycompany/uftutorial/client/MoodScreen.java
+[source,java]
+------
+package com.mycompany.uftutorial.client;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchScreen;
+
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TextBox;
+import com.mycompany.uftutorial.shared.Mood;
+
+@Dependent
+@Templated
+@WorkbenchScreen(identifier="com.mycompany.uftutorial.client.MoodScreen")
+public class MoodScreen extends Composite {
+
+  @Inject @DataField
+  private TextBox moodTextBox;
+
+  @Inject Event<Mood> moodEvent;
+
+  @Override
+  @WorkbenchPartTitle
+  public String getTitle() {
+    return "Change Mood";
+  }
+
+  @EventHandler("moodTextBox")
+  private void onKeyDown(KeyDownEvent event) {
+    if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+      moodEvent.fire(new Mood(moodTextBox.getText()));
+      moodTextBox.setText("");
+    }
+  }
+}
+------
+
+MoodScreen is very similar to HelloWorldScreen. The only structural
+differences are related to our choice of using an Errai UI Template:
+in addition to the UberFire Workbench class annotations (`@Dependent`
+and `@WorkbenchScreen`), we've also used `@Templated`. This tells
+Errai UI that this widget's layout is defined in the companion HTML
+file `MoodScreen.html` in the same directory.
+
+With Errai UI templating, we can use the `@DataField` annotation to
+inject elements from the HTML file directly into our widget class. In
+this case, we're injecting the `<input>` element as a GWT `TextBox`
+widget.
+
+We're also using Errai UI to attach an event handler to the text box:
+the `onKeyDown` method has been set up to receive `KeyDownEvent`s
+generated by `moodTextBox`. In this case, our event handler method is
+set up to create a new Mood object from the contents of the text box
+each time the user presses Enter. We fire this Mood object as a CDI
+event as soon as it's been created. Who observes the event?  Nobody
+yet, but we'll get to that soon!
+
+There's more you can do with Errai UI templates. See the full
+link:https://docs.jboss.org/author/display/ERRAI/Errai+UI[Errai
+UI reference guide] for details.
+
+=== Give MoodScreen a place in HomePerspective
+
+Let's alter HomePerspective a little bit: we'll add a new panel on the
+left-hand side and populate it with MoodScreen by default.
+
+.Modify src/main/java/com/mycompany/uftutorial/client/HomePerspective.java
+[source,java]
+------
+  @Perspective
+  public PerspectiveDefinition getPerspective() {
+    final PerspectiveDefinition p = new PerspectiveDefinitionImpl(PanelType.ROOT_STATIC);
+    p.setTransient(true);
+    p.setName(getClass().getName());
+
+    p.getRoot().addPart(
+            new PartDefinitionImpl(
+                    new
+            DefaultPlaceRequest(HelloWorldScreen.class.getName())));
+
+    // BEGIN new stuff to add
+    PanelDefinitionImpl westPanel = new PanelDefinitionImpl(PanelType.SIMPLE);
+    p.getRoot().insertChild(Position.WEST, westPanel);
+    westPanel.setWidth(250);
+    westPanel.addPart(
+            new PartDefinitionImpl(
+                    new DefaultPlaceRequest(MoodScreen.class.getName())));
+    // END new stuff to add
+
+    return p;
+  }
+------
+
+=== Add a CDI observer to HelloWorldScreen
+
+Now let's do something in HelloWorldScreen in response to the the
+event we fire in MoodScreen when the user presses Enter. To do this
+we'll add a CDI _observer method_.
+
+.Add to src/main/java/com/mycompany/uftutorial/client/HelloWorldScreen.java
+[source,java]
+------
+  public void onMoodChange(@Observes Mood mood) {
+    label.setText("I understand you are feeling " + mood.getText());
+  }
+------
+
+=== Refresh and see it work
+
+Assuming you've left Dev Mode running, you should be able to pick up
+these changes by refreshing the page in your browser.
+
+If you've quit Dev Mode already, as a reminder, here's how you launch
+it:
+
+......
+$ mvn compile gwt:run
+......
 
 == Add a menu bar
 
