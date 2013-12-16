@@ -110,9 +110,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
     @Inject
     private GenericValidator genericValidator;
 
-    @Inject
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCache;
-
     @Override
     public Path create( final Path context,
                         final String fileName,
@@ -207,8 +204,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
-
-            invalidateDMOProjectCache.fire( new InvalidateDMOProjectCacheEvent( sessionInfo, projectService.resolveProject( resource ), resource ) );
 
             return resource;
 
