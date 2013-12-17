@@ -27,8 +27,6 @@ import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
-import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -39,6 +37,7 @@ import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
@@ -56,16 +55,21 @@ public class CategoriesEditorPresenter
     @Inject
     private CategoryDefinitionResourceType type;
 
-    private Path path;
-
     @OnStartup
-    public void onStartup(final Path path) {
+    public void onStartup(final Path path,
+            final PlaceRequest place ) {
         this.path = path;
-        makeMenuBar();
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+
+        if (isReadOnly) {
+            makeRestoreMenuBar();
+        } else {
+            makeMenuBar();
+        }
 
         view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         categoryService.call(getModelSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).getContent(path);
+                new HasBusyIndicatorDefaultErrorCallback(view)).load(path);
     }
 
     private RemoteCallback<Categories> getModelSuccessCallback() {
@@ -73,23 +77,17 @@ public class CategoriesEditorPresenter
 
             @Override
             public void callback(final Categories content) {
+                multiPage.clear();
+                multiPage.addWidget(view,
+                        CommonConstants.INSTANCE.EditTabTitle());
+
+                addMetadataPage();
+
                 view.setContent(content);
                 view.hideBusyIndicator();
+
             }
         };
-    }
-
-    public void onSave() {
-        new SaveOperationService().save(path,
-                new CommandWithCommitMessage() {
-                    @Override
-                    public void execute(final String commitMessage) {
-                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-                        categoryService.call(getSaveSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
-                                view.getContent());
-                    }
-                });
     }
 
     @IsDirty
@@ -118,7 +116,7 @@ public class CategoriesEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return view;
+        return multiPage;
     }
 
     @WorkbenchMenu

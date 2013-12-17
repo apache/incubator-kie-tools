@@ -22,18 +22,17 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.categories.client.resources.i18n.Constants;
-import org.drools.workbench.screens.categories.client.type.CategoryDefinitionResourceType;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.CategoriesModelContent;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
-import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.common.Page;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -52,12 +51,7 @@ public class CategoriesRepositoryEditorPresenter
     private Event<NotificationEvent> notification;
 
     @Inject
-    private CategoryDefinitionResourceType type;
-
-    @Inject
     protected ProjectContext context;
-
-    private CategoriesModelContent categoriesModelContent;
 
     @OnStartup
     public void onStartup() {
@@ -69,30 +63,23 @@ public class CategoriesRepositoryEditorPresenter
                 new HasBusyIndicatorDefaultErrorCallback(view)).getContentByRoot(context.getActiveRepository().getRoot());
     }
 
-    private RemoteCallback<CategoriesModelContent> getModelSuccessCallback() {
+    protected RemoteCallback<CategoriesModelContent> getModelSuccessCallback() {
         return new RemoteCallback<CategoriesModelContent>() {
 
             @Override
             public void callback(final CategoriesModelContent content) {
-                CategoriesRepositoryEditorPresenter.this.categoriesModelContent = content;
+                multiPage.clear();
+                multiPage.addWidget(view,
+                        CommonConstants.INSTANCE.EditTabTitle());
+
+                path = content.getPath();
 
                 view.setContent(content.getCategories());
                 view.hideBusyIndicator();
+
+                addMetadataPage();
             }
         };
-    }
-
-    public void onSave() {
-        new SaveOperationService().save(categoriesModelContent.getPath(),
-                new CommandWithCommitMessage() {
-                    @Override
-                    public void execute(final String commitMessage) {
-                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-                        categoryService.call(getSaveSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).save(categoriesModelContent.getPath(),
-                                view.getContent());
-                    }
-                });
     }
 
     @IsDirty
@@ -115,7 +102,7 @@ public class CategoriesRepositoryEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return view;
+        return multiPage;
     }
 
     @WorkbenchMenu
