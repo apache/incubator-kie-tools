@@ -479,7 +479,7 @@ public class GuidedScoreCardEditor extends Composite {
             final CellTable<Attribute> cellTable = (CellTable<Attribute>) characteristicsAttrMap.get( selectedTable ).getDataDisplays().iterator().next();
             final DynamicSelectionCell dynamicSelectionCell = (DynamicSelectionCell) cellTable.getColumn( 0 ).getCell();
             List<String> newOptions = null;
-            if ( "double".equalsIgnoreCase( field ) || "int".equalsIgnoreCase( field ) ) {
+            if ( "double".equalsIgnoreCase( field ) || "int".equalsIgnoreCase( field ) || endsWithIgnoreCase(field, "integer")) {
                 newOptions = Arrays.asList( numericOperators );
             } else if ( "boolean".equalsIgnoreCase( field ) ) {
                 newOptions = Arrays.asList( booleanOperators );
@@ -846,7 +846,7 @@ public class GuidedScoreCardEditor extends Composite {
                                                         type = "String";
                                                     } else if ( type.endsWith( "Double" ) ) {
                                                         type = "Double";
-                                                    } else if ( type.endsWith( "Integer" ) ) {
+                                                    } else if ( endsWithIgnoreCase(type, "integer")) {
                                                         type = "int";
                                                     }
                                                     callback.callback( type );
@@ -892,5 +892,17 @@ public class GuidedScoreCardEditor extends Composite {
         final int selectedIndex = Arrays.asList( values ).indexOf( currentValue );
         listBox.setSelectedIndex( selectedIndex >= 0 ? selectedIndex : 0 );
         return listBox;
+    }
+
+    /* from Commons StringUtils.java */
+    private static boolean endsWithIgnoreCase(String str, String suffix) {
+        if (str == null || suffix == null) {
+            return (str == null && suffix == null);
+        }
+        if (suffix.length() > str.length()) {
+            return false;
+        }
+        int strOffset = str.length() - suffix.length();
+        return str.regionMatches(true, strOffset, suffix, 0, suffix.length());
     }
 }
