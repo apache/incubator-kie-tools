@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.gentlyweb.utils.StringUtils;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
@@ -479,7 +480,7 @@ public class GuidedScoreCardEditor extends Composite {
             final CellTable<Attribute> cellTable = (CellTable<Attribute>) characteristicsAttrMap.get( selectedTable ).getDataDisplays().iterator().next();
             final DynamicSelectionCell dynamicSelectionCell = (DynamicSelectionCell) cellTable.getColumn( 0 ).getCell();
             List<String> newOptions = null;
-            if ( "double".equalsIgnoreCase( field ) || "int".equalsIgnoreCase( field ) ) {
+            if ( "double".equalsIgnoreCase( field ) || "int".equalsIgnoreCase( field ) || org.apache.commons.lang.StringUtils.endsWithIgnoreCase(field, "integer")) {
                 newOptions = Arrays.asList( numericOperators );
             } else if ( "boolean".equalsIgnoreCase( field ) ) {
                 newOptions = Arrays.asList( booleanOperators );
@@ -846,7 +847,7 @@ public class GuidedScoreCardEditor extends Composite {
                                                         type = "String";
                                                     } else if ( type.endsWith( "Double" ) ) {
                                                         type = "Double";
-                                                    } else if ( type.endsWith( "Integer" ) ) {
+                                                    } else if ( org.apache.commons.lang.StringUtils.endsWithIgnoreCase(type, "integer")) {
                                                         type = "int";
                                                     }
                                                     callback.callback( type );
