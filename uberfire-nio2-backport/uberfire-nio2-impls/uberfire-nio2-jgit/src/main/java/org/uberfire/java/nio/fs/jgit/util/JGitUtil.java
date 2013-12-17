@@ -377,6 +377,19 @@ public final class JGitUtil {
                                final CommitInfo commitInfo,
                                final boolean amend,
                                final CommitContent content ) {
+        if (content instanceof RevertCommitContent){
+            commit( git, branchName, commitInfo, amend, resolveObjectId( git, ( (RevertCommitContent) content ).getRefTree() ), content );
+        } else {
+            commit( git, branchName, commitInfo, amend, null, content );
+        }
+    }
+
+    public static void commit( final Git git,
+                               final String branchName,
+                               final CommitInfo commitInfo,
+                               final boolean amend,
+                               final ObjectId _originId,
+                               final CommitContent content ) {
 
         final PersonIdent author = buildPersonIdent( git, commitInfo.getName(), commitInfo.getEmail(), commitInfo.getTimeZone(), commitInfo.getWhen() );
 
@@ -386,13 +399,22 @@ public final class JGitUtil {
                 // Create the in-memory index of the new/updated issue.
                 final ObjectId headId = git.getRepository().resolve( branchName + "^{commit}" );
 
+                final ObjectId originId;
+                if ( _originId == null ) {
+                    originId = git.getRepository().resolve( branchName + "^{commit}" );
+                } else {
+                    originId = _originId;
+                }
+
                 final DirCache index;
                 if ( content instanceof DefaultCommitContent ) {
-                    index = createTemporaryIndex( git, headId, (DefaultCommitContent) content );
+                    index = createTemporaryIndex( git, originId, (DefaultCommitContent) content );
                 } else if ( content instanceof MoveCommitContent ) {
-                    index = createTemporaryIndex( git, headId, (MoveCommitContent) content );
+                    index = createTemporaryIndex( git, originId, (MoveCommitContent) content );
                 } else if ( content instanceof CopyCommitContent ) {
-                    index = createTemporaryIndex( git, headId, (CopyCommitContent) content );
+                    index = createTemporaryIndex( git, originId, (CopyCommitContent) content );
+                } else if ( content instanceof RevertCommitContent ) {
+                    index = createTemporaryIndex( git, originId );
                 } else {
                     index = null;
                 }
@@ -690,6 +712,46 @@ public final class JGitUtil {
                             }
                         } );
                     }
+                }
+                treeWalk.release();
+            }
+
+            editor.finish();
+        } catch ( final Exception e ) {
+            throw new RuntimeException( e );
+        }
+
+        return inCoreIndex;
+    }
+
+    private static DirCache createTemporaryIndex( final Git git,
+                                                  final ObjectId headId ) {
+
+        final DirCache inCoreIndex = DirCache.newInCore();
+        final DirCacheEditor editor = inCoreIndex.editor();
+
+        try {
+            if ( headId != null ) {
+                final TreeWalk treeWalk = new TreeWalk( git.getRepository() );
+                final int hIdx = treeWalk.addTree( new RevWalk( git.getRepository() ).parseTree( headId ) );
+                treeWalk.setRecursive( true );
+
+                while ( treeWalk.next() ) {
+                    final String walkPath = treeWalk.getPathString();
+                    final CanonicalTreeParser hTree = treeWalk.getTree( hIdx, CanonicalTreeParser.class );
+
+                    final DirCacheEntry dcEntry = new DirCacheEntry( walkPath );
+                    final ObjectId _objectId = hTree.getEntryObjectId();
+                    final FileMode _fileMode = hTree.getEntryFileMode();
+
+                    // add to temporary in-core index
+                    editor.add( new DirCacheEditor.PathEdit( dcEntry ) {
+                        @Override
+                        public void apply( final DirCacheEntry ent ) {
+                            ent.setObjectId( _objectId );
+                            ent.setFileMode( _fileMode );
+                        }
+                    } );
                 }
                 treeWalk.release();
             }

@@ -13,4 +13,11 @@
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
+  <script src="js/ZeroClipboard.min.js"/>
+  <script src="js/ZeroClipboardLoader.js"/>
+
+  <public path="client/resources">
+    <include name="**/*.swf"/>
+  </public>
+
 </module>

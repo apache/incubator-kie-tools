@@ -1,15 +1,21 @@
 package org.uberfire.backend.repositories;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.base.version.VersionRecord;
 
 @Remote
 public interface RepositoryService {
+
+    RepositoryInfo getRepositoryInfo( final String alias );
+
+    List<VersionRecord> getRepositoryHistory( final String alias,
+                                              final int startIndex );
 
     Repository getRepository( final String alias );
 

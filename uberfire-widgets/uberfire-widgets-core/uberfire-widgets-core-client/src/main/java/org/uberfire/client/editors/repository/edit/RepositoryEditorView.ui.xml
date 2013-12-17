@@ -16,25 +16,84 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <g:HTMLPanel ui:field="panel">
-<!--     <h1>Admin Area</h1>
-    <g:Label ui:field="nameLabel"></g:Label> -->
-    
-<!-- <li>
-  <h3>
-    <a href="/droolsjbpm/droolsjbpm-contributed-experiments">droolsjbpm-contributed-experiments</a>
-  </h3>
+  <ui:style>
+    .uf-box {
+      padding: 1px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 6px;
+      -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      -webkit-background-clip: padding-box;
+      -moz-background-clip: padding;
+      background-clip: padding-box;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
 
-  <div class="body">
-        <p>
-          Contributed experiments. Much of this code is stale and unmaintained, but we don't want to lose it.
-        </p>
+    .protocols {
+      padding-top: 5px;
+    }
 
-        <p >Last updated <time title="2011-07-20 12:08:57" datetime="2011-07-20T12:08:57-07:00" class="js-relative-date">11 months ago</time></p>
-  </div>
-</li> -->
+    .history {
+      padding-top: 5px;
+    }
+
+  </ui:style>
+
+  <g:HTMLPanel>
+    <div style="font-size: 24px; margin-left: 20px; padding-top:20px;">
+      <i class="icon-book"></i>
+      <g:InlineHTML ui:field="ownerReference"/>
+      <strong>
+        <g:InlineHTML ui:field="repoName"/>
+      </strong>
+    </div>
+
+    <div style="padding-top:20px;">
+      <div class="{style.uf-box}">
+        <h3 class="popover-title">
+          <strong>General Information</strong>
+        </h3>
+        <div>
+          <div style="border-bottom:1px solid #ebebeb; padding:10px 14px;">
+            <p>
+              <g:InlineHTML ui:field="repoDesc"/>
+            </p>
+          </div>
+          <div class="control-group" style="padding-top:10px; padding-left:14px;">
+            <div class="controls" style="height:30px !important;">
+              <div class="input-append pull-left">
+                <g:InlineHTML ui:field="gitDaemonURI" addStyleNames="span6 input-xlarge uneditable-input"/>
+                <b:Button ui:field="myGitCopyButton" icon="PASTE"/>
+              </div>
+              <g:FlowPanel ui:field="linksPanel" addStyleNames="{style.protocols}"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding-top:20px; padding-bottom:20px;">
+      <div class="{style.uf-box}">
+        <h3 class="popover-title">
+          <strong>Commit History</strong>
+        </h3>
+        <g:FlowPanel ui:field="history"/>
+      </div>
+    </div>
+
+    <div style="padding-bottom:20px;margin-left: 20px;margin-right: 20px;">
+      <b:Button ui:field="loadMore" block="true">Load More...</b:Button>
+    </div>
 
   </g:HTMLPanel>
+
 </ui:UiBinder> 

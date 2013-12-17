@@ -66,7 +66,7 @@ public class JGitFileSystem implements FileSystem,
     private final JGitFileSystemProvider provider;
     private final Git gitRepo;
     private final ListBranchCommand.ListMode listMode;
-    private final String fullHostName;
+    private final String toStringContent;
     private boolean isClose = false;
     private final FileStore fileStore;
     private final String name;
@@ -75,15 +75,15 @@ public class JGitFileSystem implements FileSystem,
     private final Collection<WatchService> watchServices = new ArrayList<WatchService>();
 
     JGitFileSystem( final JGitFileSystemProvider provider,
-                    final String fullHostName,
+                    final Map<String, String> fullHostNames,
                     final Git git,
                     final String name,
                     final CredentialsProvider credential ) {
-        this( provider, fullHostName, git, name, null, credential );
+        this( provider, fullHostNames, git, name, null, credential );
     }
 
     JGitFileSystem( final JGitFileSystemProvider provider,
-                    final String fullHostName,
+                    final Map<String, String> fullHostNames,
                     final Git git,
                     final String name,
                     final ListBranchCommand.ListMode listMode,
@@ -94,7 +94,20 @@ public class JGitFileSystem implements FileSystem,
         this.credential = checkNotNull( "credential", credential );
         this.listMode = listMode;
         this.fileStore = new JGitFileStore( gitRepo.getRepository() );
-        this.fullHostName = fullHostName;
+        if ( fullHostNames != null && !fullHostNames.isEmpty() ) {
+            final StringBuilder sb = new StringBuilder();
+            final Iterator<Map.Entry<String, String>> iterator = fullHostNames.entrySet().iterator();
+            while ( iterator.hasNext() ) {
+                final Map.Entry<String, String> entry = iterator.next();
+                sb.append( entry.getKey() ).append( "://" ).append( entry.getValue() ).append( "/" ).append( name );
+                if ( iterator.hasNext() ) {
+                    sb.append( "\n" );
+                }
+            }
+            toStringContent = sb.toString();
+        } else {
+            toStringContent = "git://" + name;
+        }
     }
 
     @Override
@@ -362,10 +375,7 @@ public class JGitFileSystem implements FileSystem,
 
     @Override
     public String toString() {
-        if ( fullHostName == null ) {
-            return "git://" + id();
-        }
-        return "git://" + fullHostName + "/" + id();
+        return toStringContent;
     }
 
     @Override

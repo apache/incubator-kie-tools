@@ -39,6 +39,10 @@ public interface NavigatorResources
 
         String message();
 
+        String author();
+
+        String date();
+
         @ClassName("navigator-folder-icon")
         String navigatorFolderIcon();
 

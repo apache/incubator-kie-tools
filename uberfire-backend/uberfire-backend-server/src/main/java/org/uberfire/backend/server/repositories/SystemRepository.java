@@ -25,7 +25,7 @@ public class SystemRepository extends GitRepository {
     private final Map<String, Object> environment = new HashMap<String, Object>();
 
     private SystemRepository( final String alias ) {
-        super( alias, "" );
+        super( alias );
         environment.put( "init", Boolean.TRUE );
     }
 

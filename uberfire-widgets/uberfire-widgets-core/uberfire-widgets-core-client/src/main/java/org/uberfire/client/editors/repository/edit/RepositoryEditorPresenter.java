@@ -16,18 +16,23 @@
 
 package org.uberfire.client.editors.repository.edit;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.backend.repositories.Repository;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.backend.repositories.PublicURI;
+import org.uberfire.backend.repositories.RepositoryInfo;
 import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.backend.repositories.RepositoryServiceEditor;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
@@ -35,20 +40,28 @@ import org.uberfire.mvp.PlaceRequest;
 public class RepositoryEditorPresenter {
 
     @Inject
-    Caller<RepositoryService> repositoryService;
+    private Caller<RepositoryService> repositoryService;
+
+    @Inject
+    private Caller<RepositoryServiceEditor> repositoryServiceEditor;
 
     private String alias = null;
+    private Path root = null;
 
     public interface View
-            extends
-            IsWidget {
-
-        void addRepository( String repositoryName,
-                            String gitURL,
-                            String description,
-                            String link );
+            extends UberView<RepositoryEditorPresenter> {
 
         void clear();
+
+        void setRepositoryInfo( final String repositoryName,
+                                final String owner,
+                                final List<PublicURI> publicURIs,
+                                final String description,
+                                final List<VersionRecord> initialVersionList );
+
+        void reloadHistory( final List<VersionRecord> versionList );
+
+        void addHistory( final List<VersionRecord> versionList );
     }
 
     @Inject
@@ -61,17 +74,40 @@ public class RepositoryEditorPresenter {
     public void onStartup( final PlaceRequest place ) {
         this.alias = place.getParameters().get( "alias" );
 
-        repositoryService.call( new RemoteCallback<Repository>() {
+        repositoryService.call( new RemoteCallback<RepositoryInfo>() {
             @Override
-            public void callback( final Repository repo ) {
-                view.clear();
-                view.addRepository( repo.getAlias(),
-                                    repo.getUri(),
-                                    "[empty]",
-                                    repo.getRoot().toURI() );
-
+            public void callback( final RepositoryInfo repo ) {
+                root = repo.getRoot();
+                view.setRepositoryInfo( repo.getAlias(),
+                                        repo.getOwner(),
+                                        repo.getPublicURIs(),
+                                        "[empty]",
+                                        repo.getInitialVersionList() );
             }
-        } ).getRepository( alias );
+        } ).getRepositoryInfo( alias );
+    }
+
+    public void getLoadMoreHistory( final int lastIndex ) {
+        repositoryService.call( new RemoteCallback<List<VersionRecord>>() {
+            @Override
+            public void callback( final List<VersionRecord> versionList ) {
+                view.addHistory( versionList );
+            }
+        } ).getRepositoryHistory( alias, lastIndex );
+    }
+
+    public void revert( final VersionRecord record ) {
+        revert( record, null );
+    }
+
+    public void revert( final VersionRecord record,
+                        final String comment ) {
+        repositoryServiceEditor.call( new RemoteCallback<List<VersionRecord>>() {
+            @Override
+            public void callback( final List<VersionRecord> content ) {
+                view.reloadHistory( content );
+            }
+        } ).revertHistory( alias, root, comment, record );
     }
 
     @WorkbenchPartTitle
@@ -80,7 +116,7 @@ public class RepositoryEditorPresenter {
     }
 
     @WorkbenchPartView
-    public IsWidget getView() {
+    public UberView<RepositoryEditorPresenter> getView() {
         return view;
     }
 

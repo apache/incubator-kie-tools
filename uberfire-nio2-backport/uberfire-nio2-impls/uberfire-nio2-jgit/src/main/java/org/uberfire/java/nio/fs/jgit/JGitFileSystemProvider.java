@@ -121,6 +121,7 @@ import org.uberfire.java.nio.fs.jgit.util.CopyCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.DefaultCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
+import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
 import org.uberfire.java.nio.security.SecurityAware;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -178,7 +179,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     private final Map<Repository, JGitFileSystem> repoIndex = new ConcurrentHashMap<Repository, JGitFileSystem>();
     private final Map<Repository, ClusterService> clusterMap = new ConcurrentHashMap<Repository, ClusterService>();
 
-    private final String fullHostName;
+    private final Map<String, String> fullHostNames = new HashMap<String, String>();
 
     private boolean isDefault;
 
@@ -325,7 +326,12 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         loadConfig();
         CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
 
-        fullHostName = DAEMON_ENABLED ? DAEMON_HOST + ":" + DAEMON_PORT : null;
+        if ( DAEMON_ENABLED ) {
+            fullHostNames.put( "git", DAEMON_HOST + ":" + DAEMON_PORT );
+        }
+        if ( SSH_ENABLED ) {
+            fullHostNames.put( "ssh", SSH_HOST + ":" + SSH_PORT );
+        }
 
         final String[] repos = FILE_REPOSITORIES_ROOT.list( new FilenameFilter() {
             @Override
@@ -339,7 +345,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                 final File repoDir = new File( FILE_REPOSITORIES_ROOT, repo );
                 if ( repoDir.isDirectory() ) {
                     final String name = repoDir.getName().substring( 0, repoDir.getName().indexOf( DOT_GIT_EXT ) );
-                    final JGitFileSystem fs = new JGitFileSystem( this, fullHostName, newRepository( repoDir, true ), name, ALL, buildCredential( null ) );
+                    final JGitFileSystem fs = new JGitFileSystem( this, fullHostNames, newRepository( repoDir, true ), name, ALL, buildCredential( null ) );
                     fileSystems.put( name, fs );
                     repoIndex.put( fs.gitRepo().getRepository(), fs );
                 }
@@ -507,7 +513,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             git = newRepository( repoDest, bare );
         }
 
-        final JGitFileSystem fs = new JGitFileSystem( this, fullHostName, git, name, listMode, credential );
+        final JGitFileSystem fs = new JGitFileSystem( this, fullHostNames, git, name, listMode, credential );
         fileSystems.put( name, fs );
         repoIndex.put( fs.gitRepo().getRepository(), fs );
 
@@ -1276,23 +1282,32 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         final boolean isTargetBranch = isBranch( gTarget );
 
         if ( isSourceBranch && isTargetBranch ) {
-            moveBranch( gSource, gTarget );
+            moveBranch( gSource, gTarget, options );
             return;
         }
         moveAsset( gSource, gTarget, options );
     }
 
     private void moveBranch( final JGitPathImpl source,
-                             final JGitPathImpl target ) {
+                             final JGitPathImpl target,
+                             final CopyOption... options ) {
         checkCondition( "source and taget should have same setup", !hasSameFileSystem( source, target ) );
-        if ( existsBranch( target ) ) {
-            throw new FileAlreadyExistsException( target.toString() );
-        }
-        if ( !existsBranch( source ) ) {
+
+        if ( !exists( source ) ) {
             throw new NoSuchFileException( target.toString() );
         }
-        createBranch( source, target );
-        deleteBranch( source );
+
+        boolean targetExists = existsBranch( target );
+        if ( targetExists && !contains( options, StandardCopyOption.REPLACE_EXISTING ) ) {
+            throw new FileAlreadyExistsException( target.toString() );
+        }
+
+        if ( !targetExists ) {
+            createBranch( source, target );
+            deleteBranch( source );
+        } else {
+            commit( target, buildCommitInfo( "reverting from {" + source.getPath() + "}", Arrays.asList( options ) ), new RevertCommitContent( source.getRefTree() ) );
+        }
     }
 
     private void moveAsset( final JGitPathImpl source,

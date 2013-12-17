@@ -47,7 +47,20 @@
 }
 
 .message {
-    color: #4E575B;
+    color: rgb(51, 51, 51);
+    font-family: Helvetica, arial, freesans, clean, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    height: auto;
+    line-height: 19px;
+}
+
+.date {
+    color: rgb(136, 136, 136);
+}
+
+.author {
+    color: rgb(68, 68, 68);
 }
 
 .breadcrumb-2nd-level {

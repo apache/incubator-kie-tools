@@ -1,12 +1,16 @@
 package org.uberfire.backend.server.repositories.git;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.backend.repositories.PublicURI;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.impl.DefaultPublicURI;
 import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
@@ -85,7 +89,20 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         }
 
         repo.setRoot( convert( defaultRoot ) );
-        repo.setPublicUri( fs.toString() );
+        final String[] uris = fs.toString().split( "\\r?\\n" );
+        final List<PublicURI> publicURIs = new ArrayList<PublicURI>( uris.length );
+
+        for ( final String s : uris ) {
+            final int protocolStart = s.indexOf( "://" );
+            final PublicURI publicURI;
+            if ( protocolStart > 0 ) {
+                publicURI = new DefaultPublicURI( s.substring( 0, protocolStart ), s );
+            } else {
+                publicURI = new DefaultPublicURI( s );
+            }
+            publicURIs.add( publicURI );
+        }
+        repo.setPublicURIs( publicURIs );
 
         return repo;
     }

@@ -1,5 +1,6 @@
 package org.uberfire.backend.repositories;
 
+import java.util.List;
 import java.util.Map;
 
 import org.uberfire.backend.vfs.Path;
@@ -20,9 +21,10 @@ public interface Repository extends RuntimeResource {
 
     String getUri();
 
-    String getPublicUri();
+    List<PublicURI> getPublicURIs();
 
     Path getRoot();
 
     void setRoot( final Path root );
+
 }
