@@ -42,6 +42,12 @@ import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithFileNameAndCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.CopyPopup;
+import org.kie.workbench.common.widgets.client.popups.file.DeletePopup;
+import org.kie.workbench.common.widgets.client.popups.file.FileNameAndCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.RenamePopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.organizationalunit.NewOrganizationalUnitEvent;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
@@ -174,6 +180,73 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     @Override
     public FolderListing getActiveContent() {
         return activeContent;
+    }
+
+    @Override
+    public void deleteItem( final FolderItem folderItem ) {
+
+        final DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
+            @Override
+            public void execute( final String comment ) {
+                getView().showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
+                explorerService.call(
+                        new RemoteCallback<Object>() {
+                            @Override
+                            public void callback( Object o ) {
+                                refresh( false );
+                            }
+                        },
+                        new HasBusyIndicatorDefaultErrorCallback( getView() ) ).deleteItem( folderItem, comment );
+            }
+        } );
+
+        popup.show();
+    }
+
+    @Override
+    public void renameItem( final FolderItem folderItem ) {
+        final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
+            @Override
+            public void execute( final FileNameAndCommitMessage details ) {
+                getView().showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                explorerService.call(
+                        new RemoteCallback<Void>() {
+                            @Override
+                            public void callback( final Void o ) {
+                                getView().hideBusyIndicator();
+                                refresh();
+                            }
+                        },
+                        new HasBusyIndicatorDefaultErrorCallback( getView() ) ).renameItem( folderItem,
+                                                                                            details.getNewFileName(),
+                                                                                            details.getCommitMessage() );
+            }
+        } );
+
+        popup.show();
+    }
+
+    @Override
+    public void copyItem( final FolderItem folderItem ) {
+        final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
+            @Override
+            public void execute( final FileNameAndCommitMessage details ) {
+                getView().showBusyIndicator( CommonConstants.INSTANCE.Copying() );
+                explorerService.call(
+                        new RemoteCallback<Void>() {
+                            @Override
+                            public void callback( final Void o ) {
+                                getView().hideBusyIndicator();
+                                refresh();
+                            }
+                        },
+                        new HasBusyIndicatorDefaultErrorCallback( getView() ) ).copyItem( folderItem,
+                                                                                          details.getNewFileName(),
+                                                                                          details.getCommitMessage() );
+            }
+        } );
+
+        popup.show();
     }
 
     private void loadContent( final FolderListing content ) {

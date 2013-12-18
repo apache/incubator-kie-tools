@@ -31,12 +31,14 @@ import javax.inject.Named;
 
 import com.google.common.collect.Lists;
 import com.thoughtworks.xstream.XStream;
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.file.DeleteService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -55,8 +57,11 @@ import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.StandardDeleteOption;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.security.authz.AuthorizationManager;
 
@@ -83,6 +88,9 @@ public class ExplorerServiceImpl
     private ProjectService projectService;
 
     @Inject
+    private DeleteService deleteService;
+
+    @Inject
     private OrganizationalUnitService organizationalUnitService;
 
     @Inject
@@ -91,6 +99,10 @@ public class ExplorerServiceImpl
     @Inject
     @SessionScoped
     private Identity identity;
+
+    @Inject
+    @SessionScoped
+    private SessionInfo sessionInfo;
 
     @Inject
     private UserServicesImpl userServices;
@@ -661,6 +673,30 @@ public class ExplorerServiceImpl
         return null;
     }
 
+    private Collection<Path> resolvePath( final FolderItem item ) {
+        if ( item == null ) {
+            return emptyList();
+        }
+
+        if ( item.getItem() instanceof Package ) {
+            final Package pkg = ( (Package) item.getItem() );
+            return new ArrayList<Path>( 4 ) {{
+                add( pkg.getPackageMainResourcesPath() );
+                add( pkg.getPackageMainSrcPath() );
+                add( pkg.getPackageTestResourcesPath() );
+                add( pkg.getPackageTestSrcPath() );
+            }};
+        }
+
+        if ( item.getItem() instanceof Path ) {
+            return new ArrayList<Path>( 1 ) {{
+                add( (Path) item.getItem() );
+            }};
+        }
+
+        return emptyList();
+    }
+
     @Override
     public Package resolvePackage( final FolderItem item ) {
         if ( item == null ) {
@@ -679,6 +715,106 @@ public class ExplorerServiceImpl
     @Override
     public Set<Option> getLastUserOptions() {
         return getLastContent().getOptions();
+    }
+
+    @Override
+    public void deleteItem( final FolderItem folderItem,
+                            final String comment ) {
+
+        final Collection<Path> paths = resolvePath( folderItem );
+
+        try {
+            if ( paths.size() > 1 ) {
+                ioService.startBatch();
+            }
+
+            for ( final Path path : paths ) {
+                ioService.delete( Paths.convert( path ),
+                                  new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ),
+                                  StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+            }
+
+            if ( paths.size() > 1 ) {
+                ioService.endBatch();
+            }
+
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
+    public void renameItem( final FolderItem folderItem,
+                            final String newName,
+                            final String comment ) {
+        final Collection<Path> paths = resolvePath( folderItem );
+
+        try {
+            if ( paths.size() > 1 ) {
+                ioService.startBatch();
+            }
+
+            for ( final Path path : paths ) {
+                final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+
+                final org.uberfire.java.nio.file.Path _target;
+                if ( Files.isDirectory( _path ) ) {
+                    _target = _path.resolveSibling( newName );
+                } else {
+                    final String originalFileName = _path.getFileName().toString();
+                    final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+                    _target = _path.resolveSibling( newName + extension );
+                }
+
+                ioService.move( _path,
+                                _target,
+                                new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+            }
+
+            if ( paths.size() > 1 ) {
+                ioService.endBatch();
+            }
+
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    @Override
+    public void copyItem( final FolderItem folderItem,
+                          final String newName,
+                          final String comment ) {
+        final Collection<Path> paths = resolvePath( folderItem );
+
+        try {
+            if ( paths.size() > 1 ) {
+                ioService.startBatch();
+            }
+
+            for ( final Path path : paths ) {
+                final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+
+                final org.uberfire.java.nio.file.Path _target;
+                if ( Files.isDirectory( _path ) ) {
+                    _target = _path.resolveSibling( newName );
+                } else {
+                    final String originalFileName = _path.getFileName().toString();
+                    final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+                    _target = _path.resolveSibling( newName + extension );
+                }
+
+                ioService.copy( _path,
+                                _target,
+                                new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+            }
+
+            if ( paths.size() > 1 ) {
+                ioService.endBatch();
+            }
+
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        }
     }
 
     void onProjectRename( @Observes final RenameProjectEvent event ) {

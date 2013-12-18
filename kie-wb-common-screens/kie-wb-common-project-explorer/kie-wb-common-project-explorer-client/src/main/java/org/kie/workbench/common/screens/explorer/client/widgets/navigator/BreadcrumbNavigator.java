@@ -5,17 +5,22 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Icon;
+import com.github.gwtbootstrap.client.ui.Tooltip;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.constants.Placement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineHTML;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.resources.NavigatorResources;
 import org.uberfire.mvp.Command;
@@ -147,6 +152,8 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
             } );
         }} );
 
+        navigator.setText( 0, ++col, "" );
+
         if ( options.showItemAge() ) {
             navigator.setText( 0, ++col, "" );
         }
@@ -172,5 +179,63 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
                 }
             } );
         }} );
+
+        final FlowPanel iconContainer = new FlowPanel();
+
+        final InlineHTML copyContainer = new InlineHTML( new Icon( IconType.COPY ).getElement().toString() );
+        copyContainer.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.copyItem( folderItem );
+            }
+        } );
+
+        final InlineHTML renameContainer = new InlineHTML( new Icon( IconType.REPEAT ).getElement().toString() );
+        renameContainer.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.renameItem( folderItem );
+            }
+        } );
+        renameContainer.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
+
+        final InlineHTML deleteContainer = new InlineHTML( new Icon( IconType.TRASH ).getElement().toString() );
+        deleteContainer.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                presenter.deleteItem( folderItem );
+            }
+        } );
+        deleteContainer.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
+
+        iconContainer.add( copyContainer );
+        iconContainer.add( renameContainer );
+        iconContainer.add( deleteContainer );
+
+        new Tooltip() {{
+            setWidget( copyContainer );
+            setText( CommonConstants.INSTANCE.Copy() );
+            setPlacement( Placement.TOP );
+            setShowDelay( 1000 );
+            reconfigure();
+        }};
+
+        new Tooltip() {{
+            setWidget( renameContainer );
+            setText( CommonConstants.INSTANCE.Rename() );
+            setPlacement( Placement.TOP );
+            setShowDelay( 1000 );
+            reconfigure();
+        }};
+
+        new Tooltip() {{
+            setWidget( deleteContainer );
+            setText( CommonConstants.INSTANCE.Delete() );
+            setPlacement( Placement.TOP );
+            setShowDelay( 1000 );
+            reconfigure();
+        }};
+
+        navigator.setWidget( row, ++col, iconContainer );
     }
 }

@@ -50,4 +50,14 @@ public interface ExplorerService {
 
     Set<Option> getLastUserOptions();
 
+    void deleteItem( final FolderItem folderItem,
+                     final String comment );
+
+    void renameItem( final FolderItem folderItem,
+                     final String newFileName,
+                     final String commitMessage );
+
+    void copyItem( final FolderItem folderItem,
+                   final String newFileName,
+                   final String commitMessage );
 }

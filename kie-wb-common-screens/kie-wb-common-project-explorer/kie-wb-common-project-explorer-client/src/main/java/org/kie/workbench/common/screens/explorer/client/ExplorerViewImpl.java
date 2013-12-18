@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.user.client.ui.Composite;
@@ -54,6 +55,9 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
     public void init() {
         //Cannot create and bind UI until after injection points have been initialized
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        getElement().getStyle().setPropertyPx( "minWidth", 370 );
+        getElement().getStyle().setOverflowX( Style.Overflow.SCROLL );
     }
 
     @Override

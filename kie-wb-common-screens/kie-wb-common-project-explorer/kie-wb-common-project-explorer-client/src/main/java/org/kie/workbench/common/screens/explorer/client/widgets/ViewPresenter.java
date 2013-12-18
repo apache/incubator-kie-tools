@@ -65,4 +65,10 @@ public interface ViewPresenter extends HasVisibility {
     Set<Option> getActiveOptions();
 
     FolderListing getActiveContent();
+
+    void deleteItem( FolderItem folderItem );
+
+    void renameItem( FolderItem folderItem );
+
+    void copyItem( FolderItem folderItem );
 }
