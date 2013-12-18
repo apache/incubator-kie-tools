@@ -29,6 +29,7 @@ public class NavigatorBreadcrumbs extends Composite {
 
     public NavigatorBreadcrumbs( final Mode mode ) {
         initWidget( breadcrumbs );
+        breadcrumbs.getElement().getStyle().setProperty( "whiteSpace", "nowrap" );
         if ( mode != null ) {
             switch ( mode ) {
                 case HEADER:
