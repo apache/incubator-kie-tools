@@ -182,7 +182,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
 
         final FlowPanel iconContainer = new FlowPanel();
 
-        final InlineHTML copyContainer = new InlineHTML( new Icon( IconType.COPY ).getElement().toString() );
+        final InlineHTML copyContainer = new InlineHTML( "<i class=\"icon-copy\"></i>" );
         copyContainer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -190,7 +190,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
             }
         } );
 
-        final InlineHTML renameContainer = new InlineHTML( new Icon( IconType.REPEAT ).getElement().toString() );
+        final InlineHTML renameContainer = new InlineHTML( "<i class=\"icon-repeat\"></i>" );
         renameContainer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -199,7 +199,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         } );
         renameContainer.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
 
-        final InlineHTML deleteContainer = new InlineHTML( new Icon( IconType.TRASH ).getElement().toString() );
+        final InlineHTML deleteContainer = new InlineHTML( "<i class=\"icon-trash\"></i>" );
         deleteContainer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
