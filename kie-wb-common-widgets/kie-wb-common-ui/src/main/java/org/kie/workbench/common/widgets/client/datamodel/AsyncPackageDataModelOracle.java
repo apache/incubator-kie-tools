@@ -103,6 +103,8 @@ public interface AsyncPackageDataModelOracle {
                          final int i,
                          final Callback<List<String>> callback );
 
+    void getMethodInfos(final String factType,final Callback<List<MethodInfo>> callback);
+
     void getMethodParams( final String factType,
                           final String methodNameWithParams,
                           final Callback<List<String>> callback );

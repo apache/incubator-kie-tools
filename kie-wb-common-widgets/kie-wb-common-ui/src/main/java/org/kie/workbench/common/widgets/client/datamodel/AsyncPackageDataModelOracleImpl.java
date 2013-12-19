@@ -766,6 +766,13 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         return methodList;
     }
 
+    @Override
+    public void getMethodInfos(final String factType, final Callback<List<MethodInfo>> callback) {
+        callback.callback(
+                filteredMethodInformation.get(factType)
+        );
+    }
+
     /**
      * Get a list of parameters for a Method of a Fact Type
      * @param factType
