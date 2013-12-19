@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
@@ -49,8 +50,10 @@ import org.uberfire.workbench.events.SavePlaceEvent;
 import org.uberfire.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.services.WorkbenchServices;
 
 import static java.util.Collections.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -95,7 +98,11 @@ public class PlaceManagerImpl
     @Inject
     private PanelManager panelManager;
 
+    @Inject
+    private Caller<WorkbenchServices> wbServices;
+
     private Map<String, SplashScreenActivity> activeSplashScreens = new HashMap<String, SplashScreenActivity>();
+    private Map<PlaceRequest, Activity> onMayCloseList = new HashMap<PlaceRequest, Activity>();
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
@@ -209,13 +216,42 @@ public class PlaceManagerImpl
                                 (PopupActivity) activity,
                                 callback );
             } else if ( activity instanceof PerspectiveActivity ) {
-                launchActivity( requestPair.getK2(),
-                                (PerspectiveActivity) activity,
-                                callback );
+                final PerspectiveDefinition activePerspective = panelManager.getPerspective();
+                if ( activePerspective != null && !activePerspective.isTransient() ) {
+                    wbServices.call().save( activePerspective );
+                }
+                if ( closeAllCurrentPanels() ) {
+                    launchActivity( requestPair.getK2(),
+                                    (PerspectiveActivity) activity,
+                                    callback );
+                }
             }
         } else {
             goTo( requestPair.getK2(), panel );
         }
+    }
+
+    private boolean closeAllCurrentPanels() {
+        boolean result = true;
+        for ( final PlaceRequest placeRequest : existingWorkbenchParts.keySet() ) {
+            final Activity activity = existingWorkbenchActivities.get( placeRequest );
+            if ( activity instanceof AbstractWorkbenchActivity ) {
+                if ( ( (AbstractWorkbenchActivity) activity ).onMayClose() ) {
+                    onMayCloseList.put( placeRequest, activity );
+                } else {
+                    result = false;
+                    break;
+                }
+            }
+        }
+
+        if ( !result ) {
+            onMayCloseList.clear();
+        } else {
+            closeAllPlaces();
+        }
+
+        return result;
     }
 
     private Pair<Activity, PlaceRequest> resolveActivity( final PlaceRequest place ) {
@@ -536,7 +572,8 @@ public class PlaceManagerImpl
     private void onWorkbenchPartBeforeClose( final WorkbenchActivity activity,
                                              final PlaceRequest place,
                                              final boolean force ) {
-        if ( force || activity.onMayClose() ) {
+        if ( force || onMayCloseList.containsKey( place ) || activity.onMayClose() ) {
+            onMayCloseList.remove( place );
             activity.onClose();
             workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
         }

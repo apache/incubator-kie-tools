@@ -55,7 +55,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
                         final Command callback ) {
         super.launch( place,
                       callback );
-        saveState();
+        loadState();
     }
 
     @Override
@@ -103,33 +103,30 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         return null;
     }
 
-    //Save the current state of the Workbench
-    private void saveState() {
-
-        onClose();
-
-        final PerspectiveDefinition perspective = panelManager.getPerspective();
-
-        if ( perspective == null ) {
-            //On startup the Workbench has not been set to contain a perspective
-            loadState();
-
-        } else if ( perspective.isTransient() ) {
-            //Transient Perspectives are not saved
-            placeManager.closeAllPlaces();
-            loadState();
-
-        } else {
-            //Save first, then close all places before loading persisted state
-            wbServices.call( new RemoteCallback<Void>() {
-                @Override
-                public void callback( Void response ) {
-                    placeManager.closeAllPlaces();
-                    loadState();
-                }
-            } ).save( perspective );
-        }
-    }
+//    //Save the current state of the Workbench
+//    public void saveState() {
+//
+//        onClose();
+//
+//        final PerspectiveDefinition perspective = panelManager.getPerspective();
+//
+//        if ( perspective == null ) {
+//            //On startup the Workbench has not been set to contain a perspective
+//            loadState();
+//
+//        } else if ( perspective.isTransient() ) {
+//            //Transient Perspectives are not saved
+//            loadState();
+//        } else {
+//            //Save first, then close all places before loading persisted state
+//            wbServices.call( new RemoteCallback<Void>() {
+//                @Override
+//                public void callback( Void response ) {
+//                    loadState();
+//                }
+//            } ).save( perspective );
+//        }
+//    }
 
     //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
     private void loadState() {

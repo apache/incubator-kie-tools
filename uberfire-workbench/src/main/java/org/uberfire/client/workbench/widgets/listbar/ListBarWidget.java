@@ -31,6 +31,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -258,6 +259,10 @@ public class ListBarWidget
 
     private Widget buildTitle( final String title ) {
         final SpanElement spanElement = Document.get().createSpanElement();
+        spanElement.getStyle().setWhiteSpace( Style.WhiteSpace.NOWRAP );
+        spanElement.getStyle().setOverflow( Style.Overflow.HIDDEN );
+        spanElement.getStyle().setTextOverflow( Style.TextOverflow.ELLIPSIS );
+        spanElement.getStyle().setDisplay( BLOCK );
         spanElement.setInnerText( title );
 
         return new DragArea() {{

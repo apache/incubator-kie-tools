@@ -90,6 +90,8 @@ public class ShowcaseEntryPoint {
     @AfterInitialization
     public void startApp() {
         UberFirePreferences.setProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable", true );
+        //todo {porcelli} context button navigator style is broken, disabling for now
+        UberFirePreferences.setProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable", true );
 
         hideLoadingPopup();
     }
