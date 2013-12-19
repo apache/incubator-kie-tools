@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollectionIndex;
 import org.drools.workbench.models.datamodel.rule.ExpressionFieldVariable;
@@ -427,11 +428,11 @@ public class ExpressionBuilder extends RuleModellerWidget
         final String factName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
         if ( factName != null ) {
             // we currently only support 0 param method calls
-            getDataModelOracle().getMethodNames( factName,
+            getDataModelOracle().getMethodInfos( factName,
                                                  0,
-                                                 new Callback<List<String>>() {
+                                                 new Callback<List<MethodInfo>>() {
                                                      @Override
-                                                     public void callback( final List<String> methodNames ) {
+                                                     public void callback( final List<MethodInfo> methodInfos ) {
                                                          getDataModelOracle().getFieldCompletions( factName,
                                                                                                    new Callback<ModelField[]>() {
 
@@ -444,11 +445,12 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                                                                                if ( !isNested || !fieldName.equals( DataType.TYPE_THIS ) ) {
 
                                                                                                                    boolean changed = false;
-                                                                                                                   for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
-                                                                                                                       String method = i.next();
-                                                                                                                       if ( method.startsWith( fieldName ) ) {
-                                                                                                                           completions.put( method,
-                                                                                                                                            METHOD_VALUE_PREFIX + "." + method );
+                                                                                                                   for ( Iterator<MethodInfo> i = methodInfos.iterator(); i.hasNext(); ) {
+                                                                                                                       final MethodInfo methodInfo = i.next();
+                                                                                                                       final String methodName = methodInfo.getName();
+                                                                                                                       if ( methodName.startsWith( fieldName ) ) {
+                                                                                                                           completions.put( methodName,
+                                                                                                                                            METHOD_VALUE_PREFIX + "." + methodName );
                                                                                                                            i.remove();
                                                                                                                            changed = true;
                                                                                                                        }

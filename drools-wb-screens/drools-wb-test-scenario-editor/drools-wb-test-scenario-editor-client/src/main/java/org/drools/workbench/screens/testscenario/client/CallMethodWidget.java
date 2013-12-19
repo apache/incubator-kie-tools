@@ -93,16 +93,16 @@ public class CallMethodWidget extends DirtyableComposite {
 
             final FactData pattern = (FactData) scenario.getFactTypes().get( mCall.getVariable() );
             if ( pattern != null ) {
-                this.oracle.getMethodNames( pattern.getType(),
-                                            new Callback<List<String>>() {
+                this.oracle.getMethodInfos( pattern.getType(),
+                                            new Callback<List<MethodInfo>>() {
                                                 @Override
-                                                public void callback( final List<String> methodList ) {
-                                                    CallMethodWidget.this.fieldCompletionTexts = new String[ methodList.size() ];
-                                                    CallMethodWidget.this.fieldCompletionValues = new String[ methodList.size() ];
+                                                public void callback( final List<MethodInfo> methodInfos ) {
+                                                    CallMethodWidget.this.fieldCompletionTexts = new String[ methodInfos.size() ];
+                                                    CallMethodWidget.this.fieldCompletionValues = new String[ methodInfos.size() ];
                                                     int i = 0;
-                                                    for ( String methodName : methodList ) {
-                                                        CallMethodWidget.this.fieldCompletionTexts[ i ] = methodName;
-                                                        CallMethodWidget.this.fieldCompletionValues[ i ] = methodName;
+                                                    for ( MethodInfo methodInfo : methodInfos ) {
+                                                        CallMethodWidget.this.fieldCompletionTexts[ i ] = methodInfo.getName();
+                                                        CallMethodWidget.this.fieldCompletionValues[ i ] = methodInfo.getNameWithParameters();
                                                         i++;
                                                     }
                                                     CallMethodWidget.this.variableClass = pattern.getType();
