@@ -729,9 +729,9 @@ public class ExplorerServiceImpl
             }
 
             for ( final Path path : paths ) {
-                ioService.delete( Paths.convert( path ),
-                                  new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ),
-                                  StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+                ioService.deleteIfExists( Paths.convert( path ),
+                                          new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ),
+                                          StandardDeleteOption.NON_EMPTY_DIRECTORIES );
             }
 
             if ( paths.size() > 1 ) {
@@ -757,18 +757,20 @@ public class ExplorerServiceImpl
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
-                final org.uberfire.java.nio.file.Path _target;
-                if ( Files.isDirectory( _path ) ) {
-                    _target = _path.resolveSibling( newName );
-                } else {
-                    final String originalFileName = _path.getFileName().toString();
-                    final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
-                    _target = _path.resolveSibling( newName + extension );
-                }
+                if ( Files.exists( _path ) ) {
+                    final org.uberfire.java.nio.file.Path _target;
+                    if ( Files.isDirectory( _path ) ) {
+                        _target = _path.resolveSibling( newName );
+                    } else {
+                        final String originalFileName = _path.getFileName().toString();
+                        final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+                        _target = _path.resolveSibling( newName + extension );
+                    }
 
-                ioService.move( _path,
-                                _target,
-                                new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                    ioService.move( _path,
+                                    _target,
+                                    new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                }
             }
 
             if ( paths.size() > 1 ) {
@@ -794,18 +796,20 @@ public class ExplorerServiceImpl
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
-                final org.uberfire.java.nio.file.Path _target;
-                if ( Files.isDirectory( _path ) ) {
-                    _target = _path.resolveSibling( newName );
-                } else {
-                    final String originalFileName = _path.getFileName().toString();
-                    final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
-                    _target = _path.resolveSibling( newName + extension );
-                }
+                if ( Files.exists( _path ) ) {
+                    final org.uberfire.java.nio.file.Path _target;
+                    if ( Files.isDirectory( _path ) ) {
+                        _target = _path.resolveSibling( newName );
+                    } else {
+                        final String originalFileName = _path.getFileName().toString();
+                        final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+                        _target = _path.resolveSibling( newName + extension );
+                    }
 
-                ioService.copy( _path,
-                                _target,
-                                new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                    ioService.copy( _path,
+                                    _target,
+                                    new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                }
             }
 
             if ( paths.size() > 1 ) {
