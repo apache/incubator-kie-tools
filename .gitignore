@@ -18,3 +18,6 @@ runMigration.log
 # Created by Zanata
 /org.drools
 
+# Doesn't exist in this branch anymore
+drools-wb-distribution/
+drools-wb-docs/
