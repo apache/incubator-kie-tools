@@ -65,19 +65,19 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     public ActionCallMethodWidget( final RuleModeller mod,
                                    final EventBus eventBus,
-                                   final ActionCallMethod set,
+                                   final ActionCallMethod actionCallMethod,
                                    final Boolean readOnly ) {
         super( mod,
                eventBus );
-        this.model = set;
+        this.model = actionCallMethod;
         this.layout = new DirtyableFlexTable();
 
         layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
         final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
-        if ( oracle.isGlobalVariable( set.getVariable() ) ) {
+        if ( oracle.isGlobalVariable(actionCallMethod.getVariable()) ) {
 
-            oracle.getMethodInfosForGlobalVariable( set.getVariable(),
+            oracle.getMethodInfosForGlobalVariable( actionCallMethod.getVariable(),
                                                     new Callback<List<MethodInfo>>() {
                                                         @Override
                                                         public void callback( final List<MethodInfo> infos ) {
@@ -91,7 +91,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                                                                     i++;
                                                                 }
 
-                                                                ActionCallMethodWidget.this.variableClass = oracle.getGlobalVariable( set.getVariable() );
+                                                                ActionCallMethodWidget.this.variableClass = oracle.getGlobalVariable( actionCallMethod.getVariable() );
 
                                                             } else {
                                                                 ActionCallMethodWidget.this.fieldCompletionTexts = new String[ 0 ];
@@ -103,18 +103,18 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         } else {
 
-            final FactPattern pattern = mod.getModel().getLHSBoundFact( set.getVariable() );
+            final FactPattern pattern = mod.getModel().getLHSBoundFact( actionCallMethod.getVariable() );
             if ( pattern != null ) {
-                oracle.getMethodNames( pattern.getFactType(),
-                                       new Callback<List<String>>() {
+                oracle.getMethodInfos( pattern.getFactType(),
+                                       new Callback<List<MethodInfo>>() {
                                            @Override
-                                           public void callback( final List<String> methodList ) {
+                                           public void callback( final List<MethodInfo> methodList ) {
                                                ActionCallMethodWidget.this.fieldCompletionTexts = new String[ methodList.size() ];
                                                ActionCallMethodWidget.this.fieldCompletionValues = new String[ methodList.size() ];
                                                int i = 0;
-                                               for ( String methodName : methodList ) {
-                                                   ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = methodName;
-                                                   ActionCallMethodWidget.this.fieldCompletionValues[ i ] = methodName;
+                                               for ( MethodInfo methodInfo : methodList ) {
+                                                   ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = methodInfo.getNameWithParameters();
+                                                   ActionCallMethodWidget.this.fieldCompletionValues[ i ] = methodInfo.getName();
                                                    i++;
                                                }
                                                ActionCallMethodWidget.this.variableClass = pattern.getFactType();
@@ -125,20 +125,20 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
             } else {
                 /*
-                 * if the call method is applied on a bound variable created in the rhs
+                     * if the call method is applied on a bound variable created in the rhs
                  */
-                final ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.getVariable() );
+                final ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( actionCallMethod.getVariable() );
                 if ( patternRhs != null ) {
-                    oracle.getMethodNames( patternRhs.getFactType(),
-                                           new Callback<List<String>>() {
+                    oracle.getMethodInfos( patternRhs.getFactType(),
+                                           new Callback<List<MethodInfo>>() {
                                                @Override
-                                               public void callback( final List<String> methodList ) {
+                                               public void callback( final List<MethodInfo> methodList ) {
                                                    ActionCallMethodWidget.this.fieldCompletionTexts = new String[ methodList.size() ];
                                                    ActionCallMethodWidget.this.fieldCompletionValues = new String[ methodList.size() ];
                                                    int i = 0;
-                                                   for ( String methodName : methodList ) {
-                                                       ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = methodName;
-                                                       ActionCallMethodWidget.this.fieldCompletionValues[ i ] = methodName;
+                                                   for ( MethodInfo methodInfo : methodList ) {
+                                                       ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = methodInfo.getNameWithParameters();
+                                                       ActionCallMethodWidget.this.fieldCompletionValues[ i ] = methodInfo.getName();
                                                        i++;
                                                    }
                                                    ActionCallMethodWidget.this.variableClass = patternRhs.getFactType();
@@ -236,8 +236,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
             public void onChange( ChangeEvent event ) {
 
-                final String methodName = box.getItemText( box.getSelectedIndex() );
-                final String methodNameWithParams = box.getValue( box.getSelectedIndex() );
+                final String methodName = box.getValue( box.getSelectedIndex() );
+                final String methodNameWithParams = box.getItemText( box.getSelectedIndex() );
 
                 model.setMethodName( methodName );
                 model.setState( ActionCallMethod.TYPE_DEFINED );
