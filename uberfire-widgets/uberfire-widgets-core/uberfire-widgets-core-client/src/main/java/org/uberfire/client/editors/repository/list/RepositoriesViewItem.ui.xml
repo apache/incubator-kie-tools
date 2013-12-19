@@ -21,16 +21,69 @@
 
   <ui:with field="i18n" type="org.uberfire.client.resources.i18n.CoreConstants"/>
 
-  <g:HTMLPanel ui:field="panel">
-    <li class="guvnor-repository-li">
-      <h3 ui:field="alias"/>
-      <div class="guvnor-repository-body">
-        <p ui:field="uri"/>
-        <p ui:field="root"/>
-        <hr/>
-        <b:Button ui:field="btnRemoveRepository" icon="MINUS_SIGN" type="DANGER" text="{i18n.Delete}"></b:Button>
+  <ui:style>
+    .uf-box {
+      padding: 1px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 6px;
+      -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      -webkit-background-clip: padding-box;
+      -moz-background-clip: padding;
+      background-clip: padding-box;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .protocols {
+      padding-top: 5px;
+    }
+
+    .delete {
+      margin-left: 15px;
+      margin-bottom: 10px;
+    }
+  </ui:style>
+
+  <g:HTMLPanel>
+    <div style="font-size: 24px; margin-left: 20px; padding-top:20px;">
+      <i class="icon-book"></i>
+      <g:InlineHTML ui:field="ownerReference"/>
+      <strong>
+        <g:InlineHTML ui:field="repoName"/>
+      </strong>
+    </div>
+
+    <div style="padding-top:20px;">
+      <div class="{style.uf-box}">
+        <h3 class="popover-title">
+          <strong>General Information</strong>
+        </h3>
+        <div>
+          <div style="border-bottom:1px solid #ebebeb; padding:10px 14px;">
+            <p>
+              <g:InlineHTML ui:field="repoDesc"/>
+            </p>
+          </div>
+          <div class="control-group" style="padding-top:10px; padding-left:14px;">
+            <div class="controls" style="height:30px !important;">
+              <div class="input-append pull-left">
+                <g:InlineHTML ui:field="gitDaemonURI" addStyleNames="span6 input-xlarge uneditable-input"/>
+                <b:Button ui:field="myGitCopyButton" icon="PASTE"/>
+              </div>
+              <g:FlowPanel ui:field="linksPanel" addStyleNames="{style.protocols}"/>
+            </div>
+          </div>
+          <b:Button ui:field="btnRemoveRepository" icon="MINUS_SIGN" type="DANGER" text="{i18n.Delete}" addStyleNames="{style.delete}"/>
+        </div>
       </div>
-    </li>
+    </div>
+
   </g:HTMLPanel>
 
 </ui:UiBinder>

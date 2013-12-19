@@ -66,8 +66,9 @@ public class RepositoriesView extends Composite
     @Override
     public void addRepository( final Repository repository ) {
         final RepositoriesViewItem item = new RepositoriesViewItem( repository.getAlias(),
-                                                                    repository.getUri(),
-                                                                    repository.getRoot().toURI(),
+                                                                    null,
+                                                                    repository.getPublicURIs(),
+                                                                    "[empty]",
                                                                     new Command() {
 
                                                                         @Override
