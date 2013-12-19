@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
@@ -137,15 +138,15 @@ public class PackageDataModelMethodsTest {
                                                                  oracle,
                                                                  dataModel );
 
-        oracle.getMethodNames( ArrayList.class.getSimpleName(),
-                               new Callback<List<String>>() {
+        oracle.getMethodInfos( ArrayList.class.getSimpleName(),
+                               new Callback<List<MethodInfo>>() {
                                    @Override
-                                   public void callback( final List<String> methodNames ) {
-                                       assertNotNull( methodNames );
-                                       assertFalse( methodNames.isEmpty() );
-                                       for ( final String methodName : methodNames ) {
-                                           assertFalse( "Method " + methodName + " is not allowed.",
-                                                        allowedMethod( methodName ) );
+                                   public void callback( final List<MethodInfo> methodInfos ) {
+                                       assertNotNull( methodInfos );
+                                       assertFalse( methodInfos.isEmpty() );
+                                       for ( final MethodInfo methodInfo : methodInfos ) {
+                                           assertFalse( "Method " + methodInfo.getName() + " is not allowed.",
+                                                        allowedMethod( methodInfo.getName() ) );
                                        }
                                    }
                                } );

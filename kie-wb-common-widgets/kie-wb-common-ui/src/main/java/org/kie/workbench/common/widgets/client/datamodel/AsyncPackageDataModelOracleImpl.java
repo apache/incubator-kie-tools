@@ -709,28 +709,30 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     // ####################################
 
     /**
-     * Get a list of Methods for a Fact Type
+     * Get a list of MethodInfos for a Fact Type
      * @param factType
+     * @param callback
      * @return
      */
     @Override
-    public void getMethodNames( final String factType,
-                                final Callback<List<String>> callback ) {
-        getMethodNames( factType,
+    public void getMethodInfos( final String factType,
+                                final Callback<List<MethodInfo>> callback ) {
+        getMethodInfos( factType,
                         -1,
                         callback );
     }
 
     /**
-     * Get a list of Methods for a Fact Type that have at least the specified number of parameters
+     * Get a list of MethodInfos for a Fact Type that have at least the specified number of parameters
      * @param factType
-     * @param paramCount
+     * @param parameterCount
+     * @param callback
      * @return
      */
     @Override
-    public void getMethodNames( final String factType,
-                                final int paramCount,
-                                final Callback<List<String>> callback ) {
+    public void getMethodInfos( final String factType,
+                                final int parameterCount,
+                                final Callback<List<MethodInfo>> callback ) {
         final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
 
         //Load incremental content
@@ -742,7 +744,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                     AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
                                                                                   dataModel );
                     final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
-                    callback.callback( getMethodNames( paramCount,
+                    callback.callback( getMethodInfos( parameterCount,
                                                        methodInformation ) );
                 }
             } ).getUpdates( resourcePath,
@@ -750,27 +752,20 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                             factType );
 
         } else {
-            callback.callback( getMethodNames( paramCount,
+            callback.callback( getMethodInfos( parameterCount,
                                                methodInformation ) );
         }
     }
 
-    private List<String> getMethodNames( final int paramCount,
-                                         final List<MethodInfo> methodInformation ) {
-        final List<String> methodList = new ArrayList<String>();
-        for ( MethodInfo info : methodInformation ) {
-            if ( paramCount == -1 || info.getParams().size() <= paramCount ) {
-                methodList.add( info.getNameWithParameters() );
+    private List<MethodInfo> getMethodInfos( final int paramCount,
+                                             final List<MethodInfo> allMethodInfos ) {
+        final List<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+        for ( MethodInfo mi : allMethodInfos ) {
+            if ( paramCount == -1 || mi.getParams().size() <= paramCount ) {
+                methodInfos.add( mi );
             }
         }
-        return methodList;
-    }
-
-    @Override
-    public void getMethodInfos(final String factType, final Callback<List<MethodInfo>> callback) {
-        callback.callback(
-                filteredMethodInformation.get(factType)
-        );
+        return methodInfos;
     }
 
     /**
@@ -783,43 +778,83 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void getMethodParams( final String factType,
                                  final String methodNameWithParams,
                                  final Callback<List<String>> callback ) {
-        if ( !filteredMethodInformation.containsKey( factType ) ) {
+        final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
+
+        //Load incremental content
+        if ( methodInformation == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
+                    callback.callback( getMethodParams( methodInformation,
+                                                        methodNameWithParams ) );
+                }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
 
         } else {
-            final List<MethodInfo> infos = filteredMethodInformation.get( factType );
-            for ( MethodInfo info : infos ) {
-                if ( info.getNameWithParameters().startsWith( methodNameWithParams ) ) {
-                    callback.callback( info.getParams() );
-                    return;
-                }
+            callback.callback( getMethodParams( methodInformation,
+                                                methodNameWithParams ) );
+        }
+    }
+
+    private List<String> getMethodParams( final List<MethodInfo> methodInfos,
+                                          final String methodNameWithParams ) {
+        final List<String> methodParams = new ArrayList<String>();
+        for ( MethodInfo methodInfo : methodInfos ) {
+            if ( methodInfo.getNameWithParameters().startsWith( methodNameWithParams ) ) {
+                methodParams.addAll( methodInfo.getParams() );
             }
         }
-        ;
-        callback.callback( null );
+        return methodParams;
     }
 
     /**
      * Get information on a Method of a Fact Type
      * @param factType
-     * @param methodFullName
+     * @param methodNameWithParams
      * @return
      */
     @Override
     public void getMethodInfo( final String factType,
-                               final String methodFullName,
+                               final String methodNameWithParams,
                                final Callback<MethodInfo> callback ) {
-        if ( !filteredMethodInformation.containsKey( factType ) ) {
+        final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
+
+        //Load incremental content
+        if ( methodInformation == null ) {
+            service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
+
+                @Override
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
+                    final List<MethodInfo> methodInformation = filteredMethodInformation.get( factType );
+                    callback.callback( getMethodInfo( methodInformation,
+                                                      methodNameWithParams ) );
+                }
+            } ).getUpdates( resourcePath,
+                            imports,
+                            factType );
 
         } else {
-            final List<MethodInfo> infos = filteredMethodInformation.get( factType );
-            for ( MethodInfo info : infos ) {
-                if ( info.getNameWithParameters().equals( methodFullName ) ) {
-                    callback.callback( info );
-                    return;
-                }
+            callback.callback( getMethodInfo( methodInformation,
+                                              methodNameWithParams ) );
+        }
+    }
+
+    private MethodInfo getMethodInfo( final List<MethodInfo> methodInfos,
+                                      final String methodNameWithParams ) {
+        for ( MethodInfo methodInfo : methodInfos ) {
+            if ( methodInfo.getNameWithParameters().equals( methodNameWithParams ) ) {
+                return methodInfo;
             }
         }
-        callback.callback( null );
+        return null;
     }
 
     // ####################################
