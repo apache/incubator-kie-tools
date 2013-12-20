@@ -45,6 +45,7 @@
         </property>
       </activation>
       <modules>
+        <module>drools-wb-rest-defaultapprover</module>
         <module>drools-wb-rest</module>
         <module>drools-wb-screens</module>
         <module>drools-wb-webapp</module>
