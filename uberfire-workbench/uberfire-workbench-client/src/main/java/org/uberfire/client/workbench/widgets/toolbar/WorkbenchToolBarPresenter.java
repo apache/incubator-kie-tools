@@ -130,33 +130,37 @@ public class WorkbenchToolBarPresenter {
 
     public void addWorkbenchItem( final ToolBar toolBar ) {
 
-////        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
-//
-//        if ( !filteredToolBar.getItems().isEmpty() ) {
-//            workbenchItems.add( filteredToolBar );
-//            view.addToolBar( filteredToolBar );
-//        }
+        final ToolBar filteredToolBar = filterToolBarItemsByPermission( toolBar );
+
+        if ( !filteredToolBar.getItems().isEmpty() ) {
+            workbenchItems.add( filteredToolBar );
+            view.addToolBar( filteredToolBar );
+        }
     }
 
     public void addWorkbenchPerspective( final ToolBar toolBar ) {
-//        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
-//
-//        if ( !filteredToolBar.getItems().isEmpty() ) {
-//            workbenchPerspectiveItems.add( filteredToolBar );
-//            view.addToolBar( filteredToolBar );
-//        }
+        final ToolBar filteredToolBar = filterToolBarItemsByPermission( toolBar );
+
+        if ( !filteredToolBar.getItems().isEmpty() ) {
+            workbenchPerspectiveItems.add( filteredToolBar );
+            view.addToolBar( filteredToolBar );
+        }
     }
 
     public void addWorkbenchContextItem( final ToolBar toolBar ) {
-//        final ToolBar filteredToolBar = toolBarUtils.filterToolBarItemsByPermission( toolBar );
-//
-//        if ( !filteredToolBar.getItems().isEmpty() ) {
-//            workbenchContextItems.add( filteredToolBar );
-//            view.addToolBar( filteredToolBar );
-//        }
+        final ToolBar filteredToolBar = filterToolBarItemsByPermission( toolBar );
+
+        if ( !filteredToolBar.getItems().isEmpty() ) {
+            workbenchContextItems.add( filteredToolBar );
+            view.addToolBar( filteredToolBar );
+        }
     }
 
-    public void clearWorkbenchItems() {
+    private ToolBar filterToolBarItemsByPermission(ToolBar toolBar) {
+    	return toolBar; // TODO (UF-2)
+	}
+
+	public void clearWorkbenchItems() {
         if ( workbenchItems.isEmpty() ) {
             return;
         }
