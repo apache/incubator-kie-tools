@@ -44,7 +44,6 @@ import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldNature;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
@@ -111,8 +110,12 @@ public class MethodParameterValueEditor
                 if ( methodParameter.getNature() == FieldNatureType.TYPE_VARIABLE ) {
                     ListBox list = boundVariable( methodParameter );
                     root.add( list );
+                } else if ( methodParameter.getNature() == FieldNatureType.TYPE_FORMULA ) {
+                    TextBox box = boundFormulaTextBox( this.methodParameter );
+                    root.add( box );
+
                 } else {
-                    TextBox box = boundTextBox( this.methodParameter );
+                    TextBox box = boundLiteralTextBox( this.methodParameter );
                     root.add( box );
                 }
 
@@ -181,22 +184,13 @@ public class MethodParameterValueEditor
         return listVariable;
     }
 
-    private TextBox boundTextBox( final ActionFieldValue c ) {
+    private TextBox boundLiteralTextBox( final ActionFieldValue c ) {
         final TextBox box = TextBoxFactory.getTextBox( methodParameter.getType() );
         box.setStyleName( "constraint-value-Editor" );
         if ( c.getValue() == null ) {
             box.setText( "" );
         } else {
-            if ( c.getValue().trim().equals( "" ) ) {
-                c.setType( "" );
-            }
             box.setText( c.getValue() );
-        }
-
-        if ( c.getValue() == null || c.getValue().length() < 5 ) {
-            box.setVisibleLength( 6 );
-        } else {
-            box.setVisibleLength( c.getValue().length() - 1 );
         }
 
         box.addValueChangeHandler( new ValueChangeHandler<String>() {
@@ -211,11 +205,28 @@ public class MethodParameterValueEditor
 
         } );
 
-        box.addKeyUpHandler( new KeyUpHandler() {
+        return box;
+    }
 
-            public void onKeyUp( KeyUpEvent event ) {
-                box.setVisibleLength( box.getText().length() );
+    private TextBox boundFormulaTextBox( final ActionFieldValue c ) {
+        final TextBox box = new TextBox();
+        box.setStyleName( "constraint-value-Editor" );
+        if ( c.getValue() == null ) {
+            box.setText( "" );
+        } else {
+            box.setText( c.getValue() );
+        }
+
+        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            public void onValueChange( final ValueChangeEvent<String> event ) {
+                c.setValue( event.getValue() );
+                if ( onValueChangeCommand != null ) {
+                    onValueChangeCommand.execute();
+                }
+                makeDirty();
             }
+
         } );
 
         return box;
@@ -234,7 +245,9 @@ public class MethodParameterValueEditor
 
     protected void showTypeChoice( Widget w ) {
         final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                GuidedRuleEditorResources.CONSTANTS.FieldValue() );
+                                                        GuidedRuleEditorResources.CONSTANTS.FieldValue() );
+
+        //Literal values
         Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
@@ -251,34 +264,34 @@ public class MethodParameterValueEditor
         form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
                            widgets( lit,
                                     new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
-                                            GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
-        form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
-
-        /*
-         * If there is a bound variable that is the same type of the current
-         * variable type, then show abutton
-         */
+                                                   GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
+        // Bound variables
         List<String> vars = model.getModel().getLHSBoundFacts();
         List<String> vars2 = model.getModel().getRHSBoundFacts();
         for ( String i : vars2 ) {
             vars.add( i );
         }
+        boolean createBoundVariableHeader = true;
         for ( String v : vars ) {
-            boolean createButton = false;
+            boolean createBoundVariableButton = false;
             Button variable = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
             if ( vars2.contains( v ) == false ) {
                 FactPattern factPattern = model.getModel().getLHSBoundFact( v );
                 if ( factPattern.getFactType().equals( this.parameterType ) ) {
-                    createButton = true;
+                    createBoundVariableButton = true;
                 }
             } else {
                 ActionInsertFact factPattern = model.getModel().getRHSBoundFact( v );
                 if ( factPattern.getFactType().equals( this.parameterType ) ) {
-                    createButton = true;
+                    createBoundVariableButton = true;
                 }
             }
-            if ( createButton == true ) {
+            if ( createBoundVariableButton == true ) {
+                if ( createBoundVariableHeader ) {
+                    form.addRow( new HTML( "<hr/>" ) );
+                    form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
+                    createBoundVariableHeader = false;
+                }
                 form.addAttribute( GuidedRuleEditorResources.CONSTANTS.BoundVariable() + ":",
                                    variable );
                 variable.addClickHandler( new ClickHandler() {
@@ -296,6 +309,27 @@ public class MethodParameterValueEditor
             }
 
         }
+
+        //Formulas
+        if ( createBoundVariableHeader ) {
+            form.addRow( new HTML( "<hr/>" ) );
+            form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
+        }
+        Button formula = new Button( GuidedRuleEditorResources.CONSTANTS.NewFormula() );
+        formula.addClickHandler( new ClickHandler() {
+
+            public void onClick( ClickEvent event ) {
+                methodParameter.setNature( FieldNatureType.TYPE_FORMULA );
+                makeDirty();
+                refresh();
+                form.hide();
+            }
+        } );
+
+        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AFormula() + ":",
+                           widgets( formula,
+                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.AFormula(),
+                                                   GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip() ) ) );
 
         form.show();
     }
