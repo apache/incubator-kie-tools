@@ -51,7 +51,8 @@ public class ClassMethodInspector {
                 Class<?>[] listParam = aMethod.getParameterTypes();
 
                 MethodInfo info = new MethodInfo( methodName,
-                                                  solveParams( listParam ),
+                                                  convertParameterTypes( converter,
+                                                                         listParam ),
                                                   aMethod.getReturnType(),
                                                   obtainGenericType( aMethod.getGenericReturnType() ),
                                                   converter.translateClassToGenericType( clazz ) );
@@ -106,7 +107,14 @@ public class ClassMethodInspector {
         return ( "toArray".equals( methodName ) || "iterator".equals( methodName ) || "contains".equals( methodName ) || "isEmpty".equals( methodName ) || "containsAll".equals( methodName ) || "size".equals( methodName ) );
     }
 
-    private List<String> solveParams( final Class<?>[] listParam ) {
+    /**
+     * Translate Method Parameter types to the generic types used by DataModelOracle
+     * @param converter
+     * @param listParam
+     * @return
+     */
+    private List<String> convertParameterTypes( final ClassToGenericClassConverter converter,
+                                                final Class<?>[] listParam ) {
         List<String> params = new ArrayList<String>();
 
         if ( listParam.length == 0 ) {
@@ -114,7 +122,8 @@ public class ClassMethodInspector {
         } else {
 
             for ( int i = 0; i < listParam.length; i++ ) {
-                params.add( listParam[ i ].getName().substring( listParam[ i ].getName().lastIndexOf( "." ) + 1 ) );
+                final String type = converter.translateClassToGenericType( listParam[ i ] );
+                params.add( type );
             }
 
             return params;

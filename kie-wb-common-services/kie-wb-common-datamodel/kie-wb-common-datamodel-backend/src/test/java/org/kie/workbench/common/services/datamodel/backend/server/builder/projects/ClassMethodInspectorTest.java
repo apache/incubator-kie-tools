@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -30,17 +32,41 @@ public class ClassMethodInspectorTest {
 
     @Test
     public void testSimpleMethods() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( SimpleMethods.class, new Converter() );
+        final ClassMethodInspector ext = new ClassMethodInspector( SimpleMethods.class,
+                                                                   new JavaTypeSystemTranslator() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
                          allowedMethod( s ) );
         }
+        assertEquals( 3,
+                      ext.getMethodInfos().size() );
+        assertNotNull( getMethodInfo( "addOrSimilar",
+                                      ext.getMethodInfos() ) );
+        assertNotNull( getMethodInfo( "cleanOrSimilar",
+                                      ext.getMethodInfos() ) );
+        assertNotNull( getMethodInfo( "methodThatReturnsIfItWasSuccesful",
+                                      ext.getMethodInfos() ) );
+
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      getMethodInfo( "addOrSimilar",
+                                     ext.getMethodInfos() ).getParams().get( 0 ) );
+    }
+
+    private MethodInfo getMethodInfo( final String methodName,
+                                      final List<MethodInfo> methodInfos ) {
+        for ( MethodInfo methodInfo : methodInfos ) {
+            if ( methodInfo.getName().equals( methodName ) ) {
+                return methodInfo;
+            }
+        }
+        return null;
     }
 
     @Test
     public void testMoreThanOneMethodWithTheSameName() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( MoreThanOneMethodWithTheSameName.class, new Converter() );
+        final ClassMethodInspector ext = new ClassMethodInspector( MoreThanOneMethodWithTheSameName.class,
+                                                                   new JavaTypeSystemTranslator() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -51,7 +77,8 @@ public class ClassMethodInspectorTest {
 
     @Test
     public void testCollection() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( Collection.class, new Converter() );
+        final ClassMethodInspector ext = new ClassMethodInspector( Collection.class,
+                                                                   new JavaTypeSystemTranslator() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -61,7 +88,8 @@ public class ClassMethodInspectorTest {
 
     @Test
     public void testArrayList() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( ArrayList.class, new Converter() );
+        final ClassMethodInspector ext = new ClassMethodInspector( ArrayList.class,
+                                                                   new JavaTypeSystemTranslator() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -71,7 +99,8 @@ public class ClassMethodInspectorTest {
 
     @Test
     public void testList() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( List.class, new Converter() );
+        final ClassMethodInspector ext = new ClassMethodInspector( List.class,
+                                                                   new JavaTypeSystemTranslator() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -81,7 +110,8 @@ public class ClassMethodInspectorTest {
 
     @Test
     public void testSet() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( Set.class, new Converter() );
+        final ClassMethodInspector ext = new ClassMethodInspector( Set.class,
+                                                                   new JavaTypeSystemTranslator() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -91,7 +121,8 @@ public class ClassMethodInspectorTest {
 
     @Test
     public void testMap() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( Map.class, new Converter() );
+        final ClassMethodInspector ext = new ClassMethodInspector( Map.class,
+                                                                   new JavaTypeSystemTranslator() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -101,7 +132,8 @@ public class ClassMethodInspectorTest {
 
     @Test
     public void testMyMap() throws Exception {
-        final ClassMethodInspector ext = new ClassMethodInspector( MyMap.class, new Converter() );
+        final ClassMethodInspector ext = new ClassMethodInspector( MyMap.class,
+                                                                   new JavaTypeSystemTranslator() );
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
@@ -228,11 +260,4 @@ public class ClassMethodInspectorTest {
 
     }
 
-    private static class Converter implements ClassToGenericClassConverter {
-
-        public String translateClassToGenericType( Class<?> type ) {
-            return null;
-        }
-
-    }
 }
