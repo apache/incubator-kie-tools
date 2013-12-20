@@ -211,6 +211,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
+          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <module>org.uberfire.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
           <strict>true</strict>
