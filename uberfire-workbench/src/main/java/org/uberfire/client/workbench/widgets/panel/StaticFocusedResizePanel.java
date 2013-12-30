@@ -75,4 +75,7 @@ public class StaticFocusedResizePanel
         super.onResize();
     }
 
+    public WorkbenchPartPresenter.View getPartView() {
+        return (WorkbenchPartPresenter.View) container.getWidget();
+    }
 }

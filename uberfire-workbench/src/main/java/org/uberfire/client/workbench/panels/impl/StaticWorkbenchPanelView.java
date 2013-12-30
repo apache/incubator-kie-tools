@@ -25,8 +25,11 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
 /**
@@ -36,6 +39,9 @@ import org.uberfire.workbench.model.PartDefinition;
 @Named("StaticWorkbenchPanelView")
 public class StaticWorkbenchPanelView
         extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
+
+    @Inject
+    private PlaceManager placeManager;
 
     private StaticFocusedResizePanel panel = new StaticFocusedResizePanel();
 
@@ -77,7 +83,16 @@ public class StaticWorkbenchPanelView
 
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
-        panel.setPart( view );
+        if ( panel.getPartView() != null ) {
+            placeManager.tryClosePlace( panel.getPartView().getPresenter().getDefinition().getPlace(), new Command() {
+                @Override
+                public void execute() {
+                    panel.setPart( view );
+                }
+            } );
+        } else {
+            panel.setPart( view );
+        }
     }
 
     @Override

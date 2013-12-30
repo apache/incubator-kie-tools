@@ -19,6 +19,7 @@ package org.uberfire.client.editors.repository.list;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,6 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.resources.i18n.CoreConstants;
 
+@Dependent
 public class RepositoriesView extends Composite
         implements
         RequiresResize,

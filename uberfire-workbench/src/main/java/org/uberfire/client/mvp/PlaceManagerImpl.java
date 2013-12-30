@@ -16,6 +16,7 @@
 package org.uberfire.client.mvp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -232,8 +233,12 @@ public class PlaceManagerImpl
     }
 
     private boolean closeAllCurrentPanels() {
+        return closePlaces( existingWorkbenchParts.keySet() );
+    }
+
+    private boolean closePlaces( final Collection<PlaceRequest> placeRequests ) {
         boolean result = true;
-        for ( final PlaceRequest placeRequest : existingWorkbenchParts.keySet() ) {
+        for ( final PlaceRequest placeRequest : placeRequests ) {
             final Activity activity = existingWorkbenchActivities.get( placeRequest );
             if ( activity instanceof AbstractWorkbenchActivity ) {
                 if ( ( (AbstractWorkbenchActivity) activity ).onMayClose() ) {
@@ -248,7 +253,9 @@ public class PlaceManagerImpl
         if ( !result ) {
             onMayCloseList.clear();
         } else {
-            closeAllPlaces();
+            for ( final PlaceRequest placeRequest : placeRequests ) {
+                closePlace( placeRequest );
+            }
         }
 
         return result;
@@ -374,6 +381,21 @@ public class PlaceManagerImpl
             return;
         }
         workbenchPartBeforeCloseEvent.fire( new BeforeClosePlaceEvent( placeToClose, false ) );
+    }
+
+    @Override
+    public void tryClosePlace( final PlaceRequest placeToClose,
+                               final Command onAfterClose ) {
+        boolean execute = false;
+        if ( placeToClose == null ) {
+            execute = true;
+        } else {
+            execute = closePlaces( Arrays.asList( placeToClose ) );
+        }
+
+        if ( execute ) {
+            onAfterClose.execute();
+        }
     }
 
     @Override
