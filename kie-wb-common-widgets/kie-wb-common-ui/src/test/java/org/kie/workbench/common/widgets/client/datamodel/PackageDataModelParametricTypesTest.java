@@ -111,7 +111,7 @@ public class PackageDataModelParametricTypesTest {
 
         assertEquals( "Product",
                       oracle.getParametricFieldType( "Purchase",
-                                                     "customerPurchased(int)" ) );
+                                                     "customerPurchased(Integer)" ) );
     }
 
 }
