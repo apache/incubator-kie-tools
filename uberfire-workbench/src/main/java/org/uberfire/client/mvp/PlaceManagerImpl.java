@@ -233,7 +233,7 @@ public class PlaceManagerImpl
     }
 
     private boolean closeAllCurrentPanels() {
-        return closePlaces( existingWorkbenchParts.keySet() );
+        return closePlaces( new ArrayList<PlaceRequest>( existingWorkbenchParts.keySet() ) );
     }
 
     private boolean closePlaces( final Collection<PlaceRequest> placeRequests ) {
