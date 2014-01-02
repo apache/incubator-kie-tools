@@ -31,7 +31,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
                             final boolean isEvent,
                             final TypeSource typeSource ) {
         this.builder = builder;
-        this.type = clazz.getName();
+        this.type = getFullClassName( clazz );
         this.isCollection = isCollection( clazz );
         this.isEvent = isEvent;
         this.typeSource = typeSource;
@@ -67,12 +67,12 @@ public abstract class BaseFactBuilder implements FactBuilder {
         return ( clazz != null && Collection.class.isAssignableFrom( clazz ) );
     }
 
-    public String getType() {
-        return type;
+    private String getFullClassName( final Class<?> clazz ) {
+        return clazz.getName();
     }
 
-    protected String getType( final Class<?> clazz ) {
-        return clazz.getName();
+    public String getType() {
+        return type;
     }
 
     protected FactBuilder addField( final ModelField field ) {

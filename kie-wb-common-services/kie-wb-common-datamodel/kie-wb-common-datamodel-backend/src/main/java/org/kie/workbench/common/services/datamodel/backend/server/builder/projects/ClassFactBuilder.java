@@ -120,7 +120,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
             return;
         }
 
-        final String factType = getType( clazz );
+        final String factType = getType();
 
         //Get all getters and setters for the class. This does not handle delegated properties
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
@@ -148,7 +148,6 @@ public class ClassFactBuilder extends BaseFactBuilder {
                     final Class<?> returnType = m.returnType;
                     final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
                     final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.BOTH;
-
 
                     addField( new ModelField( fieldName,
                                               returnType.getName(),
@@ -314,7 +313,10 @@ public class ClassFactBuilder extends BaseFactBuilder {
             final List<String> enumValues = new ArrayList<String>();
             for ( final Field enumField : enumFields ) {
                 if ( enumField.isEnumConstant() ) {
-                    final String shortName = fieldClazz.getName().substring( fieldClazz.getName().lastIndexOf( "." ) + 1 ) + "." + enumField.getName();
+                    String shortName = fieldClazz.getName().substring( fieldClazz.getName().lastIndexOf( "." ) + 1 ) + "." + enumField.getName();
+                    if ( shortName.contains( "$" ) ) {
+                        shortName = shortName.substring( shortName.lastIndexOf( "$" ) + 1 );
+                    }
                     enumValues.add( shortName + "=" + shortName );
                 }
             }

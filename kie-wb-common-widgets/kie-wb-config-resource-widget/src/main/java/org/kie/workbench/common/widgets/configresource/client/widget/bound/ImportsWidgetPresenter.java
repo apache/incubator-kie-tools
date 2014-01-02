@@ -66,7 +66,8 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
         //Get list of potential imports
         final List<Import> allAvailableImportTypes = new ArrayList<Import>();
         for ( String importType : dmo.getExternalFactTypes() ) {
-            allAvailableImportTypes.add( new Import( importType ) );
+            allAvailableImportTypes.add( new Import( importType.replaceAll( "\\$",
+                                                                            "." ) ) );
         }
 
         view.setContent( allAvailableImportTypes,

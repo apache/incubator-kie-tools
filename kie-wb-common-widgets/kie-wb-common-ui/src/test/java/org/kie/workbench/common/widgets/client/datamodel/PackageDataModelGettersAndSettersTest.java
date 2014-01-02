@@ -121,7 +121,7 @@ public class PackageDataModelGettersAndSettersTest {
                                                                  oracle,
                                                                  dataModel );
 
-        oracle.getFieldCompletions( "PackageDataModelGettersAndSettersTest.Person",
+        oracle.getFieldCompletions( "Person",
                                     FieldAccessorsAndMutators.ACCESSOR,
                                     new Callback<ModelField[]>() {
                                         @Override
@@ -135,7 +135,7 @@ public class PackageDataModelGettersAndSettersTest {
                                         }
                                     } );
 
-        oracle.getFieldCompletions( "PackageDataModelGettersAndSettersTest.Person",
+        oracle.getFieldCompletions( "Person",
                                     FieldAccessorsAndMutators.MUTATOR,
                                     new Callback<ModelField[]>() {
                                         @Override

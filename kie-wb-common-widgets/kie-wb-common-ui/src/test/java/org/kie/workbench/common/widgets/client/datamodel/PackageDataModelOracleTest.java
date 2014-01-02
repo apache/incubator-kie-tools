@@ -3,6 +3,9 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.io.IOException;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.imports.HasImports;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -224,7 +227,7 @@ public class PackageDataModelOracleTest {
                                                 } else if ( "field2".equals( field.getName() ) ) {
                                                     assertEquals( ModelField.FIELD_ORIGIN.DECLARED, field.getOrigin() );
                                                 }
-                                                // TODO this last case is arguable : should be inherited, but is cualified as delegated, probably needs to be looked at
+                                                // TODO this last case is arguable : should be inherited, but is qualified as delegated, probably needs to be looked at
                                                 // else if ("list".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.DELEGATED, field.getOrigin());
                                             }
                                         }
@@ -324,6 +327,124 @@ public class PackageDataModelOracleTest {
         assertEquals( String.class.getName(),
                       oracle.getParametricFieldType( TestDelegatedClass.class.getSimpleName(),
                                                      "list" ) );
+    }
+
+    @Test
+    public void testNestedClass() throws IOException {
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+                .addClass( TestSuperClass.NestedClass.class )
+                .build();
+
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
+
+        //Emulate server-to-client conversions
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( packageLoader.getPackageName() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setFieldParametersType( packageLoader.getProjectFieldParametersType() );
+        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
+                                                                 new MockHasImports(),
+                                                                 oracle,
+                                                                 dataModel );
+
+        assertEquals( 1,
+                      oracle.getFactTypes().length );
+        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFactTypes()[ 0 ] );
+
+        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+                                    new Callback<ModelField[]>() {
+                                        @Override
+                                        public void callback( final ModelField[] fields ) {
+                                            assertEquals( 2,
+                                                          fields.length );
+                                        }
+                                    } );
+
+        assertEquals( DataType.TYPE_THIS,
+                      oracle.getFieldType( TestSuperClass.NestedClass.class.getSimpleName(),
+                                           "this" ) );
+        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
+                                                "this" ) );
+        assertEquals( DataType.TYPE_STRING,
+                      oracle.getFieldType( TestSuperClass.NestedClass.class.getSimpleName(),
+                                           "nestedField1" ) );
+        assertEquals( String.class.getName(),
+                      oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
+                                                "nestedField1" ) );
+    }
+
+    @Test
+    public void testImportedNestedClass() throws IOException {
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+                .addClass( TestSuperClass.NestedClass.class )
+                .build();
+
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
+
+        //Emulate server-to-client conversions
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( packageLoader.getPackageName() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setFieldParametersType( packageLoader.getProjectFieldParametersType() );
+
+        final HasImports hasImports = new HasImports() {
+
+            final Imports imports = new Imports();
+
+            {
+                imports.addImport( new Import( "org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSuperClass.NestedClass" ) );
+            }
+
+            @Override
+            public Imports getImports() {
+                return imports;
+            }
+
+            @Override
+            public void setImports( Imports imports ) {
+            }
+        };
+
+        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
+                                                                 hasImports,
+                                                                 oracle,
+                                                                 dataModel );
+        assertEquals( 1,
+                      oracle.getFactTypes().length );
+        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFactTypes()[ 0 ] );
+
+        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+                                    new Callback<ModelField[]>() {
+                                        @Override
+                                        public void callback( final ModelField[] fields ) {
+                                            assertEquals( 2,
+                                                          fields.length );
+                                        }
+                                    } );
+
+        assertEquals( DataType.TYPE_THIS,
+                      oracle.getFieldType( TestSuperClass.NestedClass.class.getSimpleName(),
+                                           "this" ) );
+        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
+                                                "this" ) );
+        assertEquals( DataType.TYPE_STRING,
+                      oracle.getFieldType( TestSuperClass.NestedClass.class.getSimpleName(),
+                                           "nestedField1" ) );
+        assertEquals( String.class.getName(),
+                      oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
+                                                "nestedField1" ) );
     }
 
 }

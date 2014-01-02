@@ -640,11 +640,11 @@ public class PackageDataModelOracleEnumTest {
         assertNotNull( dd );
         assertEquals( 3,
                       dd.getFixedList().length );
-        assertEquals( "TestJavaEnum1$TestEnum.ZERO=TestJavaEnum1$TestEnum.ZERO",
+        assertEquals( "TestEnum.ZERO=TestEnum.ZERO",
                       dd.getFixedList()[ 0 ] );
-        assertEquals( "TestJavaEnum1$TestEnum.ONE=TestJavaEnum1$TestEnum.ONE",
+        assertEquals( "TestEnum.ONE=TestEnum.ONE",
                       dd.getFixedList()[ 1 ] );
-        assertEquals( "TestJavaEnum1$TestEnum.TWO=TestJavaEnum1$TestEnum.TWO",
+        assertEquals( "TestEnum.TWO=TestEnum.TWO",
                       dd.getFixedList()[ 2 ] );
 
         final String[] ddValues = oracle.getEnumValues( TestJavaEnum1.class.getSimpleName(),
@@ -652,11 +652,11 @@ public class PackageDataModelOracleEnumTest {
         assertNotNull( ddValues );
         assertEquals( 3,
                       ddValues.length );
-        assertEquals( "TestJavaEnum1$TestEnum.ZERO=TestJavaEnum1$TestEnum.ZERO",
+        assertEquals( "TestEnum.ZERO=TestEnum.ZERO",
                       ddValues[ 0 ] );
-        assertEquals( "TestJavaEnum1$TestEnum.ONE=TestJavaEnum1$TestEnum.ONE",
+        assertEquals( "TestEnum.ONE=TestEnum.ONE",
                       ddValues[ 1 ] );
-        assertEquals( "TestJavaEnum1$TestEnum.TWO=TestJavaEnum1$TestEnum.TWO",
+        assertEquals( "TestEnum.TWO=TestEnum.TWO",
                       ddValues[ 2 ] );
     }
 

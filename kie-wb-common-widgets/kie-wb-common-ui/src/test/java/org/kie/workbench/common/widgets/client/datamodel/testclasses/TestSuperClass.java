@@ -21,4 +21,18 @@ public class TestSuperClass {
         return null;
     }
 
+    public static class NestedClass {
+
+        private String nestedField1;
+
+        public String getNestedField1() {
+            return nestedField1;
+        }
+
+        public void setNestedField1( final String nestedField1 ) {
+            this.nestedField1 = nestedField1;
+        }
+
+    }
+
 }

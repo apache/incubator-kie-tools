@@ -438,7 +438,8 @@ public class DataModelOracleUtilities {
 
     private static boolean isTypeUsed( final String fullyQualifiedClassName,
                                        final Set<String> usedFullyQualifiedClassNames ) {
-        return usedFullyQualifiedClassNames.contains( fullyQualifiedClassName );
+        return usedFullyQualifiedClassNames.contains( fullyQualifiedClassName.replaceAll( "\\$",
+                                                                                          "." ) );
     }
 
 }

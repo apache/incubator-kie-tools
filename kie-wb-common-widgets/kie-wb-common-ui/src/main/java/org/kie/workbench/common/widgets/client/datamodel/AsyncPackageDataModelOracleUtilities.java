@@ -318,8 +318,10 @@ public class AsyncPackageDataModelOracleUtilities {
         if ( dotIndex != -1 ) {
             typeName = typeName.substring( dotIndex + 1 );
         }
-        return typeName.replace( "$",
-                                 "." );
+        if ( typeName.contains( "$" ) ) {
+            typeName = typeName.substring( typeName.lastIndexOf( "$" ) + 1 );
+        }
+        return typeName;
     }
 
     private static String getQualifiedTypeFromEnumeration( final String qualifiedType ) {
@@ -442,7 +444,8 @@ public class AsyncPackageDataModelOracleUtilities {
 
     private static boolean isImported( final String qualifiedType,
                                        final Imports imports ) {
-        final Import item = new Import( qualifiedType );
+        final Import item = new Import( qualifiedType.replaceAll( "\\$",
+                                                                  "." ) );
         return imports.contains( item );
     }
 
