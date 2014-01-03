@@ -150,4 +150,11 @@ public class GitRepository implements Repository {
         result = 31 * result + ( roles != null ? roles.hashCode() : 0 );
         return result;
     }
+
+    @Override
+    public String toString() {
+      return "GitRepository [alias=" + alias + ", environment=" + environment + ", root=" + root + ", roles=" + roles
+              + ", publicURI=" + publicURI + "]";
+    }
+
 }

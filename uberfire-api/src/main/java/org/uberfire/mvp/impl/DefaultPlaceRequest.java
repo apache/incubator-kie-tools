@@ -138,4 +138,10 @@ public class DefaultPlaceRequest
         result = 31 * result + parameters.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+      return "DefaultPlaceRequest [identifier=" + identifier + ", parameters=" + parameters + "]";
+    }
+
 }

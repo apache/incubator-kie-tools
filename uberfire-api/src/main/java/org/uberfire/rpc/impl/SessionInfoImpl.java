@@ -1,9 +1,10 @@
 package org.uberfire.rpc.impl;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class SessionInfoImpl implements SessionInfo {
 
@@ -62,4 +63,10 @@ public class SessionInfoImpl implements SessionInfo {
         result = 31 * result + identity.getName().hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+      return "SessionInfoImpl [id=" + id + ", identity=" + identity + "]";
+    }
+
 }

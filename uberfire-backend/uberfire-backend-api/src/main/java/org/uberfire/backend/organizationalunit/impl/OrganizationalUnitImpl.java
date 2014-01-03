@@ -83,4 +83,11 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
         result = 31 * result + ( owner != null ? owner.hashCode() : 0 );
         return result;
     }
+
+    @Override
+    public String toString() {
+      return "OrganizationalUnitImpl [name=" + name + ", owner=" + owner + ", repositories=" + repositories
+              + ", roles=" + roles + "]";
+    }
+
 }

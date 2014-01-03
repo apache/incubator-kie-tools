@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,6 +14,9 @@
  * the License.
  */
 package org.uberfire.workbench.model.impl;
+
+import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
+import static org.uberfire.workbench.model.impl.PanelTypeHelper.getDefaultChildType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,13 +28,10 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.ContextDisplayMode;
-import org.uberfire.workbench.model.PanelType;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
-
-import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
-import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
+import org.uberfire.workbench.model.Position;
 
 /**
  * Default implementation of PanelDefinition
@@ -82,6 +82,7 @@ public class PanelDefinitionImpl
         this.defaultChildPanelType = defaultChildPanelType;
     }
 
+    @Override
     public void addPart( final PartDefinition part ) {
         part.setParentPanel( this );
         this.parts.add( part );
@@ -267,6 +268,12 @@ public class PanelDefinitionImpl
         if ( position == Position.ROOT || position == Position.SELF || position == Position.NONE ) {
             throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );
         }
+    }
+
+    @Override
+    public String toString() {
+      return "PanelDefinitionImpl [parts=" + parts + ", children=" + children + ", panelType=" + panelType
+              + ", contextDefinition=" + contextDefinition + ", contextDisplayMode=" + contextDisplayMode + "]";
     }
 
 }
