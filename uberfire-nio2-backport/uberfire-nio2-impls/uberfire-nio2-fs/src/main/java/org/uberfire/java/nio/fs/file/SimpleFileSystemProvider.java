@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.io.FileUtils;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
@@ -67,8 +66,8 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.uberfire.java.nio.file.StandardOpenOption.*;
 import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.java.nio.file.StandardOpenOption.*;
 
 public class SimpleFileSystemProvider implements FileSystemProvider {
 
@@ -134,11 +133,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         checkNotNull( "uri", uri );
         checkCondition( "uri scheme not supported", uri.getScheme().equals( getScheme() ) || uri.getScheme().equals( "default" ) );
 
-        try {
-            return getDefaultFileSystem().getPath( URIUtil.decode( uri.getPath() ) );
-        } catch ( final URIException e ) {
-            return null;
-        }
+        return getDefaultFileSystem().getPath( uri.getPath() );
     }
 
     @Override

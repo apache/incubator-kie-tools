@@ -607,11 +607,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             throw new FileSystemNotFoundException();
         }
 
-        try {
-            return JGitPathImpl.create( fileSystem, URIUtil.decode( extractPath( uri ) ), extractHost( uri ), false );
-        } catch ( final URIException e ) {
-            return null;
-        }
+        return JGitPathImpl.create( fileSystem, extractPath( uri ), extractHost( uri ), false );
     }
 
     @Override
@@ -1670,7 +1666,12 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
         final String host = extractHost( uri );
 
-        final String path = uri.toString().substring( getSchemeSize( uri ) + host.length() );
+        final String path;
+        try {
+            path = URIUtil.decode( uri.toString() ).substring( getSchemeSize( uri ) + host.length() );
+        } catch ( URIException e ) {
+            return null;
+        }
 
         if ( path.startsWith( "/:" ) ) {
             return path.substring( 2 );

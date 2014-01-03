@@ -72,12 +72,5 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!--URI Util-->
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-    </dependency>
-
   </dependencies>
 </project>

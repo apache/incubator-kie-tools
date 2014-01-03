@@ -38,10 +38,10 @@ public final class Paths {
         }
 
         if ( path.getFileName() == null ) {
-            return newPath( convert( path.getFileSystem() ), "/", path.toUri().toString() );
+            return newPath( convert( path.getFileSystem() ), "/", encodePath( path.toUri().toString() ) );
         }
 
-        return newPath( convert( path.getFileSystem() ), path.getFileName().toString(), path.toUri().toString() );
+        return newPath( convert( path.getFileSystem() ), path.getFileName().toString(), encodePath( path.toUri().toString() ) );
     }
 
     public static org.uberfire.java.nio.file.Path convert( final Path path ) {
@@ -49,14 +49,22 @@ public final class Paths {
             return null;
         }
 
+        return org.uberfire.java.nio.file.Paths.get( URI.create( decodePath( path.toURI() ) ) );
+    }
+
+    private static String encodePath( final String uriPath ) {
         try {
-            return org.uberfire.java.nio.file.Paths.get( URI.create( path.toURI() ) );
-        } catch ( IllegalArgumentException e ) {
-            try {
-                return org.uberfire.java.nio.file.Paths.get( URI.create( URIUtil.encodePath( path.toURI() ) ) );
-            } catch ( URIException ex ) {
-                return null;
-            }
+            return URIUtil.encodePath( uriPath );
+        } catch ( final URIException e ) {
+            return null;
+        }
+    }
+
+    private static String decodePath( final String uriPath ) {
+        try {
+            return URIUtil.decode( uriPath );
+        } catch ( final URIException e ) {
+            return null;
         }
     }
 

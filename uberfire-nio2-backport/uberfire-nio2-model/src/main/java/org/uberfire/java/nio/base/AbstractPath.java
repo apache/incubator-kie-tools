@@ -18,7 +18,6 @@ package org.uberfire.java.nio.base;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -26,6 +25,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.IOException;
@@ -39,8 +40,8 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.AttributeView;
 
 import static org.uberfire.commons.data.Pair.*;
-import static org.uberfire.java.nio.file.WatchEvent.*;
 import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.java.nio.file.WatchEvent.*;
 
 public abstract class AbstractPath<FS extends FileSystem>
         implements Path,
@@ -238,24 +239,24 @@ public abstract class AbstractPath<FS extends FileSystem>
             return toAbsolutePath().toUri();
         }
         if ( fs.provider().isDefault() && !isRealPath ) {
-            try {
-                return new URI( "default", host, toURIString(), null );
-            } catch ( URISyntaxException e ) {
-                return null;
-            }
+            return URI.create( "default://" + host + toURIString() );
         }
-        try {
-            return new URI( fs.provider().getScheme(), host, toURIString(), null );
-        } catch ( URISyntaxException e ) {
-            return null;
-        }
+        return URI.create( fs.provider().getScheme() + "://" + host + toURIString() );
     }
 
     private String toURIString() {
         if ( usesWindowsFormat ) {
-            return "/" + toString().replace( "\\", "/" );
+            return encodePath( "/" + toString().replace( "\\", "/" ) );
         }
-        return new String( path );
+        return encodePath( new String( path ) );
+    }
+
+    private String encodePath( final String s ) {
+        try {
+            return URIUtil.encodePath( s );
+        } catch ( final URIException e ) {
+        }
+        return null;
     }
 
     @Override
