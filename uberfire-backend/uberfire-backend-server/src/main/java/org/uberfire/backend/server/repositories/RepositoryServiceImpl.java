@@ -1,6 +1,5 @@
 package org.uberfire.backend.server.repositories;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,16 +30,13 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.rpc.SessionInfo;
 
 import static org.uberfire.backend.server.config.ConfigType.*;
 import static org.uberfire.backend.server.repositories.EnvironmentParameters.*;
 import static org.uberfire.backend.server.util.Paths.*;
-import static org.uberfire.java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
 @ApplicationScoped
@@ -151,7 +147,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                                         final String alias,
                                         final Map<String, Object> env ) {
 
-        if ( configuredRepositories.containsKey( alias ) ) {
+        if ( configuredRepositories.containsKey( alias ) || SystemRepository.SYSTEM_REPO.getAlias().equals( alias ) ) {
             throw new RepositoryAlreadyExistsException( alias );
         }
         final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup( REPOSITORY, alias, "" );
