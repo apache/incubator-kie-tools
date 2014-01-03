@@ -82,6 +82,42 @@ UberFire.] so they permeate all parts of the UberFire framework:
 * File Navigators
 * Identity
 * Marshalling
+* Workbench Events (TODO: why are these defined globally rather than in the uberfire-workbench module?)
+**ApplicationReadyEvent
+**BeforeClosePlaceEvent
+**ClosePlaceEvent
+**ContextUpdateEvent
+**DropPlaceEvent
+**MaximizePlaceEvent
+**MinimizePlaceEvent
+**NewPerspectiveEvent
+**NewWorkbenchScreenEvent
+**NotificationEvent
+**OrganizationalUnitChangeEvent
+**PanelFocusEvent
+**PathChangeEvent
+**PerspectiveChange
+**PlaceGainFocusEvent
+**PlaceLostFocusEvent
+**RepositoryChangeEvent
+**ResourceAdded
+**ResourceAddedEvent
+**ResourceBatchChangesEvent
+**ResourceChange
+**ResourceChangeType
+**ResourceCopied
+**ResourceCopiedEvent
+**ResourceDeleted
+**ResourceDeletedEvent
+**ResourceEvent
+**ResourceOpenedEvent
+**ResourceRenamed
+**ResourceRenamedEvent
+**ResourceUpdated
+**ResourceUpdatedEvent
+**RestorePlaceEvent
+**SavePlaceEvent
+**SelectPlaceEvent
 
 
 UberFire Backend API Concepts
