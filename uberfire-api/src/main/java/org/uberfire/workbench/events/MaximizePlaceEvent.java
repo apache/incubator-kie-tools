@@ -20,7 +20,7 @@ import org.uberfire.mvp.PlaceRequest;
 /**
  * An event when a PlaceRequest is maximized
  */
-public class MaximizePlaceEvent {
+public class MaximizePlaceEvent extends UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -30,6 +30,11 @@ public class MaximizePlaceEvent {
 
     public PlaceRequest getPlace() {
         return place;
+    }
+
+    @Override
+    public String toString() {
+      return "MaximizePlaceEvent [place=" + place + "]";
     }
 
 }

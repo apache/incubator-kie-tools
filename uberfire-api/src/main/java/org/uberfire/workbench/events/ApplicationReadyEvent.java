@@ -1,5 +1,5 @@
 package org.uberfire.workbench.events;
 
-public class ApplicationReadyEvent {
+public class ApplicationReadyEvent extends UberFireEvent {
 
 }

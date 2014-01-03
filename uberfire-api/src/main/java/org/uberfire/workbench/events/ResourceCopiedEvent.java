@@ -1,10 +1,10 @@
 package org.uberfire.workbench.events;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been copied
@@ -34,5 +34,10 @@ public class ResourceCopiedEvent extends ResourceCopied implements ResourceEvent
     @Override
     public Path getPath() {
         return this.sourcePath;
+    }
+
+    @Override
+    public String toString() {
+      return "ResourceCopiedEvent [sourcePath=" + sourcePath + ", sessionInfo=" + sessionInfo + "]";
     }
 }

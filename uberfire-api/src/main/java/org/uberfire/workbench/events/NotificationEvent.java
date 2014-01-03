@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -18,7 +18,7 @@ package org.uberfire.workbench.events;
 /**
  * An event to show a notification pop-up in the Workbench
  */
-public class NotificationEvent {
+public class NotificationEvent extends UberFireEvent {
 
     public static enum NotificationType {
         DEFAULT, ERROR, SUCCESS, INFO, WARNING;
@@ -44,6 +44,11 @@ public class NotificationEvent {
 
     public NotificationType getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+      return "NotificationEvent [notification=" + notification + ", type=" + type + "]";
     }
 
 }

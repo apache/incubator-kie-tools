@@ -9,7 +9,7 @@ import org.uberfire.workbench.model.menu.Menus;
  * Time: 11:44 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PerspectiveChange {
+public class PerspectiveChange extends UberFireEvent {
 
     private final PerspectiveDefinition perspectiveDefinition;
     private final Menus menus;
@@ -34,4 +34,11 @@ public class PerspectiveChange {
     public String getIdentifier() {
         return identifier;
     }
+
+    @Override
+    public String toString() {
+      return "PerspectiveChange [perspectiveDefinition=" + perspectiveDefinition + ", menus=" + menus + ", identifier="
+              + identifier + "]";
+    }
+
 }

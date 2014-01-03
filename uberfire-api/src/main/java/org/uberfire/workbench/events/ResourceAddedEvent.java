@@ -1,10 +1,10 @@
 package org.uberfire.workbench.events;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been added
@@ -32,6 +32,11 @@ public class ResourceAddedEvent extends ResourceAdded implements ResourceEvent {
 
     public SessionInfo getSessionInfo() {
         return sessionInfo;
+    }
+
+    @Override
+    public String toString() {
+      return "ResourceAddedEvent [path=" + path + ", sessionInfo=" + sessionInfo + "]";
     }
 
 }

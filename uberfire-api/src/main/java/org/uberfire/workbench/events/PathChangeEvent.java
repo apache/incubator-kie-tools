@@ -20,7 +20,7 @@ import org.uberfire.backend.vfs.Path;
 /**
  * An event raised when the Path in File Explorer (or any equivalent widget) changes
  */
-public class PathChangeEvent {
+public class PathChangeEvent extends UberFireEvent {
 
     private final Path path;
 
@@ -30,6 +30,11 @@ public class PathChangeEvent {
 
     public Path getPath() {
         return path;
+    }
+
+    @Override
+    public String toString() {
+      return "PathChangeEvent [path=" + path + "]";
     }
 
 }

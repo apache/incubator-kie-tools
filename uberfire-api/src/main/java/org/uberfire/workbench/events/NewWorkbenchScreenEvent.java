@@ -6,7 +6,7 @@ package org.uberfire.workbench.events;
  * Time: 5:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class NewWorkbenchScreenEvent {
+public class NewWorkbenchScreenEvent extends UberFireEvent {
 
     private final String screenName;
 
@@ -16,5 +16,10 @@ public class NewWorkbenchScreenEvent {
 
     public String getScreenName() {
         return screenName;
+    }
+
+    @Override
+    public String toString() {
+      return "NewWorkbenchScreenEvent [screenName=" + screenName + "]";
     }
 }

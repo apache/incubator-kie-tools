@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.uberfire.workbench.model.PanelDefinition;
 
-public class ContextUpdateEvent {
+public class ContextUpdateEvent extends UberFireEvent {
 
     private final PanelDefinition panel;
     private final Map<String, Object> contextData = new HashMap<String, Object>();
@@ -22,5 +22,10 @@ public class ContextUpdateEvent {
 
     public PanelDefinition getPanel() {
         return panel;
+    }
+
+    @Override
+    public String toString() {
+      return "ContextUpdateEvent [panel=" + panel + ", contextData=" + contextData + "]";
     }
 }

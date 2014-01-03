@@ -20,7 +20,7 @@ import org.uberfire.mvp.PlaceRequest;
 /**
  * An event when a WorkbenchPart needs to be saved
  */
-public class SavePlaceEvent {
+public class SavePlaceEvent extends UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -30,6 +30,11 @@ public class SavePlaceEvent {
 
     public PlaceRequest getPlace() {
         return place;
+    }
+
+    @Override
+    public String toString() {
+      return "SavePlaceEvent [place=" + place + "]";
     }
 
 }

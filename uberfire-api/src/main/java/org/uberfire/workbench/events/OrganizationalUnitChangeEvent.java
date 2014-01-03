@@ -20,7 +20,7 @@ import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 /**
  * An event raised when the OrganizationalUnit in File Explorer (or any equivalent widget) changes
  */
-public class OrganizationalUnitChangeEvent {
+public class OrganizationalUnitChangeEvent extends UberFireEvent {
 
     private final OrganizationalUnit organizationalUnit;
 
@@ -34,6 +34,11 @@ public class OrganizationalUnitChangeEvent {
 
     public OrganizationalUnit getOrganizationalUnit() {
         return organizationalUnit;
+    }
+
+    @Override
+    public String toString() {
+      return "OrganizationalUnitChangeEvent [organizationalUnit=" + organizationalUnit + "]";
     }
 
 }

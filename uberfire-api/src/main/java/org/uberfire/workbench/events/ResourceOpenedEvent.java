@@ -1,16 +1,16 @@
 package org.uberfire.workbench.events;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been opened
  */
 @Portable
-public class ResourceOpenedEvent {
+public class ResourceOpenedEvent extends UberFireEvent {
 
     private Path path;
     private SessionInfo sessionInfo;
@@ -32,4 +32,10 @@ public class ResourceOpenedEvent {
     public SessionInfo getSessionInfo() {
         return sessionInfo;
     }
+
+    @Override
+    public String toString() {
+      return "ResourceOpenedEvent [path=" + path + ", sessionInfo=" + sessionInfo + "]";
+    }
+
 }

@@ -6,7 +6,7 @@ package org.uberfire.workbench.events;
  * Time: 5:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class NewPerspectiveEvent {
+public class NewPerspectiveEvent extends UberFireEvent {
 
     private final String perspectiveName;
 
@@ -17,4 +17,10 @@ public class NewPerspectiveEvent {
     public String getPerspectiveName() {
         return perspectiveName;
     }
+
+    @Override
+    public String toString() {
+      return "NewPerspectiveEvent [perspectiveName=" + perspectiveName + "]";
+    }
+
 }

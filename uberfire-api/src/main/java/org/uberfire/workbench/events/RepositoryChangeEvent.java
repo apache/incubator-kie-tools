@@ -20,7 +20,7 @@ import org.uberfire.backend.repositories.Repository;
 /**
  * An event raised when the Repository in File Explorer (or any equivalent widget) changes
  */
-public class RepositoryChangeEvent {
+public class RepositoryChangeEvent extends UberFireEvent {
 
     private final Repository repository;
 
@@ -34,6 +34,11 @@ public class RepositoryChangeEvent {
 
     public Repository getRepository() {
         return repository;
+    }
+
+    @Override
+    public String toString() {
+      return "RepositoryChangeEvent [repository=" + repository + "]";
     }
 
 }
