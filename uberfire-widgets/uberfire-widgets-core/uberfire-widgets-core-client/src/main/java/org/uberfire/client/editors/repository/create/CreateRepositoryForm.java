@@ -43,6 +43,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -94,10 +95,10 @@ public class CreateRepositoryForm
     HelpInline nameHelpInline;
 
     @UiField
-    Modal popup;
+    InlineHTML isOUMandatory;
 
     @UiField
-    ControlLabel ouLabel;
+    Modal popup;
 
     private Map<String, OrganizationalUnit> availableOrganizationalUnits = new HashMap<String, OrganizationalUnit>();
     private boolean mandatoryOU = true;
@@ -107,6 +108,11 @@ public class CreateRepositoryForm
         mandatoryOU = UberFirePreferences.getProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable" ) == null;
 
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        if ( !mandatoryOU ) {
+            isOUMandatory.removeFromParent();
+        }
+
         popup.setDynamicSafe( true );
         nameTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
@@ -115,14 +121,12 @@ public class CreateRepositoryForm
                 nameHelpInline.setText( "" );
             }
         } );
-        ouLabel.getElement().setInnerText( "Organizational Unit" );
         //populate Organizational Units list box
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
                                             @Override
                                             public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
                                                 organizationalUnitDropdown.addItem( "--- Select ---" );
                                                 if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
-                                                    ouLabel.getElement().setInnerHTML( "<font color=\"red\">*</font> Organizational Unit" );
                                                     for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
                                                         organizationalUnitDropdown.addItem( organizationalUnit.getName(),
                                                                                             organizationalUnit.getName() );
@@ -170,7 +174,9 @@ public class CreateRepositoryForm
                 @Override
                 public void callback( String normalizedName ) {
                     if ( !nameTextBox.getText().equals( normalizedName ) ) {
-                        if ( !Window.confirm( "Repository Name contained illegal characters and will be generated as \"" + normalizedName + "\". Do you agree?" ) ) return;
+                        if ( !Window.confirm( "Repository Name contained illegal characters and will be generated as \"" + normalizedName + "\". Do you agree?" ) ) {
+                            return;
+                        }
                         nameTextBox.setText( normalizedName );
                     }
 
@@ -185,25 +191,25 @@ public class CreateRepositoryForm
                                                     hide();
                                                 }
                                             },
-                            new ErrorCallback<Message>() {
-                                @Override
-                                public boolean error( final Message message,
-                                                      final Throwable throwable ) {
-                                    try {
-                                        throw throwable;
-                                    } catch ( RepositoryAlreadyExistsException ex ) {
-                                        ErrorPopup.showMessage( "Repository already exists." );
-                                    } catch ( Throwable ex ) {
-                                        ErrorPopup.showMessage( "Can't create repository. \n" + throwable.getMessage() );
-                                    }
+                                            new ErrorCallback<Message>() {
+                                                @Override
+                                                public boolean error( final Message message,
+                                                                      final Throwable throwable ) {
+                                                    try {
+                                                        throw throwable;
+                                                    } catch ( RepositoryAlreadyExistsException ex ) {
+                                                        ErrorPopup.showMessage( "Repository already exists." );
+                                                    } catch ( Throwable ex ) {
+                                                        ErrorPopup.showMessage( "Can't create repository. \n" + throwable.getMessage() );
+                                                    }
 
-                                    return true;
-                                }
-                            }
-                    ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
+                                                    return true;
+                                                }
+                                            }
+                                          ).createRepository( availableOrganizationalUnits.get( organizationalUnit ), scheme, alias, env );
 
                 }
-            }).normalizeRepositoryName( nameTextBox.getText() );
+            } ).normalizeRepositoryName( nameTextBox.getText() );
         }
     }
 

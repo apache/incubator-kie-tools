@@ -19,6 +19,12 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
+  <ui:style>
+    .mandatory-field {
+      color: #FF0000 !important;
+    }
+  </ui:style>
+
   <g:HTMLPanel>
     <b:Modal ui:field="popup" title="Clone Repository" backdrop="STATIC" keyboard="true" animation="true">
       <b:Well>
@@ -29,29 +35,32 @@
           </b:Legend>
           <b:ControlGroup ui:field="nameGroup">
             <b:ControlLabel for="name">
-              <font color="red">*</font>
+              <span class="{style.mandatory-field}">*</span>
               Repository Name
             </b:ControlLabel>
             <b:Controls>
               <b:TextBox b:id="name" ui:field="nameTextBox" placeholder="repository name..."/>
-              <b:HelpInline ui:field="nameHelpInline" />
+              <b:HelpInline ui:field="nameHelpInline"/>
             </b:Controls>
           </b:ControlGroup>
           <b:ControlGroup ui:field="organizationalUnitGroup">
-            <b:ControlLabel for="ou" ui:field="ouLabel"/>
+            <b:ControlLabel for="ou">
+              <g:InlineHTML ui:field="isOUMandatory" addStyleNames="{style.mandatory-field}">*</g:InlineHTML>
+              Organizational Unit
+            </b:ControlLabel>
             <b:Controls>
-              <b:ListBox b:id="ou" ui:field="organizationalUnitDropdown" />
-              <b:HelpInline ui:field="organizationalUnitHelpInline" />
+              <b:ListBox b:id="ou" ui:field="organizationalUnitDropdown"/>
+              <b:HelpInline ui:field="organizationalUnitHelpInline"/>
             </b:Controls>
           </b:ControlGroup>
           <b:ControlGroup ui:field="urlGroup">
             <b:ControlLabel for="url">
-              <font color="red">*</font>
+              <span class="{style.mandatory-field}">*</span>
               Git URL
             </b:ControlLabel>
             <b:Controls>
               <b:TextBox b:id="url" ui:field="gitURLTextBox" placeholder="git url..."/>
-              <b:HelpInline ui:field="urlHelpInline" />
+              <b:HelpInline ui:field="urlHelpInline"/>
             </b:Controls>
           </b:ControlGroup>
           <b:ControlGroup>
