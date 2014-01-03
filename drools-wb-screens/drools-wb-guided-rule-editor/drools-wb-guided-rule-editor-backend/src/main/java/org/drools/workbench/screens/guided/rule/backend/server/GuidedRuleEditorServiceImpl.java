@@ -117,10 +117,10 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         try {
             final Package pkg = projectService.resolvePackage( context );
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            model.setPackageName(packageName);
+            model.setPackageName( packageName );
 
             // Temporal fix for https://bugzilla.redhat.com/show_bug.cgi?id=998922
-            model.getImports().addImport(new Import("java.lang.Number"));
+            model.getImports().addImport( new Import( "java.lang.Number" ) );
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
             final Path newPath = Paths.convert( nioPath );
@@ -285,8 +285,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public List<ValidationMessage> validate( final Path path,
                                              final RuleModel content ) {
         try {
-            final String source = toSource( path,
-                                            content );
+            final String source = RuleModelDRLPersistenceImpl.getInstance().marshal( content );
             return genericValidator.validate( path,
                                               new ByteArrayInputStream( source.getBytes() ),
                                               FILTER_JAVA,
