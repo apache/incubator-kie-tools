@@ -109,6 +109,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
             final Path newPath = Paths.convert( nioPath );
 
+            ioService.createFile( nioPath );
             ioService.write( nioPath,
                              drl,
                              makeCommentedOption( comment ) );
