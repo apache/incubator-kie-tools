@@ -16,12 +16,13 @@
 package org.uberfire.client.workbench.widgets.toolbar;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
@@ -30,6 +31,10 @@ import org.uberfire.workbench.events.ClosePlaceEvent;
 import org.uberfire.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.workbench.model.toolbar.ToolBar;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Presenter for WorkbenchToolBar that mediates changes to the Workbench ToolBar
@@ -55,8 +60,6 @@ public class WorkbenchToolBarPresenter {
         void show();
     }
 
-    private PlaceRequest activePlace;
-
     @Inject
     private View view;
 
@@ -70,7 +73,7 @@ public class WorkbenchToolBarPresenter {
     private List<ToolBar> workbenchPerspectiveItems = new ArrayList<ToolBar>();
 
     //Transient items relating to the current WorkbenchPart context
-    private List<ToolBar> workbenchContextItems = new ArrayList<ToolBar>();
+    private Multimap<PlaceRequest, ToolBar> workbenchContextItems = ArrayListMultimap.create();
 
     public IsWidget getView() {
         return this.view;
@@ -88,23 +91,33 @@ public class WorkbenchToolBarPresenter {
         this.view.show();
     }
 
-    //Handle removing the WorkbenchPart Tool Bar items
-    void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
-        if ( event.getPlace().equals( activePlace ) ) {
-            clearWorkbenchContextItems();
+    /**
+     * Removes all the ToolBar items that were previously added for the given place, if any.
+     */
+    private void removeItemsFor(final PlaceRequest place) {
+    	Collection<ToolBar> removed = workbenchContextItems.removeAll(place);
+        for (final ToolBar toolBar : removed) {
+            view.removeToolBar(toolBar);
         }
     }
-
-    //Handle removing the WorkbenchPart Tool Bar items
-    void onWorkbenchPartLostFocus( @Observes PlaceLostFocusEvent event ) {
-        if ( event.getPlace().equals( activePlace ) ) {
-            clearWorkbenchContextItems();
-        }
-    }
-
-    //Handle setting up the Tool Bar for the specific WorkbenchPart selected
-    void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
-        final Activity activity = placeManager.getActivity( event.getPlace() );
+    
+    /**
+	 * Adds all the ToolBar items associated with the given place to this
+	 * toolbar. The exact list of items added is remembered, and can be removed
+	 * later by a call to {@link #removeItemsFor(PlaceRequest)}.
+	 * <p>
+	 * The toolbar items are filtered for the current user subject to their
+	 * security requirements.
+	 * <p>
+	 * This method becomes a no-op when any of the following is true:
+	 * <ul>
+	 *  <li>The place doesn't have an associated {@link Activity}
+	 *  <li>The place's Activity is not a {@link WorkbenchActivity}
+	 *  <li>The place's WorkbenchActivity doesn't have a {@link ToolBar}
+	 * </ul>
+	 */
+    public void addItemsFor(final PlaceRequest place) {
+        final Activity activity = placeManager.getActivity(place);
         if ( activity == null ) {
             return;
         }
@@ -113,18 +126,34 @@ public class WorkbenchToolBarPresenter {
         }
         final WorkbenchActivity wbActivity = (WorkbenchActivity) activity;
 
-        if ( !event.getPlace().equals( activePlace ) ) {
-            clearWorkbenchContextItems();
+        final ToolBar toolBar = wbActivity.getToolBar();
+        if ( toolBar == null ) {
+            return;
+        }
+        
+        final ToolBar filteredToolBar = filterToolBarItemsByPermission(toolBar);
 
-            //Add items for current WorkbenchPart
-            activePlace = event.getPlace();
+        if ( !filteredToolBar.getItems().isEmpty() ) {
+            workbenchContextItems.put(place, filteredToolBar);
+            view.addToolBar( filteredToolBar );
+        }
+    }
+    
+    /**
+	 * Removes the toolbar items of a WorkbenchPart when that part is closed.
+	 */
+    void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
+    	removeItemsFor(event.getPlace());
+    }
 
-            final ToolBar toolBar = wbActivity.getToolBar();
-            if ( toolBar == null ) {
-                return;
-            }
-
-            addWorkbenchContextItem( toolBar );
+    /**
+	 * Adds the toolbar items of a WorkbenchPart when that part is created.
+	 * <p>
+	 * TODO(UF-6): change this to observe PlaceOpenedEvent when such an event exists.
+	 */
+    void onWorkbenchPartOnFocus( @Observes PlaceGainFocusEvent event ) {
+        if ( !workbenchContextItems.containsKey(event.getPlace()) ) {
+            addItemsFor(event.getPlace());
         }
     }
 
@@ -143,15 +172,6 @@ public class WorkbenchToolBarPresenter {
 
         if ( !filteredToolBar.getItems().isEmpty() ) {
             workbenchPerspectiveItems.add( filteredToolBar );
-            view.addToolBar( filteredToolBar );
-        }
-    }
-
-    public void addWorkbenchContextItem( final ToolBar toolBar ) {
-        final ToolBar filteredToolBar = filterToolBarItemsByPermission( toolBar );
-
-        if ( !filteredToolBar.getItems().isEmpty() ) {
-            workbenchContextItems.add( filteredToolBar );
             view.addToolBar( filteredToolBar );
         }
     }
@@ -179,16 +199,4 @@ public class WorkbenchToolBarPresenter {
         }
         workbenchPerspectiveItems.clear();
     }
-
-    private void clearWorkbenchContextItems() {
-        activePlace = null;
-        if ( workbenchContextItems.isEmpty() ) {
-            return;
-        }
-        for ( final ToolBar toolBar : workbenchContextItems ) {
-            view.removeToolBar( toolBar );
-        }
-        workbenchContextItems.clear();
-    }
-
 }
