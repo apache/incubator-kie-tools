@@ -161,6 +161,12 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.jboss.errai</groupId>
           <artifactId>jacoco-gwt-maven-plugin</artifactId>
           <version>0.5.4.201202141554</version>
@@ -284,11 +290,11 @@
           <version>1.2.1</version>
         </plugin>
 
-        <!--Site -->
+        <!-- Site plugin >= 3.3 required for compat with Maven 3.1.x -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.1</version>
+          <version>3.3</version>
         </plugin>
 
         <plugin>
@@ -509,9 +515,34 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.uberfire.build</groupId>
+            <artifactId>uberfire-build-config</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
     </plugins>
 
   </build>
+  
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>org/uberfire/build/uberfire_checks.xml</configLocation>
+          <headerLocation>org/uberfire/build/uberfire_license_header.txt</headerLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
   <profiles>
     <profile>
@@ -555,6 +586,7 @@
   </profiles>
 
   <modules>
+    <module>uberfire-build-config</module>
     <module>uberfire-bom</module>
     <module>uberfire-parent-with-dependencies</module>
     <module>uberfire-commons</module>
