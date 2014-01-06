@@ -11,12 +11,6 @@ import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-/**
- * Created with IntelliJ IDEA.
- * Date: 10/3/13
- * Time: 10:16 PM
- * To change this template use File | Settings | File Templates.
- */
 public class ContextDropdownButton extends DropdownButton {
 
     private Button trigger;

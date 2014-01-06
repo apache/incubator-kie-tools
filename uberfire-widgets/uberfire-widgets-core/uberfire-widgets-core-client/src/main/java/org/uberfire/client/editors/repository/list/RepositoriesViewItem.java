@@ -25,12 +25,6 @@ import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.ParameterizedCommand;
 
-/**
- * Created with IntelliJ IDEA.
- * Date: 24/09/13
- * Time: 18:19
- * To change this template use File | Settings | File Templates.
- */
 public class RepositoriesViewItem extends Composite {
 
     interface RepositoriesViewItemBinder

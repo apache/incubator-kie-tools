@@ -1,11 +1,5 @@
 package org.uberfire.client.advnavigator;
 
-/**
- * Created with IntelliJ IDEA.
- * Date: 7/12/13
- * Time: 3:57 PM
- * To change this template use File | Settings | File Templates.
- */
 public interface NavigatorOptions {
 
     public static final NavigatorOptions DEFAULT = new NavigatorOptions() {

@@ -3,12 +3,6 @@ package org.uberfire.workbench.events;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 
-/**
- * Created with IntelliJ IDEA.
- * Date: 7/12/13
- * Time: 11:44 AM
- * To change this template use File | Settings | File Templates.
- */
 public class PerspectiveChange extends UberFireEvent {
 
     private final PerspectiveDefinition perspectiveDefinition;
