@@ -347,9 +347,6 @@ public class ProjectScreenPresenter
                 if ( building ) {
                     view.showABuildIsAlreadyRunning();
                 } else {
-
-                    building = true;
-
                     YesNoCancelPopup yesNoCancelPopup = createYesNoCancelPopup();
                     yesNoCancelPopup.setCloseVisible( false );
                     yesNoCancelPopup.show();
@@ -383,7 +380,6 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                ;
             }
         };
     }
@@ -416,7 +412,7 @@ public class ProjectScreenPresenter
     }
 
     private void build() {
-
+        building = true;
         buildServiceCaller.call( getBuildSuccessCallback(),
                                  new BuildFailureErrorCallback( view ) ).buildAndDeploy( project );
     }
