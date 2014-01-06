@@ -1457,11 +1457,11 @@ Menu Bar, and an optional Tool Bar. Perspectives split up the screen
 into multiple resizeable regions, and end users can drag and drop
 Panels between these regions to customize their workspace.
 
-To create your first screen, create the file
-`src/main/java/com/mycompany/uftutorial/client/HelloWorldScreen.java`:
+Start by creating this new source file:
 
+.Create src/main/java/com/mycompany/uftutorial/client/HelloWorldScreen.java
 [source,java]
----------
+------
 package com.mycompany.uftutorial.client;
 
 import javax.enterprise.context.Dependent;
@@ -1477,7 +1477,9 @@ import com.google.gwt.user.client.ui.Label;
 @WorkbenchScreen(identifier = "com.mycompany.uftutorial.client.HelloWorldScreen")
 public class HelloWorldScreen {
 
-  private Label label = new Label("Hello UberFire!");
+  private static final String ORIGINAL_TEXT = "Hello UberFire!";
+
+  private Label label = new Label(ORIGINAL_TEXT);
 
   @WorkbenchPartTitle
   public String getTitle() {
@@ -1489,7 +1491,7 @@ public class HelloWorldScreen {
     return label;
   }
 }
----------
+------
 
 The class itself is quite simple: one private field and two public
 methods. But we're seeing a bunch of annotations for the first
@@ -2044,5 +2046,110 @@ Or grab link:https://github.com/uberfire/uberfire-tutorial/archive/checkpoint-3.
 ======
 
 == Add a toolbar
+
+[WARNING]
+.Toolbars don't work in 0.4
+======
+There was a bug in UberFire 0.4 which made it impossible to add
+items to a toolbar. This bug has been eliminated in the latest
+0.4.0-SNAPSHOT releases and all 0.5 versions.
+======
+
+Toolbars typically also go near the top of the screen, so let's define
+another `Header` component to house our toolbar.
+
+.Create src/main/java/com/mycompany/uftutorial/client/AppToolBar.java
+[source,java]
+------
+package com.mycompany.uftutorial.client;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.uberfire.client.workbench.Header;
+import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
+
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
+
+@ApplicationScoped
+public class AppToolBar extends Composite implements Header {
+
+  @Inject
+  private WorkbenchToolBarPresenter toolBarPresenter;
+
+  @Override
+  public Widget asWidget() {
+    return toolBarPresenter.getView().asWidget();
+  }
+
+  @Override
+  public int getOrder() {
+    return 0;
+  }
+
+}
+------
+
+This time we're returning an order index of 0, which will put the
+toolbar at the bottom of the pile of headers (beneath the menu bar we
+created earlier).
+
+The view component we return for this header comes from the
+`WorkbenchToolBarPresenter`, which automatically adjusts its contents
+so it contains all the toolbar actions available for currently-open
+places in the app.
+
+.Add to src/main/java/com/mycompany/uftutorial/client/HelloWorldScreen.java
+[source,java]
+------
+  @WorkbenchToolBar
+  public ToolBar getToolBar() {
+    ToolBar tb = new DefaultToolBar("hello-world-toolbar");
+    tb.addItem(new DefaultToolBarItem(IconType.ASTERISK, "Reset Hello Screen", new Command() {
+      @Override
+      public void execute() {
+        label.setText(ORIGINAL_TEXT);
+      }
+    }));
+    return tb;
+  }
+------
+
+=== See it work!
+
+Time to refresh the browser again. If you left Dev Mode running, just
+go to your browser and hit the refresh button!
+
+This time, you should see a toolbar sandwiched between the menu bar
+and the rest of the page's content. The toolbar should contain one
+button with an asterix icon on it. Every time you press the button,
+the panel titled ``Greetings'' (the `HelloWorldScreen`) should reset
+back to its initial message.
+
+Notice also that if if you close the `HelloWorldScreen` that its
+associated button disappears from the toolbar. Try it: press the close
+(``X'') button in the ``Greetings'' titlebar, and the toolbar should
+become empty. Now use the ``Screens'' menu to bring ``Hello Screen''
+back, and its toolbar icon will rematerialize. Easy!
+
+[TIP]
+.Not Working?
+======
+At this point, your project should be more-or-less identical to the
+Tutorial project at the
+link:https://github.com/uberfire/uberfire-tutorial/tree/checkpoint-4[checkpoint-4
+tag]. If your project isn't working at this point, grab that one and
+compare yours with it.
+
+......
+$ git clone https://github.com/uberfire/uberfire-tutorial.git
+$ cd uberfire-tutorial
+$ git checkout checkpoint-4
+......
+
+Or grab
+link:https://github.com/uberfire/uberfire-tutorial/archive/checkpoint-4.zip[a zipfile of the sources].
+======
 
 == Define a second perspective
