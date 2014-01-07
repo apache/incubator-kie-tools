@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import java.util.List;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
@@ -56,6 +57,7 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.workbench.events.NotificationEvent;
 
+@Dependent
 public class ScenarioEditorViewImpl
         implements ScenarioEditorView,
                    ScenarioParentWidget {
@@ -116,7 +118,8 @@ public class ScenarioEditorViewImpl
         addBulkRunTestScenarioPanel( path,
                                      isReadOnly );
 
-        setScenario( scenario,
+        setScenario( path,
+                     scenario,
                      oracle,
                      ruleNameService );
 
@@ -328,10 +331,12 @@ public class ScenarioEditorViewImpl
         } );
     }
 
-    private void setScenario( final Scenario scenario,
+    private void setScenario( final Path path,
+                              final Scenario scenario,
                               final AsyncPackageDataModelOracle oracle,
                               final Caller<RuleNamesService> ruleNameService ) {
         scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( this,
+                                                                             path,
                                                                              oracle,
                                                                              ruleNameService );
         scenarioWidgetComponentCreator.setScenario( scenario );

@@ -66,7 +66,7 @@ public class GuidedRuleEditorViewImpl
             public void callback( Collection<String> ruleNames ) {
                 modeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNamesForPackage( model.getPackageName() );
+        } ).getRuleNamesForPackage( path, model.getPackageName() );
     }
 
     @Override

@@ -228,7 +228,7 @@ public class GuidedDecisionTableWidget extends Composite
             public void callback( List<String> ruleNames ) {
                 ruleSelector.setRuleNames( ruleNames );
             }
-        } ).getRuleNames();
+        } ).getRuleNames( path );
 
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
@@ -1318,7 +1318,7 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( label );
 
             final MetadataCol52 at = atc;
-            final CheckBox hide = new CheckBox( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString() );
+            final CheckBox hide = new CheckBox( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString() );
             hide.setStyleName( "form-field" );
             hide.setValue( atc.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
@@ -1397,10 +1397,10 @@ public class GuidedDecisionTableWidget extends Composite
                 hp.add( new SmallLabel( ")" ) );
             }
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( new SmallLabel( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.DefaultValue()).append(GuidedDecisionTableConstants.COLON).toString() ) );
+            hp.add( new SmallLabel( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DefaultValue() ).append( GuidedDecisionTableConstants.COLON ).toString() ) );
             hp.add( defaultValue );
 
-            final CheckBox hide = new CheckBox( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString() );
+            final CheckBox hide = new CheckBox( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString() );
             hide.setStyleName( "form-field" );
             hide.setValue( at.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {

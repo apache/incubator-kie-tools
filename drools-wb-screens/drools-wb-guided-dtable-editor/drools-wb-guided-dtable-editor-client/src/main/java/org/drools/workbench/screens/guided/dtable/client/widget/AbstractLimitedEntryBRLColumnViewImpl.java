@@ -127,7 +127,7 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
             public void callback( Collection<String> ruleNames ) {
                 ruleModeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNamesForPackage( model.getPackageName() );
+        } ).getRuleNamesForPackage( path, model.getPackageName() );
 
         setHeight( getPopupHeight() + "px" );
         setWidth( getPopupWidth() + "px" );

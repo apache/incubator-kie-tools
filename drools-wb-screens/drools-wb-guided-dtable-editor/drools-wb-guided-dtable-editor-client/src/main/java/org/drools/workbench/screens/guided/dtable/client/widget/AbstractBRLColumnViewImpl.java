@@ -137,7 +137,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
             public void callback( Collection<String> ruleNames ) {
                 ruleModeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNamesForPackage( model.getPackageName() );
+        } ).getRuleNamesForPackage( path, model.getPackageName() );
 
         setHeight( getPopupHeight() + "px" );
         setWidth( getPopupWidth() + "px" );

@@ -36,11 +36,12 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.DirtyableFlexTable;
 import org.uberfire.client.common.SmallLabel;
 
@@ -48,26 +49,30 @@ public class ScenarioWidgetComponentCreator {
 
     private final ScenarioParentWidget scenarioWidget;
     private final AsyncPackageDataModelOracle oracle;
+    private final Caller<RuleNamesService> ruleNamesService;
+    private final Path path;
 
-    private String[] availableRules;
+    private boolean hasRules;
     private HandlerRegistration availableRulesHandlerRegistration;
 
     private boolean showResults;
     private Scenario scenario;
 
     protected ScenarioWidgetComponentCreator( final ScenarioParentWidget scenarioWidget,
+                                              final Path path,
                                               final AsyncPackageDataModelOracle oracle,
                                               final Caller<RuleNamesService> ruleNamesService ) {
         this.scenarioWidget = scenarioWidget;
         this.oracle = oracle;
+        this.ruleNamesService = ruleNamesService;
+        this.path = path;
 
-        ruleNamesService.call(new RemoteCallback<List<String>>() {
+        this.ruleNamesService.call( new RemoteCallback<List<String>>() {
             @Override
-            public void callback(List<String> ruleNames) {
-                availableRules = ruleNames.toArray(new String[ruleNames.size()]);
+            public void callback( final List<String> ruleNames ) {
+                hasRules = !( ruleNames == null || ruleNames.isEmpty() );
             }
-        }).getRuleNames();
-
+        } ).getRuleNames( path );
     }
 
     protected GlobalPanel createGlobalPanel( final ScenarioHelper scenarioHelper,
@@ -217,12 +222,22 @@ public class ScenarioWidgetComponentCreator {
         return ruleSelectionCL;
     }
 
-    protected ListBox createAvailableRulesBox( final String[] list ) {
+    protected ListBox createAvailableRulesBox() {
         final ListBox availableRulesBox = new ListBox();
         availableRulesBox.addItem( TestScenarioConstants.INSTANCE.pleaseChoose1() );
-        for ( int i = 0; i < list.length; i++ ) {
-            availableRulesBox.addItem( list[ i ] );
-        }
+
+        ruleNamesService.call( new RemoteCallback<List<String>>() {
+            @Override
+            public void callback( List<String> ruleNames ) {
+                if ( ruleNames == null || ruleNames.isEmpty() ) {
+                    return;
+                }
+                for ( final String ruleName : ruleNames ) {
+                    availableRulesBox.addItem( ruleName );
+                }
+            }
+        } ).getRuleNames( path );
+
         return availableRulesBox;
     }
 
@@ -246,8 +261,8 @@ public class ScenarioWidgetComponentCreator {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
         final TextBox ruleNameTextBox = createRuleNameTextBox();
         horizontalPanel.add( ruleNameTextBox );
-        if ( availableRules != null ) {
-            final ListBox availableRulesBox = createAvailableRulesBox( availableRules );
+        if ( hasRules ) {
+            final ListBox availableRulesBox = createAvailableRulesBox();
             availableRulesBox.setSelectedIndex( 0 );
             if ( availableRulesHandlerRegistration != null ) {
                 availableRulesHandlerRegistration.removeHandler();
@@ -259,7 +274,6 @@ public class ScenarioWidgetComponentCreator {
             horizontalPanel.add( availableRulesBox );
 
         } else {
-
             final Button showList = new Button( TestScenarioConstants.INSTANCE.showListButton() );
             horizontalPanel.add( showList );
             showList.addClickHandler( new ClickHandler() {
@@ -271,7 +285,7 @@ public class ScenarioWidgetComponentCreator {
                     horizontalPanel.add( busy );
                     horizontalPanel.add( loading );
 
-                    final ListBox availableRulesBox = createAvailableRulesBox( availableRules );
+                    final ListBox availableRulesBox = createAvailableRulesBox();
 
                     final ChangeHandler ruleSelectionCL = new ChangeHandler() {
                         public void onChange( ChangeEvent event ) {
