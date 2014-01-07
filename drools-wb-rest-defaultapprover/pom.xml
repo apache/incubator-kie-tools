@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>drools-wb-rest-defaultapprover</artifactId>
-  <packaging>jar</packaging>
+  <packaging>kjar</packaging>
 
   <build>
     <plugins>
@@ -19,7 +19,28 @@
         <artifactId>kie-maven-plugin</artifactId>
         <version>${drools.version}</version>
         <extensions>true</extensions>
+
+        <!-- When the bug that does prevents pom level deps from being included is fixed,
+        this dependency can be removed-->
+        <dependencies>
+
+          <dependency>
+            <groupId>org.kie.workbench.services</groupId>
+            <artifactId>kie-wb-common-services-api</artifactId>
+            <version>6.1.0-SNAPSHOT</version>
+          </dependency>
+
+        </dependencies>
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
+    </dependency>
+
+  </dependencies>
 </project>
