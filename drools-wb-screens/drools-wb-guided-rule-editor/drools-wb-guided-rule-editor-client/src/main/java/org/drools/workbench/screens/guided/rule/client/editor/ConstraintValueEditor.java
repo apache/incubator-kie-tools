@@ -829,7 +829,7 @@ public class ConstraintValueEditor
                                             final Callback<Boolean> callback ) {
 
         //Field-types can be simply compared
-        if ( boundFieldType != null && boundFieldType.equals( this.fieldType ) ) {
+        if ( boundFieldType != null && boundFieldType.equals(getFieldTypeClazz()) ) {
             callback.callback( true );
             return;
         }
@@ -900,6 +900,16 @@ public class ConstraintValueEditor
         }
 
         callback.callback( false );
+    }
+
+    private String getFieldTypeClazz() {
+        String clazz;
+        if (model.getPackageName() == null || model.getPackageName().isEmpty()) {
+            clazz = this.fieldType;
+        } else {
+            clazz = model.getPackageName() + "." + this.fieldType;
+        }
+        return clazz;
     }
 
     private DropDownData getDropDownData() {
