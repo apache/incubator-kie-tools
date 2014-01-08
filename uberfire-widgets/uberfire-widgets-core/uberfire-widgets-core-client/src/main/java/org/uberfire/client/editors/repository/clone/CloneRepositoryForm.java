@@ -55,6 +55,8 @@ import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.util.URIUtil;
 
 @Dependent
@@ -74,6 +76,9 @@ public class CloneRepositoryForm
 
     @Inject
     private Caller<OrganizationalUnitService> organizationalUnitService;
+
+    @Inject
+    private PlaceManager placeManager;
 
     @UiField
     Button clone;
@@ -231,6 +236,7 @@ public class CloneRepositoryForm
                                                     BusyPopup.close();
                                                     Window.alert( "The repository is cloned successfully" );
                                                     hide();
+                                                    placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", o.getAlias() ) );
                                                 }
                                             },
                                             new ErrorCallback<Message>() {

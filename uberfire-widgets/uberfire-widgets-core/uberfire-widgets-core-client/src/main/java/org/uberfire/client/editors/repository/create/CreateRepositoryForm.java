@@ -56,6 +56,8 @@ import org.uberfire.backend.repositories.RepositoryAlreadyExistsException;
 import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
 public class CreateRepositoryForm
@@ -75,6 +77,9 @@ public class CreateRepositoryForm
 
     @Inject
     private Caller<OrganizationalUnitService> organizationalUnitService;
+
+    @Inject
+    private PlaceManager placeManager;
 
     @UiField
     ControlGroup organizationalUnitGroup;
@@ -189,6 +194,7 @@ public class CreateRepositoryForm
                                                 public void callback( Repository o ) {
                                                     Window.alert( "The repository is created successfully" );
                                                     hide();
+                                                    placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", o.getAlias() ) );
                                                 }
                                             },
                                             new ErrorCallback<Message>() {

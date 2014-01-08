@@ -105,10 +105,9 @@ public class FileExplorerView
 
     @Override
     public void addNewRepository( final Repository repo ) {
-        //Util.getHeaderSafeHtml( images.packageIcon(), repo.getAlias() )
         final TreeItem repositoryRootItem = rootTreeItem.addItem( TreeItem.Type.FOLDER, repo.getAlias() );
         repositoryRootItem.setUserObject( repo );
-        repositoryRootItem.setState( TreeItem.State.OPEN );
+        repositoryRootItem.setState( TreeItem.State.OPEN, false, false );
 
         repositoryToTreeItemMap.put( repo,
                                      repositoryRootItem );
