@@ -3,6 +3,7 @@ package org.kie.workbench.common.screens.projecteditor.client.wizard;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -25,8 +26,10 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.Wizard;
 import org.uberfire.client.wizards.WizardPage;
 import org.uberfire.client.wizards.WizardPresenter;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
+@Dependent
 public class NewProjectWizard
         implements Wizard<NewProjectWizardContext> {
 
@@ -116,7 +119,6 @@ public class NewProjectWizard
             public void callback( final Project project ) {
                 busyIndicatorView.hideBusyIndicator();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-                newProjectEvent.fire( new NewProjectEvent( project ) );
                 placeManager.goTo( "projectScreen" );
             }
         };

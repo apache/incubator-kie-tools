@@ -57,6 +57,7 @@ import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -87,6 +88,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     @Inject
     protected Event<ProjectContextChangeEvent> contextChangedEvent;
+
+    @Inject
+    private transient SessionInfo sessionInfo;
 
     //Active context
     protected OrganizationalUnit activeOrganizationalUnit = null;
@@ -523,10 +527,17 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( project == null ) {
             return;
         }
-        if ( !Utils.isInRepository( activeRepository,
-                                    project ) ) {
+        if ( !sessionInfo.equals( event.getSessionInfo() ) ) {
+            refresh( false );
             return;
         }
+
+        if ( !Utils.isInRepository( activeRepository,
+                                    project ) ) {
+            refresh( false );
+            return;
+        }
+
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
             doInitialiseViewForActiveContext( activeOrganizationalUnit,
