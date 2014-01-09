@@ -37,59 +37,72 @@
     <!-- ################################################################################ -->
     <!-- External dependency versions -->
     <!-- ################################################################################ -->
-    <slf4j.version>1.7.2</slf4j.version>
-    <logback.version>1.0.9</logback.version>
+    <version.ch.qos.logback>1.0.9</version.ch.qos.logback>
+    <version.org.slf4j>1.7.2</version.org.slf4j>
 
-    <jetty.version>6.1.25</jetty.version>
-    <jetty-servlet.version>7.2.1.v20101111</jetty-servlet.version>
+    <version.org.mortbay.jetty>6.1.25</version.org.mortbay.jetty>
+    <version.org.eclipse.jetty>7.2.1.v20101111</version.org.eclipse.jetty>
 
-    <javax.inject.version>1</javax.inject.version>
-    <cdi-api.version>1.0-SP4</cdi-api.version>
-    <weld-spi.version>1.1.Final</weld-spi.version>
-    <weld.version>1.1.13.Final</weld.version>
+    <version.javax.inject>1</version.javax.inject>
+    <version.javax.enterprise.cdi>1.0-SP4</version.javax.enterprise.cdi>
+    <version.org.jboss.weld.weld>1.1.13.Final</version.org.jboss.weld.weld>
+    <version.org.jboss.weld.weld-api>1.1.Final</version.org.jboss.weld.weld-api>
 
-    <servlet-api.version>3.0.1</servlet-api.version>
-    <jsp-api.version>2.0</jsp-api.version>
-    <jboss-ejb3-api.version>3.1.0</jboss-ejb3-api.version>
-    <xml-apis.version>1.3.04</xml-apis.version>
+    <version.xml-apis>1.3.04</version.xml-apis>
 
-    <errai.version>2.4.3.Final</errai.version>
+    <version.org.jboss.errai>2.4.3.Final</version.org.jboss.errai>
 
-    <commons-httpclient.version>3.1</commons-httpclient.version>
-    <commons-io.version>2.1</commons-io.version>
-    <commons-fileupload.version>1.2.2</commons-fileupload.version>
-    <commons-codec.version>1.4</commons-codec.version>
+    <version.commons-httpclient>3.1</version.commons-httpclient>
+    <version.commons-io>2.1</version.commons-io>
+    <version.commons-fileupload>1.2.2</version.commons-fileupload>
+    <version.commons-codec>1.4</version.commons-codec>
 
-    <xstream.version>1.4.3</xstream.version>
-    <snakeyaml.version>1.8</snakeyaml.version>
-    <freemarker.version>2.3.19</freemarker.version>
+    <version.com.thoughtworks.xstream>1.4.3</version.com.thoughtworks.xstream>
+    <version.org.yaml.snakeyaml>1.8</version.org.yaml.snakeyaml>
+    <version.org.freemarker>2.3.19</version.org.freemarker>
 
-    <mvel.version>2.1.Beta8</mvel.version>
+    <version.org.mvel>2.1.8.Final</version.org.mvel>
 
-    <gwt.version>2.5.0</gwt.version>
-    <gwt.maven.version>2.5.0</gwt.maven.version>
-    <bootstrap.version>2.2.1.0</bootstrap.version>
-    <gwt-dnd.version>3.1.2</gwt-dnd.version>
-    <gchart.version>2.6</gchart.version>
+    <version.com.google.gwt>2.5.0</version.com.google.gwt>
+    <version.com.github.gwtbootstrap>2.2.1.0</version.com.github.gwtbootstrap>
+    <version.com.allen-sauer.gwt.dnd>3.1.2</version.com.allen-sauer.gwt.dnd>
 
-    <jasypt.version>1.9.0</jasypt.version>
-    <jacc.version>1.4</jacc.version>
-    <javassist.version>3.15.0-GA</javassist.version>
+    <version.org.jasypt>1.9.0</version.org.jasypt>
+    <version.javax.security.jacc>1.4</version.javax.security.jacc>
+    <version.org.javassist>3.15.0-GA</version.org.javassist>
 
-    <junit.version>4.11</junit.version>
-    <mockito-all.version>1.9.0</mockito-all.version>
-    <fest-assert-core.version>2.0M6</fest-assert-core.version>
-    <hamcrest.version>1.3</hamcrest.version>
+    <version.junit>4.11</version.junit>
+    <version.org.mockito>1.9.0</version.org.mockito>
+    <version.org.easytesting.fest>2.0M6</version.org.easytesting.fest>
+    <version.org.hamcrest>1.3</version.org.hamcrest>
 
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
     <version.org.apache.helix>0.6.2-incubating</version.org.apache.helix>
     <version.org.eclipse.jgit>3.1.0.201310021548-r</version.org.eclipse.jgit>
-    <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
 
+    <version.org.apache.sshd>0.9.0</version.org.apache.sshd>
+    <version.org.ocpsoft.prettytime>3.0.2.Final</version.org.ocpsoft.prettytime>
+
+
+    <version.javax.servlet.servlet-api>3.0.1</version.javax.servlet.servlet-api>
+    <version.javax.servlet.jsp-api>2.0</version.javax.servlet.jsp-api>
+    <version.org.jboss.ejb3.api>3.1.0</version.org.jboss.ejb3.api>
+
+    <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
   </properties>
 
   <!-- IMPORTANT: Do not declare any build configuration here! Declare it in kie-parent-metadata. -->
-  <build/>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <version>${version.com.google.gwt}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
   <dependencyManagement>
     <dependencies>
@@ -126,7 +139,7 @@
       <dependency>
         <groupId>org.apache.sshd</groupId>
         <artifactId>sshd-core</artifactId>
-        <version>0.9.0</version>
+        <version>${version.org.apache.sshd}</version>
       </dependency>
 
       <dependency>
@@ -151,95 +164,95 @@
       <dependency>
         <groupId>org.ocpsoft.prettytime</groupId>
         <artifactId>prettytime</artifactId>
-        <version>3.0.2.Final</version>
+        <version>${version.org.ocpsoft.prettytime}</version>
       </dependency>
 
       <!-- Annotations -->
       <dependency>
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
-        <version>${freemarker.version}</version>
+        <version>${version.org.freemarker}</version>
       </dependency>
       <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
-        <version>${javax.inject.version}</version>
+        <version>${version.javax.inject}</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-integration</artifactId>
-        <version>${hamcrest.version}</version>
+        <version>${version.org.hamcrest}</version>
       </dependency>
 
       <!-- JUnit 4.1 comes with hamcrest-core 1.1 but we need 1.3 -->
       <dependency>
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-core</artifactId>
-        <version>${hamcrest.version}</version>
+        <version>${version.org.hamcrest}</version>
       </dependency>
 
       <!-- VFS: Service -->
       <dependency>
         <groupId>commons-httpclient</groupId>
         <artifactId>commons-httpclient</artifactId>
-        <version>${commons-httpclient.version}</version>
+        <version>${version.commons-httpclient}</version>
       </dependency>
 
       <!-- Runtime / Container dependencies -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
+        <version>${version.org.slf4j}</version>
       </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
-        <version>${slf4j.version}</version>
+        <version>${version.org.slf4j}</version>
       </dependency>
 
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
+        <version>${version.ch.qos.logback}</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
+        <version>${version.ch.qos.logback}</version>
       </dependency>
 
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>${commons-io.version}</version>
+        <version>${version.commons-io}</version>
       </dependency>
 
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>${commons-fileupload.version}</version>
+        <version>${version.commons-fileupload}</version>
       </dependency>
 
       <!-- Errai -->
       <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
-        <version>${cdi-api.version}</version>
+        <version>${version.javax.enterprise.cdi}</version>
       </dependency>
 
       <!-- Errai AS -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jboss-as-support</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
       </dependency>
 
       <!-- Errai Core -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-marshalling</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -251,7 +264,7 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-bus</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.inject</groupId>
@@ -270,7 +283,7 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-ioc</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.inject</groupId>
@@ -289,19 +302,19 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-common</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
       </dependency>
       <dependency>
         <groupId>org.mvel</groupId>
         <artifactId>mvel2</artifactId>
-        <version>${mvel.version}</version>
+        <version>${version.org.mvel}</version>
       </dependency>
 
       <!-- CDI Integration Modules -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cdi-client</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -313,7 +326,7 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-javax-enterprise</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -325,7 +338,7 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-weld-integration</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -345,7 +358,7 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cdi-jetty</artifactId>
-        <version>${errai.version}</version>
+        <version>${version.org.jboss.errai}</version>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
@@ -358,25 +371,25 @@
       <dependency>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-spi</artifactId>
-        <version>${weld-spi.version}</version>
+        <version>${version.org.jboss.weld.weld-api}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core</artifactId>
-        <version>${weld.version}</version>
+        <version>${version.org.jboss.weld.weld}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.weld.se</groupId>
         <artifactId>weld-se-core</artifactId>
-        <version>${weld.version}</version>
+        <version>${version.org.jboss.weld.weld}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.weld.servlet</groupId>
         <artifactId>weld-servlet-core</artifactId>
-        <version>${weld.version}</version>
+        <version>${version.org.jboss.weld.weld}</version>
       </dependency>
 
       <!-- CDI Development Utils -->
@@ -385,123 +398,123 @@
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty</artifactId>
-        <version>${jetty.version}</version>
+        <version>${version.org.mortbay.jetty}</version>
       </dependency>
 
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-plus</artifactId>
-        <version>${jetty.version}</version>
+        <version>${version.org.mortbay.jetty}</version>
       </dependency>
 
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-naming</artifactId>
-        <version>${jetty.version}</version>
+        <version>${version.org.mortbay.jetty}</version>
       </dependency>
 
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-servlet</artifactId>
-        <version>${jetty-servlet.version}</version>
+        <version>${version.org.eclipse.jetty}</version>
       </dependency>
 
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
-        <version>${servlet-api.version}</version>
+        <version>${version.javax.servlet.servlet-api}</version>
       </dependency>
 
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jsp-api</artifactId>
-        <version>${jsp-api.version}</version>
+        <version>${version.javax.servlet.jsp-api}</version>
       </dependency>
 
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
+        <version>${version.junit}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.ejb3</groupId>
         <artifactId>jboss-ejb3-api</artifactId>
-        <version>${jboss-ejb3-api.version}</version>
+        <version>${version.org.jboss.ejb3.api}</version>
       </dependency>
 
       <!-- Bootstrap -->
       <dependency>
         <groupId>com.github.gwtbootstrap</groupId>
         <artifactId>gwt-bootstrap</artifactId>
-        <version>${bootstrap.version}</version>
+        <version>${version.com.github.gwtbootstrap}</version>
       </dependency>
 
       <!-- GWT and GWT Extensions -->
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
-        <version>${gwt.version}</version>
+        <version>${version.com.google.gwt}</version>
       </dependency>
 
       <dependency>
         <groupId>com.allen-sauer.gwt.dnd</groupId>
         <artifactId>gwt-dnd</artifactId>
-        <version>${gwt-dnd.version}</version>
+        <version>${version.com.allen-sauer.gwt.dnd}</version>
       </dependency>
 
       <dependency>
         <groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
-        <version>${xml-apis.version}</version>
+        <version>${version.xml-apis}</version>
       </dependency>
 
       <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
-        <version>${javassist.version}</version>
+        <version>${version.org.javassist}</version>
       </dependency>
 
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
-        <version>${mockito-all.version}</version>
+        <version>${version.org.mockito}</version>
       </dependency>
 
       <dependency>
         <groupId>org.easytesting</groupId>
         <artifactId>fest-assert-core</artifactId>
-        <version>${fest-assert-core.version}</version>
+        <version>${version.org.easytesting.fest}</version>
       </dependency>
 
       <dependency>
         <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>xstream</artifactId>
-        <version>${xstream.version}</version>
+        <version>${version.com.thoughtworks.xstream}</version>
       </dependency>
 
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>${commons-codec.version}</version>
+        <version>${version.commons-codec}</version>
       </dependency>
 
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>${snakeyaml.version}</version>
+        <version>${version.org.yaml.snakeyaml}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jasypt</groupId>
         <artifactId>jasypt</artifactId>
-        <version>${jasypt.version}</version>
+        <version>${version.org.jasypt}</version>
       </dependency>
 
       <dependency>
         <groupId>javax.security.jacc</groupId>
         <artifactId>javax.security.jacc-api</artifactId>
-        <version>${jacc.version}</version>
+        <version>${version.javax.security.jacc}</version>
         <scope>provided</scope>
       </dependency>
 
