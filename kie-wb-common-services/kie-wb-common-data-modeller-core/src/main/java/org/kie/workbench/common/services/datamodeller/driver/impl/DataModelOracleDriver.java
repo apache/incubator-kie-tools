@@ -192,7 +192,12 @@ public class DataModelOracleDriver implements ModelDriver {
                             String itemsClass = DataModelOracleUtilities.getParametricFieldType( oracleDataModel,
                                                                                                  factType,
                                                                                                  field.getName() );
-                            property = dataObject.addProperty( field.getName(), itemsClass, true, bag );
+                            if (itemsClass == null) {
+                                //if we don't know the items class, the property will be managed as a simple property.
+                                property = dataObject.addProperty( field.getName(), bag );
+                            } else {
+                                property = dataObject.addProperty( field.getName(), itemsClass, true, bag );
+                            }
 
                         } else {
                             property = dataObject.addProperty( field.getName(), getFieldType( oracleDataModel, packageName, field.getClassName() ) );
