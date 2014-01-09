@@ -16,6 +16,8 @@
 
 package org.uberfire.metadata.io;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileSystem;
@@ -26,11 +28,9 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.metadata.engine.MetaIndexEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static org.uberfire.java.nio.file.Files.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.java.nio.file.Files.*;
 
 /**
  *
@@ -52,13 +52,15 @@ public final class BatchIndex {
     }
 
     public void runAsync( final FileSystem fs ) {
-        new Thread() {
-            public void run() {
-                for ( final Path root : fs.getRootDirectories() ) {
-                    BatchIndex.this.run( root );
+        if ( fs != null && fs.getRootDirectories().iterator().hasNext() ) {
+            new Thread() {
+                public void run() {
+                    for ( final Path root : fs.getRootDirectories() ) {
+                        BatchIndex.this.run( root );
+                    }
                 }
-            }
-        }.start();
+            }.start();
+        }
     }
 
     public void runAsync( final Path root ) {
@@ -71,25 +73,30 @@ public final class BatchIndex {
 
     public void run( final Path root ) {
         try {
+            if ( root == null ) {
+                return;
+            }
             indexEngine.startBatchMode();
             walkFileTree( checkNotNull( "root", root ), new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile( final Path file,
                                                   final BasicFileAttributes attrs ) throws IOException {
+                    try {
+                        checkNotNull( "file", file );
+                        checkNotNull( "attrs", attrs );
 
-                    checkNotNull( "file", file );
-                    checkNotNull( "attrs", attrs );
+                        if ( !file.getFileName().toString().startsWith( "." ) ) {
 
-                    if ( !file.getFileName().toString().startsWith( "." ) ) {
+                            for ( final Class<? extends FileAttributeView> view : views ) {
+                                ioService.getFileAttributeView( file, view );
+                            }
 
-                        for ( final Class<? extends FileAttributeView> view : views ) {
-                            ioService.getFileAttributeView( file, view );
+                            final FileAttribute<?>[] allAttrs = ioService.convert( ioService.readAttributes( file ) );
+                            indexEngine.index( KObjectUtil.toKObject( file, allAttrs ) );
                         }
-
-                        final FileAttribute<?>[] allAttrs = ioService.convert( ioService.readAttributes( file ) );
-                        indexEngine.index( KObjectUtil.toKObject( file, allAttrs ) );
+                    } catch ( final Exception ex ) {
+                        LOG.error( "Index fails. [@" + file.toString() + "]", ex );
                     }
-
                     return FileVisitResult.CONTINUE;
                 }
             } );
