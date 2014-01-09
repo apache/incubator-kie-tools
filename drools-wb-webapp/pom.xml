@@ -598,6 +598,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
+          <localWorkers>4</localWorkers>
           <module>org.drools.workbench.FastCompiledDroolsWorkbench</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
@@ -685,7 +686,7 @@
 
           </compileSourcesArtifacts>
           <runTarget>org.drools.workbench.DroolsWorkbench/DroolsWorkbench.html</runTarget>
-          <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xss1M</extraJvmArgs>
+          <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
