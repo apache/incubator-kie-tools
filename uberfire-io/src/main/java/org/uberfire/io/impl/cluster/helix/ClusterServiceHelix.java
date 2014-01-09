@@ -12,6 +12,8 @@ import org.apache.helix.messaging.handling.HelixTaskResult;
 import org.apache.helix.messaging.handling.MessageHandler;
 import org.apache.helix.messaging.handling.MessageHandlerFactory;
 import org.apache.helix.model.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.message.AsyncCallback;
@@ -25,6 +27,8 @@ import static java.util.UUID.*;
 import static org.apache.helix.HelixManagerFactory.*;
 
 public class ClusterServiceHelix implements ClusterService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClusterServiceHelix.class);
 
     private final String clusterName;
     private final String instanceName;
@@ -282,27 +286,37 @@ public class ClusterServiceHelix implements ClusterService {
                     return new MessageHandler( message, context ) {
                         @Override
                         public HelixTaskResult handleMessage() throws InterruptedException {
-                            final String serviceId = _message.getRecord().getSimpleField( "serviceId" );
-                            final MessageType type = buildMessageType( _message.getRecord().getSimpleField( "type" ) );
-                            final Map<String, String> map = getMessageContent( _message );
+                            try {
+                                final String serviceId = _message.getRecord().getSimpleField( "serviceId" );
+                                final MessageType type = buildMessageType( _message.getRecord().getSimpleField( "type" ) );
+                                final Map<String, String> map = getMessageContent( _message );
 
-                            final Pair<MessageType, Map<String, String>> result = resolvers.get( serviceId ).resolveHandler( serviceId, type ).handleMessage( type, map );
+                                final Pair<MessageType, Map<String, String>> result = resolvers.get( serviceId ).resolveHandler( serviceId, type ).handleMessage( type, map );
 
-                            if ( result == null ) {
+                                if ( result == null ) {
+                                    return new HelixTaskResult() {{
+                                        setSuccess( true );
+                                    }};
+                                }
+
                                 return new HelixTaskResult() {{
                                     setSuccess( true );
+                                    getTaskResultMap().put( "serviceId", serviceId );
+                                    getTaskResultMap().put( "type", result.getK1().toString() );
+                                    getTaskResultMap().put( "origin", instanceName );
+                                    for ( Map.Entry<String, String> entry : result.getK2().entrySet() ) {
+                                        getTaskResultMap().put( entry.getKey(), entry.getValue() );
+                                    }
+                                }};
+                            } catch (final Throwable e) {
+                                logger.error("Error while processing cluster message", e);
+                                return new HelixTaskResult() {{
+                                    setSuccess( false );
+                                    setMessage(e.getMessage());
+                                    setException(new RuntimeException(e));
+
                                 }};
                             }
-
-                            return new HelixTaskResult() {{
-                                setSuccess( true );
-                                getTaskResultMap().put( "serviceId", serviceId );
-                                getTaskResultMap().put( "type", result.getK1().toString() );
-                                getTaskResultMap().put( "origin", instanceName );
-                                for ( Map.Entry<String, String> entry : result.getK2().entrySet() ) {
-                                    getTaskResultMap().put( entry.getKey(), entry.getValue() );
-                                }
-                            }};
                         }
 
                         @Override

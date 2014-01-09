@@ -77,7 +77,7 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         } catch ( final FileSystemAlreadyExistsException e ) {
             fs = ioService.getFileSystem( uri );
         } catch ( final Throwable ex ) {
-            throw new RuntimeException( ex.getCause().getMessage() );
+            throw new RuntimeException( ex.getCause().getMessage(), ex );
         }
 
         Path defaultRoot = fs.getRootDirectories().iterator().next();

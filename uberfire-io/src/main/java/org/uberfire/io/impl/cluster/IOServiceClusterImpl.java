@@ -905,18 +905,29 @@ public class IOServiceClusterImpl implements IOClusteredService {
             if ( SYNC_FS.equals( type ) ) {
                 final String scheme = content.get( "fs_scheme" );
                 final String id = content.get( "fs_id" );
+                String uris = content.get( "fs_uri" );
+                String[] supportedUris = uris.split("\n");
 
-                String origin;
-                try {
-                    origin = URLEncoder.encode( content.get( "fs_uri" ), "UTF-8" );
-                } catch ( UnsupportedEncodingException e ) {
-                    origin = content.get( "fs_uri" );
-                }
+                for (String supportedUri : supportedUris) {
+                    try {
+                        String origin;
+                        try {
+                            origin = URLEncoder.encode( supportedUri, "UTF-8" );
+                        } catch ( UnsupportedEncodingException e ) {
+                            origin = supportedUri;
+                        }
 
-                if ( origin != null ) {
-                    final URI fs = URI.create( scheme + "://" + id + "?sync=" + origin + "&force" );
+                        if ( origin != null ) {
+                            final URI fs = URI.create( scheme + "://" + id + "?sync=" + origin + "&force" );
 
-                    service.getFileSystem( fs );
+                            service.getFileSystem( fs );
+                        }
+                        break;
+                    } catch (Exception e) {
+                        // try the other supported uri in case of failure
+                        logger.warn("File system synchronization for origin {} failed with error {}, trying another if available",
+                                supportedUri, e.getMessage());
+                    }
                 }
             }
 
