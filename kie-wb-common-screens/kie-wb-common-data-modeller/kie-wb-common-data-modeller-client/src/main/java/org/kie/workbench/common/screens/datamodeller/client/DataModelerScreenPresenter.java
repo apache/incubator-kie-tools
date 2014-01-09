@@ -497,8 +497,7 @@ public class DataModelerScreenPresenter {
         if (currentProject != null && currentProject.getRootPath().equals( evt.getProject().getRootPath() ) && sessionInfo != null ) {
 
             if (!sessionInfo.equals(evt.getSessionInfo())
-                    || (evt.getResourcePath().getFileName().equals("pom.xml") ||
-                        evt.getResourcePath().getFileName().endsWith(".drl")) ) {
+                    || isDMOChangeSensitivePath(evt.getResourcePath()) ) {
                 //the project data model oracle was changed because of another user different than me OR
                 //the modification was done by me, executing in the same session but saving the project
                 //likely in the project editor.
@@ -516,6 +515,16 @@ public class DataModelerScreenPresenter {
                 getContext().setLastDMOUpdate(null);
             }
         }
+    }
+
+    boolean isDMOChangeSensitivePath(Path path) {
+        return path != null &&
+        (path.getFileName().equals("pom.xml") ||
+         path.getFileName().endsWith(".drl") ||
+         path.getFileName().equals("kmodule.xml") ||
+         path.getFileName().equals("project.imports") ||
+         path.getFileName().equals("import.suggestions")
+        );
     }
 
     private void notifyExternalDMOChange(InvalidateDMOProjectCacheEvent evt) {
