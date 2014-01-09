@@ -89,7 +89,7 @@
           </gwt:HorizontalPanel>
         </gwt:VerticalPanel>
         <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-          <b:CheckBox ui:field="chkUpdateEngine" styleName="{res.css.wizardDTableFields}" text="{i18n.UpdateEngineWithChanges}"/>
+          <b:CheckBox ui:field="chkUpdateEngine" styleName="{res.css.wizardDTableFields}" text="{i18n.UpdateEngineWithChanges}:"/>
           <c:InfoPopup styleName="{res.css.wizardDTableFields}" title="{i18n.UpdateFact}" message="{i18n.UpdateDescription}"/>
         </gwt:HorizontalPanel>
       </gwt:VerticalPanel>

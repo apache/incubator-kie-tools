@@ -63,13 +63,19 @@ public class DefaultValueWidgetFactory {
     static class DefaultValueChangedEvent {
 
         private final DTCellValue52 defaultValue;
+        private final DTCellValue52 oldDefaultValue;
 
-        public DefaultValueChangedEvent(DTCellValue52 defaultValue) {
+        public DefaultValueChangedEvent(DTCellValue52 defaultValue, DTCellValue52 oldDefaultValue) {
             this.defaultValue = defaultValue;
+            this.oldDefaultValue = oldDefaultValue;
         }
 
         public DTCellValue52 getDefaultValue() {
             return defaultValue;
+        }
+
+        public DTCellValue52 getOldDefaultValue() {
+            return oldDefaultValue;
         }
 
     }
@@ -97,8 +103,9 @@ public class DefaultValueWidgetFactory {
                 tb.addValueChangeHandler( new ValueChangeHandler<String>() {
 
                     public void onValueChange( ValueChangeEvent<String> event ) {
+                        DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                         defaultValue.setStringValue( tb.getValue() );
-                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
+                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
                     }
 
                 } );
@@ -120,13 +127,14 @@ public class DefaultValueWidgetFactory {
                 tb.addValueChangeHandler( new ValueChangeHandler<String>() {
 
                     public void onValueChange( ValueChangeEvent<String> event ) {
+                        DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                         try {
                             defaultValue.setNumericValue( new Integer( event.getValue() ) );
                         } catch ( NumberFormatException nfe ) {
                             defaultValue.setNumericValue( new Integer( "0" ) );
                             tb.setValue( "0" );
                         } finally {
-                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
+                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
                         }
                     }
 
@@ -149,13 +157,14 @@ public class DefaultValueWidgetFactory {
                 tb.addValueChangeHandler( new ValueChangeHandler<String>() {
 
                     public void onValueChange( ValueChangeEvent<String> event ) {
+                        DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                         try {
                             defaultValue.setNumericValue( new Long( event.getValue() ) );
                         } catch ( NumberFormatException nfe ) {
                             defaultValue.setNumericValue( new Long( "0" ) );
                             tb.setValue( "0" );
                         } finally {
-                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
+                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
                         }
                     }
 
@@ -186,8 +195,9 @@ public class DefaultValueWidgetFactory {
 
             cb.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
+                    DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                     defaultValue.setBooleanValue( cb.getValue() );
-                    defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
+                    defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
                 }
             } );
             editor = cb;
@@ -212,8 +222,9 @@ public class DefaultValueWidgetFactory {
                 dp.addValueChangeHandler( new ValueChangeHandler<Date>() {
 
                     public void onValueChange( ValueChangeEvent<Date> event ) {
+                        DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                         defaultValue.setDateValue( event.getValue() );
-                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue));
+                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
                     }
 
                 } );
@@ -239,7 +250,7 @@ public class DefaultValueWidgetFactory {
                         }
                         DTCellValue52 newValue = new DTCellValue52( lb.getValue( selectedIndex ) );
                         ac.setDefaultValue( newValue );
-                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(newValue));
+                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(newValue, defaultValue));
                     }
                 } );
             }

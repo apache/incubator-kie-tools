@@ -78,6 +78,7 @@ public class DecisionTableAnalyzer {
             for ( Pattern52 pattern : model.getPatterns() ) {
                 for ( ConditionCol52 conditionCol : pattern.getChildColumns() ) {
                     int columnIndex = model.getExpandedColumns().indexOf( conditionCol );
+                    if (columnIndex < 0) continue;
                     DTCellValue52 visibleCellValue = row.get( columnIndex );
                     DTCellValue52 realCellValue;
                     boolean cellIsNotBlank;
@@ -104,6 +105,7 @@ public class DecisionTableAnalyzer {
                     continue;
                 }
                 int columnIndex = model.getExpandedColumns().indexOf( actionCol );
+                if (columnIndex < 0) continue;
                 DTCellValue52 visibleCellValue = row.get( columnIndex );
                 DTCellValue52 realCellValue;
                 boolean cellIsNotBlank;

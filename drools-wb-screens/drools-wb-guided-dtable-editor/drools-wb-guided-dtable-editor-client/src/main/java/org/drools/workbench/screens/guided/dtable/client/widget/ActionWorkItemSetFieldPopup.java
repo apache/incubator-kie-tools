@@ -119,7 +119,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                                                      } );
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.Fact(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Fact()).append(GuidedDecisionTableConstants.COLON).toString(),
                       pattern );
 
         //Fact Field being set
@@ -148,7 +148,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                       header );
 
         //Update Engine with changes
-        addAttribute( GuidedDecisionTableConstants.INSTANCE.UpdateEngineWithChanges(),
+        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.UpdateEngineWithChanges()).append(GuidedDecisionTableConstants.COLON).toString(),
                       doUpdate() );
 
         //Bind field to a WorkItem result parameter

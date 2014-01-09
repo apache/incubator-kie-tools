@@ -50,31 +50,7 @@ import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.UpdateColumnAuditLogEntry;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
-import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionRetractFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.*;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
@@ -850,10 +826,10 @@ public class GuidedDecisionTableWidget extends Composite
                         horiz.add( box );
                         horiz.add( addbutton );
 
-                        pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Metadata1(),
-                                          horiz );
+                        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Metadata1())
+                                .append(GuidedDecisionTableConstants.COLON).toString(), horiz );
                         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Attribute(),
-                                          list );
+                                list );
                         pop.show();
                     }
 
@@ -1304,7 +1280,8 @@ public class GuidedDecisionTableWidget extends Composite
         if ( model.getMetadataCols().size() > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( new SmallLabel( GuidedDecisionTableConstants.INSTANCE.Metadata1() ) );
+            hp.add( new SmallLabel( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Metadata1())
+                    .append(GuidedDecisionTableConstants.COLON).toString() ));
             attributeConfigWidget.add( hp );
         }
         for ( MetadataCol52 atc : model.getMetadataCols() ) {
@@ -1323,12 +1300,13 @@ public class GuidedDecisionTableWidget extends Composite
             hide.setValue( atc.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent sender ) {
+                    final MetadataCol52 clonedAt = at.cloneColumn();
                     at.setHideColumn( hide.getValue() );
                     dtable.setColumnVisibility( at,
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
-                    fireUpdateColumn( identity.getName(), at, at );
+                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1359,7 +1337,9 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                          isReadOnly, new DefaultValueWidgetFactory.DefaultValueChangedEventHandler() {
                 @Override
                 public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
-                    fireUpdateColumn( identity.getName(), at, at );
+                    final AttributeCol52 clonedAt = at.cloneColumn();
+                    clonedAt.setDefaultValue(event.getOldDefaultValue());
+                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
                 }
             } );
 
@@ -1379,18 +1359,20 @@ public class GuidedDecisionTableWidget extends Composite
 
                 useRowNumber.addClickHandler( new ClickHandler() {
                     public void onClick( ClickEvent sender ) {
+                        final AttributeCol52 clonedAt = at.cloneColumn();
                         at.setUseRowNumber( useRowNumber.getValue() );
                         reverseOrder.setEnabled( useRowNumber.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        fireUpdateColumn( identity.getName(), at, at );
+                        fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
                     }
                 } );
 
                 reverseOrder.addClickHandler( new ClickHandler() {
                     public void onClick( ClickEvent sender ) {
+                        final AttributeCol52 clonedAt = at.cloneColumn();
                         at.setReverseOrder( reverseOrder.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        fireUpdateColumn( identity.getName(), at, at );
+                        fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
                     }
                 } );
                 hp.add( reverseOrder );
@@ -1405,12 +1387,13 @@ public class GuidedDecisionTableWidget extends Composite
             hide.setValue( at.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent sender ) {
+                    final AttributeCol52 clonedAt = at.cloneColumn();
                     at.setHideColumn( hide.getValue() );
                     dtable.setColumnVisibility( at,
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
-                    fireUpdateColumn( identity.getName(), at, at );
+                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1427,11 +1410,13 @@ public class GuidedDecisionTableWidget extends Composite
      * @param userName The user name.
      * @param originCol The source column.
      * @param newCol The new edited column.
+     * @param diffs The difference list between instances.
      */
     private void fireUpdateColumn( String userName,
                                    BaseColumn originCol,
-                                   BaseColumn newCol ) {
-        UpdateColumnAuditLogEntry entry = new UpdateColumnAuditLogEntry( userName, originCol, newCol );
+                                   BaseColumn newCol,
+                                   List<BaseColumnFieldDiff> diffs) {
+        UpdateColumnAuditLogEntry entry = new UpdateColumnAuditLogEntry( userName, originCol, newCol, diffs );
         model.getAuditLog().add( entry );
     }
 

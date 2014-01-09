@@ -26,6 +26,8 @@ import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionInsertFactColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionSetFieldColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.AttributeColumnDetails;
@@ -315,6 +317,11 @@ public class AuditLogEntryCellHelper {
                     (AttributeColumnDetails) originalDetails,
                     diffs,
                     sb );
+        } else if ( ( details instanceof MetadataColumnDetails ) && ( originalDetails instanceof MetadataColumnDetails ) ) {
+            buildColumnDetailsUpdate( (MetadataColumnDetails) details,
+                    (MetadataColumnDetails) originalDetails,
+                    diffs,
+                    sb );
         } else {
             sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateColumn(details.getColumnHeader()) ) );
         }
@@ -370,10 +377,11 @@ public class AuditLogEntryCellHelper {
                 else if (changedFieldName.equals(ConditionCol52.FIELD_OPERATOR)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Operator(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ConditionCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ConditionCol52.FIELD_BINDING)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sbFields);
-                else if (changedFieldName.equals(ConditionCol52.FIELD_CONSTRAINT_VALUE_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.CalculationType(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_CONSTRAINT_VALUE_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.CalculationType(), getLiteralForCalculationType((Integer) diff.getOldValue()), getLiteralForCalculationType((Integer) diff.getValue()), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(Pattern52.FIELD_ENTRY_POINT_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DTLabelFromEntryPoint(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(Pattern52.FIELD_FACT_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FactType(), diff.getOldValue(), diff.getValue(), sbFields);
             }
         }
 
@@ -401,14 +409,29 @@ public class AuditLogEntryCellHelper {
                 else if (changedFieldName.equals(ConditionCol52.FIELD_OPERATOR)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Operator(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ConditionCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ConditionCol52.FIELD_BINDING)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sbFields);
-                else if (changedFieldName.equals(ConditionCol52.FIELD_CONSTRAINT_VALUE_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.CalculationType(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_CONSTRAINT_VALUE_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.CalculationType(), getLiteralForCalculationType((Integer) diff.getOldValue()), getLiteralForCalculationType((Integer) diff.getValue()), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(Pattern52.FIELD_FACT_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FactType(), diff.getOldValue(), diff.getValue(), sbFields);
             }
         }
 
         if (sbFields != null) {
             sb.append( TEMPLATE.updatedFields( sbFields.toSafeHtml(), labelClass ));
+        }
+
+    }
+
+    private String getLiteralForCalculationType(Integer type) {
+        switch ( type ) {
+            case BaseSingleFieldConstraint.TYPE_LITERAL:
+                return GuidedDecisionTableConstants.INSTANCE.LiteralValue();
+            case BaseSingleFieldConstraint.TYPE_RET_VALUE:
+                return GuidedDecisionTableConstants.INSTANCE.Formula();
+            case BaseSingleFieldConstraint.TYPE_PREDICATE:
+                return GuidedDecisionTableConstants.INSTANCE.Predicate();
+            default:
+                return "--unkown--";
         }
 
     }
@@ -488,12 +511,13 @@ public class AuditLogEntryCellHelper {
                 // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
                 // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
                 if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sbFields);
-                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.BoundVariable(), diff.getOldValue(), diff.getValue(), sbFields);
-                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Field(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ActionSetFieldCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Fact(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ActionSetFieldCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Field(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_IS_INSERT_LOGICAL)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.LogicallyInsert(), diff.getOldValue(), diff.getValue(), sbFields);
-                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ActionSetFieldCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ActionSetFieldCol52.FIELD_UPDATE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.UpdateEngineWithChanges(), diff.getOldValue(), diff.getValue(), sbFields);
             }
         }
 
@@ -518,12 +542,36 @@ public class AuditLogEntryCellHelper {
                 // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
                 if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(LimitedEntryActionSetFieldCol52.FIELD_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Value(), diff.getOldValue(), diff.getValue(), sbFields);
-                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.BoundVariable(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Fact(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Field(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_IS_INSERT_LOGICAL)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.LogicallyInsert(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sbFields);
+            }
+        }
+
+        if (sbFields != null) {
+            sb.append( TEMPLATE.updatedFields( sbFields.toSafeHtml(), labelClass ));
+        }
+    }
+
+    private void buildColumnDetailsUpdate( final MetadataColumnDetails details,
+                                           final MetadataColumnDetails originalDetails,
+                                           List<BaseColumnFieldDiff> diffs,
+                                           final SafeHtmlBuilder sb ) {
+        sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction(details.getColumnHeader())) );
+
+        SafeHtmlBuilder sbFields = null;
+        // Show changed fields too.
+        if (diffs != null && !diffs.isEmpty()) {
+            sbFields = new SafeHtmlBuilder();
+            for (BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                if (changedFieldName.equals(MetadataCol52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sbFields);
+                if (changedFieldName.equals(MetadataCol52.FIELD_METADATA)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Metadata1(), diff.getOldValue(), diff.getValue(), sbFields);
+                if (changedFieldName.equals(MetadataCol52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sbFields);
+                if (changedFieldName.equals(MetadataCol52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sbFields);
             }
         }
 
