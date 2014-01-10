@@ -54,16 +54,19 @@ public class ProjectScreenServiceImpl
 
         model.setPOM( pomService.load( pathToPom ) );
         model.setPOMMetaData( metadataService.getMetadata( pathToPom ) );
+        model.setPathToPOM(pathToPom);
 
         final Project project = projectService.resolveProject( pathToPom );
 
         Path pathToKModule = project.getKModuleXMLPath();
         model.setKModule( kModuleService.load( pathToKModule ) );
         model.setKModuleMetaData( metadataService.getMetadata( pathToKModule ) );
+        model.setPathToKModule(pathToKModule);
 
         Path pathToProjectImports = project.getImportsPath();
         model.setProjectImports( projectService.load( pathToProjectImports ) );
         model.setProjectImportsMetaData( metadataService.getMetadata( pathToProjectImports ) );
+        model.setPathToImports(pathToProjectImports);
 
         return model;
     }

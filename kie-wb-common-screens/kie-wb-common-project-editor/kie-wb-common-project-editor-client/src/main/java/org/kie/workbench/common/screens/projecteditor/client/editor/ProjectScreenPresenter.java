@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -48,6 +49,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -76,9 +78,6 @@ public class ProjectScreenPresenter
 
     private Project project;
     private ObservablePath pathToPomXML;
-    //    private ObservablePath pathToKModule;
-//    private ObservablePath pathToImports;
-    private SaveOperationService saveOperationService;
 
     private Event<BuildResults> buildResultsEvent;
     private Event<NotificationEvent> notificationEvent;
@@ -93,6 +92,8 @@ public class ProjectScreenPresenter
 
     private BusyIndicatorView busyIndicatorView;
 
+    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
+
     public ProjectScreenPresenter() {
     }
 
@@ -101,7 +102,6 @@ public class ProjectScreenPresenter
                                    final ProjectContext workbenchContext,
                                    final Caller<ProjectScreenService> projectScreenService,
                                    final Caller<BuildService> buildServiceCaller,
-                                   final SaveOperationService saveOperationService,
                                    final Event<BuildResults> buildResultsEvent,
                                    final Event<NotificationEvent> notificationEvent,
                                    final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
@@ -112,7 +112,6 @@ public class ProjectScreenPresenter
 
         this.projectScreenService = projectScreenService;
         this.buildServiceCaller = buildServiceCaller;
-        this.saveOperationService = saveOperationService;
         this.buildResultsEvent = buildResultsEvent;
         this.notificationEvent = notificationEvent;
         this.changeTitleWidgetEvent = changeTitleWidgetEvent;
@@ -152,14 +151,17 @@ public class ProjectScreenPresenter
                         ProjectScreenPresenter.this.model = model;
 
                         view.setPOM( model.getPOM() );
-                        view.setDependencies( model.getPOM().getDependencies() );
-                        view.setPomMetadata( model.getPOMMetaData() );
+                        view.setDependencies(model.getPOM().getDependencies());
+                        view.setPomMetadata(model.getPOMMetaData());
+                        addConcurrentUpdateCommand(model.getPathToPOM());
 
                         view.setKModule( model.getKModule() );
-                        view.setKModuleMetadata( model.getKModuleMetaData() );
+                        view.setKModuleMetadata(model.getKModuleMetaData());
+                        addConcurrentUpdateCommand(model.getPathToKModule());
 
                         view.setImports( model.getProjectImports() );
-                        view.setImportsMetadata( model.getProjectImportsMetaData() );
+                        view.setImportsMetadata(model.getProjectImportsMetaData());
+                        addConcurrentUpdateCommand(model.getPathToImports());
 
                         view.hideBusyIndicator();
 
@@ -182,7 +184,8 @@ public class ProjectScreenPresenter
         if ( pathToPomXML != null ) {
             pathToPomXML.dispose();
         }
-        pathToPomXML = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( project.getPomXMLPath() );
+        pathToPomXML = addConcurrentUpdateCommand( project.getPomXMLPath() );
+
 
         pathToPomXML.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
@@ -226,6 +229,20 @@ public class ProjectScreenPresenter
                                    ).show();
             }
         } );
+
+    }
+
+    private ObservablePath addConcurrentUpdateCommand(Path path) {
+        ObservablePath observablePath = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
+
+        observablePath.onConcurrentUpdate(new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            @Override
+            public void execute(final ObservablePath.OnConcurrentUpdateEvent eventInfo) {
+                concurrentUpdateSessionInfo = eventInfo;
+            }
+        });
+
+        return observablePath;
     }
 
     private void disableMenus() {
@@ -433,8 +450,36 @@ public class ProjectScreenPresenter
         };
     }
 
-    private void saveProject( final RemoteCallback callback ) {
-        saveOperationService.save( pathToPomXML,
+    private void saveProject(final RemoteCallback callback) {
+        if (concurrentUpdateSessionInfo != null) {
+            newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
+                    concurrentUpdateSessionInfo.getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            save(callback);
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //cancel?
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            reload();
+                        }
+                    }
+            ).show();
+        } else {
+            save(callback);
+        }
+    }
+
+    private void save(final RemoteCallback callback) {
+        new SaveOperationService().save( pathToPomXML,
                                    new CommandWithCommitMessage() {
                                        @Override
                                        public void execute( final String comment ) {

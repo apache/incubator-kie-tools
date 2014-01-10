@@ -6,6 +6,8 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class ProjectScreenModel {
@@ -18,6 +20,9 @@ public class ProjectScreenModel {
     private Metadata projectImportsMetaData;
     private Categories projectCategories;
     private Metadata projectCategoriesMetaData;
+    private Path pathToPOM;
+    private Path pathToKModule;
+    private Path pathToImports;
 
     public POM getPOM() {
         return pom;
@@ -81,5 +86,29 @@ public class ProjectScreenModel {
 
     public void setProjectCategoriesMetaData(Metadata projectCategoriesMetaData) {
         this.projectCategoriesMetaData = projectCategoriesMetaData;
+    }
+
+    public Path getPathToPOM() {
+        return pathToPOM;
+    }
+
+    public Path getPathToKModule() {
+        return pathToKModule;
+    }
+
+    public Path getPathToImports() {
+        return pathToImports;
+    }
+
+    public void setPathToPOM(Path pathToPOM) {
+        this.pathToPOM = pathToPOM;
+    }
+
+    public void setPathToKModule(Path pathToKModule) {
+        this.pathToKModule = pathToKModule;
+    }
+
+    public void setPathToImports(Path pathToImports) {
+        this.pathToImports = pathToImports;
     }
 }
