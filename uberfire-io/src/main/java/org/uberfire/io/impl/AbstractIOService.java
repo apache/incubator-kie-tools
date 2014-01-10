@@ -16,6 +16,11 @@
 
 package org.uberfire.io.impl;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.file.StandardOpenOption.CREATE_NEW;
+import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static org.uberfire.java.nio.file.StandardOpenOption.WRITE;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -33,10 +38,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.lock.LockService;
+import org.uberfire.commons.lock.impl.ThreadLockServiceImpl;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOWatchService;
-import org.uberfire.commons.lock.impl.ThreadLockServiceImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.base.FileSystemState;
@@ -66,10 +73,9 @@ import org.uberfire.java.nio.security.SecurityAware;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.java.nio.file.StandardOpenOption.*;
-
 public abstract class AbstractIOService implements IOServiceIdentifiable {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractIOService.class);
 
     protected static final String DEFAULT_SERVICE_NAME = "default";
 
@@ -77,10 +83,12 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
 
     protected static final Charset UTF_8 = Charset.forName( "UTF-8" );
     public static final FileSystemType DEFAULT_FS_TYPE = new FileSystemType() {
+        @Override
         public String toString() {
             return "DEFAULT";
         }
 
+        @Override
         public int hashCode() {
             return toString().hashCode();
         }
@@ -231,6 +239,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         try {
             return registerFS( FileSystems.getFileSystem( uri ), DEFAULT_FS_TYPE );
         } catch ( final Exception ex ) {
+            logger.warn("Failed to register filesystem " + uri + " with DEFAULT_FS_TYPE. Returning null.", ex);
             return null;
         }
     }
