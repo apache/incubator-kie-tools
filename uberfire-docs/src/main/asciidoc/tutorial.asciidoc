@@ -419,6 +419,7 @@ of this after the `<dependencyManagement>` section:
     <dependency><groupId>org.jboss.weld</groupId><artifactId>weld-api</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>org.jboss.weld</groupId><artifactId>weld-spi</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>xml-apis</groupId><artifactId>xml-apis</artifactId><scope>provided</scope></dependency>
+    <dependency><groupId>com.sun.xml.bind</groupId><artifactId>jaxb-impl</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>org.jboss.errai.io.netty</groupId><artifactId>netty</artifactId><scope>provided</scope></dependency>
 
     <!-- And finally, add this -->
@@ -1256,6 +1257,29 @@ authentication and authorization checks altogether.
 
 TODO: why doesn't login.jsp have to be in this list?
 
+=== Enable the UberFire security CDI interceptors
+
+UberFire security relies in part on a pair of CDI interceptors which
+verify the current user has permission to invoke a particular
+operation (often this will be an RPC endpoint). CDI interceptors are
+disabled by default, so you have to create a beans.xml file which
+enables them:
+
+.Create src/main/webapp/WEB-INF/beans.xml
+[source,xml]
+------
+<beans>
+
+  <interceptors>
+    <class>org.uberfire.security.server.authz.cdi.RolesInterceptor</class>
+    <class>org.uberfire.security.server.authz.cdi.TraitInterceptor</class>
+  </interceptors>
+
+</beans>
+------
+
+TODO: couldn't these be enabled by a beans.xml inside uberfire-security.jar?
+
 At this point, we have fully configured UberFire Security.
 
 == Set up the VFS
@@ -1267,6 +1291,8 @@ server-side piece that needs to be configured: the Virtual File System
 UberFire's Workbench GUI module relies on the UberFire VFS for storing
 perspective definitions, perspective geometries, editor-to-filename
 associations, and more.
+
+=== Select the file system providers
 
 You select the UberFire's VFS implementations the same way as you
 choose UberFire security components: using Java's Service Loader
@@ -1283,6 +1309,141 @@ This tells UberFire to use its git-based filesystem as the default VFS
 (because it is first in the list), and also registers the simple
 filesystem provider. The simple filesystem provider is not optional;
 it is required for temporary files.
+
+=== Bootstrap the IO Service on the server side
+
+UberFire web applications access the shared VFS via RPC (remote
+procedure calls) to the server-side IO service, and this service needs
+some help getting started when the web application is first started on
+the server.
+
+Create the following two classes to ensure the IO service starts up
+when the application is deployed to the server:
+
+.Create src/main/java/com/mycompany/uftutorial/server/UberFireConfiguration.java
+[source,java]
+------
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.mycompany.uftutorial.server;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.jboss.errai.common.client.api.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.commons.services.cdi.StartupType;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
+
+@Startup(StartupType.BOOTSTRAP)
+@ApplicationScoped
+public class UberFireConfiguration {
+
+  private static final Logger logger =
+  LoggerFactory.getLogger(UberFireConfiguration.class);
+
+  @Inject
+  @Named("clusterServiceFactory")
+  private ClusterServiceFactory clusterServiceFactory;
+
+  private IOService ioService;
+
+  @PostConstruct
+  public void setup() {
+    if ( clusterServiceFactory == null ) {
+      ioService = new IOServiceDotFileImpl();
+    } else {
+      ioService = new IOServiceClusterImpl( new
+  IOServiceDotFileImpl(), clusterServiceFactory );
+    }
+    logger.debug("Using IOService: " + ioService);
+  }
+
+  @PreDestroy
+  public void onShutdown() {
+    ioService.dispose();
+  }
+
+  @Produces
+  @Named("ioStrategy")
+  public IOService ioService() {
+    return Assert.notNull(ioService);
+  }
+
+}
+------
+
+And this second class, which is separately responsible for ensuring
+that UberFire's ConfigurationService is bootstrapped. Unfortunately,
+you can't just inject ConfigurationService into the above class,
+because the ConfigurationService depends on the IOService, and the
+above class is responsible for producing the IOService instance. This
+leads Weld to print a warning about the circular dependency.
+
+.Create src/main/java/com/mycompany/uftutorial/server/UberFireServerBootstrapper.java
+------
+package com.mycompany.uftutorial.server;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.commons.services.cdi.Startup;
+
+/**
+ * This class is a workaround to ensure the UberFire ConfigurationService has
+ * been initialized before the first client request comes in (it has side
+ * effects, including bootstrapping the filesystem service). See JIRA issue
+ * UF-17 for details.
+ * <p>
+ * Unfortunately, we can't simply inject {@link ConfigurationService} into our
+ * {@link UberFireConfiguration} bean, because that creates a circular injection
+ * dependency chain.
+ */
+@Startup
+@ApplicationScoped
+public class UberFireServerBootstrapper {
+
+  private static final Logger logger =
+  LoggerFactory.getLogger(UberFireServerBootstrapper.class);
+
+  @Inject ConfigurationService configurationService;
+
+  @PostConstruct
+  private void init() {
+    configurationService.toString(); // this line ensures the ConfigurationService bean is really instantiated. do not remove!
+    logger.info("Finished creating UberFire ConfigurationService");
+  }
+}
+------
+
 
 == Enable the UberFire CDI Extensions
 
@@ -1379,9 +1540,11 @@ an entry point, annotate it with `@EntryPoint`. Put the following in
 ---------
 package com.mycompany.uftutorial.client;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.uberfire.client.UberFirePreferences;
 import org.uberfire.workbench.events.ApplicationReadyEvent;
 
 import com.google.gwt.animation.client.Animation;
@@ -1393,15 +1556,28 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class ClientEntryPoint {
 
   /**
-   * Gets invoked when the UberFire framework has bootstrapped itself.
+   * Gets invoked early in the startup sequence, as soon as all this bean's
+   * {@code @Inject'ed} fields are initialized. Errai Bus and UberFire services
+   * are not yet available.
    */
-  private void init(@Observes final ApplicationReadyEvent event) {
+  @PostConstruct
+  private void earlyInit() {
+    UberFirePreferences.setProperty("org.uberfire.client.workbench.widgets.listbar.context.disable",
+  true);
+  }
+
+  /**
+   * Gets invoked late in the startup sequence, when all UberFire framework
+   * bootstrapping has completed.
+   */
+  private void finalInit(@Observes final ApplicationReadyEvent event)
+  {
     hideLoadingPopup();
   }
 
   /**
-   * Fades out the "Loading application" pop-up which was included in
-   * the host page by UberFireServlet.
+   * Fades out the "Loading application" pop-up which was included in the host
+   * page by UberFireServlet.
    */
   private void hideLoadingPopup() {
       final Element e = RootPanel.get( "loading" ).getElement();
@@ -1564,11 +1740,12 @@ public class HomePerspective {
   public PerspectiveDefinition getPerspective() {
     final PerspectiveDefinition p = new
   PerspectiveDefinitionImpl(PanelType.ROOT_LIST);
+    p.setTransient(true);
     p.setName(getClass().getName());
     p.getRoot().addPart(
             new PartDefinitionImpl(
                     new DefaultPlaceRequest(HelloWorldScreen.class.getName())));
-    p.setTransient(true);
+
     return p;
   }
 
@@ -1852,7 +2029,7 @@ left-hand side and populate it with MoodScreen by default.
             DefaultPlaceRequest(HelloWorldScreen.class.getName())));
 
     // BEGIN new stuff to add
-    PanelDefinitionImpl westPanel = new PanelDefinitionImpl(PanelType.ROOT_LIST);
+    PanelDefinitionImpl westPanel = new PanelDefinitionImpl(PanelType.MULTI_LIST);
     p.getRoot().insertChild(Position.WEST, westPanel);
     westPanel.setWidth(250);
     westPanel.addPart(
@@ -1930,8 +2107,7 @@ import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Header;
-import
-org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -1964,8 +2140,8 @@ public class AppMenuBar extends Composite implements Header {
     Menus menus =
       MenuFactory.newTopLevelMenu("Screens")
         .menus()
-          .menu("Hello Screen").respondsWith(makeScreenCommand(HelloWorldScreen.class)).endMenu()
-          .menu("Mood Screen").respondsWith(makeScreenCommand(MoodScreen.class)).endMenu()
+          .menu("Hello Screen").respondsWith(makeGoToPlaceCommand(HelloWorldScreen.class)).endMenu()
+          .menu("Mood Screen").respondsWith(makeGoToPlaceCommand(MoodScreen.class)).endMenu()
         .endMenus()
       .endMenu()
       .newTopLevelMenu("Other")
@@ -1983,14 +2159,11 @@ public class AppMenuBar extends Composite implements Header {
     menuBarPresenter.addMenus(menus);
   }
 
-  private Command makeScreenCommand(final Class<?> screenClass) {
+  private Command makeGoToPlaceCommand(final Class<?> placeClass) {
     return new Command() {
       @Override
       public void execute() {
-        // screenClass.getName() works as a place name in our app
-        // because we chose to name our screens after their FQCNs.
-        // If you used arbitrary names for your screens, this won't work.
-        placeManager.goTo(screenClass.getName());
+        placeManager.goTo(placeClass.getName());
       }
     };
   }
@@ -2123,7 +2296,7 @@ go to your browser and hit the refresh button!
 
 This time, you should see a toolbar sandwiched between the menu bar
 and the rest of the page's content. The toolbar should contain one
-button with an asterix icon on it. Every time you press the button,
+button with an asterisk icon on it. Every time you press the button,
 the panel titled ``Greetings'' (the `HelloWorldScreen`) should reset
 back to its initial message.
 
@@ -2152,4 +2325,131 @@ Or grab
 link:https://github.com/uberfire/uberfire-tutorial/archive/checkpoint-4.zip[a zipfile of the sources].
 ======
 
+
 == Define a second perspective
+
+Now let's define a second perspective that contains the same two
+screens arranged in a different layout.
+
+.Create src/main/java/com/mycompany/uftutorial/client/HorizontalPerspective.java
+[source,java]
+------
+package com.mycompany.uftutorial.client;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.PanelType;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+
+@ApplicationScoped
+@WorkbenchPerspective(
+    identifier =
+    "com.mycompany.uftutorial.client.HorizontalPerspective")
+public class HorizontalPerspective {
+
+  @Perspective
+  public PerspectiveDefinition getPerspective() {
+    final PerspectiveDefinition p = new
+  PerspectiveDefinitionImpl(PanelType.ROOT_LIST);
+    p.setTransient(true);
+    p.setName(getClass().getName());
+
+    p.getRoot().addPart(
+            new PartDefinitionImpl(
+                    new
+            DefaultPlaceRequest(HelloWorldScreen.class.getName())));
+
+    PanelDefinitionImpl northPanel = new
+    PanelDefinitionImpl(PanelType.MULTI_LIST);
+    p.getRoot().insertChild(Position.NORTH, northPanel);
+    northPanel.setHeight(300);
+    northPanel.addPart(
+            new PartDefinitionImpl(
+                    new
+    DefaultPlaceRequest(MoodScreen.class.getName())));
+
+    return p;
+  }
+
+}
+------
+
+This looks very much like what we did in `HomePerspective` except this
+time we're docking the second panel at the north edge of the root
+panel rather than the west.
+
+To give ourselves a way to switch between the perspectives, let's add
+a new top-level menu item:
+
+.Modify src/main/java/com/mycompany/uftutorial/client/AppMenuBar.java
+[source,java]
+------
+// (other methods remain unchanged)
+
+  @PostConstruct
+  private void initMenus() {
+    Menus menus =
+      MenuFactory.newTopLevelMenu("Screens")
+        .menus()
+          .menu("Hello Screen").respondsWith(makeGoToPlaceCommand(HelloWorldScreen.class)).endMenu()
+          .menu("Mood Screen").respondsWith(makeGoToPlaceCommand(MoodScreen.class)).endMenu()
+        .endMenus()
+      .endMenu()
+// BEGIN new code to insert
+      .newTopLevelMenu("Perspectives")
+        .menus()
+          .menu("Home Perspective").respondsWith(makeGoToPlaceCommand(HomePerspective.class)).endMenu()
+          .menu("Horizontal Perspective").respondsWith(makeGoToPlaceCommand(HorizontalPerspective.class)).endMenu()
+        .endMenus()
+      .endMenu()
+// END new code to insert
+      .newTopLevelMenu("Other")
+        .menus()
+          .menu("Alert Box").respondsWith(new Command() {
+              @Override
+              public void execute() {
+                Window.alert("Hi. I'm an Alert Box.");
+              }
+            }).endMenu()
+        .endMenus()
+      .endMenu()
+    .build();
+
+    menuBarPresenter.addMenus(menus);
+  }
+------
+
+Luckily, we get to reuse our `makeGoToPlaceCommand()` method for
+creating the Command callbacks that switch between perspectives.
+
+=== Time to see it work!
+
+Refresh the browser window once again, and you should now see the new
+Perspectives menu. Select "Horizontal Perspective" to press this new
+perspective into action.
+
+[TIP]
+.Not Working?
+======
+At this point, your project should be more-or-less identical to the
+Tutorial project at the
+link:https://github.com/uberfire/uberfire-tutorial/tree/checkpoint-5[checkpoint-5
+tag]. If your project isn't working at this point, grab that one and
+compare yours with it.
+
+......
+$ git clone https://github.com/uberfire/uberfire-tutorial.git
+$ cd uberfire-tutorial
+$ git checkout checkpoint-5
+......
+
+Or grab
+link:https://github.com/uberfire/uberfire-tutorial/archive/checkpoint-5.zip[a zipfile of the sources].
+======
