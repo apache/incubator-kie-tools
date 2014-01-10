@@ -661,23 +661,29 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         Date when = null;
 
         if ( options != null && !options.isEmpty() ) {
-            for ( final Option option : options ) {
-                if ( option instanceof CommentedOption ) {
-                    final CommentedOption op = (CommentedOption) option;
-                    sessionId = op.getSessionId();
-                    name = op.getName();
-                    email = op.getEmail();
-                    if ( op.getMessage() != null && !op.getMessage().trim().isEmpty() ) {
-                        message = op.getMessage();
-                    }
-                    timeZone = op.getTimeZone();
-                    when = op.getWhen();
-                    break;
+            final CommentedOption op = extractCommentedOption( options );
+            if ( op != null ) {
+                sessionId = op.getSessionId();
+                name = op.getName();
+                email = op.getEmail();
+                if ( op.getMessage() != null && !op.getMessage().trim().isEmpty() ) {
+                    message = op.getMessage();
                 }
+                timeZone = op.getTimeZone();
+                when = op.getWhen();
             }
         }
 
         return new CommitInfo( sessionId, name, email, message, timeZone, when );
+    }
+
+    final CommentedOption extractCommentedOption( final Collection<? extends Option> options ) {
+        for ( final Option option : options ) {
+            if ( option instanceof CommentedOption ) {
+                return (CommentedOption) option;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -727,7 +733,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                     File tempDot = null;
                     final boolean hasDotContent;
                     if ( options != null && options.contains( new DotFileOption() ) ) {
-                        deleteIfExists( dot( path ) );
+                        deleteIfExists( dot( path ), extractCommentedOption( options ) );
                         tempDot = File.createTempFile( "meta", "dot" );
                         hasDotContent = buildDotFile( path, new FileOutputStream( tempDot ), attrs );
                     } else {
