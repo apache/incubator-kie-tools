@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -49,7 +48,6 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -148,20 +146,18 @@ public class ProjectScreenPresenter
                 new RemoteCallback<ProjectScreenModel>() {
                     @Override
                     public void callback( ProjectScreenModel model ) {
+                        concurrentUpdateSessionInfo = null;
                         ProjectScreenPresenter.this.model = model;
 
                         view.setPOM( model.getPOM() );
-                        view.setDependencies(model.getPOM().getDependencies());
-                        view.setPomMetadata(model.getPOMMetaData());
-                        addConcurrentUpdateCommand(model.getPathToPOM());
+                        view.setDependencies( model.getPOM().getDependencies() );
+                        view.setPomMetadata( model.getPOMMetaData() );
 
                         view.setKModule( model.getKModule() );
-                        view.setKModuleMetadata(model.getKModuleMetaData());
-                        addConcurrentUpdateCommand(model.getPathToKModule());
+                        view.setKModuleMetadata( model.getKModuleMetaData() );
 
                         view.setImports( model.getProjectImports() );
-                        view.setImportsMetadata(model.getProjectImportsMetaData());
-                        addConcurrentUpdateCommand(model.getPathToImports());
+                        view.setImportsMetadata( model.getProjectImportsMetaData() );
 
                         view.hideBusyIndicator();
 
@@ -184,8 +180,15 @@ public class ProjectScreenPresenter
         if ( pathToPomXML != null ) {
             pathToPomXML.dispose();
         }
-        pathToPomXML = addConcurrentUpdateCommand( project.getPomXMLPath() );
 
+        pathToPomXML = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( project.getPomXMLPath() );
+
+        pathToPomXML.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
+                concurrentUpdateSessionInfo = eventInfo;
+            }
+        } );
 
         pathToPomXML.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
@@ -229,20 +232,6 @@ public class ProjectScreenPresenter
                                    ).show();
             }
         } );
-
-    }
-
-    private ObservablePath addConcurrentUpdateCommand(Path path) {
-        ObservablePath observablePath = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
-
-        observablePath.onConcurrentUpdate(new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
-            @Override
-            public void execute(final ObservablePath.OnConcurrentUpdateEvent eventInfo) {
-                concurrentUpdateSessionInfo = eventInfo;
-            }
-        });
-
-        return observablePath;
     }
 
     private void disableMenus() {
@@ -450,47 +439,47 @@ public class ProjectScreenPresenter
         };
     }
 
-    private void saveProject(final RemoteCallback callback) {
-        if (concurrentUpdateSessionInfo != null) {
-            newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
-                    concurrentUpdateSessionInfo.getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            save(callback);
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel?
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            reload();
-                        }
-                    }
-            ).show();
+    private void saveProject( final RemoteCallback callback ) {
+        if ( concurrentUpdateSessionInfo != null ) {
+            newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                                 concurrentUpdateSessionInfo.getIdentity(),
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         save( callback );
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //cancel?
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         reload();
+                                     }
+                                 }
+                               ).show();
         } else {
-            save(callback);
+            save( callback );
         }
     }
 
-    private void save(final RemoteCallback callback) {
+    private void save( final RemoteCallback callback ) {
         new SaveOperationService().save( pathToPomXML,
-                                   new CommandWithCommitMessage() {
-                                       @Override
-                                       public void execute( final String comment ) {
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String comment ) {
 
-                                           view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
-                                           projectScreenService.call( callback,
-                                                                      new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML, model, comment );
+                                                 projectScreenService.call( callback,
+                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML, model, comment );
 
-                                       }
-                                   } );
+                                             }
+                                         } );
     }
 
     private RemoteCallback getBuildSuccessCallback() {
