@@ -3,15 +3,19 @@ package org.uberfire.backend.server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.services.cdi.ApplicationStarted;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.file.FileSystem;
@@ -59,6 +63,30 @@ public abstract class AbstractWatchService implements IOWatchService {
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
     private boolean isDisposed = false;
 
+    private boolean started;
+    private Set<Thread> watchThreads = new HashSet<Thread>();
+
+    public AbstractWatchService() {
+        final boolean autostart = Boolean.parseBoolean(System.getProperty("org.uberfire.watcher.autostart", "true"));
+        if (autostart) {
+            start();
+        }
+    }
+
+    public void configureOnEvent(@Observes ApplicationStarted applicationStartedEvent) {
+        start();
+    }
+
+    public synchronized void start() {
+        if (!started) {
+            this.started = true;
+            for (Thread watchThread : watchThreads) {
+                watchThread.start();
+            }
+            watchServices.clear();
+        }
+    }
+
     public void dispose() {
         isDisposed = true;
         for ( final WatchService watchService : watchServices ) {
@@ -76,7 +104,7 @@ public abstract class AbstractWatchService implements IOWatchService {
         fileSystems.add( fs );
         watchServices.add( ws );
 
-        new Thread( this.getClass().getName() + "(" + ws.toString() + ")" ) {
+        Thread watchThread = new Thread( this.getClass().getName() + "(" + ws.toString() + ")" ) {
             @Override
             public void run() {
                 while ( !isDisposed && !ws.isClose() ) {
@@ -139,7 +167,13 @@ public abstract class AbstractWatchService implements IOWatchService {
                     }
                 }
             }
-        }.start();
+        };
+
+        if (started) {
+            watchThread.start();
+        } else {
+            watchThreads.add(watchThread);
+        }
     }
 
     private ResourceEvent toEvent( final Path path,
