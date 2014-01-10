@@ -33,6 +33,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
@@ -104,6 +105,8 @@ public class PlaceManagerImpl
 
     private Map<String, SplashScreenActivity> activeSplashScreens = new HashMap<String, SplashScreenActivity>();
     private Map<PlaceRequest, Activity> onMayCloseList = new HashMap<PlaceRequest, Activity>();
+
+    private OnLoadingPerspective loadingPerspective = new OnLoadingPerspective();
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
@@ -195,9 +198,9 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public void goTo( PlaceRequest place,
-                      Command callback,
-                      PanelDefinition panel ) {
+    public void goTo( final PlaceRequest place,
+                      final Command callback,
+                      final PanelDefinition panel ) {
         if ( place == null || place.equals( DefaultPlaceRequest.NOWHERE ) ) {
             return;
         }
@@ -217,14 +220,37 @@ public class PlaceManagerImpl
                                 (PopupActivity) activity,
                                 callback );
             } else if ( activity instanceof PerspectiveActivity ) {
-                final PerspectiveDefinition activePerspective = panelManager.getPerspective();
-                if ( activePerspective != null && !activePerspective.isTransient() ) {
-                    wbServices.call().save( activePerspective );
-                }
-                if ( closeAllCurrentPanels() ) {
-                    launchActivity( requestPair.getK2(),
-                                    (PerspectiveActivity) activity,
-                                    callback );
+                final Command launchActivity = new Command() {
+                    @Override
+                    public void execute() {
+                        if ( closeAllCurrentPanels() ) {
+                            launchActivity( requestPair.getK2(),
+                                            (PerspectiveActivity) activity,
+                                            callback );
+                        }
+
+                    }
+                };
+                final Command loadPerspective = new Command() {
+                    @Override
+                    public void execute() {
+                        final PerspectiveDefinition activePerspective = panelManager.getPerspective();
+                        if ( activePerspective != null && !activePerspective.isTransient() ) {
+                            wbServices.call( new RemoteCallback<Object>() {
+                                @Override
+                                public void callback( Object o ) {
+                                    launchActivity.execute();
+                                }
+                            } ).save( activePerspective );
+                        } else {
+                            launchActivity.execute();
+                        }
+                    }
+                };
+                if ( loadingPerspective.isLoading() ) {
+                    loadingPerspective.executeOnLoad( loadPerspective );
+                } else {
+                    loadPerspective.execute();
                 }
             }
         } else {
@@ -556,6 +582,7 @@ public class PlaceManagerImpl
     private void launchActivity( final PlaceRequest place,
                                  final PerspectiveActivity activity,
                                  final Command callback ) {
+        loadingPerspective.startLoading();
         activeSplashScreens.clear();
         perspectiveChangeEvent.fire( new PerspectiveChange( activity.getPerspective(), activity.getMenus(), activity.getIdentifier() ) );
         final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
@@ -565,6 +592,7 @@ public class PlaceManagerImpl
             splashScreen.launch( place, null );
         }
         newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
+        loadingPerspective.endLoading();
     }
 
     public void updateHistory( PlaceRequest request ) {
@@ -678,6 +706,32 @@ public class PlaceManagerImpl
             tempBus = new SimpleEventBus();
         }
         return tempBus;
+    }
+
+    private class OnLoadingPerspective {
+
+        boolean loading = false;
+        private Command command;
+
+        public void executeOnLoad( final Command command ) {
+            this.command = command;
+        }
+
+        public void startLoading() {
+            this.loading = true;
+        }
+
+        public void endLoading() {
+            this.loading = false;
+            if ( command != null ) {
+                command.execute();
+                command = null;
+            }
+        }
+
+        public boolean isLoading() {
+            return loading;
+        }
     }
 
 }
