@@ -217,6 +217,7 @@ public class GuidedRuleEditorPresenter {
     }
 
     private void reload() {
+        concurrentUpdateSessionInfo = null;
         changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         loadContent();
@@ -403,6 +404,8 @@ public class GuidedRuleEditorPresenter {
                                     commitMessage);
                         }
                     });
+
+            concurrentUpdateSessionInfo = null;
         } else {
             ErrorPopup.showMessage(validator.getErrorMessage());
         }

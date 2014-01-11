@@ -213,6 +213,7 @@ public class GuidedRuleTemplateEditorPresenter {
     }
 
     private void reload() {
+        concurrentUpdateSessionInfo = null;
         changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         loadContent();
@@ -414,6 +415,7 @@ public class GuidedRuleTemplateEditorPresenter {
                                                                                                                         commitMessage );
                                              }
                                          } );
+        concurrentUpdateSessionInfo = null;
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {

@@ -116,6 +116,7 @@ public class ScoreCardXLSEditorViewImpl
                                          new org.uberfire.mvp.Command() {
                                              @Override
                                              public void execute() {
+                                                 concurrentUpdateSessionInfo = null;
                                                  presenter.reload();
                                              }
                                          }
@@ -165,6 +166,7 @@ public class ScoreCardXLSEditorViewImpl
 
                              }
                            );
+        concurrentUpdateSessionInfo = null;
     }
 
     @Override

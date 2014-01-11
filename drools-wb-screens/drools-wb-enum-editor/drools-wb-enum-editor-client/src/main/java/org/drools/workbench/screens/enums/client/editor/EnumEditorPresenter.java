@@ -188,6 +188,7 @@ public class EnumEditorPresenter {
     }
 
     private void reload() {
+        concurrentUpdateSessionInfo = null;
         changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         loadContent();
@@ -337,6 +338,7 @@ public class EnumEditorPresenter {
                                                                                                                             commitMessage );
                                              }
                                          } );
+        concurrentUpdateSessionInfo = null;
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {

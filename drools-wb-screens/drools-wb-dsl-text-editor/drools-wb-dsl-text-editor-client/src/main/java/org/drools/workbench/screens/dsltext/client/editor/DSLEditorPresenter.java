@@ -184,6 +184,7 @@ public class DSLEditorPresenter {
     }
 
     private void reload() {
+        concurrentUpdateSessionInfo = null;
         changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         loadContent();
@@ -320,6 +321,8 @@ public class DSLEditorPresenter {
                                                                                                                                      commitMessage );
                                              }
                                          } );
+
+        concurrentUpdateSessionInfo = null;
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {

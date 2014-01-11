@@ -117,6 +117,7 @@ public class DecisionTableXLSEditorViewImpl
                                              @Override
                                              public void execute() {
                                                  presenter.reload();
+                                                 concurrentUpdateSessionInfo = null;
                                              }
                                          }
                                        ).show();
@@ -166,6 +167,7 @@ public class DecisionTableXLSEditorViewImpl
 
                              }
                            );
+        concurrentUpdateSessionInfo = null;
     }
 
     @Override
