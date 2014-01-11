@@ -19,7 +19,6 @@ package org.uberfire.java.nio.fs.jgit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +26,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +34,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
@@ -58,6 +60,8 @@ import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 public class JGitFileSystem implements FileSystem,
                                        FileSystemId {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger( JGitFileSystem.class );
+
     private static final Set<String> SUPPORTED_ATTR_VIEWS = Collections.unmodifiableSet( new HashSet<String>() {{
         add( "basic" );
         add( "version" );
@@ -71,7 +75,7 @@ public class JGitFileSystem implements FileSystem,
     private final FileStore fileStore;
     private final String name;
     private final CredentialsProvider credential;
-    private final Map<WatchService, Queue<WatchKey>> events = new HashMap<WatchService, Queue<WatchKey>>();
+    private final Map<WatchService, Queue<WatchKey>> events = new ConcurrentHashMap<WatchService, Queue<WatchKey>>();
     private final Collection<WatchService> watchServices = new ArrayList<WatchService>();
 
     JGitFileSystem( final JGitFileSystemProvider provider,
@@ -329,12 +333,22 @@ public class JGitFileSystem implements FileSystem,
         }
         gitRepo.getRepository().close();
         isClose = true;
-        for ( final WatchService ws : watchServices ) {
-            ws.close();
+        try {
+
+            for ( final WatchService ws : new ArrayList<WatchService>( watchServices ) ) {
+                try {
+                    ws.close();
+                } catch ( final Exception ex ) {
+                    LOGGER.error( "Can't close watch service [" + toString() + "]", ex );
+                }
+            }
+            watchServices.clear();
+            events.clear();
+        } catch ( final Exception ex ) {
+            LOGGER.error( "Error during close of WatchServices [" + toString() + "]", ex );
+        } finally {
+            provider.onCloseFileSystem( this );
         }
-        watchServices.clear();
-        events.clear();
-        provider.onCloseFileSystem( this );
     }
 
     private void checkClose() throws IllegalStateException {
