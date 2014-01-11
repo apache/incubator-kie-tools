@@ -242,6 +242,7 @@ public class ProjectScreenPresenter
     }
 
     private void reload() {
+        concurrentUpdateSessionInfo = null;
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         init();
     }
@@ -480,6 +481,7 @@ public class ProjectScreenPresenter
 
                                              }
                                          } );
+        concurrentUpdateSessionInfo = null;
     }
 
     private RemoteCallback getBuildSuccessCallback() {
