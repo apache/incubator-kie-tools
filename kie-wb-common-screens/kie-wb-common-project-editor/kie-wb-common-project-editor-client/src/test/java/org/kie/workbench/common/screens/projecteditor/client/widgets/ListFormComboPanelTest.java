@@ -25,8 +25,7 @@ import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.mockito.ArgumentCaptor;
 
-import static org.jgroups.util.Util.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ListFormComboPanelTest {
@@ -53,6 +52,9 @@ public class ListFormComboPanelTest {
         items = new HashMap<String, HasListFormComboPanelProperties>();
 
         presenter = panel;
+
+        panel.setItems(items);
+
     }
 
     @Test
@@ -60,7 +62,6 @@ public class ListFormComboPanelTest {
         items.put("a", createItem("a", false));
         items.put("b", createItem("b", true));
         items.put("c", createItem("c", false));
-        panel.setItems(items);
 
         presenter.onSelect("a");
         presenter.onSelect("b");
@@ -73,14 +74,8 @@ public class ListFormComboPanelTest {
 
     @Test
     public void testAddNew() throws Exception {
-        panel.setItems(items);
 
-        presenter.onAdd();
-
-        ArgumentCaptor<PopupSetFieldCommand> commandArgumentCaptor = ArgumentCaptor.forClass(PopupSetFieldCommand.class);
-        verify(namePopup).show(commandArgumentCaptor.capture());
-
-        commandArgumentCaptor.getValue().setName("kbase1");
+        addItem("kbase1");
 
         verify(view).addItem("kbase1");
         ArgumentCaptor<HasListFormComboPanelProperties> propertiesArgumentCaptor = ArgumentCaptor.forClass(HasListFormComboPanelProperties.class);
@@ -94,9 +89,22 @@ public class ListFormComboPanelTest {
     }
 
     @Test
+    public void testAddNewInvalidName() throws Exception {
+
+        addItem("123kbase");
+
+        verify(view).showXsdIDError();
+        verify(view, never()).addItem("kbase1");
+        verify(form, never()).setModel(any());
+        verify(view, never()).enableItemEditingButtons();
+        verify(view, never()).enableMakeDefault();
+        assertFalse(items.containsKey("123kbase1"));
+
+    }
+
+    @Test
     public void testDelete() throws Exception {
         items.put("kbase", newItem("kbase"));
-        panel.setItems(items);
 
         presenter.onSelect("kbase");
         presenter.onRemove();
@@ -107,6 +115,52 @@ public class ListFormComboPanelTest {
         verify(form).clear();
 
         assertTrue(items.isEmpty());
+    }
+
+    @Test
+    public void testRename() throws Exception {
+
+        items.put("kbase", newItem("kbase"));
+        presenter.onSelect("kbase");
+
+        presenter.onRename();
+
+        ArgumentCaptor<PopupSetFieldCommand> commandArgumentCaptor = ArgumentCaptor.forClass(PopupSetFieldCommand.class);
+        verify(namePopup).show(commandArgumentCaptor.capture());
+
+        commandArgumentCaptor.getValue().setName("my_kbase");
+
+        assertFalse(items.containsKey("kbase1"));
+        assertTrue(items.containsKey("my_kbase"));
+
+    }
+
+    @Test
+    public void testRenameInvalidName() throws Exception {
+
+        items.put("kbase", newItem("kbase"));
+        presenter.onSelect("kbase");
+
+        presenter.onRename();
+
+        ArgumentCaptor<PopupSetFieldCommand> commandArgumentCaptor = ArgumentCaptor.forClass(PopupSetFieldCommand.class);
+        verify(namePopup).show(commandArgumentCaptor.capture());
+
+        commandArgumentCaptor.getValue().setName("123kbase");
+
+        verify(view).showXsdIDError();
+        assertTrue(items.containsKey("kbase"));
+        assertFalse(items.containsKey("my_kbase"));
+
+    }
+
+    private void addItem(String kbaseName) {
+        presenter.onAdd();
+
+        ArgumentCaptor<PopupSetFieldCommand> commandArgumentCaptor = ArgumentCaptor.forClass(PopupSetFieldCommand.class);
+        verify(namePopup).show(commandArgumentCaptor.capture());
+
+        commandArgumentCaptor.getValue().setName(kbaseName);
     }
 
     private HasListFormComboPanelProperties createItem(final String name, final boolean b) {

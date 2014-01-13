@@ -24,7 +24,6 @@ import org.guvnor.common.services.project.model.KSessionModel;
 public interface KSessionsPanelView
         extends IsWidget {
 
-
     public interface Presenter {
 
         void onAdd();
@@ -34,6 +33,8 @@ public interface KSessionsPanelView
         void onOptionsSelectedForKSessions(KSessionModel kSessionModel);
 
         void onDelete(KSessionModel kSessionModel);
+
+        void onRename(KSessionModel model, String name);
     }
 
     void makeReadOnly();
@@ -45,5 +46,9 @@ public interface KSessionsPanelView
     void setItemList(List<KSessionModel> list);
 
     void showOptionsPopUp(KSessionModel kSessionModel);
+
+    void refresh();
+
+    void showXsdIDError();
 
 }

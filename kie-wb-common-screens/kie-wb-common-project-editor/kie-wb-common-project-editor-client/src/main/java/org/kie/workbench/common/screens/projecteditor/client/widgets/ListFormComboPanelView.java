@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface ListFormComboPanelView
         extends IsWidget {
 
+
     interface Presenter {
 
         void onRemove();
@@ -50,6 +51,8 @@ public interface ListFormComboPanelView
     void showPleaseSelectAnItem();
 
     void showThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName();
+
+    void showXsdIDError();
 
     void enableItemEditingButtons();
 

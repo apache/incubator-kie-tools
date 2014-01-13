@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.HasListFormComboPanelProperties;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperties>
         implements IsWidget, ListFormComboPanelView.Presenter {
@@ -35,8 +36,8 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
     private final Form<T> form;
 
     public ListFormComboPanel(ListFormComboPanelView view,
-                              Form<T> form,
-                              FormPopup namePopup) {
+            Form<T> form,
+            FormPopup namePopup) {
         this.view = view;
         this.namePopup = namePopup;
         this.form = form;
@@ -72,6 +73,8 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
             public void setName(String name) {
                 if (items.containsKey(name)) {
                     view.showThereAlreadyExistAnItemWithTheGivenNamePleaseSelectAnotherName();
+                } else if (!XsdIDValidator.validate(name)) {
+                    view.showXsdIDError();
                 } else {
                     T model = createNew(name);
 
@@ -92,17 +95,21 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
         namePopup.show(new PopupSetFieldCommand() {
             @Override
             public void setName(String name) {
-                T model = items.get(selectedItemName);
-                items.remove(selectedItemName);
-                model.setName(name);
-                items.put(name, model);
+                if (XsdIDValidator.validate(name)) {
+                    T model = items.get(selectedItemName);
+                    items.remove(selectedItemName);
+                    model.setName(name);
+                    items.put(name, model);
 
-                view.remove(selectedItemName);
-                view.addItem(name);
+                    view.remove(selectedItemName);
+                    view.addItem(name);
 
-                setSelected(model);
+                    setSelected(model);
 
-                namePopup.hide();
+                    namePopup.hide();
+                } else {
+                    view.showXsdIDError();
+                }
             }
         });
     }
@@ -125,7 +132,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
 
     public void refresh() {
         if (itemsIsNotNullOrEmpty()) {
-          setSelected(getFirstItem());
+            setSelected(getFirstItem());
         } else {
             selectedItemName = null;
             form.clear();

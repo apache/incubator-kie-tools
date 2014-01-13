@@ -245,4 +245,6 @@ public interface ProjectEditorConstants
     String Refreshing();
 
     String ABuildIsAlreadyRunning();
+
+    String XsdIDError();
 }

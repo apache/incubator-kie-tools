@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.KSessionModel;
+import org.kie.workbench.common.screens.projecteditor.client.widgets.XsdIDValidator;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 
@@ -62,17 +63,32 @@ public class KSessionsPanel
     @Override
     public void onAdd() {
         namePopup.show(new PopupSetFieldCommand() {
-            @Override public void setName(String name) {
-                KSessionModel model = new KSessionModel();
-                model.setName(name);
+            @Override
+            public void setName(String name) {
+                if (XsdIDValidator.validate(name)) {
+                    KSessionModel model = new KSessionModel();
+                    model.setName(name);
 
-                items.add(model);
-                view.setItemList(items);
+                    items.add(model);
+                    view.setItemList(items);
 
-                namePopup.setOldName("");
-                namePopup.hide();
+                    namePopup.setOldName("");
+                    namePopup.hide();
+                } else {
+                    view.showXsdIDError();
+                }
             }
         });
+    }
+
+    @Override
+    public void onRename(KSessionModel model, String name) {
+        if (XsdIDValidator.validate(name)) {
+            model.setName(name);
+        } else {
+            view.refresh();
+            view.showXsdIDError();
+        }
     }
 
     @Override

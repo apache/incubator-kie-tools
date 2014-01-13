@@ -17,7 +17,14 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
              xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+
+  <ui:style>
+    .borders {
+      border: 1px lightgray solid;
+    }
+  </ui:style>
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
@@ -27,7 +34,7 @@
     <bootstrap:ButtonGroup>
       <bootstrap:Button text="Add" ui:field="addButton"/>
     </bootstrap:ButtonGroup>
-    <bootstrap:DataGrid ui:field="grid" height="500px" width="800px"/>
+    <cellview:DataGrid ui:field="grid" height="500px" width="800px"  styleName='{style.borders}' />
   </bootstrap:Container>
 
 </ui:UiBinder>

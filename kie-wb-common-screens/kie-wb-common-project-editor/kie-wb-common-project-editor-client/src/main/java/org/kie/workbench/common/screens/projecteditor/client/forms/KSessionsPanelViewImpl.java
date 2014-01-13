@@ -21,7 +21,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.EditTextCell;
@@ -34,16 +33,18 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ProvidesKey;
 import org.guvnor.common.services.project.model.ClockTypeOption;
 import org.guvnor.common.services.project.model.KSessionModel;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.ClickableImageResourceCell;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
+import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class KSessionsPanelViewImpl
         extends Composite
@@ -65,12 +66,19 @@ public class KSessionsPanelViewImpl
     @UiField
     Button addButton;
 
+    public static final ProvidesKey<KSessionModel> KEY_PROVIDER = new ProvidesKey<KSessionModel>() {
+        @Override
+        public Object getKey( KSessionModel item ) {
+            return item == null ? null : item.getName();
+        }
+    };
+
     private final KSessionModelOptionsPopUp kSessionModelOptionsPopUp;
 
     @Inject
     public KSessionsPanelViewImpl(KSessionModelOptionsPopUp kSessionModelOptionsPopUp) {
         this.kSessionModelOptionsPopUp = kSessionModelOptionsPopUp;
-        grid = new DataGrid<KSessionModel>();
+        grid = new DataGrid<KSessionModel>( KEY_PROVIDER );
 
         grid.setEmptyTableWidget(new Label("---"));
 
@@ -81,13 +89,12 @@ public class KSessionsPanelViewImpl
         setUpOptionsColumn();
         setUpRemoveColumn();
 
-        grid.setBordered(true);
-
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     private void setUpNameColumn() {
-        Column<KSessionModel, String> column = new Column<KSessionModel, String>(new EditTextCell()) {
+        final EditTextCell cell = new EditTextCell();
+        Column<KSessionModel, String> column = new Column<KSessionModel, String>(cell) {
             @Override
             public String getValue(KSessionModel kSessionModel) {
                 return kSessionModel.getName();
@@ -97,10 +104,18 @@ public class KSessionsPanelViewImpl
 
         column.setFieldUpdater(new FieldUpdater<KSessionModel, String>() {
             @Override
-            public void update(int i, KSessionModel kSessionModel, String value) {
-                kSessionModel.setName(value);
+            public void update(int row, KSessionModel kSessionModel, String value) {
+
+                cell.clearViewData(KEY_PROVIDER.getKey(kSessionModel));
+
+                presenter.onRename(kSessionModel, value);
             }
         });
+    }
+
+    @Override
+    public void refresh() {
+        grid.redraw();
     }
 
     private void setUpClockColumn() {
@@ -241,6 +256,11 @@ public class KSessionsPanelViewImpl
     @Override
     public void showOptionsPopUp(KSessionModel kSessionModel) {
         kSessionModelOptionsPopUp.show(kSessionModel);
+    }
+
+    @Override
+    public void showXsdIDError() {
+        ErrorPopup.showMessage(ProjectEditorResources.CONSTANTS.XsdIDError());
     }
 
     @Override
