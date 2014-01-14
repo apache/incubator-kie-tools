@@ -1606,19 +1606,35 @@ create as many `@EntryPoint` classes as you want, but you can't
 specify what order they will be instantiated in. Usually, you'll just
 have one.
 
-The `init()` method is a CDI observer method. The UberFire Workbench
-framework fires an `ApplicationReadyEvent` when the framework has
-finished initializing.
+The `earlyInit()` method is a CDI `@PostConstruct` method. It's
+executed after the constructor has been called footnote:[in this case,
+we don't have an explicit constructor, so CDI will invoke the implicit
+public no-args constructor provided by the Java compiler] and all
+`@Inject` fields have been filled in. This will happen very early in
+the life of the client application, so it's a good place to set global
+properties and preferences, but a bad place to interact with the DOM
+(which will still be empty at this point) or to make RPC requests to
+the server (the message bus will not be connected yet).
 
-NOTE: Since the entry point class is a CDI bean, it's tempting to use
-the CDI `@PostConstruct` annotation on the method that runs your
+The `finalInit()` method is a CDI observer method. The UberFire
+Workbench framework fires an `ApplicationReadyEvent` when the
+framework has finished initializing. This happens very late in the
+startup process of the client application, so it's a good place to
+manipulate the UI or kick off RPC requests to the server.
+
+NOTE: In Errai and UberFire, it's a common pitfall to use the CDI
+`@PostConstruct` annotation on the method that runs your
 initialization code. However, this does not work in practice because
 it's usually invoked too early: before many parts of the framework
 (including the Errai communication bus) have had a chance to
 initialize. Stick with observing `ApplicationReadyEvent` and you'll be
 fine.
 
-Right now, our entry point method just hides a `<div>` element that
+Our `earlyInit()` method sets a global preference for the UberFire
+Workbench system to switch off the _contextual list bar_, a
+feature we will not be using in this tutorial.
+
+Right now, our `finalInit()` method just hides a `<div>` element that
 was present in the host page template served by UberFireServlet. What
 else might we put in there for bootstrapping an UberFire app? Let's
 first create a panel and come back to that question later.
