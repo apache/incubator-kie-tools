@@ -33,15 +33,15 @@ public abstract class AbstractBasicFileAttributeView<P extends Path>
         implements BasicFileAttributeView,
                    ExtendedAttributeView {
 
-    private static final String IS_REGULAR_FILE    = "isRegularFile";
-    private static final String IS_DIRECTORY       = "isDirectory";
-    private static final String IS_SYMBOLIC_LINK   = "isSymbolicLink";
-    private static final String IS_OTHER           = "isOther";
-    private static final String SIZE               = "size";
-    private static final String FILE_KEY           = "fileKey";
-    private static final String LAST_MODIFIED_TIME = "lastModifiedTime";
-    private static final String LAST_ACCESS_TIME   = "lastAccessTime";
-    private static final String CREATION_TIME      = "creationTime";
+    static final String IS_REGULAR_FILE    = "isRegularFile";
+    static final String IS_DIRECTORY       = "isDirectory";
+    static final String IS_SYMBOLIC_LINK   = "isSymbolicLink";
+    static final String IS_OTHER           = "isOther";
+    static final String SIZE               = "size";
+    static final String FILE_KEY           = "fileKey";
+    static final String LAST_MODIFIED_TIME = "lastModifiedTime";
+    static final String LAST_ACCESS_TIME   = "lastAccessTime";
+    static final String CREATION_TIME      = "creationTime";
 
     private static final Set<String> PROPERTIES = new HashSet<String>() {{
         add( IS_REGULAR_FILE );
