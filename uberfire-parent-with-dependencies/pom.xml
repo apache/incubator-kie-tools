@@ -63,7 +63,7 @@
 
     <version.org.mvel>2.1.8.Final</version.org.mvel>
 
-    <version.com.google.gwt>2.5.0</version.com.google.gwt>
+    <version.com.google.gwt>2.5.1</version.com.google.gwt>
     <version.com.github.gwtbootstrap>2.2.1.0</version.com.github.gwtbootstrap>
     <version.com.allen-sauer.gwt.dnd>3.1.2</version.com.allen-sauer.gwt.dnd>
     <version.com.google.guava>13.0.1</version.com.google.guava>
