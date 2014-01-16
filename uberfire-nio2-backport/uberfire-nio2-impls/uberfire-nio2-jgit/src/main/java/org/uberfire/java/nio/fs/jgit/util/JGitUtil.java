@@ -62,7 +62,7 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
@@ -196,7 +196,7 @@ public final class JGitUtil {
             final Repository repository;
             final Git git;
             if ( gitDir != null && gitDir.exists() ) {
-                repository = FileRepositoryBuilder.create( gitDir );
+                repository = new FileRepository( gitDir );
                 git = new Git( repository );
             } else {
                 git = Git.cloneRepository()
@@ -377,7 +377,7 @@ public final class JGitUtil {
                                final CommitInfo commitInfo,
                                final boolean amend,
                                final CommitContent content ) {
-        if (content instanceof RevertCommitContent){
+        if ( content instanceof RevertCommitContent ) {
             commit( git, branchName, commitInfo, amend, resolveObjectId( git, ( (RevertCommitContent) content ).getRefTree() ), content );
         } else {
             commit( git, branchName, commitInfo, amend, null, content );
