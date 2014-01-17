@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -37,15 +38,18 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.ApplicationReadyEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -86,9 +90,17 @@ public class Workbench
     @Inject
     private Caller<WorkbenchServices> wbServices;
 
+    @Inject
+    private Caller<VFSService> vfsService;
+
     @PostConstruct
     public void setup() {
         initWidget( container );
+
+//        final StandaloneEditorPerspective perspective = iocManager.lookupBean( StandaloneEditorPerspective.class ).getInstance();
+//        final ActivityBeansCache activityBeansCache = iocManager.lookupBean( ActivityBeansCache.class ).getInstance();
+//        ( (SyncBeanManagerImpl) iocManager ).addBean( (Class) PerspectiveActivity.class, StandaloneEditorPerspective.class, null, perspective, DEFAULT_QUALIFIERS, perspective.getIdentifier(), true );
+//        activityBeansCache.addNewPerspectiveActivity( iocManager.lookupBeans( perspective.getIdentifier() ).iterator().next() );
     }
 
     private void setupHeaders() {
@@ -158,6 +170,8 @@ public class Workbench
             if ( defaultPerspective != null ) {
                 placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
             }
+        } else {
+            handleIntegration( Window.Location.getParameterMap() );
         }
 
         //Save Workbench state when Window is closed
@@ -193,7 +207,24 @@ public class Workbench
                 onResize();
             }
         } );
+    }
 
+    private void handleIntegration( final Map<String, List<String>> parameters ) {
+        if ( parameters.containsKey( "perspective" ) && !parameters.get( "perspective" ).isEmpty() ) {
+            placeManager.goTo( new DefaultPlaceRequest( parameters.get( "perspective" ).get( 0 ) ) );
+        } else if ( parameters.containsKey( "path" ) && !parameters.get( "path" ).isEmpty() ) {
+            placeManager.goTo( new DefaultPlaceRequest( "StandaloneEditorPerspective" ) );
+            vfsService.call( new RemoteCallback<Path>() {
+                @Override
+                public void callback( Path response ) {
+                    if ( parameters.containsKey( "editor" ) && !parameters.get( "editor" ).isEmpty() ) {
+                        placeManager.goTo( new PathPlaceRequest( response, parameters.get( "editor" ).get( 0 ) ) );
+                    } else {
+                        placeManager.goTo( new PathPlaceRequest( response ) );
+                    }
+                }
+            } ).get( parameters.get( "path" ).get( 0 ) );
+        }
     }
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
