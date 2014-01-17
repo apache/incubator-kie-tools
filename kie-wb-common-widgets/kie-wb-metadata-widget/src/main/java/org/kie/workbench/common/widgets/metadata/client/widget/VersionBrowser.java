@@ -20,24 +20,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.readonly.ReadOnlyPathPlaceRequest;
 import org.guvnor.common.services.shared.version.VersionService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.uberfire.java.nio.base.version.VersionRecord;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.kie.workbench.common.widgets.metadata.client.resources.Images;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
@@ -45,6 +45,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.java.nio.base.version.VersionRecord;
 
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -123,7 +124,7 @@ public class VersionBrowser extends Composite {
                                                                                   fmt.format( version.date() ),
                                                                                   version.author(),
                                                                                   version.comment() );
-            history.addItem( s, version.uri() );
+            addItemWithTitle( history.getElement(), s, version.uri() );
         }
 
         layout.setWidget( 1, 0, history );
@@ -152,6 +153,16 @@ public class VersionBrowser extends Composite {
 
         showStaticIcon();
     }
+
+    private static native void addItemWithTitle( final Element element,
+                                                 final String name,
+                                                 final String value )/*-{
+        var opt = $doc.createElement("OPTION");
+        opt.title = name;
+        opt.text = name;
+        opt.value = value;
+        element.options.add(opt);
+    }-*/;
 
     private void showBusyIcon() {
         refresh.setResource( ImageResources.INSTANCE.searching() );
