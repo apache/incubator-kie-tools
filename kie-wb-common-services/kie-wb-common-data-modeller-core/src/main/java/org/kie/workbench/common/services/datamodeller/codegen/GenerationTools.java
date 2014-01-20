@@ -34,7 +34,7 @@ public class GenerationTools {
     private static final Logger logger = LoggerFactory.getLogger(GenerationTools.class);
     private static final String TAB = "    ";
     private static final String EOL = System.getProperty("line.separator");
-    
+
     public String fitToSize(int size, String name, char padChar) {
         int n = size - name.length();
 
@@ -62,13 +62,35 @@ public class GenerationTools {
 */
 
     public String toJavaGetter(String name) {
-
-        return "get" + StringUtils.capitalize(name);
+        return toJavaAccessor("get", name);
     }
 
     public String toJavaSetter(String name) {
+        return toJavaAccessor("set", name);
+    }
 
-        return "set" + StringUtils.capitalize(name);
+    private String toJavaAccessor(String prefix, String name) {
+        if (name == null || name.length() == 0) return name;
+
+        StringBuilder method = new StringBuilder(prefix);
+
+        if (name.charAt(0) == '_') {
+            return method.append(name).toString();
+        }
+
+        if (name.length() == 1) {
+            return method.append(name.toUpperCase()).toString();
+        }
+
+        if (Character.isUpperCase(name.charAt(0))) {
+            return method.append(name).toString();
+        }
+
+        if (Character.isUpperCase(name.charAt(1))) {
+            return method.append(name).toString();
+        } else {
+            return method.append(StringUtils.capitalize(name)).toString();
+        }
     }
 
     private String toJavaName(String name, boolean firstLetterIsUpperCase) {
@@ -140,7 +162,7 @@ public class GenerationTools {
             logger.warn("Annotation definition for annotation: " + annotation + " is not defined.");
             return type.toString();
         }
-        
+
         if (annotationDefinition.isMarker()) {
             return type.toString();
         }
@@ -161,7 +183,7 @@ public class GenerationTools {
 
         return type.toString();
     }
-    
+
     public String resolveMemberType(AnnotationMemberDefinition memberDefinition, Object value) {
         StringBuffer type = new StringBuffer();
 
@@ -199,7 +221,7 @@ public class GenerationTools {
         }
         return type.toString();
     }
-    
+
     public String resolveSuperClassType(DataObject dataObject) {
         StringBuffer type = new StringBuffer("");
         if (dataObject.getSuperClassName() != null && !"".equals(dataObject.getSuperClassName())) {
@@ -225,7 +247,7 @@ public class GenerationTools {
     }
 
     public String resolveEquals(DataObject dataObject, String indent) {
-        
+
         StringBuilder head = new StringBuilder();
         //head.append(EOL);
         head.append(indent + "@Override" + EOL);
@@ -410,7 +432,7 @@ public class GenerationTools {
                         key1 = null;
                     }
                 }
-                
+
                 Annotation position2 = o2.getAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
                 if (position2 != null) {
                     try {
