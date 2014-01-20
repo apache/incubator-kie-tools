@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.uberfire.metadata.engine;
 
+import org.uberfire.metadata.model.KCluster;
 import org.uberfire.metadata.model.KObject;
 import org.uberfire.metadata.model.KObjectKey;
 
@@ -23,9 +24,9 @@ public interface MetaIndexEngine {
 
     public static final String FULL_TEXT_FIELD = "fullText";
 
-    boolean freshIndex();
+    boolean freshIndex( final KCluster cluster );
 
-    void startBatchMode();
+    void startBatch( final KCluster cluster );
 
     void index( final KObject object );
 
@@ -34,11 +35,13 @@ public interface MetaIndexEngine {
     void rename( final KObjectKey from,
                  final KObjectKey to );
 
+    void delete( final KCluster cluster );
+
     void delete( final KObjectKey objectKey );
 
     void delete( final KObjectKey... objectsKey );
 
-    void commit();
+    void commit( final KCluster cluster );
 
     void dispose();
 }

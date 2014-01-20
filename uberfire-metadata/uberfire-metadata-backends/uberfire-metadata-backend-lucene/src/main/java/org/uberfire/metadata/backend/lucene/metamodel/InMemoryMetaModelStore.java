@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.backend.lucene.metamodels;
+package org.uberfire.metadata.backend.lucene.metamodel;
 
 import java.util.concurrent.ConcurrentHashMap;
 

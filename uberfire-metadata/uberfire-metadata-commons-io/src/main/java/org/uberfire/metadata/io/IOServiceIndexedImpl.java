@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,8 @@ package org.uberfire.metadata.io;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +28,14 @@ import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.FSPath;
 import org.uberfire.java.nio.base.WatchContext;
+import org.uberfire.java.nio.file.DeleteOption;
+import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.StandardWatchEventKind;
@@ -43,6 +45,7 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.metadata.engine.MetaIndexEngine;
+import org.uberfire.metadata.model.KCluster;
 
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.java.nio.file.StandardWatchEventKind.*;
@@ -55,7 +58,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private final BatchIndex batchIndex;
 
     private final Class<? extends FileAttributeView>[] views;
-    private final Set<FileSystem> indexedFSs = new HashSet<FileSystem>();
     private final ThreadGroup threadGroup = new ThreadGroup( "IOServiceIndexing" );
     private final List<FileSystem> watchedList = new ArrayList<FileSystem>();
 
@@ -211,14 +213,33 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     private void indexIfFresh( final FileSystem fs ) {
-        if ( indexEngine.freshIndex() && !indexedFSs.contains( fs ) ) {
+        if ( indexEngine.freshIndex( KObjectUtil.toKCluster( fs ) ) ) {
             index( fs );
         }
     }
 
     private void index( final FileSystem fs ) {
-        indexedFSs.add( fs );
         batchIndex.runAsync( fs );
     }
 
+    @Override
+    public synchronized void delete( final Path path,
+                                     final DeleteOption... options ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
+        final KCluster cluster = KObjectUtil.toKCluster( path.getFileSystem() );
+        super.delete( path, options );
+        if ( path instanceof FSPath ) {
+            indexEngine.delete( cluster );
+        }
+    }
+
+    @Override
+    public synchronized boolean deleteIfExists( Path path,
+                                                DeleteOption... options ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+        final KCluster cluster = KObjectUtil.toKCluster( path.getFileSystem() );
+        final boolean result = super.deleteIfExists( path, options );
+        if ( result && path instanceof FSPath ) {
+            indexEngine.delete( cluster );
+        }
+        return result;
+    }
 }

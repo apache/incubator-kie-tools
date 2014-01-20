@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,11 @@ import java.util.ArrayList;
 
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SegmentedPath;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
+import org.uberfire.metadata.backend.lucene.model.KClusterImpl;
+import org.uberfire.metadata.model.KCluster;
 import org.uberfire.metadata.model.KObject;
 import org.uberfire.metadata.model.KObjectKey;
 import org.uberfire.metadata.model.KProperty;
@@ -216,6 +219,14 @@ public final class KObjectUtil {
                 return sb.toString();
             }
         };
+    }
+
+    public static KCluster toKCluster( final FileSystemId fs ) {
+        return new KClusterImpl( fs.id() );
+    }
+
+    public static KCluster toKCluster( final FileSystem fs ) {
+        return toKCluster( (FileSystemId) fs );
     }
 
     private static String sha1( final String input ) {

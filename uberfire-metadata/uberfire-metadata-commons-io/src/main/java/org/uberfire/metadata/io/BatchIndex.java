@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,11 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.metadata.engine.MetaIndexEngine;
+import org.uberfire.metadata.model.KCluster;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.java.nio.file.Files.*;
+import static org.uberfire.metadata.io.KObjectUtil.*;
 
 /**
  *
@@ -72,11 +74,17 @@ public final class BatchIndex {
     }
 
     public void run( final Path root ) {
+        run( root, null );
+    }
+
+    public void run( final Path root,
+                     final Runnable callback ) {
         try {
             if ( root == null ) {
                 return;
             }
-            indexEngine.startBatchMode();
+            final KCluster cluster = toKCluster( root.getFileSystem() );
+            indexEngine.startBatch( cluster );
             walkFileTree( checkNotNull( "root", root ), new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile( final Path file,
@@ -100,7 +108,10 @@ public final class BatchIndex {
                     return FileVisitResult.CONTINUE;
                 }
             } );
-            indexEngine.commit();
+            indexEngine.commit( cluster );
+            if ( callback != null ) {
+                callback.run();
+            }
         } catch ( final IllegalStateException ex ) {
             LOG.error( "Index fails - Index has an invalid state. [@" + root.getFileSystem().toString() + "]", ex );
         } catch ( final Exception ex ) {

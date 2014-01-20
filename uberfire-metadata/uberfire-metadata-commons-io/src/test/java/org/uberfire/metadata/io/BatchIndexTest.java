@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,23 +30,19 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
-import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
-import org.uberfire.metadata.backend.lucene.LuceneIndexEngine;
-import org.uberfire.metadata.backend.lucene.fields.SimpleFieldFactory;
-import org.uberfire.metadata.backend.lucene.metamodels.InMemoryMetaModelStore;
-import org.uberfire.metadata.backend.lucene.setups.BaseLuceneSetup;
-import org.uberfire.metadata.backend.lucene.setups.RAMLuceneSetup;
-import org.uberfire.metadata.engine.MetaIndexEngine;
-import org.uberfire.metadata.engine.MetaModelStore;
+import org.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
 
 import static org.junit.Assert.*;
+import static org.uberfire.metadata.io.KObjectUtil.*;
 
 /**
  *
@@ -54,17 +50,12 @@ import static org.junit.Assert.*;
 public class BatchIndexTest {
 
     private static IOService ioService = null;
-    private static MetaModelStore metaModelStore;
-    private static BaseLuceneSetup luceneSetup;
-    private static MetaIndexEngine indexEngine;
+    private static LuceneConfig config;
 
     public static IOService ioService() throws InterruptedException {
         if ( ioService == null ) {
-            metaModelStore = new InMemoryMetaModelStore();
-            luceneSetup = new RAMLuceneSetup();
-            indexEngine = new LuceneIndexEngine( metaModelStore, luceneSetup, new SimpleFieldFactory() );
-            ioService = new IOServiceIndexedImpl( indexEngine, DublinCoreView.class, VersionAttributeView.class );
-            Thread.sleep( 50 );
+            config = new LuceneConfigBuilder().withInMemoryMetaModelStore().useDirectoryBasedIndex().useInMemoryDirectory().build();
+            ioService = new IOServiceDotFileImpl();
         }
         return ioService;
     }
@@ -84,7 +75,6 @@ public class BatchIndexTest {
     }
 
     @Test
-    @Ignore
     public void testIndex() throws IOException, InterruptedException {
         {
             final Path file = ioService().get( "git://temp-repo-test/path/to/file.txt" );
@@ -197,43 +187,51 @@ public class BatchIndexTest {
             ioService().write( file, "plans!?" );
         }
 
-        new BatchIndex( indexEngine, ioService(), DublinCoreView.class ).run( ioService().get( "git://temp-repo-test/" ) );
+        new BatchIndex( config.getIndexEngine(), ioService(), DublinCoreView.class ).run( ioService().get( "git://temp-repo-test/" ), new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final LuceneIndex index = config.getIndexManager().get( toKCluster( ioService().get( "git://temp-repo-test/" ).getFileSystem() ) );
 
-        Thread.sleep( 100 );
+                    final IndexSearcher searcher = index.nrtSearcher();
+                    {
+                        final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
 
-        final IndexSearcher searcher = luceneSetup.nrtSearcher();
+                        searcher.search( new MatchAllDocsQuery(), collector );
 
-        {
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+                        final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-            searcher.search( new MatchAllDocsQuery(), collector );
+                        assertEquals( 4, hits.length );
+                    }
 
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+                    {
+                        final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
 
-            assertEquals( 4, hits.length );
-        }
+                        searcher.search( new TermQuery( new Term( "dcore.author", "name" ) ), collector );
 
-        {
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+                        final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-            searcher.search( new TermQuery( new Term( "dcore.author", "name" ) ), collector );
+                        assertEquals( 2, hits.length );
+                    }
 
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+                    {
+                        final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
 
-            assertEquals( 2, hits.length );
-        }
+                        searcher.search( new TermQuery( new Term( "dcore.author", "second" ) ), collector );
 
-        {
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
+                        final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-            searcher.search( new TermQuery( new Term( "dcore.author", "second" ) ), collector );
+                        assertEquals( 1, hits.length );
+                    }
 
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+                    index.nrtRelease( searcher );
+                } catch ( Exception ex ) {
+                    ex.printStackTrace();
+                    fail();
+                }
+            }
+        } );
 
-            assertEquals( 1, hits.length );
-        }
-
-        luceneSetup.nrtRelease( searcher );
     }
 
     public static File createTempDirectory()

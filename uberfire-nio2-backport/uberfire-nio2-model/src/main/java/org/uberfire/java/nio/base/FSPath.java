@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,10 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.backend.lucene;
+package org.uberfire.java.nio.base;
 
-import org.uberfire.metadata.backend.lucene.setups.BaseLuceneSetup;
-import org.uberfire.metadata.backend.lucene.setups.RAMLuceneSetup;
+import org.uberfire.java.nio.file.Path;
 
-/**
- *
- */
-public class InMemoryLuceneSetupTest extends BaseLuceneSetupTest {
-
-    private final RAMLuceneSetup luceneSetup;
-
-    public InMemoryLuceneSetupTest() {
-        this.luceneSetup = new RAMLuceneSetup();
-    }
-
-    @Override
-    protected BaseLuceneSetup getLuceneSetup() {
-        return luceneSetup;
-    }
+public interface FSPath extends Path {
 
 }

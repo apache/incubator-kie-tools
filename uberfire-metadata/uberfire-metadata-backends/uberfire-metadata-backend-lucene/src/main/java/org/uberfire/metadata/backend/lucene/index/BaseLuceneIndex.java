@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.backend.lucene.setups;
+package org.uberfire.metadata.backend.lucene.index;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,9 +30,8 @@ import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.util.BytesRef;
-import org.uberfire.metadata.backend.lucene.LuceneSetup;
 
-public abstract class BaseLuceneSetup implements LuceneSetup {
+public abstract class BaseLuceneIndex implements LuceneIndex {
 
     @Override
     public void indexDocument( final String id,
@@ -46,19 +45,24 @@ public abstract class BaseLuceneSetup implements LuceneSetup {
     }
 
     @Override
-    public void deleteIfExists( final String... docIds ) {
+    public boolean deleteIfExists( final String... docIds ) {
+        boolean deletedSomething = false;
         final IndexSearcher searcher = nrtSearcher();
         try {
             final int[] answers = lookupDocIdByPK( searcher, docIds );
             for ( final int docId : answers ) {
                 if ( docId != -1 ) {
-                    writer().tryDeleteDocument( searcher.getIndexReader(), docId );
+                    boolean result = writer().tryDeleteDocument( searcher.getIndexReader(), docId );
+                    if ( result ) {
+                        deletedSomething = true;
+                    }
                 }
             }
         } catch ( Exception ex ) {
         } finally {
             nrtRelease( searcher );
         }
+        return deletedSomething;
     }
 
     @Override

@@ -2,9 +2,12 @@ package org.uberfire.java.nio.fs.jgit;
 
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractBasicFileAttributeView;
+import org.uberfire.java.nio.base.NotImplementedException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  *

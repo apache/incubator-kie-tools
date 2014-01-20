@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.search;
+package org.uberfire.metadata.model;
 
-import java.util.Date;
+public interface KCluster {
 
-/**
- *
- */
-public interface DateRange {
-
-    Date before();
-
-    Date after();
+    String getClusterId();
 
 }

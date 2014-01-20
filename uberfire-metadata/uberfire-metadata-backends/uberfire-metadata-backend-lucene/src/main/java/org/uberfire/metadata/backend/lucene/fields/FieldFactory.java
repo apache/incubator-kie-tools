@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.backend.lucene.setups;
+package org.uberfire.metadata.backend.lucene.fields;
 
-import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.index.IndexableField;
+import org.uberfire.metadata.model.KProperty;
 
 /**
  *
  */
-public class RAMLuceneSetup extends DirectoryLuceneSetup {
+public interface FieldFactory {
 
-    public RAMLuceneSetup() {
-        super( new RAMDirectory(), true );
-    }
+    IndexableField[] build( final KProperty<?> property );
 }

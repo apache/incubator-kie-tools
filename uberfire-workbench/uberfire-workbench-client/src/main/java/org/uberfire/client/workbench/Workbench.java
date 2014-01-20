@@ -96,11 +96,6 @@ public class Workbench
     @PostConstruct
     public void setup() {
         initWidget( container );
-
-//        final StandaloneEditorPerspective perspective = iocManager.lookupBean( StandaloneEditorPerspective.class ).getInstance();
-//        final ActivityBeansCache activityBeansCache = iocManager.lookupBean( ActivityBeansCache.class ).getInstance();
-//        ( (SyncBeanManagerImpl) iocManager ).addBean( (Class) PerspectiveActivity.class, StandaloneEditorPerspective.class, null, perspective, DEFAULT_QUALIFIERS, perspective.getIdentifier(), true );
-//        activityBeansCache.addNewPerspectiveActivity( iocManager.lookupBeans( perspective.getIdentifier() ).iterator().next() );
     }
 
     private void setupHeaders() {

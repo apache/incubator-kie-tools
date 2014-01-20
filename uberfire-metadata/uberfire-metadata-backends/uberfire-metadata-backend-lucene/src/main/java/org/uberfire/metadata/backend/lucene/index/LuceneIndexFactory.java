@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.backend.lucene;
+package org.uberfire.metadata.backend.lucene.index;
 
-import org.apache.lucene.index.IndexableField;
-import org.uberfire.metadata.model.KProperty;
+import java.util.Map;
 
-/**
- *
- */
-public interface FieldFactory {
+import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.metadata.model.KCluster;
 
-    IndexableField[] build( final KProperty<?> property );
+public interface LuceneIndexFactory {
+
+    LuceneIndex newCluster( KCluster kcluster );
+
+    Map<? extends KCluster, ? extends LuceneIndex> getIndexes();
+
+    void dispose();
 }

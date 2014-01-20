@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.backend.lucene;
+package org.uberfire.metadata.backend.lucene.index;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.IndexSearcher;
+import org.uberfire.metadata.model.KCluster;
 
 /**
  *
  */
-public interface LuceneSetup {
+public interface LuceneIndex {
 
     public static final String CUSTOM_FIELD_FILENAME = "filename";
 
-    Analyzer getAnalyzer();
+    KCluster getCluster();
 
     void indexDocument( final String id,
                         final Document doc );
 
-    void deleteIfExists( final String... ids );
+    boolean deleteIfExists( final String... ids );
 
     void rename( final String source,
                  final String target );
+
+    IndexReader nrtReader();
+
+    void nrtRelease( final IndexReader searcher );
 
     IndexSearcher nrtSearcher();
 
@@ -46,4 +51,6 @@ public interface LuceneSetup {
     boolean freshIndex();
 
     void commit();
+
+    void delete();
 }

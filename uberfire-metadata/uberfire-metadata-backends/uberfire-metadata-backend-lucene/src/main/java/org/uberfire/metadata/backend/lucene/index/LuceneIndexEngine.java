@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.backend.lucene;
+package org.uberfire.metadata.backend.lucene.index;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexableField;
+import org.uberfire.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.metadata.engine.MetaIndexEngine;
 import org.uberfire.metadata.engine.MetaModelStore;
+import org.uberfire.metadata.model.KCluster;
 import org.uberfire.metadata.model.KObject;
 import org.uberfire.metadata.model.KObjectKey;
 import org.uberfire.metadata.model.KProperty;
@@ -41,30 +47,39 @@ import static org.uberfire.commons.validation.Preconditions.*;
 
 public class LuceneIndexEngine implements MetaIndexEngine {
 
-    private final LuceneSetup lucene;
     private final FieldFactory fieldFactory;
     private final MetaModelStore metaModelStore;
-    private int batchMode = 0;
+    private final LuceneIndexManager indexManager;
+    private final Map<KCluster, AtomicInteger> batchMode = new ConcurrentHashMap<KCluster, AtomicInteger>();
 
-    public LuceneIndexEngine( final MetaModelStore metaModelStore,
-                              final LuceneSetup lucene,
-                              final FieldFactory fieldFactory ) {
-        this.metaModelStore = checkNotNull( "metaModelStore", metaModelStore );
-        this.lucene = checkNotNull( "lucene", lucene );
+    public LuceneIndexEngine( final FieldFactory fieldFactory,
+                              final MetaModelStore metaModelStore,
+                              final LuceneIndexManager indexManager ) {
         this.fieldFactory = checkNotNull( "fieldFactory", fieldFactory );
+        this.metaModelStore = checkNotNull( "metaModelStore", metaModelStore );
+        this.indexManager = checkNotNull( "indexManager", indexManager );
     }
 
     @Override
-    public boolean freshIndex() {
-        return lucene.freshIndex();
+    public boolean freshIndex( final KCluster cluster ) {
+        final LuceneIndex index = indexManager.get( cluster );
+        if ( index == null ) {
+            return true;
+        }
+        return index.freshIndex();
     }
 
     @Override
-    public synchronized void startBatchMode() {
-        if ( batchMode < 0 ) {
-            batchMode = 1;
+    public void startBatch( final KCluster cluster ) {
+        final AtomicInteger batchStack = batchMode.get( cluster );
+        if ( batchStack == null ) {
+            batchMode.put( cluster, new AtomicInteger() );
         } else {
-            batchMode++;
+            if ( batchStack.get() < 0 ) {
+                batchStack.set( 1 );
+            } else {
+                batchStack.incrementAndGet();
+            }
         }
     }
 
@@ -72,9 +87,10 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     public void index( final KObject object ) {
         updateMetaModel( object );
 
-        lucene.indexDocument( object.getId(), newDocument( object ) );
+        final LuceneIndex index = indexManager.indexOf( object );
+        index.indexDocument( object.getId(), newDocument( object ) );
 
-        commitIfNotBatchMode();
+        commitIfNotBatchMode( index.getCluster() );
     }
 
     private Document newDocument( final KObject object ) {
@@ -113,43 +129,75 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     @Override
     public void rename( final KObjectKey from,
                         final KObjectKey to ) {
-        lucene.rename( from.getId(), to.getId() );
+        checkNotNull( "from", from );
+        checkNotNull( "to", to );
+        checkCondition( "renames are allowed only from same cluster", !from.getClusterId().equals( to.getClusterId() ) );
+        final LuceneIndex index = indexManager.indexOf( from );
+        index.rename( from.getId(), to.getId() );
 
-        commitIfNotBatchMode();
+        commitIfNotBatchMode( index.getCluster() );
+    }
+
+    @Override
+    public void delete( KCluster cluster ) {
+        indexManager.delete( cluster );
     }
 
     @Override
     public void delete( final KObjectKey objectKey ) {
-        lucene.deleteIfExists( objectKey.getId() );
+        final LuceneIndex index = indexManager.indexOf( objectKey );
+        index.deleteIfExists( objectKey.getId() );
+        commitIfNotBatchMode( index.getCluster() );
     }
 
     @Override
     public void delete( final KObjectKey... objectsKey ) {
-        final String[] ids = new String[ objectsKey.length ];
-        for ( int i = 0; i < ids.length; i++ ) {
-            ids[ i ] = objectsKey[ i ].getId();
-        }
-        lucene.deleteIfExists( ids );
-    }
+        final Map<LuceneIndex, List<String>> execution = new HashMap<LuceneIndex, List<String>>();
+        for ( final KObjectKey key : objectsKey ) {
+            final LuceneIndex index = indexManager.indexOf( key );
 
-    private synchronized void commitIfNotBatchMode() {
-        if ( batchMode <= 0 ) {
-            commit();
+            final List<String> ids = execution.get( index );
+            if ( ids == null ) {
+                execution.put( index, new ArrayList<String>() {{
+                    add( key.getId() );
+                }} );
+            } else {
+                ids.add( key.getId() );
+            }
+        }
+
+        for ( final Map.Entry<LuceneIndex, List<String>> entry : execution.entrySet() ) {
+            entry.getKey().deleteIfExists( entry.getValue().toArray( new String[ entry.getValue().size() ] ) );
         }
     }
 
     @Override
-    public synchronized void commit() {
-        batchMode--;
-        if ( batchMode <= 0 ) {
-            lucene.commit();
+    public void commit( final KCluster cluster ) {
+        final LuceneIndex index = indexManager.get( cluster );
+        if ( index == null ) {
+            return;
+        }
+        final AtomicInteger batchStack = batchMode.get( cluster );
+        if ( batchStack != null ) {
+            int value = batchStack.decrementAndGet();
+            if ( value <= 0 ) {
+                index.commit();
+            }
+        } else {
+            index.commit();
+        }
+    }
+
+    private synchronized void commitIfNotBatchMode( final KCluster cluster ) {
+        final AtomicInteger batchStack = batchMode.get( cluster );
+        if ( batchStack == null || batchStack.get() <= 0 ) {
+            commit( cluster );
         }
     }
 
     @Override
     public void dispose() {
-        metaModelStore.dispose();
-        lucene.dispose();
+        indexManager.dispose();
     }
 
     private void updateMetaModel( final KObject object ) {

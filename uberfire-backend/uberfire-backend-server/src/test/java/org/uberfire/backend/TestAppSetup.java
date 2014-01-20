@@ -27,13 +27,8 @@ import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
-import org.uberfire.metadata.backend.lucene.LuceneIndexEngine;
-import org.uberfire.metadata.backend.lucene.LuceneSetup;
-import org.uberfire.metadata.backend.lucene.fields.SimpleFieldFactory;
-import org.uberfire.metadata.backend.lucene.metamodels.InMemoryMetaModelStore;
-import org.uberfire.metadata.backend.lucene.setups.RAMLuceneSetup;
-import org.uberfire.metadata.engine.MetaIndexEngine;
-import org.uberfire.metadata.engine.MetaModelStore;
+import org.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
@@ -45,21 +40,15 @@ public class TestAppSetup {
     @Inject
     private IOWatchServiceNonDotImpl watchService;
 
-    private final LuceneSetup luceneSetup = new RAMLuceneSetup();
-
     private SessionInfo sessionInfo = new SessionInfoImpl();
 
     private IOService ioService;
 
     @PostConstruct
     public void init() {
-        final MetaModelStore metaModelStore = new InMemoryMetaModelStore();
-        final MetaIndexEngine indexEngine = new LuceneIndexEngine( metaModelStore,
-                                                                   luceneSetup,
-                                                                   new SimpleFieldFactory() );
-
+        final LuceneConfig config = new LuceneConfigBuilder().withInMemoryMetaModelStore().useDirectoryBasedIndex().useInMemoryDirectory().build();
         ioService = new IOServiceIndexedImpl( watchService,
-                                              indexEngine,
+                                              config.getIndexEngine(),
                                               DublinCoreView.class,
                                               VersionAttributeView.class );
 

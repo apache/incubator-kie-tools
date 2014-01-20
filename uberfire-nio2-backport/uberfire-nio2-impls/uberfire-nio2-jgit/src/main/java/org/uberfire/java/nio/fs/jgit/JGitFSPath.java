@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.Iterator;
 
 import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.FSPath;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.InvalidPathException;
@@ -14,7 +15,7 @@ import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 
-public class JGitFSPath implements Path {
+public class JGitFSPath implements FSPath {
 
     private final JGitFileSystem fs;
 

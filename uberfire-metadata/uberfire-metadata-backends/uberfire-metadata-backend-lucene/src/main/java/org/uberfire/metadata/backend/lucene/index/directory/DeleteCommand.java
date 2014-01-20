@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.search;
+package org.uberfire.metadata.backend.lucene.index.directory;
 
-import java.util.Date;
+public interface DeleteCommand {
 
-/**
- *
- */
-public interface DateRange {
-
-    Date before();
-
-    Date after();
+    public void execute( org.apache.lucene.store.Directory directory );
 
 }

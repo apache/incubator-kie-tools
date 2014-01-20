@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.backend.lucene;
+package org.uberfire.metadata.backend.lucene.search;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -34,6 +35,8 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.Version;
+import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.metadata.backend.lucene.index.LuceneIndexManager;
 import org.uberfire.metadata.model.KObject;
 import org.uberfire.metadata.search.ClusterSegment;
 import org.uberfire.metadata.search.DateRange;
@@ -52,12 +55,13 @@ import static org.uberfire.metadata.engine.MetaIndexEngine.*;
  */
 public class LuceneSearchIndex implements SearchIndex {
 
-    private final LuceneSetup lucene;
+    private final LuceneIndexManager indexManager;
     private final QueryParser queryParser;
 
-    public LuceneSearchIndex( final LuceneSetup lucene ) {
-        this.lucene = checkNotNull( "lucene", lucene );
-        this.queryParser = new QueryParser( Version.LUCENE_40, FULL_TEXT_FIELD, lucene.getAnalyzer() );
+    public LuceneSearchIndex( final LuceneIndexManager indexManager,
+                              final Analyzer analyzer ) {
+        this.indexManager = checkNotNull( "lucene", indexManager );
+        this.queryParser = new QueryParser( Version.LUCENE_40, FULL_TEXT_FIELD, analyzer );
         this.queryParser.setAllowLeadingWildcard( true );
     }
 
@@ -69,7 +73,7 @@ public class LuceneSearchIndex implements SearchIndex {
         if ( attrs == null || attrs.size() == 0 ) {
             return emptyList();
         }
-        return search( buildQuery( attrs, clusterSegments ), pageSize, startIndex );
+        return search( buildQuery( attrs, clusterSegments ), pageSize, startIndex, clusterSegments );
     }
 
     @Override
@@ -77,7 +81,7 @@ public class LuceneSearchIndex implements SearchIndex {
                                          final int pageSize,
                                          final int startIndex,
                                          final ClusterSegment... clusterSegments ) {
-        return search( buildQuery( term, clusterSegments ), pageSize, startIndex );
+        return search( buildQuery( term, clusterSegments ), pageSize, startIndex, clusterSegments );
     }
 
     @Override
@@ -86,17 +90,18 @@ public class LuceneSearchIndex implements SearchIndex {
         if ( attrs == null || attrs.size() == 0 ) {
             return 0;
         }
-        return searchHits( buildQuery( attrs, clusterSegments ) );
+        return searchHits( buildQuery( attrs, clusterSegments ), clusterSegments );
     }
 
     @Override
     public int fullTextSearchHits( final String term,
                                    final ClusterSegment... clusterSegments ) {
-        return searchHits( buildQuery( term, clusterSegments ) );
+        return searchHits( buildQuery( term, clusterSegments ), clusterSegments );
     }
 
-    private int searchHits( final Query query ) {
-        final IndexSearcher index = lucene.nrtSearcher();
+    private int searchHits( final Query query,
+                            final ClusterSegment... clusterSegments ) {
+        final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
         try {
             final TotalHitCountCollector collector = new TotalHitCountCollector();
             index.search( query, collector );
@@ -104,15 +109,16 @@ public class LuceneSearchIndex implements SearchIndex {
         } catch ( final Exception ex ) {
             throw new RuntimeException( "Error during Query!", ex );
         } finally {
-            lucene.nrtRelease( index );
+            indexManager.release( index );
         }
     }
 
     private List<KObject> search( final Query query,
                                   final int pageSize,
-                                  final int startIndex ) {
+                                  final int startIndex,
+                                  final ClusterSegment... clusterSegments ) {
         final TopScoreDocCollector collector = TopScoreDocCollector.create( ( startIndex + 1 ) * pageSize, true );
-        final IndexSearcher index = lucene.nrtSearcher();
+        final IndexSearcher index = indexManager.getIndexSearcher( clusterSegments );
         final List<KObject> result = new ArrayList<KObject>( pageSize );
         try {
             index.search( query, collector );
@@ -124,7 +130,7 @@ public class LuceneSearchIndex implements SearchIndex {
         } catch ( final Exception ex ) {
             throw new RuntimeException( "Error during Query!", ex );
         } finally {
-            lucene.nrtRelease( index );
+            indexManager.release( index );
         }
 
         return result;
@@ -139,7 +145,7 @@ public class LuceneSearchIndex implements SearchIndex {
                 final Long to = ( (DateRange) entry.getValue() ).before().getTime();
                 query.add( newLongRange( entry.getKey(), from, to, true, true ), MUST );
             } else if ( entry.getValue() instanceof String ) {
-                if ( entry.getKey().equalsIgnoreCase( LuceneSetup.CUSTOM_FIELD_FILENAME ) ) {
+                if ( entry.getKey().equalsIgnoreCase( LuceneIndex.CUSTOM_FIELD_FILENAME ) ) {
                     query.add( new RegexQuery( new Term( entry.getKey(), globToRegex( entry.getValue().toString().toLowerCase() ) ) ), MUST );
                 } else {
                     query.add( new WildcardQuery( new Term( entry.getKey(), entry.getValue().toString() ) ), MUST );

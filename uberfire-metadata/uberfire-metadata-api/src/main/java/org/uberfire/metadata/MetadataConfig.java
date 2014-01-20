@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.uberfire.metadata.search;
+package org.uberfire.metadata;
 
-import java.util.Date;
+import org.uberfire.metadata.engine.MetaIndexEngine;
+import org.uberfire.metadata.search.SearchIndex;
 
-/**
- *
- */
-public interface DateRange {
+public interface MetadataConfig {
 
-    Date before();
+    SearchIndex getSearchIndex();
 
-    Date after();
+    MetaIndexEngine getIndexEngine();
+
+    void dispose();
 
 }

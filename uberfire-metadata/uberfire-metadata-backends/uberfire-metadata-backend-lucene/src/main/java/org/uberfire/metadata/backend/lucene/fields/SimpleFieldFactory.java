@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexableField;
 import org.uberfire.java.nio.base.version.VersionHistory;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.metadata.backend.lucene.FieldFactory;
 import org.uberfire.metadata.model.KProperty;
 
 import static org.uberfire.metadata.backend.lucene.util.Serializer.*;
