@@ -39,6 +39,7 @@ import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.tables.ResizableHeader;
 
 public class ProblemsScreenViewImpl
         extends Composite
@@ -106,7 +107,10 @@ public class ProblemsScreenViewImpl
                 return Integer.toString( message.getLine() );
             }
         };
-        dataGrid.addColumn( lineColumn, ProjectEditorResources.CONSTANTS.Line() );
+        dataGrid.addColumn( lineColumn,
+                            new ResizableHeader( ProjectEditorResources.CONSTANTS.Line(),
+                                                 dataGrid,
+                                                 lineColumn ) );
         dataGrid.setColumnWidth( lineColumn, 60, Style.Unit.PCT );
     }
 
@@ -117,7 +121,10 @@ public class ProblemsScreenViewImpl
                 return Integer.toString( message.getColumn() );
             }
         };
-        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.Column() );
+        dataGrid.addColumn( column,
+                            new ResizableHeader( ProjectEditorResources.CONSTANTS.Column(),
+                                                 dataGrid,
+                                                 column ) );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
@@ -128,7 +135,10 @@ public class ProblemsScreenViewImpl
                 return message.getText();
             }
         };
-        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.Text() );
+        dataGrid.addColumn( column,
+                            new ResizableHeader( ProjectEditorResources.CONSTANTS.Text(),
+                                                 dataGrid,
+                                                 column ) );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
@@ -153,7 +163,10 @@ public class ProblemsScreenViewImpl
                 }
             }
         } );
-        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.FileName() );
+        dataGrid.addColumn( column,
+                            new ResizableHeader( ProjectEditorResources.CONSTANTS.FileName(),
+                                                 dataGrid,
+                                                 column ) );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
@@ -173,7 +186,10 @@ public class ProblemsScreenViewImpl
                 }
             }
         };
-        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.Level() );
+        dataGrid.addColumn( column,
+                            new ResizableHeader( ProjectEditorResources.CONSTANTS.Level(),
+                                                 dataGrid,
+                                                 column ) );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
