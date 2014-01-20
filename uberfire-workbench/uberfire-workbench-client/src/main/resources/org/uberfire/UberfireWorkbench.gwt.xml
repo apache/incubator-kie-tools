@@ -30,6 +30,9 @@
 
   <inherits name="com.github.gwtbootstrap.Bootstrap"/>
 
+  <!-- Google Guava -->
+  <inherits name="com.google.common.collect.Collect"/>
+
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
   <source path='shared'/>

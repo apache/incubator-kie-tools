@@ -29,7 +29,6 @@
 
   <name>UberFire Workbench</name>
 
-
   <modules>
     <module>uberfire-workbench-processors</module>
     <module>uberfire-workbench-client</module>
