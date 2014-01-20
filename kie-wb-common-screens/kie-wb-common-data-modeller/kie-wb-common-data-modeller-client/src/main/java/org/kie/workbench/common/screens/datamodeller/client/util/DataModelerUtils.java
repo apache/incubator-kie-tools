@@ -110,13 +110,13 @@ public class DataModelerUtils {
     public String[] getPackageTerms(String packageName) {
         return packageName.split("\\.", -1);
     }
-    
+
     public String[] calculateSubPackages(String packageName) {
         String packageTerms[];
         String subpackages[];
-        
+
         if (packageName == null || (packageTerms = getPackageTerms(packageName)) == null) return null;
-        
+
         subpackages = new String[packageTerms.length];
         for (int i = 0; i < packageTerms.length; i++) {
             String subpackage = "";
@@ -130,16 +130,18 @@ public class DataModelerUtils {
     }
 
     public String unCapitalize(String str) {
-        int strLen;
-        if (str == null || (strLen = str.length()) == 0) {
+        int strLen = str != null ? str.length() : 0;
+        if (strLen == 0) return str;
+        if (strLen > 1 && Character.isUpperCase(str.charAt(0)) && Character.isUpperCase(str.charAt(1))) {
             return str;
-        }
-        return new StringBuffer(strLen)
+        } else {
+            return new StringBuffer(strLen)
                 .append(Character.toLowerCase(str.charAt(0)))
                 .append(str.substring(1))
                 .toString();
+        }
     }
-    
+
     public Integer getMaxPosition(DataObjectTO dataObjectTO) {
         List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
         Integer maxPosition = -1;
