@@ -225,7 +225,8 @@ public class GuidedDecisionTableEditorPresenter {
         service.call( getModelSuccessCallback(),
                       new CommandDrivenErrorCallback( view,
                                                       new CommandBuilder().addNoSuchFileException( view,
-                                                                                                   multiPage ).build() ) ).loadContent( path );
+                                                                                                   multiPage,
+                                                                                                   menus ).build() ) ).loadContent( path );
     }
 
     private RemoteCallback<GuidedDecisionTableEditorContent> getModelSuccessCallback() {

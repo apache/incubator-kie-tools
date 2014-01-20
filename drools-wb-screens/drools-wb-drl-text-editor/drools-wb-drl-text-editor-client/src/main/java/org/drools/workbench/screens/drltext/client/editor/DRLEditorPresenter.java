@@ -209,7 +209,8 @@ public class DRLEditorPresenter {
         drlTextEditorService.call( getLoadContentSuccessCallback(),
                                    new CommandDrivenErrorCallback( view,
                                                                    new CommandBuilder().addNoSuchFileException( view,
-                                                                                                                multiPage ).build() ) ).loadContent( path );
+                                                                                                                multiPage,
+                                                                                                                menus ).build() ) ).loadContent( path );
     }
 
     private RemoteCallback<DrlModelContent> getLoadContentSuccessCallback() {

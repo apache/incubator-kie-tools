@@ -205,7 +205,8 @@ public class EnumEditorPresenter {
         enumService.call( getModelSuccessCallback(),
                           new CommandDrivenErrorCallback( view,
                                                           new CommandBuilder().addNoSuchFileException( view,
-                                                                                                       multiPage ).build() ) ).loadContent( path );
+                                                                                                       multiPage,
+                                                                                                       menus ).build() ) ).loadContent( path );
     }
 
     private RemoteCallback<EnumModelContent> getModelSuccessCallback() {

@@ -201,7 +201,8 @@ public class DSLEditorPresenter {
         dslTextEditorService.call( getModelSuccessCallback(),
                                    new CommandDrivenErrorCallback( view,
                                                                    new CommandBuilder().addNoSuchFileException( view,
-                                                                                                                multiPage ).build() ) ).load( path );
+                                                                                                                multiPage,
+                                                                                                                menus ).build() ) ).load( path );
     }
 
     private RemoteCallback<String> getModelSuccessCallback() {
