@@ -44,7 +44,7 @@ public class ViewDRLSourceWidget
                            "<span style='color:green;' >|</span>" );
             table.setHTML( i,
                            2,
-                           addSyntaxHilights( rows[ i ] ) );
+                           addSyntaxHighlights( rows[ i ] ) );
         }
     }
 
@@ -52,7 +52,7 @@ public class ViewDRLSourceWidget
         table.removeAllRows();
     }
 
-    private String addSyntaxHilights( String text ) {
+    private String addSyntaxHighlights( String text ) {
 
         if ( text.trim().startsWith( "#" ) ) {
             text = "<span style='color:green'>"
@@ -65,12 +65,11 @@ public class ViewDRLSourceWidget
                     "init" };
 
             for ( String keyword : keywords ) {
-                if ( text.contains( keyword ) ) {
-                    text = text.replace( keyword,
-                                         "<span style='color:red;'>"
-                                                 + keyword
-                                                 + "</span>" );
-                }
+                final String match = "\\b" + keyword + "\\b";
+                text = text.replaceAll( match,
+                                        "<span style='color:red;'>"
+                                                + keyword
+                                                + "</span>" );
             }
 
             text = handleStrings( "\"",
