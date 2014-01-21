@@ -217,8 +217,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             model.setPackageName( packageName );
 
             ioService.write( Paths.convert( resource ),
-                             toSource( resource,
-                                       model ),
+                             RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
