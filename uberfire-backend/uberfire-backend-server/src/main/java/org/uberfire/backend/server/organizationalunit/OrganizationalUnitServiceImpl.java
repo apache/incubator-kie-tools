@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
@@ -21,6 +22,7 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.server.config.SystemRepositoryChangedEvent;
 
 @Service
 @ApplicationScoped
@@ -240,5 +242,10 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             removeOrganizationalUnitEvent.fire( new RemoveOrganizationalUnitEvent( ou ) );
         }
 
+    }
+
+    public void updateRegisteredOU(@Observes SystemRepositoryChangedEvent changedEvent) {
+        registeredOrganizationalUnits.clear();
+        loadOrganizationalUnits();
     }
 }

@@ -281,8 +281,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                         long currentValue = getLastModified();
                         if ( currentValue > localLastModifiedValue ) {
                             localLastModifiedValue = currentValue;
-                            // invalidate cached values as system repo has changed - for now only for deployments
-                            configuration.remove( ConfigType.DEPLOYMENT );
+                            // invalidate cached values as system repo has changed
+                            configuration.clear();
                             changedEvent.fire( new SystemRepositoryChangedEvent() );
                         }
                     }

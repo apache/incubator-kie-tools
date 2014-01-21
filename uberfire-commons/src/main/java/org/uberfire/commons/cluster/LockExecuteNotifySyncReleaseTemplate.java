@@ -8,7 +8,7 @@ public abstract class LockExecuteNotifySyncReleaseTemplate<V> extends BaseLockEx
     }
 
     public int timeOut() {
-        return 300;
+        return TIMEOUT;
     }
 
 }

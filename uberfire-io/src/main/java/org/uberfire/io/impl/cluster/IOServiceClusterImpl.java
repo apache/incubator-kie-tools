@@ -277,7 +277,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
             @Override
             public int timeOut() {
-                return 3000;
+                return TIMEOUT;
             }
         }.execute( clusterService, new FutureTask<FileSystem>( new Callable<FileSystem>() {
             @Override
@@ -318,7 +318,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
             @Override
             public int timeOut() {
-                return 300;
+                return TIMEOUT;
             }
         }.execute( clusterService, new FutureTask<FileSystem>( new Callable<FileSystem>() {
             @Override

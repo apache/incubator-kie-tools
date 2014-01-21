@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -26,6 +27,7 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.server.config.SystemRepositoryChangedEvent;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
@@ -318,5 +320,10 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
 
         return result;
+    }
+
+    public void updateRegisteredRepositories(@Observes SystemRepositoryChangedEvent changedEvent) {
+        configuredRepositories.clear();
+        loadRepositories();
     }
 }

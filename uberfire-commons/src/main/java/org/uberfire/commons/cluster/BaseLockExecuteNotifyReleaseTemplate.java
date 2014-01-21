@@ -7,6 +7,8 @@ import java.util.concurrent.RunnableFuture;
 import org.uberfire.commons.message.MessageType;
 
 abstract class BaseLockExecuteNotifyReleaseTemplate<V> {
+    // default timeout 30 sec
+    public static final int TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.cluster.timeout", "30000"));
 
     public V execute( final ClusterService clusterService,
                       final RunnableFuture<V> task ) {
