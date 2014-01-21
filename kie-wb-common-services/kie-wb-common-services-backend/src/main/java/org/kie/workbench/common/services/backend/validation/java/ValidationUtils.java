@@ -37,4 +37,9 @@ public class ValidationUtils {
         }
         return true;
     }
+
+    public static Boolean isArtifactIdentifier( String s ) {
+        // See org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX
+        return s != null && s.matches( "[A-Za-z0-9_\\-.]+" );
+    }
 }

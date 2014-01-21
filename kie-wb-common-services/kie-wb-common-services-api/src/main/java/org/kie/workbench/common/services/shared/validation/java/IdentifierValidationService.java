@@ -27,4 +27,6 @@ public interface IdentifierValidationService {
 
     public Map<String, Boolean> evaluateIdentifiers( String[] identifiers );
 
+    public Map<String, Boolean> evaluateArtifactIdentifiers( String[] identifiers );
+
 }

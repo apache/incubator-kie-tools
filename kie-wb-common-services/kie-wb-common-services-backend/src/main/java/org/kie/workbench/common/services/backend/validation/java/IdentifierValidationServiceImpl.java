@@ -34,11 +34,20 @@ public class IdentifierValidationServiceImpl implements IdentifierValidationServ
         Map<String, Boolean> result = new HashMap<String, Boolean>( identifiers.length );
         if ( identifiers != null && identifiers.length > 0 ) {
             for ( String s : identifiers ) {
-                result.put( s,
-                            ValidationUtils.isJavaIdentifier( s ) );
+                result.put( s, ValidationUtils.isJavaIdentifier( s ) );
             }
         }
         return result;
     }
 
+    @Override
+    public Map<String, Boolean> evaluateArtifactIdentifiers( String[] identifiers ) {
+        Map<String, Boolean> result = new HashMap<String, Boolean>( identifiers.length );
+        if ( identifiers != null && identifiers.length > 0 ) {
+            for ( String s : identifiers ) {
+                result.put( s, ValidationUtils.isArtifactIdentifier( s ) );
+            }
+        }
+        return result;
+    }
 }

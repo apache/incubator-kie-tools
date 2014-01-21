@@ -129,19 +129,14 @@ public class NewProjectWizard
         pom = new POM();
         gavWizardPage.setPom( pom );
 
-        // Sanitize the ArtifactID which is initially based on the Project Name. The Project Name
-        // is used to generate the folder name and hence is only checked to be a valid file name.
-        // The ArtifactID is used to construct the default workspace and hence package names.
-        // Consequentially ArtifactIDs need to be further validated.
-        projectScreenService.call( new RemoteCallback<String>() {
-            @Override
-            public void callback( final String sanitizedArtifactId ) {
-                pom = new POM();
-                pom.setName( projectName );
-                pom.getGav().setArtifactId( sanitizedArtifactId );
-                pom.getGav().setVersion( "1.0" );
-                gavWizardPage.setPom( pom );
-            }
-        } ).sanitizeArtifactId( projectName );
+        // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
+        // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
+        // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
+        // hence package names, it is sanitized in the ProjectService.newProject() method.
+        pom = new POM();
+        pom.setName( projectName );
+        pom.getGav().setArtifactId( projectName );
+        pom.getGav().setVersion( "1.0" );
+        gavWizardPage.setPom( pom );
     }
 }

@@ -25,8 +25,6 @@ public interface ProjectScreenService {
                final String newFileName,
                final String commitMessage );
 
-    String sanitizeArtifactId( final String artifactId );
-
     boolean validate( final POM pom );
 
 }

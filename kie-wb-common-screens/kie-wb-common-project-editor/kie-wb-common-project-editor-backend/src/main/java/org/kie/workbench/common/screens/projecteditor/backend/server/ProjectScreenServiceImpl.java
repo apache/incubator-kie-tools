@@ -115,15 +115,6 @@ public class ProjectScreenServiceImpl
     }
 
     @Override
-    public String sanitizeArtifactId( final String artifactId ) {
-        PortablePreconditions.checkNotNull( "artifactId",
-                                            artifactId );
-        final String[] sanitizedArtifactIdComponents = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( artifactId.split( "\\.",
-                                                                                                                                 -1 ) );
-        return StringUtils.join( sanitizedArtifactIdComponents, "." );
-    }
-
-    @Override
     public boolean validate( final POM pom ) {
         PortablePreconditions.checkNotNull( "pom",
                                             pom );
@@ -139,7 +130,7 @@ public class ProjectScreenServiceImpl
 
         final boolean validName = !( name == null || name.isEmpty() ) && fileNameValidationService.isFileNameValid( name );
         final boolean validGroupId = !( groupIdComponents.length == 0 || identifierValidationService.evaluateIdentifiers( groupIdComponents ).containsValue( Boolean.FALSE ) );
-        final boolean validArtifactId = !( artifactIdComponents.length == 0 || identifierValidationService.evaluateIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ) );
+        final boolean validArtifactId = !( artifactIdComponents.length == 0 || identifierValidationService.evaluateArtifactIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ) );
         final boolean validVersion = !( version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ) );
 
         return validName && validGroupId && validArtifactId && validVersion;
