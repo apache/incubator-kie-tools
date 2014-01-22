@@ -21,12 +21,11 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -52,13 +51,17 @@ public class NewResourcePresenter {
 
         void enableHandler( final NewResourceHandler handler,
                             final boolean enabled );
-        
-        void setTitle(String title);
+
+        void setTitle( String title );
 
     }
 
     @Inject
+    //This is used to get Active Package when New Resource Popup is shown.
     protected ProjectContext context;
+
+    //This holds the state of the Active Package when the New Resource Popup was first shown.
+    protected Package activePackage;
 
     @Inject
     private SyncBeanManager iocBeanManager;
@@ -82,15 +85,6 @@ public class NewResourcePresenter {
             handlers.add( handler );
         }
         view.setHandlers( handlers );
-    }
-
-    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
-        final ProjectContext context = new ProjectContext();
-        context.setActiveOrganizationalUnit( event.getOrganizationalUnit() );
-        context.setActiveRepository( event.getRepository() );
-        context.setActiveProject( event.getProject() );
-        context.setActivePackage( event.getPackage() );
-        enableNewResourceHandlers( context );
     }
 
     private void enableNewResourceHandlers( final ProjectContext context ) {
@@ -126,6 +120,10 @@ public class NewResourcePresenter {
         view.show();
         view.setActiveHandler( activeHandler );
         view.setTitle( NewItemPopupConstants.INSTANCE.popupTitle() + " " + getActiveHandlerDescription() );
+
+        //Save state of current context and enable applicable handlers
+        activePackage = context.getActivePackage();
+        enableNewResourceHandlers( context );
     }
 
     void setActiveHandler( final NewResourceHandler handler ) {
@@ -142,7 +140,7 @@ public class NewResourcePresenter {
 
     public void makeItem( final String fileName ) {
         if ( activeHandler != null ) {
-            activeHandler.create( context.getActivePackage(),
+            activeHandler.create( activePackage,
                                   fileName,
                                   NewResourcePresenter.this );
         }
@@ -151,11 +149,11 @@ public class NewResourcePresenter {
     public void complete() {
         view.hide();
     }
-    
-    public String getActiveHandlerDescription(){
-        if(activeHandler != null){
+
+    public String getActiveHandlerDescription() {
+        if ( activeHandler != null ) {
             return activeHandler.getDescription();
-        }else{
+        } else {
             return "";
         }
     }
