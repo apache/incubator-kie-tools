@@ -28,9 +28,14 @@
     </dependency>
 
     <dependency>
-			<groupId>org.uberfire</groupId>
-			<artifactId>uberfire-workbench</artifactId>
-		</dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-processors</artifactId>
+    </dependency>
 
 		<dependency>
 			<groupId>javax.enterprise</groupId>

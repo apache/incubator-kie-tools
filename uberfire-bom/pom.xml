@@ -174,16 +174,26 @@
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench</artifactId>
+        <artifactId>uberfire-workbench-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench</artifactId>
+        <artifactId>uberfire-workbench-client</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-workbench-processors</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-workbench-processors</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
       <!-- JS Native Plugins -->
       <dependency>
         <groupId>org.uberfire</groupId>

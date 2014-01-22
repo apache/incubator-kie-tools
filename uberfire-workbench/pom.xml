@@ -14,9 +14,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
@@ -26,120 +25,14 @@
   </parent>
 
   <artifactId>uberfire-workbench</artifactId>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <name>UberFire Workbench</name>
-  <description>UberFire Workbench</description>
 
-  <dependencies>
 
-    <dependency>
-      <groupId>com.github.gwtbootstrap</groupId>
-      <artifactId>gwt-bootstrap</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-
-    <!-- Annotations -->
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-    </dependency>
-
-    <!-- CDI Integration Modules -->
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-client</artifactId>
-    </dependency>
-
-    <!-- Errai IoC -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-ioc</artifactId>
-    </dependency>
-
-    <!-- GWT and GWT Extensions -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.allen-sauer.gwt.dnd</groupId>
-      <artifactId>gwt-dnd</artifactId>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
-
-  <build>
-
-    <resources>
-      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <!-- Include module descriptors from src/main/resources in order not to
-        break the Intellij GWT plug-in -->
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
-
-    <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgument>-proc:none</compilerArgument>
-        </configuration>
-      </plugin>
-
-    </plugins>
-
-  </build>
+  <modules>
+    <module>uberfire-workbench-processors</module>
+    <module>uberfire-workbench-client</module>
+  </modules>
 
 </project>

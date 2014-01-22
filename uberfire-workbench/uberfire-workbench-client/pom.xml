@@ -14,60 +14,47 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-parent-with-dependencies</artifactId>
+    <artifactId>uberfire-workbench</artifactId>
     <version>0.4.0-SNAPSHOT</version>
-    <relativePath>../uberfire-parent-with-dependencies/pom.xml</relativePath>
   </parent>
 
-  <artifactId>uberfire-js</artifactId>
+  <artifactId>uberfire-workbench-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>UberFire JS</name>
-  <description>UberFire JS</description>
+  <name>UberFire Workbench Client</name>
+  <description>UberFire Workbench Client</description>
 
   <dependencies>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
+      <artifactId>uberfire-widgets-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.allen-sauer.gwt.dnd</groupId>
+      <artifactId>gwt-dnd</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-client</artifactId>
-    </dependency>
   </dependencies>
+
 
   <build>
     <resources>
@@ -75,7 +62,8 @@
       <resource>
         <directory>src/main/java</directory>
       </resource>
-      <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
+      <!-- Include module descriptors from src/main/resources in order not to
+        break the Intellij GWT plug-in -->
       <resource>
         <directory>src/main/resources</directory>
       </resource>

@@ -69,7 +69,12 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench</artifactId>
+      <artifactId>uberfire-workbench-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-processors</artifactId>
     </dependency>
 
     <dependency>
