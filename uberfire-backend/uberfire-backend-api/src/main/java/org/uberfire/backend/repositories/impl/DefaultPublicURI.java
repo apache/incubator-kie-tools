@@ -67,4 +67,12 @@ public class DefaultPublicURI implements PublicURI {
         result = 31 * result + ( uri != null ? uri.hashCode() : 0 );
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "DefaultPublicURI{" +
+                "protocol='" + protocol + '\'' +
+                ", uri='" + uri + '\'' +
+                '}';
+    }
 }

@@ -153,8 +153,8 @@ public class GitRepository implements Repository {
 
     @Override
     public String toString() {
-      return "GitRepository [alias=" + alias + ", environment=" + environment + ", root=" + root + ", roles=" + roles
-              + ", publicURI=" + publicURI + "]";
+        return "GitRepository [alias=" + alias + ", environment=" + environment + ", root=" + root + ", roles=" + roles
+                + ", publicURI=" + publicURIs + "]";
     }
 
 }
