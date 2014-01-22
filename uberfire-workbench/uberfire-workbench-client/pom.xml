@@ -49,10 +49,13 @@
       <artifactId>gwt-dnd</artifactId>
     </dependency>
     <dependency>
+<<<<<<< HEAD
       <groupId>com.google.guava</groupId>
       <artifactId>guava-gwt</artifactId>
     </dependency>
     <dependency>
+=======
+>>>>>>> UF-25: split workbench module in order to have a clean client only lib and an isolated annotation processor. looks like after split annotations processor works as expected on eclipse kepler using m2e-apt (related to UF-15)
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
