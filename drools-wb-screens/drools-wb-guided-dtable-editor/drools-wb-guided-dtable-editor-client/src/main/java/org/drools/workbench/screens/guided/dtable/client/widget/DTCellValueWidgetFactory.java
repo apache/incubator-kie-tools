@@ -51,7 +51,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.DefaultVal
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
+import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 import org.uberfire.client.common.NumericBigDecimalTextBox;
@@ -567,7 +567,7 @@ public class DTCellValueWidgetFactory {
         int selectedIndexOffset = ( allowEmptyValues ? 1 : 0 );
         for ( int i = 0; i < completions.length; i++ ) {
             String item = completions[ i ].trim();
-            String[] splut = ConstraintValueEditorHelper.splitValue( item );
+            String[] splut = ConstraintValueHelper.splitValue(item);
             lb.addItem( splut[ 1 ],
                         splut[ 0 ] );
             lb.setItemSelected( i + selectedIndexOffset,

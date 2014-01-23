@@ -51,13 +51,13 @@ import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
-import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.HasOperator;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
+import org.drools.workbench.screens.guided.rule.client.editor.util.ConstraintValueEditorHelper;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
@@ -67,6 +67,7 @@ import org.guvnor.common.services.workingset.client.factconstraints.customform.C
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
+import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
@@ -85,6 +86,7 @@ import org.uberfire.client.common.SmallLabel;
 public class ConstraintValueEditor
         extends DirtyableComposite {
 
+    private final ConstraintValueEditorHelper helper;
     private WorkingSetManager workingSetManager = null;
 
     private String factType;
@@ -143,6 +145,8 @@ public class ConstraintValueEditor
             this.fieldType = oracle.getFieldType( factType,
                                                   fieldName );
         }
+
+        helper = new ConstraintValueEditorHelper(model, oracle, factType, fieldName, constraint, fieldType, dropDownData);
 
         refreshEditor();
         initWidget( panel );
@@ -381,18 +385,18 @@ public class ConstraintValueEditor
 
         for ( String var : bindingsInScope ) {
             final String binding = var;
-            isApplicableBindingsInScope( var,
-                                         new Callback<Boolean>() {
-                                             @Override
-                                             public void callback( final Boolean result ) {
-                                                 if ( Boolean.TRUE.equals( result ) ) {
-                                                     box.addItem( binding );
-                                                     if ( ConstraintValueEditor.this.constraint.getValue() != null && ConstraintValueEditor.this.constraint.getValue().equals( binding ) ) {
-                                                         box.setSelectedIndex( box.getItemCount() - 1 );
-                                                     }
-                                                 }
-                                             }
-                                         } );
+            helper.isApplicableBindingsInScope(var,
+                    new Callback<Boolean>() {
+                        @Override
+                        public void callback(final Boolean result) {
+                            if (Boolean.TRUE.equals(result)) {
+                                box.addItem(binding);
+                                if (ConstraintValueEditor.this.constraint.getValue() != null && ConstraintValueEditor.this.constraint.getValue().equals(binding)) {
+                                    box.setSelectedIndex(box.getItemCount() - 1);
+                                }
+                            }
+                        }
+                    });
         }
 
         box.addChangeHandler( new ChangeHandler() {
@@ -607,32 +611,32 @@ public class ConstraintValueEditor
 
                 final Button bindingButton = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
 
-                //This Set is used as a flag to know whether the button has been added; due to use of callbacks
+                //This Set is used as a 1flag to know whether the button has been added; due to use of callbacks
                 final Set<Button> bindingButtonContainer = new HashSet<Button>();
 
                 for ( String var : bindingsInScope ) {
-                    isApplicableBindingsInScope( var,
-                                                 new Callback<Boolean>() {
-                                                     @Override
-                                                     public void callback( final Boolean result ) {
-                                                         if ( Boolean.TRUE.equals( result ) ) {
-                                                             if ( !bindingButtonContainer.contains( bindingButton ) ) {
-                                                                 bindingButtonContainer.add( bindingButton );
-                                                                 bindingButton.addClickHandler( new ClickHandler() {
+                    helper.isApplicableBindingsInScope(var,
+                            new Callback<Boolean>() {
+                                @Override
+                                public void callback(final Boolean result) {
+                                    if (Boolean.TRUE.equals(result)) {
+                                        if (!bindingButtonContainer.contains(bindingButton)) {
+                                            bindingButtonContainer.add(bindingButton);
+                                            bindingButton.addClickHandler(new ClickHandler() {
 
-                                                                     public void onClick( ClickEvent event ) {
-                                                                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
-                                                                         doTypeChosen( form );
-                                                                     }
-                                                                 } );
-                                                                 form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AVariable(),
-                                                                                    widgets( bindingButton,
-                                                                                             new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
-                                                                                                            GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
-                                                             }
-                                                         }
-                                                     }
-                                                 } );
+                                                public void onClick(ClickEvent event) {
+                                                    con.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
+                                                    doTypeChosen(form);
+                                                }
+                                            });
+                                            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.AVariable(),
+                                                    widgets(bindingButton,
+                                                            new InfoPopup(GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
+                                                                    GuidedRuleEditorResources.CONSTANTS.BoundVariableTip())));
+                                        }
+                                    }
+                                }
+                            });
 
                 }
             }
@@ -708,208 +712,6 @@ public class ConstraintValueEditor
 
     public void setOnValueChangeCommand( Command onValueChangeCommand ) {
         this.onValueChangeCommand = onValueChangeCommand;
-    }
-
-    private void isApplicableBindingsInScope( final String binding,
-                                              final Callback<Boolean> callback ) {
-
-        //LHS FactPattern
-        FactPattern fp = model.getLHSBoundFact( binding );
-        if ( fp != null ) {
-            isLHSFactTypeEquivalent( binding,
-                                     callback );
-        }
-
-        //LHS FieldConstraint
-        FieldConstraint fc = model.getLHSBoundField( binding );
-        if ( fc != null ) {
-            isLHSFieldTypeEquivalent( binding,
-                                      callback );
-        }
-    }
-
-    private void isLHSFactTypeEquivalent( final String boundVariable,
-                                          final Callback<Boolean> callback ) {
-        String boundFactType = model.getLHSBoundFact( boundVariable ).getFactType();
-        String boundFieldType = model.getLHSBindingType( boundVariable );
-
-        //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-        if ( boundFactType.equals( DataType.TYPE_COMPARABLE ) ) {
-            if ( !this.fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-                callback.callback( false );
-                return;
-            }
-            String[] dd = this.oracle.getEnumValues( boundFactType,
-                                                     this.fieldName );
-            callback.callback( isEnumEquivalent( dd ) );
-            return;
-        }
-
-        isBoundVariableApplicable( boundFactType,
-                                   boundFieldType,
-                                   callback );
-    }
-
-    private void isLHSFieldTypeEquivalent( final String boundVariable,
-                                           final Callback<Boolean> callback ) {
-        String boundFieldType = this.model.getLHSBindingType( boundVariable );
-
-        //If the fieldTypes are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-        if ( boundFieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-            if ( !this.fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-                callback.callback( false );
-                return;
-            }
-            FieldConstraint fc = this.model.getLHSBoundField( boundVariable );
-            if ( fc instanceof SingleFieldConstraint ) {
-                String fieldName = ( (SingleFieldConstraint) fc ).getFieldName();
-                String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding( boundVariable ).getFactType();
-                String[] dd = this.oracle.getEnumValues( parentFactTypeForBinding,
-                                                         fieldName );
-                callback.callback( isEnumEquivalent( dd ) );
-                return;
-            }
-            callback.callback( false );
-            return;
-        }
-
-        isBoundVariableApplicable( boundFieldType,
-                                   callback );
-    }
-
-    private boolean isEnumEquivalent( String[] values ) {
-        if ( values == null && this.dropDownData.getFixedList() != null ) {
-            return false;
-        }
-        if ( values != null && this.dropDownData.getFixedList() == null ) {
-            return false;
-        }
-        if ( values.length != this.dropDownData.getFixedList().length ) {
-            return false;
-        }
-        for ( int i = 0; i < values.length; i++ ) {
-            if ( !values[ i ].equals( this.dropDownData.getFixedList()[ i ] ) ) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void isBoundVariableApplicable( final String boundFactType,
-                                            final String boundFieldType,
-                                            final Callback<Boolean> callback ) {
-
-        //Fields of the same type as the bound variable can be compared
-        if ( boundFactType != null && boundFactType.equals( this.fieldType ) ) {
-            callback.callback( true );
-            return;
-        }
-
-        //'this' can be compared to bound facts of the same type
-        if ( this.fieldName.equals( DataType.TYPE_THIS ) ) {
-            if ( boundFactType != null && boundFactType.equals( this.factType ) ) {
-                callback.callback( true );
-                return;
-            }
-        }
-
-        //For collection, present the list of possible bound variable
-        String factCollectionType = oracle.getParametricFieldType( this.factType,
-                                                                   this.fieldName );
-        if ( boundFactType != null && factCollectionType != null && boundFactType.equals( factCollectionType ) ) {
-            callback.callback( true );
-            return;
-        }
-
-        isBoundVariableApplicable( boundFieldType,
-                                   callback );
-    }
-
-    private void isBoundVariableApplicable( String boundFieldType,
-                                            final Callback<Boolean> callback ) {
-
-        //Field-types can be simply compared
-        if ( boundFieldType != null && boundFieldType.equals(getFieldTypeClazz()) ) {
-            callback.callback( true );
-            return;
-        }
-
-        //'this' can be compared to bound fields of the same type
-        if ( this.fieldName.equals( DataType.TYPE_THIS ) ) {
-            if ( boundFieldType != null && boundFieldType.equals( this.factType ) ) {
-                callback.callback( true );
-                return;
-            }
-        }
-
-        //'this' can be compared to bound events if using a CEP operator
-        if ( this.fieldName.equals( DataType.TYPE_THIS ) ) {
-            oracle.isFactTypeAnEvent( boundFieldType,
-                                      new Callback<Boolean>() {
-                                          @Override
-                                          public void callback( final Boolean result ) {
-                                              if ( Boolean.TRUE.equals( result ) ) {
-                                                  if ( ConstraintValueEditor.this.constraint instanceof HasOperator ) {
-                                                      HasOperator hop = (HasOperator) ConstraintValueEditor.this.constraint;
-                                                      if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
-                                                          callback.callback( true );
-                                                          return;
-                                                      }
-                                                  }
-                                              }
-                                          }
-                                      } );
-        }
-
-        //'this' can be compared to bound Dates if using a CEP operator
-        if ( this.fieldName.equals( DataType.TYPE_THIS ) && boundFieldType.equals( DataType.TYPE_DATE ) ) {
-            if ( this.constraint instanceof HasOperator ) {
-                HasOperator hop = (HasOperator) this.constraint;
-                if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
-                    callback.callback( true );
-                    return;
-                }
-            }
-        }
-
-        //Dates can be compared to bound events if using a CEP operator
-        if ( this.fieldType.equals( DataType.TYPE_DATE ) ) {
-            oracle.isFactTypeAnEvent( boundFieldType,
-                                      new Callback<Boolean>() {
-                                          @Override
-                                          public void callback( final Boolean result ) {
-                                              if ( Boolean.TRUE.equals( result ) ) {
-                                                  if ( ConstraintValueEditor.this.constraint instanceof HasOperator ) {
-                                                      HasOperator hop = (HasOperator) ConstraintValueEditor.this.constraint;
-                                                      if ( CEPOracle.isCEPOperator( hop.getOperator() ) ) {
-                                                          callback.callback( true );
-                                                          return;
-                                                      }
-                                                  }
-                                              }
-                                          }
-                                      } );
-        }
-
-        //For collection, present the list of possible bound variable
-        String factCollectionType = oracle.getParametricFieldType( this.factType,
-                                                                   this.fieldName );
-        if ( factCollectionType != null && factCollectionType.equals( boundFieldType ) ) {
-            callback.callback( true );
-            return;
-        }
-
-        callback.callback( false );
-    }
-
-    private String getFieldTypeClazz() {
-        String clazz;
-        if (model.getPackageName() == null || model.getPackageName().isEmpty()) {
-            clazz = this.fieldType;
-        } else {
-            clazz = model.getPackageName() + "." + this.fieldType;
-        }
-        return clazz;
     }
 
     private DropDownData getDropDownData() {

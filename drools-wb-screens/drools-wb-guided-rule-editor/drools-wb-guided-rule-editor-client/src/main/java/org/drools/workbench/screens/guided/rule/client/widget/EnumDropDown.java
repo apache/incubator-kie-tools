@@ -30,7 +30,7 @@ import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
+import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.IDirtyable;
@@ -171,7 +171,7 @@ public class EnumDropDown
             String val;
             if ( v.indexOf( '=' ) > 0 ) {
                 //using a mapping
-                String[] splut = ConstraintValueEditorHelper.splitValue( v );
+                String[] splut = ConstraintValueHelper.splitValue(v);
                 String realValue = splut[ 0 ];
                 String display = splut[ 1 ];
                 val = realValue;

@@ -34,7 +34,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
+import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 
 /**
  * A utility class to expand Condition column definitions into rows. Action
@@ -191,7 +191,7 @@ public class RowExpander {
         final String[] splitValues = new String[ values.length ];
         for ( int i = 0; i < values.length; i++ ) {
             String v = values[ i ];
-            String[] splut = ConstraintValueEditorHelper.splitValue( v );
+            String[] splut = ConstraintValueHelper.splitValue(v);
             splitValues[ i ] = splut[ 0 ];
         }
         return splitValues;
@@ -435,7 +435,7 @@ public class RowExpander {
             final String[] splitValues = new String[ values.length ];
             for ( int i = 0; i < values.length; i++ ) {
                 final String v = values[ i ];
-                final String[] splut = ConstraintValueEditorHelper.splitValue( v );
+                final String[] splut = ConstraintValueHelper.splitValue(v);
                 splitValues[ i ] = splut[ 0 ];
             }
             return splitValues;
