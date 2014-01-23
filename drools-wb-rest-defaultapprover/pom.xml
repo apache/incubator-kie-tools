@@ -19,28 +19,15 @@
         <artifactId>kie-maven-plugin</artifactId>
         <version>${drools.version}</version>
         <extensions>true</extensions>
-
-        <!-- When the bug that does prevents pom level deps from being included is fixed,
-        this dependency can be removed-->
-        <dependencies>
-
-          <dependency>
-            <groupId>org.kie.workbench.services</groupId>
-            <artifactId>kie-wb-common-services-api</artifactId>
-            <version>${guvnor.version}</version>
-          </dependency>
-
-        </dependencies>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
-
   </dependencies>
+  
 </project>

@@ -1,5 +1,7 @@
 filter:
    - pattern: /rest/**
+   - pattern: /maven2/**
+   - pattern: /org.drools.workbench.DroolsWorkbench/**
 
 exclude:
    - /*.ico
