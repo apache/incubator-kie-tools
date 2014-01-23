@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.widgets.client.util;
 
-public class ConstraintValueEditorHelper {
+public class ConstraintValueHelper {
 
     /**
      * 'Person.age' : ['M=Male', 'F=Female'] 'Person.expression' :
@@ -25,30 +25,30 @@ public class ConstraintValueEditorHelper {
      * This will split the drop down item into a value and a key, e.g.
      * key=value. Equals signs in the expression can be delimited with "\\"
      */
-    public static String[] splitValue( String v ) {
+    public static String[] splitValue(String v) {
 
-        String[] s = new String[ 2 ];
-        s[ 0 ] = v;
-        s[ 1 ] = v;
-        int equalsIndex = v.indexOf( "=" );
-        int escapedEqualsIndex = v.indexOf( "\\=" );
-        while ( ( equalsIndex - escapedEqualsIndex == 1 ) ) {
-            equalsIndex = v.indexOf( "=",
-                                     equalsIndex + 1 );
-            escapedEqualsIndex = v.indexOf( "\\=",
-                                            escapedEqualsIndex + 1 );
+        String[] s = new String[2];
+        s[0] = v;
+        s[1] = v;
+        int equalsIndex = v.indexOf("=");
+        int escapedEqualsIndex = v.indexOf("\\=");
+        while ((equalsIndex - escapedEqualsIndex == 1)) {
+            equalsIndex = v.indexOf("=",
+                    equalsIndex + 1);
+            escapedEqualsIndex = v.indexOf("\\=",
+                    escapedEqualsIndex + 1);
         }
-        if ( equalsIndex != -1 && escapedEqualsIndex == -1 ) {
-            String lhs = v.substring( 0,
-                                      equalsIndex );
-            String rhs = v.substring( equalsIndex + 1 );
-            s[ 0 ] = lhs;
-            s[ 1 ] = rhs;
+        if (equalsIndex != -1 && escapedEqualsIndex == -1) {
+            String lhs = v.substring(0,
+                    equalsIndex);
+            String rhs = v.substring(equalsIndex + 1);
+            s[0] = lhs;
+            s[1] = rhs;
         }
-        s[ 0 ] = s[ 0 ].replace( "\\",
-                                 "" );
-        s[ 1 ] = s[ 1 ].replace( "\\",
-                                 "" );
+        s[0] = s[0].replace("\\",
+                "");
+        s[1] = s[1].replace("\\",
+                "");
         return s;
     }
 

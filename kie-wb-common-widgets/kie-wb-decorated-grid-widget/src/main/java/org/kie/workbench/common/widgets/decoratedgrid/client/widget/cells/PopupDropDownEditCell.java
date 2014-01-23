@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueEditorHelper;
+import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 
 /**
@@ -121,7 +121,7 @@ public class PopupDropDownEditCell extends
         for ( int i = 0; i < items.length; i++ ) {
             String item = items[ i ].trim();
             if ( item.indexOf( '=' ) > 0 ) {
-                String[] splut = ConstraintValueEditorHelper.splitValue( item );
+                String[] splut = ConstraintValueHelper.splitValue(item);
                 this.items[ i ][ 0 ] = splut[ 0 ];
                 this.items[ i ][ 1 ] = splut[ 1 ];
                 this.listBox.addItem( splut[ 1 ],
