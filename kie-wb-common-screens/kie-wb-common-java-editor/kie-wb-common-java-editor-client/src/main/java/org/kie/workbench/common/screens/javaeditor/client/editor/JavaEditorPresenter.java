@@ -27,7 +27,6 @@ import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -51,7 +50,7 @@ public class JavaEditorPresenter {
     private Caller<VFSService> vfsServices;
 
     @Inject
-    private ViewSourceView sourceView;
+    private JavaSourceView sourceView;
 
     @Inject
     private MetadataWidget metadataWidget;
