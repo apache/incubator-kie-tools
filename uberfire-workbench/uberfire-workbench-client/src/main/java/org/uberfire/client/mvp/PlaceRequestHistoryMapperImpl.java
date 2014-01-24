@@ -42,27 +42,7 @@ public class PlaceRequestHistoryMapperImpl
         return placeRequest;
     }
 
-//    @Override
-//    public String getIdentifier( final PlaceRequest placeRequest ) {
-//        StringBuilder token = new StringBuilder();
-//        token.append( placeRequest.getIdentifier() );
-//
-//        if ( placeRequest.getParameterNames().size() > 0 ) {
-//            token.append( "?" );
-//        }
-//        for ( String name : placeRequest.getParameterNames() ) {
-//            token.append( name ).append( "=" ).append( placeRequest.getParameter( name, null ) );
-//            token.append( "&" );
-//        }
-//
-//        if ( token.length() != 0 && token.lastIndexOf( "&" ) + 1 == token.length() ) {
-//            token.deleteCharAt( token.length() - 1 );
-//        }
-//
-//        return token.toString();
-//    }
-
-    private static Map<String, String> getParameters( String query ) {
+    private Map<String, String> getParameters( String query ) {
         Map<String, String> parameters = new HashMap<String, String>();
 
         if ( query != null && !"".equalsIgnoreCase( query ) ) {
@@ -78,7 +58,7 @@ public class PlaceRequestHistoryMapperImpl
                     name = part.substring( 0,
                                            index );
                     value = index < part.length() ? part.substring( index + 1 ) : "";
-                    value = urlDecode( value );
+                    value = this.urlDecode( value );
                 }
                 parameters.put( urlDecode( name ),
                                 value );
@@ -88,7 +68,7 @@ public class PlaceRequestHistoryMapperImpl
         return parameters;
     }
 
-    private static String urlDecode( String value ) {
+    String urlDecode( String value ) {
         return URL.decode( value );
     }
 }

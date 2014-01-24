@@ -8,6 +8,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.SelectPlaceEvent;
+import org.uberfire.workbench.model.PanelDefinition;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -18,7 +19,6 @@ import static org.mockito.Mockito.*;
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
  * life-cycle events. There remains a lot more work to do in this class.
  */
-@Ignore
 public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
 
     @Test
@@ -33,7 +33,12 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
             add( spy );
         }} );
 
-        placeManager.goTo( somewhere );
+
+        placeManager = new PlaceManagerImplUnitTestWrapper( spy, panelManager );
+
+        final PanelDefinition root = panelManager.getRoot();
+
+        placeManager.goTo( somewhere, root );
 
         verify( spy ).launch( any( AcceptItem.class ),
                               eq( somewhere ),
@@ -62,8 +67,15 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
             add( spy );
         }} );
 
-        placeManager.goTo( somewhere );
-        placeManager.goTo( somewhereTheSame );
+        placeManager = new PlaceManagerImplUnitTestWrapper( spy, panelManager, selectWorkbenchPartEvent );
+
+        final PanelDefinition root = panelManager.getRoot();
+
+        placeManager.goTo( somewhere, root );
+
+        placeManager.goTo( somewhereTheSame, root );
+
+
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
@@ -100,8 +112,14 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
             add( spy2 );
         }} );
 
-        placeManager.goTo( somewhere );
-        placeManager.goTo( somewhereElse );
+        placeManager = new PlaceManagerImplUnitTestWrapper( spy1, panelManager, selectWorkbenchPartEvent );
+
+        final PanelDefinition root = panelManager.getRoot();
+
+        placeManager.goTo( somewhere, root );
+        //just to change the activity mock
+        placeManager = new PlaceManagerImplUnitTestWrapper( spy2, panelManager, selectWorkbenchPartEvent );
+        placeManager.goTo( somewhereElse, root  );
 
         verify( spy1,
                 times( 1 ) ).launch( any( AcceptItem.class ),

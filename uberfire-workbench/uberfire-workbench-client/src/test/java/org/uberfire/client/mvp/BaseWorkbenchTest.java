@@ -20,7 +20,9 @@ import javax.enterprise.event.Event;
 import org.junit.Before;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.PanelManagerImpl;
+import org.uberfire.client.workbench.PanelManagerImplUnitTestWrapper;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.workbench.events.PlaceGainFocusEvent;
@@ -48,6 +50,8 @@ public abstract class BaseWorkbenchTest {
     protected Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
     protected Event<SelectPlaceEvent> selectWorkbenchPartEvent;
     protected WorkbenchStatusBarPresenter statusBar;
+    protected WorkbenchPanelPresenter workbenchPanelPresenter;
+
 
     @Before
     @SuppressWarnings("unchecked")
@@ -66,19 +70,22 @@ public abstract class BaseWorkbenchTest {
         selectWorkbenchPartEvent = mock( Event.class );
         statusBar = mock( WorkbenchStatusBarPresenter.class );
 
+        workbenchPanelPresenter = mock (SimpleWorkbenchPanelPresenter.class);
+
+
         //Dummy Panel Manager\Workbench
-        panelManager = new PanelManagerImpl( factory,
+        panelManager = new PanelManagerImplUnitTestWrapper( factory,
                                              workbenchPartBeforeCloseEvent,
                                              workbenchPartOnFocusEvent,
                                              workbenchPartLostFocusEvent,
                                              selectWorkbenchPartEvent,
-                                             statusBar );
+                                             statusBar, workbenchPanelPresenter );
         final PanelDefinition root = new PanelDefinitionImpl( ROOT_SIMPLE );
 
         panelManager.setRoot( root );
 
         //Dummy Place Manager
-        placeManager = new PlaceManagerImpl(  );
+        placeManager = new PlaceManagerImpl();
     }
 
 }

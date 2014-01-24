@@ -89,13 +89,13 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
 
         final PathPlaceRequest that = (PathPlaceRequest) o;
 
-        return path.equals( that.path );
+        return getPath().equals( that.getPath() );
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + path.hashCode();
+        result = 31 * result + getPath().hashCode();
         return result;
     }
 }

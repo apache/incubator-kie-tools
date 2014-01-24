@@ -6,21 +6,20 @@ import org.junit.Test;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.Position;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class AbstractPopupActivityTest  extends BaseWorkbenchTest {
+public class AbstractWorkbenchContextActivityTest extends BaseWorkbenchTest {
 
 
     @Test
-    public void testPopUpLaunch() throws Exception {
+      public void testAbstractWorkbenchContextActivityLaunch() throws Exception {
 
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
-        final AbstractPopupActivity activity = mock( AbstractPopupActivity.class );
+        final AbstractWorkbenchContextActivity activity = mock( AbstractWorkbenchContextActivity.class );
         HashSet<Activity> activities = new HashSet<Activity>( 1 ) {{
             add( activity );
         }};
@@ -31,8 +30,9 @@ public class AbstractPopupActivityTest  extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere );
 
-        verify( activity ).launch( eq( somewhere ), any(Command.class));
+        verify( activity , never()).launch( eq( somewhere ), any(Command.class));
 
     }
+
 
 }

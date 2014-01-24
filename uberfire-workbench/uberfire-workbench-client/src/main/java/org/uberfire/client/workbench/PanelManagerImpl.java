@@ -118,7 +118,7 @@ public class PanelManagerImpl implements PanelManager {
 
         this.root = newRoot;
         this.perspective = perspective;
-        WorkbenchPanelPresenter newPresenter = mapPanelDefinitionToPresenter.get( newRoot );
+        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter( newRoot );
         if ( newPresenter == null ) {
             newPresenter = factory.newWorkbenchPanel( newRoot );
             mapPanelDefinitionToPresenter.put( newRoot, newPresenter );
@@ -148,7 +148,7 @@ public class PanelManagerImpl implements PanelManager {
             throw new IllegalArgumentException( "Root has already been set. Unable to set root." );
         }
 
-        WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+        WorkbenchPanelPresenter panelPresenter = getWorkbenchPanelPresenter( panel );
         if ( panelPresenter == null ) {
             panelPresenter = factory.newWorkbenchPanel( panel );
             mapPanelDefinitionToPresenter.put( panel,
@@ -184,7 +184,7 @@ public class PanelManagerImpl implements PanelManager {
         if ( part.isMinimized() ) {
             statusBar.addMinimizedPlace( part.getPlace() );
         } else {
-            final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+            final WorkbenchPanelPresenter panelPresenter = getWorkbenchPanelPresenter( panel );
             if ( panelPresenter == null ) {
                 throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
             }
@@ -199,6 +199,10 @@ public class PanelManagerImpl implements PanelManager {
 
         //Select newly inserted part
         selectPlaceEvent.fire( new SelectPlaceEvent( place ) );
+    }
+
+    WorkbenchPanelPresenter getWorkbenchPanelPresenter( PanelDefinition panel ) {
+        return mapPanelDefinitionToPresenter.get( panel );
     }
 
     @Override
@@ -234,7 +238,7 @@ public class PanelManagerImpl implements PanelManager {
 
         PanelDefinition newPanel = null;
 
-        WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
+        WorkbenchPanelPresenter targetPanelPresenter = getWorkbenchPanelPresenter( targetPanel );
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
             mapPanelDefinitionToPresenter.put( targetPanel,
@@ -490,7 +494,7 @@ public class PanelManagerImpl implements PanelManager {
 
     @Override
     public WorkbenchPanelView getPanelView( final PanelDefinition panel ) {
-        return mapPanelDefinitionToPresenter.get( panel ).getPanelView();
+        return getWorkbenchPanelPresenter( panel ).getPanelView();
     }
 
     private void removePanel( final PanelDefinition panelToRemove,

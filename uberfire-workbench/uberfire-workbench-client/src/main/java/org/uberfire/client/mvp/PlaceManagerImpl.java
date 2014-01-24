@@ -110,9 +110,13 @@ public class PlaceManagerImpl
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
-        placeHistoryHandler.register( this,
-                                      produceEventBus(),
-                                      DefaultPlaceRequest.NOWHERE );
+        getPlaceHistoryHandler().register( this,
+                                           produceEventBus(),
+                                           DefaultPlaceRequest.NOWHERE );
+    }
+
+    PlaceHistoryHandler getPlaceHistoryHandler() {
+        return placeHistoryHandler;
     }
 
     @Override
@@ -234,7 +238,7 @@ public class PlaceManagerImpl
                 final Command loadPerspective = new Command() {
                     @Override
                     public void execute() {
-                        final PerspectiveDefinition activePerspective = panelManager.getPerspective();
+                        final PerspectiveDefinition activePerspective = getPanelManager().getPerspective();
                         if ( activePerspective != null && !activePerspective.isTransient() ) {
                             wbServices.call( new RemoteCallback<Object>() {
                                 @Override
@@ -295,7 +299,7 @@ public class PlaceManagerImpl
             return existingPair;
         }
 
-        final Set<Activity> activities = activityManager.getActivities( place );
+        final Set<Activity> activities = getActivities( place );
 
         if ( activities == null || activities.size() == 0 ) {
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
@@ -309,6 +313,10 @@ public class PlaceManagerImpl
         }
 
         return Pair.newPair( activities.iterator().next(), place );
+    }
+
+    Set<Activity> getActivities( PlaceRequest place ) {
+        return activityManager.getActivities( place );
     }
 
     private Pair<Activity, PlaceRequest> resolveExistingParts( final PlaceRequest place ) {
@@ -496,7 +504,7 @@ public class PlaceManagerImpl
 
         //If we're already showing this place exit.
         if ( existingWorkbenchParts.containsKey( place ) ) {
-            selectWorkbenchPartEvent.fire( new SelectPlaceEvent( place ) );
+            getSelectWorkbenchPartEvent().fire( new SelectPlaceEvent( place ) );
             return;
         }
 
@@ -505,8 +513,7 @@ public class PlaceManagerImpl
         if ( _panel != null ) {
             panel = _panel;
         } else {
-            panel = panelManager.addWorkbenchPanel( panelManager.getRoot(),
-                                                    position );
+            panel = addWorkbenchPanelTo( position );
         }
 
         launchActivity( place,
@@ -514,6 +521,15 @@ public class PlaceManagerImpl
                         part,
                         panel,
                         callback );
+    }
+
+    Event<SelectPlaceEvent> getSelectWorkbenchPartEvent() {
+        return selectWorkbenchPartEvent;
+    }
+
+    PanelDefinition addWorkbenchPanelTo( Position position ) {
+        return getPanelManager().addWorkbenchPanel( getPanelManager().getRoot(),
+                                                    position );
     }
 
     private void launchActivity( final PlaceRequest place,
@@ -530,24 +546,36 @@ public class PlaceManagerImpl
         updateHistory( place );
         checkPathDelete( place );
 
-        final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
+        revealActivityWithCalBackToAttachToWorkbench( place, activity, part, panel, callback );
+    }
+
+    private void revealActivityWithCalBackToAttachToWorkbench( final PlaceRequest place,
+                                                               final WorkbenchActivity activity,
+                                                               final PartDefinition part,
+                                                               final PanelDefinition panel,
+                                                               Command callback ) {
+        final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
 
         //Reveal activity with call-back to attach to Workbench
         activity.launch( new AcceptItem() {
             public void add( final UIPart uiPart ) {
-                panelManager.addWorkbenchPart( place,
-                                               part,
-                                               panel,
-                                               activity.getMenus(),
-                                               uiPart,
-                                               activity.contextId() );
+                getPanelManager().addWorkbenchPart( place,
+                                                    part,
+                                                    panel,
+                                                    activity.getMenus(),
+                                                    uiPart,
+                                                    activity.contextId() );
                 if ( splashScreen != null ) {
                     activeSplashScreens.put( place.getIdentifier(), splashScreen );
-                    newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
+                    fireNewSplashScreenActiveEvent();
                     splashScreen.launch( place, null );
                 }
             }
         }, place, callback );
+    }
+
+    PanelManager getPanelManager() {
+        return panelManager;
     }
 
     private void checkPathDelete( final PlaceRequest place ) {
@@ -584,19 +612,31 @@ public class PlaceManagerImpl
                                  final Command callback ) {
         loadingPerspective.startLoading();
         activeSplashScreens.clear();
-        perspectiveChangeEvent.fire( new PerspectiveChange( activity.getPerspective(), activity.getMenus(), activity.getIdentifier() ) );
-        final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
+        firePerspectiveChangeEvent( activity );
+        final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
         activity.launch( place, callback );
         if ( splashScreen != null ) {
             activeSplashScreens.put( place.getIdentifier(), splashScreen );
             splashScreen.launch( place, null );
         }
-        newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
+        fireNewSplashScreenActiveEvent();
         loadingPerspective.endLoading();
     }
 
+    SplashScreenActivity getSplashScreenInterceptor( PlaceRequest place ) {
+        return activityManager.getSplashScreenInterceptor( place );
+    }
+
+    void fireNewSplashScreenActiveEvent() {
+        newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
+    }
+
+    void firePerspectiveChangeEvent( PerspectiveActivity activity ) {
+        perspectiveChangeEvent.fire( new PerspectiveChange( activity.getPerspective(), activity.getMenus(), activity.getIdentifier() ) );
+    }
+
     public void updateHistory( PlaceRequest request ) {
-        placeHistoryHandler.onPlaceChange( request );
+        getPlaceHistoryHandler().onPlaceChange( request );
     }
 
     @SuppressWarnings("unused")

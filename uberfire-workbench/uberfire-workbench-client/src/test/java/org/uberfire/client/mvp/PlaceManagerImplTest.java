@@ -3,7 +3,6 @@ package org.uberfire.client.mvp;
 import java.util.HashSet;
 
 import com.google.gwt.event.shared.EventBus;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -17,19 +16,20 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.*;
 
-@Ignore
 public class PlaceManagerImplTest extends BaseWorkbenchTest {
 
     @Test
-    //Test PlaceManager calls an Activities launch method
     public void testGoToSomeWhere() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
-
         final WorkbenchEditorActivity activity = mock( WorkbenchEditorActivity.class );
-        when( activity.getDefaultPosition() ).thenReturn( Position.ROOT );
-        when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
+        HashSet<Activity> activities = new HashSet<Activity>( 1 ) {{
             add( activity );
-        }} );
+        }};
+
+        when( activity.getDefaultPosition() ).thenReturn( Position.ROOT );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( activities );
+
+        placeManager = new PlaceManagerImplUnitTestWrapper( activity, panelManager );
 
         placeManager.goTo( somewhere );
 
@@ -50,6 +50,10 @@ public class PlaceManagerImplTest extends BaseWorkbenchTest {
 
     @Test
     public void testPlaceManagerGetInitializedToADefaultPlace() throws Exception {
+        placeManager = new PlaceManagerImplUnitTestWrapper( placeHistoryHandler );
+
+        placeManager.initPlaceHistoryHandler();
+
         verify( placeHistoryHandler ).register( any( PlaceManager.class ),
                                                 any( EventBus.class ),
                                                 any( PlaceRequest.class ) );
@@ -66,7 +70,9 @@ public class PlaceManagerImplTest extends BaseWorkbenchTest {
             add( spy );
         }} );
 
-        placeManager.goTo( somewhere );
+        placeManager = new PlaceManagerImplUnitTestWrapper( spy, panelManager, selectWorkbenchPartEvent );
+
+        placeManager.goTo( somewhere, panelManager.getRoot() );
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
@@ -76,7 +82,7 @@ public class PlaceManagerImplTest extends BaseWorkbenchTest {
                 times( 1 ) ).fire( any( SelectPlaceEvent.class ) );
 
         PlaceRequest somewhereSecondCall = new DefaultPlaceRequest( "Somewhere" );
-        placeManager.goTo( somewhereSecondCall );
+        placeManager.goTo( somewhereSecondCall, panelManager.getRoot() );
 
         verify( spy,
                 times( 1 ) ).launch( any( AcceptItem.class ),
@@ -85,8 +91,5 @@ public class PlaceManagerImplTest extends BaseWorkbenchTest {
         verify( selectWorkbenchPartEvent,
                 times( 2 ) ).fire( any( SelectPlaceEvent.class ) );
     }
-
-    // TODO: Close
-    // TODO: History
 
 }
