@@ -153,38 +153,44 @@ public class AsyncPackageDataModelOracleUtilities {
     }
 
     //Filter and rename Super Types based on package name and imports
-    public static Map<String, String> filterSuperTypes( final String packageName,
+    public static Map<String, List<String>> filterSuperTypes( final String packageName,
                                                         final Imports imports,
-                                                        final Map<String, String> projectSuperTypes ) {
-        final Map<String, String> scopedSuperTypes = new HashMap<String, String>();
-        for ( Map.Entry<String, String> e : projectSuperTypes.entrySet() ) {
+                                                        final Map<String, List<String>> projectSuperTypes ) {
+        final Map<String, List<String>> scopedSuperTypes = new HashMap<String, List<String>>();
+        for ( Map.Entry<String, List<String>> e : projectSuperTypes.entrySet() ) {
             final String typeQualifiedType = e.getKey();
             final String typePackageName = getPackageName( typeQualifiedType );
             final String typeTypeName = getTypeName( typeQualifiedType );
 
-            final String superTypeQualifiedType = e.getValue();
+            final List<String> superTypeQualifiedTypes = e.getValue();
 
-            if ( superTypeQualifiedType == null ) {
+            if ( superTypeQualifiedTypes == null ) {
                 //Doesn't have a Super Type
                 if ( typePackageName.equals( packageName ) || isImported( typeQualifiedType,
                                                                           imports ) ) {
                     scopedSuperTypes.put( typeTypeName,
-                                          superTypeQualifiedType );
+                                          superTypeQualifiedTypes );
                 }
             } else {
                 //Has a Super Type
                 if ( typePackageName.equals( packageName ) || isImported( typeQualifiedType,
                                                                           imports ) ) {
-                    final String superTypePackageName = getPackageName( superTypeQualifiedType );
-                    final String superTypeTypeName = getTypeName( superTypeQualifiedType );
-                    if ( superTypePackageName.equals( packageName ) || isImported( superTypeQualifiedType,
-                                                                                   imports ) ) {
-                        scopedSuperTypes.put( typeTypeName,
-                                              superTypeTypeName );
-                    } else {
-                        scopedSuperTypes.put( typeTypeName,
-                                              superTypeQualifiedType );
+                    ArrayList<String> result = new ArrayList<String>();
+
+                    for (String superTypeQualifiedType : superTypeQualifiedTypes) {
+                        final String superTypePackageName = getPackageName(superTypeQualifiedType);
+                        final String superTypeTypeName = getTypeName(superTypeQualifiedType);
+
+                        if (superTypePackageName.equals(packageName) || isImported(superTypeQualifiedType,
+                                imports)) {
+                            result.add(superTypeTypeName);
+                        } else {
+                            result.add(superTypeQualifiedType);
+                        }
                     }
+
+                    scopedSuperTypes.put( typeTypeName,
+                                          result);
                 }
             }
         }

@@ -36,7 +36,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private final Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
     private final Map<String, String> fieldParametersType = new HashMap<String, String>();
 
-    private final String superType;
+    private final List<String> superTypes;
     private final Set<Annotation> annotations = new LinkedHashSet<Annotation>();
     private final Map<String, Set<Annotation>> fieldAnnotations = new HashMap<String, Set<Annotation>>();
 
@@ -48,7 +48,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                clazz,
                isEvent,
                typeSource );
-        this.superType = getSuperType( clazz );
+        this.superTypes = getSuperTypes(clazz);
         this.annotations.addAll( getAnnotations( clazz ) );
         this.fieldAnnotations.putAll( getFieldsAnnotations( clazz ) );
         loadClassFields( clazz );
@@ -63,10 +63,15 @@ public class ClassFactBuilder extends BaseFactBuilder {
         oracle.addProjectTypeAnnotations( buildTypeAnnotations() );
         oracle.addProjectTypeFieldsAnnotations( buildTypeFieldsAnnotations() );
     }
+     private List<String> getSuperTypes(final Class<?> clazz){
+        ArrayList<String> strings = new ArrayList<String>();
+        Class<?> superType = clazz.getSuperclass();
+        while(superType != null){
+            strings.add(superType.getName());
+            superType = superType.getSuperclass();
+        }
 
-    protected String getSuperType( final Class<?> clazz ) {
-        final Class<?> superType = clazz.getSuperclass();
-        return ( superType == null || Object.class.equals( superType ) ? null : superType.getName() );
+        return strings;
     }
 
     protected Set<Annotation> getAnnotations( final Class<?> clazz ) {
@@ -358,10 +363,10 @@ public class ClassFactBuilder extends BaseFactBuilder {
         return null;
     }
 
-    private Map<String, String> buildSuperTypes() {
-        final Map<String, String> loadableSuperTypes = new HashMap<String, String>();
+    private Map<String, List<String>> buildSuperTypes() {
+        final Map<String, List<String>> loadableSuperTypes = new HashMap<String, List<String>>();
         loadableSuperTypes.put( getType(),
-                                superType );
+                                superTypes );
         return loadableSuperTypes;
     }
 

@@ -79,7 +79,12 @@ public class DataModelOracleUtilities {
      */
     public static String getSuperType( final ProjectDataModelOracle oracle,
                                        final String fullyQualifiedClassName ) {
-        return oracle.getProjectSuperTypes().get( fullyQualifiedClassName );
+        List<String> superTypes = oracle.getProjectSuperTypes().get(fullyQualifiedClassName);
+        if (superTypes != null) {
+            return superTypes.get(0);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -349,16 +354,16 @@ public class DataModelOracleUtilities {
     }
 
     //Filter Super Types by the types used
-    private static Map<String, String> filterSuperTypes( final Set<String> usedFullyQualifiedClassNames,
-                                                         final Map<String, String> projectSuperTypes ) {
-        final Map<String, String> scopedSuperTypes = new HashMap<String, String>();
-        for ( Map.Entry<String, String> e : projectSuperTypes.entrySet() ) {
+    private static Map<String, List<String>> filterSuperTypes( final Set<String> usedFullyQualifiedClassNames,
+                                                               final Map<String, List<String>> projectSuperTypes ) {
+        final Map<String, List<String>> scopedSuperTypes = new HashMap<String, List<String>>();
+        for ( Map.Entry<String, List<String>> e : projectSuperTypes.entrySet() ) {
             final String typeQualifiedType = e.getKey();
-            final String superTypeQualifiedType = e.getValue();
+            final List<String> superTypeQualifiedTypes = e.getValue();
             if ( isTypeUsed( typeQualifiedType,
                              usedFullyQualifiedClassNames ) ) {
                 scopedSuperTypes.put( typeQualifiedType,
-                                      superTypeQualifiedType );
+                                      superTypeQualifiedTypes );
             }
         }
         return scopedSuperTypes;

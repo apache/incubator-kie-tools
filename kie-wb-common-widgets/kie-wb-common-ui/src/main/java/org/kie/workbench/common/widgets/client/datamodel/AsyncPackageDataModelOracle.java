@@ -65,6 +65,9 @@ public interface AsyncPackageDataModelOracle {
     void getSuperType( final String factType,
                        final Callback<String> callback );
 
+    void getSuperTypes( final String factType,
+                        final Callback<List<String>> callback );
+
     void getTypeAnnotations( final String factType,
                              final Callback<Set<Annotation>> callback );
 
@@ -172,7 +175,7 @@ public interface AsyncPackageDataModelOracle {
 
     void addTypeSources( final Map<String, TypeSource> typeSources );
 
-    void addSuperTypes( final Map<String, String> superTypes );
+    void addSuperTypes( final Map<String, List<String>> superTypes );
 
     void addTypeAnnotations( final Map<String, Set<Annotation>> annotations );
 

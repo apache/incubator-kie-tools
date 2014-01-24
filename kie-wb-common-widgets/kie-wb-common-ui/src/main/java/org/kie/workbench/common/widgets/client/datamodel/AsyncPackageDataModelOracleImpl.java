@@ -87,7 +87,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     protected Map<String, TypeSource> projectTypeSources = new HashMap<String, TypeSource>();
 
     //Map {factType, superType} to determine the Super Type of a FactType.
-    protected Map<String, String> projectSuperTypes = new HashMap<String, String>();
+    protected Map<String, List<String>> projectSuperTypes = new HashMap<String, List<String>>();
 
     //Map {factType, Set<Annotation>} containing the FactType's annotations.
     protected Map<String, Set<Annotation>> projectTypeAnnotations = new HashMap<String, Set<Annotation>>();
@@ -131,7 +131,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     private Map<String, TypeSource> filteredTypeSources = new HashMap<String, TypeSource>();
 
     // Filtered (current package and imports) Map {factType, superType} to determine the Super Type of a FactType.
-    protected Map<String, String> filteredSuperTypes = new HashMap<String, String>();
+    protected Map<String, List<String>> filteredSuperTypes = new HashMap<String, List<String>>();
 
     // Filtered (current package and imports) Map {factType, Set<Annotation>} containing the FactType's annotations.
     protected Map<String, Set<Annotation>> filteredTypeAnnotations = new HashMap<String, Set<Annotation>>();
@@ -333,25 +333,42 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public void getSuperType( final String factType,
                               final Callback<String> callback ) {
-        final String superType = filteredSuperTypes.get( factType );
+
+        getSuperTypes(factType, new Callback<List<String>>() {
+            @Override
+            public void callback(List<String> result) {
+                if (result != null) {
+                    callback.callback(result.get(0));
+
+                } else {
+                    callback.callback(null);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getSuperTypes( final String factType,
+                               final Callback<List<String>> callback) {
+
+        final List<String> superTypes = filteredSuperTypes.get(factType);
 
         //Load incremental content
-        if ( superType == null ) {
+        if ( superTypes == null ) {
             service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
 
                 @Override
                 public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
                     AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
-                                                                                  dataModel );
-                    final String superType = filteredSuperTypes.get( factType );
-                    callback.callback( superType );
+                            dataModel );
+                    callback.callback( filteredSuperTypes.get( factType ) );
                 }
             } ).getUpdates( resourcePath,
-                            imports,
-                            factType );
+                    imports,
+                    factType );
 
         } else {
-            callback.callback( superType );
+            callback.callback( superTypes );
         }
     }
 
@@ -1234,7 +1251,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                                                                                             projectTypeSources ) );
 
         //Filter and rename Declared Types based on package name and imports
-        filteredSuperTypes = new HashMap<String, String>();
+        filteredSuperTypes = new HashMap<String, List<String>>();
         filteredSuperTypes.putAll( AsyncPackageDataModelOracleUtilities.filterSuperTypes( packageName,
                                                                                           imports,
                                                                                           projectSuperTypes ) );
@@ -1306,7 +1323,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public void addSuperTypes( final Map<String, String> superTypes ) {
+    public void addSuperTypes( final Map<String, List<String>> superTypes ) {
         this.projectSuperTypes.putAll( superTypes );
     }
 

@@ -46,7 +46,7 @@ public class PackageDataModelOracleIncrementalPayload {
     private Map<String, TypeSource> typeSources = new HashMap<String, TypeSource>();
 
     //Map {factType, superType} to determine the Super Type of a FactType.
-    private Map<String, String> superTypes = new HashMap<String, String>();
+    private Map<String, List<String>> superTypes = new HashMap<String, List<String>>();
 
     //Map {factType, Set<Annotation>} containing the FactType's annotations.
     private Map<String, Set<Annotation>> typeAnnotations = new HashMap<String, Set<Annotation>>();
@@ -92,11 +92,11 @@ public class PackageDataModelOracleIncrementalPayload {
         this.typeSources = typeSources;
     }
 
-    public Map<String, String> getSuperTypes() {
+    public Map<String, List<String>> getSuperTypes() {
         return superTypes;
     }
 
-    public void setSuperTypes( final Map<String, String> superTypes ) {
+    public void setSuperTypes( final Map<String, List<String>> superTypes ) {
         this.superTypes = superTypes;
     }
 
