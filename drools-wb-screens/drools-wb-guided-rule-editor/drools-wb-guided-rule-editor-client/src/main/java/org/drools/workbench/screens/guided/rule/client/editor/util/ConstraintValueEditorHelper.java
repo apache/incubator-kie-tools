@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor.util;
 
+import java.util.List;
+
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -55,11 +57,18 @@ public class ConstraintValueEditorHelper {
         this.dropDownData = dropDownData;
     }
 
-    public void isBoundVariableApplicable(String boundVariable, Callback<Boolean> callback) {
+    public void isBoundVariableApplicable(final String boundVariable, final Callback<Boolean> callback) {
 
-        if (isBoundVariableApplicableByField(boundVariable, callback)) {
-            isBoundVariableApplicableByFactType(boundVariable, callback);
-        }
+        isBoundVariableApplicableByField(boundVariable, new Callback<Boolean>() {
+            @Override
+            public void callback(Boolean result) {
+                if (result) {
+                    callback.callback(true);
+                } else {
+                    isBoundVariableApplicableByFactType(boundVariable, callback);
+                }
+            }
+        });
 
     }
 
@@ -74,32 +83,37 @@ public class ConstraintValueEditorHelper {
         }
 
         //LHS FieldConstraint
-        isBoundVariableApplicableByField(binding,callback);
+        isBoundVariableApplicableByField(binding, callback);
     }
 
-    private boolean isBoundVariableApplicableByField(String boundVariable, Callback<Boolean> callback) {
-        SingleFieldConstraint lhsBoundField = this.model.getLHSBoundField(boundVariable);
+    private void isBoundVariableApplicableByField(final String boundVariable, final Callback<Boolean> callback) {
 
-        if (lhsBoundField != null) {
-            String boundClassName = this.oracle.getFieldClassName(lhsBoundField.getFactType(), lhsBoundField.getFieldName());
+        isLHSFieldTypeEquivalent(boundVariable,
+                new Callback<Boolean>() {
+                    @Override
+                    public void callback(Boolean result) {
+                        if (result) {
+                            callback.callback(true);
+                        } else {
+                            SingleFieldConstraint lhsBoundField = model.getLHSBoundField(boundVariable);
 
-            if (getFieldTypeClazz().equals(boundClassName)) {
-                callback.callback(true);
-                return true;
-            }
+                            if (lhsBoundField != null) {
+                                final String boundClassName = oracle.getFieldClassName(lhsBoundField.getFactType(), lhsBoundField.getFieldName());
 
-            this.oracle.getSuperType(boundClassName,new Callback<String>() {
-                @Override public void callback(String result) {
+                                if (getFieldTypeClazz().equals(boundClassName)) {
+                                    callback.callback(true);
+                                }
 
-                }
-            });
-        }
-
-
-            isLHSFieldTypeEquivalent(boundVariable,
-                    callback);
-
-        return false;
+                                oracle.getSuperTypes(boundClassName, new Callback<List<String>>() {
+                                    @Override
+                                    public void callback(List<String> superTypes) {
+                                        callback.callback(checkSuperTypes(superTypes));
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
     }
 
     private void isBoundVariableApplicableByFactType(final String boundVariable,
@@ -192,7 +206,7 @@ public class ConstraintValueEditorHelper {
         if (boundFieldType.equals(DataType.TYPE_COMPARABLE)) {
             if (!this.fieldType.equals(DataType.TYPE_COMPARABLE)) {
                 callback.callback(false);
-                return ;
+                return;
             }
             FieldConstraint fc = this.model.getLHSBoundField(boundVariable);
             if (fc instanceof SingleFieldConstraint) {
@@ -231,27 +245,46 @@ public class ConstraintValueEditorHelper {
 
     private void isLHSFactTypeEquivalent(final String boundVariable,
             final Callback<Boolean> callback) {
-        String boundFactType = model.getLHSBoundFact(boundVariable).getFactType();
+        final String boundFactType = model.getLHSBoundFact(boundVariable).getFactType();
 
         if (getFieldTypeClazz().equals(boundFactType)) {
-            callback.callback(true);
-            return;
-        }
 
-        //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-        if (boundFactType.equals(DataType.TYPE_COMPARABLE)) {
-            if (!this.fieldType.equals(DataType.TYPE_COMPARABLE)) {
+            callback.callback(true);
+
+        } else if (boundFactType.equals(DataType.TYPE_COMPARABLE)) {
+            //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
+            if (!fieldType.equals(DataType.TYPE_COMPARABLE)) {
                 callback.callback(false);
                 return;
             }
-            String[] dd = this.oracle.getEnumValues(boundFactType,
-                    this.fieldName);
+            String[] dd = oracle.getEnumValues(boundFactType,
+                    fieldName);
             callback.callback(isEnumEquivalent(dd));
-            return;
-        }
+        } else {
 
-        isBoundVariableApplicable(boundVariable,
-                callback);
+            this.oracle.getSuperTypes(boundFactType, new Callback<List<String>>() {
+                @Override
+                public void callback(List<String> superTypes) {
+                    if (checkSuperTypes(superTypes)) {
+                        callback.callback(true);
+                    } else {
+                        isBoundVariableApplicable(boundVariable,
+                                callback);
+                    }
+                }
+            });
+        }
+    }
+
+    private boolean checkSuperTypes(List<String> superTypes) {
+        if (superTypes != null) {
+            for (String superType : superTypes) {
+                if (getFieldTypeClazz().equals(superType)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private String getFieldTypeClazz() {
