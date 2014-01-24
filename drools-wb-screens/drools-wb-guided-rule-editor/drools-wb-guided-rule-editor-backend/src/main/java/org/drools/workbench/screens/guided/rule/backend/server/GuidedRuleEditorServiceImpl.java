@@ -45,8 +45,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.backend.file.DslFileFilter;
-import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
+import org.kie.workbench.common.services.backend.file.*;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -65,9 +64,11 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
 
-    private static final DslFileFilter FILTER_DSLS = new DslFileFilter();
+    private static final DrlFileFilter FILTER_DRL = new DrlFileFilter();
 
     private static final GlobalsFileFilter FILTER_GLOBALS = new GlobalsFileFilter();
+
+    private static final DslFileFilter FILTER_DSLS = new DslFileFilter();
 
     @Inject
     @Named("ioStrategy")
@@ -289,7 +290,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                                               new ByteArrayInputStream( source.getBytes() ),
                                               FILTER_JAVA,
                                               FILTER_GLOBALS,
-                                              FILTER_DSLS );
+                                              FILTER_DSLS,
+                                              FILTER_DRL);
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
