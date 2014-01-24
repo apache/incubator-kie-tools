@@ -76,14 +76,18 @@ public class ConstraintValueEditorHelper {
             final Callback<Boolean> callback) {
 
         //LHS FactPattern
-        FactPattern fp = model.getLHSBoundFact(binding);
-        if (fp != null) {
-            isLHSFactTypeEquivalent(binding,
-                    callback);
-        }
-
-        //LHS FieldConstraint
-        isBoundVariableApplicableByField(binding, callback);
+        isLHSFactTypeEquivalent(binding,
+                new Callback<Boolean>() {
+                    @Override
+                    public void callback(Boolean result) {
+                        if (result) {
+                            callback.callback(true);
+                        } else {
+                            //LHS FieldConstraint
+                            isBoundVariableApplicableByField(binding, callback);
+                        }
+                    }
+                });
     }
 
     private void isBoundVariableApplicableByField(final String boundVariable, final Callback<Boolean> callback) {
@@ -245,7 +249,14 @@ public class ConstraintValueEditorHelper {
 
     private void isLHSFactTypeEquivalent(final String boundVariable,
             final Callback<Boolean> callback) {
-        final String boundFactType = model.getLHSBoundFact(boundVariable).getFactType();
+        FactPattern factPattern = model.getLHSBoundFact(boundVariable);
+
+        if (factPattern == null) {
+            callback.callback(false);
+            return;
+        }
+
+        final String boundFactType = factPattern.getFactType();
 
         if (getFieldTypeClazz().equals(boundFactType)) {
 
