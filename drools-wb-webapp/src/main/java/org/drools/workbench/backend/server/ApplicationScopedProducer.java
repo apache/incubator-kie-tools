@@ -33,17 +33,10 @@ import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
-import org.uberfire.metadata.backend.lucene.LuceneIndexEngine;
-import org.uberfire.metadata.backend.lucene.LuceneSearchIndex;
-import org.uberfire.metadata.backend.lucene.LuceneSetup;
-import org.uberfire.metadata.backend.lucene.fields.SimpleFieldFactory;
-import org.uberfire.metadata.backend.lucene.metamodels.InMemoryMetaModelStore;
-import org.uberfire.metadata.backend.lucene.setups.NIOLuceneSetup;
-import org.uberfire.metadata.engine.MetaIndexEngine;
-import org.uberfire.metadata.engine.MetaModelStore;
+import org.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.metadata.io.IOSearchIndex;
 import org.uberfire.metadata.io.IOServiceIndexedImpl;
-import org.uberfire.metadata.search.SearchIndex;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
@@ -67,7 +60,7 @@ public class ApplicationScopedProducer {
     @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
 
-    private final LuceneSetup luceneSetup = new NIOLuceneSetup();
+    private LuceneConfig config;
 
     private IOService ioService;
     private IOSearchService ioSearchService;
@@ -76,15 +69,13 @@ public class ApplicationScopedProducer {
     public void setup() {
         SecurityFactory.setAuthzManager( new RuntimeAuthorizationManager() );
 
-        final MetaModelStore metaModelStore = new InMemoryMetaModelStore();
-        final MetaIndexEngine indexEngine = new LuceneIndexEngine( metaModelStore,
-                                                                   luceneSetup,
-                                                                   new SimpleFieldFactory() );
-
-        final SearchIndex searchIndex = new LuceneSearchIndex( luceneSetup );
+        this.config = new LuceneConfigBuilder().withInMemoryMetaModelStore()
+                .useDirectoryBasedIndex()
+                .useNIODirectory()
+                .build();
 
         final IOService service = new IOServiceIndexedImpl( watchService,
-                                                            indexEngine,
+                                                            config.getIndexEngine(),
                                                             DublinCoreView.class,
                                                             VersionAttributeView.class,
                                                             OtherMetaView.class );
@@ -98,12 +89,12 @@ public class ApplicationScopedProducer {
         ioService.setAuthenticationManager( authenticationManager );
         ioService.setAuthorizationManager( authorizationManager );
 
-        ioSearchService = new IOSearchIndex( searchIndex, ioService );
+        ioSearchService = new IOSearchIndex( config.getSearchIndex(), ioService );
     }
 
     @PreDestroy
     private void cleanup() {
-        luceneSetup.dispose();
+        config.dispose();
         ioService.dispose();
     }
 
