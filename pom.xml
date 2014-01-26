@@ -640,7 +640,7 @@
   </profiles>
 
   <modules>
-    <module>uberfire-build-config</module>
+    <!--<module>uberfire-build-config</module>-->
     <module>uberfire-bom</module>
     <module>uberfire-parent-with-dependencies</module>
     <module>uberfire-commons</module>
