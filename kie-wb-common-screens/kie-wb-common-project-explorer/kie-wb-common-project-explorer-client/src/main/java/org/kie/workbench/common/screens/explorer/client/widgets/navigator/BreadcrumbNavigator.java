@@ -190,7 +190,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
             }
         } );
 
-        final InlineHTML renameContainer = new InlineHTML( "<i class=\"icon-repeat\"></i>" );
+        final InlineHTML renameContainer = new InlineHTML( "<i class=\"icon-font\"></i>" );
         renameContainer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
