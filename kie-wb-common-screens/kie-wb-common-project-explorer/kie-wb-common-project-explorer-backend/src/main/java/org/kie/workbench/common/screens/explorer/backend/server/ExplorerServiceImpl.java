@@ -730,7 +730,10 @@ public class ExplorerServiceImpl
 
             for ( final Path path : paths ) {
                 ioService.deleteIfExists( Paths.convert( path ),
-                                          new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ),
+                                          new CommentedOption( sessionInfo.getId(),
+                                                               identity.getName(),
+                                                               null,
+                                                               comment ),
                                           StandardDeleteOption.NON_EMPTY_DIRECTORIES );
             }
 
@@ -763,13 +766,16 @@ public class ExplorerServiceImpl
                         _target = _path.resolveSibling( newName );
                     } else {
                         final String originalFileName = _path.getFileName().toString();
-                        final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+                        final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
                         _target = _path.resolveSibling( newName + extension );
                     }
 
                     ioService.move( _path,
                                     _target,
-                                    new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                                    new CommentedOption( sessionInfo.getId(),
+                                                         identity.getName(),
+                                                         null,
+                                                         comment ) );
                 }
             }
 
@@ -802,13 +808,16 @@ public class ExplorerServiceImpl
                         _target = _path.resolveSibling( newName );
                     } else {
                         final String originalFileName = _path.getFileName().toString();
-                        final String extension = originalFileName.substring( originalFileName.indexOf( "." ) );
+                        final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
                         _target = _path.resolveSibling( newName + extension );
                     }
 
                     ioService.copy( _path,
                                     _target,
-                                    new CommentedOption( sessionInfo.getId(), identity.getName(), null, comment ) );
+                                    new CommentedOption( sessionInfo.getId(),
+                                                         identity.getName(),
+                                                         null,
+                                                         comment ) );
                 }
             }
 
