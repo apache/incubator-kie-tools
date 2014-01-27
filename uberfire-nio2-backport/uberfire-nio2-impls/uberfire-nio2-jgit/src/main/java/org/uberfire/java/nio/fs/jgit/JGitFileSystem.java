@@ -439,4 +439,9 @@ public class JGitFileSystem implements FileSystem,
             queue.add( wk );
         }
     }
+
+    @Override
+    public void dispose() {
+        provider.onDisposeFileSystem( this );
+    }
 }

@@ -18,12 +18,14 @@ package org.uberfire.java.nio.file;
 
 import java.util.Set;
 
+import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.java.nio.Closeable;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-public interface FileSystem extends Closeable {
+public interface FileSystem extends Closeable,
+                                    Disposable {
 
     FileSystemProvider provider();
 

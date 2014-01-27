@@ -277,6 +277,14 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         }
     }
 
+    public void onDisposeFileSystem( final JGitFileSystem fileSystem ) {
+        closedFileSystems.remove( fileSystem );
+        fileSystems.remove( fileSystem.id() );
+
+        repoIndex.remove( fileSystem.gitRepo().getRepository() );
+        clusterMap.remove( fileSystem.gitRepo().getRepository() );
+    }
+
     private static JGitFileSystemProvider provider = null;
 
     public static JGitFileSystemProvider getInstance() {

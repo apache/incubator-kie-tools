@@ -95,4 +95,9 @@ public class SimpleUnixFileSystem extends BaseSimpleFileSystem {
             }
         };
     }
+
+    @Override
+    public void dispose() {
+        close();
+    }
 }

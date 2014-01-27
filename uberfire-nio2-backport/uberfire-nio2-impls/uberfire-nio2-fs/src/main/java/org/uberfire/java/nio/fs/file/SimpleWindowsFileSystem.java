@@ -105,4 +105,9 @@ public class SimpleWindowsFileSystem extends BaseSimpleFileSystem {
             }
         };
     }
+
+    @Override
+    public void dispose() {
+        close();
+    }
 }

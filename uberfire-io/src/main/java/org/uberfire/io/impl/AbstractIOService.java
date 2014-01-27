@@ -581,7 +581,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         }
         for ( final FileSystem fileSystem : getFileSystems() ) {
             try {
-                fileSystem.close();
+                fileSystem.dispose();
             } catch ( final Exception ignored ) {
             }
         }
