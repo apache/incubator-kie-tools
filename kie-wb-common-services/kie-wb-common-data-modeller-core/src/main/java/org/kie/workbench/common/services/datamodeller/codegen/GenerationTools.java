@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,18 +49,6 @@ public class GenerationTools {
 
         return buf.toString();
     }
-
-/*
-    public String toJavaClass(String name) {
-
-        return toJavaName(name, true);
-    }
-
-    public String toJavaMethod(String name) {
-
-        return toJavaName(name, false);
-    }
-*/
 
     public String toJavaGetter(String name) {
         return toJavaAccessor("get", name);
@@ -498,5 +487,9 @@ public class GenerationTools {
         if (value == null) return value;
         //we need to escape characters like this '\r\t', \n, and " to generate the code properly.
         return StringEscapeUtils.escapeJava(value);
+    }
+
+    public String fileHashEmptyTag() {
+        return FileHashingUtils.getFileHashEmptyTag();
     }
 }

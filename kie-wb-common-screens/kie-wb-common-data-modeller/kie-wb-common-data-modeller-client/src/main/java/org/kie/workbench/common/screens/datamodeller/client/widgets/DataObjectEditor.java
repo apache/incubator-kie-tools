@@ -109,6 +109,8 @@ public class DataObjectEditor extends Composite {
     @Inject
     private ValidatorService validatorService;
 
+    private boolean readonly = true;
+
     private static DataObjectDetailEditorUIBinder uiBinder = GWT.create( DataObjectDetailEditorUIBinder.class );
 
     public DataObjectEditor() {
@@ -146,6 +148,7 @@ public class DataObjectEditor extends Composite {
                 packageChanged( event );
             }
         } );
+        setReadonly(true);
     }
 
     public DataObjectTO getDataObject() {
@@ -170,8 +173,26 @@ public class DataObjectEditor extends Composite {
         return getContext() != null ? getContext().getDataModel() : null;
     }
 
+    private void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+        boolean value = !readonly;
+
+        name.setEnabled( value );
+        label.setEnabled( value );
+        description.setEnabled( value );
+        packageSelector.setEnabled( value );
+        superclassSelector.setEnabled( value );
+        roleSelector.setEnabled( value );
+        roleHelpIcon.setVisible( value );
+    }
+
+    private boolean isReadonly() {
+        return readonly;
+    }
+
     private void loadDataObject( DataObjectTO dataObject ) {
         clean();
+        setReadonly( true );
         if ( dataObject != null ) {
             setDataObject( dataObject );
 
@@ -196,6 +217,10 @@ public class DataObjectEditor extends Composite {
                 String value = annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) != null ? annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() : NOT_SELECTED;
                 roleSelector.setSelectedValue( value );
             }
+
+            if ( ! dataObject.isExternallyModified() ) {
+                setReadonly( false );
+            }
         }
     }
 
@@ -213,6 +238,7 @@ public class DataObjectEditor extends Composite {
             if ( getDataModel().getDataObjects().size() == 0 ) {
                 clean();
                 setDataObject( null );
+                setReadonly( true );
             }
         }
     }

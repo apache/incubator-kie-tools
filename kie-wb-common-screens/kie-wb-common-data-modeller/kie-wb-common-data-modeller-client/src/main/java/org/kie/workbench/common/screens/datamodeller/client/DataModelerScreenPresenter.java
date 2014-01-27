@@ -36,6 +36,7 @@ import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -61,9 +62,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentChange;
 import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentUpdate;
@@ -329,6 +328,7 @@ public class DataModelerScreenPresenter {
                                         dataModel.setParentProjectName( projectRootPath.getFileName() );
                                         setDataModel( dataModel );
                                         notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_loaded( projectRootPath.toURI() ) ) );
+                                        showReadonlyStateInfo();
                                     }
 
                                 },
@@ -553,8 +553,8 @@ public class DataModelerScreenPresenter {
 
     private void restoreModelStatus( GenerationResult result ) {
         //when the model is saved without errors
-        //clean the deleted dataobjects status, mark all dataobjects as persisted, etc.
-        getDataModel().setPersistedStatus();
+        //clean the deleted dataobjects status, mark all dataobjects as persisted (except readonly objects), etc.
+        getDataModel().setPersistedStatus( false );
         getDataModel().updateFingerPrints( result.getObjectFingerPrints() );
     }
 
@@ -566,6 +566,53 @@ public class DataModelerScreenPresenter {
         return false;
     }
     */
+
+    private void showReadonlyStateInfo() {
+        final DataModelTO dataModelTO = getDataModel();
+        final List<String> readonlyObjects = new ArrayList<String>();
+        final StringBuilder message = new StringBuilder();
+        boolean isFirst = true;
+
+        message.append(Constants.INSTANCE.modelEditor_notify_readonly_objects_read());
+        message.append("</BR>");
+        message.append("</BR>");
+
+        if (dataModelTO != null && dataModelTO.getDataObjects() != null) {
+            for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
+                if (dataObjectTO.isExternallyModified()) {
+                    readonlyObjects.add(dataObjectTO.getClassName());
+                }
+            }
+        }
+
+        Collections.sort(readonlyObjects);
+        for (String readonlyObject : readonlyObjects) {
+            if (!isFirst) {
+                message.append("</BR>");
+            }
+            message.append(readonlyObject);
+            isFirst = false;
+        }
+
+        if (readonlyObjects.size() > 0) {
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
+                    message.toString(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //do nothing.
+                        }
+                    },
+                    CommonConstants.INSTANCE.OK(),
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            yesNoCancelPopup.setCloseVisible(false);
+            yesNoCancelPopup.show();
+        }
+    }
 
     private void makeMenuBar() {
 

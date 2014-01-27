@@ -29,6 +29,7 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEve
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -159,7 +160,7 @@ public class DataObjectBreadcrums extends Breadcrumbs {
 
         public Widget getWidget() {
             //create the new widget
-            NavLink navLink = new NavLink(DataModelerUtils.getDataObjectUILabel(dataObject));
+            NavLink navLink = new NavLink(DataModelerUtils.getDataObjectUILabel(dataObject, true, Constants.INSTANCE.objectBrowser_readonlyLabel()));
             navLink.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {

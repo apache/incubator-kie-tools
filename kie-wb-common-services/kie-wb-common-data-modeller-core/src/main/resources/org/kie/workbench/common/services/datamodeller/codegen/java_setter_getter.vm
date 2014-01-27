@@ -4,6 +4,6 @@
         return this.$varName;
     }
 
-    public void $nameTool.toJavaSetter( $varName )(  $nameTool.resolveAttributeType( $attr) $varName ) {
+    public void $nameTool.toJavaSetter( $varName )($nameTool.resolveAttributeType( $attr) $varName) {
         this.$varName = $varName;
     }

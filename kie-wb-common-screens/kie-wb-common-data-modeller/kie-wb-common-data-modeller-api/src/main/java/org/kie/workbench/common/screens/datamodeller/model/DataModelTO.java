@@ -88,18 +88,26 @@ public class DataModelTO {
 
     /**
      * Tag all objects as persisted and clean deleted objects list.
+     *
+     * @param includeReadonlyObjects true set also readonly objects as PERSISTENT objects, false to skip them.
      */
-    public void setPersistedStatus() {
+    public void setPersistedStatus(boolean includeReadonlyObjects) {
         deletedDataObjects.clear();
         for (DataObjectTO dataObjectTO : dataObjects) {
-            dataObjectTO.setOriginalClassName(dataObjectTO.getClassName());
-            dataObjectTO.setStatus(DataObjectTO.PERSISTENT);
+            if (includeReadonlyObjects || !dataObjectTO.isExternallyModified()) {
+                dataObjectTO.setOriginalClassName(dataObjectTO.getClassName());
+                dataObjectTO.setStatus(DataObjectTO.PERSISTENT);
+            }
         }
     }
 
     public void updateFingerPrints(Map<String, String> fingerPrints) {
+        String fingerPrint = null;
         for (DataObjectTO dataObject : getDataObjects()) {
-            dataObject.setFingerPrint(fingerPrints.get(dataObject.getClassName()));
+            fingerPrint = fingerPrints.get(dataObject.getClassName());
+            if (fingerPrint != null) {
+                dataObject.setFingerPrint(fingerPrint);
+            }
         }
     }
 

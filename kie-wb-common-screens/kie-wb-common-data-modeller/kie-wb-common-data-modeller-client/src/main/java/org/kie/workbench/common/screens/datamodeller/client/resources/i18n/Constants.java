@@ -61,6 +61,8 @@ public interface Constants extends Messages {
 
     public String modelEditor_notification_dataModel_saved(String seconds);
 
+    public String modelEditor_notify_readonly_objects_read();
+
     public String modelEditor_discard_changes_message();
 
     public String modelEditor_confirm_delete();
@@ -110,6 +112,8 @@ public interface Constants extends Messages {
     public String objectBrowser_typeLabel();
 
     public String objectBrowser_labelPlaceholder();
+
+    public String objectBrowser_readonlyLabel();
 
     public String objectEditor_nameLabel();
 

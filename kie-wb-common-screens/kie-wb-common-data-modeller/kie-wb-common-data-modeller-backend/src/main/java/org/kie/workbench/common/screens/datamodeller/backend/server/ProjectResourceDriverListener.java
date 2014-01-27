@@ -21,11 +21,12 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
+import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.OpenOption;
+import org.uberfire.java.nio.base.options.CommentedOption;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -46,7 +47,7 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
     @Named("ioStrategy")
     IOService ioService;
 
-    private OpenOption option;
+    private CommentedOption option;
 
     private Project currentProject;
 
@@ -61,7 +62,7 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
         this.currentProject = currentProject;
     }
 
-    public void setOption(OpenOption option) {
+    public void setOption(CommentedOption option) {
         this.option = option;
     }
 
@@ -107,9 +108,11 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
         //the last subDirPath is the directory to crate the file.
         destFilePath = subDirPath.resolve( fileName );
         boolean exists = ioService.exists( destFilePath );
+        content = content != null ? content.trim() : null;
+        String hashedContent = FileHashingUtils.setFileHashValue( content );
 
         ioService.write( destFilePath,
-                content,
+                hashedContent,
                 option );
 
         if ( !exists ) {

@@ -51,13 +51,24 @@ public class DataModelerUtils {
      * Returns the data-object's class name or the label, in case the object has one.
      */
     public static String getDataObjectUILabel(DataObjectTO dataObject) {
+        return getDataObjectUILabel(dataObject, false, null);
+    }
+
+    /*
+     * Returns the data-object's class name or the label, in case the object has one.
+     */
+    public static String getDataObjectUILabel(DataObjectTO dataObject, boolean appendReadonlyMark, String readonlyMark) {
         if (dataObject != null) {
             String label = dataObject.getLabel();
-            if (label != null) return label;
-            else return dataObject.getName();
+            if (label == null) label = dataObject.getName();
+            if (appendReadonlyMark && dataObject.isExternallyModified()) {
+                label = label + " (" + readonlyMark + ")";
+            }
+            return label;
         }
         return "";
     }
+
 
     public static String getMaxLengthClippedString(String s, int maxLength) {
         return s.length() > maxLength ? s.substring(0, maxLength) + CLIPPED_MARKER : s;

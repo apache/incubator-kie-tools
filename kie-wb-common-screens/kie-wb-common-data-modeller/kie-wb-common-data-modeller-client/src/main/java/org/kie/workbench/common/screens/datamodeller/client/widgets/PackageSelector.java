@@ -120,6 +120,11 @@ public class PackageSelector extends Composite {
         newPackage.setVisible(enable);
     }
 
+    public void setEnabled(boolean enabled) {
+        newPackage.setVisible(enabled);
+        packageList.setEnabled(enabled);
+    }
+
     public Boolean isValueSelected() {
         return packageList.getValue() != null && !"".equals(packageList.getValue().trim()) && !NOT_SELECTED.equals(packageList.getValue().trim());
     }

@@ -78,6 +78,10 @@ public class SuperclassSelector extends Composite {
         }
     }
 
+    public void setEnabled(boolean enabled) {
+        this.superclassList.setEnabled(enabled);
+    }
+
     private DataModelTO getDataModel() {
         return getContext() != null ? getContext().getDataModel() : null;
     }

@@ -35,6 +35,13 @@ public class DataObjectTO {
      */
     public static final Integer VOLATILE = 1;
 
+
+    /*
+     * Data objects that wasn't created by the data modeller, or was modified by an external editor and pushed to
+     * the project repository.
+     */
+    public static final Integer PERSISTENT_EXTERNALLY_MODIFIED = 2;
+
     private String name;
     
     private String packageName;
@@ -136,6 +143,10 @@ public class DataObjectTO {
     
     public boolean isPersistent() {
         return getStatus() == PERSISTENT;
+    }
+
+    public boolean isExternallyModified() {
+        return getStatus() == PERSISTENT_EXTERNALLY_MODIFIED;
     }
 
     public boolean classNameChanged() {

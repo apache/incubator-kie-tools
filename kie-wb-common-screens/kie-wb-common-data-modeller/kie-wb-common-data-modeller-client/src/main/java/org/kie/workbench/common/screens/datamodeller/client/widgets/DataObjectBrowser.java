@@ -141,6 +141,8 @@ public class DataObjectBrowser extends Composite {
 
     private boolean newPropertyActionEnabled = false;
 
+    private boolean readonly = true;
+
     public DataObjectBrowser() {
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -328,7 +330,11 @@ public class DataObjectBrowser extends Composite {
         final Column<ObjectPropertyTO, ImageResource> deletePropertyColumnImg = new Column<ObjectPropertyTO, ImageResource>(decorator) {
             @Override
             public ImageResource getValue( final ObjectPropertyTO global ) {
-                return ImagesResources.INSTANCE.Delete();
+                if (!isReadonly()) {
+                    return ImagesResources.INSTANCE.Delete();
+                } else {
+                    return null;
+                }
             }
         };
 
@@ -337,7 +343,9 @@ public class DataObjectBrowser extends Composite {
                                 final ObjectPropertyTO property,
                                 final ImageResource value ) {
 
-                checkAndDeleteDataObjectProperty(property, index);
+                if (!isReadonly()) {
+                    checkAndDeleteDataObjectProperty(property, index);
+                }
             }
         } );
 
@@ -373,7 +381,7 @@ public class DataObjectBrowser extends Composite {
 
         newPropertyButton.setIcon(IconType.PLUS_SIGN);
 
-        enableNewPropertyAction(false);
+        setReadonly(true);
     }
     
     @PostConstruct
@@ -620,6 +628,15 @@ public class DataObjectBrowser extends Composite {
         newPropertyType.setSelectedValue(NOT_SELECTED);
     }
 
+    private void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+        enableNewPropertyAction(!readonly);
+    }
+
+    private boolean isReadonly() {
+        return readonly;
+    }
+
     //Event handlers
 
     @UiHandler("newPropertyButton")
@@ -658,14 +675,16 @@ public class DataObjectBrowser extends Composite {
             DataObjectTO dataObject = event.getCurrentDataObject();
             resetInput();
             setDataObject(dataObject);
-            enableNewPropertyAction(dataObject != null);
+            setReadonly(true);
+            if (dataObject != null && !dataObject.isExternallyModified()) {
+                setReadonly(false);
+            }
         }
     }
 
     private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
         if (event.isFrom(getDataModel())) {
             initTypeList();
-            enableNewPropertyAction(true);
         }
     }
 
@@ -680,7 +699,7 @@ public class DataObjectBrowser extends Composite {
                 dataObjectPropertiesTable.redraw();
                 objectName.setText(null);
                 resetInput();
-                enableNewPropertyAction(false);
+                setReadonly(true);
             }
         }
     }

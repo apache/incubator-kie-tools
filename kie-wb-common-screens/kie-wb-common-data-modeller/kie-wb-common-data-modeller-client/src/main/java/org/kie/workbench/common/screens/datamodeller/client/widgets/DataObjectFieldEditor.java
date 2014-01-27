@@ -118,6 +118,8 @@ public class DataObjectFieldEditor extends Composite {
 
     private DataModelerContext context;
 
+    private boolean readonly = true;
+
     public DataObjectFieldEditor() {
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -136,6 +138,8 @@ public class DataObjectFieldEditor extends Composite {
 
         positionHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
         positionHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+
+        setReadonly(true);
     }
 
     public DataObjectTO getDataObject() {
@@ -167,6 +171,23 @@ public class DataObjectFieldEditor extends Composite {
         return getContext() != null ? getContext().getDataModel() : null;
     }
 
+    private void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+        boolean value = !readonly;
+
+        name.setEnabled(value);
+        label.setEnabled(value);
+        description.setEnabled(value);
+        typeSelector.setEnabled(value);
+        equalsSelector.setEnabled(value);
+        positionHelpIcon.setVisible(value);
+        positionSelector.setEnabled(value);
+    }
+
+    private boolean isReadonly() {
+        return readonly;
+    }
+
     // Event notifications
 
     private void notifyFieldChange(String memberName, Object oldValue, Object newValue) {
@@ -188,6 +209,7 @@ public class DataObjectFieldEditor extends Composite {
         if (event.isFrom(getDataModel())) {
             if (getDataObject().getProperties().size() == 0) {
                 clean();
+                setReadonly(true);
             }
         }
     }
@@ -217,6 +239,7 @@ public class DataObjectFieldEditor extends Composite {
                 clean();
                 setDataObject(null);
                 setObjectField(null);
+                setReadonly(true);
             }
         }
     }
@@ -232,6 +255,7 @@ public class DataObjectFieldEditor extends Composite {
     private void loadDataObjectField(DataObjectTO dataObject, ObjectPropertyTO objectField) {
         clean();
         initTypeList();
+        setReadonly(true);
         if (dataObject != null && objectField != null) {
             setDataObject(dataObject);
             setObjectField(objectField);
@@ -261,6 +285,10 @@ public class DataObjectFieldEditor extends Composite {
             if (annotation != null) {
                 String position = (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM);
                 positionSelector.setSelectedValue(position);
+            }
+
+            if ( ! dataObject.isExternallyModified() ) {
+                setReadonly( false );
             }
         }
     }

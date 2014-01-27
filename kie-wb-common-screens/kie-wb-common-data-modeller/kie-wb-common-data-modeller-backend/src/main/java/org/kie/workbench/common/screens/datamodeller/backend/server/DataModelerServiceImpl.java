@@ -28,7 +28,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
@@ -44,6 +48,7 @@ import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleDriver;
+import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
@@ -52,6 +57,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceAdded;
@@ -65,6 +71,10 @@ import org.uberfire.workbench.events.ResourceUpdated;
 public class DataModelerServiceImpl implements DataModelerService {
 
     private static final Logger logger = LoggerFactory.getLogger( DataModelerServiceImpl.class );
+
+    private static final boolean checkExternalModifications = !"false".equals( System.getProperty( "org.kie.workbench.datamodeller.checkExternalModifications" ) );
+
+    private static final boolean checkExternalModificationsForOldVersions = !"false".equals( System.getProperty( "org.kie.workbench.datamodeller.checkExternalModificationsForOldVersions" ) );
 
     @Inject
     @Named("ioStrategy")
@@ -84,6 +94,16 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Inject
     private Event<ResourceBatchChangesEvent> resourceBatchChangesEvent;
+
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
+    private MetadataService metadataService;
+
+    private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
+
+    private static final String DEFAULT_COMMIT_MESSAGE_OLD_VERSIONS = "Data modeller generated action.";
 
     public DataModelerServiceImpl() {
     }
@@ -107,9 +127,11 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         DataModel dataModel = null;
         Path projectPath = null;
+        Package defaultPackage = null;
 
         try {
             projectPath = project.getRootPath();
+            defaultPackage = projectService.resolveDefaultPackage(project);
             if ( logger.isDebugEnabled() ) {
                 logger.debug( "Current project path is: " + projectPath );
             }
@@ -121,6 +143,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             //Objects read from persistent .java format are tagged as PERSISTENT objects
             DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To( dataModel, DataObjectTO.PERSISTENT, true );
+            if (checkExternalModifications) calculateReadonlyStatus( dataModelTO, Paths.convert( defaultPackage.getPackageMainSrcPath() ) );
 
             Long endTime = System.currentTimeMillis();
             if ( logger.isDebugEnabled() ) {
@@ -160,6 +183,8 @@ public class DataModelerServiceImpl implements DataModelerService {
                 mergeWithExistingModel( dataModel, project );
             }
 
+            filterReadonlyObjects(dataModel);
+
             //convert to domain model
             DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain( dataModel );
 
@@ -173,7 +198,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
             //to it must be treated carefully.
-            CommentedOption option = makeCommentedOption( "Data modeller generated action." );
+            CommentedOption option = makeCommentedOption( );
             ioService.startBatch();
             onBatch = true;
 
@@ -232,15 +257,17 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         for ( DataObjectTO reloadedDataObject : reloadedModel.getDataObjects() ) {
-            if ( !currentObjects.containsKey( reloadedDataObject.getClassName() ) && !deletedObjects.containsKey( reloadedDataObject.getClassName() ) ) {
+            if ( !currentObjects.containsKey( reloadedDataObject.getClassName() ) && !deletedObjects.containsKey( reloadedDataObject.getClassName() ) && !reloadedDataObject.isExternallyModified() ) {
                 dataModel.getDeletedDataObjects().add( reloadedDataObject );
             }
         }
     }
 
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
+    private CommentedOption makeCommentedOption() {
         final String name = identity.getName();
         final Date when = new Date();
+        final String commitMessage = DEFAULT_COMMIT_MESSAGE;
+
         final CommentedOption option = new CommentedOption( sessionInfo.getId(),
                                                             name,
                                                             null,
@@ -315,6 +342,49 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
+
+    private void calculateReadonlyStatus( DataModelTO dataModelTO, org.uberfire.java.nio.file.Path javaPath ) {
+        for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
+            if (wasModified(dataObjectTO, javaPath)) {
+                dataObjectTO.setStatus(DataObjectTO.PERSISTENT_EXTERNALLY_MODIFIED);
+            }
+        }
+    }
+
+    private boolean wasModified(DataObjectTO dataObjectTO, org.uberfire.java.nio.file.Path javaPath) {
+        org.uberfire.java.nio.file.Path filePath;
+        String content;
+        String expectedHashValue;
+
+        filePath = calculateFilePath(dataObjectTO.getClassName(), javaPath);
+        content = ioService.readAllString(filePath);
+        content = content != null ? content.trim() : null;
+
+        if (content == null) return false;
+
+        expectedHashValue = FileHashingUtils.extractFileHashValue(content);
+        if (expectedHashValue != null) {
+            return !FileHashingUtils.verifiesHash(content, expectedHashValue);
+        }
+
+        return checkExternalModificationsForOldVersions ? wasModifiedForOldFiles(dataObjectTO, filePath) : true;
+    }
+
+    private boolean wasModifiedForOldFiles(DataObjectTO dataObjectTO, org.uberfire.java.nio.file.Path filePath) {
+        Metadata metadata = metadataService.getMetadata(Paths.convert(filePath));
+        if (metadata == null) return true;
+
+        //analyse if all the commits has been done with the data modeller
+        List<VersionRecord> versions = metadata.getVersion();
+        String comment;
+        for (VersionRecord version : versions) {
+            comment = version.comment();
+            comment = comment != null ? comment.trim() : null;
+            if (!DEFAULT_COMMIT_MESSAGE_OLD_VERSIONS.equals(comment)) return true;
+        }
+        return false;
+    }
+
     private List<Path> calculateDeleteableFiles( final DataModelTO dataModel,
                                                  final org.uberfire.java.nio.file.Path javaPath ) {
 
@@ -325,7 +395,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         //process deleted persistent objects.
         for ( DataObjectTO dataObject : deletedObjects ) {
-            if ( dataObject.isPersistent() ) {
+            if ( dataObject.isPersistent() || dataObject.isExternallyModified() ) {
                 filePath = calculateFilePath( dataObject.getOriginalClassName(), javaPath );
                 if ( dataModel.getDataObjectByClassName( dataObject.getOriginalClassName() ) != null ) {
                     //TODO check if we need to have this level of control or instead we remove this file directly.
@@ -368,9 +438,28 @@ public class DataModelerServiceImpl implements DataModelerService {
         for ( DataObjectTO dataObject : dataModelTO.getDataObjects() ) {
             newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint( dataObject.getStringId() );
             if ( newFingerPrint.equals( dataObject.getFingerPrint() ) ) {
-                logger.debug( "XXXXXXXXXXXXXXXXXXX the class : " + dataObject.getClassName() + " wasn't modified" );
+                logger.debug( "The class : " + dataObject.getClassName() + " wasn't modified" );
                 dataModelDomain.removeDataObject( dataObject.getClassName() );
             }
+        }
+    }
+
+    /**
+     * Remove objects marked as readonly form the model, they should never be generated or deleted.
+     * @param dataModel
+     */
+    private void filterReadonlyObjects( final DataModelTO dataModel ) {
+        List<DataObjectTO> deletableObjects = new ArrayList<DataObjectTO>();
+
+        for ( DataObjectTO dataObjectTO : dataModel.getDataObjects() ) {
+            if ( dataObjectTO.isExternallyModified() ) {
+                deletableObjects.add( dataObjectTO );
+            }
+        }
+
+        for ( DataObjectTO deletableObject : deletableObjects ) {
+            dataModel.removeDataObject( deletableObject );
+            dataModel.getDeletedDataObjects().remove( deletableObject );
         }
     }
 
@@ -389,7 +478,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     private org.uberfire.java.nio.file.Path existsProjectJavaPath( org.uberfire.java.nio.file.Path projectPath ) {
-        org.uberfire.java.nio.file.Path javaPath = projectPath.resolve( "src" ).resolve( "main" ).resolve( "java" );
+        org.uberfire.java.nio.file.Path javaPath = projectPath.resolve( "src" ).resolve( "main" ).resolve("java");
         if ( ioService.exists( javaPath ) ) {
             return javaPath;
         }
