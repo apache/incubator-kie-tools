@@ -224,8 +224,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         box.addItem( "..." );
 
         for ( int i = 0; i < fieldCompletionTexts.length; i++ ) {
-            box.addItem( fieldCompletionTexts[ i ],
-                         fieldCompletionValues[ i ] );
+            box.addItem( fieldCompletionValues[ i ],
+                         fieldCompletionTexts[ i ] );
         }
 
         box.setSelectedIndex( 0 );
@@ -236,8 +236,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
             public void onChange( ChangeEvent event ) {
 
-                final String methodName = box.getItemText( box.getSelectedIndex() );
-                final String methodNameWithParams = box.getValue( box.getSelectedIndex() );
+                final String methodName = box.getValue( box.getSelectedIndex() );
+                final String methodNameWithParams = box.getItemText( box.getSelectedIndex() );
 
                 model.setMethodName( methodName );
                 model.setState( ActionCallMethod.TYPE_DEFINED );
