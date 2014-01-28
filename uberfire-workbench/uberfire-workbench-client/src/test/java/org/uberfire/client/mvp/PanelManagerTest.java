@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.event.Event;
+
 import org.junit.Test;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
@@ -35,7 +38,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
             add( spy );
         }} );
 
-        placeManager = new PlaceManagerImplUnitTestWrapper( spy, panelManager, null );
+        placeManager = new PlaceManagerImplUnitTestWrapper( spy, panelManager, (Event<SelectPlaceEvent>) null );
 
         final PanelDefinition root = panelManager.getRoot();
 
@@ -129,7 +132,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         }} );
 
 
-        placeManager = new PlaceManagerImplUnitTestWrapper( spy1, panelManager, null );
+        placeManager = new PlaceManagerImplUnitTestWrapper( spy1, panelManager, (Event<SelectPlaceEvent>) null );
 
         final PanelDefinition root = panelManager.getRoot();
 
