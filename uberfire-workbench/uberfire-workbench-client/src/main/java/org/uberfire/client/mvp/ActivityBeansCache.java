@@ -46,11 +46,11 @@ public class ActivityBeansCache {
 
     @PostConstruct
     public void init() {
-        final Collection<IOCBeanDef<Activity>> availableActivities = iocManager.lookupBeans( Activity.class );
+        final Collection<IOCBeanDef<Activity>> availableActivities = getAvailableActivities();
 
         for ( final IOCBeanDef<Activity> baseBean : availableActivities ) {
             //{porcelli} TODO workaround an Errai bug - it doesn't attach bean names when you lookup by a type that's not the concrete bean type
-            final IOCBeanDef<Activity> activityBean = (IOCBeanDef<Activity>) iocManager.lookupBean( baseBean.getBeanClass() );
+            final IOCBeanDef<Activity> activityBean = reLookupBean( baseBean );
 
             final String id = activityBean.getName();
 
@@ -63,13 +63,17 @@ public class ActivityBeansCache {
             if ( isSplashScreen( activityBean.getQualifiers() ) ) {
                 splashScreens.add( (SplashScreenActivity) activityBean.getInstance() );
             } else {
-                final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = getActivityMetaInfo( activityBean );
+                final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = ActivityMetaInfo.generate( activityBean );
                 if ( metaInfo != null ) {
                     activities.add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
                 }
             }
         }
 
+        sortActivities();
+    }
+
+    void sortActivities() {
         sort( activities, new Comparator<ActivityAndMetaInfo>() {
             @Override
             public int compare( final ActivityAndMetaInfo o1,
@@ -84,6 +88,14 @@ public class ActivityBeansCache {
                 }
             }
         } );
+    }
+
+    IOCBeanDef<Activity> reLookupBean( IOCBeanDef<Activity> baseBean ) {
+        return (IOCBeanDef<Activity>) iocManager.lookupBean( baseBean.getBeanClass() );
+    }
+
+    Collection<IOCBeanDef<Activity>> getAvailableActivities() {
+        return iocManager.lookupBeans( Activity.class );
     }
 
     private boolean isSplashScreen( final Set<Annotation> qualifiers ) {
@@ -135,40 +147,7 @@ public class ActivityBeansCache {
         return splashScreens;
     }
 
-    private Pair<Integer, List<Class<? extends ClientResourceType>>> getActivityMetaInfo( final IOCBeanDef<?> beanDefinition ) {
-        AssociatedResources associatedResources = null;
-        Priority priority = null;
 
-        final Set<Annotation> annotations = beanDefinition.getQualifiers();
-        for ( Annotation a : annotations ) {
-            if ( a instanceof AssociatedResources ) {
-                associatedResources = (AssociatedResources) a;
-                continue;
-            }
-            if ( a instanceof Priority ) {
-                priority = (Priority) a;
-                continue;
-            }
-        }
-
-        if ( associatedResources == null ) {
-            return null;
-        }
-
-        final int priorityValue;
-        if ( priority == null ) {
-            priorityValue = 0;
-        } else {
-            priorityValue = priority.value();
-        }
-
-        final List<Class<? extends ClientResourceType>> types = new ArrayList<Class<? extends ClientResourceType>>();
-        for ( Class<? extends ClientResourceType> type : associatedResources.value() ) {
-            types.add( type );
-        }
-
-        return Pair.newPair( priorityValue, types );
-    }
 
     public IOCBeanDef<Activity> getActivity( final String id ) {
         return activitiesById.get( id );
