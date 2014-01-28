@@ -1,4 +1,4 @@
-= Getting Acquainted With UberFire
+= UberFire Tutorial
 Jonathan Fuerth <jfuerth@redhat.com>
 :toc:
 :source-highlighter: highlightjs
