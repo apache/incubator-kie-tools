@@ -36,33 +36,10 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.Intercept;
-import org.uberfire.client.annotations.Perspective;
-import org.uberfire.client.annotations.SplashBodySize;
-import org.uberfire.client.annotations.SplashFilter;
-import org.uberfire.client.annotations.WorkbenchContextId;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchToolBar;
-import org.uberfire.lifecycle.IsDirty;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnContextAttach;
-import org.uberfire.lifecycle.OnFocus;
-import org.uberfire.lifecycle.OnLostFocus;
-import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnSave;
-import org.uberfire.lifecycle.OnShutdown;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.annotations.RolesType;
-import org.uberfire.security.annotations.SecurityTrait;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.Position;
+import org.uberfire.annotations.processors.facades.APIModule;
+import org.uberfire.annotations.processors.facades.BackendModule;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
+import org.uberfire.annotations.processors.facades.SecurityModule;
 
 /**
  * Utilities for code generation
@@ -81,7 +58,7 @@ public class GeneratorUtils {
                                                               final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnStartup.class );
+                                  new APIModule().getOnStartupClass() );
     }
 
     /**
@@ -97,8 +74,8 @@ public class GeneratorUtils {
                                                               final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  new String[]{ Path.class.getName() },
-                                  OnStartup.class );
+                                  new String[]{ new BackendModule().getPathClass().getName() },
+                                  new APIModule().getOnStartupClass() );
     }
 
     /**
@@ -115,16 +92,16 @@ public class GeneratorUtils {
                                                                            final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  new String[]{ Path.class.getName(), PlaceRequest.class.getName() },
-                                  OnStartup.class );
+                                  new String[]{ new BackendModule().getPathClass().getName(), new APIModule().getPlaceRequestClass().getName() },
+                                  new APIModule().getOnStartupClass() );
     }
 
     public static String getOnContextAttachPanelDefinitionMethodName( final TypeElement classElement,
                                                                       final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  new String[]{ PanelDefinition.class.getName() },
-                                  OnContextAttach.class );
+                                  new String[]{ new APIModule().getPanelDefinitionClass().getName() },
+                                  new APIModule().getOnContextAttachClass() );
     }
 
     /**
@@ -140,8 +117,8 @@ public class GeneratorUtils {
                                                                     final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  new String[]{ PlaceRequest.class.getName() },
-                                  OnStartup.class );
+                                  new String[]{ new APIModule().getPlaceRequestClass().getName() },
+                                  new APIModule().getOnStartupClass() );
     }
 
     /**
@@ -157,7 +134,7 @@ public class GeneratorUtils {
                                                   final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getBooleanMethodName( classElement,
                                      processingEnvironment,
-                                     OnMayClose.class );
+                                     new APIModule().getOnMayCloseClass());
     }
 
     /**
@@ -172,7 +149,7 @@ public class GeneratorUtils {
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnClose.class );
+                                  new APIModule().getOnCloseClass() );
     }
 
     /**
@@ -187,7 +164,7 @@ public class GeneratorUtils {
                                                   final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnShutdown.class );
+                                  new APIModule().getOnShutdownlass() );
     }
 
     /**
@@ -202,7 +179,7 @@ public class GeneratorUtils {
                                               final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnOpen.class );
+                                  new APIModule().getOnOpenClass() );
     }
 
     /**
@@ -218,7 +195,7 @@ public class GeneratorUtils {
                                                    final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnLostFocus.class );
+                                  new APIModule().getOnLostFocusClass() );
     }
 
     /**
@@ -233,7 +210,7 @@ public class GeneratorUtils {
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnFocus.class );
+                                  new APIModule().getOnFocusClass() );
     }
 
     /**
@@ -249,7 +226,7 @@ public class GeneratorUtils {
                                                        final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getDefaultPositionMethodName( classElement,
                                              processingEnvironment,
-                                             DefaultPosition.class );
+                                             new ClientAPIModule().getDefaultPositionClass() );
     }
 
     /**
@@ -265,14 +242,14 @@ public class GeneratorUtils {
                                              final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getStringMethodName( classElement,
                                     processingEnvironment,
-                                    WorkbenchPartTitle.class );
+                                    new ClientAPIModule().getWorkbenchPartTitleClass() );
     }
 
     public static String getContextIdMethodName( final TypeElement classElement,
                                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getStringMethodName( classElement,
                                     processingEnvironment,
-                                    WorkbenchContextId.class );
+                                    new ClientAPIModule().getWorkbenchContextIdClass() );
     }
 
     /**
@@ -288,7 +265,7 @@ public class GeneratorUtils {
                                                               final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getWidgetMethodName( classElement,
                                     processingEnvironment,
-                                    WorkbenchPartTitleDecoration.class );
+                                    new ClientAPIModule().getWorkbenchPartTitleDecorationsClass()  );
     }
 
     /**
@@ -304,7 +281,7 @@ public class GeneratorUtils {
                                                          final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getWidgetMethodName( classElement,
                                     processingEnvironment,
-                                    WorkbenchPartView.class );
+                                    new ClientAPIModule().getWorkbenchPartViewClass() );
     }
 
     /**
@@ -349,7 +326,7 @@ public class GeneratorUtils {
                                              final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getPopupMethodName( classElement,
                                    processingEnvironment,
-                                   WorkbenchPartView.class );
+                                   new ClientAPIModule().getWorkbenchPartViewClass() );
     }
 
     /**
@@ -379,7 +356,7 @@ public class GeneratorUtils {
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getBooleanMethodName( classElement,
                                      processingEnvironment,
-                                     IsDirty.class );
+                                     new APIModule().getIsDirtyClass());
     }
 
     /**
@@ -394,7 +371,7 @@ public class GeneratorUtils {
                                               final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getVoidMethodName( classElement,
                                   processingEnvironment,
-                                  OnSave.class );
+                                  new APIModule().getOnSaveClass() );
     }
 
     /**
@@ -410,7 +387,7 @@ public class GeneratorUtils {
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getMenuBarMethodName( classElement,
                                      processingEnvironment,
-                                     WorkbenchMenu.class );
+                                    new ClientAPIModule().getWorkbenchMenuClass() );
     }
 
     /**
@@ -426,7 +403,7 @@ public class GeneratorUtils {
                                                final ProcessingEnvironment processingEnvironment ) throws GenerationException {
         return getToolBarMethodName( classElement,
                                      processingEnvironment,
-                                     WorkbenchToolBar.class );
+                                     new ClientAPIModule().getWorkbenchToolBarClass() );
     }
 
     /**
@@ -443,7 +420,7 @@ public class GeneratorUtils {
         return getMethodName( classElement,
                               processingEnvironment,
                               "org.uberfire.workbench.model.PerspectiveDefinition",
-                              Perspective.class );
+                              new ClientAPIModule().getPerspectiveClass() );
     }
 
     public static String getSplashFilterMethodName( final TypeElement classElement,
@@ -451,7 +428,7 @@ public class GeneratorUtils {
         return getMethodName( classElement,
                               processingEnvironment,
                               "org.uberfire.workbench.model.SplashScreenFilter",
-                              SplashFilter.class );
+                              new ClientAPIModule().getSplashFilterClass() );
     }
 
     public static String getBodyHeightMethodName( TypeElement classElement,
@@ -459,7 +436,7 @@ public class GeneratorUtils {
         return getMethodName( classElement,
                               processingEnvironment,
                               "java.lang.Integer",
-                              SplashBodySize.class );
+                              new ClientAPIModule().getSplashBodySizeClass());
     }
 
     public static String getInterceptMethodName( final TypeElement classElement,
@@ -467,7 +444,7 @@ public class GeneratorUtils {
         return getMethodName( classElement,
                               processingEnvironment,
                               "java.lang.Boolean",
-                              Intercept.class );
+                              new ClientAPIModule().getInterceptClass() );
     }
 
     // Lookup a public method name with the given annotation. The method must be
@@ -778,7 +755,7 @@ public class GeneratorUtils {
                                                         final Class annotation ) throws GenerationException {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement( Position.class.getName() ).asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement( new APIModule().getPositionClass().getName() ).asType();
         final List<ExecutableElement> methods = ElementFilter.methodsIn( classElement.getEnclosedElements() );
 
         ExecutableElement match = null;
@@ -950,7 +927,7 @@ public class GeneratorUtils {
         return match.getSimpleName().toString();
     }
 
-    public static String getSecurityTraitList( final Element element ) {
+    public static String getSecurityTraitList( final Element element ) throws GenerationException {
 
         final List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
 
@@ -958,7 +935,7 @@ public class GeneratorUtils {
 
         for ( final AnnotationMirror annotationMirror : annotationMirrors ) {
             final Element annotationElement = annotationMirror.getAnnotationType().asElement();
-            if ( annotationElement.getAnnotation( SecurityTrait.class ) != null ) {
+            if ( annotationElement.getAnnotation( new SecurityModule().getSecurityTraitClass() ) != null ) {
                 traits.add( annotationElement.asType().toString() );
             }
         }
@@ -970,11 +947,11 @@ public class GeneratorUtils {
         return collectionAsString( traits );
     }
 
-    public static String getRoleList( final Element element ) {
+    public static String getRoleList( final Element element ) throws GenerationException {
         final List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
         final Set<String> result = new HashSet<String>();
         for ( final AnnotationMirror annotationMirror : annotationMirrors ) {
-            if ( annotationMirror.getAnnotationType().asElement().getAnnotation( RolesType.class ) != null ) {
+            if ( annotationMirror.getAnnotationType().asElement().getAnnotation(new SecurityModule().getRolesTypeClass() ) != null ) {
                 for ( final Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet() ) {
                     if ( entry.getKey().getSimpleName().toString().equals( "value" ) ) {
                         result.addAll( extractValue( entry.getValue() ) );

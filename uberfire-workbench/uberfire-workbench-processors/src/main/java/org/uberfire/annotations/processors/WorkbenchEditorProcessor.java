@@ -34,7 +34,7 @@ import javax.tools.JavaFileObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * Processor for {@code WorkbenchEditor} and related annotations
@@ -71,8 +71,16 @@ public class WorkbenchEditorProcessor extends AbstractProcessor {
             return false;
         }
 
+        //instantiate ClientAPIModule facade
+        ClientAPIModule clientAPIModule =null;
+        try {
+            clientAPIModule = new ClientAPIModule();
+        } catch ( GenerationException e ) {
+            logger.error( e.getMessage() );
+        }
+
         //Scan for all classes with the WorkbenchEditor annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchEditor.class ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( clientAPIModule.getWorkbenchEditorClass() ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

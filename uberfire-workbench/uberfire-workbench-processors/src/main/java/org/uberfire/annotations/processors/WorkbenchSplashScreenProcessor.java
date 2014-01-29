@@ -34,7 +34,7 @@ import javax.tools.JavaFileObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.WorkbenchSplashScreen;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * Processor for {@code WorkbenchPopup} and related annotations
@@ -71,8 +71,17 @@ public class WorkbenchSplashScreenProcessor extends AbstractProcessor {
             return false;
         }
 
+        //instantiate ClientAPIModule facade
+        ClientAPIModule clientAPIModule;
+        try {
+            clientAPIModule = new ClientAPIModule();
+        } catch ( GenerationException e ) {
+            logger.error( e.getMessage() );
+            return false;
+        }
+
         //Scan for all classes with the WorkbenchPopup annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchSplashScreen.class ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( clientAPIModule.getWorkbenchSplashScreenClass() ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

@@ -34,7 +34,7 @@ import javax.tools.JavaFileObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * Processor for {@code WorkbenchScreen} and related annotations
@@ -43,24 +43,24 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class WorkbenchScreenProcessor extends AbstractProcessor {
 
-    private static final Logger           logger            = LoggerFactory.getLogger( WorkbenchScreenProcessor.class );
+    private static final Logger logger = LoggerFactory.getLogger( WorkbenchScreenProcessor.class );
 
     private final ScreenActivityGenerator activityGenerator = new ScreenActivityGenerator();
 
-    private GenerationCompleteCallback    callback          = null;
+    private GenerationCompleteCallback callback = null;
 
     public WorkbenchScreenProcessor() {
     }
 
     //Constructor for tests only, to prevent code being written to file. The generated code will be sent to the call-back
-    WorkbenchScreenProcessor(final GenerationCompleteCallback callback) {
+    WorkbenchScreenProcessor( final GenerationCompleteCallback callback ) {
         this.callback = callback;
         logger.info( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
     }
 
     @Override
-    public boolean process(Set< ? extends TypeElement> annotations,
-                           RoundEnvironment roundEnv) {
+    public boolean process( Set<? extends TypeElement> annotations,
+                            RoundEnvironment roundEnv ) {
         //We don't have any post-processing
         if ( roundEnv.processingOver() ) {
             return false;
@@ -70,9 +70,17 @@ public class WorkbenchScreenProcessor extends AbstractProcessor {
         if ( roundEnv.errorRaised() ) {
             return false;
         }
+        //instantiate ClientAPIModule facade
+        ClientAPIModule clientAPIModule;
+        try {
+            clientAPIModule = new ClientAPIModule();
+        } catch ( GenerationException e ) {
+            logger.error( e.getMessage() );
+            return false;
+        }
 
         //Scan for all classes with the WorkbenchScreen annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( WorkbenchScreen.class ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( clientAPIModule.getWorkbenchScreenClass() ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;
@@ -114,9 +122,9 @@ public class WorkbenchScreenProcessor extends AbstractProcessor {
     }
 
     //Write generated code to javac's Filer
-    private void writeCode(final String packageName,
-                           final String className,
-                           final StringBuffer code) {
+    private void writeCode( final String packageName,
+                            final String className,
+                            final StringBuffer code ) {
         try {
             JavaFileObject jfo = processingEnv.getFiler().createSourceFile( packageName + "." + className );
             Writer w = jfo.openWriter();

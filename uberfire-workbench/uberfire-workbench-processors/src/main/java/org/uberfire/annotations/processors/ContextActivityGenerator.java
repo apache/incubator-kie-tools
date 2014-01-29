@@ -32,7 +32,7 @@ import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.WorkbenchContext;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * A source code generator for Activities
@@ -51,8 +51,12 @@ public class ContextActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        final WorkbenchContext wbw = classElement.getAnnotation( WorkbenchContext.class );
-        final String identifier = wbw.identifier();
+        String identifier = "";
+        try {
+            identifier = new ClientAPIModule().getWbContextIdentifierValueOnClass( classElement );
+        } catch ( GenerationException e ) {
+            logger.error( e.getMessage() );
+        }
         final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName( classElement,
                                                                             processingEnvironment );
         final String getOnContextAttachPanelDefinitionMethodName = GeneratorUtils.getOnContextAttachPanelDefinitionMethodName( classElement,

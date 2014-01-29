@@ -31,7 +31,7 @@ import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * A source code generator for Activities
@@ -50,9 +50,14 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        final WorkbenchPerspective wbp = classElement.getAnnotation( WorkbenchPerspective.class );
-        final String identifier = wbp.identifier();
-        final boolean isDefault = wbp.isDefault();
+        String identifier = "";
+        boolean isDefault=false;
+        try {
+            identifier = new ClientAPIModule().getWbPerspectiveScreenIdentifierValueOnClass( classElement );
+            isDefault = new ClientAPIModule().getWbPerspectiveScreenIsDefaultValueOnClass(classElement);
+        } catch ( GenerationException e ) {
+            logger.error( e.getMessage() );
+        }
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,

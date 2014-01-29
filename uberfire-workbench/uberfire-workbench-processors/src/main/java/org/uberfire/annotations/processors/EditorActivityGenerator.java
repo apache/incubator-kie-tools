@@ -36,7 +36,7 @@ import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * A source code generator for Activities
@@ -56,7 +56,15 @@ public class EditorActivityGenerator extends AbstractGenerator {
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
 
-        final String annotationName = WorkbenchEditor.class.getName();
+        //instantiate ClientAPIModule facade
+        ClientAPIModule clientAPIModule =null;
+        try {
+            clientAPIModule = new ClientAPIModule();
+        } catch ( GenerationException e ) {
+            logger.error( e.getMessage() );
+        }
+
+        final String annotationName = clientAPIModule.getWorkbenchEditorClass().getName();
         AnnotationValue action = null;
 
         String identifier = null;

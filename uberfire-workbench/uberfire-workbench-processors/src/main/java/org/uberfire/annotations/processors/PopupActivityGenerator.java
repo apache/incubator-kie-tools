@@ -32,7 +32,7 @@ import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
-import org.uberfire.client.annotations.WorkbenchPopup;
+import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 /**
  * A source code generator for Activities
@@ -49,10 +49,15 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
         logger.debug( "Starting code generation for [" + className + "]" );
 
-        //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        final WorkbenchPopup wbp = classElement.getAnnotation( WorkbenchPopup.class );
-        final String identifier = wbp.identifier();
+
+        String identifier = "";
+        try {
+            identifier = new ClientAPIModule().getWbPopupScreenIdentifierValueOnClass( classElement );
+        } catch ( GenerationException e ) {
+            logger.error( e.getMessage() );
+        }
+
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
