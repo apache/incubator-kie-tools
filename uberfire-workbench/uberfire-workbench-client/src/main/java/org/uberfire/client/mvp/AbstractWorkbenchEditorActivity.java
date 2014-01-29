@@ -15,13 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.HashMap;
-
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.events.ContextUpdateEvent;
 
 /**
  * Base class for Editor Activities
@@ -49,23 +46,6 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
 
         onOpen();
-    }
-
-    protected void fireContextUpdateEvent() {
-        if ( lastContextUpdate == null ) {
-            contextUpdateEvent.fire( new ContextUpdateEvent( wstatecontext.getActivePanel(), new HashMap<String, Object>( 2 ) {{
-                put( "path", path );
-                put( "place", place );
-            }} ) );
-            return;
-        }
-        if ( !path.equals( lastContextUpdate.getData().get( "path" ) )
-                && !place.equals( lastContextUpdate.getData().get( "place" ) ) ) {
-            contextUpdateEvent.fire( new ContextUpdateEvent( wstatecontext.getActivePanel(), new HashMap<String, Object>( 2 ) {{
-                put( "path", path );
-                put( "place", place );
-            }} ) );
-        }
     }
 
     @Override

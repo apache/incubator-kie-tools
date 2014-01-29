@@ -11,7 +11,6 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.context.DefaultWorkbenchContext;
 import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -31,9 +30,6 @@ public class DefaultFileEditorPresenter {
 
     @Inject
     private Caller<VFSService> vfsServices;
-
-    @Inject
-    DefaultWorkbenchContext defaultWorkbenchContext;
 
     private Path path;
 

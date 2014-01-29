@@ -12,12 +12,12 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.lifecycle.OnContextAttach;
 import org.uberfire.client.annotations.WorkbenchContext;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.navigator.FileNavigator;
 import org.uberfire.client.navigator.NavigatorOptions;
+import org.uberfire.lifecycle.OnContextAttach;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.PanelDefinition;
 
@@ -33,9 +33,6 @@ public class FileNavigatorContext extends Composite {
 
     @Inject
     private FileNavigator fileNavigator;
-
-    @Inject
-    private org.uberfire.client.workbench.context.WorkbenchContext context;
 
     @UiField
     SimplePanel container;

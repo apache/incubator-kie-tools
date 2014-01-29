@@ -15,11 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.HashMap;
-
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.ContextUpdateEvent;
 
 /**
  * Base class for Screen Activities
@@ -50,12 +47,5 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
     @Override
     public void onStartup( final PlaceRequest place ) {
         //Do nothing.  
-    }
-
-    @Override
-    protected void fireContextUpdateEvent() {
-        contextUpdateEvent.fire( new ContextUpdateEvent( wstatecontext.getActivePanel(), new HashMap<String, Object>( 2 ) {{
-            put( "place", place );
-        }} ) );
     }
 }

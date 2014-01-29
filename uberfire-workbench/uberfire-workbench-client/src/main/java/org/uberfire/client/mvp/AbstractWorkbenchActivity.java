@@ -15,10 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import javax.enterprise.event.Observes;
-
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.workbench.events.ContextUpdateEvent;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
@@ -29,8 +26,6 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 public abstract class AbstractWorkbenchActivity extends AbstractActivity
         implements
         WorkbenchActivity {
-
-    protected ContextUpdateEvent lastContextUpdate = null;
 
     public AbstractWorkbenchActivity( final PlaceManager placeManager ) {
         super( placeManager );
@@ -74,7 +69,6 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
 
     @Override
     public void onFocus() {
-        fireContextUpdateEvent();
     }
 
     @Override
@@ -87,15 +81,9 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
         return null;
     }
 
-    protected abstract void fireContextUpdateEvent();
-
     @Override
     public String contextId() {
         return null;
-    }
-
-    protected void onContextUpdateEvent( @Observes final ContextUpdateEvent event ) {
-        this.lastContextUpdate = event;
     }
 
 }

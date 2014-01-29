@@ -15,13 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import org.uberfire.client.workbench.context.WorkbenchContext;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.ContextUpdateEvent;
 
 /**
  * Base class for Activities
@@ -29,12 +24,6 @@ import org.uberfire.workbench.events.ContextUpdateEvent;
 public abstract class AbstractActivity
         implements
         Activity {
-
-    @Inject
-    protected Event<ContextUpdateEvent> contextUpdateEvent;
-
-    @Inject
-    protected WorkbenchContext wstatecontext;
 
     protected PlaceManager placeManager;
 
