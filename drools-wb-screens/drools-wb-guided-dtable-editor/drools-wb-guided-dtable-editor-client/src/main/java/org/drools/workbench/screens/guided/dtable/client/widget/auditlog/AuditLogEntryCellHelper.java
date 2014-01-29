@@ -451,8 +451,8 @@ public class AuditLogEntryCellHelper {
                 // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sb);
                 // if (changedFieldName.equals(ActionInsertFactCol52.FIELD_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sb);
                 if (changedFieldName.equals(DTColumnConfig52.FIELD_HEADER)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ColumnHeader(), diff.getOldValue(), diff.getValue(), sbFields);
-                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FactType(), diff.getOldValue(), diff.getValue(), sbFields);
-                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Field(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_FIELD)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Field(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_FACT_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FactType(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_IS_INSERT_LOGICAL)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.LogicallyInsert(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(ActionInsertFactCol52.FIELD_VALUE_LIST)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.ValueList(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sbFields);
