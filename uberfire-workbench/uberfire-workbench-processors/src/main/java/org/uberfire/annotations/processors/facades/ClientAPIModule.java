@@ -7,6 +7,8 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
@@ -16,25 +18,33 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
  */
 public class ClientAPIModule {
 
-    private final Class<? extends Annotation> workbenchSplashScreen;
-    private final Class<? extends Annotation> workbenchPerspective;
-    private final Class<? extends Annotation> workbenchPopup;
-    private final Class<? extends Annotation> workbenchScreen;
-    private final Class<? extends Annotation> workbenchContext;
-    private final Class<? extends Annotation> workbenchEditor;
-    private final Class<? extends Annotation> defaultPosition;
-    private final Class<? extends Annotation> workbenchPartTitle;
-    private final Class<? extends Annotation> workbenchContextId;
-    private final Class<? extends Annotation> workbenchPartTitleDecoration;
-    private final Class<? extends Annotation> workbenchPartView;
-    private final Class<? extends Annotation> workbenchMenu;
-    private final Class<? extends Annotation> workbenchToolBar;
-    private final Class<? extends Annotation> perspective;
-    private final Class<? extends Annotation> splashFilter;
-    private final Class<? extends Annotation> splashBodySize;
-    private final Class<? extends Annotation> intercept;
 
-    public ClientAPIModule() throws GenerationException {
+    private static final Logger logger = LoggerFactory.getLogger( ClientAPIModule.class );
+
+    public static final String IDENTIFIER = "identifier";
+    public static final String IS_DEFAULT = "isDefault";
+    private static Class<? extends Annotation> workbenchSplashScreen;
+    private static Class<? extends Annotation> workbenchPerspective;
+    private static Class<? extends Annotation> workbenchPopup;
+    private static Class<? extends Annotation> workbenchScreen;
+    private static Class<? extends Annotation> workbenchContext;
+    private static Class<? extends Annotation> workbenchEditor;
+    private static Class<? extends Annotation> defaultPosition;
+    private static Class<? extends Annotation> workbenchPartTitle;
+    private static Class<? extends Annotation> workbenchContextId;
+    private static Class<? extends Annotation> workbenchPartTitleDecoration;
+    private static Class<? extends Annotation> workbenchPartView;
+    private static Class<? extends Annotation> workbenchMenu;
+    private static Class<? extends Annotation> workbenchToolBar;
+    private static Class<? extends Annotation> perspective;
+    private static Class<? extends Annotation> splashFilter;
+    private static Class<? extends Annotation> splashBodySize;
+    private static Class<? extends Annotation> intercept;
+
+    private ClientAPIModule() {}
+    
+    
+    static {
 
         try {
             workbenchSplashScreen = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchSplashScreen" );
@@ -56,81 +66,81 @@ public class ClientAPIModule {
             intercept = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.Intercept" );
 
         } catch ( ClassNotFoundException e ) {
-            throw new GenerationException( e.getMessage(), e.getCause() );
+            logger.error(e.getMessage());
         }
     }
 
 
 
-    public Class<? extends Annotation> getWorkbenchScreenClass() {
+    public static Class<? extends Annotation> getWorkbenchScreenClass() {
         return workbenchScreen;
     }
 
-    public Class<? extends Annotation> getSplashFilterClass() {
+    public static Class<? extends Annotation> getSplashFilterClass() {
         return splashFilter;
     }
 
-    public Class<? extends Annotation> getSplashBodySizeClass() {
+    public static Class<? extends Annotation> getSplashBodySizeClass() {
         return splashBodySize;
     }
 
-    public Class<? extends Annotation> getInterceptClass() {
+    public static Class<? extends Annotation> getInterceptClass() {
         return intercept;
     }
 
-    public Class<? extends Annotation> getPerspectiveClass() {
+    public static Class<? extends Annotation> getPerspectiveClass() {
         return perspective;
     }
 
-    public Class<? extends Annotation> getWorkbenchToolBarClass() {
+    public static Class<? extends Annotation> getWorkbenchToolBarClass() {
         return workbenchToolBar;
     }
 
-    public Class<? extends Annotation> getWorkbenchMenuClass() {
+    public static Class<? extends Annotation> getWorkbenchMenuClass() {
         return workbenchMenu;
     }
 
-    public Class<? extends Annotation> getWorkbenchPartViewClass() {
+    public static Class<? extends Annotation> getWorkbenchPartViewClass() {
         return workbenchPartView;
     }
 
-    public Class<? extends Annotation> getWorkbenchPartTitleDecorationsClass() {
+    public static Class<? extends Annotation> getWorkbenchPartTitleDecorationsClass() {
         return workbenchPartTitleDecoration;
     }
 
-    public Class<? extends Annotation> getWorkbenchContextIdClass() {
+    public static Class<? extends Annotation> getWorkbenchContextIdClass() {
         return workbenchContextId;
     }
 
-    public Class<? extends Annotation> getWorkbenchPartTitleClass() {
+    public static Class<? extends Annotation> getWorkbenchPartTitleClass() {
         return workbenchPartTitle;
     }
 
-    public Class<? extends Annotation> getDefaultPositionClass() {
+    public static Class<? extends Annotation> getDefaultPositionClass() {
         return defaultPosition;
     }
 
-    public Class<? extends Annotation> getWorkbenchContextClass() {
+    public static Class<? extends Annotation> getWorkbenchContextClass() {
         return workbenchContext;
     }
 
-    public Class<? extends Annotation> getWorkbenchEditorClass() {
+    public static Class<? extends Annotation> getWorkbenchEditorClass() {
         return workbenchEditor;
     }
 
-    public Class<? extends Annotation> getWorkbenchPopupClass() {
+    public static Class<? extends Annotation> getWorkbenchPopupClass() {
         return workbenchPopup;
     }
 
-    public Class<? extends Annotation> getWorkbenchSplashScreenClass() {
+    public static Class<? extends Annotation> getWorkbenchSplashScreenClass() {
         return workbenchSplashScreen;
     }
 
-    public Class<? extends Annotation> getWorkbenchPerspectiveClass() {
+    public static Class<? extends Annotation> getWorkbenchPerspectiveClass() {
         return workbenchPerspective;
     }
 
-    private String getAnnotationIdentifierValueOnClass( TypeElement o,
+    private static String getAnnotationIdentifierValueOnClass( TypeElement o,
                                                         String className,
                                                         String annotationName ) throws GenerationException {
         try {
@@ -152,28 +162,28 @@ public class ClientAPIModule {
         }
     }
 
-    public Boolean getWbPerspectiveScreenIsDefaultValueOnClass( TypeElement classElement ) throws GenerationException {
-        String bool = ( getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective.getName(), "isDefault" ) );
+    public static Boolean getWbPerspectiveScreenIsDefaultValueOnClass( TypeElement classElement ) throws GenerationException {
+        String bool = ( getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective.getName(), IS_DEFAULT ) );
         return Boolean.valueOf( bool );
     }
 
-    public String getWbPerspectiveScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective.getName(), "identifier" );
+    public static String getWbPerspectiveScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective.getName(), IDENTIFIER );
     }
 
-    public String getWbPopupScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchPopup.getName(), "identifier" );
+    public static String getWbPopupScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchPopup.getName(), IDENTIFIER );
     }
 
-    public String getWbSplashScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchSplashScreen.getName(), "identifier" );
+    public static String getWbSplashScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchSplashScreen.getName(), IDENTIFIER );
     }
 
-    public String getWbScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchScreen.getName(), "identifier" );
+    public static String getWbScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchScreen.getName(), IDENTIFIER );
     }
 
-    public String getWbContextIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchContext.getName(), "identifier" );
+    public static String getWbContextIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchContext.getName(), IDENTIFIER );
     }
 }

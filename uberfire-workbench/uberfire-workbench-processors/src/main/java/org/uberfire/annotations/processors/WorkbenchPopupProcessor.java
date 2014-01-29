@@ -71,16 +71,8 @@ public class WorkbenchPopupProcessor extends AbstractProcessor {
             return false;
         }
 
-        //instantiate ClientAPIModule facade
-        ClientAPIModule clientAPIModule =null;
-        try {
-            clientAPIModule = new ClientAPIModule();
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-        }
-
         //Scan for all classes with the WorkbenchPopup annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( clientAPIModule.getWorkbenchPopupClass()) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( ClientAPIModule.getWorkbenchPopupClass()) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

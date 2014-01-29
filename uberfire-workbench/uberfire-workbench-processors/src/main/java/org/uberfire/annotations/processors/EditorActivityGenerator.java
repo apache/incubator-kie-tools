@@ -56,15 +56,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
 
-        //instantiate ClientAPIModule facade
-        ClientAPIModule clientAPIModule =null;
-        try {
-            clientAPIModule = new ClientAPIModule();
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-        }
-
-        final String annotationName = clientAPIModule.getWorkbenchEditorClass().getName();
+        final String annotationName = ClientAPIModule.getWorkbenchEditorClass().getName();
         AnnotationValue action = null;
 
         String identifier = null;

@@ -2,6 +2,8 @@ package org.uberfire.annotations.processors.facades;
 
 import java.lang.annotation.Annotation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
@@ -11,20 +13,22 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
  */
 public class BackendModule {
 
+    private static final Logger logger = LoggerFactory.getLogger( BackendModule.class );
 
-    private final Class<? extends Annotation> path;
+    private static Class<? extends Annotation> path;
 
-    public BackendModule() throws GenerationException {
+    private BackendModule(){};
 
+    static {
         try {
             path = (Class<? extends Annotation>) Class.forName( "org.uberfire.backend.vfs.Path" );
 
         } catch ( ClassNotFoundException e ) {
-            throw new GenerationException( e.getMessage(), e.getCause() );
+            logger.error( e.getMessage() );
         }
     }
 
-    public Class<? extends Annotation> getPathClass() {
+    public static Class<? extends Annotation> getPathClass() {
         return path;
     }
 }

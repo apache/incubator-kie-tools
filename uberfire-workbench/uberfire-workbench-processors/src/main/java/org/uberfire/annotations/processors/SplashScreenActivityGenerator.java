@@ -51,12 +51,9 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        String identifier = "";
-        try {
-            identifier = new ClientAPIModule().getWbSplashScreenIdentifierValueOnClass( classElement );
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-        }
+
+        String identifier = ClientAPIModule.getWbSplashScreenIdentifierValueOnClass( classElement );
+
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,

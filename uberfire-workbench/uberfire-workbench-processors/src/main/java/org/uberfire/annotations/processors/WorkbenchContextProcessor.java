@@ -71,16 +71,8 @@ public class WorkbenchContextProcessor extends AbstractProcessor {
             return false;
         }
 
-        //instantiate ClientAPIModule facade
-        ClientAPIModule clientAPIModule =null;
-        try {
-            clientAPIModule = new ClientAPIModule();
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-        }
-
         //Scan for all classes with the WorkbenchScreen annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( clientAPIModule.getWorkbenchContextClass() ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( ClientAPIModule.getWorkbenchContextClass() ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

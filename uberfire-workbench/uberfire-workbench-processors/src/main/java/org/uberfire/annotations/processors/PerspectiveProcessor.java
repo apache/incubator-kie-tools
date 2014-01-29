@@ -71,16 +71,8 @@ public class PerspectiveProcessor extends AbstractProcessor {
             return false;
         }
 
-        //instantiate ClientAPIModule facade
-        ClientAPIModule clientAPIModule =null;
-        try {
-            clientAPIModule = new ClientAPIModule();
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-            return false;
-        }
         //Scan for all classes with the WorkbenchPerspective annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( clientAPIModule.getWorkbenchPerspectiveClass() ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( ClientAPIModule.getWorkbenchPerspectiveClass() ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

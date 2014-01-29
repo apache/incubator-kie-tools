@@ -50,14 +50,9 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        String identifier = "";
-        boolean isDefault=false;
-        try {
-            identifier = new ClientAPIModule().getWbPerspectiveScreenIdentifierValueOnClass( classElement );
-            isDefault = new ClientAPIModule().getWbPerspectiveScreenIsDefaultValueOnClass(classElement);
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-        }
+        String identifier = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( classElement );
+        boolean isDefault=  ClientAPIModule.getWbPerspectiveScreenIsDefaultValueOnClass( classElement );
+
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,

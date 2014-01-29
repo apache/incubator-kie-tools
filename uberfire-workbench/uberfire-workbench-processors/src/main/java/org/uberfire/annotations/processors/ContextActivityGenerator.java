@@ -51,12 +51,9 @@ public class ContextActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        String identifier = "";
-        try {
-            identifier = new ClientAPIModule().getWbContextIdentifierValueOnClass( classElement );
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-        }
+
+        String identifier =  ClientAPIModule.getWbContextIdentifierValueOnClass( classElement );
+
         final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName( classElement,
                                                                             processingEnvironment );
         final String getOnContextAttachPanelDefinitionMethodName = GeneratorUtils.getOnContextAttachPanelDefinitionMethodName( classElement,

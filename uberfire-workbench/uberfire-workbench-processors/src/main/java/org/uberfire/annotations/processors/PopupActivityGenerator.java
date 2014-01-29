@@ -51,12 +51,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
         final TypeElement classElement = (TypeElement) element;
 
-        String identifier = "";
-        try {
-            identifier = new ClientAPIModule().getWbPopupScreenIdentifierValueOnClass( classElement );
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-        }
+        String identifier = ClientAPIModule.getWbPopupScreenIdentifierValueOnClass( classElement );
 
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );

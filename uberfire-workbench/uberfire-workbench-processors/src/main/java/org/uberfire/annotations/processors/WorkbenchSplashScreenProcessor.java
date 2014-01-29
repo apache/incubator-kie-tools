@@ -71,17 +71,8 @@ public class WorkbenchSplashScreenProcessor extends AbstractProcessor {
             return false;
         }
 
-        //instantiate ClientAPIModule facade
-        ClientAPIModule clientAPIModule;
-        try {
-            clientAPIModule = new ClientAPIModule();
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-            return false;
-        }
-
         //Scan for all classes with the WorkbenchPopup annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( clientAPIModule.getWorkbenchSplashScreenClass() ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( ClientAPIModule.getWorkbenchSplashScreenClass() ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

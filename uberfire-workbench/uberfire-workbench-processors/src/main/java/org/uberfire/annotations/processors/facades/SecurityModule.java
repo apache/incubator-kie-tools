@@ -2,6 +2,8 @@ package org.uberfire.annotations.processors.facades;
 
 import java.lang.annotation.Annotation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
@@ -11,25 +13,28 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
  */
 public class SecurityModule {
 
-    private final Class<? extends Annotation> rolesType;
-    private final Class<? extends Annotation> securityTrait;
+    private static Class<? extends Annotation> rolesType;
+    private static Class<? extends Annotation> securityTrait;
+    private static final Logger logger = LoggerFactory.getLogger( SecurityModule.class );
 
-    public SecurityModule() throws GenerationException {
+    private SecurityModule() {}
+
+    static {
 
         try {
             rolesType = (Class<? extends Annotation>) Class.forName( "org.uberfire.security.annotations.RolesType" );
             securityTrait = (Class<? extends Annotation>) Class.forName( "org.uberfire.security.annotations.SecurityTrait" );
 
         } catch ( ClassNotFoundException e ) {
-            throw new GenerationException( e.getMessage(), e.getCause() );
+            logger.error( e.getMessage() );
         }
     }
 
-    public Class<? extends Annotation> getSecurityTraitClass() {
+    public static Class<? extends Annotation> getSecurityTraitClass() {
         return securityTrait;
     }
 
-    public Class<? extends Annotation> getRolesTypeClass() {
+    public static Class<? extends Annotation> getRolesTypeClass() {
         return rolesType;
     }
 

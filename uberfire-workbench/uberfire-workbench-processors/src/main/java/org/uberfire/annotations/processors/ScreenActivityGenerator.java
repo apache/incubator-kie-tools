@@ -51,12 +51,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        String identifier = "";
-        try {
-            identifier  =new ClientAPIModule().getWbScreenIdentifierValueOnClass( classElement );;
-        } catch ( GenerationException e ) {
-            logger.error( e.getMessage() );
-        }
+        String identifier = ClientAPIModule.getWbScreenIdentifierValueOnClass( classElement );;
+
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
