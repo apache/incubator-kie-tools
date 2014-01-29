@@ -17,9 +17,6 @@
 package org.drools.workbench.screens.guided.rule.backend.server;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -33,7 +30,6 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
@@ -45,7 +41,9 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.backend.file.*;
+import org.kie.workbench.common.services.backend.file.DrlFileFilter;
+import org.kie.workbench.common.services.backend.file.DslFileFilter;
+import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -53,9 +51,7 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -90,16 +86,13 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Identity identity;
-
-    @Inject
     private SessionInfo sessionInfo;
 
     @Inject
     private DataModelService dataModelService;
 
     @Inject
-    private FileDiscoveryService fileDiscoveryService;
+    private GuidedRuleEditorServiceUtilities utilities;
 
     @Inject
     private ProjectService projectService;
@@ -130,7 +123,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             ioService.write( nioPath,
                              toSource( newPath,
                                        model ),
-                             makeCommentedOption( comment ) );
+                             utilities.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -143,8 +136,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public RuleModel load( final Path path ) {
         try {
             final String drl = ioService.readAllString( Paths.convert( path ) );
-            final String[] dsls = loadDslsForPackage( path );
-            final List<String> globals = loadGlobalsForPackage( path );
+            final String[] dsls = utilities.loadDslsForPackage( path );
+            final List<String> globals = utilities.loadGlobalsForPackage( path );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
@@ -180,33 +173,6 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         }
     }
 
-    private String[] loadDslsForPackage( final Path path ) {
-        final List<String> dsls = new ArrayList<String>();
-        final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
-        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
-        final Collection<org.uberfire.java.nio.file.Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                         FILTER_DSLS );
-        for ( final org.uberfire.java.nio.file.Path dslPath : dslPaths ) {
-            final String dslDefinition = ioService.readAllString( dslPath );
-            dsls.add( dslDefinition );
-        }
-        final String[] result = new String[ dsls.size() ];
-        return dsls.toArray( result );
-    }
-
-    private List<String> loadGlobalsForPackage( final Path path ) {
-        final List<String> globals = new ArrayList<String>();
-        final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
-        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
-        final Collection<org.uberfire.java.nio.file.Path> globalPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                            FILTER_GLOBALS );
-        for ( final org.uberfire.java.nio.file.Path globalPath : globalPaths ) {
-            final String globalDefinition = ioService.readAllString( globalPath );
-            globals.add( globalDefinition );
-        }
-        return globals;
-    }
-
     @Override
     public Path save( final Path resource,
                       final RuleModel model,
@@ -221,7 +187,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                              RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
-                             makeCommentedOption( comment ) );
+                             utilities.makeCommentedOption( comment ) );
 
             return resource;
 
@@ -291,22 +257,11 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                                               FILTER_JAVA,
                                               FILTER_GLOBALS,
                                               FILTER_DSLS,
-                                              FILTER_DRL);
+                                              FILTER_DRL );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
 }

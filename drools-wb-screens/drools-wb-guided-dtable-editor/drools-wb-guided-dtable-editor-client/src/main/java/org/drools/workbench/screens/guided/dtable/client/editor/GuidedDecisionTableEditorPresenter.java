@@ -147,7 +147,10 @@ public class GuidedDecisionTableEditorPresenter {
         this.path.onRename( new Command() {
             @Override
             public void execute() {
+                //Effectively the same as reload() but don't reset concurrentUpdateSessionInfo
                 changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
+                view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                loadContent();
             }
         } );
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {

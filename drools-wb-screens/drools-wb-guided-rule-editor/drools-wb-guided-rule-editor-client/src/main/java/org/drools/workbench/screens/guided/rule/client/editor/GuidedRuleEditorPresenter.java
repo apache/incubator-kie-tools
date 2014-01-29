@@ -23,12 +23,10 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.editor.validator.GuidedRuleEditorValidator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
@@ -156,7 +154,10 @@ public class GuidedRuleEditorPresenter {
         this.path.onRename( new Command() {
             @Override
             public void execute() {
+                //Effectively the same as reload() but don't reset concurrentUpdateSessionInfo
                 changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
+                view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                loadContent();
             }
         } );
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
@@ -390,25 +391,25 @@ public class GuidedRuleEditorPresenter {
     }
 
     private void save() {
-        GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator(model, GuidedRuleEditorResources.CONSTANTS);
+        GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator( model, GuidedRuleEditorResources.CONSTANTS );
 
-        if (validator.isValid()) {
-            new SaveOperationService().save(path,
-                    new CommandWithCommitMessage() {
-                        @Override
-                        public void execute(final String commitMessage) {
-                            view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-                            service.call(getSaveSuccessCallback(),
-                                    new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
-                                    view.getContent(),
-                                    metadataWidget.getContent(),
-                                    commitMessage);
-                        }
-                    });
+        if ( validator.isValid() ) {
+            new SaveOperationService().save( path,
+                                             new CommandWithCommitMessage() {
+                                                 @Override
+                                                 public void execute( final String commitMessage ) {
+                                                     view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                     service.call( getSaveSuccessCallback(),
+                                                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                            view.getContent(),
+                                                                                                                            metadataWidget.getContent(),
+                                                                                                                            commitMessage );
+                                                 }
+                                             } );
 
             concurrentUpdateSessionInfo = null;
         } else {
-            ErrorPopup.showMessage(validator.getErrorMessage());
+            ErrorPopup.showMessage( validator.getErrorMessage() );
         }
     }
 

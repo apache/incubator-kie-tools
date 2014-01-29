@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.template.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -28,6 +27,7 @@ import javax.inject.Named;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleEditorServiceUtilities;
 import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleModelVisitor;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
@@ -53,9 +53,7 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -88,9 +86,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Identity identity;
-
-    @Inject
     private SessionInfo sessionInfo;
 
     @Inject
@@ -108,6 +103,9 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     @Inject
     private GuidedRuleTemplateResourceTypeDefinition resourceTypeDefinition;
 
+    @Inject
+    private GuidedRuleEditorServiceUtilities utilities;
+
     public Path create( final Path context,
                         final String fileName,
                         final TemplateModel content,
@@ -123,7 +121,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             ioService.createFile( nioPath );
             ioService.write( nioPath,
                              RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( content ),
-                             makeCommentedOption( comment ) );
+                             utilities.makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -180,7 +178,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             ioService.write( Paths.convert( resource ),
                              RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource, metadata ),
-                             makeCommentedOption( comment ) );
+                             utilities.makeCommentedOption( comment ) );
 
             return resource;
 
@@ -293,17 +291,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
         msg.setLevel( ValidationMessage.Level.WARNING );
         msg.setText( message );
         return msg;
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
 }
