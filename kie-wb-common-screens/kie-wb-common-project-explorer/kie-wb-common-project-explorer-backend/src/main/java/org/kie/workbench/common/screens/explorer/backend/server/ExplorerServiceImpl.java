@@ -26,13 +26,16 @@ import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.collect.Lists;
 import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.CopyHelper;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
+import org.guvnor.common.services.backend.file.RenameHelper;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
@@ -109,6 +112,12 @@ public class ExplorerServiceImpl
 
     @Inject
     private UserServicesBackendImpl userServicesBackend;
+
+    @Inject
+    private Instance<RenameHelper> renameHelpers;
+
+    @Inject
+    private Instance<CopyHelper> copyHelpers;
 
     private XStream xs = new XStream();
 
@@ -753,9 +762,8 @@ public class ExplorerServiceImpl
         final Collection<Path> paths = resolvePath( folderItem );
 
         try {
-            if ( paths.size() > 1 ) {
-                ioService.startBatch();
-            }
+            //Always use a batch as RenameHelpers may be involved with the rename operation
+            ioService.startBatch();
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -776,12 +784,21 @@ public class ExplorerServiceImpl
                                                          identity.getName(),
                                                          null,
                                                          comment ) );
+
+                    //Delegate additional changes required for a rename to applicable Helpers
+                    if ( _target != null ) {
+                        final Path targetPath = Paths.convert( _target );
+                        for ( RenameHelper helper : renameHelpers ) {
+                            if ( helper.supports( targetPath ) ) {
+                                helper.postProcess( path,
+                                                    targetPath );
+                            }
+                        }
+                    }
                 }
             }
 
-            if ( paths.size() > 1 ) {
-                ioService.endBatch();
-            }
+            ioService.endBatch();
 
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -795,9 +812,8 @@ public class ExplorerServiceImpl
         final Collection<Path> paths = resolvePath( folderItem );
 
         try {
-            if ( paths.size() > 1 ) {
-                ioService.startBatch();
-            }
+            //Always use a batch as CopyHelpers may be involved with the rename operation
+            ioService.startBatch();
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -818,12 +834,21 @@ public class ExplorerServiceImpl
                                                          identity.getName(),
                                                          null,
                                                          comment ) );
+
+                    //Delegate additional changes required for a copy to applicable Helpers
+                    if ( _target != null ) {
+                        final Path targetPath = Paths.convert( _target );
+                        for ( CopyHelper helper : copyHelpers ) {
+                            if ( helper.supports( targetPath ) ) {
+                                helper.postProcess( path,
+                                                    targetPath );
+                            }
+                        }
+                    }
                 }
             }
 
-            if ( paths.size() > 1 ) {
-                ioService.endBatch();
-            }
+            ioService.endBatch();
 
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
