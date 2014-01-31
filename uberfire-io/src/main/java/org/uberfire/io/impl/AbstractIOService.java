@@ -16,11 +16,6 @@
 
 package org.uberfire.io.impl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.java.nio.file.StandardOpenOption.CREATE_NEW;
-import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static org.uberfire.java.nio.file.StandardOpenOption.WRITE;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -73,9 +68,12 @@ import org.uberfire.java.nio.security.SecurityAware;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.java.nio.file.StandardOpenOption.*;
+
 public abstract class AbstractIOService implements IOServiceIdentifiable {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractIOService.class);
+    private static final Logger logger = LoggerFactory.getLogger( AbstractIOService.class );
 
     protected static final String DEFAULT_SERVICE_NAME = "default";
 
@@ -239,7 +237,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         try {
             return registerFS( FileSystems.getFileSystem( uri ), DEFAULT_FS_TYPE );
         } catch ( final Exception ex ) {
-            logger.warn("Failed to register filesystem " + uri + " with DEFAULT_FS_TYPE. Returning null.", ex);
+            logger.warn( "Failed to register filesystem " + uri + " with DEFAULT_FS_TYPE. Returning null.", ex );
             return null;
         }
     }
@@ -479,15 +477,11 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     @Override
     public String readAllString( final Path path,
                                  final Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException {
-        final List<String> result = Files.readAllLines( path, cs );
-        if ( result == null ) {
+        final byte[] result = Files.readAllBytes( path );
+        if ( result == null && result.length < 0 ) {
             return "";
         }
-        final StringBuilder sb = new StringBuilder();
-        for ( final String s : result ) {
-            sb.append( s ).append( '\n' );
-        }
-        return sb.toString();
+        return new String( result, cs );
     }
 
     @Override

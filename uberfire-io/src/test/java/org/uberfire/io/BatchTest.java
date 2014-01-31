@@ -73,7 +73,7 @@ public class BatchTest {
         final VersionAttributeView vinit = ioService.getFileAttributeView( init, VersionAttributeView.class );
         final VersionAttributeView vinit2 = ioService.getFileAttributeView( init, VersionAttributeView.class );
 
-        assertEquals( "init 2!\n", ioService.readAllString( init ) );
+        assertEquals( "init 2!", ioService.readAllString( init ) );
 
         assertNotNull( vinit );
         assertEquals( 2, vinit.readAttributes().history().records().size() );

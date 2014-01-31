@@ -56,7 +56,7 @@ public class OpenCloseTest {
         }
 
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
-        assertEquals( "init!\n", ioService.readAllString( init ) );
+        assertEquals( "init!", ioService.readAllString( init ) );
 
         init = ioService.get( URI.create( "git://open-close-repo-test/readme.txt" ) );
         ioService.delete( init.getFileSystem().getPath( null ) );
