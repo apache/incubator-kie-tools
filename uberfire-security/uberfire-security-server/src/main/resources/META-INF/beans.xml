@@ -12,4 +12,10 @@
     <weld:exclude name="org.uberfire.security.server.auth.impl.SimpleUserPassAuthenticationManager"/>
     <weld:exclude name="org.uberfire.backend.server.security.RepositoryAuthorizationManager"/>
   </weld:scan>
+
+  <interceptors>
+    <class>org.uberfire.security.server.authz.cdi.RolesInterceptor</class>
+    <class>org.uberfire.security.server.authz.cdi.TraitInterceptor</class>
+  </interceptors>
+
 </beans>

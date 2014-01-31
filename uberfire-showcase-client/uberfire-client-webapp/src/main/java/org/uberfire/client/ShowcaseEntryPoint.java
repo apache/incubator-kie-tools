@@ -124,6 +124,7 @@ public class ShowcaseEntryPoint {
             } else {
                 name = IOC.getBeanManager().lookupBean( _menuItem.getBeanClass() ).getName();
             }
+            names.add( name );
         }
 
         Collections.sort( names );
