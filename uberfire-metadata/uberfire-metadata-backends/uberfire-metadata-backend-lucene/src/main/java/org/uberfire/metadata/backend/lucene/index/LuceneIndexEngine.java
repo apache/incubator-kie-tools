@@ -128,12 +128,12 @@ public class LuceneIndexEngine implements MetaIndexEngine {
 
     @Override
     public void rename( final KObjectKey from,
-                        final KObjectKey to ) {
+                        final KObject to ) {
         checkNotNull( "from", from );
         checkNotNull( "to", to );
-        checkCondition( "renames are allowed only from same cluster", !from.getClusterId().equals( to.getClusterId() ) );
+        checkCondition( "renames are allowed only from same cluster", from.getClusterId().equals( to.getClusterId() ) );
         final LuceneIndex index = indexManager.indexOf( from );
-        index.rename( from.getId(), to.getId() );
+        index.rename( from.getId(), newDocument( to ) );
 
         commitIfNotBatchMode( index.getCluster() );
     }

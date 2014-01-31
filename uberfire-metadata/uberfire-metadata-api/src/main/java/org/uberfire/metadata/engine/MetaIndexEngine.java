@@ -33,7 +33,7 @@ public interface MetaIndexEngine {
     void index( final KObject... objects );
 
     void rename( final KObjectKey from,
-                 final KObjectKey to );
+                 final KObject to );
 
     void delete( final KCluster cluster );
 

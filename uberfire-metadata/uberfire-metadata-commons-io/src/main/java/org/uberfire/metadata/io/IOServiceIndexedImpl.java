@@ -197,7 +197,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                 }
                             }
                             if ( object.kind() == StandardWatchEventKind.ENTRY_RENAME ) {
-                                indexEngine.rename( KObjectUtil.toKObjectKey( context.getOldPath() ), KObjectUtil.toKObjectKey( context.getPath() ) );
+                                indexEngine.rename( KObjectUtil.toKObjectKey( context.getOldPath() ), KObjectUtil.toKObject( context.getPath() ) );
                             }
                             if ( object.kind() == StandardWatchEventKind.ENTRY_DELETE ) {
                                 indexEngine.delete( KObjectUtil.toKObjectKey( context.getOldPath() ) );

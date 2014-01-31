@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.index.DocsEnum;
@@ -67,18 +65,14 @@ public abstract class BaseLuceneIndex implements LuceneIndex {
 
     @Override
     public void rename( final String sourceId,
-                        final String targetId ) {
+                        final Document doc ) {
         final IndexSearcher searcher = nrtSearcher();
         try {
             int docId = lookupDocIdByPK( searcher, sourceId )[ 0 ];
             if ( docId != -1 ) {
-                final Document source = searcher.getIndexReader().document( docId );
-
-                source.removeField( "id" );
-                source.add( new StringField( "id", targetId, Field.Store.YES ) );
-
-                indexDocument( sourceId, source );
+                writer().tryDeleteDocument( searcher.getIndexReader(), docId );
             }
+            indexDocument( sourceId, doc );
         } catch ( IOException ex ) {
         } finally {
             nrtRelease( searcher );

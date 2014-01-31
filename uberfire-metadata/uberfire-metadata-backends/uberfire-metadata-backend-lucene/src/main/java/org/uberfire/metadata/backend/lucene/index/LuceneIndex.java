@@ -35,8 +35,8 @@ public interface LuceneIndex {
 
     boolean deleteIfExists( final String... ids );
 
-    void rename( final String source,
-                 final String target );
+    void rename( final String sourceId,
+                 final Document doc );
 
     IndexReader nrtReader();
 
