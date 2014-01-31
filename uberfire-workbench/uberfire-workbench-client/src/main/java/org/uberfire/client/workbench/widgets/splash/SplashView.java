@@ -25,7 +25,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.uberfire.client.common.Modal;
+import org.uberfire.client.workbench.widgets.common.Modal;
 import org.uberfire.mvp.ParameterizedCommand;
 
 /**

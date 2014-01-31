@@ -9,19 +9,16 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.plugin.RuntimePluginsService;
-import org.uberfire.client.resources.CommonResources;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class JSNativePlugin {
 
     @Inject
-    protected Caller<RuntimePluginsService> runtimePluginsService;
+    protected RuntimePluginsServiceProxy runtimePluginsService;
 
     protected JavaScriptObject obj;
     protected Element element = null;
@@ -149,16 +146,16 @@ public class JSNativePlugin {
             contentUrl = null;
         }
 
-        element = new SimplePanel( new Image( CommonResources.INSTANCE.images().spinner() ) ).getElement();
+        element = new SimplePanel( new Label( "Loading" ) ).getElement();
         if ( content != null ) {
             element = new HTML( new SafeHtmlBuilder().appendHtmlConstant( content ).toSafeHtml() ).getElement();
         } else if ( contentUrl != null ) {
-            runtimePluginsService.call( new RemoteCallback<String>() {
+            runtimePluginsService.getTemplateContent( contentUrl, new ParameterizedCommand<String>() {
                 @Override
-                public void callback( String content ) {
-                    element = new HTML( new SafeHtmlBuilder().appendHtmlConstant( content ).toSafeHtml() ).getElement();
+                public void execute( String parameter ) {
+                    element = new HTML( new SafeHtmlBuilder().appendHtmlConstant( parameter ).toSafeHtml() ).getElement();
                 }
-            } ).getTemplateContent( contentUrl );
+            } );
         } else {
             element = null;
         }

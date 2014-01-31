@@ -7,22 +7,23 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.BusState;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
-import org.uberfire.backend.plugin.RuntimePluginsService;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.workbench.events.ApplicationReadyEvent;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.events.ApplicationReadyEvent;
 
 import static com.google.gwt.core.client.ScriptInjector.*;
 import static org.jboss.errai.ioc.client.QualifierUtil.*;
@@ -31,27 +32,33 @@ import static org.jboss.errai.ioc.client.QualifierUtil.*;
 public class JSEntryPoint {
 
     @Inject
-    private Caller<RuntimePluginsService> runtimePluginsService;
+    private RuntimePluginsServiceProxy runtimePluginsService;
 
     @Inject
     private Event<ApplicationReadyEvent> appReady;
 
+    @Inject
+    private ClientMessageBus bus;
+
     @PostConstruct
     public void init() {
         publish();
+        if ( ( (ClientMessageBusImpl) bus ).getState() == BusState.LOCAL_ONLY ) {
+            setup();
+        }
     }
 
     @AfterInitialization
     public void setup() {
-        runtimePluginsService.call( new RemoteCallback<Collection<String>>() {
+        runtimePluginsService.listFramworksContent( new ParameterizedCommand<Collection<String>>() {
             @Override
-            public void callback( Collection<String> response ) {
+            public void execute( final Collection<String> response ) {
                 for ( final String s : response ) {
                     ScriptInjector.fromString( s ).setWindow( TOP_WINDOW ).inject();
                 }
-                runtimePluginsService.call( new RemoteCallback<Collection<String>>() {
+                runtimePluginsService.listPluginsContent( new ParameterizedCommand<Collection<String>>() {
                     @Override
-                    public void callback( Collection<String> response ) {
+                    public void execute( final Collection<String> response ) {
                         try {
                             for ( final String s : response ) {
                                 ScriptInjector.fromString( s ).setWindow( TOP_WINDOW ).inject();
@@ -59,11 +66,11 @@ public class JSEntryPoint {
                         } finally {
                             appReady.fire( new ApplicationReadyEvent() );
                         }
-                    }
 
-                } ).listPluginsContent();
+                    }
+                } );
             }
-        } ).listFramworksContent();
+        } );
     }
 
     public static void registerPlugin( final Object _obj ) {

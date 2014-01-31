@@ -27,9 +27,8 @@ import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.ClosePlaceEvent;
-import org.uberfire.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.workbench.events.PlaceLostFocusEvent;
+import org.uberfire.client.workbench.events.ClosePlaceEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
 import com.google.common.collect.ArrayListMultimap;

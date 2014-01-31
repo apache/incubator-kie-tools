@@ -8,11 +8,11 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
-import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.perspective.JSPanelDefinition;
 import org.uberfire.client.perspective.JSPartDefinition;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.ContextDisplayMode;
@@ -25,7 +25,6 @@ import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
-import org.uberfire.workbench.services.WorkbenchServices;
 
 @Dependent
 public class JSNativePerspective {
@@ -37,7 +36,7 @@ public class JSNativePerspective {
     private PlaceManager placeManager;
 
     @Inject
-    private Caller<WorkbenchServices> wbServices;
+    private WorkbenchServicesProxy wbServices;
 
     private JavaScriptObject obj;
 
@@ -262,7 +261,7 @@ public class JSNativePerspective {
         return placeManager;
     }
 
-    public Caller<WorkbenchServices> getWbServices() {
+    public WorkbenchServicesProxy getWbServices() {
         return wbServices;
     }
 }

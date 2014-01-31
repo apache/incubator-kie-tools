@@ -644,18 +644,19 @@
     <module>uberfire-bom</module>
     <module>uberfire-parent-with-dependencies</module>
     <module>uberfire-commons</module>
+    <module>uberfire-api</module>
+    <module>uberfire-client-api</module>
     <module>uberfire-security</module>
     <module>uberfire-nio2-backport</module>
     <module>uberfire-io</module>
     <module>uberfire-metadata</module>
-    <module>uberfire-api</module>
     <module>uberfire-server</module>
-    <module>uberfire-client-api</module>
-    <module>uberfire-workbench</module>
     <module>uberfire-backend</module>
     <module>uberfire-widgets</module>
     <module>uberfire-js</module>
+    <module>uberfire-workbench</module>
     <module>uberfire-showcase</module>
+    <module>uberfire-showcase-client</module>
   </modules>
 
   <!-- IMPORTANT: Do not declare any dependencies here! Declare them in uberfire-parent-with-dependencies. -->

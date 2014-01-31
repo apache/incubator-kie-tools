@@ -19,15 +19,16 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='org.jboss.errai.bus.ErraiBus'/>
+  <inherits name='org.jboss.errai.ioc.Container'/>
 
   <script src="js/uri.min.js"/>
 
+  <source path='backend'/>
   <source path='lifecycle'/>
-  <source path='navigator'/>
   <source path='mvp'/>
   <source path='paging'/>
   <source path='rpc'/>
+  <source path='security'/>
   <source path='workbench'/>
 
   <super-source path="jre"/>

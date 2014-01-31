@@ -13,7 +13,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.security.Identity;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -26,7 +26,7 @@ public class PartContextMenusView
         implements PartContextMenusPresenter.View {
 
     @Inject
-    private RuntimeAuthorizationManager authzManager;
+    private AuthorizationManager authzManager;
 
     @Inject
     private Identity identity;

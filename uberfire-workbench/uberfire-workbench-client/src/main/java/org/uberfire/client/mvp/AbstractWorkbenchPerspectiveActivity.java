@@ -18,17 +18,16 @@ package org.uberfire.client.mvp;
 import java.util.Set;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
-import org.uberfire.workbench.services.WorkbenchServices;
 
 /**
  * Base class for Perspective Activities
@@ -44,7 +43,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     private PlaceManager placeManager;
 
     @Inject
-    private Caller<WorkbenchServices> wbServices;
+    private WorkbenchServicesProxy wbServices;
 
     public AbstractWorkbenchPerspectiveActivity( final PlaceManager placeManager ) {
         super( placeManager );
@@ -103,31 +102,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         return null;
     }
 
-//    //Save the current state of the Workbench
-//    public void saveState() {
-//
-//        onClose();
-//
-//        final PerspectiveDefinition perspective = panelManager.getPerspective();
-//
-//        if ( perspective == null ) {
-//            //On startup the Workbench has not been set to contain a perspective
-//            loadState();
-//
-//        } else if ( perspective.isTransient() ) {
-//            //Transient Perspectives are not saved
-//            loadState();
-//        } else {
-//            //Save first, then close all places before loading persisted state
-//            wbServices.call( new RemoteCallback<Void>() {
-//                @Override
-//                public void callback( Void response ) {
-//                    loadState();
-//                }
-//            } ).save( perspective );
-//        }
-//    }
-
     //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
     private void loadState() {
 
@@ -142,16 +116,16 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
         } else {
 
-            wbServices.call( new RemoteCallback<PerspectiveDefinition>() {
+            wbServices.loadPerspective( perspective.getName(), new ParameterizedCommand<PerspectiveDefinition>() {
                 @Override
-                public void callback( PerspectiveDefinition response ) {
+                public void execute( final PerspectiveDefinition response ) {
                     if ( response == null ) {
                         initialisePerspective( perspective );
                     } else {
                         initialisePerspective( response );
                     }
                 }
-            } ).loadPerspective( perspective.getName() );
+            } );
         }
     }
 

@@ -30,7 +30,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Identity;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Collections.*;
 
@@ -41,7 +41,7 @@ public class ActivityManagerImpl implements ActivityManager {
     private SyncBeanManager iocManager;
 
     @Inject
-    private RuntimeAuthorizationManager authzManager;
+    private AuthorizationManager authzManager;
 
     @Inject
     private ActivityBeansCache activityBeansCache;

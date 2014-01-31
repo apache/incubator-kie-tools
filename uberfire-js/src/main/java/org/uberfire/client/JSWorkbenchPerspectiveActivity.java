@@ -3,9 +3,9 @@ package org.uberfire.client;
 import java.util.Collection;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -136,16 +136,16 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
 
         } else {
 
-            nativePerspective.getWbServices().call( new RemoteCallback<PerspectiveDefinition>() {
+            nativePerspective.getWbServices().loadPerspective( perspective.getName(), new ParameterizedCommand<PerspectiveDefinition>() {
                 @Override
-                public void callback( PerspectiveDefinition response ) {
+                public void execute( final PerspectiveDefinition response ) {
                     if ( response == null ) {
                         initialisePerspective( perspective );
                     } else {
                         initialisePerspective( response );
                     }
                 }
-            } ).loadPerspective( perspective.getName() );
+            } );
         }
     }
 

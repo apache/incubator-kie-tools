@@ -3,10 +3,8 @@ package org.uberfire.client.mvp;
 import javax.enterprise.event.Event;
 
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.PerspectiveChange;
-import org.uberfire.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 

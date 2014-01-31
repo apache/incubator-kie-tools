@@ -22,15 +22,13 @@ import javax.inject.Inject;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.client.workbench.WorkbenchServicesProxy;
+import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.workbench.model.SplashScreenFilter;
-import org.uberfire.workbench.services.WorkbenchServices;
 
 /**
  * Base class for Pop-up Activities
@@ -42,7 +40,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity
     private PlaceManager placeManager;
 
     @Inject
-    private Caller<WorkbenchServices> wbServices;
+    private WorkbenchServicesProxy wbServices;
 
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
@@ -68,23 +66,16 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity
         super.launch( place,
                       callback );
 
-        wbServices.call( new RemoteCallback<SplashScreenFilter>() {
-                             @Override
-                             public void callback( final SplashScreenFilter response ) {
-                                 if ( response != null ) {
-                                     splashFilter = response;
-                                 }
-                                 init();
-                             }
-                         }, new ErrorCallback<Object>() {
-                             @Override
-                             public boolean error( Object o,
-                                                   Throwable throwable ) {
-                                 init();
-                                 return false;
-                             }
-                         }
-                       ).loadSplashScreenFilter( getFilter().getName() );
+        wbServices.loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
+            @Override
+            public void execute( final SplashScreenFilter response ) {
+                if ( response != null ) {
+                    splashFilter = response;
+                }
+                init();
+
+            }
+        } );
     }
 
     public void init() {
@@ -170,7 +161,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity
         showAgain = splash.showAgain();
         if ( showAgain != null ) {
             splashFilter.setDisplayNextTime( showAgain );
-            wbServices.call().save( splashFilter );
+            wbServices.save( splashFilter );
         }
     }
 }

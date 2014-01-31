@@ -7,10 +7,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
-import org.jboss.errai.common.client.api.Caller;
+import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.model.impl.SplashScreenFilterImpl;
-import org.uberfire.workbench.services.WorkbenchServices;
 
 import static java.util.Collections.*;
 
@@ -20,9 +19,9 @@ public class JSNativeSplashScreen extends JSNativePlugin {
     private Integer bodyHeight = null;
 
     @Inject
-    private Caller<WorkbenchServices> wbServices;
+    private WorkbenchServicesProxy wbServices;
 
-    public Caller<WorkbenchServices> getWbServices() {
+    public WorkbenchServicesProxy getWbServices() {
         return wbServices;
     }
 

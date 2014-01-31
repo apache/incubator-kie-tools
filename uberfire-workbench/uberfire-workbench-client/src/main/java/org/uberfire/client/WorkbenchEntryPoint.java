@@ -18,27 +18,21 @@ package org.uberfire.client;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
+import com.github.gwtbootstrap.client.ui.resources.ResourceInjector;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.api.TransportError;
-import org.jboss.errai.bus.client.api.TransportErrorHandler;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.OrganizationalUnitChangeEvent;
 
 @EntryPoint
 public class WorkbenchEntryPoint {
@@ -55,52 +49,24 @@ public class WorkbenchEntryPoint {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
-    private Event<OrganizationalUnitChangeEvent> groupChangedEvent;
-
     private SessionInfo sessionInfo = null;
 
     private final SimplePanel appWidget = new SimplePanel();
 
-    private boolean askRefresh = false;
-
     @PostConstruct
     public void init() {
         appWidget.add( workbench );
+        ResourceInjector.configure();
+        startApp();
     }
 
-    @AfterInitialization
     private void startApp() {
         loadStyles();
         RootLayoutPanel.get().add( appWidget );
 
         //No context by default.. Ensure dependent widgets know about it.
-        groupChangedEvent.fire( new OrganizationalUnitChangeEvent( null ) );
-
         ( (SessionInfoImpl) sessionInfo ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
-
-        bus.addTransportErrorHandler( new TransportErrorHandler() {
-            @Override
-            public void onError( TransportError error ) {
-                if ( askRefresh ) {
-                    return;
-                }
-                if ( error != null && error.getStatusCode() > 400 && error.getStatusCode() < 500 ) {
-                    askRefresh = true;
-                    ErrorPopup.showMessage( "You've been disconnected, click OK to refresh application.", null, new Command() {
-                        @Override
-                        public void execute() {
-                            forceReload();
-                        }
-                    } );
-                }
-            }
-        } );
     }
-
-    private static native void forceReload() /*-{
-        $wnd.location.reload(true);
-    }-*/;
 
     @Produces
     @ApplicationScoped

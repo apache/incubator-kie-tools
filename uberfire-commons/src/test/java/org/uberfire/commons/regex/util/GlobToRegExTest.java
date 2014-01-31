@@ -1,9 +1,8 @@
 package org.uberfire.commons.regex.util;
 
 import org.junit.Test;
-import org.uberfire.commons.regex.util.GlobToRegEx;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  *

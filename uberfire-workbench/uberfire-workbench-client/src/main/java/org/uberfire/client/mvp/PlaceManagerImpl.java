@@ -32,30 +32,28 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.WorkbenchServicesProxy;
+import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
+import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
+import org.uberfire.client.workbench.events.PerspectiveChange;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
+import org.uberfire.client.workbench.events.SavePlaceEvent;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.workbench.events.ClosePlaceEvent;
-import org.uberfire.workbench.events.PerspectiveChange;
-import org.uberfire.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.workbench.events.SavePlaceEvent;
-import org.uberfire.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.services.WorkbenchServices;
 
 import static java.util.Collections.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -86,9 +84,6 @@ public class PlaceManagerImpl
     private Event<NewSplashScreenActiveEvent> newSplashScreenActiveEvent;
 
     @Inject
-    private DefaultPlaceResolver defaultPlaceResolver;
-
-    @Inject
     private ActivityManager activityManager;
 
     @Inject
@@ -101,7 +96,7 @@ public class PlaceManagerImpl
     private PanelManager panelManager;
 
     @Inject
-    private Caller<WorkbenchServices> wbServices;
+    private WorkbenchServicesProxy wbServices;
 
     private Map<String, SplashScreenActivity> activeSplashScreens = new HashMap<String, SplashScreenActivity>();
     private Map<PlaceRequest, Activity> onMayCloseList = new HashMap<PlaceRequest, Activity>();
@@ -240,12 +235,12 @@ public class PlaceManagerImpl
                     public void execute() {
                         final PerspectiveDefinition activePerspective = getPanelManager().getPerspective();
                         if ( activePerspective != null && !activePerspective.isTransient() ) {
-                            wbServices.call( new RemoteCallback<Object>() {
+                            wbServices.save( activePerspective, new Command() {
                                 @Override
-                                public void callback( Object o ) {
+                                public void execute() {
                                     launchActivity.execute();
                                 }
-                            } ).save( activePerspective );
+                            } );
                         } else {
                             launchActivity.execute();
                         }

@@ -21,11 +21,10 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
@@ -48,23 +47,15 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
                         final Command callback ) {
         this.place = place;
 
-        nativeSplashScreen.getWbServices().call( new RemoteCallback<SplashScreenFilter>() {
-                                                     @Override
-                                                     public void callback( final SplashScreenFilter response ) {
-                                                         if ( response != null ) {
-                                                             splashFilter = response;
-                                                         }
-                                                         init();
-                                                     }
-                                                 }, new ErrorCallback<Object>() {
-                                                     @Override
-                                                     public boolean error( Object o,
-                                                                           Throwable throwable ) {
-                                                         init();
-                                                         return false;
-                                                     }
-                                                 }
-                                               ).loadSplashScreenFilter( getFilter().getName() );
+        nativeSplashScreen.getWbServices().loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
+            @Override
+            public void execute( final SplashScreenFilter response ) {
+                if ( response != null ) {
+                    splashFilter = response;
+                }
+                init();
+            }
+        } );
     }
 
     public void init() {
@@ -162,7 +153,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
         showAgain = splash.showAgain();
         if ( showAgain != null ) {
             splashFilter.setDisplayNextTime( showAgain );
-            nativeSplashScreen.getWbServices().call().save( splashFilter );
+            nativeSplashScreen.getWbServices().save( splashFilter );
         }
     }
 

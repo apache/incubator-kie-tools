@@ -9,5 +9,8 @@
   <source path='backend'>
     <exclude name="server/**"/>
   </source>
+  <source path='navigator'/>
+  <source path='workbench'/>
+
 
 </module>

@@ -13,7 +13,7 @@ import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 @Ignore
 public class RepositoryCreationTest {

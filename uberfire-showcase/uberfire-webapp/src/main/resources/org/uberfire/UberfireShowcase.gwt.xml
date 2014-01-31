@@ -8,9 +8,8 @@
 
   <inherits name="org.uberfire.security.UberfireSecurityClient"/>
 
-  <inherits name="org.uberfire.UberfireWorkbench"/>
+  <inherits name="org.uberfire.UberfireWorkbenchBackend"/>
   <inherits name="org.uberfire.UberfireWidgetsCore"/>
-  <inherits name="org.uberfire.UberfireBackend"/>
 
   <inherits name="org.uberfire.UberfireMarkdownWidget"/>
 

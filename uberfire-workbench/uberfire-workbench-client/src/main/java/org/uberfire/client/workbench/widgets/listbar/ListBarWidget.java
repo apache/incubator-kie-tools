@@ -60,7 +60,7 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Identity;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -89,7 +89,7 @@ public class ListBarWidget
     private PanelManager panelManager;
 
     @Inject
-    private RuntimeAuthorizationManager authzManager;
+    private AuthorizationManager authzManager;
 
     @Inject
     private Identity identity;

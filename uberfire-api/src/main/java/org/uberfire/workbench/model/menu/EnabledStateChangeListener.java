@@ -15,8 +15,6 @@
  */
 package org.uberfire.workbench.model.menu;
 
-import com.google.gwt.event.shared.HasHandlers;
-
 /**
  * A Listener for changes in a Widget's enabled state
  */

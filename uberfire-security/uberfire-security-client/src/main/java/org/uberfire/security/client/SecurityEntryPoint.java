@@ -44,7 +44,7 @@ public class SecurityEntryPoint {
     private Identity currentIdentity = null;
 
     @Inject
-    MessageBus bus;
+    private MessageBus bus;
 
     @Produces
     @ApplicationScoped

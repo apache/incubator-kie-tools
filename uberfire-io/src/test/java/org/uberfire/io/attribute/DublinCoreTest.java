@@ -15,7 +15,7 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  *

@@ -22,8 +22,8 @@ import javax.inject.Named;
 
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.workbench.events.MaximizePlaceEvent;
-import org.uberfire.workbench.events.MinimizePlaceEvent;
+import org.uberfire.client.workbench.events.MaximizePlaceEvent;
+import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.

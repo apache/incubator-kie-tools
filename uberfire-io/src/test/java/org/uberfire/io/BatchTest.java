@@ -19,9 +19,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.*;
 
 public class BatchTest {
 

@@ -79,7 +79,7 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-client</artifactId>
+      <artifactId>uberfire-workbench-client-backend</artifactId>
     </dependency>
 
     <dependency>

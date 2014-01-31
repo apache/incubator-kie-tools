@@ -4,13 +4,11 @@ import java.util.HashSet;
 
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
-import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 
 import static org.mockito.Matchers.any;

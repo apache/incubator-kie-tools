@@ -33,6 +33,10 @@
   <description>UberFire API</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
 
     <!-- Errai IoC -->
     <dependency>
@@ -41,19 +45,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-javax-enterprise</artifactId>
+      <artifactId>errai-marshalling</artifactId>
     </dependency>
 
   </dependencies>

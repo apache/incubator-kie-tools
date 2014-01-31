@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.animations.LinearFadeOutAnimation;
+import org.uberfire.client.workbench.widgets.animations.LinearFadeOutAnimation;
 import org.uberfire.workbench.events.NotificationEvent;
 
 /**

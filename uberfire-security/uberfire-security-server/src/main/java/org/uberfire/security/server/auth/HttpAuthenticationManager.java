@@ -50,10 +50,7 @@ import org.uberfire.security.server.HttpSecurityContext;
 import org.uberfire.security.server.cdi.SecurityFactory;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.security.Role.*;
-import static org.uberfire.security.auth.AuthenticationStatus.*;
 
 public class HttpAuthenticationManager implements AuthenticationManager {
 

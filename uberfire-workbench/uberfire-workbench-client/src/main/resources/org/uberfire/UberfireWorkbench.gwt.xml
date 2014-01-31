@@ -12,6 +12,8 @@
   <!-- inherit css based theme -->
   <inherits name='com.google.gwt.user.theme.clean.Clean'/>
 
+  <inherits name="com.github.gwtbootstrap.Bootstrap"/>
+
   <!-- Errai modules -->
   <inherits name="org.jboss.errai.enterprise.CDI"/>
 
@@ -25,10 +27,6 @@
 
   <!-- GuvnorNG API common interfaces -->
   <inherits name="org.uberfire.UberfireClientAPI"/>
-  <inherits name="org.uberfire.UberfireBackend"/>
-  <inherits name="org.uberfire.security.UberfireSecurityAPI"/>
-
-  <inherits name="com.github.gwtbootstrap.Bootstrap"/>
 
   <!-- Google Guava -->
   <inherits name="com.google.common.collect.Collect"/>

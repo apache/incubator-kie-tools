@@ -5,7 +5,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.workbench.events.PerspectiveChange;
+import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped

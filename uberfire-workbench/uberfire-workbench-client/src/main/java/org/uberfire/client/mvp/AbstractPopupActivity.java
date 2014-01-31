@@ -26,8 +26,8 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.workbench.events.ClosePlaceEvent;
+import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
+import org.uberfire.client.workbench.events.ClosePlaceEvent;
 
 /**
  * Base class for Pop-up Activities

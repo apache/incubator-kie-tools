@@ -34,7 +34,7 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
+      <artifactId>uberfire-api</artifactId>
     </dependency>
 
     <dependency>
@@ -47,13 +47,7 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
     </dependency>
-    <!-- in fact should be
-<dependency>
-    <groupId>org.jboss.spec.javax.interceptor</groupId>
-    <artifactId>jboss-interceptors-api_1.1_spec</artifactId>
-    <version>1.0.1.Final</version>
-</dependency>
-     -->
+
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>

@@ -38,23 +38,20 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.events.ApplicationReadyEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
-import org.uberfire.workbench.services.WorkbenchServices;
 
 import static java.util.Collections.*;
 import static org.uberfire.workbench.model.PanelType.*;
@@ -88,10 +85,10 @@ public class Workbench
     private WorkbenchPickupDragController dragController;
 
     @Inject
-    private Caller<WorkbenchServices> wbServices;
+    private WorkbenchServicesProxy wbServices;
 
     @Inject
-    private Caller<VFSService> vfsService;
+    private VFSServiceProxy vfsService;
 
     @PostConstruct
     public void setup() {
@@ -176,12 +173,7 @@ public class Workbench
             public void onWindowClosing( ClosingEvent event ) {
                 final PerspectiveDefinition perspective = panelManager.getPerspective();
                 if ( perspective != null ) {
-                    wbServices.call( new RemoteCallback<Void>() {
-                        @Override
-                        public void callback( Void response ) {
-                            //Nothing to do. Window is closing.
-                        }
-                    } ).save( perspective );
+                    wbServices.save( perspective );
                 }
             }
 
@@ -209,16 +201,16 @@ public class Workbench
             placeManager.goTo( new DefaultPlaceRequest( parameters.get( "perspective" ).get( 0 ) ) );
         } else if ( parameters.containsKey( "path" ) && !parameters.get( "path" ).isEmpty() ) {
             placeManager.goTo( new DefaultPlaceRequest( "StandaloneEditorPerspective" ) );
-            vfsService.call( new RemoteCallback<Path>() {
+            vfsService.get( parameters.get( "path" ).get( 0 ), new ParameterizedCommand<Path>() {
                 @Override
-                public void callback( Path response ) {
+                public void execute( final Path response ) {
                     if ( parameters.containsKey( "editor" ) && !parameters.get( "editor" ).isEmpty() ) {
                         placeManager.goTo( new PathPlaceRequest( response, parameters.get( "editor" ).get( 0 ) ) );
                     } else {
                         placeManager.goTo( new PathPlaceRequest( response ) );
                     }
                 }
-            } ).get( parameters.get( "path" ).get( 0 ) );
+            } );
         }
     }
 
