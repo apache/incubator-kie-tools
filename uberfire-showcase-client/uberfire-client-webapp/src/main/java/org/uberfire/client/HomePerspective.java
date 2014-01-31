@@ -26,13 +26,6 @@ public class HomePerspective {
                 new PartDefinitionImpl(
                         new DefaultPlaceRequest( "HelloWorldScreen" ) ) );
 
-//        PanelDefinitionImpl westPanel = new PanelDefinitionImpl( PanelType.MULTI_LIST );
-//        p.getRoot().insertChild( Position.WEST, westPanel );
-//        westPanel.setWidth( 250 );
-//        westPanel.addPart(
-//                new PartDefinitionImpl(
-//                        new DefaultPlaceRequest( MoodScreen.class.getName() ) ) );
-
         return p;
     }
 

@@ -70,23 +70,6 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
-    private List<String> menuItemsToRemove = new ArrayList<String>() {{
-        add( "IFrameScreen" );
-        add( "IPInfoGadget" );
-        add( "MarkdownLiveEditor" );
-        add( "MarkdownLiveViewer" );
-        add( "RepositoriesEditor" );
-        add( "RepositoryEditor" );
-        add( "SportsNewsGadget" );
-        add( "StockQuotesGadget" );
-        add( "TodoListScreen" );
-        add( "WeatherGadget" );
-        add( "YouTubeScreen" );
-        add( "YouTubeVideos" );
-        add( "chartPopulator" );
-        add( "welcome" );
-    }};
-
     @Inject
     private ClientMessageBus bus;
 
@@ -140,10 +123,6 @@ public class ShowcaseEntryPoint {
                 name = _menuItem.getName();
             } else {
                 name = IOC.getBeanManager().lookupBean( _menuItem.getBeanClass() ).getName();
-            }
-
-            if ( !menuItemsToRemove.contains( name ) ) {
-                names.add( name );
             }
         }
 

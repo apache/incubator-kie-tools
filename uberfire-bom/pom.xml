@@ -337,6 +337,20 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
+
+      <!-- UberFire Unified Client Library -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-client-all</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-client-all</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

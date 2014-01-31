@@ -655,6 +655,7 @@
     <module>uberfire-widgets</module>
     <module>uberfire-js</module>
     <module>uberfire-workbench</module>
+    <module>uberfire-client-all</module>
     <module>uberfire-showcase</module>
     <module>uberfire-showcase-client</module>
   </modules>
