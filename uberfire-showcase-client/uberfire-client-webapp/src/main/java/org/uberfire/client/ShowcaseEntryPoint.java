@@ -75,10 +75,6 @@ public class ShowcaseEntryPoint {
 
     @PostConstruct
     public void startApp() {
-        //TODO: hack needed in order to be able to workaround AfterInitialization methods not executed!
-        //see JSEntryPoint PostConstruct IF
-        ( (ClientMessageBusImpl) bus ).setState( BusState.LOCAL_ONLY );
-
         UberFirePreferences.setProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable", true );
         //todo {porcelli} context button navigator style is broken, disabling for now
         UberFirePreferences.setProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable", true );

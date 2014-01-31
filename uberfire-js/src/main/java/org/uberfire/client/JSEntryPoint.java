@@ -43,9 +43,6 @@ public class JSEntryPoint {
     @PostConstruct
     public void init() {
         publish();
-        if ( ( (ClientMessageBusImpl) bus ).getState() == BusState.LOCAL_ONLY ) {
-            setup();
-        }
     }
 
     @AfterInitialization
