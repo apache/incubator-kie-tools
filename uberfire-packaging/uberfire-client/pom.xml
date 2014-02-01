@@ -21,16 +21,15 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-parent-with-dependencies</artifactId>
+    <artifactId>uberfire-packaging</artifactId>
     <version>0.4.0-SNAPSHOT</version>
-    <relativePath>../uberfire-parent-with-dependencies/pom.xml</relativePath>
   </parent>
 
-  <artifactId>uberfire-client-all</artifactId>
+  <artifactId>uberfire-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>UberFire All Client Libraries</name>
-  <description>UberFire All Client Libraries</description>
+  <name>UberFire Client Only Libraries</name>
+  <description>UberFire Client Only Libraries</description>
 
   <dependencies>
     <dependency>
@@ -56,12 +55,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 

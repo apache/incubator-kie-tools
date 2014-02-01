@@ -19,12 +19,12 @@ package org.uberfire.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.api.TransportError;
 import org.jboss.errai.bus.client.api.TransportErrorHandler;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.workbench.widgets.common.ErrorPopup;
+import org.uberfire.mvp.Command;
 
 @EntryPoint
 public class WorkbenchBackendEntryPoint {

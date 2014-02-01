@@ -584,7 +584,7 @@
     </plugins>
 
   </build>
-  
+
   <reporting>
     <plugins>
       <plugin>
@@ -610,7 +610,7 @@
         <module>uberfire-distro</module>
       </modules>
     </profile>
-    
+
     <profile>
       <id>graph</id>
       <pluginRepositories>
@@ -628,11 +628,11 @@
             <groupId>org.fusesource.mvnplugins</groupId>
             <artifactId>maven-graph-plugin</artifactId>
             <version>1.10</version>
-    
+
             <configuration>
               <hideExternal>true</hideExternal>
             </configuration>
-    
+
           </plugin>
         </plugins>
       </build>
@@ -655,9 +655,8 @@
     <module>uberfire-widgets</module>
     <module>uberfire-js</module>
     <module>uberfire-workbench</module>
-    <module>uberfire-client-all</module>
+    <module>uberfire-packaging</module>
     <module>uberfire-showcase</module>
-    <module>uberfire-showcase-client</module>
   </modules>
 
   <!-- IMPORTANT: Do not declare any dependencies here! Declare them in uberfire-parent-with-dependencies. -->

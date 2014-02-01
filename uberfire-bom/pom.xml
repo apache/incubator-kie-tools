@@ -338,7 +338,29 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- UberFire Unified Client Library -->
+      <!-- UberFire Packaging -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-client</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-client-backend</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-client-backend</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-client-all</artifactId>
@@ -349,6 +371,22 @@
         <artifactId>uberfire-client-all</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-server-all</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-all</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-all</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
     </dependencies>

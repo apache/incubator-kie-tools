@@ -24,14 +24,16 @@
     <relativePath>../uberfire-parent-with-dependencies/pom.xml</relativePath>
   </parent>
 
-  <artifactId>uberfire-showcase</artifactId>
+  <artifactId>uberfire-packaging</artifactId>
   <packaging>pom</packaging>
 
-  <name>UberFire Showcase</name>
+  <name>UberFire Packaging</name>
 
   <modules>
-    <module>uberfire-client-webapp</module>
-    <module>uberfire-webapp</module>
-    <module>showcase-distribution-wars</module>
+    <module>uberfire-client</module>
+    <module>uberfire-client-backend</module>
+    <module>uberfire-client-all</module>
+    <module>uberfire-server-all</module>
+    <module>uberfire-all</module>
   </modules>
 </project>

@@ -21,11 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.resources.ResourceInjector;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
@@ -56,15 +56,13 @@ public class WorkbenchEntryPoint {
     @PostConstruct
     public void init() {
         appWidget.add( workbench );
-        ResourceInjector.configure();
-        startApp();
     }
 
+    @AfterInitialization
     private void startApp() {
         loadStyles();
         RootLayoutPanel.get().add( appWidget );
 
-        //No context by default.. Ensure dependent widgets know about it.
         ( (SessionInfoImpl) sessionInfo ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
     }
 
