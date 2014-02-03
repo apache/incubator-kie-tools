@@ -419,7 +419,6 @@ public class ProjectResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/deploy")
     public JobRequest deployProject(
