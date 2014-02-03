@@ -2,7 +2,7 @@
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
 
   <kbase name="workflow">
-    <ksession name="ksession1"/>
+    <ksession name="ksession1" default="true"/>
   </kbase>
 
 </kmodule>
