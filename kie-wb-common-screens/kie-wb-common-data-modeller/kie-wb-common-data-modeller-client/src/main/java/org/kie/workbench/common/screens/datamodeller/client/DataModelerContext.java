@@ -41,9 +41,9 @@ public class DataModelerContext {
 
     private boolean dirty = false;
 
-    private boolean DMOInvalidated = false;
-
     private InvalidateDMOProjectCacheEvent lastDMOUpdate;
+
+    private InvalidateDMOProjectCacheEvent lastJavaFileChangeEvent;
 
     private List<String> currentProjectPackages = new ArrayList<String>();
 
@@ -94,19 +94,23 @@ public class DataModelerContext {
     }
 
     public boolean isDMOInvalidated() {
-        return DMOInvalidated;
-    }
-
-    public void setDMOInvalidated(boolean DMOInvalidated) {
-        this.DMOInvalidated = DMOInvalidated;
+        return lastDMOUpdate != null || lastJavaFileChangeEvent != null;
     }
 
     public InvalidateDMOProjectCacheEvent getLastDMOUpdate() {
-        return lastDMOUpdate;
+        return lastDMOUpdate == null ? getLastJavaFileChangeEvent() : lastDMOUpdate;
     }
 
     public void setLastDMOUpdate(InvalidateDMOProjectCacheEvent lastDMOUpdate) {
         this.lastDMOUpdate = lastDMOUpdate;
+    }
+
+    public InvalidateDMOProjectCacheEvent getLastJavaFileChangeEvent() {
+        return lastJavaFileChangeEvent;
+    }
+
+    public void setLastJavaFileChangeEvent(InvalidateDMOProjectCacheEvent lastJavaFileChangeEvent) {
+        this.lastJavaFileChangeEvent = lastJavaFileChangeEvent;
     }
 
     public void appendPackages(Collection<Package> packages) {
@@ -146,6 +150,6 @@ public class DataModelerContext {
         cleanPackages();
         helper = new DataModelHelper();
         setLastDMOUpdate(null);
-        setDMOInvalidated(false);
+        setLastJavaFileChangeEvent(null);
     }
 }

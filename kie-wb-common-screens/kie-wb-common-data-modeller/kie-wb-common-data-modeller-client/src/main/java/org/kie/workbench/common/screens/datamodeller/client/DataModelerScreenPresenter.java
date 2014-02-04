@@ -29,6 +29,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.NewDataObjectPopup;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelReload;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
@@ -55,7 +56,7 @@ import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.*;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -278,8 +279,8 @@ public class DataModelerScreenPresenter {
                     restoreModelStatus( result );
                     Boolean oldDirtyStatus = getContext().isDirty();
                     getContext().setDirty( false );
-                    getContext().setDMOInvalidated(false);
-                    getContext().setLastDMOUpdate(null);
+                    getContext().setLastDMOUpdate( null );
+                    getContext().setLastJavaFileChangeEvent( null );
                     notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
 
                     if ( changeProject != null ) {
@@ -322,8 +323,8 @@ public class DataModelerScreenPresenter {
                                         BusyPopup.close();
 
                                         getContext().setDirty( false );
-                                        getContext().setDMOInvalidated(false);
                                         getContext().setLastDMOUpdate(null);
+                                        getContext().setLastJavaFileChangeEvent(null);
 
                                         dataModel.setParentProjectName( projectRootPath.getFileName() );
                                         setDataModel( dataModel );
@@ -405,6 +406,108 @@ public class DataModelerScreenPresenter {
         if (event.isFrom(getDataModel())) {
             //Some of the related widgets has sent this event in order to re-load the model.
             reload();
+        }
+    }
+
+    private void onResourceAdded(@Observes  final ResourceAddedEvent resourceAddedEvent) {
+        processExternalFileChange(resourceAddedEvent.getSessionInfo(), resourceAddedEvent);
+    }
+
+    private void onResourceRenamed(@Observes final ResourceRenamedEvent resourceRenamedEvent) {
+        processExternalFileChange(resourceRenamedEvent.getSessionInfo(), resourceRenamedEvent);
+    }
+
+    private void onResourceDeleted(@Observes final ResourceDeletedEvent resourceDeletedEvent) {
+        processExternalFileChange(resourceDeletedEvent.getSessionInfo(), resourceDeletedEvent);
+    }
+
+    private void onResourceUpdated(@Observes final ResourceUpdatedEvent resourceUpdatedEvent) {
+        processExternalFileChange(resourceUpdatedEvent.getSessionInfo(), resourceUpdatedEvent);
+    }
+
+    private void onResourceCopied(@Observes final ResourceCopiedEvent resourceCopiedEvent) {
+        processExternalFileChange(resourceCopiedEvent.getSessionInfo(), resourceCopiedEvent);
+    }
+
+    private void processExternalFileChange(SessionInfo evtSessionInfo, ResourceEvent resourceEvent) {
+        if (sessionInfo.equals(evtSessionInfo) && resourceEvent.getPath().getFileName().endsWith(".java")
+            && currentProject != null && resourceEvent.getPath().toURI().startsWith(currentProject.getRootPath().toURI())) {
+
+            boolean notifyChange = false;
+            Path path = null;
+
+            if (resourceEvent instanceof ResourceRenamedEvent || resourceEvent instanceof ResourceCopiedEvent) {
+                //datamodeller never generates these events
+                path = resourceEvent instanceof ResourceRenamedEvent ? ((ResourceRenamedEvent)resourceEvent).getDestinationPath() : ((ResourceCopiedEvent)resourceEvent).getDestinationPath();
+                notifyChange = true;
+            } else if (resourceEvent instanceof ResourceAddedEvent) {
+                path = resourceEvent.getPath();
+                if (getDataModel() != null) {
+                    String className = DataModelerUtils.calculateExpectedClassName(currentProject.getRootPath(), resourceEvent.getPath());
+                    if (className != null) {
+                        DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName(className);
+                        if (dataObjectTO == null || !dataObjectTO.isPersistent()) {
+                            notifyChange = true;
+                        }
+                    }
+                }
+            } else if (resourceEvent instanceof ResourceDeletedEvent) {
+                path = resourceEvent.getPath();
+                if (getDataModel() != null) {
+                    String className = DataModelerUtils.calculateExpectedClassName(currentProject.getRootPath(), resourceEvent.getPath());
+                    if (className != null) {
+                        DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName(className);
+                        if (dataObjectTO != null) {
+                            notifyChange = true;
+                        } else {
+                            for (DataObjectTO deletedObject : getDataModel().getDeletedDataObjects()) {
+                                if (className.equals(deletedObject.getClassName())) {
+                                    notifyChange = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (resourceEvent instanceof ResourceUpdatedEvent) {
+                modelerService.call( new FileVerificationRemoteCallback(evtSessionInfo, resourceEvent.getPath()),
+                        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).verifiesHash(resourceEvent.getPath());
+            }
+
+            if (notifyChange) {
+                InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo, currentProject, path);
+                getContext().setLastJavaFileChangeEvent(event);
+                if (getContext().isDirty()) {
+                    notifyExternalDMOChange(event);
+                }
+            }
+        }
+    }
+
+    private class FileVerificationRemoteCallback implements RemoteCallback<Boolean> {
+
+        private SessionInfo sessionInfo;
+
+        private Path path;
+
+        private FileVerificationRemoteCallback() {
+        }
+
+        public FileVerificationRemoteCallback(SessionInfo sessionInfo, Path path) {
+            this.sessionInfo = sessionInfo;
+            this.path = path;
+        }
+
+        @Override
+        public void callback(Boolean verifiesHash) {
+            if (!verifiesHash) {
+                InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo, currentProject, path);
+                getContext().setLastJavaFileChangeEvent(event);
+
+                if (getContext().isDirty()) {
+                    notifyExternalDMOChange(event);
+                }
+            }
         }
     }
 
@@ -496,6 +599,7 @@ public class DataModelerScreenPresenter {
         //filter if the event is related to current project
         if (currentProject != null && currentProject.getRootPath().equals( evt.getProject().getRootPath() ) && sessionInfo != null ) {
 
+
             if (!sessionInfo.equals(evt.getSessionInfo())
                     || isDMOChangeSensitivePath(evt.getResourcePath()) ) {
                 //the project data model oracle was changed because of another user different than me OR
@@ -503,7 +607,6 @@ public class DataModelerScreenPresenter {
                 //likely in the project editor.
 
                 //current project DMO was concurrently modified.
-                getContext().setDMOInvalidated(true);
                 getContext().setLastDMOUpdate(evt);
 
                 if (getContext().isDirty()) {
@@ -511,7 +614,6 @@ public class DataModelerScreenPresenter {
                 }
             } else {
                 //the event was generated when I saved the model
-                getContext().setDMOInvalidated(false);
                 getContext().setLastDMOUpdate(null);
             }
         }
@@ -523,8 +625,7 @@ public class DataModelerScreenPresenter {
          path.getFileName().endsWith(".drl") ||
          path.getFileName().equals("kmodule.xml") ||
          path.getFileName().equals("project.imports") ||
-         path.getFileName().equals("import.suggestions")
-        );
+         path.getFileName().equals("import.suggestions") );
     }
 
     private void notifyExternalDMOChange(InvalidateDMOProjectCacheEvent evt) {
@@ -557,15 +658,6 @@ public class DataModelerScreenPresenter {
         getDataModel().setPersistedStatus( false );
         getDataModel().updateFingerPrints( result.getObjectFingerPrints() );
     }
-
-    /*
-    private boolean isOnCurrentProject(Package pkg) {
-        if (currentProject != null) {
-            return currentProject.getRootPath().equals(pkg.getProjectRootPath());
-        }
-        return false;
-    }
-    */
 
     private void showReadonlyStateInfo() {
         final DataModelTO dataModelTO = getDataModel();

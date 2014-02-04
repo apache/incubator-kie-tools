@@ -46,4 +46,6 @@ public interface DataModelerService {
 
     Map<String, AnnotationDefinitionTO> getAnnotationDefinitions();
 
+    Boolean verifiesHash(Path javaFile);
+
 }

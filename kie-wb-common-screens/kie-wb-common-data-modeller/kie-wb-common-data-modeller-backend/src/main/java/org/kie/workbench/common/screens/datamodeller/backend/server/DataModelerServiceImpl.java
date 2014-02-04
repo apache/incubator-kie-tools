@@ -241,6 +241,24 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
+    public Boolean verifiesHash(Path javaFile) {
+        if (javaFile == null) return false;
+        org.uberfire.java.nio.file.Path filePath = Paths.convert(javaFile);
+        String content;
+        String expectedHashValue;
+
+        content = ioService.readAllString(filePath);
+        content = content != null ? content.trim() : null;
+
+        if (content == null) return false;
+
+        expectedHashValue = FileHashingUtils.extractFileHashValue(content);
+        if (expectedHashValue != null) {
+            return FileHashingUtils.verifiesHash(content, expectedHashValue);
+        }
+        return false;
+    }
+
     private void mergeWithExistingModel( DataModelTO dataModel,
                                          Project project ) {
 

@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
+import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.uberfire.backend.vfs.Path;
 
 import java.util.List;
 
@@ -234,4 +236,21 @@ public class DataModelerUtils {
         }
     }
 
+    public static String calculateExpectedClassName(Path projectRootPath, Path javaFilePath) {
+        if (projectRootPath == null || javaFilePath == null) return null;
+        return calculateExpectedClassName(projectRootPath.toURI(), javaFilePath.toURI());
+    }
+
+    public static String calculateExpectedClassName(String projectRootPathUri, String javaFilePathUri) {
+        String srcPathStrUri = projectRootPathUri + "/src/main/java/";
+        if (!javaFilePathUri.startsWith(srcPathStrUri)) return null;
+
+        javaFilePathUri = javaFilePathUri.substring(srcPathStrUri.length(), javaFilePathUri.length());
+
+        int extensionIndex = javaFilePathUri.lastIndexOf(".java");
+        if (extensionIndex <= 0) return null;
+
+        javaFilePathUri = javaFilePathUri.substring(0, extensionIndex);
+        return javaFilePathUri.replaceAll("/", ".");
+    }
 }
