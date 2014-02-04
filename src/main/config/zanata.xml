@@ -6,9 +6,9 @@
   <project-type>utf8properties</project-type>
 
   <locales>
-    <locale map-from="es_ES">es</locale>
-    <locale map-from="fr_FR">fr</locale>
-    <locale map-from="ja_JP">ja</locale>
+    <locale >es</locale>
+    <locale >fr</locale>
+    <locale >ja</locale>
     <locale>de</locale>
     <locale>pt-BR</locale>
     <locale map-from="zh_CN">zh-Hans</locale>
