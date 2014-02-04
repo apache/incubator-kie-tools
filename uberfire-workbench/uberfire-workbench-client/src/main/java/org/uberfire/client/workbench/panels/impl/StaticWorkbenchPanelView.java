@@ -30,6 +30,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 
 /**
@@ -41,9 +42,9 @@ public class StaticWorkbenchPanelView
         extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
 
     @Inject
-    private PlaceManager placeManager;
+    PlaceManager placeManager;
 
-    private StaticFocusedResizePanel panel = new StaticFocusedResizePanel();
+    StaticFocusedResizePanel panel = new StaticFocusedResizePanel();
 
     public StaticWorkbenchPanelView() {
 
@@ -84,7 +85,7 @@ public class StaticWorkbenchPanelView
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
         if ( panel.getPartView() != null ) {
-            placeManager.tryClosePlace( panel.getPartView().getPresenter().getDefinition().getPlace(), new Command() {
+            placeManager.tryClosePlace( getPlaceOfPartView(), new Command() {
                 @Override
                 public void execute() {
                     panel.setPart( view );
@@ -93,6 +94,10 @@ public class StaticWorkbenchPanelView
         } else {
             panel.setPart( view );
         }
+    }
+
+    PlaceRequest getPlaceOfPartView() {
+        return panel.getPartView().getPresenter().getDefinition().getPlace();
     }
 
     @Override
@@ -134,7 +139,11 @@ public class StaticWorkbenchPanelView
             setPixelSize( width, height );
             presenter.onResize( width, height );
             panel.setPixelSize( width, height );
-            super.onResize();
+            resizeSuper();
         }
+    }
+
+    void resizeSuper() {
+        super.onResize();
     }
 }

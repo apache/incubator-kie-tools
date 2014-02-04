@@ -95,59 +95,29 @@ public class WorkbenchMenuBarView extends Composite
             }
         }
     }
-
-    private Widget makeItem( final MenuItem item ) {
-        if ( !authzManager.authorize( item, identity ) ) {
+    //TODO ederign maybe this methods should go to another class
+    Widget makeItem( final MenuItem item ) {
+        if ( notHavePermissionToMakeThis( item ) ) {
             return null;
         }
 
         if ( item instanceof MenuItemCommand ) {
-            final MenuItemCommand cmdItem = (MenuItemCommand) item;
-            final Widget gwtItem;
 
-            gwtItem = new NavLink( cmdItem.getCaption() ) {{
-                setDisabled( !item.isEnabled() );
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                        cmdItem.getCommand().execute();
-                    }
-                } );
-            }};
-            item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
-                @Override
-                public void enabledStateChanged( final boolean enabled ) {
-                    ( (NavLink) gwtItem ).setDisabled( !enabled );
-                }
-            } );
-
-            return gwtItem;
+            return makeMenuItemCommand( item );
 
         } else if ( item instanceof MenuGroup ) {
-            final MenuGroup groups = (MenuGroup) item;
-            final List<Widget> widgetList = new ArrayList<Widget>();
-            for ( final MenuItem _item : groups.getItems() ) {
-                final Widget result = makeItem( _item );
-                if ( result != null ) {
-                    widgetList.add( result );
-                }
-            }
 
-            if ( widgetList.isEmpty() ) {
-                return null;
-            }
+            return makeMenuGroup( (MenuGroup) item );
 
-            return new Dropdown( groups.getCaption() ) {{
-                for ( final Widget widget : widgetList ) {
-                    add( widget );
-                }
-            }};
         } else if ( item instanceof MenuCustom ) {
-            final MenuCustom custom = (MenuCustom) item;
 
-            return (Widget) custom.build();
+            return makeMenuCustom( (MenuCustom) item );
+
         }
+        return makeNavLink( item );
+    }
 
+    Widget makeNavLink( final MenuItem item ) {
         final NavLink gwtItem = new NavLink( item.getCaption() ) {{
             setDisabled( !item.isEnabled() );
         }};
@@ -159,6 +129,60 @@ public class WorkbenchMenuBarView extends Composite
         } );
 
         return gwtItem;
+    }
+
+    Widget makeMenuCustom( MenuCustom item ) {
+        final MenuCustom custom = (MenuCustom) item;
+
+        return (Widget) custom.build();
+    }
+
+    Widget makeMenuGroup( MenuGroup item ) {
+        final MenuGroup groups = (MenuGroup) item;
+        final List<Widget> widgetList = new ArrayList<Widget>();
+        for ( final MenuItem _item : groups.getItems() ) {
+            final Widget result = makeItem( _item );
+            if ( result != null ) {
+                widgetList.add( result );
+            }
+        }
+
+        if ( widgetList.isEmpty() ) {
+            return null;
+        }
+
+        return new Dropdown( groups.getCaption() ) {{
+            for ( final Widget widget : widgetList ) {
+                add( widget );
+            }
+        }};
+    }
+
+    Widget makeMenuItemCommand( final MenuItem item ) {
+        final MenuItemCommand cmdItem = (MenuItemCommand) item;
+        final Widget gwtItem;
+
+        gwtItem = new NavLink( cmdItem.getCaption() ) {{
+            setDisabled( !item.isEnabled() );
+            addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( final ClickEvent event ) {
+                    cmdItem.getCommand().execute();
+                }
+            } );
+        }};
+        item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+            @Override
+            public void enabledStateChanged( final boolean enabled ) {
+                ( (NavLink) gwtItem ).setDisabled( !enabled );
+            }
+        } );
+
+        return gwtItem;
+    }
+
+    boolean notHavePermissionToMakeThis( MenuItem item ) {
+        return !authzManager.authorize( item, identity );
     }
 
     @Override

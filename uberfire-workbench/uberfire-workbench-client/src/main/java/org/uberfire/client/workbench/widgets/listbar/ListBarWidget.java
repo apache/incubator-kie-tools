@@ -86,7 +86,7 @@ public class ListBarWidget
     private static ListBarWidgetBinder uiBinder = GWT.create( ListBarWidgetBinder.class );
 
     @Inject
-    private PanelManager panelManager;
+    PanelManager panelManager;
 
     @Inject
     private AuthorizationManager authzManager;
@@ -127,18 +127,19 @@ public class ListBarWidget
     @UiField
     FlowPanel menuArea;
 
-    private CustomList customList = null;
+    CustomList customList = null;
 
-    private WorkbenchPanelPresenter presenter;
+    WorkbenchPanelPresenter presenter;
+
     private WorkbenchDragAndDropManager dndManager;
 
     private final Map<PartDefinition, FlowPanel> partContentView = new HashMap<PartDefinition, FlowPanel>();
     private final Map<PartDefinition, Widget> partTitle = new HashMap<PartDefinition, Widget>();
-    private LinkedHashSet<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
+    LinkedHashSet<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
 
-    private boolean isMultiPart = true;
-    private boolean isDndEnabled = true;
-    private Pair<PartDefinition, FlowPanel> currentPart;
+    boolean isMultiPart = true;
+    boolean isDndEnabled = true;
+    Pair<PartDefinition, FlowPanel> currentPart;
 
     public ListBarWidget() {
 
@@ -178,9 +179,13 @@ public class ListBarWidget
             }
         } );
 
-        if ( UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) != null ) {
+        if ( isPropertyListbarContextDisable() ) {
             contextDisplay.removeFromParent();
         }
+    }
+
+    boolean isPropertyListbarContextDisable() {
+        return UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) != null;
     }
 
     public void enableDnd() {

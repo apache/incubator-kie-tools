@@ -61,18 +61,22 @@ public class ActivityBeansCache {
             if ( isSplashScreen( activityBean.getQualifiers() ) ) {
                 splashScreens.add( (SplashScreenActivity) activityBean.getInstance() );
             } else {
-                final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = ActivityMetaInfo.generate( activityBean );
+                final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = generateActivityMetaInfo( activityBean );
                 if ( metaInfo != null ) {
-                    activities.add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
+                    getActivities().add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
                 }
             }
         }
 
-        sortActivities();
+        sortActivitiesByPriority();
     }
 
-    void sortActivities() {
-        sort( activities, new Comparator<ActivityAndMetaInfo>() {
+    List<ActivityAndMetaInfo> getActivities() {
+        return activities;
+    }
+
+    void sortActivitiesByPriority() {
+        sort( getActivities(), new Comparator<ActivityAndMetaInfo>() {
             @Override
             public int compare( final ActivityAndMetaInfo o1,
                                 final ActivityAndMetaInfo o2 ) {
@@ -153,7 +157,7 @@ public class ActivityBeansCache {
 
     public IOCBeanDef<Activity> getActivity( final Path path ) {
 
-        for ( final ActivityAndMetaInfo currentActivity : activities ) {
+        for ( final ActivityAndMetaInfo currentActivity : getActivities() ) {
             for ( final ClientResourceType resourceType : currentActivity.getResourceTypes() ) {
                 if ( resourceType.accept( path ) ) {
                     return currentActivity.getActivityBean();
@@ -164,13 +168,17 @@ public class ActivityBeansCache {
         return null;
     }
 
-    private class ActivityAndMetaInfo {
+    Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( IOCBeanDef<Activity> activityBean ) {
+        return ActivityMetaInfo.generate( activityBean );
+    }
+
+    class ActivityAndMetaInfo {
 
         private final IOCBeanDef<Activity> activityBean;
         private final int priority;
         private final ClientResourceType[] resourceTypes;
 
-        private ActivityAndMetaInfo( final IOCBeanDef<Activity> activityBean,
+        ActivityAndMetaInfo( final IOCBeanDef<Activity> activityBean,
                                      final int priority,
                                      final List<Class<? extends ClientResourceType>> resourceTypes ) {
             this.activityBean = activityBean;

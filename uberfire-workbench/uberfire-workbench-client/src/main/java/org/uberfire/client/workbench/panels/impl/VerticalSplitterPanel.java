@@ -37,12 +37,12 @@ public class VerticalSplitterPanel extends ResizeComposite
         implements
         SplitPanel {
 
-    private final WorkbenchSplitLayoutPanel slp = new WorkbenchSplitLayoutPanel();
-    private final SimpleLayoutPanel northWidgetContainer = new SimpleLayoutPanel();
-    private final SimpleLayoutPanel southWidgetContainer = new SimpleLayoutPanel();
+    WorkbenchSplitLayoutPanel slp = new WorkbenchSplitLayoutPanel();
+    SimpleLayoutPanel northWidgetContainer = new SimpleLayoutPanel();
+    SimpleLayoutPanel southWidgetContainer = new SimpleLayoutPanel();
 
     public VerticalSplitterPanel() {
-        initWidget( slp );
+        initWidget( getSlp() );
     }
 
     @Override
@@ -58,32 +58,36 @@ public class VerticalSplitterPanel extends ResizeComposite
         switch ( position ) {
             case NORTH:
                 int northChildSize = getChildSize( northWidget.getPresenter().getDefinition() );
-                slp.addNorth( northWidgetContainer,
-                              size + northChildSize );
-                slp.add( southWidgetContainer );
+                getSlp().addNorth( northWidgetContainer,
+                                   size + northChildSize );
+                getSlp().add( southWidgetContainer );
                 break;
             case SOUTH:
                 int southChildSize = getChildSize( southWidget.getPresenter().getDefinition() );
-                slp.addSouth( southWidgetContainer,
-                              size + southChildSize );
-                slp.add( northWidgetContainer );
+                getSlp().addSouth( southWidgetContainer,
+                                   size + southChildSize );
+                getSlp().add( northWidgetContainer );
                 break;
             default:
                 throw new IllegalArgumentException( "position must be either NORTH or SOUTH" );
         }
-        slp.setWidgetMinSize( northWidgetContainer,
-                              minSize );
-        slp.setWidgetMinSize( southWidgetContainer,
-                              minSize );
+        getSlp().setWidgetMinSize( northWidgetContainer,
+                                   minSize );
+        getSlp().setWidgetMinSize( southWidgetContainer,
+                                   minSize );
 
         northWidgetContainer.setWidget( northWidget );
         southWidgetContainer.setWidget( southWidget );
-        scheduleResize( slp );
+        scheduleResize( getSlp() );
+    }
+
+    WorkbenchSplitLayoutPanel getSlp() {
+        return slp;
     }
 
     @Override
     public void clear() {
-        this.slp.clear();
+        getSlp().clear();
     }
 
     @Override
@@ -117,7 +121,7 @@ public class VerticalSplitterPanel extends ResizeComposite
         return ( minSize == null ? DEFAULT_MIN_SIZE : minSize );
     }
 
-    private int getChildSize( final PanelDefinition panel ) {
+    int getChildSize( final PanelDefinition panel ) {
         int childSize = 0;
         final PanelDefinition northPanel = panel.getChild( Position.NORTH );
         final PanelDefinition southPanel = panel.getChild( Position.SOUTH );

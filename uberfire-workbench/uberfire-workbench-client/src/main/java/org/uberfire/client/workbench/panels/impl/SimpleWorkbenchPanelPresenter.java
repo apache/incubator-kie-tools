@@ -61,7 +61,7 @@ public class SimpleWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
 
     @SuppressWarnings("unused")
     @PostConstruct
-    private void init() {
+    void init() {
         view.init( this );
     }
 

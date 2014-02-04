@@ -47,7 +47,15 @@ public class SimpleWorkbenchPanelView
     protected ContextPanel contextWidget = new ContextPanel();
 
     @PostConstruct
-    private void setupDragAndDrop() {
+    void setupDragAndDrop() {
+        setupListBarDragAndDrop();
+
+        container.add( contextWidget );
+        container.add( listBar );
+        initWidget( container );
+    }
+
+    private void setupListBarDragAndDrop() {
         listBar.setDndManager( dndManager );
         listBar.setup( false, false );
 
@@ -66,11 +74,11 @@ public class SimpleWorkbenchPanelView
                 panelManager.onPanelFocus( presenter.getDefinition() );
             }
         } );
-        listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
+        setListBarOverFlow();
+    }
 
-        container.add( contextWidget );
-        container.add( listBar );
-        initWidget( container );
+    void setListBarOverFlow() {
+        listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
     }
 
     public void enableDnd() {
@@ -135,7 +143,11 @@ public class SimpleWorkbenchPanelView
 
             listBar.onResize();
 
-            super.onResize();
+            resizeSuper();
         }
+    }
+
+    void resizeSuper() {
+        super.onResize();
     }
 }

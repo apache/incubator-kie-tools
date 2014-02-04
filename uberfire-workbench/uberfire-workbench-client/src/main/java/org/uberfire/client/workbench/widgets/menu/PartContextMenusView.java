@@ -31,7 +31,7 @@ public class PartContextMenusView
     @Inject
     private Identity identity;
 
-    private NavPills menuBar = new NavPills();
+    NavPills menuBar = new NavPills();
 
     public PartContextMenusView() {
         initWidget( menuBar );
@@ -49,55 +49,67 @@ public class PartContextMenusView
         }
     }
 
-    private Widget makeItem( final MenuItem item ) {
-        if ( !authzManager.authorize( item, identity ) ) {
+    Widget makeItem( final MenuItem item ) {
+        if ( notHavePermissionToMakeThis( item ) ) {
             return null;
         }
 
         if ( item instanceof MenuItemCommand ) {
-            final MenuItemCommand cmdItem = (MenuItemCommand) item;
-            final Widget gwtItem;
-
-            gwtItem = new NavLink( cmdItem.getCaption() ) {{
-                setDisabled( !item.isEnabled() );
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                        cmdItem.getCommand().execute();
-                    }
-                } );
-            }};
-            item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
-                @Override
-                public void enabledStateChanged( final boolean enabled ) {
-                    ( (NavLink) gwtItem ).setDisabled( !enabled );
-                }
-            } );
-
-            return gwtItem;
+            return makeMenuItemCommand( item );
 
         } else if ( item instanceof MenuGroup ) {
-            final MenuGroup groups = (MenuGroup) item;
-            final List<Widget> widgetList = new ArrayList<Widget>();
-            for ( final MenuItem _item : groups.getItems() ) {
-                final Widget result = makeItem( _item );
-                if ( result != null ) {
-                    widgetList.add( result );
-                }
-            }
-
-            if ( widgetList.isEmpty() ) {
-                return null;
-            }
-
-            return new Dropdown( groups.getCaption() ) {{
-                for ( final Widget widget : widgetList ) {
-                    add( widget );
-                }
-            }};
+            return makeMenuGroup( (MenuGroup) item );
         }
 
         return null;
+    }
+
+    Widget makeMenuGroup( MenuGroup item ) {
+        final MenuGroup groups = (MenuGroup) item;
+        final List<Widget> widgetList = new ArrayList<Widget>();
+        for ( final MenuItem _item : groups.getItems() ) {
+            final Widget result = makeItem( _item );
+            if ( result != null ) {
+                widgetList.add( result );
+            }
+        }
+
+        if ( widgetList.isEmpty() ) {
+            return null;
+        }
+
+        return new Dropdown( groups.getCaption() ) {{
+            for ( final Widget widget : widgetList ) {
+                add( widget );
+            }
+        }};
+    }
+
+    Widget makeMenuItemCommand( final MenuItem item ) {
+        final MenuItemCommand cmdItem = (MenuItemCommand) item;
+        final Widget gwtItem;
+
+        gwtItem = new NavLink( cmdItem.getCaption() ) {{
+            setDisabled( !item.isEnabled() );
+            addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( final ClickEvent event ) {
+                    cmdItem.getCommand().execute();
+                }
+            } );
+        }};
+        item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+            @Override
+            public void enabledStateChanged( final boolean enabled ) {
+                ( (NavLink) gwtItem ).setDisabled( !enabled );
+            }
+        } );
+
+        return gwtItem;
+    }
+
+    boolean notHavePermissionToMakeThis( MenuItem item ) {
+        return !authzManager.authorize( item, identity );
     }
 
     @Override

@@ -37,12 +37,12 @@ public class HorizontalSplitterPanel extends ResizeComposite
         implements
         SplitPanel {
 
-    private final WorkbenchSplitLayoutPanel slp = new WorkbenchSplitLayoutPanel();
-    private final SimpleLayoutPanel eastWidgetContainer = new SimpleLayoutPanel();
-    private final SimpleLayoutPanel westWidgetContainer = new SimpleLayoutPanel();
+    WorkbenchSplitLayoutPanel slp = new WorkbenchSplitLayoutPanel();
+    SimpleLayoutPanel eastWidgetContainer = new SimpleLayoutPanel();
+    SimpleLayoutPanel westWidgetContainer = new SimpleLayoutPanel();
 
     public HorizontalSplitterPanel() {
-        initWidget( slp );
+        initWidget( getSlp() );
     }
 
     @Override
@@ -58,32 +58,36 @@ public class HorizontalSplitterPanel extends ResizeComposite
         switch ( position ) {
             case EAST:
                 final int eastChildSize = getChildSize( eastWidget.getPresenter().getDefinition() );
-                slp.addEast( eastWidgetContainer,
-                             size + eastChildSize );
-                slp.add( westWidgetContainer );
+                getSlp().addEast( eastWidgetContainer,
+                                  size + eastChildSize );
+                getSlp().add( westWidgetContainer );
                 break;
             case WEST:
                 final int westChildSize = getChildSize( westWidget.getPresenter().getDefinition() );
-                slp.addWest( westWidgetContainer,
-                             size + westChildSize );
-                slp.add( eastWidgetContainer );
+                getSlp().addWest( westWidgetContainer,
+                                  size + westChildSize );
+                getSlp().add( eastWidgetContainer );
                 break;
             default:
                 throw new IllegalArgumentException( "position must be either EAST or WEST" );
         }
-        slp.setWidgetMinSize( eastWidgetContainer,
-                              minSize );
-        slp.setWidgetMinSize( westWidgetContainer,
-                              minSize );
+        getSlp().setWidgetMinSize( eastWidgetContainer,
+                                   minSize );
+        getSlp().setWidgetMinSize( westWidgetContainer,
+                                   minSize );
 
         westWidgetContainer.setWidget( westWidget );
         eastWidgetContainer.setWidget( eastWidget );
-        scheduleResize( slp );
+        scheduleResize( getSlp() );
+    }
+
+    WorkbenchSplitLayoutPanel getSlp() {
+        return slp;
     }
 
     @Override
     public void clear() {
-        this.slp.clear();
+        getSlp().clear();
     }
 
     @Override
@@ -117,7 +121,7 @@ public class HorizontalSplitterPanel extends ResizeComposite
         return ( minSize == null ? DEFAULT_MIN_SIZE : minSize );
     }
 
-    private int getChildSize( final PanelDefinition panel ) {
+    int getChildSize( final PanelDefinition panel ) {
         int childSize = 0;
         final PanelDefinition eastPanel = panel.getChild( Position.EAST );
         final PanelDefinition westPanel = panel.getChild( Position.WEST );
