@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.screens.projecteditor.client.forms;
+
+import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.DataGrid;
-import com.google.gwt.cell.client.EditTextCell;
+import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -30,16 +31,13 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import java.util.List;
 
 public class DependencyGridViewImpl
         extends Composite
         implements DependencyGridView {
-
 
     interface Binder
             extends
@@ -47,7 +45,7 @@ public class DependencyGridViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     private Presenter presenter;
 
@@ -61,91 +59,142 @@ public class DependencyGridViewImpl
     Button addFromRepositoryDependencyButton;
 
     public DependencyGridViewImpl() {
-        dataGrid.setEmptyTableWidget(new Label("---"));
-
-        dataGrid.setAutoHeaderRefreshDisabled(true);
+        dataGrid.setEmptyTableWidget( new Label( ProjectEditorResources.CONSTANTS.NoDependencies() ) );
+        dataGrid.setAutoHeaderRefreshDisabled( true );
 
         addGroupIdColumn();
         addArtifactIdColumn();
         addVersionColumn();
         addRemoveRowColumn();
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     /**
      * <p>Custom field updater for handling dependency GAV values.</p>
      * <p>If cell's value is invalid, this field updater restores the old value for the cell.</p>
-     *
+     * <p/>
      * <p>Some handlers are provided:</p>
      * <ul>
-     *     <li><code>emptyHandler</code>: Handler for empty value (not allowed).</li>
-     *     <li><code>notValidValueHandler</code>: Handler for not valid value.</li>
-     *     <li><code>validHandler</code>: Handler for valid value.</li>
+     * <li><code>emptyHandler</code>: Handler for empty value (not allowed).</li>
+     * <li><code>notValidValueHandler</code>: Handler for not valid value.</li>
+     * <li><code>validHandler</code>: Handler for valid value.</li>
      * </ul>
-     *
+     * <p/>
      * NOTE: BZ-1007894
-     *
      * @param <T> the data type that will be modified
      * @param <C> the data type of the modified field
      */
-    private class DependencyFieldUpdater<T, C> implements  FieldUpdater<T, C> {
+    private class DependencyFieldUpdater<T, C> implements FieldUpdater<T, C> {
 
-        private EditTextCell cell;
+        private WaterMarkEditTextCell cell;
         private DependencyFieldUpdaterHandler emptyHandler;
         private DependencyFieldUpdaterHandler notValidValueHandler;
         private DependencyFieldUpdaterHandler validHandler;
 
-        DependencyFieldUpdater(EditTextCell cell) {
+        DependencyFieldUpdater( WaterMarkEditTextCell cell ) {
             this.cell = cell;
         }
 
         @Override
-        public void update(int index, T object, C value) {
+        public void update( int index,
+                            T object,
+                            C value ) {
             try {
                 Dependency dependency = (Dependency) object;
                 String sValue = (String) value;
 
                 boolean hasError = false;
-                if (checkIsNotEmpty(sValue)) {
-                    if (emptyHandler != null) emptyHandler.handle(dependency, sValue);
+                if ( checkIsNotEmpty( sValue ) ) {
+                    if ( emptyHandler != null ) {
+                        emptyHandler.handle( dependency, sValue );
+                    }
                     hasError = true;
                 }
-                if (checkIsInValid(sValue)) {
-                    if (notValidValueHandler != null) notValidValueHandler.handle(dependency, sValue);
+                if ( checkIsInValid( sValue ) ) {
+                    if ( notValidValueHandler != null ) {
+                        notValidValueHandler.handle( dependency, sValue );
+                    }
                     hasError = true;
                 }
 
                 // Clear view data. Restore old data.
-                if (hasError) {
-                    cell.clearViewData(dependency);
+                if ( hasError ) {
+                    cell.clearViewData( dependency );
                     refresh();
                 } else {
-                    if (validHandler != null) validHandler.handle(dependency, sValue);
+                    if ( validHandler != null ) {
+                        validHandler.handle( dependency, sValue );
+                    }
                 }
-            } catch (ClassCastException e) {
-                throw new UnsupportedOperationException("Class DependencyGridViewImpl.DependencyFieldUpdater only supports org.guvnor.common.services.project.model.Dependency as source");
+            } catch ( ClassCastException e ) {
+                throw new UnsupportedOperationException( "Class DependencyGridViewImpl.DependencyFieldUpdater only supports org.guvnor.common.services.project.model.Dependency as source" );
             }
         }
 
-    };
+    }
+
+    ;
 
     /**
      * BZ-1007894:
-     *
+     * <p/>
      * Dependency field update handler.
      */
     private interface DependencyFieldUpdaterHandler {
-        void handle(Dependency dep, String value);
+
+        void handle( Dependency dep,
+                     String value );
     }
 
+    private void addGroupIdColumn() {
+        Column<Dependency, String> column = new Column<Dependency, String>( new WaterMarkEditTextCell( ProjectEditorResources.CONSTANTS.EnterAGroupID() ) ) {
+            @Override
+            public String getValue( Dependency dependency ) {
+                if ( dependency.getGroupId() != null ) {
+                    return dependency.getGroupId();
+                } else {
+                    return "";
+                }
+            }
+        };
+
+        // BZ-1007894: If field value is not correct, do not update the model and the widget cell value.
+        DependencyFieldUpdater fieldUpdater = new DependencyFieldUpdater( (WaterMarkEditTextCell) column.getCell() );
+        fieldUpdater.emptyHandler = new DependencyFieldUpdaterHandler() {
+            @Override
+            public void handle( Dependency dep,
+                                String value ) {
+                Window.alert( ProjectEditorResources.CONSTANTS.GroupIdMissing() );
+            }
+        };
+        fieldUpdater.notValidValueHandler = new DependencyFieldUpdaterHandler() {
+            @Override
+            public void handle( Dependency dep,
+                                String value ) {
+                Window.alert( ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed() );
+            }
+        };
+        fieldUpdater.validHandler = new DependencyFieldUpdaterHandler() {
+            @Override
+            public void handle( Dependency dep,
+                                String value ) {
+                dep.setGroupId( value );
+            }
+        };
+
+        column.setFieldUpdater( fieldUpdater );
+
+        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.GroupID() );
+        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
+    }
 
     private void addArtifactIdColumn() {
-        final Column<Dependency, String> column = new Column<Dependency, String>(new EditTextCell()) {
+        final Column<Dependency, String> column = new Column<Dependency, String>( new WaterMarkEditTextCell( ProjectEditorResources.CONSTANTS.EnterAnArtifactID() ) ) {
 
             @Override
-            public String getValue(Dependency dependency) {
-                if (dependency.getArtifactId() != null) {
+            public String getValue( Dependency dependency ) {
+                if ( dependency.getArtifactId() != null ) {
                     return dependency.getArtifactId();
                 } else {
                     return "";
@@ -154,77 +203,40 @@ public class DependencyGridViewImpl
         };
 
         // BZ-1007894: If field value is not correct, do not update the model and the widet cell value.
-        DependencyFieldUpdater fieldUpdater = new DependencyFieldUpdater((EditTextCell) column.getCell());
+        DependencyFieldUpdater fieldUpdater = new DependencyFieldUpdater( (WaterMarkEditTextCell) column.getCell() );
         fieldUpdater.emptyHandler = new DependencyFieldUpdaterHandler() {
             @Override
-            public void handle(Dependency dep, String value) {
-                Window.alert(ProjectEditorResources.CONSTANTS.ArtifactIdMissing());
+            public void handle( Dependency dep,
+                                String value ) {
+                Window.alert( ProjectEditorResources.CONSTANTS.ArtifactIdMissing() );
             }
         };
         fieldUpdater.notValidValueHandler = new DependencyFieldUpdaterHandler() {
             @Override
-            public void handle(Dependency dep, String value) {
-                Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
+            public void handle( Dependency dep,
+                                String value ) {
+                Window.alert( ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed() );
             }
         };
         fieldUpdater.validHandler = new DependencyFieldUpdaterHandler() {
             @Override
-            public void handle(Dependency dep, String value) {
-                dep.setArtifactId(value);
+            public void handle( Dependency dep,
+                                String value ) {
+                dep.setArtifactId( value );
             }
         };
 
+        column.setFieldUpdater( fieldUpdater );
 
-        column.setFieldUpdater(fieldUpdater);
-
-        dataGrid.addColumn(column, ProjectEditorResources.CONSTANTS.ArtifactID());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
-    }
-
-    private void addGroupIdColumn() {
-        Column<Dependency, String> column = new Column<Dependency, String>(new EditTextCell()) {
-            @Override
-            public String getValue(Dependency dependency) {
-                if (dependency.getGroupId() != null) {
-                    return dependency.getGroupId();
-                } else {
-                    return "";
-                }
-            }
-        };
-
-        // BZ-1007894: If field value is not correct, do not update the model and the widet cell value.
-        DependencyFieldUpdater fieldUpdater = new DependencyFieldUpdater((EditTextCell) column.getCell());
-        fieldUpdater.emptyHandler = new DependencyFieldUpdaterHandler() {
-            @Override
-            public void handle(Dependency dep, String value) {
-                Window.alert(ProjectEditorResources.CONSTANTS.GroupIdMissing());
-            }
-        };
-        fieldUpdater.notValidValueHandler = new DependencyFieldUpdaterHandler() {
-            @Override
-            public void handle(Dependency dep, String value) {
-                Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
-            }
-        };
-        fieldUpdater.validHandler = new DependencyFieldUpdaterHandler() {
-            @Override
-            public void handle(Dependency dep, String value) {
-                dep.setGroupId(value);
-            }
-        };
-
-        column.setFieldUpdater(fieldUpdater);
-
-        dataGrid.addColumn(column, ProjectEditorResources.CONSTANTS.GroupID());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
+        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.ArtifactID() );
+        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
     private void addVersionColumn() {
-        Column<Dependency, String> column = new Column<Dependency, String>(new EditTextCell()) {
+        Column<Dependency, String> column = new Column<Dependency, String>( new WaterMarkEditTextCell( ProjectEditorResources.CONSTANTS.EnterAVersion() ) ) {
             @Override
-            public String getValue(Dependency dependency) {
-                if (dependency.getVersion() != null) {
+            public String getValue( Dependency dependency ) {
+                if ( dependency.getVersion() != null ) {
                     return dependency.getVersion();
                 } else {
                     return "";
@@ -232,48 +244,47 @@ public class DependencyGridViewImpl
             }
         };
 
-        // BZ-1007894: If field value is not correct, do not update the model and the widet cell value.
-        DependencyFieldUpdater fieldUpdater = new DependencyFieldUpdater((EditTextCell) column.getCell());
+        // BZ-1007894: If field value is not correct, do not update the model and the widget cell value.
+        DependencyFieldUpdater fieldUpdater = new DependencyFieldUpdater( (WaterMarkEditTextCell) column.getCell() );
         fieldUpdater.emptyHandler = new DependencyFieldUpdaterHandler() {
             @Override
-            public void handle(Dependency dep, String value) {
-                Window.alert(ProjectEditorResources.CONSTANTS.VersionIdMissing());
+            public void handle( Dependency dep,
+                                String value ) {
+                Window.alert( ProjectEditorResources.CONSTANTS.VersionIdMissing() );
             }
         };
         fieldUpdater.notValidValueHandler = new DependencyFieldUpdaterHandler() {
             @Override
-            public void handle(Dependency dep, String value) {
-                Window.alert(ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed());
+            public void handle( Dependency dep,
+                                String value ) {
+                Window.alert( ProjectEditorResources.CONSTANTS.XMLMarkIsNotAllowed() );
             }
         };
         fieldUpdater.validHandler = new DependencyFieldUpdaterHandler() {
             @Override
-            public void handle(Dependency dep, String value) {
-                dep.setVersion(value);
+            public void handle( Dependency dep,
+                                String value ) {
+                dep.setVersion( value );
             }
         };
 
-        column.setFieldUpdater(fieldUpdater);
+        column.setFieldUpdater( fieldUpdater );
 
-        dataGrid.addColumn(column, ProjectEditorResources.CONSTANTS.VersionID());
-        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
-    }
-
-    private void updateCellValue(int index, Dependency dependency, String value) {
-
+        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.VersionID() );
+        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
     }
 
     // BZ-1007894
-    boolean checkIsNotEmpty(String content) {
-        if (content != null && content.trim().length() > 0) {
+    boolean checkIsNotEmpty( String content ) {
+        if ( content != null && content.trim().length() > 0 ) {
             return false;
         }
 
         return true;
     }
 
-    boolean checkIsInValid(String content) {
-        if (content != null && (content.contains("<") || content.contains(">") || content.contains("&"))) {
+    boolean checkIsInValid( String content ) {
+        if ( content != null && ( content.contains( "<" ) || content.contains( ">" ) || content.contains( "&" ) ) ) {
             return true;
         }
 
@@ -281,48 +292,49 @@ public class DependencyGridViewImpl
     }
 
     private void addRemoveRowColumn() {
-        Column<Dependency, ImageResource> column = new Column<Dependency, ImageResource>(new TrashCanImageCell()) {
+        Column<Dependency, ImageResource> column = new Column<Dependency, ImageResource>( new TrashCanImageCell() ) {
             @Override
-            public ImageResource getValue(Dependency dependency) {
+            public ImageResource getValue( Dependency dependency ) {
                 return ProjectEditorResources.INSTANCE.Trash();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<Dependency, ImageResource>() {
+        column.setFieldUpdater( new FieldUpdater<Dependency, ImageResource>() {
             @Override
-            public void update(int index, Dependency dependency, ImageResource value) {
-                presenter.onRemoveDependency(dependency);
+            public void update( int index,
+                                Dependency dependency,
+                                ImageResource value ) {
+                presenter.onRemoveDependency( dependency );
             }
-        });
+        } );
 
-
-        dataGrid.addColumn(column);
-        dataGrid.setColumnWidth(column, 40, Style.Unit.PCT);
+        dataGrid.addColumn( column );
+        dataGrid.setColumnWidth( column, 40, Style.Unit.PCT );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
     public void setReadOnly() {
-        addDependencyButton.setEnabled(false);
-        addFromRepositoryDependencyButton.setEnabled(false);
+        addDependencyButton.setEnabled( false );
+        addFromRepositoryDependencyButton.setEnabled( false );
     }
 
     @Override
-    public void setList(List<Dependency> dependencies) {
-        dataGrid.setRowData(dependencies);
+    public void setList( List<Dependency> dependencies ) {
+        dataGrid.setRowData( dependencies );
     }
 
     @UiHandler("addDependencyButton")
-    void onAddDependency(ClickEvent event) {
+    void onAddDependency( ClickEvent event ) {
         presenter.onAddDependencyButton();
     }
 
     @UiHandler("addFromRepositoryDependencyButton")
-    void onAddDependencyFromRepository(ClickEvent event) {
+    void onAddDependencyFromRepository( ClickEvent event ) {
         presenter.onAddDependencyFromRepositoryButton();
     }
 
@@ -330,4 +342,5 @@ public class DependencyGridViewImpl
     public void refresh() {
         dataGrid.redraw();
     }
+
 }

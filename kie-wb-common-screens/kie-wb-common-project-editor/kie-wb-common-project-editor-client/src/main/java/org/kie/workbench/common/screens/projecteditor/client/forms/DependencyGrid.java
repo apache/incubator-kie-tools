@@ -25,30 +25,31 @@ import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 
 public class DependencyGrid
-        implements IsWidget, DependencyGridView.Presenter {
+        implements IsWidget,
+                   DependencyGridView.Presenter {
 
     private final DependencyGridView view;
     private List<Dependency> dependencies;
     private final DependencySelectorPopup dependencySelectorPopup;
 
     @Inject
-    public DependencyGrid(DependencySelectorPopup dependencySelectorPopup,
-                          DependencyGridView view) {
+    public DependencyGrid( DependencySelectorPopup dependencySelectorPopup,
+                           DependencyGridView view ) {
         this.dependencySelectorPopup = dependencySelectorPopup;
-        dependencySelectorPopup.addSelectionHandler(new GAVSelectionHandler() {
+        dependencySelectorPopup.addSelectionHandler( new GAVSelectionHandler() {
             @Override
-            public void onSelection(GAV gav) {
-                dependencies.add(new Dependency(gav));
-                fillList(dependencies);
+            public void onSelection( GAV gav ) {
+                dependencies.add( new Dependency( gav ) );
+                fillList( dependencies );
             }
-        });
+        } );
         this.view = view;
-        view.setPresenter(this);
+        view.setPresenter( this );
     }
 
-    public void fillList(List<Dependency> dependencies) {
+    public void fillList( List<Dependency> dependencies ) {
         this.dependencies = dependencies;
-        view.setList(dependencies);
+        view.setList( dependencies );
     }
 
     @Override
@@ -59,12 +60,8 @@ public class DependencyGrid
     @Override
     public void onAddDependencyButton() {
         Dependency dependency = new Dependency();
-        dependency.setArtifactId("*****");
-        dependency.setGroupId("*****");
-        dependency.setVersion("*****");
-
-        dependencies.add(dependency);
-        fillList(dependencies);
+        dependencies.add( dependency );
+        fillList( dependencies );
     }
 
     @Override
@@ -73,9 +70,9 @@ public class DependencyGrid
     }
 
     @Override
-    public void onRemoveDependency(Dependency dependency) {
-        dependencies.remove(dependency);
-        fillList(dependencies);
+    public void onRemoveDependency( Dependency dependency ) {
+        dependencies.remove( dependency );
+        fillList( dependencies );
     }
 
     public void setReadOnly() {

@@ -39,7 +39,7 @@
       </bootstrap:Column>
     </bootstrap:FluidRow>
     <bootstrap:FluidRow>
-      <bootstrap:DataGrid ui:field="dataGrid" width="600px" height="400px"/>
+      <bootstrap:DataGrid ui:field="dataGrid" width="100%" height="400px" addStyleNames="table table-striped table-hover"/>
     </bootstrap:FluidRow>
   </bootstrap:FluidContainer>
 

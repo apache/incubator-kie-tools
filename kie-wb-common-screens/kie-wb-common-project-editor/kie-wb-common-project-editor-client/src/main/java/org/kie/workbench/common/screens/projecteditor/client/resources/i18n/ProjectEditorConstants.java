@@ -247,4 +247,13 @@ public interface ProjectEditorConstants
     String ABuildIsAlreadyRunning();
 
     String XsdIDError();
+
+    String NoDependencies();
+
+    String EnterAGroupID();
+
+    String EnterAnArtifactID();
+
+    String EnterAVersion();
+
 }
