@@ -30,76 +30,47 @@
   <name>Kie Workbench - Common - Java Editor Client</name>
   <description>Kie Workbench - Common - Java Editor Client</description>
 
-    <dependencies>
+  <dependencies>
 
-        <dependency>
-            <groupId>org.kie.workbench.screens</groupId>
-            <artifactId>kie-wb-common-java-editor-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-java-editor-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.kie.workbench.widgets</groupId>
-            <artifactId>kie-wb-view-source-widget</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-view-source-widget</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-client-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-processors</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-widgets-commons</artifactId>
-        </dependency>
+    <!-- GWT and GWT Extensions -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-workbench-client</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-common-ui</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-workbench-processors</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-config-resource-widget</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-widgets-core-client</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-metadata-widget</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-        </dependency>
-
-        <!-- GWT and GWT Extensions -->
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kie.workbench.widgets</groupId>
-            <artifactId>kie-wb-common-ui</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kie.workbench.widgets</groupId>
-            <artifactId>kie-wb-config-resource-widget</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kie.workbench.widgets</groupId>
-            <artifactId>kie-wb-metadata-widget</artifactId>
-        </dependency>
-
-    </dependencies>
+  </dependencies>
 
   <build>
     <resources>

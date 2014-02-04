@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.client.search;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
-import org.uberfire.workbench.events.PerspectiveChange;
+import org.uberfire.client.workbench.events.PerspectiveChange;
 
 /**
  * @author salaboy

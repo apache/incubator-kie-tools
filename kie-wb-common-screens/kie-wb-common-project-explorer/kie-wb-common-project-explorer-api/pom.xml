@@ -16,7 +16,6 @@
   <description>Kie Workbench - Common - Project Explorer API</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
@@ -24,14 +23,8 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
+      <artifactId>uberfire-client-api</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
-
   </dependencies>
 
   <build>

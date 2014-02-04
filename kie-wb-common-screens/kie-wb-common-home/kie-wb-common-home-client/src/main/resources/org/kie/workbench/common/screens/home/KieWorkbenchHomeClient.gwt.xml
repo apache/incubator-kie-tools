@@ -24,10 +24,7 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
-  <inherits name='org.jboss.errai.bus.ErraiBus'/>
-
   <inherits name="org.uberfire.UberfireWorkbench"/>
-  <inherits name="org.uberfire.UberfireWidgetsCommons"/>
 
   <inherits name="org.kie.workbench.common.screens.home.KieWorkbenchCommonHomeAPI"/>
 

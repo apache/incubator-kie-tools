@@ -19,10 +19,8 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='org.jboss.errai.bus.ErraiBus'/>
-
-  <inherits name='org.uberfire.UberfireBackend'/>
-  <inherits name='org.uberfire.UberfireClientAPI'/>
+  <inherits name='org.guvnor.common.services.project.GuvnorProjectAPI'/>
+  <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
 
   <source path='shared'/>
 

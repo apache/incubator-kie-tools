@@ -33,6 +33,7 @@ import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
+import org.kie.workbench.common.widgets.client.tables.AbstractPathPagedTable;
 import org.uberfire.client.common.CheckboxCellImpl;
 import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.ComparableImageResource;
@@ -43,7 +44,6 @@ import org.uberfire.client.tables.TitledTextCell;
 import org.uberfire.client.tables.TitledTextColumn;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
-import org.uberfire.client.workbench.widgets.tables.AbstractPathPagedTable;
 import org.uberfire.paging.PageResponse;
 
 import static org.jboss.errai.bus.client.api.base.MessageBuilder.*;

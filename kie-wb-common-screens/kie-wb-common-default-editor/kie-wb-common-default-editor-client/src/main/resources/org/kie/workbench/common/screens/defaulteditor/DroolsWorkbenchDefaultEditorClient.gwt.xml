@@ -24,15 +24,14 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
-  <inherits name='org.jboss.errai.bus.ErraiBus'/>
+  <inherits name='org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorAPI'/>
 
-  <inherits name="org.uberfire.UberfireWorkbench"/>
-  <inherits name="org.uberfire.UberfireWidgetsCommons"/>
+  <inherits name="org.uberfire.UberfireClientAll"/>
 
+  <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
   <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
   <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
   <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
 
-  <inherits name='org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorAPI'/>
 
 </module>

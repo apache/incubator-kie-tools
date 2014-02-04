@@ -16,25 +16,21 @@
   ~ limitations under the License.
   -->
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
-        "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-    <!-- Inherit the core Web Toolkit stuff. -->
-    <inherits name="com.google.gwt.i18n.I18N"/>
-    <inherits name="com.google.gwt.http.HTTP"/>
-    <inherits name="com.google.gwt.user.User"/>
+  <!-- Inherit the core Web Toolkit stuff. -->
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  <inherits name="com.google.gwt.http.HTTP"/>
+  <inherits name="com.google.gwt.user.User"/>
 
-    <inherits name='org.jboss.errai.bus.ErraiBus'/>
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+  <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
+  <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
+  <inherits name="org.kie.workbench.common.widgets.viewsource.KieWorkbenchViewSourceWidget"/>
 
-    <inherits name="org.uberfire.UberfireWorkbench"/>
-    <inherits name="org.uberfire.UberfireWidgetsCommons"/>
+  <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorAPI"/>
 
-    <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
-    <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
-    <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
-
-    <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorAPI"/>
-
-    <source path="client"/>
+  <source path="client"/>
 
 </module>

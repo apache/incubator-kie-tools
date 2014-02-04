@@ -20,7 +20,7 @@
 <module>
 
 
-  <inherits name="org.jboss.errai.bus.ErraiBus"/>
+  <inherits name="org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI"/>
 
   <source path="model"/>
   <source path="service"/>

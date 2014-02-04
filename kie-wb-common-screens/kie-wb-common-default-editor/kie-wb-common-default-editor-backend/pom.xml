@@ -16,7 +16,6 @@
   <description>Kie Workbench - Common - Default Editor - Backend</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-default-editor-api</artifactId>
@@ -25,16 +24,6 @@
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
     </dependency>
 
   </dependencies>

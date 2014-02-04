@@ -16,9 +16,9 @@
   <description>Kie Workbench - Common - Default Editor</description>
 
   <modules>
+    <module>kie-wb-common-default-editor-api</module>
     <module>kie-wb-common-default-editor-backend</module>
     <module>kie-wb-common-default-editor-client</module>
-    <module>kie-wb-common-default-editor-api</module>
   </modules>
 
 </project>
