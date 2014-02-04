@@ -404,16 +404,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         BRLActionVariableColumn firstColumn = modelColumn.getChildColumns().get( 0 );
         int firstColumnIndex = model.getExpandedColumns().indexOf( firstColumn );
-        if (firstColumnIndex >= 0) {
+        if ( firstColumnIndex >= 0 ) {
             int numberOfColumns = modelColumn.getChildColumns().size();
             deleteColumns( firstColumnIndex,
-                    numberOfColumns,
-                    true );
+                           numberOfColumns,
+                           true );
             model.getActionCols().remove( modelColumn );
 
             //Log deletion of column
             model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
-                    modelColumn ) );
+                                                                    modelColumn ) );
         }
     }
 
@@ -446,16 +446,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         BRLConditionVariableColumn firstColumn = modelColumn.getChildColumns().get( 0 );
         int firstColumnIndex = model.getExpandedColumns().indexOf( firstColumn );
-        if (firstColumnIndex >= 0) {
+        if ( firstColumnIndex >= 0 ) {
             int numberOfColumns = modelColumn.getChildColumns().size();
             deleteColumns( firstColumnIndex,
-                    numberOfColumns,
-                    true );
+                           numberOfColumns,
+                           true );
             model.getConditions().remove( modelColumn );
 
             //Log deletion of column
             model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
-                    modelColumn ) );
+                                                                    modelColumn ) );
         }
     }
 
@@ -488,14 +488,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         int index = model.getExpandedColumns().indexOf( modelColumn );
-        if (index >= 0) {
+        if ( index >= 0 ) {
             model.getAttributeCols().remove( modelColumn );
             deleteColumn( index,
-                    true );
+                          true );
 
             //Log deletion of column
             model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
-                    modelColumn ) );
+                                                                    modelColumn ) );
         }
     }
 
@@ -1249,23 +1249,23 @@ public abstract class AbstractDecisionTableWidget extends Composite
         List<BaseColumnFieldDiff> patternDiff = null;
 
         boolean existPattern = false;
-        if (model.getConditions() != null && !model.getConditions().isEmpty()) {
-            for (CompositeColumn<? extends BaseColumn> col : model.getConditions()) {
+        if ( model.getConditions() != null && !model.getConditions().isEmpty() ) {
+            for ( CompositeColumn<? extends BaseColumn> col : model.getConditions() ) {
                 // In this case only check for Pattern52 class instances.
                 try {
                     Pattern52 existingCol = (Pattern52) col;
-                    if (existingCol.getBoundName().equals(editPattern.getBoundName())) {
+                    if ( existingCol.getBoundName().equals( editPattern.getBoundName() ) ) {
                         existPattern = true;
                         break;
                     }
-                } catch (ClassCastException e) {
+                } catch ( ClassCastException e ) {
                     // Do nothing.
                 }
             }
         }
 
         //Add pattern to model, if applicable
-        if ( ! existPattern ) {
+        if ( !existPattern ) {
             model.getConditions().add( editPattern );
 
             //Signal patterns changed event
@@ -1273,10 +1273,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
             eventBus.fireEvent( pce );
         } else {
             // Calculate the diffs between original and edit pattern
-            patternDiff = origPattern.diff(editPattern);
+            patternDiff = origPattern.diff( editPattern );
 
             // Update the original pattern properties with new values.
-            origPattern.update(editPattern);
+            origPattern.update( editPattern );
         }
 
         boolean bUpdateColumnData = false;
@@ -1349,9 +1349,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 isValueListUpdated = BaseColumnFieldDiffImpl.hasChanged( ConditionCol52.FIELD_VALUE_LIST, diffs );
             }
 
-            if (patternDiff != null && !patternDiff.isEmpty()) {
-                if (diffs == null) diffs = new ArrayList<BaseColumnFieldDiff>(patternDiff.size());
-                diffs.addAll(patternDiff);
+            if ( patternDiff != null && !patternDiff.isEmpty() ) {
+                if ( diffs == null ) {
+                    diffs = new ArrayList<BaseColumnFieldDiff>( patternDiff.size() );
+                }
+                diffs.addAll( patternDiff );
                 bUpdateColumnDefinition = true; // Force firing the audit log change event.
             }
 
@@ -1525,6 +1527,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         for ( BaseColumn column : columns ) {
             columnsData.add( cellValueFactory.makeColumnData( column ) );
         }
+        InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( columns,
+                                                                                 columnsData,
+                                                                                 index,
+                                                                                 bRedraw );
+        eventBus.fireEvent( dce );
     }
 
     /**
@@ -1778,7 +1785,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     //Convert comma-separated values to the first in the list
     private void removeCommaSeparatedValues( DTColumnConfig52 column ) {
         int index = this.model.getExpandedColumns().indexOf( column );
-        if (index >= 0) {
+        if ( index >= 0 ) {
             for ( List<DTCellValue52> row : this.model.getData() ) {
                 DTCellValue52 dcv = row.get( index );
                 cellUtils.removeCommaSeparatedValue( dcv );
@@ -1796,7 +1803,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bUpdateColumnData = false;
         int iCol = model.getExpandedColumns().indexOf( origColumn );
-        if (iCol >= 0) {
+        if ( iCol >= 0 ) {
             for ( List<DTCellValue52> row : this.model.getData() ) {
                 if ( !vals.contains( row.get( iCol ).getStringValue() ) ) {
                     bUpdateColumnData = true;

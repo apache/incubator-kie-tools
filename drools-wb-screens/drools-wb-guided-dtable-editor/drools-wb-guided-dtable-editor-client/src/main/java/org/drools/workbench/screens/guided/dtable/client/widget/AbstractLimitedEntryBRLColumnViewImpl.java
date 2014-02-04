@@ -18,15 +18,17 @@ package org.drools.workbench.screens.guided.dtable.client.widget;
 import java.util.Collection;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.Modal;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -45,17 +47,16 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.Popup;
+import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * An editor for Limited Entry BRL Column definitions
  */
-public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseColumn> extends Popup
+public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseColumn> extends Modal
         implements
         RuleModelEditor {
 
     protected int MIN_WIDTH = 500;
-    protected int MIN_HEIGHT = 200;
 
     @UiField(provided = true)
     RuleModeller ruleModeller;
@@ -68,11 +69,6 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
 
     @UiField
     ScrollPanel brlEditorContainer;
-
-    @UiField
-    Button cmdApplyChanges;
-
-    Widget popupContent;
 
     @SuppressWarnings("rawtypes")
     interface AbstractLimitedEntryBRLColumnEditorBinder
@@ -107,8 +103,6 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
         this.editingCol = cloneBRLColumn( column );
         this.ruleModel = getRuleModel( editingCol );
 
-        setModal( false );
-
         //Limited Entry decision tables do not permit field values to be defined with Template Keys
         final ModellerWidgetFactory widgetFactory = new RuleModellerWidgetFactory();
 
@@ -118,9 +112,28 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
                                               widgetFactory,
                                               getRuleModellerConfiguration(),
                                               eventBus,
-                                              isReadOnly );
+                                              isReadOnly ) {
+            @Override
+            public void refreshWidget() {
+                super.refreshWidget();
+                centerVertically( AbstractLimitedEntryBRLColumnViewImpl.this.getElement() );
+            }
+        };
 
-        this.popupContent = uiBinder.createAndBindUi( this );
+        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
+                applyChanges();
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
+                hide();
+            }
+        }
+        ) );
+        setWidth( getPopupWidth() );
 
         ruleNameService.call( new RemoteCallback<Collection<String>>() {
             @Override
@@ -129,13 +142,15 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
             }
         } ).getRuleNamesForPackage( path, model.getPackageName() );
 
-        setHeight( getPopupHeight() + "px" );
-        setWidth( getPopupWidth() + "px" );
-        this.brlEditorContainer.setHeight( ( getPopupHeight() - 160 ) + "px" );
-        this.brlEditorContainer.setWidth( getPopupWidth() + "px" );
+        this.brlEditorContainer.setHeight( "100%" );
+        this.brlEditorContainer.setWidth( "100%" );
         this.txtColumnHeader.setText( editingCol.getHeader() );
         this.chkHideColumn.setValue( editingCol.isHideColumn() );
     }
+
+    private native void centerVertically( Element e ) /*-{
+        $wnd.jQuery(e).css("margin-top", (-1 * $wnd.jQuery(e).outerHeight() / 2) + "px");
+    }-*/;
 
     protected abstract boolean isHeaderUnique( String header );
 
@@ -155,33 +170,16 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
         return this.ruleModeller;
     }
 
-    @Override
-    public Widget getContent() {
-        return popupContent;
-    }
-
     /**
-     * Width of pop-up, 75% of the client width or MIN_WIDTH
+     * Width of pop-up, 50% of the client width or MIN_WIDTH
      * @return
      */
     private int getPopupWidth() {
-        int w = (int) ( Window.getClientWidth() * 0.75 );
+        int w = (int) ( Window.getClientWidth() * 0.5 );
         if ( w < MIN_WIDTH ) {
             w = MIN_WIDTH;
         }
         return w;
-    }
-
-    /**
-     * Height of pop-up, 75% of the client height or MIN_HEIGHT
-     * @return
-     */
-    protected int getPopupHeight() {
-        int h = (int) ( Window.getClientHeight() * 0.75 );
-        if ( h < MIN_HEIGHT ) {
-            h = MIN_HEIGHT;
-        }
-        return h;
     }
 
     @UiHandler("txtColumnHeader")
@@ -194,8 +192,7 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
         editingCol.setHideColumn( chkHideColumn.getValue() );
     }
 
-    @UiHandler("cmdApplyChanges")
-    void applyChangesClickHandler( ClickEvent event ) {
+    private void applyChanges() {
 
         //Validation
         if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
