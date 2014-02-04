@@ -33,6 +33,7 @@ import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -783,6 +784,13 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                              this );
         eventBus.addHandler( InsertInternalDecisionTableColumnEvent.TYPE,
                              this );
+        addResizeHandler( new ResizeHandler() {
+            @Override
+            public void onResize( final ResizeEvent event ) {
+                final int width = event.getWidth();
+                panel.setWidth( width + "px" );
+            }
+        } );
     }
 
     @Override
