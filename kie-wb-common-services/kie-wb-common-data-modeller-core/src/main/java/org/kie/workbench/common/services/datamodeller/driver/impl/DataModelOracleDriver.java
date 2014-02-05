@@ -121,7 +121,7 @@ public class DataModelOracleDriver implements ModelDriver {
         return ModelFactoryImpl.getInstance().newModel();
     }
 
-    public DataModel loadModel( ProjectDataModelOracle oracleDataModel ) throws ModelDriverException {
+    public DataModel loadModel( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) throws ModelDriverException {
 
         DataModel dataModel = createModel();
 
@@ -135,7 +135,7 @@ public class DataModelOracleDriver implements ModelDriver {
                 //skip .drl declared fact types.
                 source = factSource( oracleDataModel, factTypes[ i ] );
                 if ( source != null && ( ObjectSource.INTERNAL.equals( source ) || ObjectSource.DEPENDENCY.equals( source ) ) ) {
-                    addFactType( dataModel, oracleDataModel, factTypes[ i ], source );
+                    addFactType( dataModel, oracleDataModel, factTypes[ i ], source, projectClassLoader );
                 }
             }
         } else {
@@ -147,7 +147,8 @@ public class DataModelOracleDriver implements ModelDriver {
     private void addFactType( DataModel dataModel,
                               ProjectDataModelOracle oracleDataModel,
                               String factType,
-                              ObjectSource source ) throws ModelDriverException {
+                              ObjectSource source,
+                              ClassLoader classLoader) throws ModelDriverException {
 
         String packageName = NamingUtils.getInstance().extractPackageName( factType );
         String className = NamingUtils.getInstance().extractClassName( factType );
@@ -155,7 +156,8 @@ public class DataModelOracleDriver implements ModelDriver {
                                                                    factType );
 
         logger.debug( "Adding factType: " + factType + ", to dataModel: " + dataModel + ", from oracleDataModel: " + oracleDataModel );
-        DataObject dataObject = dataModel.addDataObject( factType, source );
+        int modifiers = readClassModifiers(factType, classLoader);
+        DataObject dataObject = dataModel.addDataObject( factType, source, modifiers );
         dataObject.setSuperClassName( superClass );
 
         //process type annotations
@@ -221,6 +223,17 @@ public class DataModelOracleDriver implements ModelDriver {
         } else {
             logger.debug( "No fields for factTye: " + factType );
         }
+    }
+
+    private int readClassModifiers(String factType, ClassLoader classLoader) {
+
+        int modifiers = 0;
+        try {
+            modifiers = classLoader.loadClass(factType).getModifiers();
+        } catch (ClassNotFoundException e) {
+            logger.error("It was not possible to read class modifiers for class: " + factType);
+        }
+        return modifiers;
     }
 
     private void verifyPositions( DataObject dataObject,

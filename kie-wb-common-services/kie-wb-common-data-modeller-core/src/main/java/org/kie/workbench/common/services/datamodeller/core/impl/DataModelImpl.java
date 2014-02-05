@@ -21,6 +21,7 @@ import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class DataModelImpl implements DataModel {
@@ -87,13 +88,25 @@ public class DataModelImpl implements DataModel {
 
     @Override
     public DataObject addDataObject(String packageName, String name, ObjectSource source) {
+        return addDataObject(packageName, name, source, Modifier.PUBLIC);
+    }
+
+    @Override
+    public DataObject addDataObject(String packageName, String name, ObjectSource source, int modifiers) {
         switch (source) {
             case INTERNAL:
-                return addDataObject(packageName, name, dataObjects);
+                return addDataObject(packageName, name, dataObjects, modifiers);
             case DEPENDENCY:
-                return addDataObject(packageName, name, dependencyDataObjects);
+                return addDataObject(packageName, name, dependencyDataObjects, modifiers);
         }
         return null;
+    }
+
+    @Override
+    public DataObject addDataObject(String className, ObjectSource source, int modifiers) {
+        String name = NamingUtils.getInstance().extractClassName(className);
+        String packageName = NamingUtils.getInstance().extractPackageName(className);
+        return addDataObject(packageName, name, source, modifiers);
     }
 
     @Override
@@ -103,9 +116,7 @@ public class DataModelImpl implements DataModel {
 
     @Override
     public DataObject addDataObject(String className, ObjectSource source) {
-        String name = NamingUtils.getInstance().extractClassName(className);
-        String packageName = NamingUtils.getInstance().extractPackageName(className);
-        return addDataObject(packageName, name, source);
+        return addDataObject(className, source, Modifier.PUBLIC);
     }
 
     private Set<DataObject> getDataObjects(Map<String, DataObject> objectsMap) {
@@ -114,8 +125,8 @@ public class DataModelImpl implements DataModel {
         return set;
     }
 
-    private DataObject addDataObject(String packageName, String name, Map<String, DataObject> objectsMap) {
-        DataObject dataObject = new DataObjectImpl(packageName, name);
+    private DataObject addDataObject(String packageName, String name, Map<String, DataObject> objectsMap, int modifiers) {
+        DataObject dataObject = new DataObjectImpl(packageName, name, modifiers);
         objectsMap.put(dataObject.getClassName(), dataObject);
         return dataObject;
     }

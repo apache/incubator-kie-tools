@@ -28,12 +28,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -99,6 +103,9 @@ public class DataModelerServiceImpl implements DataModelerService {
     private ProjectService projectService;
 
     @Inject
+    private POMService pomService;
+
+    @Inject
     private MetadataService metadataService;
 
     private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
@@ -139,7 +146,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel( projectPath );
 
             DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
-            dataModel = driver.loadModel( projectDataModelOracle );
+            dataModel = driver.loadModel( projectDataModelOracle, getProjectClassLoader(project) );
 
             //Objects read from persistent .java format are tagged as PERSISTENT objects
             DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To( dataModel, DataObjectTO.PERSISTENT, true );
@@ -156,6 +163,21 @@ public class DataModelerServiceImpl implements DataModelerService {
             logger.error( "Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e );
             throw new ServiceException( "Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e );
         }
+    }
+
+    private ClassLoader getProjectClassLoader(Project project) {
+        if (project == null || project.getPomXMLPath() == null) {
+            logger.warn("project: " + project + " or pomXMLPath: " + project.getPomXMLPath() + " is null." );return null;
+        }
+        POM pom = pomService.load(project.getPomXMLPath());
+        if (pom == null) {
+            logger.warn("Pom couldn't be read for project: " + project + " pomXmlPath: " + project.getPomXMLPath());
+            return null;
+        }
+
+        KieServices kieServices = KieServices.Factory.get();
+        KieContainer kieContainer = kieServices.newKieContainer(kieServices.newReleaseId(pom.getGav().getGroupId(), pom.getGav().getArtifactId(), pom.getGav().getVersion()));
+        return kieContainer.getClassLoader();
     }
 
     @Override

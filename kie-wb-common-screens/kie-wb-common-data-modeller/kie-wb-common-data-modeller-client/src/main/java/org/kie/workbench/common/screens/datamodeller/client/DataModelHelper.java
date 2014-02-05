@@ -202,9 +202,9 @@ public class DataModelHelper {
         labelledClassNames.clear();
         siblingsMap.clear();
         if (dataModel != null) {
-            for (String extClassName : dataModel.getExternalClasses()) {
-                classNames.put(extClassName, null);
-                labelledClassNames.put(extClassName, extClassName);
+            for (DataObjectTO extClassName : dataModel.getExternalClasses()) {
+                classNames.put(extClassName.getClassName(), null);
+                labelledClassNames.put(extClassName.getClassName(), extClassName.getClassName());
             }
             for (DataObjectTO object : dataModel.getDataObjects()) {
                 String className = object.getClassName();

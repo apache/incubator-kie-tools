@@ -43,7 +43,11 @@ public interface DataModel {
 
     DataObject addDataObject(String packageName, String name, ObjectSource source);
 
+    DataObject addDataObject(String packageName, String name, ObjectSource source, int modifiers);
+
     DataObject addDataObject(String className, ObjectSource source);
+
+    DataObject addDataObject(String className, ObjectSource source, int modifiers);
 
     DataObject getDataObject(String className, ObjectSource source);
 

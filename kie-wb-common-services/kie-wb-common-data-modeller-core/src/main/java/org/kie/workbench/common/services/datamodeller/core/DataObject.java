@@ -39,4 +39,10 @@ public interface DataObject extends HasName, HasPackageName, HasClassName, HasAn
 
     ObjectProperty removeProperty(String name);
 
+    boolean isInterface();
+
+    boolean isAbstract();
+
+    boolean isFinal();
+
 }

@@ -19,6 +19,7 @@ package org.kie.workbench.common.services.datamodeller.core.impl;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,9 +37,16 @@ public class DataObjectImpl extends AbstractHasAnnotations implements DataObject
 
     private Map<String, ObjectProperty> properties = new HashMap<String, ObjectProperty>();
 
-    public DataObjectImpl(String packageName, String name) {
+    int modifiers = Modifier.PUBLIC;
+
+    public DataObjectImpl(String packageName, String name, int modifiers) {
         this.setName(name);
         this.packageName = packageName;
+        this.modifiers = modifiers;
+    }
+
+    public DataObjectImpl(String packageName, String name) {
+        this(packageName, name, Modifier.PUBLIC);
     }
 
     @Override
@@ -113,5 +121,20 @@ public class DataObjectImpl extends AbstractHasAnnotations implements DataObject
     @Override
     public List<String> getImports() {
         return imports;
+    }
+
+    @Override
+    public boolean isInterface() {
+        return Modifier.isInterface(modifiers);
+    }
+
+    @Override
+    public boolean isAbstract() {
+        return Modifier.isAbstract(modifiers);
+    }
+
+    @Override
+    public boolean isFinal() {
+        return Modifier.isFinal(modifiers);
     }
 }

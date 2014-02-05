@@ -80,7 +80,7 @@ public class DataModelOracleUtilities {
     public static String getSuperType( final ProjectDataModelOracle oracle,
                                        final String fullyQualifiedClassName ) {
         List<String> superTypes = oracle.getProjectSuperTypes().get(fullyQualifiedClassName);
-        if (superTypes != null) {
+        if (superTypes != null && superTypes.size() > 0) {
             return superTypes.get(0);
         } else {
             return null;

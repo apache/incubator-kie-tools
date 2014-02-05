@@ -23,13 +23,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class SuperclassSelector extends Composite {
@@ -71,11 +69,6 @@ public class SuperclassSelector extends Composite {
     public void setDataObject(DataObjectTO dataObject) {
         this.dataObject = dataObject;
         initList();
-        if (dataObject != null && dataObject.getSuperClassName() != null) {
-            superclassList.setSelectedValue(dataObject.getSuperClassName());
-        } else {
-            superclassList.setSelectedValue(NOT_SELECTED);
-        }
     }
 
     public void setEnabled(boolean enabled) {
@@ -86,16 +79,50 @@ public class SuperclassSelector extends Composite {
         return getContext() != null ? getContext().getDataModel() : null;
     }
 
-    private void initList() {
+    public void initList() {
         superclassList.clear();
-
         superclassList.addItem("", NOT_SELECTED);
+
         if (getDataModel() != null) {
-            for (Map.Entry<String, String> mapEntry : getContext().getHelper().getLabelledClassMap().entrySet()) {
-                if (dataObject != null && mapEntry.getValue().equalsIgnoreCase(dataObject.getClassName())) continue;
-                superclassList.addItem(mapEntry.getKey(), mapEntry.getValue());
+            SortedMap<String, String> sortedClassNames = new TreeMap<String, String>();
+             boolean isExtensible = false;
+             String className;
+             String classLabel;
+
+            // first, all data object form this model in order
+            for (DataObjectTO internalDataObject : getDataModel().getDataObjects()) {
+                className = internalDataObject.getClassName();
+                classLabel = DataModelerUtils.getDataObjectFullLabel(internalDataObject);
+                isExtensible = !internalDataObject.isAbstract() && !internalDataObject.isFinal() && !internalDataObject.isInterface();
+                if (isExtensible) {
+                    if (dataObject != null && className.toLowerCase().equals(dataObject.getClassName().toLowerCase())) continue;
+                    sortedClassNames.put(classLabel, className);
+                }
+            }
+            for (Map.Entry<String, String> classNameEntry : sortedClassNames.entrySet()) {
+                superclassList.addItem(classNameEntry.getKey(), classNameEntry.getValue());
+            }
+
+            // Then add all external types, ordered
+            sortedClassNames.clear();
+            for (DataObjectTO externalDataObject : getDataModel().getExternalClasses()) {
+                className = externalDataObject.getClassName();
+                classLabel = DataModelerUtils.EXTERNAL_PREFIX + className;
+                isExtensible = !externalDataObject.isAbstract() && !externalDataObject.isFinal() && !externalDataObject.isInterface();
+                if (isExtensible) {
+                    if (dataObject != null && className.toLowerCase().equals(dataObject.getClassName().toLowerCase())) continue;
+                    sortedClassNames.put(classLabel, className);
+                }
+            }
+            for (Map.Entry<String, String> classNameEntry : sortedClassNames.entrySet()) {
+                superclassList.addItem(classNameEntry.getKey(), classNameEntry.getValue());
+            }
+
+            if (dataObject != null && dataObject.getSuperClassName() != null) {
+                superclassList.setSelectedValue(dataObject.getSuperClassName());
+            } else {
+                superclassList.setSelectedValue(NOT_SELECTED);
             }
         }
     }
-
 }

@@ -33,7 +33,7 @@ public class DataModelTO {
     /**
      * List of class names imported by this module.
      */
-    private List<String> externalClasses = new ArrayList<String>();
+    private List<DataObjectTO> externalClasses = new ArrayList<DataObjectTO>();
 
     /**
      * A list to remember data objects that was deleted in memory and has to be removed fisically when the model
@@ -111,16 +111,20 @@ public class DataModelTO {
         }
     }
 
-    public List<String> getExternalClasses() {
+    public List<DataObjectTO> getExternalClasses() {
         return externalClasses;
     }
 
-    public void setExternalClasses(List<String> externalClasses) {
+    public void setExternalClasses(List<DataObjectTO> externalClasses) {
         this.externalClasses = externalClasses;
     }
     
     public boolean isExternal(String className) {
-        return externalClasses != null && externalClasses.contains(className);
+        if (externalClasses == null || className == null || "".equals(className)) return false;
+        for (DataObjectTO externalDataObject : externalClasses) {
+            if (className.equals(externalDataObject.getClassName())) return true;
+        }
+        return false;
     }
 
     public int getId() {

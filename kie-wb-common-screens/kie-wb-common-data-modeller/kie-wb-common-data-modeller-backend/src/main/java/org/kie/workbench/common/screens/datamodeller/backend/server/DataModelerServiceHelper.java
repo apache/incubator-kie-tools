@@ -53,7 +53,7 @@ public class DataModelerServiceHelper {
         DataModelTO dataModelTO = new DataModelTO();
         List<DataObject> dataObjects = new ArrayList<DataObject>();
         List<DataObject> externalDataObjects = new ArrayList<DataObject>();
-        List<String> externalClasses = new ArrayList<String>();
+        Map<String, String> externalClasses = new HashMap<String, String>();
 
         dataObjects.addAll(dataModel.getDataObjects());
         externalDataObjects.addAll(dataModel.getDataObjects(ObjectSource.DEPENDENCY));
@@ -62,7 +62,7 @@ public class DataModelerServiceHelper {
 
         if (dataObjects != null) {
             for (DataObject dataObject  : dataObjects) {
-                dataObjectTO = new DataObjectTO(dataObject.getName(), dataObject.getPackageName(), dataObject.getSuperClassName());
+                dataObjectTO = new DataObjectTO(dataObject.getName(), dataObject.getPackageName(), dataObject.getSuperClassName(), dataObject.isAbstract(), dataObject.isInterface(), dataObject.isFinal());
                 if (initialStatus != null) {
                     dataObjectTO.setStatus(initialStatus);
                 }
@@ -74,12 +74,18 @@ public class DataModelerServiceHelper {
             }
         }
 
+
         for (DataObject externalDataObject : externalDataObjects) {
-            if (!externalClasses.contains(externalDataObject.getClassName())) {
-                externalClasses.add(externalDataObject.getClassName());
+            dataObjectTO = new DataObjectTO(externalDataObject.getName(), externalDataObject.getPackageName(), externalDataObject.getSuperClassName(), externalDataObject.isAbstract(), externalDataObject.isInterface(), externalDataObject.isFinal());
+            if (!externalClasses.containsKey(dataObjectTO.getClassName())) {
+                //TODO if needed add the external clases properties.
+                //version 6.0.1 will not do anything with external classes properties, so we can
+                //skip properties loading.
+                dataModelTO.getExternalClasses().add(dataObjectTO);
+                externalClasses.put(dataObjectTO.getClassName(), dataObjectTO.getClassName());
             }
+
         }
-        dataModelTO.setExternalClasses(externalClasses);
 
         return dataModelTO;
     }

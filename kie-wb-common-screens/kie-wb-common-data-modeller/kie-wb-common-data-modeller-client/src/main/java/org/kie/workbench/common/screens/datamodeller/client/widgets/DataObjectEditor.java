@@ -240,6 +240,7 @@ public class DataObjectEditor extends Composite {
                 setDataObject( null );
                 setReadonly( true );
             }
+            superclassSelector.initList();
         }
     }
 

@@ -464,7 +464,8 @@ public class DataObjectFieldEditor extends Composite {
 
             // Then add all external types, ordered
             typeNames.clear();
-            for (String extClass : getDataModel().getExternalClasses()) {
+            for (DataObjectTO externalDataObject : getDataModel().getExternalClasses()) {
+                String extClass = externalDataObject.getClassName();
                 String extClass_m = extClass + DataModelerUtils.MULTIPLE;
                 typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
                 typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);

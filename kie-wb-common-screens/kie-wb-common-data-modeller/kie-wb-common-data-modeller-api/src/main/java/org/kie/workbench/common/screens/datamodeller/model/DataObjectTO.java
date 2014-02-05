@@ -61,13 +61,26 @@ public class DataObjectTO {
 
     private String fingerPrint;
 
+    private boolean abstractModifier = false;
+
+    private boolean interfaceModifier = false;
+
+    private boolean finalModifier = false;
+
     public DataObjectTO() {
     }
 
     public DataObjectTO(String name, String packageName, String superClassName) {
+        this(name, packageName, superClassName, false, false, false);
+    }
+
+    public DataObjectTO(String name, String packageName, String superClassName, boolean abstractModifier, boolean interfaceModifier, boolean finalModifier) {
         this.name = name;
         this.packageName = packageName;
         this.superClassName = superClassName;
+        this.abstractModifier = abstractModifier;
+        this.interfaceModifier = interfaceModifier;
+        this.finalModifier = finalModifier;
     }
 
     public String getName() {
@@ -231,4 +244,17 @@ public class DataObjectTO {
         }
         return strId.toString();
     }
+
+    public boolean isAbstract() {
+        return abstractModifier;
+    }
+
+    public boolean isFinal() {
+        return finalModifier;
+    }
+
+    public boolean isInterface() {
+        return interfaceModifier;
+    }
+
 }
