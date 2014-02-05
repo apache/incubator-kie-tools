@@ -20,11 +20,9 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='org.jboss.errai.bus.ErraiBus'/>
-
   <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
 
-  <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
+  <inherits name="org.guvnor.common.services.GuvnorServicesAPI"/>
 
   <source path="model"/>
   <source path="service"/>

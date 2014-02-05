@@ -43,7 +43,6 @@
         <exclude>bouncycastle:bcmail-jdk14</exclude>
         <exclude>bouncycastle:bcprov-jdk14</exclude>
         <exclude>com.allen-sauer.gwt.dnd:gwt-dnd</exclude>
-        <exclude>com.github.gwtbootstrap:gwt-bootstrap</exclude>
         <exclude>com.google.gwt:gwt-user</exclude>
         <exclude>com.google.inject:guice</exclude>
         <exclude>com.sun.xml.bind:jaxb-xjc</exclude>

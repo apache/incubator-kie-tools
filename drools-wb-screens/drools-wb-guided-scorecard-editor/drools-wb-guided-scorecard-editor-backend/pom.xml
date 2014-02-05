@@ -15,7 +15,6 @@
   <description>Drools Workbench - Guided Score Card Editor - Backend</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-scorecard-editor-api</artifactId>
@@ -36,16 +35,6 @@
       <artifactId>guvnor-project-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-server</artifactId>
-    </dependency>
-
     <!-- Needed for org.codehaus.plexus.util.StringUtils -->
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -56,18 +45,6 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
     </dependency>
-
-    <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-ioc</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
-
   </dependencies>
 
 </project>

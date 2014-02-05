@@ -16,7 +16,6 @@
   <description>Drools Workbench - Fact Model Editor - Backend</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-factmodel-editor-api</artifactId>
@@ -45,15 +44,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
     </dependency>
   </dependencies>
 

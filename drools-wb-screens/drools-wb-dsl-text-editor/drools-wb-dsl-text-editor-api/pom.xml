@@ -16,7 +16,6 @@
   <description>Drools Workbench - Domain Specific Language Editor - API</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>
@@ -25,11 +24,6 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-services-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
     </dependency>
   </dependencies>
 

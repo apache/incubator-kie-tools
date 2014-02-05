@@ -1,8 +1,0 @@
-<beans>
-
-  <interceptors>
-    <class>org.uberfire.security.server.authz.cdi.RolesInterceptor</class>
-    <class>org.uberfire.security.server.authz.cdi.TraitInterceptor</class>
-  </interceptors>
-
-</beans>

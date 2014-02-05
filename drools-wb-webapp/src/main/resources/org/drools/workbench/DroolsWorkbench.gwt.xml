@@ -2,15 +2,8 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
-  <!-- Errai -->
-  <inherits name="org.jboss.errai.enterprise.CDI"/>
-
   <!-- Uberfire dependencies -->
-  <inherits name="org.uberfire.UberfireJS"/>
-  <inherits name="org.uberfire.UberfireWorkbench"/>
-  <inherits name="org.uberfire.UberfireWidgetsCore"/>
-  <inherits name="org.uberfire.UberfireBackend"/>
-  <inherits name="org.uberfire.security.UberfireSecurityClient"/>
+  <inherits name="org.uberfire.UberfireClientAll"/>
 
   <!-- Guvnor dependencies -->
   <inherits name="org.guvnor.inbox.GuvnorInboxClient"/>
@@ -26,7 +19,7 @@
   <inherits name="org.kie.workbench.common.screens.search.KieWorkbenchSearchScreenClient"/>
   <inherits name="org.kie.workbench.common.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
   <inherits name='org.kie.workbench.common.screens.organizationalunit.manager.KieWorkbenchOrganizationalUnitManager'/>
-  <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorClient" />
+  <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorClient"/>
 
 
   <!-- Common Services -->

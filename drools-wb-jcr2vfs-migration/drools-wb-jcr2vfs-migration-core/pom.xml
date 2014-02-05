@@ -110,35 +110,6 @@
       <version>2.4.1</version>
     </dependency>
 
-    <!-- VFS Guvnor (Drools Workbench) dependencies -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-io</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.helix</groupId>
-          <artifactId>helix-core</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-    </dependency>
-    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-rule-editor-api</artifactId>
@@ -207,25 +178,23 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
+      <artifactId>uberfire-backend-server</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>com.google.gwt</groupId>
-          <artifactId>gwt-user</artifactId>
+          <groupId>org.apache.helix</groupId>
+          <artifactId>helix-core</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- VFS Guvnor (Drools Workbench) dependencies -->
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-server</artifactId>
+      <artifactId>uberfire-nio2-jgit</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
     </dependency>
 
     <!-- Other external dependencies -->

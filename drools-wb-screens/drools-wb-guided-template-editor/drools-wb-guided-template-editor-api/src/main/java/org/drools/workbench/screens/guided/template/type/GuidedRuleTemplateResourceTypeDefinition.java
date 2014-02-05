@@ -2,7 +2,6 @@ package org.drools.workbench.screens.guided.template.type;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 

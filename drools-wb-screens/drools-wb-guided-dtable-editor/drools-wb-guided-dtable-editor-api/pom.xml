@@ -31,31 +31,16 @@
       <artifactId>kie-wb-common-datamodel-api</artifactId>
     </dependency>
 
-    <!-- Needed for DataModelOracle builder used in tests -->
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-datamodel-backend</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-decorated-grid-widget</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-rule-editor-api</artifactId>
     </dependency>
 
+    <!-- Needed for DataModelOracle builder used in tests -->
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-datamodel-backend</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
