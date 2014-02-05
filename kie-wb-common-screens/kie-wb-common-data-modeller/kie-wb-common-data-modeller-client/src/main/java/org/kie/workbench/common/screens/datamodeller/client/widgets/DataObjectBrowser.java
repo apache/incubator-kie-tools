@@ -262,7 +262,7 @@ public class DataObjectBrowser extends Composite {
         //Init property type browsing column
         ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
         final TooltipCellDecorator<ImageResource> typeImageDecorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
-        typeImageDecorator.setText("Go to data object definition");
+        typeImageDecorator.setText(Constants.INSTANCE.objectBrowser_action_goToDataObjectDefinition());
 
         final Column<ObjectPropertyTO, ImageResource> typeImageColumn = new Column<ObjectPropertyTO, ImageResource>(typeImageDecorator) {
             @Override

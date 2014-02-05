@@ -115,6 +115,8 @@ public interface Constants extends Messages {
 
     public String objectBrowser_readonlyLabel();
 
+    public String objectBrowser_action_goToDataObjectDefinition();
+
     public String objectEditor_nameLabel();
 
     public String objectEditor_labelLabel();
