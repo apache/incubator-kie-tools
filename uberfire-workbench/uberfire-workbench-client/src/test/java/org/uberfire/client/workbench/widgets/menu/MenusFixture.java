@@ -19,9 +19,9 @@ import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.MINI;
-import static java.util.Collections.emptyList;
-import static org.mockito.Mockito.mock;
+import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
+import static java.util.Collections.*;
+import static org.mockito.Mockito.*;
 
 public class MenusFixture {
 
