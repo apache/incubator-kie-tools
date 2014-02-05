@@ -4,10 +4,10 @@ import java.util.HashSet;
 
 import com.google.gwt.event.shared.EventBus;
 import org.junit.Test;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.Position;
 
 import static org.junit.Assert.*;

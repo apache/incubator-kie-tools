@@ -7,10 +7,10 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Mockito.*;
 
-public class PartContextMenusViewUnitTestWrapper extends PartContextMenusView{
+public class PespectiveMenusViewUnitTestWrapper extends PespectiveContextMenusView{
 
     public void setupMocks(NavPills menuBar){
-        this.menuBar = menuBar;
+       this.menuBar = menuBar;
     }
 
     @Override

@@ -1,14 +1,11 @@
 package org.uberfire.client.workbench.widgets.listbar;
 
 import java.util.LinkedHashSet;
-import java.util.Map;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.commons.data.Pair;

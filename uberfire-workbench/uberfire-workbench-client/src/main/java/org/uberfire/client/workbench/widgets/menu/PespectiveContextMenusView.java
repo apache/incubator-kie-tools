@@ -31,7 +31,7 @@ public class PespectiveContextMenusView
     @Inject
     private Identity identity;
 
-    private NavPills menuBar = new NavPills();
+    NavPills menuBar = new NavPills();
 
     public PespectiveContextMenusView() {
         initWidget( menuBar );
@@ -49,11 +49,33 @@ public class PespectiveContextMenusView
         }
     }
 
-    private Widget makeItem( final MenuItem item ) {
-        if ( !authzManager.authorize( item, identity ) ) {
+    Widget makeItem( final MenuItem item ) {
+        if ( notHavePermissionToMakeThis( item ) ) {
             return null;
         }
+        if ( isInstanceOfMenuItemCommand(item ) ) {
+            return makeMenuItemCommand( item );
 
+        } else if ( isInstanceOfMenuGroup( item ) ) {
+            return makeMenuGroup( (MenuGroup) item );
+        }
+
+        return null;
+    }
+
+    private boolean isInstanceOfMenuGroup( MenuItem item ) {
+        //Workaround af a dev mode bug that instanceOf doesn't seems to work with static inner classes
+        boolean isInstanceOfMenuGroup = false;
+        try {
+            final MenuGroup _x = (MenuGroup) item;
+            isInstanceOfMenuGroup = true;
+        } catch ( Exception ex ) {
+            isInstanceOfMenuGroup = false;
+        }
+        return isInstanceOfMenuGroup;
+    }
+
+    private boolean isInstanceOfMenuItemCommand( MenuItem item ) {
         //Workaround af a dev mode bug that instanceOf doesn't seems to work with static inner classes
         boolean isInstanceOfMenuItemCommand = false;
         try {
@@ -62,59 +84,55 @@ public class PespectiveContextMenusView
         } catch ( Exception ex ) {
             isInstanceOfMenuItemCommand = false;
         }
+        return isInstanceOfMenuItemCommand;
+    }
 
-        boolean isInstanceOfMenuGroup = false;
-        try {
-            final MenuGroup _x = (MenuGroup) item;
-            isInstanceOfMenuGroup = true;
-        } catch ( Exception ex ) {
-            isInstanceOfMenuGroup = false;
-        }
+    Widget makeMenuItemCommand( final MenuItem item ) {
+        final MenuItemCommand cmdItem = (MenuItemCommand) item;
+        final Widget gwtItem;
 
-        if ( isInstanceOfMenuItemCommand ) {
-            final MenuItemCommand cmdItem = (MenuItemCommand) item;
-            final Widget gwtItem;
-
-            gwtItem = new NavLink( cmdItem.getCaption() ) {{
-                setDisabled( !item.isEnabled() );
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( final ClickEvent event ) {
-                        cmdItem.getCommand().execute();
-                    }
-                } );
-            }};
-            item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+        gwtItem = new NavLink( cmdItem.getCaption() ) {{
+            setDisabled( !item.isEnabled() );
+            addClickHandler( new ClickHandler() {
                 @Override
-                public void enabledStateChanged( final boolean enabled ) {
-                    ( (NavLink) gwtItem ).setDisabled( !enabled );
+                public void onClick( final ClickEvent event ) {
+                    cmdItem.getCommand().execute();
                 }
             } );
-
-            return gwtItem;
-
-        } else if ( isInstanceOfMenuGroup ) {
-            final MenuGroup groups = (MenuGroup) item;
-            final List<Widget> widgetList = new ArrayList<Widget>();
-            for ( final MenuItem _item : groups.getItems() ) {
-                final Widget result = makeItem( _item );
-                if ( result != null ) {
-                    widgetList.add( result );
-                }
+        }};
+        item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+            @Override
+            public void enabledStateChanged( final boolean enabled ) {
+                ( (NavLink) gwtItem ).setDisabled( !enabled );
             }
+        } );
 
-            if ( widgetList.isEmpty() ) {
-                return null;
+        return gwtItem;
+    }
+
+    Widget makeMenuGroup( MenuGroup item ) {
+        final MenuGroup groups = (MenuGroup) item;
+        final List<Widget> widgetList = new ArrayList<Widget>();
+        for ( final MenuItem _item : groups.getItems() ) {
+            final Widget result = makeItem( _item );
+            if ( result != null ) {
+                widgetList.add( result );
             }
-
-            return new Dropdown( groups.getCaption() ) {{
-                for ( final Widget widget : widgetList ) {
-                    add( widget );
-                }
-            }};
         }
 
-        return null;
+        if ( widgetList.isEmpty() ) {
+            return null;
+        }
+
+        return new Dropdown( groups.getCaption() ) {{
+            for ( final Widget widget : widgetList ) {
+                add( widget );
+            }
+        }};
+    }
+
+    boolean notHavePermissionToMakeThis( MenuItem item ) {
+        return !authzManager.authorize( item, identity );
     }
 
     @Override

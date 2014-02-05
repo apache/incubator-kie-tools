@@ -37,8 +37,13 @@ public class SplashView
 
     private Boolean showAgain = null;
 
-    private final Modal modal = new Modal( true, true );
-    private final SplashModalFooter footer = new SplashModalFooter( new ParameterizedCommand<Boolean>() {
+    private final Modal modal = getModal();
+
+    Modal getModal() {
+        return new Modal( true, true );
+    }
+
+    final SplashModalFooter footer = new SplashModalFooter( new ParameterizedCommand<Boolean>() {
         @Override
         public void execute( final Boolean parameter ) {
             showAgain = parameter;
@@ -72,13 +77,17 @@ public class SplashView
 
     public void show() {
         modal.show();
-        modal.addHideHandler( new HideHandler() {
+        modal.addHideHandler( createHideHandler() );
+    }
+
+    private HideHandler createHideHandler() {
+        return new HideHandler() {
             @Override
             public void onHide( final HideEvent hideEvent ) {
                 showAgain = footer.getShowAgain();
                 cleanup();
             }
-        } );
+        };
     }
 
     public void hide() {
@@ -86,7 +95,7 @@ public class SplashView
         cleanup();
     }
 
-    private void cleanup() {
+    void cleanup() {
         CloseEvent.fire( this, this, false );
         ( (DivWidget) modal.getWidget( 1 ) ).clear();
     }

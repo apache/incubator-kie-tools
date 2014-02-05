@@ -1,7 +1,5 @@
 package org.uberfire.client.workbench;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 

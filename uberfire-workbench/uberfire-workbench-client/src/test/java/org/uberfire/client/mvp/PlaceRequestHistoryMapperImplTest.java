@@ -2,7 +2,6 @@ package org.uberfire.client.mvp;
 
 import java.util.Map;
 
-import com.google.gwt.http.client.URL;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.mvp.PlaceRequest;

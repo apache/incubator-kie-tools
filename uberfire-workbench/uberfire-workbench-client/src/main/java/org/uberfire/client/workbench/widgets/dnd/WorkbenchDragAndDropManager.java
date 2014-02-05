@@ -32,16 +32,16 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 public class WorkbenchDragAndDropManager {
 
     //A registry of SimplePanels and their respective DropController
-    private Map<WorkbenchPanelView, DropController> dropControllerMap = new HashMap<WorkbenchPanelView, DropController>();
+    Map<WorkbenchPanelView, DropController> dropControllerMap = new HashMap<WorkbenchPanelView, DropController>();
 
     //The context of the drag operation
     private WorkbenchDragContext workbenchContext = null;
 
     @Inject
-    private WorkbenchPickupDragController dragController;
+    WorkbenchPickupDragController dragController;
 
     @Inject
-    private BeanFactory factory;
+    BeanFactory factory;
 
     public void makeDraggable( IsWidget draggable,
                                IsWidget dragHandle ) {

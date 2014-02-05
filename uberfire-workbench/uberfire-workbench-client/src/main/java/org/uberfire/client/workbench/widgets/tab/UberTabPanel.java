@@ -41,17 +41,17 @@ public class UberTabPanel
 
     private static final int MARGIN = 20;
 
-    private final TabPanel tabPanel;
+    TabPanel tabPanel;
 
     private WorkbenchPanelPresenter presenter;
-    private WorkbenchDragAndDropManager dndManager;
+    WorkbenchDragAndDropManager dndManager;
 
     private int maxDropdownTabLinkWidth = 0;
     private boolean alreadyScheduled = false;
 
-    private final Map<WorkbenchPartPresenter.View, TabLink> tabIndex = new HashMap<WorkbenchPartPresenter.View, TabLink>();
-    private final Map<TabLink, WorkbenchPartPresenter.View> tabInvertedIndex = new HashMap<TabLink, WorkbenchPartPresenter.View>();
-    private final Map<PartDefinition, TabLink> partTabIndex = new HashMap<PartDefinition, TabLink>();
+    final Map<WorkbenchPartPresenter.View, TabLink> tabIndex = new HashMap<WorkbenchPartPresenter.View, TabLink>();
+    final Map<TabLink, WorkbenchPartPresenter.View> tabInvertedIndex = new HashMap<TabLink, WorkbenchPartPresenter.View>();
+    final Map<PartDefinition, TabLink> partTabIndex = new HashMap<PartDefinition, TabLink>();
     private boolean hasFocus = false;
     private Command addOnFocusHandler;
 
@@ -175,7 +175,7 @@ public class UberTabPanel
             final Tab newTab = createTab( view, false, 0, 0 );
 
             final Widget lastTab = getLastTab();
-            if ( lastTab != null && lastTab instanceof DropdownTab ) {
+            if ( lastTabIsDropdownTab( lastTab ) ) {
                 final Tab clonedTab = cloneTab( newTab.asTabLink(), false, true );
                 final DropdownTab dropdown = cloneDropdown( (DropdownTab) lastTab, -1 );
 
@@ -188,13 +188,21 @@ public class UberTabPanel
                 tabPanel.remove( lastTab );
             } else {
                 tabPanel.add( newTab );
-                if ( getTabs().getWidgetCount() == 1 ) {
+                if ( isFirstWidget() ) {
                     tabPanel.selectTab( 0 );
                 }
             }
 
             scheduleResize();
         }
+    }
+
+    boolean lastTabIsDropdownTab( Widget lastTab ) {
+        return lastTab != null && lastTab instanceof DropdownTab;
+    }
+
+    boolean isFirstWidget() {
+        return getTabs().getWidgetCount() == 1;
     }
 
     private void scheduleResize() {
@@ -242,32 +250,14 @@ public class UberTabPanel
         }
     }
 
-    private Tab createTab( final WorkbenchPartPresenter.View view,
-                           final boolean isActive,
-                           final int width,
-                           final int height ) {
+    Tab createTab( final WorkbenchPartPresenter.View view,
+                   final boolean isActive,
+                   final int width,
+                   final int height ) {
 
-        final Tab tab = new Tab() {{
-            setHeading( view.getPresenter().getTitle() );
-            setActive( isActive );
-        }};
+        final Tab tab = createTab( view, isActive );
 
-        tab.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( final ClickEvent event ) {
-                UberTabPanel.this.onClick( event );
-                if ( tab.asTabLink().getParent().getParent() instanceof DropdownTab ) {
-                    final DropdownTab dropdownTab = (DropdownTab) tab.asTabLink().getParent().getParent();
-                    dropdownTab.setText( "Active: " + view.getPresenter().getTitle() );
-                    dropdownTab.addStyleName( Constants.ACTIVE );
-                } else {
-                    final Widget lastTab = getLastTab();
-                    if ( lastTab instanceof DropdownTab ) {
-                        ( (DropdownTab) lastTab ).setText( "More..." );
-                    }
-                }
-            }
-        } );
+        tab.addClickHandler( createTabClickHandler( view, tab ) );
 
         tab.add( view.asWidget() );
 
@@ -282,9 +272,37 @@ public class UberTabPanel
         return addCloseToTab( tab );
     }
 
-    private Tab cloneTab( final TabLink tabLink,
-                          final boolean fromDropdown,
-                          final boolean toDropdown ) {
+    private ClickHandler createTabClickHandler( final WorkbenchPartPresenter.View view,
+                                                final Tab tab ) {
+        return new ClickHandler() {
+            @Override
+            public void onClick( final ClickEvent event ) {
+                UberTabPanel.this.onClick( event );
+                if ( tab.asTabLink().getParent().getParent() instanceof DropdownTab ) {
+                    final DropdownTab dropdownTab = (DropdownTab) tab.asTabLink().getParent().getParent();
+                    dropdownTab.setText( "Active: " + view.getPresenter().getTitle() );
+                    dropdownTab.addStyleName( Constants.ACTIVE );
+                } else {
+                    final Widget lastTab = getLastTab();
+                    if ( lastTab instanceof DropdownTab ) {
+                        ( (DropdownTab) lastTab ).setText( "More..." );
+                    }
+                }
+            }
+        };
+    }
+
+    Tab createTab( final WorkbenchPartPresenter.View view,
+                   final boolean isActive ) {
+        return new Tab() {{
+            setHeading( view.getPresenter().getTitle() );
+            setActive( isActive );
+        }};
+    }
+
+    Tab cloneTab( final TabLink tabLink,
+                  final boolean fromDropdown,
+                  final boolean toDropdown ) {
 
         final Widget content = tabLink.getTabPane().getWidget( 0 );
         final WorkbenchPartPresenter.View view = tabInvertedIndex.get( tabLink );
@@ -301,8 +319,8 @@ public class UberTabPanel
                           content.getOffsetHeight() );
     }
 
-    private DropdownTab cloneDropdown( final DropdownTab original,
-                                       final int excludedIndex ) {
+    DropdownTab cloneDropdown( final DropdownTab original,
+                               final int excludedIndex ) {
         final DropdownTab newDropdown = new DropdownTab( original.getText() );
 
         boolean isAnyTabActive = false;
@@ -447,7 +465,7 @@ public class UberTabPanel
         return (ComplexPanel) tabPanel.getWidget( 0 );
     }
 
-    private Widget getLastTab() {
+    Widget getLastTab() {
         final ComplexPanel tabs = getTabs();
         if ( tabs.getWidgetCount() <= 0 ) {
             return null;

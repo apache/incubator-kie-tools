@@ -16,10 +16,10 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.commons.data.Pair;
 
 import static java.util.Collections.*;
 

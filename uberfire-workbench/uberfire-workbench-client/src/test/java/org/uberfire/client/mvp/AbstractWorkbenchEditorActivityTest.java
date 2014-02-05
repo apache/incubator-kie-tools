@@ -6,9 +6,9 @@ import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 
 import static org.mockito.Matchers.any;

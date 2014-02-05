@@ -1,6 +1,5 @@
 package org.uberfire.client.workbench.widgets.listbar;
 
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -8,11 +7,9 @@ import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;

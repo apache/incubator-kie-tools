@@ -1,7 +1,6 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;

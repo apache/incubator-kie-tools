@@ -21,13 +21,13 @@ import org.junit.Before;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.PanelManagerImplUnitTestWrapper;
-import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 

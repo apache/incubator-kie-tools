@@ -23,11 +23,11 @@ import javax.inject.Named;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.events.MaximizePlaceEvent;
+import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;

@@ -8,8 +8,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped

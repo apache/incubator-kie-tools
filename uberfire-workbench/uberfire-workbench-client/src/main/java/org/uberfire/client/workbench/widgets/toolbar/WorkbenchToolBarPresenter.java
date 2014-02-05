@@ -18,22 +18,20 @@ package org.uberfire.client.workbench.widgets.toolbar;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.uberfire.client.mvp.Activity;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.client.workbench.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.workbench.model.toolbar.ToolBar;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.Activity;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.WorkbenchActivity;
+import org.uberfire.client.workbench.events.ClosePlaceEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.toolbar.ToolBar;
 
 /**
  * Presenter for WorkbenchToolBar that mediates changes to the Workbench ToolBar

@@ -1,6 +1,5 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;

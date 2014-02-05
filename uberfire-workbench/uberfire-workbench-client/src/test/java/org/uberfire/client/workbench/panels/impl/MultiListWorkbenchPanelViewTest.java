@@ -1,6 +1,5 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -10,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.client.workbench.widgets.tab.UberTabPanel;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.PartDefinition;
 
 import static org.mockito.Mockito.*;
 

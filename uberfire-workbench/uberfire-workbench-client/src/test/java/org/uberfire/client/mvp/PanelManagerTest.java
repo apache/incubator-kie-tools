@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.event.Event;
 
 import org.junit.Test;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
