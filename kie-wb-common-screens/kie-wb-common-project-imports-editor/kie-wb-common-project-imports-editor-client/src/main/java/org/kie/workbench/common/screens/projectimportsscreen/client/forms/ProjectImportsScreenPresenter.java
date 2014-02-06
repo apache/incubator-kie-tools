@@ -25,30 +25,37 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projectimportsscreen.client.resources.i18n.ProjectConfigScreenConstants;
 import org.kie.workbench.common.screens.projectimportsscreen.client.type.ProjectImportsResourceType;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = {ProjectImportsResourceType.class})
+@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectImportsResourceType.class })
 public class ProjectImportsScreenPresenter
         implements ProjectImportsScreenView.Presenter {
+
+    private BusyIndicatorView busyIndicatorView;
+    private Event<NotificationEvent> notification;
 
     private ProjectImportsScreenView view;
 
@@ -59,6 +66,7 @@ public class ProjectImportsScreenPresenter
     private Menus menus;
 
     private Path path;
+    private ProjectImports content;
     private ImportsWidgetPresenter importsWidget;
 
     private boolean isReadOnly;
@@ -67,51 +75,91 @@ public class ProjectImportsScreenPresenter
     }
 
     @Inject
-    public ProjectImportsScreenPresenter(@New ProjectImportsScreenView view,
-                                         @New FileMenuBuilder menuBuilder,
-                                         @New ImportsWidgetPresenter importsWidget,
-                                         Caller<ProjectService> projectService,
-                                         Caller<MetadataService> metadataService) {
+    public ProjectImportsScreenPresenter( @New final ProjectImportsScreenView view,
+                                          @New final FileMenuBuilder menuBuilder,
+                                          @New final ImportsWidgetPresenter importsWidget,
+                                          final Event<NotificationEvent> notification,
+                                          final BusyIndicatorView busyIndicatorView,
+                                          final Caller<ProjectService> projectService,
+                                          final Caller<MetadataService> metadataService ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.importsWidget = importsWidget;
         this.projectService = projectService;
         this.metadataService = metadataService;
+        this.busyIndicatorView = busyIndicatorView;
+        this.notification = notification;
 
-        view.setImports(importsWidget);
+        view.setImports( importsWidget );
 
-        view.setPresenter(this);
+        view.setPresenter( this );
     }
 
     @OnStartup
-    public void init(final Path path,
-                     final PlaceRequest place) {
-        this.path = checkNotNull("path",
-                path);
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+    public void init( final Path path,
+                      final PlaceRequest place ) {
+        this.path = checkNotNull( "path",
+                                  path );
+        this.isReadOnly = place.getParameter( "readOnly", null ) != null;
 
         makeMenuBar();
 
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        projectService.call(getModelSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).load(path);
+        projectService.call( getModelSuccessCallback(),
+                             new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
 
     private RemoteCallback<ProjectImports> getModelSuccessCallback() {
         return new RemoteCallback<ProjectImports>() {
 
             @Override
-            public void callback(final ProjectImports projectImports) {
-                importsWidget.setContent(projectImports, true);
+            public void callback( final ProjectImports projectImports ) {
+                content = projectImports;
+                importsWidget.setContent( content, isReadOnly );
             }
         };
     }
 
     private void makeMenuBar() {
-        if (isReadOnly) {
-            menus = menuBuilder.addRestoreVersion(path).build();
+        if ( isReadOnly ) {
+            menus = menuBuilder.addRestoreVersion( path ).build();
+        } else {
+            menus = menuBuilder.addSave( new Command() {
+                @Override
+                public void execute() {
+                    onSave();
+                }
+            } ).build();
         }
+    }
+
+    private void onSave() {
+        new SaveOperationService().save( path,
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 projectService.call( getSaveSuccessCallback(),
+                                                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
+                                                                                                                                            content,
+                                                                                                                                            view.getMetadata(),
+                                                                                                                                            commitMessage );
+                                             }
+                                         } );
+
+    }
+
+    private RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path path ) {
+                busyIndicatorView.hideBusyIndicator();
+                importsWidget.setNotDirty();
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            }
+        };
     }
 
     @WorkbenchPartTitle
@@ -126,18 +174,17 @@ public class ProjectImportsScreenPresenter
 
     @Override
     public void onShowMetadata() {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-        metadataService.call(getMetadataSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).getMetadata(path);
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        metadataService.call( getMetadataSuccessCallback(),
+                              new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
     }
-
 
     private RemoteCallback<Metadata> getMetadataSuccessCallback() {
         return new RemoteCallback<Metadata>() {
 
             @Override
-            public void callback(final Metadata metadata) {
-                view.setMetadata(metadata);
+            public void callback( final Metadata metadata ) {
+                view.setMetadata( metadata );
                 view.hideBusyIndicator();
             }
         };
