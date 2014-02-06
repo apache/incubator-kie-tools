@@ -34,7 +34,7 @@ public class FormAuthenticationScheme implements AuthenticationScheme {
     public boolean isAuthenticationRequest(final SecurityContext context) {
         final HttpSecurityContext httpSecurityContext = checkInstanceOf("context", context, HttpSecurityContext.class);
 
-        return httpSecurityContext.getRequest().getRequestURI().contains(HTTP_FORM_J_SECURITY_CHECK);
+        return httpSecurityContext.getRequest().getRequestURI().contains(HTTP_FORM_SECURITY_CHECK_URI);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class FormAuthenticationScheme implements AuthenticationScheme {
     public Credential buildCredential(final SecurityContext context) {
         final HttpSecurityContext httpSecurityContext = checkInstanceOf("context", context, HttpSecurityContext.class);
 
-        final String userName = httpSecurityContext.getRequest().getParameter(HTTP_FORM_J_USERNAME);
-        final String password = httpSecurityContext.getRequest().getParameter(HTTP_FORM_J_PASSWORD);
+        final String userName = httpSecurityContext.getRequest().getParameter(HTTP_FORM_USERNAME_PARAM);
+        final String password = httpSecurityContext.getRequest().getParameter(HTTP_FORM_PASSWORD_PARAM);
 
         if (userName == null || password == null) {
             return null;

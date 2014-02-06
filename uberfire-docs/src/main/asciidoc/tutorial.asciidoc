@@ -947,7 +947,8 @@ For this demo, we will control access using the default settings, which are:
 * Authentication Manager (controls login and logout): `HttpAuthenticationManager`
 ** Authentication Schemes (extract provided credentials from HTTP requests):
 *** HTTP BASIC (`HttpBasicAuthenticationScheme`)
-*** JAAS standard form authentication, i.e. POST to j_security_check (`FormAuthenticationScheme`)
+*** Form-based authentication, i.e. POST `uf_username` and `uf_password` to
+    `/uf_security_check` (`FormAuthenticationScheme`)
 *** UberFire ``Remember Me'' cookies (`RememberMeCookieAuthScheme`)
 ** Authentication Providers: `DefaultAuthenticationProvider` and `RememberMeCookieAuthProvider`
 ** Authenticated Storage Providers: `HttpSessionStorage` and `CookieStorage`
@@ -960,7 +961,7 @@ For this demo, we will control access using the default settings, which are:
 ** Resource Manager: `URLResourceManager`
 ** Resource Decision Managers: `URLAccessDecisionManager`
 
-TODO: define the terms used above: authentication, HTTP BASIC, JAAS,
+TODO: define the terms used above: authentication, HTTP BASIC,
 Authenticated Storage, Resource, Role, Subject, Subject Properties,
 Authorization, Decision Manager, Voting Strategy, and Consensus-based voting.
 
@@ -1057,11 +1058,12 @@ We've chosen a mechanism for representing users, passwords, and
 roles. But how do we initiate a login request?
 
 UberFire supports a variety of authentication mechanisms, including
-JAAS form authentication. This mechanism is part of the Java Servlets
-specification: a POST request to the URL `j_security_check` with form
-parameters `j_username` and `j_password` constitutes a login
-request. We'll create a `login.jsp` page with a form which submits
-the correct information to this special URL.
+form-based authentication. This mechanism is similar to the form-based
+authentication available in the Java Servlets specification: a POST
+request to the URL `uf_security_check` with form parameters
+`uf_username` and `uf_password` constitutes a login request. We'll
+create a `login.jsp` page with a form which submits the correct
+information to this special URL.
 
 Place the following file in `src/main/webapp/login.jsp`:
 
@@ -1204,16 +1206,16 @@ Place the following file in `src/main/webapp/login.jsp`:
   </div>
 
   <div id="login-content">
-    <form action="j_security_check" method="post">
+    <form action="uf_security_check" method="post">
       <p>
         <label>Username</label>
-        <input value="" name="j_username" class="text-input" type="text"/>
+        <input value="" name="uf_username" class="text-input" type="text"/>
         <br style="clear: both;"/>
       </p>
 
       <p>
         <label>Password</label>
-        <input name="j_password" class="text-input" type="password"/>
+        <input name="uf_password" class="text-input" type="password"/>
         <br style="clear: both;"/>
       </p>
 
@@ -1229,8 +1231,8 @@ Place the following file in `src/main/webapp/login.jsp`:
 </html>
 ---------
 
-The important part of this file is the form that posts `j_username`
-and `j_password` to the `j_security_check` URL. This will be
+The important part of this file is the form that posts `uf_username`
+and `uf_password` to the `uf_security_check` URL. This will be
 recognized by UberFireSecurityFilter as a login attempt.
 
 TODO: `/login.jsp` should not be a hardcoded path. Could rely mostly on

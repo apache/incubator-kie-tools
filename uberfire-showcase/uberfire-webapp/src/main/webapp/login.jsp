@@ -146,16 +146,16 @@
   </div>
 
   <div id="login-content">
-    <form action="j_security_check" method="post">
+    <form action="uf_security_check" method="post">
       <p>
         <label>Username</label>
-        <input value="" name="j_username" class="text-input" type="text"/>
+        <input value="" name="uf_username" class="text-input" type="text"/>
       </p>
       <br style="clear: both;"/>
 
       <p>
         <label>Password</label>
-        <input name="j_password" class="text-input" type="password"/>
+        <input name="uf_password" class="text-input" type="password"/>
       </p>
       <br style="clear: both;"/>
 

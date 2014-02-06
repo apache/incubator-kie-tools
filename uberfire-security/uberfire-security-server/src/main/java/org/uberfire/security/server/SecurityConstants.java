@@ -48,11 +48,11 @@ public interface SecurityConstants {
 
     final String AUTH_PROVIDER_KEY = "org.uberfire.auth.provider";
 
-    final String HTTP_FORM_J_SECURITY_CHECK = "/j_security_check";
+    final String HTTP_FORM_SECURITY_CHECK_URI = "/uf_security_check";
 
-    final String HTTP_FORM_J_USERNAME = "j_username";
+    final String HTTP_FORM_USERNAME_PARAM = "uf_username";
 
-    final String HTTP_FORM_J_PASSWORD = "j_password";
+    final String HTTP_FORM_PASSWORD_PARAM = "uf_password";
 
     final String CONFIG_USERS_PROPERTIES = "users.properties";
 
