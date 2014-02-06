@@ -284,7 +284,7 @@ previous snippet:
 
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire</artifactId>
+        <artifactId>uberfire-bom</artifactId>
         <version>${uberfire.version}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -366,7 +366,7 @@ of this after the `<dependencyManagement>` section:
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench</artifactId>
+      <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
 
     <dependency>
@@ -406,6 +406,7 @@ of this after the `<dependencyManagement>` section:
     <dependency><groupId>org.jboss.errai</groupId><artifactId>errai-cdi-jetty</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>org.jboss.errai</groupId><artifactId>errai-codegen-gwt</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>org.jboss.errai</groupId><artifactId>errai-data-binding</artifactId><scope>provided</scope></dependency>
+    <dependency><groupId>org.jboss.errai</groupId><artifactId>errai-ioc</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>org.jboss.errai</groupId><artifactId>errai-javax-enterprise</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>org.jboss.errai</groupId><artifactId>errai-jaxrs-client</artifactId><scope>provided</scope></dependency>
     <dependency><groupId>org.jboss.errai</groupId><artifactId>errai-jpa-client</artifactId><scope>provided</scope></dependency>
@@ -506,7 +507,17 @@ First up, we'll define some settings for `maven-compiler-plugin`:
         <dependencies>
           <dependency>
             <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-workbench</artifactId>
+            <artifactId>uberfire-workbench-processors</artifactId>
+            <version>${uberfire.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-client-api</artifactId>
+            <version>${uberfire.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-security-api</artifactId>
             <version>${uberfire.version}</version>
           </dependency>
         </dependencies>
@@ -517,10 +528,11 @@ The `source` and `target` options set the compiler for Java 1.6
 compliance. This is the version of the Java language that GWT 2.5.x
 supports.
 
-The dependency on `uberfire-workbench` is the recommended way of
-hinting Eclipse's Maven integration that this module contains Java
-Annotation Processors that should be executed whenever an incremental
-build is performed. More on this later (TODO: link to m2e setup).
+The dependencies on `uberfire-workbench-processors` and its
+requirements is the recommended way of hinting Eclipse's Maven
+integration that this module contains Java Annotation Processors that
+should be executed whenever an incremental build is performed. More on
+this later (TODO: link to m2e setup).
 
 Next up, the all-important `gwt-maven-plugin`.
 
@@ -544,7 +556,7 @@ Next up, the all-important `gwt-maven-plugin`.
           <runTarget>http://localhost:8080/${project.artifactId}/</runTarget>
 
           <!-- do not insert line breaks in this string; it breaks Windows compatibility -->
-          <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000</extraJvmArgs>
+          <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.jboss.javaopts=-XX:MaxPermSize=256m -Derrai.dev.context=${project.artifactId} -Derrai.jboss.javaagent.path=${settings.localRepository}/org/jboss/errai/errai-client-local-class-hider/${errai.devmode.version}/errai-client-local-class-hider-${errai.devmode.version}.jar</extraJvmArgs>
 
         </configuration>
         <executions>
@@ -1545,7 +1557,7 @@ import javax.enterprise.event.Observes;
 
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.UberFirePreferences;
-import org.uberfire.workbench.events.ApplicationReadyEvent;
+import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
