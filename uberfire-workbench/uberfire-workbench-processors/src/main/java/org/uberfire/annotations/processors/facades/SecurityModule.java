@@ -26,7 +26,7 @@ public class SecurityModule {
             securityTrait = (Class<? extends Annotation>) Class.forName( "org.uberfire.security.annotations.SecurityTrait" );
 
         } catch ( ClassNotFoundException e ) {
-            logger.error( e.getMessage() );
+            throw new RuntimeException( e );
         }
     }
 
