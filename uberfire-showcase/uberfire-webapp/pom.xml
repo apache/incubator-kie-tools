@@ -203,6 +203,8 @@
               <includes>
                 <include>.errai/**</include>
                 <include>.niogit/**</include>
+                <include>src/main/webapp/WEB-INF/classes/**</include>
+                <include>src/main/webapp/WEB-INF/lib/**</include>
               </includes>
             </fileset>
           </filesets>
