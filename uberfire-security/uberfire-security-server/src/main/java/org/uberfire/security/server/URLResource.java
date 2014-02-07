@@ -29,4 +29,10 @@ public class URLResource implements Resource {
     public String getURL() {
         return url;
     }
+
+    @Override
+    public String toString() {
+        return "URLResource <" + url + ">";
+    }
+
 }

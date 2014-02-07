@@ -263,12 +263,12 @@ public class UberFireSecurityFilter implements Filter {
 
     @Override
     public void doFilter( final ServletRequest request,
-                          final ServletResponse response,
+                          final ServletResponse rawResponse,
                           final FilterChain chain )
             throws IOException, ServletException {
 
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
-        final HttpServletResponse httpResponse = (HttpServletResponse) response;
+        final HttpServletResponse httpResponse = new HttpServletResponseWrapper((HttpServletResponse) rawResponse);
 
         final SecurityContext context = securityManager.newSecurityContext( httpRequest, httpResponse );
 
@@ -279,13 +279,13 @@ public class UberFireSecurityFilter implements Filter {
 
             authorize( context, httpResponse );
 
-            if ( !response.isCommitted() ) {
-                chain.doFilter( request, response );
+            if ( !httpResponse.isCommitted() ) {
+                chain.doFilter( request, httpResponse );
             }
         } catch ( AuthenticationException e ) {
-            if ( !response.isCommitted() ) {
+            if ( !httpResponse.isCommitted() ) {
                 LOG.debug("Authentication failure. Sending HTTP 401 response.", e);
-                ( (HttpServletResponse) response ).sendError( 401, e.getMessage() );
+                httpResponse.sendError( 401, e.getMessage() );
             }
             else {
               LOG.debug("Authentication failure on already-committed response. NOT sending HTTP 401.", e);

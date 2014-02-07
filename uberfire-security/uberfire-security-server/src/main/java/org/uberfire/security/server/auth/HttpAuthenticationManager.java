@@ -47,10 +47,8 @@ import org.uberfire.security.auth.SubjectPropertiesProvider;
 import org.uberfire.security.impl.IdentityImpl;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.server.HttpSecurityContext;
+import org.uberfire.security.server.SecurityConstants;
 import org.uberfire.security.server.cdi.SecurityFactory;
-
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.security.Role.*;
 
 public class HttpAuthenticationManager implements AuthenticationManager {
 
@@ -108,10 +106,33 @@ public class HttpAuthenticationManager implements AuthenticationManager {
                     break;
                 } else if ( requiresAuthentication ) {
                     if ( !requestCache.containsKey( httpContext.getRequest().getSession().getId() ) ) {
-                        if ( forceURL != null ) {
-                            requestCache.put( httpContext.getRequest().getSession().getId(), forceURL );
+
+                        String preservedQueryStr = httpContext.getRequest().getQueryString();
+
+                        if (preservedQueryStr == null) {
+                            preservedQueryStr = "";
                         } else {
-                            requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + "?" + httpContext.getRequest().getQueryString() );
+                            preservedQueryStr = "?" + preservedQueryStr;
+                        }
+
+                        // this is for the benefit of dev mode logins: the uf_security_check form
+                        // won't have the gwt.codeserver parameter on it, but the referer will
+                        String referer = httpContext.getRequest().getHeader( "Referer" );
+                        if ( preservedQueryStr.equals( "" ) && referer != null && referer.indexOf( '?' ) >= 0 ) {
+                            preservedQueryStr = referer.substring( referer.indexOf( '?' ) );
+                        }
+
+                        if ( forceURL != null ) {
+
+                            // prepend context path for context-relative forceURLs
+                            String contextPrefix = "";
+                            if (forceURL.startsWith( "/" )) {
+                                contextPrefix = httpContext.getRequest().getContextPath();
+                            }
+
+                            requestCache.put( httpContext.getRequest().getSession().getId(), contextPrefix + forceURL + preservedQueryStr );
+                        } else {
+                            requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + preservedQueryStr );
                         }
                     }
                     authScheme.challengeClient( httpContext );
@@ -182,7 +203,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
                     rd.forward( httpContext.getRequest(), httpContext.getResponse() );
                 }
             } catch ( Exception e ) {
-                throw new RuntimeException( "Unable to redirect." );
+                throw new RuntimeException( "Unable to redirect.", e );
             }
         }
 
@@ -200,7 +221,9 @@ public class HttpAuthenticationManager implements AuthenticationManager {
 
     private boolean useRedirect( String originalRequest ) {
         // hack for gwt hosted mode
-        return originalRequest.contains( "gwt.codesvr" );
+        // and form-based auth
+        // TODO perhaps the "hack" should cover the case that forwarding was meant to address?
+        return originalRequest.contains( "gwt.codesvr" ) || originalRequest.contains( SecurityConstants.HTTP_FORM_SECURITY_CHECK_URI );
     }
 
     @Override
