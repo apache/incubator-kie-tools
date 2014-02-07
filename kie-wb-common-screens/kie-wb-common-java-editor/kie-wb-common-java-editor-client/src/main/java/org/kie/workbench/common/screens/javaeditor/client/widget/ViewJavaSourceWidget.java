@@ -42,8 +42,10 @@ public class ViewJavaSourceWidget extends Composite {
             if (!inSideBlockComment) inSideBlockComment = s.startsWith( "/*" );
             lineComment = !inSideBlockComment && s.startsWith( "//" );
 
-            // Escape leading white spaces BEFORE applying syntax highlighting (which wraps the text with '<span ...')
-            String escapedIndents = replaceLeadingWhitespaces( rows [ i ] );
+            // Escape leading white spaces and html brackets BEFORE applying syntax highlighting
+            // (which wraps the text with '<span ...')
+            String escaped = replaceLeadingWhitespaces( rows [ i ] );
+            escaped = escapeHtmlBrackets( escaped );
 
             table.setHTML( i,
                     0,
@@ -55,7 +57,7 @@ public class ViewJavaSourceWidget extends Composite {
                     "<span style='color:green;' >|</span>" );
             table.setHTML( i,
                     2,
-                    addSyntaxHighlights( escapedIndents, inSideBlockComment || lineComment )
+                    addSyntaxHighlights( escaped, inSideBlockComment || lineComment )
             );
             // While inside a block comment, evaluate if line ends with '*/'
             if (inSideBlockComment) inSideBlockComment = !s.endsWith("*/");
@@ -77,6 +79,10 @@ public class ViewJavaSourceWidget extends Composite {
         }
         sb.append( text.substring( i ) );
         return sb.toString();
+    }
+
+    private String escapeHtmlBrackets( String s ) {
+        return s.replaceAll( "<", "&lt;" ).replaceAll( ">", "&gt;" );
     }
 
     private String addSyntaxHighlights( String text, boolean isComment ) {
