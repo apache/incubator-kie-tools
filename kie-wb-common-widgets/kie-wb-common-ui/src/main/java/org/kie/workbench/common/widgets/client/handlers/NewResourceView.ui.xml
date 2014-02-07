@@ -16,7 +16,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants"/>
   <ui:with field="i18nCommon" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
@@ -31,17 +32,17 @@
       <b:ControlGroup ui:field="fileNameGroup">
         <b:ControlLabel for="fileName">
           <font color="red">*</font>
-          Resource Name
+            <base:InlineLabel text="{i18n.resourceName}"/>
         </b:ControlLabel>
         <b:Controls>
-          <b:TextBox b:id="fileName" ui:field="fileNameTextBox" placeholder="resource name..."/>
+          <b:TextBox b:id="fileName" ui:field="fileNameTextBox" placeholder="{i18n.resourceNamePlaceholder}"/>
           <b:HelpInline ui:field="fileNameHelpInline"/>
         </b:Controls>
       </b:ControlGroup>
       
       <b:ControlGroup>
           <b:ControlLabel>
-          Location
+              <base:InlineLabel text="{i18n.location}"/>
         </b:ControlLabel>
         <b:Controls addStyleNames="readonly">
             <g:VerticalPanel ui:field="handlerExtensions"/>

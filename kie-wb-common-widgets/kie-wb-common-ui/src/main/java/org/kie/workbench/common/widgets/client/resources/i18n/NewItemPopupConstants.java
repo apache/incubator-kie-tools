@@ -34,4 +34,10 @@ public interface NewItemPopupConstants
 
     String fileNameIsMandatory();
 
+    String resourceName();
+
+    String location();
+
+    String resourceNamePlaceholder();
+
 }

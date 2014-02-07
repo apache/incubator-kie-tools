@@ -78,10 +78,10 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @Inject
     protected Caller<ExplorerService> explorerService;
 
-    private final NavLink businessView = new NavLink( "Project View" );
-    private final NavLink techView = new NavLink( "Repository View" );
-    private final NavLink treeExplorer = new NavLink( "Show as Folders" );
-    private final NavLink breadcrumbExplorer = new NavLink( "Show as Links" );
+    private final NavLink businessView = new NavLink( ProjectExplorerConstants.INSTANCE.projectView() );
+    private final NavLink techView = new NavLink( ProjectExplorerConstants.INSTANCE.repositoryView() );
+    private final NavLink treeExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsFolders() );
+    private final NavLink breadcrumbExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsLinks() );
 //    private final NavLink hiddenFiles = new NavLink( "Display hidden items" );
 
     private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS ) );
