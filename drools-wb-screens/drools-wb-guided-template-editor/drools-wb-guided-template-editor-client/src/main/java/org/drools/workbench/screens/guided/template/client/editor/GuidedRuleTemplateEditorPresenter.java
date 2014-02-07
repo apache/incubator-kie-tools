@@ -27,6 +27,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.screens.guided.template.client.resources.i18n.GuidedTemplateEditorConstants;
 import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
@@ -461,7 +462,7 @@ public class GuidedRuleTemplateEditorPresenter {
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return "Guided Template Editor [" + fileName + "]";
+        return GuidedTemplateEditorConstants.INSTANCE.GuidedTemplateEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

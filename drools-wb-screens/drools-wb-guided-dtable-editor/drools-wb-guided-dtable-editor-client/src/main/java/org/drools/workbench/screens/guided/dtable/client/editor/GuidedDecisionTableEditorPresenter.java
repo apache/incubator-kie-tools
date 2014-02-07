@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
@@ -425,7 +426,7 @@ public class GuidedDecisionTableEditorPresenter {
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return "Guided Decision Table Editor [" + fileName + "]";
+        return GuidedDecisionTableConstants.INSTANCE.GuidedDecisionTableEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

@@ -86,4 +86,6 @@ public interface GuidedScoreCardConstants
 
     public String actions();
 
+    public String ScoreCardEditorTitle();
+
 }

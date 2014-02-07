@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
+import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.m2repo.client.event.M2RepoRefreshEvent;
 import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.guvnor.m2repo.client.upload.UploadForm;
@@ -106,7 +107,7 @@ public class M2RepoPerspective {
     }
 
     private void buildMenuBar() {
-        this.menus = MenuFactory.newTopLevelMenu( "Upload" )
+        this.menus = MenuFactory.newTopLevelMenu( AppConstants.INSTANCE.Upload() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
@@ -124,7 +125,7 @@ public class M2RepoPerspective {
                     }
                 } )
                 .endMenu()
-                .newTopLevelMenu( "Refresh" )
+                .newTopLevelMenu( AppConstants.INSTANCE.Refresh() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {

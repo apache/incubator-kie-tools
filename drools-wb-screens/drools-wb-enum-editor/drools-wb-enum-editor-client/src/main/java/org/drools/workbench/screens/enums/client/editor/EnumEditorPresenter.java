@@ -24,6 +24,7 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.enums.client.resources.i18n.EnumEditorConstants;
 import org.drools.workbench.screens.enums.client.type.EnumResourceType;
 import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
@@ -380,7 +381,7 @@ public class EnumEditorPresenter {
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return "Enum Editor [" + fileName + "]";
+        return EnumEditorConstants.INSTANCE.EnumEditorTitle()+" [" + fileName + "]";
     }
 
     @WorkbenchPartView

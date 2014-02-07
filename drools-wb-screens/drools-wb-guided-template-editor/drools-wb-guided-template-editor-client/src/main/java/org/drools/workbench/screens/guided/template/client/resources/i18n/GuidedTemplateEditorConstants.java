@@ -36,4 +36,6 @@ public interface GuidedTemplateEditorConstants
 
     String NewGuidedRuleTemplateDescription();
 
+    public String GuidedTemplateEditorTitle();
+
 }

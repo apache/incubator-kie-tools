@@ -25,7 +25,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
+import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
+import org.drools.workbench.screens.guided.scorecard.client.widget.GuidedScoreCardEditor;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
@@ -441,7 +443,7 @@ public class GuidedScoreCardEditorPresenter {
         if ( isReadOnly ) {
             return "Read Only Score Card Viewer [" + fileName + "]";
         }
-        return "Score Card Editor [" + fileName + "]";
+        return GuidedScoreCardConstants.INSTANCE.ScoreCardEditorTitle()+ " [" + fileName + "]";
     }
 
     @WorkbenchMenu

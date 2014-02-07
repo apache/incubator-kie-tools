@@ -445,4 +445,7 @@ public interface GuidedDecisionTableConstants
     String NewGuidedDecisionTableDescription();
 
     String AllTheRulesInherit();
+
+    String GuidedDecisionTableEditorTitle();
+
 }

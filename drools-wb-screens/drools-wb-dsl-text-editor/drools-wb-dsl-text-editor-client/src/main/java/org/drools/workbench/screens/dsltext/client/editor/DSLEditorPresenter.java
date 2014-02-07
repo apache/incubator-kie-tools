@@ -364,7 +364,7 @@ public class DSLEditorPresenter {
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return "DSL Editor [" + fileName + "]";
+        return DSLTextEditorConstants.INSTANCE.DslEditorTitle() +" [" + fileName + "]";
     }
 
     @WorkbenchPartView

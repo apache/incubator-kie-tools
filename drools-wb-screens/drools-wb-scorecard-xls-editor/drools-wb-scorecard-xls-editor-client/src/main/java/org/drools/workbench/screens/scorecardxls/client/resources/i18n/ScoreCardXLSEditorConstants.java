@@ -41,4 +41,7 @@ public interface ScoreCardXLSEditorConstants
     String Uploading();
 
     String Download();
+
+    public String ScoreCardXLEditorTitle();
+
 }

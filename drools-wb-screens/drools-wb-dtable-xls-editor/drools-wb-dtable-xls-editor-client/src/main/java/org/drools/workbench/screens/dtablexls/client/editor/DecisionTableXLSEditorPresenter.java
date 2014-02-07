@@ -266,7 +266,7 @@ public class DecisionTableXLSEditorPresenter
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return "XLS Decision Table Editor [" + fileName + "]";
+        return DecisionTableXLSEditorConstants.INSTANCE.DecisionTableEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

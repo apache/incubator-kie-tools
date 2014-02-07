@@ -398,7 +398,7 @@ public class DRLEditorPresenter {
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return "DRL Editor [" + fileName + "]";
+        return DRLTextEditorConstants.INSTANCE.DrlEditorTitle()+ " [" + fileName + "]";
     }
 
     @WorkbenchPartView

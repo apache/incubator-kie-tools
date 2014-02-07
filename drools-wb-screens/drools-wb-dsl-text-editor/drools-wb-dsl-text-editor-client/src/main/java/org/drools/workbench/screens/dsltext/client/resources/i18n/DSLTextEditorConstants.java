@@ -32,4 +32,6 @@ public interface DSLTextEditorConstants
 
     String DSL();
 
+    String DslEditorTitle();
+
 }

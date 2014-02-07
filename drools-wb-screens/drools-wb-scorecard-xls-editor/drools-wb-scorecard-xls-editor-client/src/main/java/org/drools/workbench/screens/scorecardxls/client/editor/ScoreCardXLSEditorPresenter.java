@@ -254,7 +254,7 @@ public class ScoreCardXLSEditorPresenter
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return "XLS Score Card Editor [" + fileName + "]";
+        return ScoreCardXLSEditorConstants.INSTANCE.ScoreCardXLEditorTitle()+" [" + fileName + "]";
     }
 
     @WorkbenchPartView

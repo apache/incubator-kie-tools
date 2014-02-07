@@ -38,4 +38,6 @@ public interface EnumEditorConstants
 
     String AddEnum();
 
+    String EnumEditorTitle();
+
 }

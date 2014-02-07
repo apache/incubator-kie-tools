@@ -48,4 +48,6 @@ public interface DecisionTableXLSEditorConstants
 
     String ConversionResults();
 
+    String DecisionTableEditorTitle();
+
 }

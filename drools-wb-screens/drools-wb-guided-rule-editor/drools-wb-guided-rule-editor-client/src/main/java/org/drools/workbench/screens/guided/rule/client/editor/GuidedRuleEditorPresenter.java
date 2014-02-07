@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.editor.validator.GuidedRuleEditorValidator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
@@ -460,7 +461,7 @@ public class GuidedRuleEditorPresenter {
             fileName = fileName + " v" + version;
         }
 
-        return "Guided Rule Editor [" + fileName + "]";
+        return Constants.INSTANCE.GuidedRuleEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

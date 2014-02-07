@@ -31,6 +31,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.jboss.errai.common.client.api.Caller;
@@ -96,7 +97,7 @@ public class DroolsWorkbenchEntryPoint {
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
 
         final Menus menus = MenuFactory
-                .newTopLevelMenu( "Home" )
+                .newTopLevelMenu( AppConstants.INSTANCE.Home() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
@@ -108,10 +109,10 @@ public class DroolsWorkbenchEntryPoint {
                     }
                 } )
                 .endMenu()
-                .newTopLevelMenu( "Perspectives" )
+                .newTopLevelMenu( AppConstants.INSTANCE.Perspectives() )
                 .withItems( getPerspectives() )
                 .endMenu()
-                .newTopLevelMenu( "Logout" )
+                .newTopLevelMenu( AppConstants.INSTANCE.Logout())
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
@@ -119,7 +120,7 @@ public class DroolsWorkbenchEntryPoint {
                     }
                 } )
                 .endMenu()
-                .newTopLevelMenu( "Find" )
+                .newTopLevelMenu( AppConstants.INSTANCE.Find() )
                 .position( MenuPosition.RIGHT )
                 .respondsWith( new Command() {
                     @Override
