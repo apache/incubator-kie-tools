@@ -893,7 +893,11 @@ Here's what you need in a typical UberFire `web.xml`. Create a file
     </filter-class>
     <init-param>
       <param-name>org.uberfire.cookie.id</param-name>
-      <param-value>errai-cdi-workbench-cookie</param-value>
+      <param-value>uberfire-tutorial-cookie</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.uberfire.auth.force.url</param-name>
+      <param-value>/UberFireTutorial/UberFire.html</param-value>
     </init-param>
   </filter>
 
@@ -934,15 +938,25 @@ The following subsections examine the contents of `web.xml` in detail.
 The `UberFireSecurityFilter` is mapped to `/*` and so it is consulted
 for every request to a servlet or static resource in your web
 application. In other words, this filter makes an allow/deny decision
-for every HTTP request to your application.
+for every HTTP request to your application. There are a handful of
+settings you can use to influence the behaviour of this filter. We're
+using two of them:
 
-How do you control the behaviour of this filter? It depends.  The
-filter relies on a series of pluggable mechanisms to make its
-decisions about how users can identify themselves, which
+* `org.uberfire.cookie.id` lets us specify the name of the "Remember
+  Me" cookie set by UberFire's `RememberMeCookieAuthScheme`
+* `org.uberfire.auth.force.url` lets us specify the location that
+  UberFire redirects to following a successful authentication (login) attempt.
+
+What are all the options that control the behaviour of this filter? It
+depends.  The filter relies on a series of pluggable mechanisms to
+make its decisions about how users can identify themselves, which
 username+password combinations are valid, and which URLs anonymous and
-authenticated users are allowed to access.
+authenticated users are allowed to access. The init parameters are all
+passed to each pluggable component, and each component can do what it
+feels is best. You can even add your own components and define your own
+custom init parameters if needed.
 
-For this demo, we will control access using the default settings, which are:
+For this demo, we will control access using the default mechanisms, which are:
 
 * Authentication Manager (controls login and logout): `HttpAuthenticationManager`
 ** Authentication Schemes (extract provided credentials from HTTP requests):
@@ -1261,15 +1275,12 @@ exclude:
    - /*.ico
    - /UberFireTutorial/images/**
    - /UberFireTutorial/css/**
-   - /css/**
-   - /plugins/**
+   - /login.jsp
 ---------
 
 This example file shows you how to restrict certain URL paths to
 certain roles, and also how to exclude some paths from the
 authentication and authorization checks altogether.
-
-TODO: why doesn't login.jsp have to be in this list?
 
 === Enable the UberFire security CDI interceptors
 
