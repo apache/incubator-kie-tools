@@ -153,11 +153,14 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                      "Created config " + filePath.getFileName() );
-        ioService.startBatch();
-        ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
+        try {
+            ioService.startBatch();
+            ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
 
-        updateLastModified();
-        ioService.endBatch();
+            updateLastModified();
+        } finally {
+            ioService.endBatch();
+        }
         //Invalidate cache if a new item has been created; otherwise cached value is stale
         configuration.remove( configGroup.getType() );
 
@@ -172,11 +175,14 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
                                                                      "Updated config " + filePath.getFileName() );
-        ioService.startBatch();
-        ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
+        try {
+            ioService.startBatch();
+            ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
 
-        updateLastModified();
-        ioService.endBatch();
+            updateLastModified();
+        } finally {
+            ioService.endBatch();
+        }
         //Invalidate cache if a new item has been created; otherwise cached value is stale
         configuration.remove( configGroup.getType() );
 
@@ -195,12 +201,16 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         if ( !ioService.exists( filePath ) ) {
             return true;
         }
-        ioService.startBatch();
-        boolean result = ioService.deleteIfExists( filePath );
-        if ( result ) {
-            updateLastModified();
+        boolean result;
+        try {
+            ioService.startBatch();
+            result = ioService.deleteIfExists( filePath );
+            if ( result ) {
+                updateLastModified();
+            }
+        } finally {
+            ioService.endBatch();
         }
-        ioService.endBatch();
 
         return result;
     }
