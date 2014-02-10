@@ -147,6 +147,9 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
             cleanupClosedFileSystems();
             final Path path = fileSystems.values().iterator().next().get( 0 ).getRootDirectories().iterator().next();
             setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+            if ( options != null && options.length == 1 ) {
+                setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, options[ 0 ] );
+            }
         }
     }
 
