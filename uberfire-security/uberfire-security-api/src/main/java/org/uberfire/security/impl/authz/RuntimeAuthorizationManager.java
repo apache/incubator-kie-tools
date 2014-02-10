@@ -20,7 +20,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 import static org.uberfire.security.authz.AuthorizationResult.ACCESS_ABSTAIN;
 import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 
 import org.uberfire.security.Resource;
 import org.uberfire.security.Subject;
@@ -29,7 +29,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
 
-@ApplicationScoped
+@Alternative
 public class RuntimeAuthorizationManager implements AuthorizationManager {
 
     private final RuntimeResourceManager resourceManager = new RuntimeResourceManager();
