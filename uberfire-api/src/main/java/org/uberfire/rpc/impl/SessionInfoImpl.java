@@ -1,11 +1,13 @@
 package org.uberfire.rpc.impl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import javax.enterprise.inject.Alternative;
 
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
+@Alternative
 public class SessionInfoImpl implements SessionInfo {
 
     private String id;
@@ -66,7 +68,7 @@ public class SessionInfoImpl implements SessionInfo {
 
     @Override
     public String toString() {
-      return "SessionInfoImpl [id=" + id + ", identity=" + identity + "]";
+        return "SessionInfoImpl [id=" + id + ", identity=" + identity + "]";
     }
 
 }

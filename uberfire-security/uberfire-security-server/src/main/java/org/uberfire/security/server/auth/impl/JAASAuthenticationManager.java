@@ -2,12 +2,15 @@ package org.uberfire.security.server.auth.impl;
 
 import java.util.HashMap;
 
+import javax.enterprise.inject.Alternative;
+
 import org.uberfire.security.auth.SubjectPropertiesProvider;
 import org.uberfire.security.server.auth.BasicUserPassAuthenticationScheme;
 import org.uberfire.security.server.auth.source.JAASAuthenticationSource;
 
 import static org.uberfire.security.server.SecurityConstants.*;
 
+@Alternative
 public class JAASAuthenticationManager extends SimpleUserPassAuthenticationManager {
 
     public JAASAuthenticationManager() {

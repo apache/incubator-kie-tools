@@ -16,18 +16,11 @@
 
 package org.uberfire.security.server.auth;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
-import static org.uberfire.security.Role.ROLE_REMEMBER_ME;
-import static org.uberfire.security.auth.AuthenticationStatus.FAILED;
-import static org.uberfire.security.auth.AuthenticationStatus.SUCCESS;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.enterprise.inject.Alternative;
 import javax.servlet.RequestDispatcher;
 
 import org.uberfire.security.ResourceManager;
@@ -50,6 +43,13 @@ import org.uberfire.security.server.HttpSecurityContext;
 import org.uberfire.security.server.SecurityConstants;
 import org.uberfire.security.server.cdi.SecurityFactory;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.security.Role.*;
+import static org.uberfire.security.auth.AuthenticationStatus.*;
+
+@Alternative
 public class HttpAuthenticationManager implements AuthenticationManager {
 
     private final List<AuthenticationScheme> authSchemes;
@@ -109,7 +109,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
 
                         String preservedQueryStr = httpContext.getRequest().getQueryString();
 
-                        if (preservedQueryStr == null) {
+                        if ( preservedQueryStr == null ) {
                             preservedQueryStr = "";
                         } else {
                             preservedQueryStr = "?" + preservedQueryStr;
@@ -126,7 +126,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
 
                             // prepend context path for context-relative forceURLs
                             String contextPrefix = "";
-                            if (forceURL.startsWith( "/" )) {
+                            if ( forceURL.startsWith( "/" ) ) {
                                 contextPrefix = httpContext.getRequest().getContextPath();
                             }
 
@@ -228,11 +228,10 @@ public class HttpAuthenticationManager implements AuthenticationManager {
 
     @Override
     public String toString() {
-      return "HttpAuthenticationManager [authSchemes=" + authSchemes + ", authProviders=" + authProviders
-              + ", roleProviders=" + roleProviders + ", subjectPropertiesProviders=" + subjectPropertiesProviders
-              + ", authStorageProviders=" + authStorageProviders + ", resourceManager=" + resourceManager
-              + ", requestCache=" + requestCache + ", forceURL=" + forceURL + "]";
+        return "HttpAuthenticationManager [authSchemes=" + authSchemes + ", authProviders=" + authProviders
+                + ", roleProviders=" + roleProviders + ", subjectPropertiesProviders=" + subjectPropertiesProviders
+                + ", authStorageProviders=" + authStorageProviders + ", resourceManager=" + resourceManager
+                + ", requestCache=" + requestCache + ", forceURL=" + forceURL + "]";
     }
-
 
 }

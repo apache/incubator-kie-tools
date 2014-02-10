@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Alternative;
+
 import org.uberfire.security.Role;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.Subject;
@@ -24,6 +26,7 @@ import org.uberfire.security.server.auth.DefaultAuthenticationProvider;
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.security.auth.AuthenticationStatus.*;
 
+@Alternative
 public class SimpleUserPassAuthenticationManager implements AuthenticationManager {
 
     private final AuthenticationScheme scheme;
