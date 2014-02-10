@@ -745,13 +745,12 @@ public class ExplorerServiceImpl
                                                                comment ),
                                           StandardDeleteOption.NON_EMPTY_DIRECTORIES );
             }
-
+        } catch ( final Exception e ) {
+            throw ExceptionUtilities.handleException( e );
+        } finally {
             if ( paths.size() > 1 ) {
                 ioService.endBatch();
             }
-
-        } catch ( final Exception e ) {
-            throw ExceptionUtilities.handleException( e );
         }
     }
 
@@ -797,11 +796,10 @@ public class ExplorerServiceImpl
                     }
                 }
             }
-
-            ioService.endBatch();
-
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
+        } finally {
+            ioService.endBatch();
         }
     }
 
@@ -847,11 +845,10 @@ public class ExplorerServiceImpl
                     }
                 }
             }
-
-            ioService.endBatch();
-
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
+        } finally {
+            ioService.endBatch();
         }
     }
 

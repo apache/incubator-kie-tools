@@ -4,8 +4,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
-import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.KModuleService;
@@ -77,21 +75,25 @@ public class ProjectScreenServiceImpl
                       final String comment ) {
         final Project project = projectService.resolveProject( pathToPomXML );
 
-        ioService.startBatch();
-        pomService.save( pathToPomXML,
-                         model.getPOM(),
-                         model.getPOMMetaData(),
-                         comment );
-        kModuleService.save( project.getKModuleXMLPath(),
-                             model.getKModule(),
-                             model.getKModuleMetaData(),
+        try {
+            ioService.startBatch();
+            pomService.save( pathToPomXML,
+                             model.getPOM(),
+                             model.getPOMMetaData(),
                              comment );
-        projectService.save( project.getImportsPath(),
-                             model.getProjectImports(),
-                             model.getProjectImportsMetaData(),
-                             comment );
-        ioService.endBatch();
-
+            kModuleService.save( project.getKModuleXMLPath(),
+                                 model.getKModule(),
+                                 model.getKModuleMetaData(),
+                                 comment );
+            projectService.save( project.getImportsPath(),
+                                 model.getProjectImports(),
+                                 model.getProjectImportsMetaData(),
+                                 comment );
+        } catch ( final Exception e ) {
+            throw new RuntimeException( e );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     @Override
