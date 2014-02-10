@@ -51,6 +51,7 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
@@ -119,7 +120,10 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
             final Path newPath = Paths.convert( nioPath );
 
-            ioService.createFile( nioPath );
+            if ( ioService.exists( nioPath ) ) {
+                throw new FileAlreadyExistsException( nioPath.toString() );
+            }
+
             ioService.write( nioPath,
                              toSource( newPath,
                                        model ),
