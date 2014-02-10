@@ -242,8 +242,10 @@ using. Add this inside the `<project>` element, after the
     <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
     <maven.gwt.plugin.version>2.5.1</maven.gwt.plugin.version>
     <jboss-as-maven-plugin.version>7.4.Final</jboss-as-maven-plugin.version>
-    <uberfire.version>0.4.0-SNAPSHOT</uberfire.version>
-    <errai.version>2.4.3-SNAPSHOT</errai.version>
+    <uberfire.version>0.5.0-SNAPSHOT</uberfire.version>
+    <errai.version>3.0-SNAPSHOT</errai.version>
+    <errai.devmode.version>3.0-SNAPSHOT</errai.devmode.version>
+    <errai.jboss.home>/Users/jfuerth/wildfly-8.0.0.Beta1</errai.jboss.home>
     <jboss.spec.version>3.0.2.Final</jboss.spec.version>
   </properties>
 ---------
@@ -544,7 +546,7 @@ Next up, the all-important `gwt-maven-plugin`.
         <version>${maven.gwt.plugin.version}</version>
         <configuration>
 
-          <noServer>true</noServer>
+          <server>org.jboss.errai.cdi.server.gwt.JBossLauncher</server>
 
           <!-- Change to false if using client-side Bean Validation -->
           <strict>true</strict>
@@ -553,9 +555,10 @@ Next up, the all-important `gwt-maven-plugin`.
                rebind errors by setting this to DEBUG -->
           <logLevel>INFO</logLevel>
 
-          <runTarget>http://localhost:8080/${project.artifactId}/</runTarget>
+          <runTarget>${project.artifactId}</runTarget>
 
-          <!-- do not insert line breaks in this string; it breaks Windows compatibility -->
+          <!-- do not insert line breaks in this string; it breaks
+          Windows compatibility -->
           <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.jboss.javaopts=-XX:MaxPermSize=256m -Derrai.dev.context=${project.artifactId} -Derrai.jboss.javaagent.path=${settings.localRepository}/org/jboss/errai/errai-client-local-class-hider/${errai.devmode.version}/errai-client-local-class-hider-${errai.devmode.version}.jar</extraJvmArgs>
 
         </configuration>
@@ -580,9 +583,11 @@ Next up, the all-important `gwt-maven-plugin`.
 
 This is a lot to digest. Let's take it one step at a time.
 
-First, we configure `noServer` because we'll be doing our Dev Mode
-testing against a real JBoss EAP or WildFly instance. We don't want
-Dev Mode to start its embedded Jetty server.
+First, we configure GWT to use Errai's `JBossLauncher`, which manages
+deployment of your webapp to a real JBoss EAP or WildFly instance. We
+don't want Dev Mode to start its embedded Jetty 6 server, because that
+makes it difficult to set up CDI, JPA, and other features that work
+well with UberFire and Errai.
 
 Next, we enable GWT's strict mode. This causes the build to fail with
 a helpful error message when you use Java APIs that aren't available
@@ -601,10 +606,11 @@ point.
 Moving on, we set `runTarget` to the local URL where your webapp will
 be served by the JBoss EAP or WildFly server on your workstation.
 
-The `extraJvmArgs` setting increases the memory limits for the Dev
-Mode JVM, and asks its JIT compiler to be more aggressive in
-generating native code. We've done some experimenting and found a
-compile threshold of 1000 allows Dev Mode to start up a little faster.
+The `extraJvmArgs` setting passes some information to Errai's
+`JBossLauncher`, increases the memory limits for the Dev Mode JVM, and
+asks its JIT compiler to be more aggressive in generating native
+code. We've done some experimenting and found a compile threshold of
+1000 allows Dev Mode to start up a little faster.
 
 Next up, we configure `maven-war-plugin`, which produces the WAR file
 during the build's _package_ phase:
@@ -1000,6 +1006,69 @@ the GWT compiler that ties all its output together.
 
 The ErraiServlet manages the communication bus that allows
 two-way-push communication between the client and the server.
+
+
+== Set up Dev Mode logging
+
+UberFire and Errai both use slf4j to generate log messages. As
+mentioned earlier, server-side logging configuration is taken care of
+by the app server (EAP or WildFly) -- all the slf4j logging requests
+are handled by jboss-logging. However, in Dev Mode and during the GWT
+compile phase of building your app, there is still some logging activity
+that you may be interested in, and jboss-logging isn't present in
+those environments. For these cases, we'll use log4j.
+
+.Create src/main/resources/log4j.properties
+------
+log4j.rootLogger=INFO, A1
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%d %-5p %c - %m%n
+
+log4j.logger=INFO
+
+# Some logging categories that may be of interest when troubleshooting
+#log4j.logger.org.jboss.errai.reflections=DEBUG
+#log4j.logger.org.jboss.errai.ioc.rebind.ioc.bootstrapper=DEBUG
+#log4j.logger.ErraiMarshalling=DEBUG
+------
+
+NOTE: to change the logging configuration used on the server
+when it's controlled by `JBossLauncher`, edit the file
+`$JBOSS_HOME/standalone/configuration/standalone-full.xml`.
+
+
+== Set up Errai classpath scanning
+
+Errai optimizes its scanning of the classpath by doing a two-phase
+scan: first, a shallow scan for classpath locations (.jar files and
+directories) that contain an `ErraiApp.properties` file at their
+root. Then in the second phase, Errai does a deep scan of everything
+under that classpath location. We need to mark our own application as
+a "classpath entry of interest to Errai".
+
+Create the following file, and optionally paste the comment text below
+into it:
+
+.Create src/main/resources/ErraiApp.properties
+------
+# ErraiApp.properties
+#
+# Do not remove, even if empty!
+#
+
+# This is a marker file. When it is detected inside a JAR or at the
+# top of any classpath, the subdirectories are scanned for deployable
+# components. As such, all Errai application modules in a project
+# should contain an ErraiApp.properties at the root of all classpaths
+# that you wish to be scanned.
+#
+# There are also some configuration options that can be set in this
+# file, although it is rarely necessary. See the documentation at
+# https://github.com/errai/errai/blob/master/errai-docs/src/main/asciidoc/reference.asciidoc#erraiappproperties
+# for details.
+------
+
 
 == Set up UberFire security
 
