@@ -253,7 +253,7 @@ public class MethodParameterValueEditor
 
             public void onClick( ClickEvent event ) {
                 methodParameter.setNature( FieldNatureType.TYPE_LITERAL );
-                methodParameter.setValue( " " );
+                methodParameter.setValue( "" );
                 makeDirty();
                 refresh();
                 form.hide();
