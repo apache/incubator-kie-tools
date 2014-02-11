@@ -488,7 +488,7 @@ public class ProjectScreenPresenter
         return new RemoteCallback<BuildResults>() {
             @Override
             public void callback( final BuildResults result ) {
-                if ( result.getMessages().isEmpty() ) {
+                if ( result.getErrorMessages().isEmpty() ) {
                     notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildSuccessful(),
                                                                    NotificationEvent.NotificationType.SUCCESS ) );
                 } else {

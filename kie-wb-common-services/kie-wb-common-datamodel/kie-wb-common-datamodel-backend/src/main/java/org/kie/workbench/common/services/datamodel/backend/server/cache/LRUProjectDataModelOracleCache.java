@@ -88,17 +88,17 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         //Add all classes from the KieModule metaData
         for ( final String packageName : kieModuleMetaData.getPackages() ) {
             for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
-                final Class clazz = kieModuleMetaData.getClass( packageName,
-                                                                className );
-                final TypeMetaInfo typeMetaInfo = kieModuleMetaData.getTypeMetaInfo( clazz );
-                final TypeSource typeSource = builder.getClassSource( kieModuleMetaData,
-                                                                      clazz );
                 try {
+                    final Class clazz = kieModuleMetaData.getClass( packageName,
+                                                                    className );
+                    final TypeMetaInfo typeMetaInfo = kieModuleMetaData.getTypeMetaInfo( clazz );
+                    final TypeSource typeSource = builder.getClassSource( kieModuleMetaData,
+                                                                          clazz );
                     pdBuilder.addClass( clazz,
                                         typeMetaInfo.isEvent(),
                                         typeSource );
-                } catch ( IOException ioe ) {
-                    log.error( ioe.getMessage() );
+                } catch ( Throwable e ) {
+                    log.error( e.getMessage() );
                 }
             }
         }
@@ -116,7 +116,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
                                         false,
                                         TypeSource.JAVA_DEPENDENCY );
                 } catch ( ClassNotFoundException cnfe ) {
-                    //This should not happen as Builder would have failed to load them and failed fast.
+                    //This would have been raised to the user by Builder's validation but record the error here too
                     log.error( cnfe.getMessage() );
                 } catch ( IOException ioe ) {
                     log.error( ioe.getMessage() );
