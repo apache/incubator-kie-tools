@@ -64,7 +64,9 @@ public class AuditLogViewImpl extends Modal
     /* The 500px width constant. */
     private static final String P500 = "500px";
 
-    /** The page size constant value. */
+    /**
+     * The page size constant value.
+     */
     private static final int PAGE_SIZE = 4;
 
     @UiField
@@ -80,15 +82,21 @@ public class AuditLogViewImpl extends Modal
 
     /**
      * Custom styles for audit log cell table.
-     *
+     * <p/>
      * NOTE: BZ-996942
      */
     public interface AuditLogStyle extends CssResource {
+
         String eventTypesTitle();
+
         String eventsContainerInline();
+
         String auitLogModalBody();
+
         String eventTypesCheckbox();
+
         String auditLogDetailLabel();
+
         String auditLogDetailValue();
     }
 
@@ -111,7 +119,7 @@ public class AuditLogViewImpl extends Modal
         this.auditLog = auditLog;
         this.identity = identity;
 
-        setTitle(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog());
+        setTitle( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog() );
         setBackdrop( BackdropType.STATIC );
         setKeyboard( true );
         setAnimation( true );
@@ -132,10 +140,10 @@ public class AuditLogViewImpl extends Modal
     public void setup() {
 
         // BZ-996942: Add a custom style for modal panel to set a fixed width.
-        addStyleName(style.auitLogModalBody());
+        addStyleName( style.auitLogModalBody() );
 
         // BZ-996917: Use a the gwtboostrap style "row-fluid" to allow display some events in the same row.
-        eventTypes.setStyleName(Constants.ROW_FLUID);
+        eventTypes.setStyleName( Constants.ROW_FLUID );
 
         // Fill panel with available events.
         for ( Map.Entry<String, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet() ) {
@@ -146,13 +154,13 @@ public class AuditLogViewImpl extends Modal
         // Create the GWT Cell Table as events container.
         // BZ-996942: Set custom width and table css style.
         events = new CellTable<AuditLogEntry>();
-        events.setWidth(P700);
-        events.addStyleName(Constants.TABLE);
+        events.setWidth( P700 );
+        events.addStyleName( Constants.TABLE );
 
         final ListDataProvider<AuditLogEntry> dlp = new ListDataProvider<AuditLogEntry>( filterDeletedEntries( auditLog ) );
         dlp.addDataDisplay( events );
 
-        AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn(style.auditLogDetailLabel(), style.auditLogDetailValue());
+        AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn( style.auditLogDetailLabel(), style.auditLogDetailValue() );
         AuditLogEntryCommentColumn commentColumn = new AuditLogEntryCommentColumn();
 
         events.addColumn( summaryColumn );
@@ -166,7 +174,7 @@ public class AuditLogViewImpl extends Modal
                                Unit.PCT );
 
         //If the current user is not an Administrator include the delete comment column
-        if ( !identity.hasRole( AppRoles.ADMIN ) ) {
+        if ( identity.hasRole( AppRoles.ADMIN ) ) {
 
             AuditLogEntryDeleteCommentColumn deleteCommentColumn = new AuditLogEntryDeleteCommentColumn();
             deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, SafeHtml>() {
@@ -195,7 +203,7 @@ public class AuditLogViewImpl extends Modal
         events.setPageSize( PAGE_SIZE );
 
         // Configure the simple pager.
-        pager.setDisplay(events);
+        pager.setDisplay( events );
         pager.setPageSize( PAGE_SIZE );
 
         // Add the table to the container.
@@ -217,9 +225,9 @@ public class AuditLogViewImpl extends Modal
         } );
 
         // BZ-996942: Use one column layout.
-        chkEventType.addStyleName("span2");
-        chkEventType.addStyleName(style.eventTypesCheckbox());
-        chkEventType.setWordWrap(false);
+        chkEventType.addStyleName( "span2" );
+        chkEventType.addStyleName( style.eventTypesCheckbox() );
+        chkEventType.setWordWrap( false );
 
         return chkEventType;
     }
