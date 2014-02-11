@@ -161,19 +161,21 @@ public class ProjectScreenPresenter
 
                         view.hideBusyIndicator();
 
-                        changeTitleWidgetEvent.fire(
-                                new ChangeTitleWidgetEvent(
-                                        placeRequest,
-                                        ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
-                                                model.getPOM().getGav().getArtifactId() + ":" +
-                                                        model.getPOM().getGav().getGroupId() + ":" +
-                                                        model.getPOM().getGav().getVersion()
-                                                                                              ) ) );
+                        updateEditorTitle();
                     }
                 },
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).load( pathToPomXML );
 
         view.showGAVPanel();
+    }
+
+    private void updateEditorTitle() {
+        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
+                placeRequest,
+                ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
+                        model.getPOM().getGav().getArtifactId() + ":" +
+                                model.getPOM().getGav().getGroupId() + ":" +
+                                model.getPOM().getGav().getVersion() ) ) );
     }
 
     private void setupPathToPomXML() {
@@ -411,6 +413,7 @@ public class ProjectScreenPresenter
                         view.switchBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
                         notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
                                                                        NotificationEvent.NotificationType.SUCCESS ) );
+
                         build();
                     }
                 } );
@@ -477,8 +480,10 @@ public class ProjectScreenPresenter
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
                                                  projectScreenService.call( callback,
-                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML, model, comment );
-
+                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( pathToPomXML,
+                                                                                                                                     model,
+                                                                                                                                     comment );
+                                                 updateEditorTitle();
                                              }
                                          } );
         concurrentUpdateSessionInfo = null;
