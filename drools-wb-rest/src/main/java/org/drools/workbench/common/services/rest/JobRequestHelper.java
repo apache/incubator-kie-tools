@@ -248,7 +248,7 @@ public class JobRequestHelper {
             BuildResults buildResults = buildService.build( project );
 
             result.setDetailedResult( buildResultsToDetailedStringMessages( buildResults.getMessages() ) );
-            result.setStatus( buildResults.getMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
+            result.setStatus( buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
             jobResultEvent.fire( result );
         }
     }
@@ -294,7 +294,7 @@ public class JobRequestHelper {
                 buildResults = buildService.buildAndDeploy( project );
 
                 result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
-                result.setStatus( buildResults.getMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
+                result.setStatus( buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
             } catch ( Throwable t ) {
                 List<String> errorResult = new ArrayList<String>();
                 errorResult.add( t.getMessage() );
@@ -308,7 +308,7 @@ public class JobRequestHelper {
 
     private List<String> deployResultToDetailedStringMessages( final BuildResults deployResult ) {
         GAV gav = deployResult.getGAV();
-        List<String> result = buildResultsToDetailedStringMessages( deployResult.getMessages() );
+        List<String> result = buildResultsToDetailedStringMessages( deployResult.getErrorMessages() );
         String detailedStringMessage = "artifactID:" + gav.getArtifactId() +
                 ", groupId:" + gav.getGroupId() +
                 ", version:" + gav.getVersion();
@@ -413,7 +413,7 @@ public class JobRequestHelper {
             BuildResults buildResults = buildService.buildAndDeploy( project );
 
             result.setDetailedResult( buildResults == null ? null : deployResultToDetailedStringMessages( buildResults ) );
-            result.setStatus( buildResults.getMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
+            result.setStatus( buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL );
             jobResultEvent.fire( result );
         }
     }
