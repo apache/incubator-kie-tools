@@ -245,10 +245,16 @@ using. Add this inside the `<project>` element, after the
     <uberfire.version>0.5.0-SNAPSHOT</uberfire.version>
     <errai.version>3.0-SNAPSHOT</errai.version>
     <errai.devmode.version>3.0-SNAPSHOT</errai.devmode.version>
-    <errai.jboss.home>/Users/jfuerth/wildfly-8.0.0.Beta1</errai.jboss.home>
+    <errai.jboss.home>${user.home}/wildfly-8.0.0.Beta1</errai.jboss.home>
     <jboss.spec.version>3.0.2.Final</jboss.spec.version>
   </properties>
 ---------
+
+.Location of App Server
+NOTE: this setup assumes you have downloaded and unzipped WildFly
+8.0.0.Beta1 into your home directory. If you have a different JBoss
+app server on hand (JBoss AS 7.1.1, EAP 6, or a different version of
+WildFly) then change the `errai.jboss.home` property accordingly.
 
 Now, after the properties section, we'll import four Maven _BOM_
 files. BOM (short for Bill Of Materials) is a Maven technique (usage
