@@ -16,6 +16,8 @@
 
 package org.uberfire.backend.server.security;
 
+import javax.enterprise.inject.Alternative;
+
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.RepositoryServiceImpl;
 import org.uberfire.java.nio.file.FileSystem;
@@ -33,6 +35,7 @@ import org.uberfire.security.impl.authz.RuntimeResourceManager;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;
 
+@Alternative
 public class RepositoryAuthorizationManager implements AuthorizationManager {
 
     private final RuntimeResourceDecisionManager decisionManager = new RuntimeResourceDecisionManager( new RuntimeResourceManager() );

@@ -29,7 +29,6 @@ import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.impl.IdentityImpl;
 import org.uberfire.security.impl.RoleImpl;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 public class SecurityFactory {
 
@@ -38,13 +37,13 @@ public class SecurityFactory {
     }};
     private static final ThreadLocal<Subject> subjects = new ThreadLocal<Subject>();
 
-    static private RuntimeAuthorizationManager authzManager = null;
+    static private AuthorizationManager authzManager = null;
 
     public static void setSubject( final Subject subject ) {
         subjects.set( subject );
     }
 
-    public static void setAuthzManager( final RuntimeAuthorizationManager authzManager ) {
+    public static void setAuthzManager( final AuthorizationManager authzManager ) {
         SecurityFactory.authzManager = authzManager;
     }
 
@@ -59,7 +58,7 @@ public class SecurityFactory {
 
     @Produces
     @ApplicationScoped
-    public static RuntimeAuthorizationManager getAuthzManager() {
+    public static AuthorizationManager getAuthzManager() {
         return authzManager;
     }
 

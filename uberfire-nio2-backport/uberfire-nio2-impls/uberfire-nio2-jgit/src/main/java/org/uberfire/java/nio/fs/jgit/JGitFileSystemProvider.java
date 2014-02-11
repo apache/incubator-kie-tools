@@ -67,8 +67,6 @@ import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.util.FileUtils;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.commons.lock.LockService;
-import org.uberfire.commons.lock.impl.ThreadLockServiceImpl;
 import org.uberfire.commons.message.MessageType;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
@@ -172,6 +170,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public static final int DEFAULT_SCHEME_SIZE = ( "default://" ).length();
 
     private FileSystemState state = FileSystemState.NORMAL;
+    private CommitInfo batchCommitInfo = null;
     private boolean hadCommitOnBatchState = false;
 
     private final Map<String, JGitFileSystem> fileSystems = new ConcurrentHashMap<String, JGitFileSystem>();
@@ -190,8 +189,6 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
     private Daemon daemonService = null;
     private GitSSHService gitSSHService = null;
-
-    private final LockService internalLockService = new ThreadLockServiceImpl();
 
     private void loadConfig() {
         final String bareReposDir = System.getProperty( "org.uberfire.nio.git.dir" );
@@ -680,6 +677,29 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                 timeZone = op.getTimeZone();
                 when = op.getWhen();
             }
+        }
+
+        return new CommitInfo( sessionId, name, email, message, timeZone, when );
+    }
+
+    private CommitInfo buildCommitInfo( final String defaultMessage,
+                                        final CommentedOption op ) {
+        String sessionId = null;
+        String name = null;
+        String email = null;
+        String message = defaultMessage;
+        TimeZone timeZone = null;
+        Date when = null;
+
+        if ( op != null ) {
+            sessionId = op.getSessionId();
+            name = op.getName();
+            email = op.getEmail();
+            if ( op.getMessage() != null && !op.getMessage().trim().isEmpty() ) {
+                message = op.getMessage();
+            }
+            timeZone = op.getTimeZone();
+            when = op.getWhen();
         }
 
         return new CommitInfo( sessionId, name, email, message, timeZone, when );
@@ -1558,6 +1578,10 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         checkNotEmpty( "attributes", attribute );
 
         if ( attribute.equals( FileSystemState.FILE_SYSTEM_STATE_ATTR ) ) {
+            if ( value instanceof CommentedOption ) {
+                this.batchCommitInfo = buildCommitInfo( "Batch mode", (CommentedOption) value );
+                return;
+            }
             final boolean isOriginalStateBatch = state.equals( FileSystemState.BATCH );
             try {
                 state = FileSystemState.valueOf( value.toString() );
@@ -1566,6 +1590,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                 state = FileSystemState.NORMAL;
             }
             if ( isOriginalStateBatch && state.equals( FileSystemState.NORMAL ) ) {
+                this.batchCommitInfo = null;
                 notifyAllDiffs();
             }
             hadCommitOnBatchState = false;
@@ -1750,7 +1775,11 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
         final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
 
-        JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
+        if ( batchState && batchCommitInfo != null ) {
+            JGitUtil.commit( git, branchName, batchCommitInfo, amend, commitContent );
+        } else {
+            JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
+        }
 
         if ( !batchState ) {
             final ObjectId newHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );

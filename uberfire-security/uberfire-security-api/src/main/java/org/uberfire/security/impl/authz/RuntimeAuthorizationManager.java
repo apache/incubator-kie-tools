@@ -20,6 +20,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 import static org.uberfire.security.authz.AuthorizationResult.ACCESS_ABSTAIN;
 import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 
 import org.uberfire.security.Resource;
@@ -29,30 +30,32 @@ import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
 
+@ApplicationScoped
 @Alternative
 public class RuntimeAuthorizationManager implements AuthorizationManager {
 
     private final RuntimeResourceManager resourceManager = new RuntimeResourceManager();
-    private final RuntimeResourceDecisionManager decisionManager = new RuntimeResourceDecisionManager(resourceManager);
+    private final RuntimeResourceDecisionManager decisionManager = new RuntimeResourceDecisionManager( resourceManager );
     private final RoleDecisionManager roleDecisionManager = new DefaultRoleDecisionManager();
 
     @Override
-    public boolean supports(final Resource resource) {
-        return resourceManager.supports(resource);
+    public boolean supports( final Resource resource ) {
+        return resourceManager.supports( resource );
     }
 
     @Override
-    public boolean authorize(final Resource resource, final Subject subject)
+    public boolean authorize( final Resource resource,
+                              final Subject subject )
             throws AuthorizationException {
-        if (!resourceManager.requiresAuthentication(resource)) {
+        if ( !resourceManager.requiresAuthentication( resource ) ) {
             return true;
         }
 
-        checkNotNull("subject", subject);
+        checkNotNull( "subject", subject );
 
-        final AuthorizationResult finalResult = decisionManager.decide(resource, subject, roleDecisionManager);
+        final AuthorizationResult finalResult = decisionManager.decide( resource, subject, roleDecisionManager );
 
-        if (finalResult.equals(ACCESS_ABSTAIN) || finalResult.equals(ACCESS_GRANTED)) {
+        if ( finalResult.equals( ACCESS_ABSTAIN ) || finalResult.equals( ACCESS_GRANTED ) ) {
             return true;
         }
 
