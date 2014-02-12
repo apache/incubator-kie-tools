@@ -47,7 +47,7 @@
             <b:ControlGroup>
                 <b:Fieldset title="PACKAGE">
                     <b:ControlLabel for="package">
-                        <gwt:InlineHTML text="Package"/>
+                        <gwt:InlineHTML text="{i18n.objectEditor_packageLabel}"/>
                     </b:ControlLabel>
                     <b:Controls>
                         <table>

@@ -97,4 +97,6 @@ public interface Constants
     String FindTitle();
 
     String SearchPlaceholder();
+
+    String SearchResultTitle();
 }

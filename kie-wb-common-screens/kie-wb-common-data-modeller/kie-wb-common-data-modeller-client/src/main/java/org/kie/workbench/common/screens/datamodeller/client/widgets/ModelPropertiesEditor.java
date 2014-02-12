@@ -25,6 +25,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 
@@ -70,10 +71,10 @@ public class ModelPropertiesEditor extends Composite {
     @PostConstruct
     private void init() {
 
-        objectTab.setHeading("Data object");
+        objectTab.setHeading(Constants.INSTANCE.objectEditor_dataObjectTitle());
         objectTab.add(objectProperties);
 
-        fieldTab.setHeading("Field");
+        fieldTab.setHeading(Constants.INSTANCE.objectFieldEditor_fieldTitle());
         fieldTab.add(fieldProperties);
 
         tabPanel.add(objectTab);

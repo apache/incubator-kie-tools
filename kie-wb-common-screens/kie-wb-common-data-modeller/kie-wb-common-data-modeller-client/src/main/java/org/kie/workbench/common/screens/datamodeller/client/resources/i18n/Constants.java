@@ -195,4 +195,8 @@ public interface Constants extends Messages {
 
     public String validation_error_cyclic_extension(String sibling, String parent);
 
+    public String objectEditor_dataObjectTitle();
+
+    public String objectFieldEditor_fieldTitle();
+
 }

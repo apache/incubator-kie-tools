@@ -34,7 +34,7 @@
   <g:FlowPanel>
     <g:HTMLPanel>
       <div class='input-append'>
-        <b:TextBox ui:field="termTextBox" placeholder="Search..." addStyleNames="{style.mysearch-text}"/>
+        <b:TextBox ui:field="termTextBox" placeholder="{i18n.SearchPlaceholder}" addStyleNames="{style.mysearch-text}"/>
         <b:Button icon="SEARCH" ui:field="search" addStyleNames="{style.add-on}"/>
       </div>
     </g:HTMLPanel>
