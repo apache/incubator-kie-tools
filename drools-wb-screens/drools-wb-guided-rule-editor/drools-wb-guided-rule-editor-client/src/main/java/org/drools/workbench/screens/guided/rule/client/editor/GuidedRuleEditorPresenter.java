@@ -461,7 +461,7 @@ public class GuidedRuleEditorPresenter {
             fileName = fileName + " v" + version;
         }
 
-        return Constants.INSTANCE.GuidedRuleEditorTitle() + " [" + fileName + "]";
+        return view.getTitle(fileName);
     }
 
     @WorkbenchPartView

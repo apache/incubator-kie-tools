@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 
 import java.util.Collection;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
@@ -29,6 +30,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 
@@ -67,6 +69,12 @@ public class GuidedRuleEditorViewImpl
                 modeller.setRuleNamesForPackage( ruleNames );
             }
         } ).getRuleNamesForPackage( path, model.getPackageName() );
+    }
+
+    @Override
+    public String getTitle(String fileName) {
+        Constants constants = GWT.create(Constants.class);
+        return constants.GuidedRuleEditorTitle() + " [" + fileName + "]";
     }
 
     @Override

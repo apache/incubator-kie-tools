@@ -34,6 +34,8 @@ public interface GuidedRuleEditorView extends HasBusyIndicator,
                      final boolean isReadOnly,
                      final boolean isDSLEnabled );
 
+    String getTitle(String fileName);
+
     RuleModel getContent();
 
     boolean isDirty();
