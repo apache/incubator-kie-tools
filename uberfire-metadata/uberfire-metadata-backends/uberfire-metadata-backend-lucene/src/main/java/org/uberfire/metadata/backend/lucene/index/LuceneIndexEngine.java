@@ -64,7 +64,7 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     public boolean freshIndex( final KCluster cluster ) {
         final LuceneIndex index = indexManager.get( cluster );
         if ( index == null ) {
-            return true;
+            return !batchMode.containsKey( cluster );
         }
         return index.freshIndex();
     }
@@ -182,6 +182,7 @@ public class LuceneIndexEngine implements MetaIndexEngine {
             int value = batchStack.decrementAndGet();
             if ( value <= 0 ) {
                 index.commit();
+                batchMode.remove( cluster );
             }
         } else {
             index.commit();
