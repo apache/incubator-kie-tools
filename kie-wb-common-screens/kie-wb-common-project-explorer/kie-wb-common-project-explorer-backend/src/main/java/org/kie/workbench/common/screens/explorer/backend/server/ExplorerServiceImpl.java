@@ -67,6 +67,7 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.server.cdi.AppResourcesAuthz;
 
 import static java.util.Collections.*;
 
@@ -97,6 +98,7 @@ public class ExplorerServiceImpl
     private OrganizationalUnitService organizationalUnitService;
 
     @Inject
+    @AppResourcesAuthz
     private AuthorizationManager authorizationManager;
 
     @Inject
