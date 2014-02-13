@@ -67,7 +67,6 @@ import org.guvnor.common.services.workingset.client.factconstraints.customform.C
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
@@ -104,6 +103,7 @@ public class ConstraintValueEditor
     private DropDownData dropDownData;
     private boolean readOnly;
     private Command onValueChangeCommand;
+    private Command onTemplateValueChangeCommand;
     private boolean isDropDownDataEnum;
     private Widget constraintWidget = null;
 
@@ -146,7 +146,7 @@ public class ConstraintValueEditor
                                                   fieldName );
         }
 
-        helper = new ConstraintValueEditorHelper(model, oracle, factType, fieldName, constraint, fieldType, dropDownData);
+        helper = new ConstraintValueEditorHelper( model, oracle, factType, fieldName, constraint, fieldType, dropDownData );
 
         refreshEditor();
         initWidget( panel );
@@ -156,7 +156,7 @@ public class ConstraintValueEditor
         return constraint;
     }
 
-    private void refreshEditor() {
+    public void refreshEditor() {
         panel.clear();
         constraintWidget = null;
 
@@ -385,18 +385,18 @@ public class ConstraintValueEditor
 
         for ( String var : bindingsInScope ) {
             final String binding = var;
-            helper.isApplicableBindingsInScope(var,
-                    new Callback<Boolean>() {
-                        @Override
-                        public void callback(final Boolean result) {
-                            if (Boolean.TRUE.equals(result)) {
-                                box.addItem(binding);
-                                if (ConstraintValueEditor.this.constraint.getValue() != null && ConstraintValueEditor.this.constraint.getValue().equals(binding)) {
-                                    box.setSelectedIndex(box.getItemCount() - 1);
-                                }
-                            }
-                        }
-                    });
+            helper.isApplicableBindingsInScope( var,
+                                                new Callback<Boolean>() {
+                                                    @Override
+                                                    public void callback( final Boolean result ) {
+                                                        if ( Boolean.TRUE.equals( result ) ) {
+                                                            box.addItem( binding );
+                                                            if ( ConstraintValueEditor.this.constraint.getValue() != null && ConstraintValueEditor.this.constraint.getValue().equals( binding ) ) {
+                                                                box.setSelectedIndex( box.getItemCount() - 1 );
+                                                            }
+                                                        }
+                                                    }
+                                                } );
         }
 
         box.addChangeHandler( new ChangeHandler() {
@@ -480,7 +480,7 @@ public class ConstraintValueEditor
             @Override
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 constraint.setValue( event.getValue() );
-                executeOnValueChangeCommand();
+                executeOnTemplateValueChangeCommand();
             }
 
         } );
@@ -615,28 +615,28 @@ public class ConstraintValueEditor
                 final Set<Button> bindingButtonContainer = new HashSet<Button>();
 
                 for ( String var : bindingsInScope ) {
-                    helper.isApplicableBindingsInScope(var,
-                            new Callback<Boolean>() {
-                                @Override
-                                public void callback(final Boolean result) {
-                                    if (Boolean.TRUE.equals(result)) {
-                                        if (!bindingButtonContainer.contains(bindingButton)) {
-                                            bindingButtonContainer.add(bindingButton);
-                                            bindingButton.addClickHandler(new ClickHandler() {
+                    helper.isApplicableBindingsInScope( var,
+                                                        new Callback<Boolean>() {
+                                                            @Override
+                                                            public void callback( final Boolean result ) {
+                                                                if ( Boolean.TRUE.equals( result ) ) {
+                                                                    if ( !bindingButtonContainer.contains( bindingButton ) ) {
+                                                                        bindingButtonContainer.add( bindingButton );
+                                                                        bindingButton.addClickHandler( new ClickHandler() {
 
-                                                public void onClick(ClickEvent event) {
-                                                    con.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
-                                                    doTypeChosen(form);
-                                                }
-                                            });
-                                            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.AVariable(),
-                                                    widgets(bindingButton,
-                                                            new InfoPopup(GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
-                                                                    GuidedRuleEditorResources.CONSTANTS.BoundVariableTip())));
-                                        }
-                                    }
-                                }
-                            });
+                                                                            public void onClick( ClickEvent event ) {
+                                                                                con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+                                                                                doTypeChosen( form );
+                                                                            }
+                                                                        } );
+                                                                        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AVariable(),
+                                                                                           widgets( bindingButton,
+                                                                                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
+                                                                                                                   GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
+                                                                    }
+                                                                }
+                                                            }
+                                                        } );
 
                 }
             }
@@ -700,18 +700,28 @@ public class ConstraintValueEditor
         return panel;
     }
 
-    private void executeOnValueChangeCommand() {
-        if ( this.onValueChangeCommand != null ) {
-            this.onValueChangeCommand.execute();
-        }
-    }
-
     public boolean isDirty() {
         return super.isDirty();
     }
 
     public void setOnValueChangeCommand( Command onValueChangeCommand ) {
         this.onValueChangeCommand = onValueChangeCommand;
+    }
+
+    private void executeOnValueChangeCommand() {
+        if ( this.onValueChangeCommand != null ) {
+            this.onValueChangeCommand.execute();
+        }
+    }
+
+    public void setOnTemplateValueChangeCommand( Command onTemplateValueChangeCommand ) {
+        this.onTemplateValueChangeCommand = onTemplateValueChangeCommand;
+    }
+
+    private void executeOnTemplateValueChangeCommand() {
+        if ( this.onTemplateValueChangeCommand != null ) {
+            this.onTemplateValueChangeCommand.execute();
+        }
     }
 
     private DropDownData getDropDownData() {
@@ -740,26 +750,6 @@ public class ConstraintValueEditor
                                                  currentValueMap );
         }
         return dropDownData;
-    }
-
-    /**
-     * Refresh the displayed drop-down
-     */
-    public void refreshDropDownData() {
-        if ( this.dropDownData == null ) {
-            return;
-        }
-        if ( this.constraintWidget instanceof HorizontalPanel ) {
-            HorizontalPanel hp = (HorizontalPanel) this.constraintWidget;
-            for ( int iChildIndex = 0; iChildIndex < hp.getWidgetCount(); iChildIndex++ ) {
-                Widget w = hp.getWidget( iChildIndex );
-                if ( w instanceof EnumDropDown ) {
-                    EnumDropDown edd = (EnumDropDown) w;
-                    edd.setDropDownData( constraint.getValue(),
-                                         getDropDownData() );
-                }
-            }
-        }
     }
 
     //Signal (potential) change in Template variables

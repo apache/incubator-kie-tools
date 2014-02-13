@@ -15,8 +15,9 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
-import java.util.Arrays;
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -48,9 +49,20 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidge
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.AbstractProxyPopupDropDownEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDialectDropDownEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupDropDownEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.PopupTextEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupDateDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericBigDecimalDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericBigIntegerDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericByteDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericDoubleDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericFloatDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericIntegerDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericLongDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupNumericShortDropDownEditCell;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.ProxyPopupTextDropDownEditCell;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells.RowNumberCell;
 
 /**
@@ -189,15 +201,19 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         final String factType = model.getPattern( col ).getFactType();
         final String fieldName = col.getFactField();
+        final String dataType = utils.getType( col );
         if ( utils.hasValueList( col ) ) {
             return makeValueListCell( col );
 
+        } else if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
+            return makeMultipleSelectEnumCell( factType,
+                                               fieldName );
+
         } else if ( oracle.hasEnums( factType,
                                      fieldName ) ) {
-            final boolean isMultipleSelect = isExplicitListOperator( col.getOperator() );
-            return makeEnumCell( factType,
-                                 fieldName,
-                                 isMultipleSelect );
+            return makeSingleSelectionEnumCell( factType,
+                                                fieldName,
+                                                dataType );
         }
 
         return derieveCellFromModel( col );
@@ -209,12 +225,16 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         //Check if the column has an enumeration
         final String factType = col.getFactType();
         final String fieldName = col.getFactField();
-        if ( oracle.hasEnums( factType,
-                              fieldName ) ) {
-            final boolean isMultipleSelect = isExplicitListOperator( col.getOperator() );
-            return makeEnumCell( factType,
-                                 fieldName,
-                                 isMultipleSelect );
+        final String dataType = utils.getType( col );
+        if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
+            return makeMultipleSelectEnumCell( factType,
+                                               fieldName );
+
+        } else if ( oracle.hasEnums( factType,
+                                     fieldName ) ) {
+            return makeSingleSelectionEnumCell( factType,
+                                                fieldName,
+                                                dataType );
         }
 
         return derieveCellFromModel( col );
@@ -226,13 +246,15 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         final String factType = utils.getBoundFactType( col.getBoundName() );
         final String fieldName = col.getFactField();
+        final String dataType = utils.getType( col );
         if ( utils.hasValueList( col ) ) {
             return makeValueListCell( col );
 
         } else if ( oracle.hasEnums( factType,
                                      fieldName ) ) {
-            return makeEnumCell( factType,
-                                 fieldName );
+            return makeSingleSelectionEnumCell( factType,
+                                                fieldName,
+                                                dataType );
         }
 
         return derieveCellFromModel( col );
@@ -244,13 +266,15 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         final String factType = col.getFactType();
         final String fieldName = col.getFactField();
+        final String dataType = utils.getType( col );
         if ( utils.hasValueList( col ) ) {
             return makeValueListCell( col );
 
         } else if ( oracle.hasEnums( factType,
                                      fieldName ) ) {
-            return makeEnumCell( factType,
-                                 fieldName );
+            return makeSingleSelectionEnumCell( factType,
+                                                fieldName,
+                                                dataType );
         }
 
         return derieveCellFromModel( col );
@@ -274,10 +298,12 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         //Check if the column has an enumeration
         final String factType = col.getFactType();
         final String fieldName = col.getFactField();
+        final String dataType = utils.getType( col );
         if ( oracle.hasEnums( factType,
                               fieldName ) ) {
-            return makeEnumCell( factType,
-                                 fieldName );
+            return makeSingleSelectionEnumCell( factType,
+                                                fieldName,
+                                                dataType );
         }
 
         return derieveCellFromModel( col );
@@ -353,18 +379,13 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     //Get a cell for a Value List
     private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeValueListCell( final ConditionCol52 col ) {
         // Columns with "Value Lists" are always Text (for now)
-        final boolean isMultipleSelect = isExplicitListOperator( col.getOperator() );
+        final boolean isMultipleSelect = OperatorsOracle.operatorRequiresList( col.getOperator() );
         PopupValueListDropDownEditCell pudd = new PopupValueListDropDownEditCell( utils.getValueList( col ),
                                                                                   isMultipleSelect,
                                                                                   isReadOnly );
         DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                                                                                  eventBus );
         return cell;
-    }
-
-    private boolean isExplicitListOperator( final String operator ) {
-        final List<String> ops = Arrays.asList( OperatorsOracle.EXPLICIT_LIST_OPERATORS );
-        return ops.contains( operator );
     }
 
     //Get a cell for a Value List
@@ -378,26 +399,119 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     }
 
     //Get a cell for a Value List
-    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeEnumCell( String factType,
-                                                                                 String fieldName ) {
-        return makeEnumCell( factType,
-                             fieldName,
-                             false );
-    }
-
-    //Get a cell for a Value List
-    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeEnumCell( String factType,
-                                                                                 String fieldName,
-                                                                                 boolean isMultipleSelect ) {
+    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeMultipleSelectEnumCell( String factType,
+                                                                                               String fieldName ) {
         // Columns with enumerations are always Text
         PopupDropDownEditCell pudd = new PopupDropDownEditCell( factType,
                                                                 fieldName,
                                                                 oracle,
                                                                 dropDownManager,
-                                                                isMultipleSelect,
+                                                                true,
                                                                 isReadOnly );
         DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = new DecoratedGridCellValueAdaptor<String>( pudd,
                                                                                                                  eventBus );
+        return cell;
+    }
+
+    //Get a cell for a Value List
+    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeSingleSelectionEnumCell( String factType,
+                                                                                                String fieldName,
+                                                                                                String dataType ) {
+        DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell;
+        if ( dataType.equals( DataType.TYPE_NUMERIC ) ) {
+            final AbstractProxyPopupDropDownEditCell<BigDecimal, BigDecimal> pudd = new ProxyPopupNumericBigDecimalDropDownEditCell( factType,
+                                                                                                                                     fieldName,
+                                                                                                                                     oracle,
+                                                                                                                                     dropDownManager,
+                                                                                                                                     isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<BigDecimal>( pudd,
+                                                                  eventBus );
+
+        } else if ( dataType.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
+            final AbstractProxyPopupDropDownEditCell<BigDecimal, BigDecimal> pudd = new ProxyPopupNumericBigDecimalDropDownEditCell( factType,
+                                                                                                                                     fieldName,
+                                                                                                                                     oracle,
+                                                                                                                                     dropDownManager,
+                                                                                                                                     isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<BigDecimal>( pudd,
+                                                                  eventBus );
+        } else if ( dataType.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
+            final AbstractProxyPopupDropDownEditCell<BigInteger, BigInteger> pudd = new ProxyPopupNumericBigIntegerDropDownEditCell( factType,
+                                                                                                                                     fieldName,
+                                                                                                                                     oracle,
+                                                                                                                                     dropDownManager,
+                                                                                                                                     isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<BigInteger>( pudd,
+                                                                  eventBus );
+        } else if ( dataType.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
+            final AbstractProxyPopupDropDownEditCell<Byte, Byte> pudd = new ProxyPopupNumericByteDropDownEditCell( factType,
+                                                                                                                   fieldName,
+                                                                                                                   oracle,
+                                                                                                                   dropDownManager,
+                                                                                                                   isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<Byte>( pudd,
+                                                            eventBus );
+        } else if ( dataType.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
+            final AbstractProxyPopupDropDownEditCell<Double, Double> pudd = new ProxyPopupNumericDoubleDropDownEditCell( factType,
+                                                                                                                         fieldName,
+                                                                                                                         oracle,
+                                                                                                                         dropDownManager,
+                                                                                                                         isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<Double>( pudd,
+                                                              eventBus );
+        } else if ( dataType.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
+            final AbstractProxyPopupDropDownEditCell<Float, Float> pudd = new ProxyPopupNumericFloatDropDownEditCell( factType,
+                                                                                                                      fieldName,
+                                                                                                                      oracle,
+                                                                                                                      dropDownManager,
+                                                                                                                      isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<Float>( pudd,
+                                                             eventBus );
+        } else if ( dataType.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
+            final AbstractProxyPopupDropDownEditCell<Integer, Integer> pudd = new ProxyPopupNumericIntegerDropDownEditCell( factType,
+                                                                                                                            fieldName,
+                                                                                                                            oracle,
+                                                                                                                            dropDownManager,
+                                                                                                                            isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<Integer>( pudd,
+                                                               eventBus );
+        } else if ( dataType.equals( DataType.TYPE_NUMERIC_LONG ) ) {
+            final AbstractProxyPopupDropDownEditCell<Long, Long> pudd = new ProxyPopupNumericLongDropDownEditCell( factType,
+                                                                                                                   fieldName,
+                                                                                                                   oracle,
+                                                                                                                   dropDownManager,
+                                                                                                                   isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<Long>( pudd,
+                                                            eventBus );
+        } else if ( dataType.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
+            final AbstractProxyPopupDropDownEditCell<Short, Short> pudd = new ProxyPopupNumericShortDropDownEditCell( factType,
+                                                                                                                      fieldName,
+                                                                                                                      oracle,
+                                                                                                                      dropDownManager,
+                                                                                                                      isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<Short>( pudd,
+                                                             eventBus );
+        } else if ( dataType.equals( DataType.TYPE_BOOLEAN ) ) {
+            cell = makeBooleanCell();
+        } else if ( dataType.equals( DataType.TYPE_DATE ) ) {
+            final AbstractProxyPopupDropDownEditCell<Date, Date> pudd = new ProxyPopupDateDropDownEditCell( factType,
+                                                                                                            fieldName,
+                                                                                                            oracle,
+                                                                                                            dropDownManager,
+                                                                                                            isReadOnly,
+                                                                                                            DATE_FORMAT );
+            cell = new DecoratedGridCellValueAdaptor<Date>( pudd,
+                                                            eventBus );
+        } else {
+            final AbstractProxyPopupDropDownEditCell<String, String> pudd = new ProxyPopupTextDropDownEditCell( factType,
+                                                                                                                fieldName,
+                                                                                                                oracle,
+                                                                                                                dropDownManager,
+                                                                                                                isReadOnly );
+            cell = new DecoratedGridCellValueAdaptor<String>( pudd,
+                                                              eventBus );
+        }
+
         return cell;
     }
 

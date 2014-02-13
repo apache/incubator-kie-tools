@@ -217,14 +217,6 @@ public class GuidedDecisionTableUtils {
 
     private String getTypeFromDataOracle( final String factType,
                                           final String fieldName ) {
-
-        // Columns with enumerations are always Text (for now)
-        if ( oracle.hasEnums( factType,
-                              fieldName ) ) {
-            return DataType.TYPE_STRING;
-        }
-
-        //Otherwise lookup from SuggestionCompletionEngine
         final String type = oracle.getFieldType( factType,
                                                  fieldName );
         return type;

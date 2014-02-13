@@ -684,10 +684,17 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                                                  this.getModeller(),
                                                                                  this.getEventBus(),
                                                                                  this.readOnly );
+        //If any literal value changes set to dirty and refresh dependent enumerations
         constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {
                 setModified( true );
                 refreshConstraintValueEditorsDropDownData( c );
+            }
+        } );
+        //If a Template Key value changes only set to dirty
+        constraintValueEditor.setOnTemplateValueChangeCommand( new Command() {
+            public void execute() {
+                setModified( true );
             }
         } );
 
@@ -900,7 +907,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     private void refreshConstraintValueEditorsDropDownData( final SingleFieldConstraint modifiedConstraint ) {
         for ( Map.Entry<SingleFieldConstraint, ConstraintValueEditor> e : constraintValueEditors.entrySet() ) {
             if ( e.getKey() != modifiedConstraint ) {
-                e.getValue().refreshDropDownData();
+                e.getValue().refreshEditor();
             }
         }
     }
