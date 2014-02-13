@@ -48,7 +48,11 @@ public class AnnotationDefinitionTO {
     public static final String DESCRIPTION_ANNOTATION = "org.kie.api.definition.type.Description";
 
     public static final String KEY_ANNOTATION = "org.kie.api.definition.type.Key";
-    
+
+    public static final String PROPERTY_REACTIVE_ANNOTATION = "org.kie.api.definition.type.PropertyReactive";
+
+    public static final String CLASS_REACTIVE_ANNOTATION = "org.kie.api.definition.type.ClassReactive";
+
     public static final String VALUE_PARAM = "value";
 
     private List<AnnotationMemberDefinitionTO> annotationMembers = new ArrayList<AnnotationMemberDefinitionTO>();

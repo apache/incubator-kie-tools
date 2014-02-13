@@ -29,6 +29,7 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodeller.driver.*;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.*;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
@@ -43,11 +44,6 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.DescriptionAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.LabelAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.RoleAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +78,14 @@ public class DataModelOracleDriver implements ModelDriver {
         annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
 
         annotationDefinition = PositionAnnotationDefinition.getInstance();
+        configuredAnnotations.add( annotationDefinition );
+        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
+
+        annotationDefinition = PropertyReactiveAnnotationDefinition.getInstance();
+        configuredAnnotations.add( annotationDefinition );
+        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
+
+        annotationDefinition = ClassReactiveAnnotationDefinition.getInstance();
         configuredAnnotations.add( annotationDefinition );
         annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
 

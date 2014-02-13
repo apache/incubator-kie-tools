@@ -131,6 +131,14 @@ public interface Constants extends Messages {
 
     public String objectEditor_roleHelp();
 
+    public String objectEditor_classReactiveLabel();
+
+    public String objectEditor_classReactiveLabelHelp();
+
+    public String objectEditor_propertyReactiveLabel();
+
+    public String objectEditor_propertyReactiveLabelHelp();
+
     public String objectFieldEditor_nameLabel();
 
     public String objectFieldEditor_labelLabel();
@@ -140,6 +148,8 @@ public interface Constants extends Messages {
     public String objectFieldEditor_typeLabel();
 
     public String objectFieldEditor_equalsLabel();
+
+    public String objectFieldEditor_equalsHelp();
 
     public String objectFieldEditor_positionLabel();
 

@@ -21,14 +21,12 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Icon;
-import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.TextArea;
-import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -97,7 +95,19 @@ public class DataObjectEditor extends Composite {
     ListBox roleSelector;
 
     @UiField
+    CheckBox classReactiveSelector;
+
+    @UiField
+    CheckBox propertyReactiveSelector;
+
+    @UiField
     Icon roleHelpIcon;
+
+    @UiField
+    Icon classReactiveHelpIcon;
+
+    @UiField
+    Icon propertyReactiveHelpIcon;
 
     @Inject
     Event<DataModelerEvent> dataModelerEvent;
@@ -116,8 +126,12 @@ public class DataObjectEditor extends Composite {
     public DataObjectEditor() {
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        roleHelpIcon.getElement().getStyle().setPaddingLeft( 4, Style.Unit.PX );
+        //roleHelpIcon.getElement().getStyle().setPaddingLeft( 4, Style.Unit.PX );
         roleHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        //classReactiveHelpIcon.getElement().getStyle().setPaddingLeft( 4, Style.Unit.PX );
+        classReactiveHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        //propertyReactiveHelpIcon.getElement().getStyle().setPaddingLeft( 4, Style.Unit.PX );
+        propertyReactiveHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
     }
 
     @PostConstruct
@@ -183,7 +197,8 @@ public class DataObjectEditor extends Composite {
         packageSelector.setEnabled( value );
         superclassSelector.setEnabled( value );
         roleSelector.setEnabled( value );
-        roleHelpIcon.setVisible( value );
+        propertyReactiveSelector.setEnabled( value );
+        classReactiveSelector.setEnabled( value );
     }
 
     private boolean isReadonly() {
@@ -216,6 +231,16 @@ public class DataObjectEditor extends Composite {
             if ( annotation != null ) {
                 String value = annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) != null ? annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() : NOT_SELECTED;
                 roleSelector.setSelectedValue( value );
+            }
+
+            annotation = dataObject.getAnnotation( AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION );
+            if ( annotation != null ) {
+                propertyReactiveSelector.setValue( Boolean.TRUE );
+            }
+
+            annotation = dataObject.getAnnotation( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION );
+            if ( annotation != null ) {
+                classReactiveSelector.setValue( Boolean.TRUE );
             }
 
             if ( ! dataObject.isExternallyModified() ) {
@@ -485,6 +510,54 @@ public class DataObjectEditor extends Composite {
         notifyObjectChange( AnnotationDefinitionTO.ROLE_ANNOTATION, oldValue, _role );
     }
 
+    @UiHandler("propertyReactiveSelector")
+    void propertyReactiveChanged(final ClickEvent event) {
+        if ( getDataObject() == null ) return;
+
+        Boolean oldValue = null;
+        AnnotationTO annotation = getDataObject().getAnnotation(AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION);
+        oldValue = annotation != null;
+
+        final Boolean isChecked = propertyReactiveSelector.getValue();
+
+        if ( annotation != null && !isChecked ) {
+            getDataObject().removeAnnotation( annotation );
+        } else if ( annotation == null && isChecked ) {
+            getDataObject().addAnnotation( new AnnotationTO( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION ) ) );
+        }
+
+        if ( isChecked ) {
+            getDataObject().removeAnnotation( new AnnotationTO( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION ) ) );
+            classReactiveSelector.setValue( false );
+        }
+        //TODO check if this event is needed and add validation, this annotation cannot coexist with the ClassReactiveAnnotation
+        notifyObjectChange( AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION, oldValue, isChecked );
+    }
+
+    @UiHandler("classReactiveSelector")
+    void classReactiveChanged(final ClickEvent event) {
+        if ( getDataObject() == null ) return;
+
+        Boolean oldValue = null;
+        AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION );
+        oldValue = annotation != null;
+
+        final Boolean isChecked = classReactiveSelector.getValue();
+
+        if ( annotation != null && !isChecked ) {
+            getDataObject().removeAnnotation( annotation );
+        } else if ( annotation == null && isChecked ) {
+            getDataObject().addAnnotation( new AnnotationTO( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION ) ) );
+        }
+
+        if ( isChecked )  {
+            getDataObject().removeAnnotation( new AnnotationTO( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION ) ) );
+            propertyReactiveSelector.setValue( false );
+        }
+        //TODO check if this event is needed and add validation, this annotation cannot coexist with the PropertyReactiveAnnotation
+        notifyObjectChange( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION, oldValue, isChecked );
+    }
+
     private void clean() {
         nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
         name.setText( null );
@@ -495,5 +568,7 @@ public class DataObjectEditor extends Composite {
         // TODO superclassLabel when its validation is put in place
         superclassSelector.setDataObject( null );
         roleSelector.setSelectedValue( NOT_SELECTED );
+        classReactiveSelector.setValue( false );
+        propertyReactiveSelector.setValue( false );
     }
 }

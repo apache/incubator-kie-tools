@@ -96,6 +96,9 @@ public class DataObjectFieldEditor extends Composite {
     CheckBox equalsSelector;
 
     @UiField
+    Icon equalsHelpIcon;
+
+    @UiField
     Label positionLabel;
 
     @UiField
@@ -136,8 +139,10 @@ public class DataObjectFieldEditor extends Composite {
             }
         });
 
-        positionHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
+        //positionHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
         positionHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        //equalsHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
+        equalsHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
 
         setReadonly(true);
     }
@@ -180,7 +185,6 @@ public class DataObjectFieldEditor extends Composite {
         description.setEnabled(value);
         typeSelector.setEnabled(value);
         equalsSelector.setEnabled(value);
-        positionHelpIcon.setVisible(value);
         positionSelector.setEnabled(value);
     }
 

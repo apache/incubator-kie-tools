@@ -28,8 +28,8 @@
 
         <style>
             .propertiesTable {
-            min-height: 310px !Important;
-            min-width: 285px !Important;
+            min-height: 320px !Important;
+            min-width: 300px !Important;
             overflow: hidden;
             }
 
@@ -50,16 +50,18 @@
         <table class="row-fluid span12" style="padding: 4px;">
 
             <tr>
-                <td style="white-space: nowrap; vertical-align: top;">
+                <td style="white-space: nowrap; vertical-align: top; min-width:110px;">
                     <gwt:Label ui:field="nameLabel" text="{i18n.objectFieldEditor_nameLabel}"/>
                 </td>
-                <td style="padding-left: 4px;">
+                <td style="padding-left: 4px; padding-right:16px;">
                     <b:TextBox ui:field="name" styleName="span10 "></b:TextBox>
+                </td>
+                <td style="padding-left: 4px;">
                 </td>
             </tr>
 
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
 
             <tr>
@@ -69,9 +71,11 @@
                 <td style="padding-left: 4px;">
                     <b:TextBox ui:field="label" styleName="span10"></b:TextBox>
                 </td>
+                <td style="padding-left: 4px;">
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -80,9 +84,11 @@
                 <td style="padding-left: 4px;">
                     <b:TextArea ui:field="description" styleName="span10"></b:TextArea>
                 </td>
+                <td style="padding-left: 4px;">
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -91,9 +97,11 @@
                 <td style="padding-left: 4px;">
                     <b:ListBox ui:field="typeSelector" styleName="span10"></b:ListBox>
                 </td>
+                <td style="padding-left: 4px;">
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -102,9 +110,14 @@
                 <td style="padding-left: 4px;">
                     <b:CheckBox ui:field="equalsSelector"></b:CheckBox>
                 </td>
+                <td style="padding-left: 4px;">
+                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectFieldEditor_equalsLabel}" text="{i18n.objectFieldEditor_equalsHelp}">
+                        <b:Icon ui:field="equalsHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -112,12 +125,13 @@
                 </td>
                 <td style="padding-left: 4px;">
                     <b:ListBox ui:field="positionSelector" styleName="span10"></b:ListBox>
+                </td>
+                <td style="padding-left: 4px;">
                     <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectFieldEditor_positionLabel}" text="{i18n.objectFieldEditor_positionHelp}">
                         <b:Icon ui:field="positionHelpIcon" type="QUESTION_SIGN"></b:Icon>
                     </b:Popover>
                 </td>
             </tr>
-
         </table>
 
     </div>

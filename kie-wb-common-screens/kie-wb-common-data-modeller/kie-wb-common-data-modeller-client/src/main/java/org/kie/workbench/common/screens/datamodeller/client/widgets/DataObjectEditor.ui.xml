@@ -29,8 +29,8 @@
 
         <style>
             .propertiesTable2 {
-            min-height: 310px !Important;
-            min-width: 285px !Important;
+            min-height: 320px !Important;
+            min-width: 300px !Important;
             overflow: hidden;
             }
 
@@ -51,15 +51,17 @@
         <table class="row-fluid span12"  style="padding: 4px;">
 
             <tr>
-                <td style="white-space: nowrap; vertical-align: top;">
+                <td style="white-space: nowrap; vertical-align: top; min-width:110px;">
                     <gwt:Label ui:field="nameLabel" text="{i18n.objectEditor_nameLabel}"/>
                 </td>
                 <td style="padding-left: 4px;">
                     <b:TextBox ui:field="name" styleName="span10"></b:TextBox>
                 </td>
+                <td style="padding-left: 4px;">
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -68,9 +70,11 @@
                 <td style="padding-left: 4px;">
                     <b:TextBox ui:field="label" styleName="span10"></b:TextBox>
                 </td>
+                <td style="padding-left: 4px;">
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -79,9 +83,11 @@
                 <td style="padding-left: 4px;">
                     <b:TextArea ui:field="description" styleName="span10"></b:TextArea>
                 </td>
+                <td style="padding-left: 4px;">
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -92,9 +98,11 @@
 
                     </gwt:SimplePanel>
                 </td>
+                <td style="padding-left: 4px;">
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -103,9 +111,11 @@
                 <td style="padding-left: 4px;">
                     <datamodeler:SuperclassSelector ui:field="superclassSelector"  styleName="span10"></datamodeler:SuperclassSelector>
                 </td>
+                <td style="padding-left: 4px;">
+                </td>
             </tr>
             <tr>
-                <td colspan="2" style="padding: 3px;"></td>
+                <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
                 <td style="white-space: nowrap; vertical-align: top;">
@@ -113,8 +123,42 @@
                 </td>
                 <td style="padding-left: 4px;">
                     <b:ListBox ui:field="roleSelector" styleName="span10"></b:ListBox>
-                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_roleLabel}" text="{i18n.objectEditor_roleHelp}">
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_roleLabel}" text="{i18n.objectEditor_roleHelp}" >
                         <b:Icon ui:field="roleHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="classReactiveLabel" text="{i18n.objectEditor_classReactiveLabel}" />
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:CheckBox ui:field="classReactiveSelector"></b:CheckBox>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_classReactiveLabel}" text="{i18n.objectEditor_classReactiveLabelHelp}">
+                        <b:Icon ui:field="classReactiveHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="propertyReactiveLabel" text="{i18n.objectEditor_propertyReactiveLabel}"/>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:CheckBox ui:field="propertyReactiveSelector"></b:CheckBox>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_propertyReactiveLabel}" text="{i18n.objectEditor_propertyReactiveLabelHelp}">
+                        <b:Icon ui:field="propertyReactiveHelpIcon" type="QUESTION_SIGN"></b:Icon>
                     </b:Popover>
                 </td>
             </tr>
