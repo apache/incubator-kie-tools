@@ -14,17 +14,22 @@ import org.uberfire.security.Subject;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
 import org.uberfire.security.authz.AuthorizationException;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.RuntimeResource;
-import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.server.cdi.AppResourcesAuthz;
 
 public abstract class AbstractSecurityInterceptor {
 
-    @Inject RuntimeAuthorizationManager authzManager;
+    @Inject
+    @AppResourcesAuthz
+    private AuthorizationManager authzManager;
 
-    @Inject @SessionScoped Subject subject;
+    @Inject
+    @SessionScoped
+    private Subject subject;
 
     @AroundInvoke
-    public Object interceptInvoke(final InvocationContext ctx) throws Exception {
+    public Object interceptInvoke( final InvocationContext ctx ) throws Exception {
 
         final Method method = ctx.getMethod();
 
@@ -40,7 +45,7 @@ public abstract class AbstractSecurityInterceptor {
 
             @Override
             public Collection<String> getRoles() {
-                if (roles == null) {
+                if ( roles == null ) {
                     build();
                 }
                 return roles;
@@ -48,7 +53,7 @@ public abstract class AbstractSecurityInterceptor {
 
             @Override
             public Collection<String> getTraits() {
-                if (traits == null) {
+                if ( traits == null ) {
                     build();
                 }
                 return traits;
@@ -58,41 +63,41 @@ public abstract class AbstractSecurityInterceptor {
                 this.roles = new ArrayList<String>();
                 this.traits = new ArrayList<String>();
 
-                final List<Annotation[]> availableAnnotations = new ArrayList<Annotation[]>(2);
-                availableAnnotations.add(method.getAnnotations());
-                availableAnnotations.add(method.getDeclaringClass().getAnnotations());
+                final List<Annotation[]> availableAnnotations = new ArrayList<Annotation[]>( 2 );
+                availableAnnotations.add( method.getAnnotations() );
+                availableAnnotations.add( method.getDeclaringClass().getAnnotations() );
 
-                for (final Annotation[] annotations : availableAnnotations) {
-                    for (final Annotation annotation : annotations) {
-                        if (annotation.annotationType().getAnnotation(RolesType.class) != null) {
-                            for (final Method annotationMethod : annotation.getClass().getDeclaredMethods()) {
+                for ( final Annotation[] annotations : availableAnnotations ) {
+                    for ( final Annotation annotation : annotations ) {
+                        if ( annotation.annotationType().getAnnotation( RolesType.class ) != null ) {
+                            for ( final Method annotationMethod : annotation.getClass().getDeclaredMethods() ) {
                                 final String paramName = annotationMethod.getName().intern();
-                                if (paramName.equals("value")) {
+                                if ( paramName.equals( "value" ) ) {
                                     try {
-                                        if (annotationMethod.getReturnType().isArray()) {
-                                            final Object[] params = (Object[]) annotationMethod.invoke(annotation);
-                                            for (final Object param : params) {
-                                                roles.add(param.toString());
+                                        if ( annotationMethod.getReturnType().isArray() ) {
+                                            final Object[] params = (Object[]) annotationMethod.invoke( annotation );
+                                            for ( final Object param : params ) {
+                                                roles.add( param.toString() );
                                             }
                                         } else {
-                                            final Object param = annotationMethod.invoke(annotation);
-                                            roles.add(param.toString());
+                                            final Object param = annotationMethod.invoke( annotation );
+                                            roles.add( param.toString() );
                                         }
-                                    } catch (Exception e) {
+                                    } catch ( Exception e ) {
                                     }
                                     break;
                                 }
                             }
-                        } else if (annotation.annotationType().getAnnotation(SecurityTrait.class) != null) {
-                            traits.add(annotation.annotationType().getName());
+                        } else if ( annotation.annotationType().getAnnotation( SecurityTrait.class ) != null ) {
+                            traits.add( annotation.annotationType().getName() );
                         }
                     }
                 }
             }
         };
 
-        if (!authzManager.authorize(resource, subject)) {
-            throw new AuthorizationException("Invalid credentials.");
+        if ( !authzManager.authorize( resource, subject ) ) {
+            throw new AuthorizationException( "Invalid credentials." );
         }
 
         return ctx.proceed();

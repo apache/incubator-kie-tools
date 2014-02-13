@@ -58,6 +58,7 @@ public class SecurityFactory {
 
     @Produces
     @ApplicationScoped
+    @AppResourcesAuthz
     public static AuthorizationManager getAuthzManager() {
         return authzManager;
     }
