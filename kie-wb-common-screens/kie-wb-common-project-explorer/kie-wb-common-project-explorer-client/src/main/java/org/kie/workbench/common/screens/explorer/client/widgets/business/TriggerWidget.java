@@ -15,24 +15,36 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
+import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.NavHeader;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.user.client.ui.*;
 import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
 
 /**
  * Trigger Widget for ResourceType groups
  */
-public class TriggerWidget extends HorizontalPanel {
+public class TriggerWidget extends Composite {
+
+    FlexTable resourceHeader;
 
     public TriggerWidget( final String caption ) {
-        add( makeNavHeader( caption ) );
+        resourceHeader = new FlexTable();
+        initWidget( resourceHeader );
+        resourceHeader.setWidget( 0, 0, makeNavHeader( caption ) );
+        resourceHeader.setHTML( 0, 1, "&nbsp;&nbsp;" );
+        resourceHeader.setWidget( 0, 2, new Icon( IconType.CARET_DOWN ) );
     }
 
     public TriggerWidget( final IsWidget icon,
                           final String caption ) {
-        add( icon );
-        add( makeNavHeader( caption ) );
+        resourceHeader = new FlexTable();
+        initWidget( resourceHeader );
+        resourceHeader.setWidget( 0, 0, icon );
+        resourceHeader.setHTML( 0, 1, "&nbsp;&nbsp;" );
+        resourceHeader.setWidget( 0, 2, makeNavHeader(caption) );
+        resourceHeader.setHTML( 0, 3, "&nbsp;&nbsp;" );
+        resourceHeader.setWidget( 0, 4, new Icon( IconType.CARET_DOWN ) );
     }
 
     private NavHeader makeNavHeader( final String caption ) {
