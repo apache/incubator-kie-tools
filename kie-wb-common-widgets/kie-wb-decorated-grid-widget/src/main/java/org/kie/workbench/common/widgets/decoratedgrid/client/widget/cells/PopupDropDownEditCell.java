@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public class PopupDropDownEditCell extends
         for ( int i = 0; i < items.length; i++ ) {
             String item = items[ i ].trim();
             if ( item.indexOf( '=' ) > 0 ) {
-                String[] splut = ConstraintValueHelper.splitValue(item);
+                String[] splut = ConstraintValueHelper.splitValue( item );
                 this.items[ i ][ 0 ] = splut[ 0 ];
                 this.items[ i ][ 1 ] = splut[ 1 ];
                 this.listBox.addItem( splut[ 1 ],

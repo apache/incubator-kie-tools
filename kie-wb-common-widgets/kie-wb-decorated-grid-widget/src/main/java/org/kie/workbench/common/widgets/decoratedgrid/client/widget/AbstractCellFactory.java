@@ -41,7 +41,8 @@ import org.uberfire.client.common.CheckboxCellImpl;
  */
 public abstract class AbstractCellFactory<T> {
 
-    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    protected final String DROOLS_DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    protected final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( DROOLS_DATE_FORMAT );
 
     protected final AsyncPackageDataModelOracle oracle;
 
@@ -92,7 +93,7 @@ public abstract class AbstractCellFactory<T> {
 
     // Make a new Cell for Date columns
     protected DecoratedGridCellValueAdaptor<Date> makeDateCell() {
-        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DateTimeFormat.getFormat( DATE_FORMAT ),
+        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DATE_FORMAT,
                                                                                isReadOnly ),
                                                         eventBus );
     }
