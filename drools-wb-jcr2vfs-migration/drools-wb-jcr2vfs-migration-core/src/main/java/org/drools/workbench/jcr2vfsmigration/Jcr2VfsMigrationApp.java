@@ -72,6 +72,7 @@ public class Jcr2VfsMigrationApp {
     public void startUp() {
         System.setProperty( "org.kie.nio.git.daemon.enabled", "false" );
         System.setProperty( "org.uberfire.nio.git.ssh.enabled", "false" );
+        System.setProperty( "org.uberfire.sys.repo.monitor.disabled", "true" );
         weld = new Weld();
         weldContainer = weld.initialize();
         migrater = weldContainer.instance().select( Jcr2VfsMigrater.class ).get();

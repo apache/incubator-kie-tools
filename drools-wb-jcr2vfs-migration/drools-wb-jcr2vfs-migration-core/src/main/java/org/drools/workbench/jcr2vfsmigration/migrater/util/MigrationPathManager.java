@@ -158,6 +158,7 @@ public class MigrationPathManager {
         URI uri = URI.create( "git://" + repoName );
         this.fs = ioService.newFileSystem( uri, new HashMap<String, Object>() {{
             put( "out-dir", outputDir );
+            put( "init", true );
         }}, MIGRATION_INSTANCE );
     }
 
