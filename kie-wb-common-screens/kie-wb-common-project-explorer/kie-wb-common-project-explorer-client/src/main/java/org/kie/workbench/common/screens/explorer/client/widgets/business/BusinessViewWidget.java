@@ -74,6 +74,7 @@ public class BusinessViewWidget extends Composite implements View {
     private static BusinessViewImplBinder uiBinder = GWT.create( BusinessViewImplBinder.class );
 
     private static final String MISCELLANEOUS = "Miscellaneous";
+    private static final String ID_CLEANUP_PATTERN = "[^a-zA-Z0-9]";
 
     @UiField
     Explorer explorer;
@@ -149,7 +150,7 @@ public class BusinessViewWidget extends Composite implements View {
 
                 final Collapse collapse = new Collapse();
                 collapse.setExistTrigger( true );
-                collapse.setId( e.getKey().getSuffix() );
+                collapse.setId( getCollapseId(e.getKey()) );
                 final NavList itemsNavList = new NavList();
                 collapse.add( itemsNavList );
                 for ( FolderItem folderItem : e.getValue() ) {
@@ -185,7 +186,7 @@ public class BusinessViewWidget extends Composite implements View {
     }
 
     private CollapseTrigger makeTriggerWidget( final ClientResourceType resourceType ) {
-        final CollapseTrigger collapseTrigger = new CollapseTrigger( "#" + resourceType.getSuffix() );
+        final CollapseTrigger collapseTrigger = new CollapseTrigger( "#" + getCollapseId( resourceType ) );
         final String description = getResourceTypeDescription( resourceType );
         final IsWidget icon = resourceType.getIcon();
         if ( icon == null ) {
@@ -219,6 +220,10 @@ public class BusinessViewWidget extends Composite implements View {
             }
         } );
         return navLink;
+    }
+
+    private String getCollapseId( ClientResourceType resourceType ) {
+        return resourceType != null ? resourceType.getShortName().replaceAll( ID_CLEANUP_PATTERN, "" ) : "";
     }
 
     @Override
