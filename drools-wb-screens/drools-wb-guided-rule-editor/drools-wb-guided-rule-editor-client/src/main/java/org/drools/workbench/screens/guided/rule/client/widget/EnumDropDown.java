@@ -154,6 +154,8 @@ public class EnumDropDown
         if ( isMultipleSelect() && trimmedCurrentValue != null ) {
             trimmedCurrentValue = currentValue.replace( "\"",
                                                         "" );
+            trimmedCurrentValue = trimmedCurrentValue.replaceAll( "\\s+",
+                                                        "" );
             trimmedCurrentValue = trimmedCurrentValue.replace( "(",
                                                                "" );
             trimmedCurrentValue = trimmedCurrentValue.replace( ")",
