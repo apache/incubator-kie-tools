@@ -93,10 +93,13 @@ public class GuvnorTextEditorPresenter
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                if ( !metadataWidget.isAlreadyLoaded() ) {
+                    metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                    metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                       isReadOnly ),
+                                          new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                        ).getMetadata( path );
+                }
             }
 
             @Override
@@ -117,7 +120,8 @@ public class GuvnorTextEditorPresenter
                                 public void execute() {
                                     onSave();
                                 }
-                            } )
+                            }
+                            )
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
@@ -138,7 +142,8 @@ public class GuvnorTextEditorPresenter
                                                                                                                                                   metadataWidget.getContent(),
                                                                                                                                                   commitMessage );
                                              }
-                                         } );
+                                         }
+                                       );
     }
 
     private RemoteCallback<Path> getSaveSuccessCallback() {
@@ -169,7 +174,7 @@ public class GuvnorTextEditorPresenter
 
     @IsDirty
     public boolean isDirty() {
-        return super.isDirty();
+        return super.isDirty() || metadataWidget.isDirty();
     }
 
     public IsWidget getWidget() {

@@ -64,6 +64,8 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
 
     private List<DirtyableComposite> compositeList = new ArrayList<DirtyableComposite>();
 
+    private boolean isAlreadyLoaded = false;
+
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
@@ -72,17 +74,23 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
         initWidget( layout );
     }
 
+    public boolean isAlreadyLoaded() {
+        return isAlreadyLoaded;
+    }
+
     public void setContent( final Metadata metadata,
                             final boolean readOnly ) {
-        this.metadata = checkNotNull( "metadata", metadata );
-        this.readOnly = readOnly;
+        if ( !isAlreadyLoaded ) {
+            this.metadata = checkNotNull( "metadata", metadata );
+            this.readOnly = readOnly;
 
-        layout.clear();
+            layout.clear();
 
-        startSection( MetadataConstants.INSTANCE.Metadata() );
-        addHeader( metadata.getPath().getFileName() );
+            startSection( MetadataConstants.INSTANCE.Metadata() );
+            addHeader( metadata.getPath().getFileName() );
 
-        loadData();
+            loadData();
+        }
     }
 
     private void addHeader( final String name ) {
@@ -128,7 +136,8 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
                               makeDirty();
                               metadata.setSubject( val );
                           }
-                      }, MetadataConstants.INSTANCE.AShortDescriptionOfTheSubjectMatter() ) );
+                      }, MetadataConstants.INSTANCE.AShortDescriptionOfTheSubjectMatter() )
+                    );
 
         addAttribute( MetadataConstants.INSTANCE.TypeMetaData(),
                       editableText( new FieldBinding() {
@@ -141,7 +150,8 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
                               metadata.setType( val );
                           }
 
-                      }, MetadataConstants.INSTANCE.TypeTip() ) );
+                      }, MetadataConstants.INSTANCE.TypeTip() )
+                    );
 
         addAttribute( MetadataConstants.INSTANCE.ExternalLinkMetaData(),
                       editableText( new FieldBinding() {
@@ -154,7 +164,8 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
                               metadata.setExternalRelation( val );
                           }
 
-                      }, MetadataConstants.INSTANCE.ExternalLinkTip() ) );
+                      }, MetadataConstants.INSTANCE.ExternalLinkTip() )
+                    );
 
         addAttribute( MetadataConstants.INSTANCE.SourceMetaData(),
                       editableText( new FieldBinding() {
@@ -167,7 +178,8 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
                               metadata.setExternalSource( val );
                           }
 
-                      }, MetadataConstants.INSTANCE.SourceMetaDataTip() ) );
+                      }, MetadataConstants.INSTANCE.SourceMetaDataTip() )
+                    );
 
         endSection( true );
 
@@ -180,6 +192,8 @@ public class MetadataWidget extends DirtyableComposite implements HasBusyIndicat
         layout.add( commentWidget() );
 
         layout.add( discussionWidget() );
+
+        isAlreadyLoaded = true;
     }
 
     private Widget commentWidget() {

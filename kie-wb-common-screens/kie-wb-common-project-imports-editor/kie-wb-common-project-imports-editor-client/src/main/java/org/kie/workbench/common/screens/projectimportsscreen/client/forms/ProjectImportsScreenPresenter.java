@@ -146,7 +146,8 @@ public class ProjectImportsScreenPresenter
                                                                                                                                             view.getMetadata(),
                                                                                                                                             commitMessage );
                                              }
-                                         } );
+                                         }
+                                       );
 
     }
 
@@ -174,9 +175,11 @@ public class ProjectImportsScreenPresenter
 
     @Override
     public void onShowMetadata() {
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        metadataService.call( getMetadataSuccessCallback(),
-                              new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
+        if ( !view.isMetadataAlreadyLoaded() ) {
+            view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+            metadataService.call( getMetadataSuccessCallback(),
+                                  new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
+        }
     }
 
     private RemoteCallback<Metadata> getMetadataSuccessCallback() {

@@ -22,21 +22,21 @@ public class ProjectImportsScreenViewImpl
     private Presenter presenter;
 
     @Inject
-    public ProjectImportsScreenViewImpl(final MetadataWidget metadataWidget) {
+    public ProjectImportsScreenViewImpl( final MetadataWidget metadataWidget ) {
         super();
         this.metadataWidget = metadataWidget;
 
     }
 
     @Override
-    public void setPresenter(final Presenter presenter) {
+    public void setPresenter( final Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setImports(ImportsWidgetPresenter importsWidgetPresenter) {
-        addPage(new Page(importsWidgetPresenter,
-                ImportConstants.INSTANCE.Imports()) {
+    public void setImports( ImportsWidgetPresenter importsWidgetPresenter ) {
+        addPage( new Page( importsWidgetPresenter,
+                           ImportConstants.INSTANCE.Imports() ) {
             @Override
             public void onFocus() {
             }
@@ -44,10 +44,10 @@ public class ProjectImportsScreenViewImpl
             @Override
             public void onLostFocus() {
             }
-        });
+        } );
 
-        addPage(new Page(metadataWidget,
-                MetadataConstants.INSTANCE.Metadata()) {
+        addPage( new Page( metadataWidget,
+                           MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
                 presenter.onShowMetadata();
@@ -56,13 +56,13 @@ public class ProjectImportsScreenViewImpl
             @Override
             public void onLostFocus() {
             }
-        });
+        } );
     }
 
     @Override
-    public void setMetadata(final Metadata metadata) {
-        metadataWidget.setContent(metadata,
-                false);
+    public void setMetadata( final Metadata metadata ) {
+        metadataWidget.setContent( metadata,
+                                   false );
     }
 
     @Override
@@ -72,17 +72,22 @@ public class ProjectImportsScreenViewImpl
 
     @Override
     public boolean confirmClose() {
-        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
 
     @Override
     public void alertReadOnly() {
-        Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
     }
 
     @Override
-    public void showBusyIndicator(final String message) {
-        BusyPopup.showMessage(message);
+    public boolean isMetadataAlreadyLoaded() {
+        return metadataWidget.isAlreadyLoaded();
+    }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        BusyPopup.showMessage( message );
     }
 
     @Override
