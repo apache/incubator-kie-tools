@@ -390,10 +390,6 @@ public class DataModelOracleDriver implements ModelDriver {
     private String getFieldType( ProjectDataModelOracle oracleDataModel,
                                  String packageName,
                                  String fieldType ) {
-        String primitiveClass = NamingUtils.getInstance().getClassForPrimitiveTypeId( fieldType );
-        if ( primitiveClass != null ) {
-            return primitiveClass;
-        }
         return fieldType;
     }
 

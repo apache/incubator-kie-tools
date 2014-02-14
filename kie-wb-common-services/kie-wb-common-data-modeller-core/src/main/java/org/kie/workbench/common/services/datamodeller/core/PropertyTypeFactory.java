@@ -24,4 +24,6 @@ public interface PropertyTypeFactory {
 
     boolean isBasePropertyType(String className);
 
+    boolean isPrimitivePropertyType(String className);
+
 }

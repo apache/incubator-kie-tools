@@ -321,7 +321,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         List<PropertyTypeTO> types = new ArrayList<PropertyTypeTO>();
 
         for ( PropertyType baseType : PropertyTypeFactoryImpl.getInstance().getBasePropertyTypes() ) {
-            types.add( new PropertyTypeTO( baseType.getName(), baseType.getClassName() ) );
+            types.add( new PropertyTypeTO( baseType.getName(), baseType.getClassName(), baseType.isPrimitive() ) );
         }
         return types;
     }

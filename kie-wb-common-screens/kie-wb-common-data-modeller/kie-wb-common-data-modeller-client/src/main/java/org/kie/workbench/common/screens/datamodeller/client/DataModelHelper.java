@@ -47,7 +47,9 @@ public class DataModelHelper {
     // Map of all labelled class names that coexist within a project
     private Map<String, String> labelledClassNames = new TreeMap<String, String>();
 
-    Map <String, String> orderedBaseTypes = new TreeMap<String, String>();
+    Map <String, PropertyTypeTO> orderedBaseTypes = new TreeMap<String, PropertyTypeTO>();
+
+    Map <String, PropertyTypeTO> baseTypesByClassName = new HashMap<String, PropertyTypeTO>();
 
     public DataModelHelper() {
     }
@@ -72,7 +74,7 @@ public class DataModelHelper {
         return Collections.unmodifiableMap(labelledClassNames);
     }
 
-    public Map <String, String> getOrderedBaseTypes() {
+    public Map <String, PropertyTypeTO> getOrderedBaseTypes() {
         return orderedBaseTypes;
     }
 
@@ -153,7 +155,7 @@ public class DataModelHelper {
     }
 
     public Boolean isBaseType(String type) {
-        return orderedBaseTypes.containsValue(type);
+        return baseTypesByClassName.containsKey(type);
     }
 
     /**
@@ -188,7 +190,8 @@ public class DataModelHelper {
     public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
         if (baseTypes != null) {
             for (PropertyTypeTO type : baseTypes) {
-                orderedBaseTypes.put(type.getName(), type.getClassName());
+                orderedBaseTypes.put(type.getName(), type);
+                baseTypesByClassName.put(type.getClassName(), type);
             }
         }
     }

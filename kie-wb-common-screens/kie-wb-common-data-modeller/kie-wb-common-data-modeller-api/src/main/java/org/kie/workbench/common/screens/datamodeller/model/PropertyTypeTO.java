@@ -25,12 +25,15 @@ public class PropertyTypeTO {
 
     private String className;
 
+    private boolean primitive;
+
     public PropertyTypeTO() {
     }
 
-    public PropertyTypeTO(String name, String className) {
+    public PropertyTypeTO(String name, String className, boolean primitive) {
         this.name = name;
         this.className = className;
+        this.primitive = primitive;
     }
 
     public String getName() {
@@ -47,5 +50,13 @@ public class PropertyTypeTO {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public boolean isPrimitive() {
+        return primitive;
+    }
+
+    public void setPrimitive(boolean primitive) {
+        this.primitive = primitive;
     }
 }

@@ -64,10 +64,7 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.client.util.ObjectPropertyComparator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.*;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.*;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
@@ -406,8 +403,10 @@ public class DataObjectBrowser extends Composite {
         SortedMap<String, String> typeNames = new TreeMap<String, String>();
         if (getDataModel() != null) {
             // First add all base types, ordered
-            for (Map.Entry<String, String> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
-                newPropertyType.addItem(baseType.getKey(), baseType.getValue());
+            for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
+                if (!baseType.getValue().isPrimitive()) {
+                    newPropertyType.addItem(baseType.getKey(), baseType.getValue().getClassName());
+                }
                 // TODO add multiple types for base types?
             }
 
@@ -434,6 +433,12 @@ public class DataObjectBrowser extends Composite {
             }
             for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
                 newPropertyType.addItem(typeName.getKey(), typeName.getValue());
+            }
+            //finally add primitives
+            for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
+                if (baseType.getValue().isPrimitive()) {
+                    newPropertyType.addItem(baseType.getKey(), baseType.getValue().getClassName());
+                }
             }
         }
     }

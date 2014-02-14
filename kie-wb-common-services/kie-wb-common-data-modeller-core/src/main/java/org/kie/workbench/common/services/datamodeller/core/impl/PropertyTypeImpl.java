@@ -1,6 +1,7 @@
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
+import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 
 public class PropertyTypeImpl implements PropertyType {
 
@@ -37,5 +38,10 @@ public class PropertyTypeImpl implements PropertyType {
     @Override
     public boolean isBaseType() {
         return PropertyTypeFactoryImpl.getInstance().isBasePropertyType(className);
+    }
+
+    @Override
+    public boolean isPrimitive() {
+        return NamingUtils.getInstance().isPrimitiveTypeId(className);
     }
 }

@@ -22,6 +22,7 @@ import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
+import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -257,10 +258,17 @@ public class GenerationTools {
             for(ObjectProperty prop : props) {
                 String _propName = toJavaVar(prop.getName());
                 if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
-                    // Construction: "if (<_propName> != null ? !<_propName>.equals(that.<_propName>) : that.<_propName> != null) return false;"
-                    sb.append(indent + TAB + "if (");
-                    sb.append(_propName).append(" != null ? !").append(_propName).append(".equals(that.").append(_propName).append(")");
-                    sb.append(" : that.").append(_propName).append(" != null").append(") return false;");
+
+                    if (NamingUtils.getInstance().isPrimitiveTypeId(prop.getClassName())) {
+                        // Construction: "if (<_propName> != that.<_propName>) return false;
+                        sb.append(indent + TAB);
+                        addEqualsTermForPrimitive(sb, _propName, prop.getClassName());
+                    } else {
+                        // Construction: "if (<_propName> != null ? !<_propName>.equals(that.<_propName>) : that.<_propName> != null) return false;"
+                        sb.append(indent + TAB + "if (");
+                        sb.append(_propName).append(" != null ? !").append(_propName).append(".equals(that.").append(_propName).append(")");
+                        sb.append(" : that.").append(_propName).append(" != null").append(") return false;");
+                    }
                     sb.append(EOL);
                     hasTerms = true;
                 }
@@ -274,6 +282,19 @@ public class GenerationTools {
             return head.toString();
         } else {
             return "";
+        }
+    }
+
+    private void addEqualsTermForPrimitive(StringBuilder sb, String _propName, String primitive) {
+        if (NamingUtils.DOUBLE.equals(primitive)) {
+            // if (Double.compare(that._double, _double) != 0) return false;
+            sb.append("if (Double.compare(that.").append(_propName).append(", ").append(_propName).append(") != 0) return false;");
+        } else if (NamingUtils.FLOAT.equals(primitive)) {
+            // if (Float.compare(that._float, _float) != 0) return false;
+            sb.append("if (Float.compare(that.").append(_propName).append(", ").append(_propName).append(") != 0) return false;");
+        } else {
+            // Construction: "if (<_propName> != that.<_propName>) return false;
+            sb.append("if (").append(_propName).append(" != that.").append(_propName).append(")").append(" return false;");
         }
     }
 
@@ -296,8 +317,14 @@ public class GenerationTools {
             for(ObjectProperty prop : props) {
                 String _propName = toJavaVar(prop.getName());
                 if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
-                    // Construction: "result = 13 * result + (<_propName> != null ? <_propName>.hashCode() : 0);"
-                    sb.append(indent + TAB + "result = 13 * result + (").append(_propName).append(" != null ? ").append(_propName).append(".hashCode() : 0);");
+
+                    if (NamingUtils.getInstance().isPrimitiveTypeId(prop.getClassName())) {
+                        sb.append(indent + TAB);
+                        addHashCodeTermForPrimitive(sb, _propName, prop.getClassName());
+                    } else {
+                        // Construction: "result = 13 * result + (<_propName> != null ? <_propName>.hashCode() : 0);"
+                        sb.append(indent + TAB + "result = 31 * result + (").append(_propName).append(" != null ? ").append(_propName).append(".hashCode() : 0);");
+                    }
                     sb.append(EOL);
                     hasTerms = true;
                 }
@@ -311,6 +338,29 @@ public class GenerationTools {
             return head.toString();
         } else {
             return "";
+        }
+    }
+
+    private void addHashCodeTermForPrimitive(StringBuilder sb, String _propName, String primitive) {
+
+        if (NamingUtils.BYTE.equals(primitive) || NamingUtils.CHAR.equals(primitive) || NamingUtils.SHORT.equals(primitive)) {
+            //result = 31 * result + (int) _propName;
+            sb.append("result = 31 * result + (int) ").append(_propName).append(";");
+        } else if (NamingUtils.BOOLEAN.equals(primitive)) {
+           //result = 31 * result + (_boolean ? 1 : 0);
+            sb.append("result = 31 * result + (").append(_propName).append(" ? 1 : 0);");
+        } else if (NamingUtils.LONG.equals(primitive)) {
+            //result = 31 * result + (int) (_long ^ (_long >>> 32));
+            sb.append("result = 31 * result + (int) (").append(_propName).append(" ^ (").append(_propName).append(" >>> 32));");
+        } else if (NamingUtils.DOUBLE.equals(primitive)) {
+            String temp = "Double.doubleToLongBits("+_propName+")";
+            sb.append("result = 31 * result + (int) (" + temp + " ^ (" + temp +" >>> 32));");
+        } else if (NamingUtils.FLOAT.equals(primitive)) {
+            //"result = 31 * result + (_float != +0.0f ? Float.floatToIntBits(_float) : 0);"
+            sb.append("result = 31 * result + (").append(_propName).append(" != +0.0f ? Float.floatToIntBits(").append(_propName).append(") : 0);");
+        } else {
+            //"result = 31 * result + _propName
+            sb.append("result = 31 * result + ").append(_propName).append(";");
         }
     }
 

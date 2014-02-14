@@ -27,6 +27,8 @@ public interface ObjectProperty extends HasName, HasClassName, HasAnnotations {
 
     boolean isBaseType();
 
+    boolean isPrimitiveType();
+
     String getBag();
     
     void setBag(String bag);

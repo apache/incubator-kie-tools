@@ -17,6 +17,7 @@
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 
 public class ObjectPropertyImpl extends AbstractHasAnnotations implements ObjectProperty {
 
@@ -85,6 +86,11 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
     @Override
     public boolean isBaseType() {
         return PropertyTypeFactoryImpl.getInstance().isBasePropertyType(getClassName());
+    }
+
+    @Override
+    public boolean isPrimitiveType() {
+        return NamingUtils.getInstance().isPrimitiveTypeClass(getClassName());
     }
 
     @Override

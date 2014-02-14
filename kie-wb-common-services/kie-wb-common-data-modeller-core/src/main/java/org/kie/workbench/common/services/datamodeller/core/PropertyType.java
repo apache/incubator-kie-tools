@@ -24,4 +24,6 @@ public interface PropertyType {
 
     boolean isBaseType();
 
+    boolean isPrimitive();
+
 }
