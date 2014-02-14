@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.editor.validator.GuidedRuleEditorValidator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
@@ -237,7 +236,9 @@ public class GuidedRuleEditorPresenter {
                       new CommandDrivenErrorCallback( view,
                                                       new CommandBuilder().addNoSuchFileException( view,
                                                                                                    multiPage,
-                                                                                                   menus ).build() ) ).loadContent( path );
+                                                                                                   menus ).build()
+                      )
+                    ).loadContent( path );
     }
 
     private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
@@ -271,10 +272,13 @@ public class GuidedRuleEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                        if ( !metadataWidget.isAlreadyLoaded() ) {
+                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                               isReadOnly ),
+                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                                ).getMetadata( path );
+                        }
                     }
 
                     @Override
@@ -406,7 +410,8 @@ public class GuidedRuleEditorPresenter {
                                                                                                                             metadataWidget.getContent(),
                                                                                                                             commitMessage );
                                                  }
-                                             } );
+                                             }
+                                           );
 
             concurrentUpdateSessionInfo = null;
         } else {
@@ -429,7 +434,7 @@ public class GuidedRuleEditorPresenter {
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty();
+        return view.isDirty() || metadataWidget.isDirty();
     }
 
     @OnClose
@@ -461,7 +466,7 @@ public class GuidedRuleEditorPresenter {
             fileName = fileName + " v" + version;
         }
 
-        return view.getTitle(fileName);
+        return view.getTitle( fileName );
     }
 
     @WorkbenchPartView

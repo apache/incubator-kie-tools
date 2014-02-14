@@ -215,28 +215,32 @@ public class ScenarioEditorViewImpl
                                              0,
                                              scenarioWidgetComponentCreator.createGivenLabelButton( listExecutionTrace,
                                                                                                     executionTraceLine,
-                                                                                                    previousExecutionTrace ) );
+                                                                                                    previousExecutionTrace )
+                                           );
                 layoutRow++;
                 createWidgetForEditorLayout( editorLayout,
                                              layoutRow,
                                              1,
                                              scenarioWidgetComponentCreator.createGivenPanel( listExecutionTrace,
                                                                                               executionTraceLine,
-                                                                                              (FixturesMap) fixture ) );
+                                                                                              (FixturesMap) fixture )
+                                           );
             } else if ( fixture instanceof CallFixtureMap ) {
                 createWidgetForEditorLayout( editorLayout,
                                              layoutRow,
                                              0,
                                              scenarioWidgetComponentCreator.createCallMethodLabelButton( listExecutionTrace,
                                                                                                          executionTraceLine,
-                                                                                                         previousExecutionTrace ) );
+                                                                                                         previousExecutionTrace )
+                                           );
                 layoutRow++;
                 createWidgetForEditorLayout( editorLayout,
                                              layoutRow,
                                              1,
                                              scenarioWidgetComponentCreator.createCallMethodOnGivenPanel( listExecutionTrace,
                                                                                                           executionTraceLine,
-                                                                                                          (CallFixtureMap) fixture ) );
+                                                                                                          (CallFixtureMap) fixture )
+                                           );
             } else {
                 FixtureList fixturesList = (FixtureList) fixture;
                 Fixture first = fixturesList.get( 0 );
@@ -247,7 +251,8 @@ public class ScenarioEditorViewImpl
                                                  1,
                                                  scenarioWidgetComponentCreator.createVerifyFactsPanel( listExecutionTrace,
                                                                                                         executionTraceLine,
-                                                                                                        fixturesList ) );
+                                                                                                        fixturesList )
+                                               );
                 } else if ( first instanceof VerifyRuleFired ) {
                     createWidgetForEditorLayout( editorLayout,
                                                  layoutRow,
@@ -289,7 +294,8 @@ public class ScenarioEditorViewImpl
                                      layoutRow,
                                      1,
                                      scenarioWidgetComponentCreator.createGlobalPanel( scenarioHelper,
-                                                                                       previousExecutionTrace ) );
+                                                                                       previousExecutionTrace )
+                                   );
     }
 
     private void addTestRunnerWidget( final Scenario scenario,
@@ -304,10 +310,13 @@ public class ScenarioEditorViewImpl
                                      MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
-                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                if ( !metadataWidget.isAlreadyLoaded() ) {
+                    metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                    metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                       isReadOnly ),
+                                          new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                        ).getMetadata( path );
+                }
             }
 
             @Override

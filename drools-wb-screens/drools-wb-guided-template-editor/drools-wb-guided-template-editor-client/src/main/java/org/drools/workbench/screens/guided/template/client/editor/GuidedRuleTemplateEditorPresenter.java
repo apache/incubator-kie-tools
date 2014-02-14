@@ -235,7 +235,9 @@ public class GuidedRuleTemplateEditorPresenter {
                       new CommandDrivenErrorCallback( view,
                                                       new CommandBuilder().addNoSuchFileException( view,
                                                                                                    multiPage,
-                                                                                                   menus ).build() ) ).loadContent( path );
+                                                                                                   menus ).build()
+                      )
+                    ).loadContent( path );
     }
 
     private RemoteCallback<GuidedTemplateEditorContent> getModelSuccessCallback() {
@@ -287,10 +289,13 @@ public class GuidedRuleTemplateEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                        if ( !metadataWidget.isAlreadyLoaded() ) {
+                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                               isReadOnly ),
+                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                                ).getMetadata( path );
+                        }
                     }
 
                     @Override
@@ -419,7 +424,8 @@ public class GuidedRuleTemplateEditorPresenter {
                                                                                                                         metadataWidget.getContent(),
                                                                                                                         commitMessage );
                                              }
-                                         } );
+                                         }
+                                       );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -438,7 +444,7 @@ public class GuidedRuleTemplateEditorPresenter {
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty();
+        return view.isDirty() || metadataWidget.isDirty();
     }
 
     @OnClose

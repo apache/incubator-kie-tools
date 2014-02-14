@@ -34,9 +34,9 @@ public class JobRequestApprovalService {
 
     private static final Logger logger = LoggerFactory.getLogger( JobRequestApprovalService.class );
 
-    @Inject
-    @KSession("ksession1")
-    KieSession ksession;
+//    @Inject
+//    @KSession("ksession1")
+    KieSession ksession = null;
 
     public JobResult requestApproval( final JobRequest jobRequest ) {
         logger.info( "Approval request for Job: " + jobRequest.getJobId() + " received." );

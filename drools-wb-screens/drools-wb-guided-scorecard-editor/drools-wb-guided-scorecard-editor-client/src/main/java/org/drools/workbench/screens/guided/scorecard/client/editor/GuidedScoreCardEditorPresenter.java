@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
-import org.drools.workbench.screens.guided.scorecard.client.widget.GuidedScoreCardEditor;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
@@ -225,7 +224,9 @@ public class GuidedScoreCardEditorPresenter {
                                      new CommandDrivenErrorCallback( view,
                                                                      new CommandBuilder().addNoSuchFileException( view,
                                                                                                                   multiPage,
-                                                                                                                  menus ).build() ) ).loadContent( path );
+                                                                                                                  menus ).build()
+                                     )
+                                   ).loadContent( path );
     }
 
     private RemoteCallback<ScoreCardModelContent> getModelSuccessCallback() {
@@ -260,10 +261,13 @@ public class GuidedScoreCardEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                        if ( !metadataWidget.isAlreadyLoaded() ) {
+                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                               isReadOnly ),
+                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                                ).getMetadata( path );
+                        }
                     }
 
                     @Override
@@ -388,7 +392,8 @@ public class GuidedScoreCardEditorPresenter {
                                                                                                                                        metadataWidget.getContent(),
                                                                                                                                        comment );
                                              }
-                                         } );
+                                         }
+                                       );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -443,7 +448,7 @@ public class GuidedScoreCardEditorPresenter {
         if ( isReadOnly ) {
             return "Read Only Score Card Viewer [" + fileName + "]";
         }
-        return GuidedScoreCardConstants.INSTANCE.ScoreCardEditorTitle()+ " [" + fileName + "]";
+        return GuidedScoreCardConstants.INSTANCE.ScoreCardEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchMenu

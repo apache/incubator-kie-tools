@@ -182,10 +182,13 @@ public class ScoreCardXLSEditorPresenter
                                      CommonConstants.INSTANCE.MetadataTabTitle() ) {
             @Override
             public void onFocus() {
-                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                if ( !metadataWidget.isAlreadyLoaded() ) {
+                    metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                    metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                       isReadOnly ),
+                                          new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                        ).getMetadata( path );
+                }
             }
 
             @Override
@@ -254,7 +257,7 @@ public class ScoreCardXLSEditorPresenter
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return ScoreCardXLSEditorConstants.INSTANCE.ScoreCardXLEditorTitle()+" [" + fileName + "]";
+        return ScoreCardXLSEditorConstants.INSTANCE.ScoreCardXLEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

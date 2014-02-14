@@ -210,7 +210,9 @@ public class DRLEditorPresenter {
                                    new CommandDrivenErrorCallback( view,
                                                                    new CommandBuilder().addNoSuchFileException( view,
                                                                                                                 multiPage,
-                                                                                                                menus ).build() ) ).loadContent( path );
+                                                                                                                menus ).build()
+                                   )
+                                 ).loadContent( path );
     }
 
     private RemoteCallback<DrlModelContent> getLoadContentSuccessCallback() {
@@ -226,10 +228,13 @@ public class DRLEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                        if ( !metadataWidget.isAlreadyLoaded() ) {
+                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                               isReadOnly ),
+                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                                ).getMetadata( path );
+                        }
                     }
 
                     @Override
@@ -356,7 +361,8 @@ public class DRLEditorPresenter {
                                                                                                                                      metadataWidget.getContent(),
                                                                                                                                      commitMessage );
                                              }
-                                         } );
+                                         }
+                                       );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -375,7 +381,7 @@ public class DRLEditorPresenter {
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty();
+        return view.isDirty() || metadataWidget.isDirty();
     }
 
     @OnClose
@@ -398,7 +404,7 @@ public class DRLEditorPresenter {
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return DRLTextEditorConstants.INSTANCE.DrlEditorTitle()+ " [" + fileName + "]";
+        return DRLTextEditorConstants.INSTANCE.DrlEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

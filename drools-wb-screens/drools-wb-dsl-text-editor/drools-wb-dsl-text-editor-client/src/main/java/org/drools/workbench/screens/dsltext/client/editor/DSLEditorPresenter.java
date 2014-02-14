@@ -202,7 +202,9 @@ public class DSLEditorPresenter {
                                    new CommandDrivenErrorCallback( view,
                                                                    new CommandBuilder().addNoSuchFileException( view,
                                                                                                                 multiPage,
-                                                                                                                menus ).build() ) ).load( path );
+                                                                                                                menus ).build()
+                                   )
+                                 ).load( path );
     }
 
     private RemoteCallback<String> getModelSuccessCallback() {
@@ -218,10 +220,13 @@ public class DSLEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                        if ( !metadataWidget.isAlreadyLoaded() ) {
+                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                               isReadOnly ),
+                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                                ).getMetadata( path );
+                        }
                     }
 
                     @Override
@@ -321,7 +326,8 @@ public class DSLEditorPresenter {
                                                                                                                                      metadataWidget.getContent(),
                                                                                                                                      commitMessage );
                                              }
-                                         } );
+                                         }
+                                       );
 
         concurrentUpdateSessionInfo = null;
     }
@@ -341,7 +347,7 @@ public class DSLEditorPresenter {
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty();
+        return view.isDirty() || metadataWidget.isDirty();
     }
 
     @OnClose
@@ -364,7 +370,7 @@ public class DSLEditorPresenter {
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return DSLTextEditorConstants.INSTANCE.DslEditorTitle() +" [" + fileName + "]";
+        return DSLTextEditorConstants.INSTANCE.DslEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

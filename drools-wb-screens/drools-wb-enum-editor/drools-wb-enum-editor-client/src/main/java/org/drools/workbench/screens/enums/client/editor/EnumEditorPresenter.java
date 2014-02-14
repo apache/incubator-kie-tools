@@ -207,7 +207,9 @@ public class EnumEditorPresenter {
                           new CommandDrivenErrorCallback( view,
                                                           new CommandBuilder().addNoSuchFileException( view,
                                                                                                        multiPage,
-                                                                                                       menus ).build() ) ).loadContent( path );
+                                                                                                       menus ).build()
+                          )
+                        ).loadContent( path );
     }
 
     private RemoteCallback<EnumModelContent> getModelSuccessCallback() {
@@ -236,10 +238,13 @@ public class EnumEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                        if ( !metadataWidget.isAlreadyLoaded() ) {
+                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                               isReadOnly ),
+                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                                ).getMetadata( path );
+                        }
                     }
 
                     @Override
@@ -339,7 +344,8 @@ public class EnumEditorPresenter {
                                                                                                                             metadataWidget.getContent(),
                                                                                                                             commitMessage );
                                              }
-                                         } );
+                                         }
+                                       );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -358,7 +364,7 @@ public class EnumEditorPresenter {
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty();
+        return view.isDirty() || metadataWidget.isDirty();
     }
 
     @OnClose
@@ -381,7 +387,7 @@ public class EnumEditorPresenter {
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return EnumEditorConstants.INSTANCE.EnumEditorTitle()+" [" + fileName + "]";
+        return EnumEditorConstants.INSTANCE.EnumEditorTitle() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

@@ -203,7 +203,9 @@ public class WorkItemsEditorPresenter {
                                new CommandDrivenErrorCallback( view,
                                                                new CommandBuilder().addNoSuchFileException( view,
                                                                                                             multiPage,
-                                                                                                            menus ).build() ) ).loadContent( path );
+                                                                                                            menus ).build()
+                               )
+                             ).loadContent( path );
     }
 
     private RemoteCallback<WorkItemsModelContent> getModelSuccessCallback() {
@@ -219,10 +221,13 @@ public class WorkItemsEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                        if ( !metadataWidget.isAlreadyLoaded() ) {
+                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                               isReadOnly ),
+                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
+                                                ).getMetadata( path );
+                        }
                     }
 
                     @Override
@@ -325,7 +330,8 @@ public class WorkItemsEditorPresenter {
                                                                                                                                  metadataWidget.getContent(),
                                                                                                                                  commitMessage );
                                              }
-                                         } );
+                                         }
+                                       );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -344,7 +350,7 @@ public class WorkItemsEditorPresenter {
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty();
+        return view.isDirty() || metadataWidget.isDirty();
     }
 
     @OnClose
