@@ -57,6 +57,7 @@ import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
@@ -130,7 +131,7 @@ public class CreateRepositoryForm
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
                                             @Override
                                             public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
-                                                organizationalUnitDropdown.addItem( "--- Select ---" );
+                                                organizationalUnitDropdown.addItem(CoreConstants.INSTANCE.SelectEntry() );
                                                 if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
                                                     for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
                                                         organizationalUnitDropdown.addItem( organizationalUnit.getName(),
@@ -145,7 +146,7 @@ public class CreateRepositoryForm
                                             @Override
                                             public boolean error( final Message message,
                                                                   final Throwable throwable ) {
-                                                Window.alert( "Can't load Organizational Units. \n" + message.toString() );
+                                                Window.alert( CoreConstants.INSTANCE.CantLoadOrganizationalUnits()+" \n" + message.toString() );
 
                                                 return false;
                                             }
@@ -164,7 +165,7 @@ public class CreateRepositoryForm
         final String organizationalUnit = organizationalUnitDropdown.getValue( organizationalUnitDropdown.getSelectedIndex() );
         if ( mandatoryOU && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             organizationalUnitGroup.setType( ControlGroupType.ERROR );
-            organizationalUnitHelpInline.setText( "Organizational Unit is mandatory" );
+            organizationalUnitHelpInline.setText( CoreConstants.INSTANCE.OrganizationalUnitMandatory() );
             return;
         } else {
             organizationalUnitGroup.setType( ControlGroupType.NONE );
@@ -172,14 +173,14 @@ public class CreateRepositoryForm
 
         if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
             nameGroup.setType( ControlGroupType.ERROR );
-            nameHelpInline.setText( "Repository Name is mandatory" );
+            nameHelpInline.setText( CoreConstants.INSTANCE.RepositoryNaneMandatory() );
             return;
         } else {
             repositoryService.call( new RemoteCallback<String>() {
                 @Override
                 public void callback( String normalizedName ) {
                     if ( !nameTextBox.getText().equals( normalizedName ) ) {
-                        if ( !Window.confirm( "Repository Name contained illegal characters and will be generated as \"" + normalizedName + "\". Do you agree?" ) ) {
+                        if ( !Window.confirm( CoreConstants.INSTANCE.RepositoryNameInvalid()+" \"" + normalizedName + "\". "+CoreConstants.INSTANCE.DoYouAgree() ) ) {
                             return;
                         }
                         nameTextBox.setText( normalizedName );
@@ -192,7 +193,7 @@ public class CreateRepositoryForm
                     repositoryService.call( new RemoteCallback<Repository>() {
                                                 @Override
                                                 public void callback( Repository o ) {
-                                                    Window.alert( "The repository is created successfully" );
+                                                    Window.alert( CoreConstants.INSTANCE.RepoCreationSuccess() );
                                                     hide();
                                                     placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", o.getAlias() ) );
                                                 }
@@ -204,9 +205,9 @@ public class CreateRepositoryForm
                                                     try {
                                                         throw throwable;
                                                     } catch ( RepositoryAlreadyExistsException ex ) {
-                                                        ErrorPopup.showMessage( "Repository already exists." );
+                                                        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoAlreadyExists() );
                                                     } catch ( Throwable ex ) {
-                                                        ErrorPopup.showMessage( "Can't create repository. \n" + throwable.getMessage() );
+                                                        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoCreationFail()+ " \n" + throwable.getMessage() );
                                                     }
 
                                                     return true;

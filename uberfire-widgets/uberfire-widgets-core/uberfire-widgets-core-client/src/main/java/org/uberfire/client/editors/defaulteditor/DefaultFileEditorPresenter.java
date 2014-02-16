@@ -11,6 +11,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -46,7 +47,7 @@ public class DefaultFileEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Default Editor [" + path.getFileName() + "]";
+        return CoreConstants.INSTANCE.DefaultEditor()+" [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

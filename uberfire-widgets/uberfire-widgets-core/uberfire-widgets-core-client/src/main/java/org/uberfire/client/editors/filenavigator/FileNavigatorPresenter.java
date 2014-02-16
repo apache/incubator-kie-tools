@@ -27,6 +27,7 @@ import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.resources.i18n.CoreConstants;
 
 @Dependent
 @WorkbenchScreen(identifier = "FileNavigator")
@@ -55,7 +56,7 @@ public class FileNavigatorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Navigator";
+        return CoreConstants.INSTANCE.Navigator();
     }
 
     public void newRootDirectory( @Observes NewRepositoryEvent event ) {

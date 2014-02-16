@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.common.YesNoCancelPopup;
 import org.uberfire.client.resources.NavigatorResources;
 import org.uberfire.client.resources.i18n.CommonConstants;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -106,7 +107,7 @@ public class CommitNavigator extends Composite {
                     @Override
                     public void onClick( final ClickEvent event ) {
                         final YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
-                                                                                                        "Confirm state revert?",
+                                                                                                        CoreConstants.INSTANCE.ConfirmStateRevert(),
                                                                                                         new Command() {
                                                                                                             @Override
                                                                                                             public void execute() {

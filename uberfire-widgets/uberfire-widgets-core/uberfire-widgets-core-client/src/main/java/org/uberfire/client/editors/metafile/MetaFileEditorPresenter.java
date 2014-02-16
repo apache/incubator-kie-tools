@@ -13,6 +13,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.editors.texteditor.TextEditorPresenter;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.client.workbench.type.DotResourceType;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
@@ -39,7 +40,7 @@ public class MetaFileEditorPresenter {
             @Override
             public void callback( String response ) {
                 if ( response == null ) {
-                    view.setContent( "-- empty --" );
+                    view.setContent( CoreConstants.INSTANCE.EmptyEntry() );
                 } else {
                     view.setContent( response );
                 }
@@ -74,7 +75,7 @@ public class MetaFileEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Meta File Editor [" + path.getFileName() + "]";
+        return CoreConstants.INSTANCE.MetaFileEditor() + " [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView

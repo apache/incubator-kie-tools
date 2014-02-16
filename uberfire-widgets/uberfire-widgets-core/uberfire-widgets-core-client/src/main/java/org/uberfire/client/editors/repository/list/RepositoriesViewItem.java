@@ -71,7 +71,7 @@ public class RepositoriesViewItem extends Composite {
         int count = 0;
         if ( publicURIs.size() > 0 ) {
             linksPanel.add( new InlineHTML() {{
-                setText( "Available protocol(s): " );
+                setText( CoreConstants.INSTANCE.AvailableProtocols() );
                 getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
             }} );
         }

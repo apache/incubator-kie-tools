@@ -18,6 +18,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+    <ui:with field="i18n"
+             type="org.uberfire.client.resources.i18n.CoreConstants"/>
 
   <ui:style>
     .uf-box {
@@ -60,7 +62,7 @@
     <div style="padding-top:20px;">
       <div class="{style.uf-box}">
         <h3 class="popover-title">
-          <strong>General Information</strong>
+          <strong><ui:text from="{i18n.GeneralInformation}"/></strong>
         </h3>
         <div>
           <div style="border-bottom:1px solid #ebebeb; padding:10px 14px;">
@@ -84,14 +86,14 @@
     <div style="padding-top:20px; padding-bottom:20px;">
       <div class="{style.uf-box}">
         <h3 class="popover-title">
-          <strong>Commit History</strong>
+          <strong><ui:text from="{i18n.CommitHistory}"/></strong>
         </h3>
         <g:FlowPanel ui:field="history"/>
       </div>
     </div>
 
     <div style="padding-bottom:20px;margin-left: 20px;margin-right: 20px;">
-      <b:Button ui:field="loadMore" block="true">Load More...</b:Button>
+      <b:Button ui:field="loadMore" block="true"><ui:text from="{i18n.LoadMore}"/></b:Button>
     </div>
 
   </g:HTMLPanel>

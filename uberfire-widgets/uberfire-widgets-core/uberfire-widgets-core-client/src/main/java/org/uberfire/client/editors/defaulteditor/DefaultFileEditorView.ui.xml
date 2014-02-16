@@ -19,7 +19,8 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:github="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:defaulteditor="urn:import:org.uberfire.client.editors.defaulteditor">
-
+    <ui:with field="i18n"
+             type="org.uberfire.client.resources.i18n.CoreConstants"/>
   <ui:style>
     .center {
       margin-top: 50px;
@@ -36,13 +37,13 @@
   <g:ResizeLayoutPanel height="300px">
     <github:Column size="4" styleName='{style.center}'>
       <github:Row>
-        <github:Label text="Please select a file to upload"/>
+        <github:Label text="{i18n.SelectFileToUpload}"/>
       </github:Row>
       <github:Row>
         <defaulteditor:DefaultEditorFileUpload ui:field="fileUpload"/>
       </github:Row>
       <github:Row styleName='{style.topMargin}'>
-        <github:Button ui:field="downloadButton" text="Download"/>
+        <github:Button ui:field="downloadButton" text="{i18n.Download}"/>
       </github:Row>
     </github:Column>
   </g:ResizeLayoutPanel>

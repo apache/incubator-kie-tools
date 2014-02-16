@@ -62,7 +62,7 @@
     <div style="padding-top:20px;">
       <div class="{style.uf-box}">
         <h3 class="popover-title">
-          <strong>General Information</strong>
+          <strong><ui:text from="{i18n.GeneralInformation}"/></strong>
         </h3>
         <div>
           <div style="border-bottom:1px solid #ebebeb; padding:10px 14px;">

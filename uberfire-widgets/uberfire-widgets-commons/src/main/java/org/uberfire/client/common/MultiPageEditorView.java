@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.resources.i18n.CommonConstants;
 
 public class MultiPageEditorView
         extends Composite
@@ -119,14 +120,14 @@ public class MultiPageEditorView
             maxDropdownTabLinkWidth = 0;
             final TabLink tab = (TabLink) lastTab;
 
-            final DropdownTab dropdown = new DropdownTab( "More..." ) {{
+            final DropdownTab dropdown = new DropdownTab( CommonConstants.INSTANCE.More() ) {{
                 setDropup( true );
             }};
 
             final Tab clonedTab = cloneTab( tab, false, true );
 
             if ( clonedTab.isActive() ) {
-                dropdown.setText( "Active: " + clonedTab.asTabLink().getText() );
+                dropdown.setText( CommonConstants.INSTANCE.Active()+" " + clonedTab.asTabLink().getText() );
                 dropdown.addStyleName( Constants.ACTIVE );
             }
 
@@ -146,7 +147,7 @@ public class MultiPageEditorView
             final DropdownTab dropdown = cloneDropdown( (DropdownTab) lastTab, -1 );
 
             if ( clonedTab.isActive() ) {
-                dropdown.setText( "Active: " + clonedTab.asTabLink().getText() );
+                dropdown.setText( CommonConstants.INSTANCE.Active()+" " + clonedTab.asTabLink().getText() );
                 dropdown.addStyleName( Constants.ACTIVE );
             }
 
@@ -215,12 +216,12 @@ public class MultiPageEditorView
             public void onClick( final ClickEvent event ) {
                 if ( tab.asTabLink().getParent().getParent() instanceof DropdownTab ) {
                     final DropdownTab dropdownTab = (DropdownTab) tab.asTabLink().getParent().getParent();
-                    dropdownTab.setText( "Active: " + label );
+                    dropdownTab.setText( CommonConstants.INSTANCE.Active()+" " + label );
                     dropdownTab.addStyleName( Constants.ACTIVE );
                 } else {
                     final Widget lastTab = getLastTab();
                     if ( lastTab instanceof DropdownTab ) {
-                        ( (DropdownTab) lastTab ).setText( "More..." );
+                        ( (DropdownTab) lastTab ).setText( CommonConstants.INSTANCE.More() );
                     }
                 }
             }
@@ -281,7 +282,7 @@ public class MultiPageEditorView
         if ( isAnyTabActive ) {
             newDropdown.addStyleName( Constants.ACTIVE );
         } else {
-            newDropdown.setText( "More..." );
+            newDropdown.setText( CommonConstants.INSTANCE.More() );
         }
 
         return newDropdown;
