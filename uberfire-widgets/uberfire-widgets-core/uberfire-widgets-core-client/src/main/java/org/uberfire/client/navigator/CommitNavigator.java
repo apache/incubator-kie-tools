@@ -101,7 +101,7 @@ public class CommitNavigator extends Composite {
         }} );
 
         if ( onRevertCommand != null ) {
-            navigator.setWidget( row, ++col, new Button( "Revert" ) {{
+            navigator.setWidget( row, ++col, new Button( CoreConstants.INSTANCE.Revert() ) {{
                 setType( ButtonType.DANGER );
                 addClickHandler( new ClickHandler() {
                     @Override

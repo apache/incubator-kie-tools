@@ -148,4 +148,8 @@ public interface CoreConstants
 
     String CreateRepository();
 
+    String Empty();
+
+    String Revert();
+
 }

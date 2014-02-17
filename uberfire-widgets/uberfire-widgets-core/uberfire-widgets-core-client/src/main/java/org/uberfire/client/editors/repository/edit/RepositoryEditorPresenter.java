@@ -82,7 +82,7 @@ public class RepositoryEditorPresenter {
                 view.setRepositoryInfo( repo.getAlias(),
                                         repo.getOwner(),
                                         repo.getPublicURIs(),
-                                        "[empty]",
+                                        CoreConstants.INSTANCE.Empty(),
                                         repo.getInitialVersionList() );
             }
         } ).getRepositoryInfo( alias );
