@@ -18,7 +18,6 @@ package org.uberfire.backend.server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,12 +38,14 @@ public class UserServicesBackendImpl {
 
     private FileSystem bootstrapRoot = null;
 
-    @PostConstruct
-    public void init() {
-        final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
-        if ( fsIterator.hasNext() ) {
-            this.bootstrapRoot = fsIterator.next();
+    private FileSystem getBootstrapRoot() {
+        if ( bootstrapRoot == null ) {
+            final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
+            if ( fsIterator.hasNext() ) {
+                this.bootstrapRoot = fsIterator.next();
+            }
         }
+        return bootstrapRoot;
     }
 
     public Path buildPath( final String _userName,
@@ -54,9 +55,9 @@ public class UserServicesBackendImpl {
         final String resultUserName = TextUtil.normalizeUserName( _userName );
 
         if ( relativePath != null && !"".equals( relativePath ) ) {
-            return bootstrapRoot.getPath( resultUserName + "-uf-user", serviceType, relativePath );
+            return getBootstrapRoot().getPath( resultUserName + "-uf-user", serviceType, relativePath );
         } else {
-            return bootstrapRoot.getPath( resultUserName + "-uf-user", serviceType );
+            return getBootstrapRoot().getPath( resultUserName + "-uf-user", serviceType );
         }
     }
 
@@ -64,16 +65,16 @@ public class UserServicesBackendImpl {
                                              final String relativePath ) {
         final Collection<Path> result = new ArrayList<Path>();
 
-        for ( final Path path : bootstrapRoot.getRootDirectories() ) {
-                final Path _path;
-                if ( relativePath != null && !"".equals( relativePath ) ) {
-                    _path = path.resolve( serviceType ).resolve( relativePath );
-                } else {
-                    _path = path.resolve( serviceType );
-                }
-                if ( ioService.exists( _path ) ) {
-                    result.add( _path );
-                }
+        for ( final Path path : getBootstrapRoot().getRootDirectories() ) {
+            final Path _path;
+            if ( relativePath != null && !"".equals( relativePath ) ) {
+                _path = path.resolve( serviceType ).resolve( relativePath );
+            } else {
+                _path = path.resolve( serviceType );
+            }
+            if ( ioService.exists( _path ) ) {
+                result.add( _path );
+            }
         }
 
         return result;
