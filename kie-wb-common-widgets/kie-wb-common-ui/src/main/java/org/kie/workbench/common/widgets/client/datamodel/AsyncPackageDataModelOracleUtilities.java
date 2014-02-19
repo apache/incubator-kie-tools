@@ -265,6 +265,10 @@ public class AsyncPackageDataModelOracleUtilities {
             final String miPackageName = getPackageName( miQualifiedType );
             final String miTypeName = getTypeName( miQualifiedType );
 
+
+            // TODO: The methods for fields never get imported or might not be in the same package
+
+
             if ( miPackageName.equals( packageName ) || isImported( miQualifiedType,
                                                                     imports ) ) {
                 scopedMethodInformation.put( miTypeName,

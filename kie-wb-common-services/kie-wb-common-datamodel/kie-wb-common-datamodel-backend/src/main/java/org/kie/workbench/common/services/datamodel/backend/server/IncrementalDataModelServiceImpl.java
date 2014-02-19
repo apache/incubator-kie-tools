@@ -74,10 +74,18 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
 
             //Get the fully qualified class name of the fact type
             String fullyQualifiedClassName = null;
-            for ( Import imp : imports.getImports() ) {
-                if ( imp.getType().endsWith( factType ) ) {
-                    fullyQualifiedClassName = imp.getType();
-                    break;
+
+            // Check if the factType is already the FQCN
+            if (factType.contains(".")) {
+                fullyQualifiedClassName = factType;
+            }
+
+            if (fullyQualifiedClassName == null) {
+                for (Import imp : imports.getImports()) {
+                    if (imp.getType().endsWith(factType)) {
+                        fullyQualifiedClassName = imp.getType();
+                        break;
+                    }
                 }
             }
             if ( fullyQualifiedClassName == null ) {
