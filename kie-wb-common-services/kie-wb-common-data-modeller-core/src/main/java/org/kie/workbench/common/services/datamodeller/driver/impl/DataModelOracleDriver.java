@@ -32,7 +32,6 @@ import org.kie.workbench.common.services.datamodeller.driver.*;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.*;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.OpenOption;
-import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
@@ -156,88 +155,90 @@ public class DataModelOracleDriver implements ModelDriver {
 
         String packageName = NamingUtils.getInstance().extractPackageName( factType );
         String className = NamingUtils.getInstance().extractClassName( factType );
-        String superClass = DataModelOracleUtilities.getSuperType( oracleDataModel,
-                                                                   factType );
+        String superClass = DataModelOracleUtilities.getSuperType( oracleDataModel, factType );
+        DataObject dataObject;
 
         logger.debug( "Adding factType: " + factType + ", to dataModel: " + dataModel + ", from oracleDataModel: " + oracleDataModel );
-        int modifiers = readClassModifiers(factType, classLoader);
-        DataObject dataObject = dataModel.addDataObject( factType, source, modifiers );
-        dataObject.setSuperClassName( superClass );
+        ClassMetadata classMetadata = readClassMetadata(factType, classLoader);
 
-        //process type annotations
-        Set<Annotation> typeAnnotations = DataModelOracleUtilities.getTypeAnnotations( oracleDataModel,
-                                                                                       factType );
-        if ( typeAnnotations != null ) {
-            for ( Annotation annotation : typeAnnotations ) {
-                addFactTypeAnnotation( dataObject, annotation );
-            }
-        }
+        if (classMetadata != null && !classMetadata.isMemberClass() && !classMetadata.isAnonymousClass() && !classMetadata.isLocalClass() ) {
+            dataObject = dataModel.addDataObject( factType, source, classMetadata.getModifiers() );
+            dataObject.setSuperClassName( superClass );
 
-        Map<String, ModelField[]> fields = oracleDataModel.getProjectModelFields();
-        if ( fields != null ) {
-            ModelField[] factFields = fields.get( factType );
-            ModelField field;
-            ObjectProperty property;
-            Map<String, Set<Annotation>> typeFieldsAnnotations = DataModelOracleUtilities.getTypeFieldsAnnotations( oracleDataModel,
-                                                                                                                    factType );
-            Set<Annotation> fieldAnnotations;
-            Integer naturalOrder = 0;
-            List<PropertyPosition> naturalOrderPositions = new ArrayList<PropertyPosition>();
-
-            if ( factFields != null && factFields.length > 0 ) {
-                for ( int j = 0; j < factFields.length; j++ ) {
-                    field = factFields[ j ];
-                    if ( isLoadableField( field ) ) {
-
-                        if ( field.getType().equals( "Collection" ) ) {
-                            //particular processing for collection types
-                            //read the correct bag and item classes.
-                            String bag = DataModelOracleUtilities.getFieldClassName( oracleDataModel,
-                                                                                     factType,
-                                                                                     field.getName() );
-                            String itemsClass = DataModelOracleUtilities.getParametricFieldType( oracleDataModel,
-                                                                                                 factType,
-                                                                                                 field.getName() );
-                            if (itemsClass == null) {
-                                //if we don't know the items class, the property will be managed as a simple property.
-                                property = dataObject.addProperty( field.getName(), bag );
-                            } else {
-                                property = dataObject.addProperty( field.getName(), itemsClass, true, bag );
-                            }
-
-                        } else {
-                            property = dataObject.addProperty( field.getName(), getFieldType( oracleDataModel, packageName, field.getClassName() ) );
-                        }
-
-                        //process property annotations
-                        if ( typeFieldsAnnotations != null && ( fieldAnnotations = typeFieldsAnnotations.get( field.getName() ) ) != null ) {
-                            for ( Annotation fieldAnnotation : fieldAnnotations ) {
-                                addFieldAnnotation( dataObject, property, fieldAnnotation );
-                            }
-                        }
-
-                        AnnotationImpl position = new AnnotationImpl( PositionAnnotationDefinition.getInstance() );
-                        position.setValue( "value", naturalOrder.toString() );
-                        naturalOrderPositions.add( new PropertyPosition( property, position ) );
-                        naturalOrder++;
-                    }
+            //process type annotations
+            Set<Annotation> typeAnnotations = DataModelOracleUtilities.getTypeAnnotations( oracleDataModel,
+                                                                                           factType );
+            if ( typeAnnotations != null ) {
+                for ( Annotation annotation : typeAnnotations ) {
+                    addFactTypeAnnotation( dataObject, annotation );
                 }
-                verifyPositions( dataObject, naturalOrderPositions );
             }
-        } else {
-            logger.debug( "No fields for factTye: " + factType );
+
+            Map<String, ModelField[]> fields = oracleDataModel.getProjectModelFields();
+            if ( fields != null ) {
+                ModelField[] factFields = fields.get( factType );
+                ModelField field;
+                ObjectProperty property;
+                Map<String, Set<Annotation>> typeFieldsAnnotations = DataModelOracleUtilities.getTypeFieldsAnnotations( oracleDataModel,
+                                                                                                                        factType );
+                Set<Annotation> fieldAnnotations;
+                Integer naturalOrder = 0;
+                List<PropertyPosition> naturalOrderPositions = new ArrayList<PropertyPosition>();
+
+                if ( factFields != null && factFields.length > 0 ) {
+                    for ( int j = 0; j < factFields.length; j++ ) {
+                        field = factFields[ j ];
+                        if ( isLoadableField( field ) ) {
+
+                            if ( field.getType().equals( "Collection" ) ) {
+                                //particular processing for collection types
+                                //read the correct bag and item classes.
+                                String bag = DataModelOracleUtilities.getFieldClassName( oracleDataModel,
+                                                                                         factType,
+                                                                                         field.getName() );
+                                String itemsClass = DataModelOracleUtilities.getParametricFieldType( oracleDataModel,
+                                                                                                     factType,
+                                                                                                     field.getName() );
+                                if (itemsClass == null) {
+                                    //if we don't know the items class, the property will be managed as a simple property.
+                                    property = dataObject.addProperty( field.getName(), bag );
+                                } else {
+                                    property = dataObject.addProperty( field.getName(), itemsClass, true, bag );
+                                }
+
+                            } else {
+                                property = dataObject.addProperty( field.getName(), getFieldType( oracleDataModel, packageName, field.getClassName() ) );
+                            }
+
+                            //process property annotations
+                            if ( typeFieldsAnnotations != null && ( fieldAnnotations = typeFieldsAnnotations.get( field.getName() ) ) != null ) {
+                                for ( Annotation fieldAnnotation : fieldAnnotations ) {
+                                    addFieldAnnotation( dataObject, property, fieldAnnotation );
+                                }
+                            }
+
+                            AnnotationImpl position = new AnnotationImpl( PositionAnnotationDefinition.getInstance() );
+                            position.setValue( "value", naturalOrder.toString() );
+                            naturalOrderPositions.add( new PropertyPosition( property, position ) );
+                            naturalOrder++;
+                        }
+                    }
+                    verifyPositions( dataObject, naturalOrderPositions );
+                }
+            } else {
+                logger.debug( "No fields for factTye: " + factType );
+            }
         }
     }
 
-    private int readClassModifiers(String factType, ClassLoader classLoader) {
-
-        int modifiers = 0;
+    private ClassMetadata readClassMetadata(String factType, ClassLoader classLoader) {
         try {
-            modifiers = classLoader.loadClass(factType).getModifiers();
+            Class _class = classLoader.loadClass(factType);
+            return new ClassMetadata(_class.getModifiers(), _class.isMemberClass(), _class.isLocalClass(), _class.isAnonymousClass());
         } catch (ClassNotFoundException e) {
             logger.error("It was not possible to read class modifiers for class: " + factType);
         }
-        return modifiers;
+        return null;
     }
 
     private void verifyPositions( DataObject dataObject,
@@ -371,7 +372,7 @@ public class DataModelOracleDriver implements ModelDriver {
 
     private org.kie.workbench.common.services.datamodeller.core.Annotation createAnnotation( Annotation annotationToken ) throws ModelDriverException {
 
-        AnnotationDefinition annotationDefinition = getConfiguredAnnotation( annotationToken.getQualifiedTypeName() );
+        AnnotationDefinition annotationDefinition = getConfiguredAnnotation(annotationToken.getQualifiedTypeName());
         org.kie.workbench.common.services.datamodeller.core.Annotation annotation = null;
 
         if ( annotationDefinition != null ) {
@@ -499,6 +500,56 @@ public class DataModelOracleDriver implements ModelDriver {
 
         public List<FileChangeDescriptor> getFileChanges() {
             return fileChanges;
+        }
+    }
+
+    public class ClassMetadata {
+
+        int modifiers;
+
+        boolean memberClass;
+
+        boolean localClass;
+
+        boolean anonymousClass;
+
+        public ClassMetadata(int modifiers, boolean memberClass, boolean localClass, boolean anonymousClass) {
+            this.modifiers = modifiers;
+            this.memberClass = memberClass;
+            this.localClass = localClass;
+            this.anonymousClass = anonymousClass;
+        }
+
+        public int getModifiers() {
+            return modifiers;
+        }
+
+        public void setModifiers(int modifiers) {
+            this.modifiers = modifiers;
+        }
+
+        public boolean isMemberClass() {
+            return memberClass;
+        }
+
+        public void setMemberClass(boolean memberClass) {
+            this.memberClass = memberClass;
+        }
+
+        public boolean isLocalClass() {
+            return localClass;
+        }
+
+        public void setLocalClass(boolean localClass) {
+            this.localClass = localClass;
+        }
+
+        public boolean isAnonymousClass() {
+            return anonymousClass;
+        }
+
+        public void setAnonymousClass(boolean anonymousClass) {
+            this.anonymousClass = anonymousClass;
         }
     }
 }
