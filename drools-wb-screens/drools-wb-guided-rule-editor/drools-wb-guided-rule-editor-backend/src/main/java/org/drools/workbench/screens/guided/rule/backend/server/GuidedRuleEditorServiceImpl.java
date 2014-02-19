@@ -29,6 +29,8 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
+import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
+import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
@@ -100,6 +102,12 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
     @Inject
     private SourceServices sourceServices;
+
+    @Inject
+    private GuidedRuleDRLResourceTypeDefinition drlResourceType;
+
+    @Inject
+    private GuidedRuleDSLRResourceTypeDefinition dslrResourceType;
 
     @Inject
     private GenericValidator genericValidator;
@@ -188,7 +196,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             model.setPackageName( packageName );
 
             ioService.write( Paths.convert( resource ),
-                             RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
+                             toSourceUnexpanded( resource,
+                                                 model ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              utilities.makeCommentedOption( comment ) );
@@ -244,7 +253,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public String toSource( final Path path,
                             final RuleModel model ) {
         try {
-            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
+            return toSourceExpanded( path,
+                                     model );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -255,7 +265,8 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public List<ValidationMessage> validate( final Path path,
                                              final RuleModel content ) {
         try {
-            final String source = RuleModelDRLPersistenceImpl.getInstance().marshal( content );
+            final String source = toSourceUnexpanded( path,
+                                                      content );
             return genericValidator.validate( path,
                                               new ByteArrayInputStream( source.getBytes() ),
                                               FILTER_JAVA,
@@ -266,6 +277,23 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private String toSourceExpanded( final Path path,
+                                     final RuleModel model ) {
+        //This returns the expanded Source as used in "View Source" within the UI.
+        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
+    }
+
+    private String toSourceUnexpanded( final Path path,
+                                       final RuleModel content ) {
+        //Wrap RuleModel as we need to control whether the DSLs are expanded. Both DRL and DSLR files should not have
+        //DSLs expanded. In the case of DSLRs we need to explicitly control escaping plain-DRL to prevent attempts
+        //by drools to expand it, by forcing the Model->DRL persistence into believing the model has DSLs.
+        final RuleModelWrapper model = new RuleModelWrapper( content,
+                                                             dslrResourceType.accept( path ) );
+        final String source = RuleModelDRLPersistenceImpl.getInstance().marshal( model );
+        return source;
     }
 
 }
