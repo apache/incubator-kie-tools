@@ -34,6 +34,7 @@ import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.screens.guided.rule.client.editor.MethodParameterValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
@@ -76,79 +77,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         if ( oracle.isGlobalVariable( actionCallMethod.getVariable() ) ) {
-
-            oracle.getMethodInfosForGlobalVariable( actionCallMethod.getVariable(),
-                                                    new Callback<List<MethodInfo>>() {
-                                                        @Override
-                                                        public void callback( final List<MethodInfo> infos ) {
-                                                            if ( infos != null ) {
-                                                                ActionCallMethodWidget.this.fieldCompletionTexts = new String[ infos.size() ];
-                                                                ActionCallMethodWidget.this.fieldCompletionValues = new String[ infos.size() ];
-                                                                int i = 0;
-                                                                for ( MethodInfo info : infos ) {
-                                                                    ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = info.getName();
-                                                                    ActionCallMethodWidget.this.fieldCompletionValues[ i ] = info.getNameWithParameters();
-                                                                    i++;
-                                                                }
-
-                                                                ActionCallMethodWidget.this.variableClass = oracle.getGlobalVariable( actionCallMethod.getVariable() );
-
-                                                            } else {
-                                                                ActionCallMethodWidget.this.fieldCompletionTexts = new String[ 0 ];
-                                                                ActionCallMethodWidget.this.fieldCompletionValues = new String[ 0 ];
-                                                                ActionCallMethodWidget.this.readOnly = true;
-                                                            }
-                                                        }
-                                                    } );
-
+            getMethodInfosForGlobalVariable(actionCallMethod, oracle);
         } else {
-
-            final FactPattern pattern = mod.getModel().getLHSBoundFact( actionCallMethod.getVariable() );
-            if ( pattern != null ) {
-                oracle.getMethodInfos( pattern.getFactType(),
-                                       new Callback<List<MethodInfo>>() {
-                                           @Override
-                                           public void callback( final List<MethodInfo> methodInfos ) {
-                                               ActionCallMethodWidget.this.fieldCompletionTexts = new String[ methodInfos.size() ];
-                                               ActionCallMethodWidget.this.fieldCompletionValues = new String[ methodInfos.size() ];
-                                               int i = 0;
-                                               for ( MethodInfo methodInfo : methodInfos ) {
-                                                   ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = methodInfo.getName();
-                                                   ActionCallMethodWidget.this.fieldCompletionValues[ i ] = methodInfo.getNameWithParameters();
-                                                   i++;
-                                               }
-                                               ActionCallMethodWidget.this.variableClass = pattern.getFactType();
-                                               ActionCallMethodWidget.this.isBoundFact = true;
-
-                                           }
-                                       } );
-
-            } else {
-                /*
-                     * if the call method is applied on a bound variable created in the rhs
-                 */
-                final ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( actionCallMethod.getVariable() );
-                if ( patternRhs != null ) {
-                    oracle.getMethodInfos( patternRhs.getFactType(),
-                                           new Callback<List<MethodInfo>>() {
-                                               @Override
-                                               public void callback( final List<MethodInfo> methodInfos ) {
-                                                   ActionCallMethodWidget.this.fieldCompletionTexts = new String[ methodInfos.size() ];
-                                                   ActionCallMethodWidget.this.fieldCompletionValues = new String[ methodInfos.size() ];
-                                                   int i = 0;
-                                                   for ( MethodInfo methodInfo : methodInfos ) {
-                                                       ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = methodInfo.getName();
-                                                       ActionCallMethodWidget.this.fieldCompletionValues[ i ] = methodInfo.getNameWithParameters();
-                                                       i++;
-                                                   }
-                                                   ActionCallMethodWidget.this.variableClass = patternRhs.getFactType();
-                                                   ActionCallMethodWidget.this.isBoundFact = true;
-                                               }
-                                           } );
-                } else {
-                    this.readOnly = true;
-                }
-            }
+            getMethodInfos(mod, oracle);
         }
 
         this.isFactTypeKnown = oracle.isFactTypeRecognized( this.variableClass );
@@ -164,6 +95,117 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         doLayout();
         initWidget( this.layout );
+    }
+
+    private void getMethodInfos(RuleModeller mod, AsyncPackageDataModelOracle oracle) {
+
+        String factType = null;
+
+        factType = getFactTypeLHS(mod, factType);
+
+        if (factType == null) {
+
+            factType = getFactTypeFromRHS(mod, factType);
+
+        }
+
+
+        if (factType == null) {
+            factType = getFactTypeFromLHSField(mod, oracle);
+        }
+
+        if (factType != null) {
+            setMethodInfos(oracle, factType);
+        } else {
+            /**
+             * Fact type is unknown. Best to make this readonly.
+             */
+            this.readOnly = true;
+        }
+    }
+
+    private String getFactTypeFromLHSField(RuleModeller mod, final AsyncPackageDataModelOracle oracle) {
+        SingleFieldConstraint lhsBoundField = mod.getModel().getLHSBoundField(model.getVariable());
+        if (lhsBoundField != null) {
+            return oracle.getFieldClassName(lhsBoundField.getFactType(), lhsBoundField.getFieldName());
+        } else {
+            return null;
+        }
+    }
+
+    private String getFactTypeFromRHS(RuleModeller mod, String factType) {
+        ActionInsertFact rhsBoundFact = mod.getModel().getRHSBoundFact(model.getVariable());
+        if (rhsBoundFact != null) {
+            factType = rhsBoundFact.getFactType();
+        }
+        return factType;
+    }
+
+    private String getFactTypeLHS(RuleModeller mod, String factType) {
+        FactPattern lhsBoundFact = mod.getModel().getLHSBoundFact(model.getVariable());
+        if (lhsBoundFact != null) {
+            factType = lhsBoundFact.getFactType();
+        }
+        return factType;
+    }
+
+    private void setMethodInfos(AsyncPackageDataModelOracle oracle, final String factType) {
+
+
+
+
+
+        // TODO: How to get the fields for field variables
+
+
+
+
+        oracle.getMethodInfos(factType,
+                               new Callback<List<MethodInfo>>() {
+                                   @Override
+                                   public void callback( final List<MethodInfo> methodInfos ) {
+                                       setMethodInfos(methodInfos, factType);
+                                   }
+                               } );
+    }
+
+    private void setMethodInfos(List<MethodInfo> methodInfos, String factType) {
+        this.fieldCompletionTexts = new String[ methodInfos.size() ];
+        this.fieldCompletionValues = new String[ methodInfos.size() ];
+        int i = 0;
+        for ( MethodInfo methodInfo : methodInfos ) {
+            this.fieldCompletionTexts[ i ] = methodInfo.getName();
+            this.fieldCompletionValues[ i ] = methodInfo.getNameWithParameters();
+            i++;
+        }
+        this.variableClass = factType;
+        this.isBoundFact = true;
+    }
+
+    private void getMethodInfosForGlobalVariable(final ActionCallMethod actionCallMethod, final AsyncPackageDataModelOracle oracle) {
+        oracle.getMethodInfosForGlobalVariable( actionCallMethod.getVariable(),
+                                                new Callback<List<MethodInfo>>() {
+                                                    @Override
+                                                    public void callback( final List<MethodInfo> infos ) {
+                                                        if ( infos != null ) {
+                                                            ActionCallMethodWidget.this.fieldCompletionTexts = new String[ infos.size() ];
+                                                            ActionCallMethodWidget.this.fieldCompletionValues = new String[ infos.size() ];
+                                                            int i = 0;
+                                                            for ( MethodInfo info : infos ) {
+                                                                ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = info.getName();
+                                                                ActionCallMethodWidget.this.fieldCompletionValues[ i ] = info.getNameWithParameters();
+                                                                i++;
+                                                            }
+
+                                                            ActionCallMethodWidget.this.variableClass = oracle.getGlobalVariable( actionCallMethod.getVariable() );
+
+                                                        } else {
+                                                            ActionCallMethodWidget.this.fieldCompletionTexts = new String[ 0 ];
+                                                            ActionCallMethodWidget.this.fieldCompletionValues = new String[ 0 ];
+                                                            ActionCallMethodWidget.this.readOnly = true;
+                                                        }
+                                                    }
+                                                } );
     }
 
     private void doLayout() {
