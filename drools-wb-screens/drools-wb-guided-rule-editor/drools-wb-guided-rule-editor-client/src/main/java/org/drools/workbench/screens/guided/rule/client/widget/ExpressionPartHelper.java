@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.widget;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionGlobalVariable;
@@ -32,6 +33,7 @@ public class ExpressionPartHelper {
                                                    final String factName,
                                                    final String methodName,
                                                    final Callback<ExpressionPart> callback ) {
+        //Ensure MethodInfo details for type have been loaded
         oracle.getMethodInfo( factName,
                               methodName,
                               new Callback<MethodInfo>() {
@@ -55,29 +57,48 @@ public class ExpressionPartHelper {
                                                   final String factName,
                                                   final String fieldName,
                                                   final Callback<ExpressionPart> callback ) {
-        String fieldClassName = oracle.getFieldClassName( factName, fieldName );
-        String fieldGenericType = oracle.getFieldType( factName, fieldName );
-        if ( DataType.TYPE_COLLECTION.equals( fieldGenericType ) ) {
-            String fieldParametricType = oracle.getParametricFieldType( factName,
-                                                                        fieldName );
-            callback.callback( new ExpressionCollection( fieldName,
-                                                         fieldClassName,
-                                                         fieldGenericType,
-                                                         fieldParametricType ) );
-        } else {
-            callback.callback( new ExpressionField( fieldName,
-                                                    fieldClassName,
-                                                    fieldGenericType ) );
-        }
+        final String fieldClassName = oracle.getFieldClassName( factName, fieldName );
+        final String fieldGenericType = oracle.getFieldType( factName, fieldName );
+
+        //Ensure ModelField details for type have been loaded
+        oracle.getFieldCompletions( fieldGenericType,
+                                    new Callback<ModelField[]>() {
+
+                                        @Override
+                                        public void callback( final ModelField[] result ) {
+                                            if ( DataType.TYPE_COLLECTION.equals( fieldGenericType ) ) {
+                                                String fieldParametricType = oracle.getParametricFieldType( factName,
+                                                                                                            fieldName );
+                                                callback.callback( new ExpressionCollection( fieldName,
+                                                                                             fieldClassName,
+                                                                                             fieldGenericType,
+                                                                                             fieldParametricType ) );
+                                            } else {
+                                                callback.callback( new ExpressionField( fieldName,
+                                                                                        fieldClassName,
+                                                                                        fieldGenericType ) );
+                                            }
+                                        }
+                                    } );
     }
 
     public static void getExpressionPartForGlobalVariable( final AsyncPackageDataModelOracle oracle,
                                                            final String varName,
                                                            final Callback<ExpressionPart> callback ) {
-        String globalVarType = oracle.getGlobalVariable( varName );
-        callback.callback( new ExpressionGlobalVariable( varName,
-                                                         globalVarType,
-                                                         globalVarType ) );
+        final String globalVarType = oracle.getGlobalVariable( varName );
+
+        //Ensure ModelField details for Global type have been loaded
+        oracle.getFieldCompletions( globalVarType,
+                                    new Callback<ModelField[]>() {
+
+                                        @Override
+                                        public void callback( final ModelField[] result ) {
+                                            callback.callback( new ExpressionGlobalVariable( varName,
+                                                                                             globalVarType,
+                                                                                             globalVarType ) );
+                                        }
+                                    }
+                                  );
     }
 
 }
