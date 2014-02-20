@@ -52,7 +52,15 @@ public interface AsyncPackageDataModelOracle {
 
     String[] getExternalFactTypes();
 
-    String getFactNameFromType( final String classType );
+    public String getFGCNByFactName(String factName);
+
+    /**
+     * Returns fact's name from class type
+     *
+     * @param fqcnName for example org.test.Person
+     * @return Shorter type name org.test.Person returns Person
+     */
+    String getFactNameFromType( final String fqcnName );
 
     boolean isFactTypeRecognized( final String factType );
 

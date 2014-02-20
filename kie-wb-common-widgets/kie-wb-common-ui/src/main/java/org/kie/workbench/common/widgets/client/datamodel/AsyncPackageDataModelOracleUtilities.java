@@ -56,14 +56,17 @@ public class AsyncPackageDataModelOracleUtilities {
     }
 
     //Filter and rename Model Fields based on package name and imports
-    public static Map<String, ModelField[]> filterModelFields( final String packageName,
-                                                               final Imports imports,
-                                                               final Map<String, ModelField[]> projectModelFields ) {
+    public static Map<String, ModelField[]> filterModelFields(final String packageName,
+            final Imports imports,
+            final Map<String, ModelField[]> projectModelFields,
+            final FactNameToFQCNHandleRegistry registry) {
         final Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
         for ( Map.Entry<String, ModelField[]> e : projectModelFields.entrySet() ) {
             final String mfQualifiedType = e.getKey();
             final String mfPackageName = getPackageName( mfQualifiedType );
             final String mfTypeName = getTypeName( mfQualifiedType );
+
+            registry.add(mfTypeName, mfQualifiedType);
 
             if ( mfPackageName.equals( packageName ) || isImported( mfQualifiedType,
                                                                     imports ) ) {
@@ -255,29 +258,15 @@ public class AsyncPackageDataModelOracleUtilities {
         return scopedEnumLists;
     }
 
-    //Filter and rename Method Information (used by ActionCallXXX and ExpressionBuilder) based on package name and imports
-    public static Map<String, List<MethodInfo>> filterMethodInformation( final String packageName,
-                                                                         final Imports imports,
-                                                                         final Map<String, List<MethodInfo>> projectMethodInformation ) {
-        final Map<String, List<MethodInfo>> scopedMethodInformation = new HashMap<String, List<MethodInfo>>();
+    // For filling the FQCN-fact name -registry
+    public static void visitMethodInformation( final Map<String, List<MethodInfo>> projectMethodInformation,
+                                                final FactNameToFQCNHandleRegistry registry) {
         for ( Map.Entry<String, List<MethodInfo>> e : projectMethodInformation.entrySet() ) {
             final String miQualifiedType = e.getKey();
-            final String miPackageName = getPackageName( miQualifiedType );
             final String miTypeName = getTypeName( miQualifiedType );
 
-
-            // TODO: The methods for fields never get imported or might not be in the same package
-
-
-            if ( miPackageName.equals( packageName ) || isImported( miQualifiedType,
-                                                                    imports ) ) {
-                scopedMethodInformation.put( miTypeName,
-                                             correctMethodInformation( packageName,
-                                                                       e.getValue(),
-                                                                       imports ) );
-            }
+            registry.add(miTypeName,miQualifiedType);
         }
-        return scopedMethodInformation;
     }
 
     //Filter and rename Field Parameter Types based on package name and imports
@@ -353,9 +342,9 @@ public class AsyncPackageDataModelOracleUtilities {
         return "";
     }
 
-    private static ModelField[] correctModelFields( final String packageName,
-                                                    final ModelField[] originalModelFields,
-                                                    final Imports imports ) {
+    private static ModelField[] correctModelFields(final String packageName,
+            final ModelField[] originalModelFields,
+            final Imports imports) {
         if ( originalModelFields == null ) {
             return null;
         }
