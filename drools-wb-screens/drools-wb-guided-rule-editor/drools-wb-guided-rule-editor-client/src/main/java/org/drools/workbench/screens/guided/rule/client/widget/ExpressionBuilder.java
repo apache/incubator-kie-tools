@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -240,7 +242,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             return createStartPointWidget();
         }
 
-        final ChangeHandler ch = new ChangeHandler() {
+        final ChangeHandler changeHandler = new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
                 ListBox box = (ListBox) event.getSource();
                 panel.remove( box );
@@ -250,26 +252,26 @@ public class ExpressionBuilder extends RuleModellerWidget
             }
         };
 
-        final ListBox lb = new ListBox();
-        lb.setVisibleItemCount( 1 );
-        lb.addItem( GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
-                    "" );
-        lb.addItem( "<==" + GuidedRuleEditorResources.CONSTANTS.DeleteItem(),
-                    DELETE_VALUE );
+        final ListBox listBox = new ListBox();
+        listBox.setVisibleItemCount(1);
+        listBox.addItem(GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
+                "");
+        listBox.addItem("<==" + GuidedRuleEditorResources.CONSTANTS.DeleteItem(),
+                DELETE_VALUE);
 
         getCompletionsForCurrentType( expression.getParts().size() > 1,
                                       new Callback<Map<String, String>>() {
                                           @Override
                                           public void callback( final Map<String, String> completions ) {
                                               for ( Map.Entry<String, String> entry : completions.entrySet() ) {
-                                                  lb.addItem( entry.getKey(),
-                                                              entry.getValue() );
+                                                  listBox.addItem(entry.getKey(),
+                                                          entry.getValue());
                                               }
-                                              lb.addChangeHandler( ch );
+                                              listBox.addChangeHandler( changeHandler );
                                           }
                                       } );
 
-        return lb;
+        return listBox;
     }
 
     private void onCollectionChange( String value ) {
@@ -387,28 +389,15 @@ public class ExpressionBuilder extends RuleModellerWidget
 
     private void getCompletionsForCurrentType( final boolean isNested,
                                                final Callback<Map<String, String>> callback ) {
-        final Map<String, String> completions = new LinkedHashMap<String, String>();
-
         if ( DataType.TYPE_FINAL_OBJECT.equals( getCurrentGenericType() ) ) {
-            callback.callback( completions );
+            callback.callback( Collections.EMPTY_MAP );
             return;
         } else if ( DataType.TYPE_COLLECTION.equals( getCurrentGenericType() ) ) {
-            completions.put( "size()",
-                             "size" );
-            completions.put( "first()",
-                             "first" );
-            completions.put( "last()",
-                             "last" );
-            completions.put( "isEmpty()",
-                             "isEmpty" );
-            callback.callback( completions );
+
+            callback.callback(getCollectionMethods());
             return;
         } else if ( DataType.TYPE_STRING.equals( getCurrentGenericType() ) ) {
-            completions.put( "size()",
-                             "size" );
-            completions.put( "isEmpty()",
-                             "isEmpty" );
-            callback.callback( completions );
+            callback.callback( getStringMethods() );
             return;
         } else if ( DataType.TYPE_BOOLEAN.equals( getCurrentGenericType() )
                 || DataType.TYPE_NUMERIC_BIGDECIMAL.equals( getCurrentGenericType() )
@@ -421,56 +410,94 @@ public class ExpressionBuilder extends RuleModellerWidget
                 || DataType.TYPE_NUMERIC_SHORT.equals( getCurrentGenericType() )
                 || DataType.TYPE_DATE.equals( getCurrentGenericType() )
                 || DataType.TYPE_OBJECT.equals( getCurrentGenericType() ) ) {
-            callback.callback( completions );
+            callback.callback( Collections.EMPTY_MAP );
             return;
         }
 
         final String factName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
         if ( factName != null ) {
             // we currently only support 0 param method calls
-            getDataModelOracle().getMethodInfos( factName,
-                                                 0,
-                                                 new Callback<List<MethodInfo>>() {
-                                                     @Override
-                                                     public void callback( final List<MethodInfo> methodInfos ) {
-                                                         getDataModelOracle().getFieldCompletions( factName,
-                                                                                                   new Callback<ModelField[]>() {
 
-                                                                                                       @Override
-                                                                                                       public void callback( final ModelField[] fields ) {
-                                                                                                           for ( ModelField field : fields ) {
-
-                                                                                                               //You can't use "this" in a nested accessor
-                                                                                                               final String fieldName = field.getName();
-                                                                                                               if ( !isNested || !fieldName.equals( DataType.TYPE_THIS ) ) {
-
-                                                                                                                   boolean changed = false;
-                                                                                                                   for ( Iterator<MethodInfo> i = methodInfos.iterator(); i.hasNext(); ) {
-                                                                                                                       final MethodInfo methodInfo = i.next();
-                                                                                                                       final String methodName = methodInfo.getName();
-                                                                                                                       if ( methodName.startsWith( fieldName ) ) {
-                                                                                                                           completions.put( methodName,
-                                                                                                                                            METHOD_VALUE_PREFIX + "." + methodName );
-                                                                                                                           i.remove();
-                                                                                                                           changed = true;
-                                                                                                                       }
-                                                                                                                   }
-                                                                                                                   if ( !changed ) {
-                                                                                                                       completions.put( fieldName,
-                                                                                                                                        FIElD_VALUE_PREFIX + "." + fieldName );
-                                                                                                                   }
-                                                                                                               }
-                                                                                                           }
-                                                                                                           callback.callback( completions );
-                                                                                                       }
-                                                                                                   } );
-                                                     }
-                                                 } );
+            getMethods(isNested, callback, factName);
 
         } else {
             // else {We don't know anything about this type, so return empty map}
-            callback.callback( completions );
+            callback.callback( Collections.EMPTY_MAP );
         }
+    }
+
+    private LinkedHashMap<String, String> getStringMethods() {
+        LinkedHashMap<String, String> completions = new LinkedHashMap<String, String>();
+
+        completions.put( "size()",
+                         "size" );
+        completions.put( "isEmpty()",
+                         "isEmpty" );
+
+        return completions;
+    }
+
+    private LinkedHashMap<String, String> getCollectionMethods() {
+        LinkedHashMap<String, String> completions = new LinkedHashMap<String, String>();
+
+        completions.put( "size()",
+                         "size" );
+        completions.put( "first()",
+                         "first" );
+        completions.put( "last()",
+                         "last" );
+        completions.put( "isEmpty()",
+                         "isEmpty" );
+        return completions;
+    }
+
+    private void getMethods( final boolean isNested,
+                             final Callback<Map<String, String>> callback,
+                             final String factName) {
+        getDataModelOracle().getMethodInfos( factName,
+                                             0,
+                                             new Callback<List<MethodInfo>>() {
+                                                 @Override
+                                                 public void callback( final List<MethodInfo> methodInfos ) {
+                                                     fillMethods(methodInfos, factName, isNested, callback);
+                                                 }
+                                             } );
+    }
+
+    private void fillMethods(final List<MethodInfo> methodInfos, String factName, final boolean isNested, final Callback<Map<String, String>> callback) {
+        getDataModelOracle().getFieldCompletions( factName,
+                                                  new Callback<ModelField[]>() {
+
+                                                      @Override
+                                                      public void callback( final ModelField[] fields ) {
+                                                          final Map<String, String> completions = new LinkedHashMap<String, String>();
+
+                                                          for ( ModelField field : fields ) {
+
+                                                              //You can't use "this" in a nested accessor
+                                                              final String fieldName = field.getName();
+                                                              if ( !isNested || !fieldName.equals( DataType.TYPE_THIS ) ) {
+
+                                                                  boolean changed = false;
+                                                                  for ( Iterator<MethodInfo> i = methodInfos.iterator(); i.hasNext(); ) {
+                                                                      final MethodInfo methodInfo = i.next();
+                                                                      final String methodName = methodInfo.getName();
+                                                                      if ( methodName.startsWith( fieldName ) ) {
+                                                                          completions.put( methodName,
+                                                                                           METHOD_VALUE_PREFIX + "." + methodName );
+                                                                          i.remove();
+                                                                          changed = true;
+                                                                      }
+                                                                  }
+                                                                  if ( !changed ) {
+                                                                      completions.put( fieldName,
+                                                                                       FIElD_VALUE_PREFIX + "." + fieldName );
+                                                                  }
+                                                              }
+                                                          }
+                                                          callback.callback( completions );
+                                                      }
+                                                  } );
     }
 
     private RuleModel getRuleModel() {
@@ -562,6 +589,8 @@ public class ExpressionBuilder extends RuleModellerWidget
         popup.addRow( vn );
         popup.show();
     }
+
+
 
     private class SmallLabelClickHandler
             implements

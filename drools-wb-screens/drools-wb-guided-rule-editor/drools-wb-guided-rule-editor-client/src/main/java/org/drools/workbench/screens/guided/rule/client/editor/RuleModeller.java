@@ -38,8 +38,9 @@ import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeEvent;
+import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeHandler;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.kie.workbench.common.services.security.UserCapabilities;
@@ -397,7 +398,7 @@ public class RuleModeller extends DirtyableComposite
                                                                  eventBus,
                                                                  action,
                                                                  readOnly );
-            w.addOnModifiedCommand( this.onWidgetModifiedCommand );
+            w.addOnModifiedCommand(this.onWidgetModifiedCommand);
 
             widget.add( wrapRHSWidget( model,
                                        i,
@@ -436,11 +437,8 @@ public class RuleModeller extends DirtyableComposite
                                                     "100%" );
 
             if ( !w.isFactTypeKnown() ) {
-                final Image image = GuidedRuleEditorImages508.INSTANCE.Error();
-                image.setTitle( GuidedRuleEditorResources.CONSTANTS.InvalidPatternSectionDisabled() );
-                this.addLineIcon( currentLayoutRow,
-                                  0,
-                                  image );
+                addInvalidPatternIcon();
+                addFactTypeKnownValueChangeHandler(w, currentLayoutRow);
             }
 
             final int index = i;
@@ -511,41 +509,41 @@ public class RuleModeller extends DirtyableComposite
 
             IPattern pattern = model.lhs[ i ];
 
-            RuleModellerWidget w = getWidgetFactory().getWidget( this,
+            final RuleModellerWidget widget = getWidgetFactory().getWidget( this,
                                                                  eventBus,
                                                                  pattern,
                                                                  readOnly );
-            w.addOnModifiedCommand( this.onWidgetModifiedCommand );
+            widget.addOnModifiedCommand(this.onWidgetModifiedCommand);
 
-            vert.add( wrapLHSWidget( model,
-                                     i,
-                                     w ) );
-            vert.add( spacerWidget() );
+            vert.add(wrapLHSWidget(model,
+                    i,
+                    widget));
+            vert.add(spacerWidget());
 
             layout.setWidget( currentLayoutRow,
                               0,
                               new DirtyableHorizontalPane() );
-            layout.setWidget( currentLayoutRow,
-                              1,
-                              new DirtyableHorizontalPane() );
+            layout.setWidget(currentLayoutRow,
+                    1,
+                    new DirtyableHorizontalPane());
 
-            layout.setWidget( currentLayoutRow,
-                              2,
-                              this.wrapLineNumber( i + 1,
-                                                   true ) );
-            layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
-                                                                  2,
-                                                                  HasHorizontalAlignment.ALIGN_CENTER );
-            layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
-                                                                2,
-                                                                HasVerticalAlignment.ALIGN_MIDDLE );
+            layout.setWidget(currentLayoutRow,
+                    2,
+                    this.wrapLineNumber(i + 1,
+                            true));
+            layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow,
+                    2,
+                    HasHorizontalAlignment.ALIGN_CENTER);
+            layout.getFlexCellFormatter().setVerticalAlignment(currentLayoutRow,
+                    2,
+                    HasVerticalAlignment.ALIGN_MIDDLE);
 
-            layout.setWidget( currentLayoutRow,
-                              3,
-                              vert );
-            layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
-                                                                  3,
-                                                                  HasHorizontalAlignment.ALIGN_LEFT );
+            layout.setWidget(currentLayoutRow,
+                    3,
+                    vert);
+            layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow,
+                    3,
+                    HasHorizontalAlignment.ALIGN_LEFT);
             layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
                                                                 3,
                                                                 HasVerticalAlignment.ALIGN_TOP );
@@ -553,16 +551,13 @@ public class RuleModeller extends DirtyableComposite
                                                     3,
                                                     "100%" );
 
-            if ( !w.isFactTypeKnown() ) {
-                final Image image = GuidedRuleEditorImages508.INSTANCE.Error();
-                image.setTitle( GuidedRuleEditorResources.CONSTANTS.InvalidPatternSectionDisabled() );
-                this.addLineIcon( currentLayoutRow,
-                                  0,
-                                  image );
+            if ( !widget.isFactTypeKnown() ) {
+                addInvalidPatternIcon();
+                addFactTypeKnownValueChangeHandler(widget, currentLayoutRow);
             }
 
             final int index = i;
-            if ( !( this.lockLHS() || w.isReadOnly() ) ) {
+            if ( !( this.lockLHS() || widget.isReadOnly() ) ) {
                 this.addActionsButtonsToLayout( GuidedRuleEditorResources.CONSTANTS.AddAConditionBelow(),
                                                 new ClickHandler() {
 
@@ -587,10 +582,32 @@ public class RuleModeller extends DirtyableComposite
                                               );
             }
 
-            this.lhsWidgets.add( w );
+            this.lhsWidgets.add( widget );
             currentLayoutRow++;
         }
 
+    }
+
+    private void addFactTypeKnownValueChangeHandler(final RuleModellerWidget widget, final int layoutRow) {
+        widget.addFactTypeKnownValueChangeHandler(new FactTypeKnownValueChangeHandler() {
+            @Override
+            public void onValueChanged(FactTypeKnownValueChangeEvent factTypeKnownValueChangeEvent) {
+                    if (!widget.isFactTypeKnown()) {
+                    addInvalidPatternIcon();
+                } else {
+                    clearLineIcons(layoutRow,
+                            0);
+                }
+            }
+        });
+    }
+
+    private void addInvalidPatternIcon() {
+        final Image image = GuidedRuleEditorImages508.INSTANCE.Error();
+        image.setTitle( GuidedRuleEditorResources.CONSTANTS.InvalidPatternSectionDisabled() );
+        this.addLineIcon( currentLayoutRow,
+                          0,
+                          image );
     }
 
     private HTML spacerWidget() {

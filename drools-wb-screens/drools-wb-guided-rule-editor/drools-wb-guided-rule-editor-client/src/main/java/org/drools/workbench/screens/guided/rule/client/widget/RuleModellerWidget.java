@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
+import org.drools.workbench.screens.guided.rule.client.editor.ExpressionChangeEvent;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.uberfire.client.common.DirtyableComposite;
 
@@ -30,7 +32,7 @@ import org.uberfire.client.common.DirtyableComposite;
 public abstract class RuleModellerWidget
         extends DirtyableComposite {
 
-    private RuleModeller modeller;
+    protected RuleModeller modeller;
 
     private EventBus eventBus;
 
@@ -60,6 +62,11 @@ public abstract class RuleModellerWidget
      * @return
      */
     public abstract boolean isFactTypeKnown();
+
+    public HandlerRegistration addFactTypeKnownValueChangeHandler(FactTypeKnownValueChangeHandler changeHandler){
+        return addHandler( changeHandler,
+                FactTypeKnownValueChangeEvent.getType() );
+    }
 
     public RuleModeller getModeller() {
         return modeller;

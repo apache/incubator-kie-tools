@@ -53,7 +53,8 @@ import org.uberfire.client.common.SmallLabel;
 public class ActionCallMethodWidget extends RuleModellerWidget {
 
     final private ActionCallMethod model;
-    final private DirtyableFlexTable layout;
+    final private DirtyableFlexTable layout = new DirtyableFlexTable();
+    private final AsyncPackageDataModelOracle oracle;
     private boolean isBoundFact = false;
 
     private String[] fieldCompletionTexts;
@@ -62,7 +63,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     private boolean readOnly;
 
-    private boolean isFactTypeKnown;
+    private boolean isFactTypeKnown = false;
+    private static final String READ_ONLY_STYLE_NAME = "editor-disabled-widget";
 
     public ActionCallMethodWidget( final RuleModeller mod,
                                    final EventBus eventBus,
@@ -70,62 +72,62 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                                    final Boolean readOnly ) {
         super( mod,
                eventBus );
-        this.model = actionCallMethod;
-        this.layout = new DirtyableFlexTable();
+        model = actionCallMethod;
+        oracle = this.getModeller().getDataModelOracle();
 
         layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
-        final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
-        if ( oracle.isGlobalVariable( actionCallMethod.getVariable() ) ) {
-            getMethodInfosForGlobalVariable(actionCallMethod, oracle);
-        } else {
-            getMethodInfos(mod, oracle);
-        }
+        getMethodInfos();
+        checkIfReadOnly(readOnly);
 
-        this.isFactTypeKnown = oracle.isFactTypeRecognized( this.variableClass );
-        if ( readOnly == null ) {
+        initWidget( layout );
+    }
+
+    private void getMethodInfos() {
+        if ( oracle.isGlobalVariable( model.getVariable() ) ) {
+            getMethodInfosForGlobalVariable();
+        } else {
+            getMethodInfosForBasicFactType();
+        }
+    }
+
+    private void checkIfReadOnly(Boolean readOnly) {
+        if (readOnly == null) {
             this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
 
-        if ( this.readOnly ) {
-            layout.addStyleName( "editor-disabled-widget" );
+        if (this.readOnly) {
+            layout.addStyleName(READ_ONLY_STYLE_NAME);
+        } else {
+            layout.removeStyleName(READ_ONLY_STYLE_NAME);
         }
 
         doLayout();
-        initWidget( this.layout );
     }
 
-    private void getMethodInfos(RuleModeller mod, AsyncPackageDataModelOracle oracle) {
+    private void getMethodInfosForBasicFactType() {
 
-        String factType = null;
-
-        factType = getFactTypeLHS(mod, factType);
+        String factType = getFactTypeLHS();
 
         if (factType == null) {
-
-            factType = getFactTypeFromRHS(mod, factType);
-
+            factType = getFactTypeFromRHS(factType);
         }
 
-
         if (factType == null) {
-            factType = getFactTypeFromLHSField(mod, oracle);
+            factType = getFactTypeFromLHSField();
         }
 
         if (factType != null) {
-            setMethodInfos(oracle, factType);
+            setMethodInfos(factType);
         } else {
-            /**
-             * Fact type is unknown. Best to make this readonly.
-             */
-            this.readOnly = true;
+            checkIfReadOnly(null);
         }
     }
 
-    private String getFactTypeFromLHSField(RuleModeller mod, final AsyncPackageDataModelOracle oracle) {
-        SingleFieldConstraint lhsBoundField = mod.getModel().getLHSBoundField(model.getVariable());
+    private String getFactTypeFromLHSField() {
+        SingleFieldConstraint lhsBoundField = modeller.getModel().getLHSBoundField(model.getVariable());
         if (lhsBoundField != null) {
             return oracle.getFieldClassName(lhsBoundField.getFactType(), lhsBoundField.getFieldName());
         } else {
@@ -133,40 +135,47 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         }
     }
 
-    private String getFactTypeFromRHS(RuleModeller mod, String factType) {
-        ActionInsertFact rhsBoundFact = mod.getModel().getRHSBoundFact(model.getVariable());
+    private String getFactTypeFromRHS(String factType) {
+        ActionInsertFact rhsBoundFact = modeller.getModel().getRHSBoundFact(model.getVariable());
         if (rhsBoundFact != null) {
             factType = rhsBoundFact.getFactType();
         }
         return factType;
     }
 
-    private String getFactTypeLHS(RuleModeller mod, String factType) {
-        FactPattern lhsBoundFact = mod.getModel().getLHSBoundFact(model.getVariable());
+    private String getFactTypeLHS() {
+
+        FactPattern lhsBoundFact = modeller.getModel().getLHSBoundFact(model.getVariable());
         if (lhsBoundFact != null) {
-            factType = lhsBoundFact.getFactType();
+            return lhsBoundFact.getFactType();
         }
-        return factType;
+
+        return null;
     }
 
-    private void setMethodInfos(AsyncPackageDataModelOracle oracle, final String factType) {
-
-
-
-
-
-        // TODO: How to get the fields for field variables
-
-
-
-
+    private void setMethodInfos(final String factType) {
         oracle.getMethodInfos(factType,
                                new Callback<List<MethodInfo>>() {
                                    @Override
                                    public void callback( final List<MethodInfo> methodInfos ) {
+
+                                       checkIfFactTypeKnown(methodInfos);
+                                       checkIfReadOnly(null);
+
                                        setMethodInfos(methodInfos, factType);
+
                                    }
                                } );
+    }
+
+    private void checkIfFactTypeKnown(List<MethodInfo> methodInfos) {
+        if (methodInfos != null) {
+            isFactTypeKnown = true;
+        }
+        if (!isFactTypeKnown) {
+            this.isFactTypeKnown = oracle.isFactTypeRecognized(this.variableClass);
+        }
+        fireEvent(new FactTypeKnownValueChangeEvent());
     }
 
     private void setMethodInfos(List<MethodInfo> methodInfos, String factType) {
@@ -182,8 +191,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         this.isBoundFact = true;
     }
 
-    private void getMethodInfosForGlobalVariable(final ActionCallMethod actionCallMethod, final AsyncPackageDataModelOracle oracle) {
-        oracle.getMethodInfosForGlobalVariable( actionCallMethod.getVariable(),
+    private void getMethodInfosForGlobalVariable() {
+        oracle.getMethodInfosForGlobalVariable( model.getVariable(),
                                                 new Callback<List<MethodInfo>>() {
                                                     @Override
                                                     public void callback( final List<MethodInfo> infos ) {
@@ -197,12 +206,12 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                                                                 i++;
                                                             }
 
-                                                            ActionCallMethodWidget.this.variableClass = oracle.getGlobalVariable( actionCallMethod.getVariable() );
+                                                            ActionCallMethodWidget.this.variableClass = oracle.getGlobalVariable( model.getVariable() );
 
                                                         } else {
                                                             ActionCallMethodWidget.this.fieldCompletionTexts = new String[ 0 ];
                                                             ActionCallMethodWidget.this.fieldCompletionValues = new String[ 0 ];
-                                                            ActionCallMethodWidget.this.readOnly = true;
+                                                            checkIfReadOnly(true);
                                                         }
                                                     }
                                                 } );
@@ -249,6 +258,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             if ( !this.readOnly ) {
                 horiz.add( edit );
             }
+
         } else {
             horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + model.getVariable() + "." + model.getMethodName() + "]" ) ); // NON-NLS
         }
