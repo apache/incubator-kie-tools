@@ -36,7 +36,7 @@ public class ConfigIOServiceProducer {
     private AuthorizationManager authorizationManager;
     private AuthenticationManager authenticationManager;
 
-    ConfigIOServiceProducer() {
+    public ConfigIOServiceProducer() {
         final String authType = System.getProperty( "org.uberfire.io.auth", null );
         final String domain = System.getProperty( SecurityConstants.AUTH_DOMAIN_KEY, null );
 

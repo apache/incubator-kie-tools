@@ -1,11 +1,15 @@
 package org.uberfire.security.server.auth.source;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
+import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 
@@ -17,6 +21,7 @@ import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.impl.auth.UserNameCredential;
+import org.uberfire.security.server.auth.source.adapter.RolesAdapter;
 
 import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
 import static org.uberfire.security.server.SecurityConstants.*;
@@ -26,6 +31,8 @@ public class JACCAuthenticationSource implements AuthenticationSource,
 
     public static final String DEFAULT_ROLE_PRINCIPLE_NAME = "Roles";
     private String rolePrincipleName = DEFAULT_ROLE_PRINCIPLE_NAME;
+
+    private ServiceLoader<RolesAdapter> rolesAdapterServiceLoader = ServiceLoader.load(RolesAdapter.class);
 
     @Override
     public void initialize( Map<String, ?> options ) {
@@ -66,15 +73,15 @@ public class JACCAuthenticationSource implements AuthenticationSource,
 
     @Override
     public List<Role> loadRoles( Principal principal ) {
-        List<Role> roles = null;
+        List<Role> roles = new ArrayList<Role>();
         try {
-            Subject subject = (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );
+            Subject subject = getSubjectFromContainer();
 
             if ( subject != null ) {
                 Set<java.security.Principal> principals = subject.getPrincipals();
 
                 if ( principals != null ) {
-                    roles = new ArrayList<Role>();
+
                     for ( java.security.Principal p : principals ) {
                         if ( p instanceof Group && rolePrincipleName.equalsIgnoreCase( p.getName() ) ) {
                             Enumeration<? extends java.security.Principal> groups = ( (Group) p ).members();
@@ -87,13 +94,27 @@ public class JACCAuthenticationSource implements AuthenticationSource,
                             break;
 
                         }
-
+                    }
+                }
+            } else {
+                // use adapters
+                for (RolesAdapter adapter : rolesAdapterServiceLoader) {
+                    List<Role> userRoles = adapter.getRoles(principal.getName());
+                    if (userRoles != null) {
+                        roles.addAll(userRoles);
                     }
                 }
             }
         } catch ( Exception e ) {
-            throw new RuntimeException( e );
         }
         return roles;
+    }
+
+    protected Subject getSubjectFromContainer() {
+        try {
+            return (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

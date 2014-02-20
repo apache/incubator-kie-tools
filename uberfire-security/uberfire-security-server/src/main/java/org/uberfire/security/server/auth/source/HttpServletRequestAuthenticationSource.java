@@ -27,13 +27,18 @@ public class HttpServletRequestAuthenticationSource extends JACCAuthenticationSo
     public boolean authenticate( final Credential credential, final SecurityContext securityContext ) {
         try {
             final UserNameCredential userNameCredential = checkInstanceOf( "credential", credential, UserNameCredential.class );
-            Subject subject = (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );
+            final HttpServletRequest request = ((HttpSecurityContext) securityContext).getRequest();
+
+            if (request.getUserPrincipal() != null) {
+                return true;
+            }
+            Subject subject =  getSubjectFromContainer();
             if ( subject != null ) {
                 return super.authenticate( credential, securityContext );
             }
 
             if ( userNameCredential instanceof UsernamePasswordCredential ) {
-                final HttpServletRequest request = ((HttpSecurityContext) securityContext).getRequest();
+
                 try {
                     request.login( userNameCredential.getUserName(), ( (UsernamePasswordCredential) userNameCredential ).getPassword().toString() );
                 } catch ( final ServletException ex ) {
@@ -45,4 +50,6 @@ public class HttpServletRequestAuthenticationSource extends JACCAuthenticationSo
             return false;
         }
     }
+
+
 }

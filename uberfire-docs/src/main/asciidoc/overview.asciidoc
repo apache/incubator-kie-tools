@@ -68,14 +68,20 @@ footnote:[A few of these concepts actually come from Errai and GWT,
 but the distinction isn't important when getting started with
 UberFire.] so they permeate all parts of the UberFire framework:
 
-* Perspectives: tie panels together
-* Screens
-* Widgets
-* Places and PlaceRequests
-* Contexts
-* Panels
-* Parts
-* Widgets
+* Workbench: Top level container for toolbars, menu bars and perspectives.
+* Perspectives: Child of the Workbench. Group and layout panels in a composite container.
+* Panels: Child of a perspective and a container for Parts. Different types of panel can have different behaviours, for example (as provided by default):
+** Single (active) part rendered, selection of other parts using tabs. Supports drag and drop repositioning of parts.
+** Single (active) part rendered, selection of other parts from a drop-down listbox. Supports drag and drop repositioning of parts.
+** Single part; fixed content. Drag and drop support disabled.
+* Parts: Child of a Panel. A Part is the finest grained logical entity within the Workbench. A Part is represented by a Place and can be a Screen or an Editor.
+* Place: Everything within the Uberfire framework is considered to be a Place; and can be launched programmatically. All places should have a unique identifier within the Workbench.
+* PlaceRequest: A request for the Workbench to goto a Place. PlaceRequests can represent a perspective, popup, screen or editor.
+* Path: A Path is a location within any Virtual File System configured within UberFire. Editors can be defined to respond to different Paths.
+* Screens: A screen is not associated to a Path pattern and can be launched by requesting the corresponding Place. Screens can be used for static content; or for resources beyond Uberfire's VFS mechanisms. 
+* Editors: An editor is associated to a Path pattern. Requests for Places that correspond to a Path will launch corresponding editor. Editors can be used for resources within Uberfire's VFS mechanisms.
+* Widgets: Uberfire is not a widget library and can be used with different third party libraries; however some widgets are provided for core Workbench features. 
+* Contexts: [TODO]
 * Menus: items, groups, factories, commands, positions
 * Tool bars: items, icons, types
 * Resources
@@ -83,42 +89,32 @@ UberFire.] so they permeate all parts of the UberFire framework:
 * Identity
 * Marshalling
 * Workbench Events (TODO: why are these defined globally rather than in the uberfire-workbench module?)
-**ApplicationReadyEvent
-**BeforeClosePlaceEvent
-**ClosePlaceEvent
-**ContextUpdateEvent
-**DropPlaceEvent
-**MaximizePlaceEvent
-**MinimizePlaceEvent
-**NewPerspectiveEvent
-**NewWorkbenchScreenEvent
-**NotificationEvent
-**OrganizationalUnitChangeEvent
-**PanelFocusEvent
-**PathChangeEvent
-**PerspectiveChange
-**PlaceGainFocusEvent
-**PlaceLostFocusEvent
-**RepositoryChangeEvent
-**ResourceAdded
-**ResourceAddedEvent
-**ResourceBatchChangesEvent
-**ResourceChange
-**ResourceChangeType
-**ResourceCopied
-**ResourceCopiedEvent
-**ResourceDeleted
-**ResourceDeletedEvent
-**ResourceEvent
-**ResourceOpenedEvent
-**ResourceRenamed
-**ResourceRenamedEvent
-**ResourceUpdated
-**ResourceUpdatedEvent
-**RestorePlaceEvent
-**SavePlaceEvent
-**SelectPlaceEvent
+** ApplicationReadyEvent: Signal when certain resources have been injected into the GWT Host Page and other bootstrap processes complete. Raised by Uberfire. 
+** BeforeClosePlaceEvent: Signal when a Part is about to be closed; normally in response to the user electing to interactively close a Part. Screens and Editors can veto the closure (for example if they contain unsaved content). Raised by Uberfire. 
+** ClosePlaceEvent: Signal when a Part is closed. This event signals the removal of a Part from a Panel. Raised by Uberfire.
+** ContextUpdateEvent: [TODO]
+** DropPlaceEvent: Part of the drag and drop support. Signals a Part has been dragged to and dropped on a target Panel. Raised by Uberfire. 
+** MaximizePlaceEvent: Signals a Part has been "maximized" to consume the whole Workbench client region (Note: Work in progress). Raised by Uberfire.
+** MinimizePlaceEvent: Signals a Part has been "minimized" to a status bar within the Workbench (Note: Work in progress). Raised by Uberfire.
+** NewPerspectiveEvent: [TODO]
+** NewWorkbenchScreenEvent: [TODO]
+** NotificationEvent: Signal a informative notification (e.g. "File saved" etc) that appears within the Workbench as a popup message. Raised by whoever needs to inform users of a notication.
+** PanelFocusEvent: Signal a Panel has received the input focus. Raised by Uberfire.
+** PerspectiveChange: Signal a change in active Perspective. Raised by Uberfire.
+** PlaceGainFocusEvent: Signal a Place has gained the input focus. Raised by Uberfire.
+** PlaceLostFocusEvent: Signal a Place has lost the input focus. Raised by Uberfire.
+** SavePlaceEvent: Signal an Editor can have it's state saved. Raised by developers using Uberfire from Widgets outside of the Editor itself (e.g. a Workbench Menubar entry). 
+** SelectPlaceEvent: Signal a Place has been selected. Raised by Uberfire.
+** RestorePlaceEvent: [TODO]
 
+* VFS Events (TODO: why are these defined globally rather than in the uberfire-workbench module?)
+** ResourceAddedEvent: Signal a resource has been added to a VFS. Raised by VFS.
+** ResourceBatchChangesEvent: Signal a batch change to various resources within a VFS. Raised by VFS.
+** ResourceCopiedEvent: Signal a resource has been copied within a VFS. Raised by VFS.
+** ResourceDeletedEvent: Signal a resource has been deleted from a VFS. Raised by VFS.
+** ResourceOpenedEvent: Signal a resource has been opened (Note: Uberfire does not make raise or observe the event itself) 
+** ResourceRenamedEvent: Signal a resource has been renamed within a VFS. Raised by VFS.
+** ResourceUpdatedEvent: Signal a resource has been modified within a VFS. Raised by VFS.
 
 UberFire Backend API Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

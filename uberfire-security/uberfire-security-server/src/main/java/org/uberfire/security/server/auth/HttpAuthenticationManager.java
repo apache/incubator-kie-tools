@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.inject.Alternative;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.Role;
@@ -217,6 +218,11 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
         final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
         httpContext.getRequest().getSession().invalidate();
+        try {
+            httpContext.getRequest().logout();
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean useRedirect( String originalRequest ) {
