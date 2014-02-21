@@ -17,11 +17,16 @@
 package org.kie.workbench.common.screens.datamodeller.events;
 
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 
+@Portable
 public class DataObjectFieldCreatedEvent extends DataModelerEvent {
+
+    public DataObjectFieldCreatedEvent() {
+    }
 
     public DataObjectFieldCreatedEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject, ObjectPropertyTO currentField) {
         super(source, currentModel, currentDataObject);

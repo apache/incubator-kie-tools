@@ -16,16 +16,18 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 
 @Portable
-public class DataModelStatusChangeEvent extends DataModelerPropertyChangeEvent {
+public class DataModelSaved extends DataModelerEvent {
 
-    public DataModelStatusChangeEvent() {
+    public DataModelSaved() {
     }
 
-    public DataModelStatusChangeEvent(String source, DataModelTO currentModel, boolean oldDirtyStatus, boolean newDirtyStatus) {
-        super(source, currentModel, null, "dirtyStatus", oldDirtyStatus, newDirtyStatus);
+    public DataModelSaved(String source, DataModelTO currentModel) {
+        super(source, currentModel, null);
     }
 }

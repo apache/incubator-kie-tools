@@ -165,11 +165,7 @@ public class DataModelBrowser extends Composite {
         final Column<DataObjectTO, ImageResource> deleteDataObjectColumnImg = new Column<DataObjectTO, ImageResource>(decorator) {
             @Override
             public ImageResource getValue( final DataObjectTO dataObject ) {
-                if ( !dataObject.isExternallyModified() ) {
-                    return ImagesResources.INSTANCE.Delete();
-                } else {
-                    return null;
-                }
+                return ImagesResources.INSTANCE.Delete();
             }
         };
 

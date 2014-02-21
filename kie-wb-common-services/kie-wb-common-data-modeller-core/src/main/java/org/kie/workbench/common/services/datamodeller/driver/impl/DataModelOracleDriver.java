@@ -236,7 +236,7 @@ public class DataModelOracleDriver implements ModelDriver {
             Class _class = classLoader.loadClass(factType);
             return new ClassMetadata(_class.getModifiers(), _class.isMemberClass(), _class.isLocalClass(), _class.isAnonymousClass());
         } catch (ClassNotFoundException e) {
-            logger.error("It was not possible to read class modifiers for class: " + factType);
+            logger.error("It was not possible to read class metadata for class: " + factType);
         }
         return null;
     }

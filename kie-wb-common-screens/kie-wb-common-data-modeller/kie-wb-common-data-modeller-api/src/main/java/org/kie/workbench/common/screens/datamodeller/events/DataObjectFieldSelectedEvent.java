@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 
+@Portable
 public class DataObjectFieldSelectedEvent extends DataModelerEvent {
 
     public DataObjectFieldSelectedEvent() {

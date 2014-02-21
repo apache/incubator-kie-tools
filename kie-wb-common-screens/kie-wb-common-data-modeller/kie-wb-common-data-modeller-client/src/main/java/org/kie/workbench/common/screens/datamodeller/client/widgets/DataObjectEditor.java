@@ -243,9 +243,7 @@ public class DataObjectEditor extends Composite {
                 classReactiveSelector.setValue( Boolean.TRUE );
             }
 
-            if ( ! dataObject.isExternallyModified() ) {
-                setReadonly( false );
-            }
+            setReadonly( false );
         }
     }
 

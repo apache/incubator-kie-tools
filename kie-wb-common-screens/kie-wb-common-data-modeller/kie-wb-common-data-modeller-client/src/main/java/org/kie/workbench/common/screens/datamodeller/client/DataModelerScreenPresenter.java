@@ -31,10 +31,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.NewDataObjectPopup;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelReload;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -292,6 +289,8 @@ public class DataModelerScreenPresenter {
                             oldDirtyStatus,
                             getContext().isDirty()));
 
+                    dataModelerEvent.fire(new DataModelSaved(null, getDataModel()));
+
                 }
             }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel(getDataModel(), currentProject, overwrite);
     }
@@ -446,7 +445,7 @@ public class DataModelerScreenPresenter {
                     String className = DataModelerUtils.calculateExpectedClassName(currentProject.getRootPath(), resourceEvent.getPath());
                     if (className != null) {
                         DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName(className);
-                        if (dataObjectTO == null || !dataObjectTO.isPersistent()) {
+                        if (dataObjectTO == null || dataObjectTO.isVolatile()) {
                             notifyChange = true;
                         }
                     }

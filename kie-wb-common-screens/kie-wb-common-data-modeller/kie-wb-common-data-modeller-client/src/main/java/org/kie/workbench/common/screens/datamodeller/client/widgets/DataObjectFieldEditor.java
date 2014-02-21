@@ -287,9 +287,7 @@ public class DataObjectFieldEditor extends Composite {
                 positionSelector.setSelectedValue(position);
             }
 
-            if ( ! dataObject.isExternallyModified() ) {
-                setReadonly( false );
-            }
+            setReadonly( false );
         }
     }
 

@@ -16,10 +16,15 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 
+@Portable
 public class DataObjectDeletedEvent extends DataModelerEvent {
+
+    public DataObjectDeletedEvent() {
+    }
 
     public DataObjectDeletedEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject) {
         super(source, currentModel, currentDataObject);

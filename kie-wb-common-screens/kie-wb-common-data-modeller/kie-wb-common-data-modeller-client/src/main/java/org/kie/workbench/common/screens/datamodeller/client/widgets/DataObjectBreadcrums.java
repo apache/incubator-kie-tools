@@ -23,10 +23,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
@@ -210,6 +207,11 @@ public class DataObjectBreadcrums extends Breadcrumbs {
         }
     }
 
+    private void onDataModelSaved(@Observes DataModelSaved event) {
+        if (event.isFrom(getDataModel())) {
+            rebuild();
+        }
+    }
     // Event notifications
     private void notifyObjectSelected(DataObjectTO dataObject) {
         dataModelerEvent.fire(new DataObjectSelectedEvent(DataModelerEvent.DATA_MODEL_BREAD_CRUMB, getDataModel(), dataObject));

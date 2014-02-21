@@ -681,10 +681,7 @@ public class DataObjectBrowser extends Composite {
             DataObjectTO dataObject = event.getCurrentDataObject();
             resetInput();
             setDataObject(dataObject);
-            setReadonly(true);
-            if (dataObject != null && !dataObject.isExternallyModified()) {
-                setReadonly(false);
-            }
+            setReadonly(false);
         }
     }
 

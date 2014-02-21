@@ -106,6 +106,10 @@ public class DataModelTO {
         for (DataObjectTO dataObject : getDataObjects()) {
             fingerPrint = fingerPrints.get(dataObject.getClassName());
             if (fingerPrint != null) {
+                if (dataObject.isExternallyModified() && !fingerPrint.equals(dataObject.getFingerPrint())) {
+                    dataObject.setOriginalClassName(dataObject.getClassName());
+                    dataObject.setStatus(DataObjectTO.PERSISTENT);
+                }
                 dataObject.setFingerPrint(fingerPrint);
             }
         }

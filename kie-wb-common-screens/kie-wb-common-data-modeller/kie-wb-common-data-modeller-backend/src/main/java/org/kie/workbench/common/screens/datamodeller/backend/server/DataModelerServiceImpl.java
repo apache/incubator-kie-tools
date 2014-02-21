@@ -205,8 +205,6 @@ public class DataModelerServiceImpl implements DataModelerService {
                 mergeWithExistingModel( dataModel, project );
             }
 
-            filterReadonlyObjects(dataModel);
-
             //convert to domain model
             DataModel dataModelDomain = DataModelerServiceHelper.getInstance().to2Domain( dataModel );
 
@@ -297,7 +295,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         for ( DataObjectTO reloadedDataObject : reloadedModel.getDataObjects() ) {
-            if ( !currentObjects.containsKey( reloadedDataObject.getClassName() ) && !deletedObjects.containsKey( reloadedDataObject.getClassName() ) && !reloadedDataObject.isExternallyModified() ) {
+            if ( !currentObjects.containsKey( reloadedDataObject.getClassName() ) && !deletedObjects.containsKey( reloadedDataObject.getClassName() ) ) {
                 dataModel.getDeletedDataObjects().add( reloadedDataObject );
             }
         }
@@ -452,7 +450,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         //process package or class name changes for persistent objects.
         for ( DataObjectTO dataObject : currentObjects ) {
-            if ( dataObject.isPersistent() && dataObject.classNameChanged() ) {
+            if ( (dataObject.isPersistent() || dataObject.isExternallyModified()) && dataObject.classNameChanged() ) {
                 //if the className changes the old file needs to be removed
                 filePath = calculateFilePath( dataObject.getOriginalClassName(), javaPath );
 
@@ -488,6 +486,7 @@ public class DataModelerServiceImpl implements DataModelerService {
      * Remove objects marked as readonly form the model, they should never be generated or deleted.
      * @param dataModel
      */
+    /*
     private void filterReadonlyObjects( final DataModelTO dataModel ) {
         List<DataObjectTO> deletableObjects = new ArrayList<DataObjectTO>();
 
@@ -502,6 +501,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             dataModel.getDeletedDataObjects().remove( deletableObject );
         }
     }
+    */
 
     private void cleanupFiles( final List<Path> deleteableFiles,
                                final CommentedOption option ) {

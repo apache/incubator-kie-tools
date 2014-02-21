@@ -163,11 +163,11 @@ public class DataObjectTO {
     }
 
     public boolean classNameChanged() {
-        return isPersistent() && !getClassName().equals(getOriginalClassName());
+        return !isVolatile() && !getClassName().equals(getOriginalClassName());
     }
 
     public boolean packageNameChanged() {
-        if (isPersistent()) {
+        if (!isVolatile()) {
             //extract package name.
             int index = getOriginalClassName().lastIndexOf(".");
             String originalPackageName = "";
