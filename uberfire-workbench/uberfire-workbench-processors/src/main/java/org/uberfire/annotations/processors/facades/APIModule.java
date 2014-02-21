@@ -54,7 +54,7 @@ public class APIModule {
             onContextAttach = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnContextAttach" );
 
         } catch ( ClassNotFoundException e ) {
-            logger.error( e.getMessage() );
+            throw new RuntimeException( e );
         }
     }
 

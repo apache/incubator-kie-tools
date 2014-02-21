@@ -13,8 +13,6 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
  */
 public class BackendModule {
 
-    private static final Logger logger = LoggerFactory.getLogger( BackendModule.class );
-
     private static Class<? extends Annotation> path;
 
     private BackendModule(){};
@@ -24,7 +22,7 @@ public class BackendModule {
             path = (Class<? extends Annotation>) Class.forName( "org.uberfire.backend.vfs.Path" );
 
         } catch ( ClassNotFoundException e ) {
-            logger.error( e.getMessage() );
+            throw new RuntimeException( e );
         }
     }
 

@@ -18,9 +18,6 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
  */
 public class ClientAPIModule {
 
-
-    private static final Logger logger = LoggerFactory.getLogger( ClientAPIModule.class );
-
     public static final String IDENTIFIER = "identifier";
     public static final String IS_DEFAULT = "isDefault";
     private static Class<? extends Annotation> workbenchSplashScreen;
@@ -66,7 +63,7 @@ public class ClientAPIModule {
             intercept = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.Intercept" );
 
         } catch ( ClassNotFoundException e ) {
-            logger.error(e.getMessage());
+            throw new RuntimeException( e );
         }
     }
 
