@@ -324,6 +324,21 @@ public class AuditLogEntryCellHelper {
                     sb );
         } else {
             sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateColumn(details.getColumnHeader()) ) );
+
+            SafeHtmlBuilder sbFields = null;
+            // Show changed fields too.
+            if (diffs != null && !diffs.isEmpty()) {
+                sbFields = new SafeHtmlBuilder();
+                for (BaseColumnFieldDiff diff : diffs ) {
+                    String changedFieldName = diff.getFieldName();
+                    if (changedFieldName.equals(AttributeCol52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sbFields);
+                    else if (changedFieldName.equals(AttributeCol52.FIELD_DEFAULT_VALUE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DefaultValue(), diff.getOldValue(), diff.getValue(), sbFields);
+                }
+            }
+
+            if (sbFields != null) {
+                sb.append( TEMPLATE.updatedFields( sbFields.toSafeHtml(), labelClass ));
+            }
         }
     }
 
@@ -382,6 +397,8 @@ public class AuditLogEntryCellHelper {
                 else if (changedFieldName.equals(DTColumnConfig52.FIELD_HIDE_COLUMN)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.HideThisColumn(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(Pattern52.FIELD_ENTRY_POINT_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.DTLabelFromEntryPoint(), diff.getOldValue(), diff.getValue(), sbFields);
                 else if (changedFieldName.equals(Pattern52.FIELD_FACT_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.FactType(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(Pattern52.FIELD_BOUND_NAME)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Fact(), diff.getOldValue(), diff.getValue(), sbFields);
+                else if (changedFieldName.equals(ConditionCol52.FIELD_FIELD_TYPE)) buildColumnUpdateFields(GuidedDecisionTableConstants.INSTANCE.Binding(), diff.getOldValue(), diff.getValue(), sbFields);
             }
         }
 
@@ -560,7 +577,7 @@ public class AuditLogEntryCellHelper {
                                            final MetadataColumnDetails originalDetails,
                                            List<BaseColumnFieldDiff> diffs,
                                            final SafeHtmlBuilder sb ) {
-        sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction(details.getColumnHeader())) );
+        sb.append( TEMPLATE.commentHeader(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateColumn(details.getColumnHeader())) );
 
         SafeHtmlBuilder sbFields = null;
         // Show changed fields too.

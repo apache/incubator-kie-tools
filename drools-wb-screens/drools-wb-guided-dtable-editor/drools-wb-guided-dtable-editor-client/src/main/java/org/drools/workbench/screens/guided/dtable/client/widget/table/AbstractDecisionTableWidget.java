@@ -1264,6 +1264,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
+        // Calculate the diffs between original and edit pattern
+        if (origPattern != null) patternDiff = origPattern.diff( editPattern );
+
         //Add pattern to model, if applicable
         if ( !existPattern ) {
             model.getConditions().add( editPattern );
@@ -1272,9 +1275,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
             BoundFactsChangedEvent pce = new BoundFactsChangedEvent( rm.getLHSBoundFacts() );
             eventBus.fireEvent( pce );
         } else {
-            // Calculate the diffs between original and edit pattern
-            patternDiff = origPattern.diff( editPattern );
-
             // Update the original pattern properties with new values.
             origPattern.update( editPattern );
         }
@@ -1321,11 +1321,18 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
             deleteColumn( origColumnIndex,
                           true );
-
+            
             //Log change to column definition
+            List<BaseColumnFieldDiff> diffs = origColumn.diff( editColumn );
+            if ( patternDiff != null && !patternDiff.isEmpty() ) {
+                if ( diffs == null ) {
+                    diffs = new ArrayList<BaseColumnFieldDiff>( patternDiff.size() );
+                }
+                diffs.addAll( patternDiff );
+            }
             model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
                                                                     origColumn,
-                                                                    editColumn ) );
+                                                                    editColumn, diffs ) );
 
         } else {
 
