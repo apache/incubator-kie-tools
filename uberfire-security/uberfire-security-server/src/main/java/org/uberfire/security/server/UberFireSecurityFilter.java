@@ -174,7 +174,7 @@ public class UberFireSecurityFilter implements Filter {
         if ( hasRememerMe( options ) ) {
             final String cookieName = options.get( COOKIE_NAME_KEY );
             if ( cookieName == null || cookieName.trim().isEmpty() ) {
-                throw new RuntimeException( "Can't find cookie id." );
+                throw new RuntimeException( "RemememberMe option is set, but no cookie name is defined in init param " + COOKIE_NAME_KEY );
             }
             return new CookieStorage( cookieName );
         }

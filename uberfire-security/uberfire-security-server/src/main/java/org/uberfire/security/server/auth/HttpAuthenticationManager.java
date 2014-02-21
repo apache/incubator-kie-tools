@@ -193,16 +193,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         final String originalRequest = requestCache.remove( httpContext.getRequest().getSession().getId() );
         if ( originalRequest != null && !originalRequest.isEmpty() && !httpContext.getResponse().isCommitted() ) {
             try {
-                if ( useRedirect( originalRequest ) ) {
-                    httpContext.getResponse().sendRedirect( originalRequest );
-                } else {
-                    // subject must be already set here since we forwarding
-                    SecurityFactory.setSubject( result );
-                    RequestDispatcher rd = httpContext.getRequest().getRequestDispatcher( originalRequest.replaceFirst( httpContext.getRequest().getContextPath(), "" ) );
-                    // forward instead of sendRedirect as sendRedirect will always use GET method which
-                    // means it can change http method if non GET was used for instance POST
-                    rd.forward( httpContext.getRequest(), httpContext.getResponse() );
-                }
+                httpContext.getResponse().sendRedirect( originalRequest );
             } catch ( Exception e ) {
                 throw new RuntimeException( "Unable to redirect.", e );
             }
@@ -225,13 +216,6 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
     }
 
-    private boolean useRedirect( String originalRequest ) {
-        // hack for gwt hosted mode
-        // and form-based auth
-        // TODO perhaps the "hack" should cover the case that forwarding was meant to address?
-        return originalRequest.contains( "gwt.codesvr" ) || originalRequest.contains( SecurityConstants.HTTP_FORM_SECURITY_CHECK_URI );
-    }
-
     @Override
     public String toString() {
         return "HttpAuthenticationManager [authSchemes=" + authSchemes + ", authProviders=" + authProviders
@@ -239,5 +223,4 @@ public class HttpAuthenticationManager implements AuthenticationManager {
                 + ", authStorageProviders=" + authStorageProviders + ", resourceManager=" + resourceManager
                 + ", requestCache=" + requestCache + ", forceURL=" + forceURL + "]";
     }
-
 }
