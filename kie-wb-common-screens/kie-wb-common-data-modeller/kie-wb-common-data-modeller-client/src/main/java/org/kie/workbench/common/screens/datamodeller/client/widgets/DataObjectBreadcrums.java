@@ -157,7 +157,7 @@ public class DataObjectBreadcrums extends Breadcrumbs {
 
         public Widget getWidget() {
             //create the new widget
-            NavLink navLink = new NavLink(DataModelerUtils.getDataObjectUILabel(dataObject, true, Constants.INSTANCE.objectBrowser_readonlyLabel()));
+            NavLink navLink = new NavLink(DataModelerUtils.getDataObjectUILabel(dataObject, true, Constants.INSTANCE.objectBrowser_externallyModifiedLabel()));
             navLink.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {

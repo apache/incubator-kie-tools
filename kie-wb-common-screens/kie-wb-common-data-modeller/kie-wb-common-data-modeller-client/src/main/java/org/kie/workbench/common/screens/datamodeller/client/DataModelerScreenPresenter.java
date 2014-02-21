@@ -664,7 +664,7 @@ public class DataModelerScreenPresenter {
         final StringBuilder message = new StringBuilder();
         boolean isFirst = true;
 
-        message.append(Constants.INSTANCE.modelEditor_notify_readonly_objects_read());
+        message.append(Constants.INSTANCE.modelEditor_notify_externally_modified_objects_read());
         message.append("</BR>");
         message.append("</BR>");
 
