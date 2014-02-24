@@ -24,6 +24,7 @@ public class GitSSHService {
     private AuthorizationManager authorizationManager;
 
     public void setup( final File certDir,
+                       final String host,
                        final int port,
                        final AuthenticationManager authenticationManager,
                        final AuthorizationManager authorizationManager,
@@ -33,6 +34,7 @@ public class GitSSHService {
         this.authorizationManager = authorizationManager;
 
         sshd.getProperties().put( SshServer.IDLE_TIMEOUT, "10000" );
+        sshd.setHost( host );
         sshd.setPort( port );
         if ( !certDir.exists() ) {
             certDir.mkdirs();

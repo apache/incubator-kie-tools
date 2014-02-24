@@ -234,7 +234,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             SSH_ENABLED = SSH_DEFAULT_ENABLED;
         } else {
             try {
-                SSH_ENABLED = Boolean.valueOf( enabled );
+                SSH_ENABLED = Boolean.valueOf( sshEnabled );
             } catch ( Exception ex ) {
                 SSH_ENABLED = SSH_DEFAULT_ENABLED;
             }
@@ -249,7 +249,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             if ( sshHost == null || sshHost.trim().isEmpty() ) {
                 SSH_HOST = DEFAULT_HOST;
             } else {
-                SSH_HOST = host;
+                SSH_HOST = sshHost;
             }
 
             if ( sshCertDir == null || sshCertDir.trim().isEmpty() ) {
@@ -433,7 +433,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
         gitSSHService = new GitSSHService();
 
-        gitSSHService.setup( SSH_FILE_CERT_DIR, SSH_PORT, authenticationManager, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
+        gitSSHService.setup( SSH_FILE_CERT_DIR, SSH_HOST, SSH_PORT, authenticationManager, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
 
         gitSSHService.start();
     }
