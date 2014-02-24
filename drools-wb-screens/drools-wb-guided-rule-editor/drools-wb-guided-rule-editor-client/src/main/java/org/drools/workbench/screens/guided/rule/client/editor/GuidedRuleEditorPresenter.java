@@ -49,6 +49,7 @@ import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
+import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
@@ -123,6 +124,9 @@ public class GuidedRuleEditorPresenter {
 
     @Inject
     private AsyncPackageDataModelOracleFactory oracleFactory;
+
+    @Inject
+    private DefaultFileNameValidator fileNameValidator;
 
     @Inject
     @New
@@ -319,8 +323,10 @@ public class GuidedRuleEditorPresenter {
                             onSave();
                         }
                     } )
-                    .addCopy( path )
-                    .addRename( path )
+                    .addCopy( path,
+                              fileNameValidator )
+                    .addRename( path,
+                                fileNameValidator )
                     .addDelete( path )
                     .addValidate( onValidate() )
                     .build();

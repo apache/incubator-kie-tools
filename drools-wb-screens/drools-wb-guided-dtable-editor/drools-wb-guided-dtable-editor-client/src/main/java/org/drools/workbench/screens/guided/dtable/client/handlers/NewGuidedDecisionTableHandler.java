@@ -29,6 +29,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.wizards.WizardPresenter;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Handler for the creation of new Guided Decision Tables
@@ -78,6 +79,11 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     @Override
     public IsWidget getIcon() {
         return new Image( GuidedDecisionTableResources.INSTANCE.images().typeGuidedDecisionTable() );
+    }
+
+    @Override
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
     }
 
     @Override
@@ -138,8 +144,8 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
         service.call( getSuccessCallback( newResourcePresenter,
                                           postSaveCommand ),
                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
-                                                                                              buildFileName( resourceType,
-                                                                                                             baseFileName ),
+                                                                                              buildFileName( baseFileName,
+                                                                                                             resourceType ),
                                                                                               model,
                                                                                               "" );
     }

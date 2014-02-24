@@ -1,4 +1,4 @@
-package org.drools.workbench.screens.testscenario.client.handler;
+package org.drools.workbench.screens.testscenario.client.handlers;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -7,19 +7,20 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.drools.workbench.screens.testscenario.client.TestScenarioResourceType;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class NewTestScenarioHandler
@@ -45,6 +46,11 @@ public class NewTestScenarioHandler
     }
 
     @Override
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
+    }
+
+    @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
         final Package activePackage = context.getActivePackage();
         this.pathLabel.setPath( ( activePackage == null ? null : activePackage.getPackageTestResourcesPath() ) );
@@ -60,8 +66,8 @@ public class NewTestScenarioHandler
         service.call(
                 getSuccessCallback( presenter ),
                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageTestResourcesPath(),
-                                                                                        buildFileName( resourceType,
-                                                                                                       baseFileName ),
+                                                                                        buildFileName( baseFileName,
+                                                                                                       resourceType ),
                                                                                         new Scenario( pkg.getPackageName(),
                                                                                                       baseFileName ),
                                                                                         "" );

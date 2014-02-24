@@ -34,6 +34,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
@@ -93,6 +94,9 @@ public class ScoreCardXLSEditorPresenter
 
     @Inject
     private ScoreCardXLSResourceType type;
+
+    @Inject
+    private DefaultFileNameValidator fileNameValidator;
 
     @Inject
     @New
@@ -217,8 +221,10 @@ public class ScoreCardXLSEditorPresenter
             menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
             menus = menuBuilder
-                    .addCopy( path )
-                    .addRename( path )
+                    .addCopy( path,
+                              fileNameValidator )
+                    .addRename( path,
+                                fileNameValidator )
                     .addDelete( path )
                     .addValidate( onValidate() )
                     .build();

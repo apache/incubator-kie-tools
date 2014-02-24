@@ -25,6 +25,7 @@ import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
+import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
@@ -96,6 +97,9 @@ public class GlobalsEditorPresenter {
 
     @Inject
     private GlobalResourceType type;
+
+    @Inject
+    private DefaultFileNameValidator fileNameValidator;
 
     @Inject
     @New
@@ -272,8 +276,10 @@ public class GlobalsEditorPresenter {
                             onSave();
                         }
                     } )
-                    .addCopy( path )
-                    .addRename( path )
+                    .addCopy( path,
+                              fileNameValidator )
+                    .addRename( path,
+                                fileNameValidator )
                     .addDelete( path )
                     .addValidate( onValidate() )
                     .build();

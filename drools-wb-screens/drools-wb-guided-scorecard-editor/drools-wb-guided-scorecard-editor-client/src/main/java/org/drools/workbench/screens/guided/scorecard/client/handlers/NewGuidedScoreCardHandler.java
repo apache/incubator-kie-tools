@@ -17,6 +17,7 @@ import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandle
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Handler for the creation of new Guided Score Cards
@@ -44,6 +45,11 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
     }
 
     @Override
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
+    }
+
+    @Override
     public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
@@ -53,8 +59,8 @@ public class NewGuidedScoreCardHandler extends DefaultNewResourceHandler {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         scoreCardService.call( getSuccessCallback( presenter ),
                                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
-                                                                                                       buildFileName( resourceType,
-                                                                                                                      baseFileName ),
+                                                                                                       buildFileName( baseFileName,
+                                                                                                                      resourceType ),
                                                                                                        model,
                                                                                                        "" );
     }

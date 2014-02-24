@@ -24,6 +24,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Handler for the creation of new DRL Text Rules
@@ -66,14 +67,19 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
     }
 
     @Override
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
+    }
+
+    @Override
     public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( ScoreCardXLSEditorConstants.INSTANCE.Uploading() );
 
         final Path path = pkg.getPackageMainResourcesPath();
-        final String fileName = buildFileName( resourceType,
-                                               baseFileName );
+        final String fileName = buildFileName( baseFileName,
+                                               resourceType );
         final Path newPath = PathFactory.newPath( path.getFileSystem(),
                                                   fileName,
                                                   URL.encode( path.toURI() + "/" + fileName ) );

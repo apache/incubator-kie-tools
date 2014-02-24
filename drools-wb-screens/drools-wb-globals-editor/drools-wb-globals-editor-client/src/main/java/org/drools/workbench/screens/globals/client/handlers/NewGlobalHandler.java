@@ -18,6 +18,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Handler for the creation of new DRL Text Rules
@@ -48,6 +49,11 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
     }
 
     @Override
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
+    }
+
+    @Override
     public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
@@ -55,8 +61,8 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         globalsService.call( getSuccessCallback( presenter ),
                              new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
-                                                                                                     buildFileName( resourceType,
-                                                                                                                    baseFileName ),
+                                                                                                     buildFileName( baseFileName,
+                                                                                                                    resourceType ),
                                                                                                      model,
                                                                                                      "" );
     }

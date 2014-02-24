@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.rulenames.RuleNamesService;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
+import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -69,6 +71,7 @@ public class ScenarioEditorPresenter {
     private final TestScenarioResourceType type;
     private final AsyncPackageDataModelOracleFactory oracleFactory;
     private final Caller<RuleNamesService> ruleNameService;
+    private final DefaultFileNameValidator fileNameValidator;
 
     private Menus menus;
 
@@ -89,7 +92,8 @@ public class ScenarioEditorPresenter {
                                     final Event<ChangeTitleWidgetEvent> changeTitleNotification,
                                     final TestScenarioResourceType type,
                                     final AsyncPackageDataModelOracleFactory oracleFactory,
-                                    final Caller<RuleNamesService> ruleNameService ) {
+                                    final Caller<RuleNamesService> ruleNameService,
+                                    final DefaultFileNameValidator fileNameValidator ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.service = service;
@@ -98,6 +102,7 @@ public class ScenarioEditorPresenter {
         this.type = type;
         this.oracleFactory = oracleFactory;
         this.ruleNameService = ruleNameService;
+        this.fileNameValidator = fileNameValidator;
     }
 
     @OnStartup
@@ -316,8 +321,10 @@ public class ScenarioEditorPresenter {
                             onSave();
                         }
                     } )
-                    .addCopy( path )
-                    .addRename( path )
+                    .addCopy( path,
+                              fileNameValidator )
+                    .addRename( path,
+                                fileNameValidator )
                     .addDelete( path )
                     .build();
         }

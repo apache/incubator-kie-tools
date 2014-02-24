@@ -23,7 +23,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
@@ -42,7 +42,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
     private Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent;
 
     @Inject
-    private Caller<FileNameValidationService> fileNameValidationService;
+    private Caller<ValidationService> fileNameValidationService;
 
     private boolean isBaseFileNameValid = false;
 

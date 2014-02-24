@@ -1,4 +1,4 @@
-package org.drools.workbench.screens.testscenario.client;
+package org.drools.workbench.screens.testscenario.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
 

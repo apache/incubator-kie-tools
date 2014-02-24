@@ -14,7 +14,6 @@ import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResour
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -22,6 +21,8 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Handler for the creation of new Guided Rules
@@ -63,6 +64,13 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
     }
 
     @Override
+    public ResourceTypeDefinition getResourceType() {
+        final boolean useDSL = useDSLCheckbox.getValue();
+        final ClientResourceType resourceType = ( useDSL ? resourceTypeDSLR : resourceTypeDRL );
+        return resourceType;
+    }
+
+    @Override
     public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
@@ -74,8 +82,8 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         service.call( getSuccessCallback( presenter ),
                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),
-                                                                                              buildFileName( resourceType,
-                                                                                                             baseFileName ),
+                                                                                              buildFileName( baseFileName,
+                                                                                                             resourceType ),
                                                                                               ruleModel,
                                                                                               "" );
     }
