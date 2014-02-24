@@ -13,8 +13,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
-import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
-import org.kie.workbench.common.services.shared.validation.java.IdentifierValidationService;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
@@ -37,10 +36,7 @@ public class ProjectScreenServiceImpl
     private MetadataService metadataService;
 
     @Inject
-    private IdentifierValidationService identifierValidationService;
-
-    @Inject
-    private FileNameValidationService fileNameValidationService;
+    private ValidationService validationService;
 
     @Inject
     @Named("ioStrategy")
@@ -130,9 +126,9 @@ public class ProjectScreenServiceImpl
         final String[] artifactIdComponents = ( artifactId == null ? new String[]{ } : artifactId.split( "\\.",
                                                                                                          -1 ) );
 
-        final boolean validName = !( name == null || name.isEmpty() ) && fileNameValidationService.isFileNameValid( name );
-        final boolean validGroupId = !( groupIdComponents.length == 0 || identifierValidationService.evaluateIdentifiers( groupIdComponents ).containsValue( Boolean.FALSE ) );
-        final boolean validArtifactId = !( artifactIdComponents.length == 0 || identifierValidationService.evaluateArtifactIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ) );
+        final boolean validName = !( name == null || name.isEmpty() ) && validationService.isProjectNameValid( name );
+        final boolean validGroupId = !( groupIdComponents.length == 0 || validationService.evaluateIdentifiers( groupIdComponents ).containsValue( Boolean.FALSE ) );
+        final boolean validArtifactId = !( artifactIdComponents.length == 0 || validationService.evaluateArtifactIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ) );
         final boolean validVersion = !( version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ) );
 
         return validName && validGroupId && validArtifactId && validVersion;

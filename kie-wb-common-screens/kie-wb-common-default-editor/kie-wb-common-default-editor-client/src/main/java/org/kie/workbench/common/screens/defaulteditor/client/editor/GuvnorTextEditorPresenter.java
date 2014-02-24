@@ -12,6 +12,7 @@ import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
+import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
@@ -50,8 +51,10 @@ public class GuvnorTextEditorPresenter
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
-    protected FileMenuBuilder menuBuilder;
+    private DefaultFileNameValidator fileNameValidator;
 
+    @Inject
+    protected FileMenuBuilder menuBuilder;
     protected Menus menus;
 
     @Inject
@@ -122,8 +125,10 @@ public class GuvnorTextEditorPresenter
                                 }
                             }
                             )
-                    .addCopy( path )
-                    .addRename( path )
+                    .addCopy( path,
+                              fileNameValidator )
+                    .addRename( path,
+                                fileNameValidator )
                     .addDelete( path )
                     .build();
         }

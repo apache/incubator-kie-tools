@@ -31,6 +31,11 @@
       <artifactId>kie-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-client-api</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

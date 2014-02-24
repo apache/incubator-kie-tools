@@ -15,9 +15,11 @@
  */
 package org.kie.workbench.common.widgets.client.menu;
 
+import org.kie.workbench.common.services.shared.validation.Validator;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public interface FileMenuBuilder {
 
@@ -37,9 +39,15 @@ public interface FileMenuBuilder {
 
     FileMenuBuilder addRename( final Path path );
 
+    FileMenuBuilder addRename( final Path path,
+                               final Validator validator );
+
     FileMenuBuilder addCopy( final Command command );
 
     FileMenuBuilder addCopy( final Path path );
+
+    FileMenuBuilder addCopy( final Path path,
+                             final Validator validator );
 
     FileMenuBuilder addValidate( final Command command );
 

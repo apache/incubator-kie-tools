@@ -14,18 +14,18 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.commons.data.Pair;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
-import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Handler for the creation of new Items that require a Name and Path
@@ -43,7 +43,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     protected Caller<ProjectService> projectService;
 
     @Inject
-    protected Caller<FileNameValidationService> fileNameValidationService;
+    protected Caller<ValidationService> validationService;
 
     @Inject
     private PlaceManager placeManager;
@@ -68,7 +68,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     }
 
     @Override
-    public void validate( final String fileName,
+    public void validate( final String baseFileName,
                           final ValidatorWithReasonCallback callback ) {
         if ( pathLabel.getPath() == null ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.MissingPath() );
@@ -76,13 +76,16 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
             return;
         }
 
-        fileNameValidationService.call( new RemoteCallback<Boolean>() {
+        final String fileName = buildFileName( baseFileName,
+                                               getResourceType() );
+
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean response ) {
                 if ( Boolean.TRUE.equals( response ) ) {
                     callback.onSuccess();
                 } else {
-                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( fileName ) );
+                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( baseFileName ) );
                 }
             }
         } ).isFileNameValid( fileName );
@@ -100,13 +103,15 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
         }
     }
 
-    protected String buildFileName( final ClientResourceType resourceType,
-                                    final String baseFileName ) {
-        final String extension = "." + resourceType.getSuffix();
+    protected String buildFileName( final String baseFileName,
+                                    final ResourceTypeDefinition resourceType ) {
+        final String suffix = resourceType.getSuffix();
+        final String prefix = resourceType.getPrefix();
+        final String extension = !( suffix == null || "".equals( suffix ) ) ? "." + resourceType.getSuffix() : "";
         if ( baseFileName.endsWith( extension ) ) {
-            return resourceType.getPrefix() + baseFileName;
+            return prefix + baseFileName;
         }
-        return resourceType.getPrefix() + baseFileName + extension;
+        return prefix + baseFileName + extension;
     }
 
     protected void notifySuccess() {

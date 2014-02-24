@@ -33,6 +33,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -40,6 +41,9 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.kie.workbench.common.services.shared.validation.Validator;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
@@ -81,6 +85,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     protected Caller<BuildService> buildService;
 
     @Inject
+    private Caller<ValidationService> validationService;
+
+    @Inject
     protected PlaceManager placeManager;
 
     @Inject
@@ -91,6 +98,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     @Inject
     private transient SessionInfo sessionInfo;
+
+    @Inject
+    private SyncBeanManager iocBeanManager;
 
     //Active context
     protected OrganizationalUnit activeOrganizationalUnit = null;
@@ -209,30 +219,68 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     @Override
     public void renameItem( final FolderItem folderItem ) {
-        final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
-            @Override
-            public void execute( final FileNameAndCommitMessage details ) {
-                getView().showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
-                explorerService.call(
-                        new RemoteCallback<Void>() {
-                            @Override
-                            public void callback( final Void o ) {
-                                getView().hideBusyIndicator();
-                                refresh();
-                            }
-                        },
-                        new HasBusyIndicatorDefaultErrorCallback( getView() ) ).renameItem( folderItem,
-                                                                                            details.getNewFileName(),
-                                                                                            details.getCommitMessage() );
-            }
-        } );
+        final Path path = getFolderItemPath( folderItem );
+        final RenamePopup popup = new RenamePopup( path,
+                                                   new Validator() {
+                                                       @Override
+                                                       public void validate( final String value,
+                                                                             final ValidatorCallback callback ) {
+                                                           validationService.call( new RemoteCallback<Object>() {
+                                                               @Override
+                                                               public void callback( Object response ) {
+                                                                   if ( Boolean.TRUE.equals( response ) ) {
+                                                                       callback.onSuccess();
+                                                                   } else {
+                                                                       callback.onFailure();
+                                                                   }
+                                                               }
+                                                           } ).isFileNameValid( path,
+                                                                                value );
+                                                       }
+                                                   },
+                                                   new CommandWithFileNameAndCommitMessage() {
+                                                       @Override
+                                                       public void execute( final FileNameAndCommitMessage details ) {
+                                                           getView().showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                                                           explorerService.call(
+                                                                   new RemoteCallback<Void>() {
+                                                                       @Override
+                                                                       public void callback( final Void o ) {
+                                                                           getView().hideBusyIndicator();
+                                                                           refresh();
+                                                                       }
+                                                                   },
+                                                                   new HasBusyIndicatorDefaultErrorCallback( getView() ) ).renameItem( folderItem,
+                                                                                                                                       details.getNewFileName(),
+                                                                                                                                       details.getCommitMessage() );
+                                                       }
+                                                   }
+        );
 
         popup.show();
     }
 
     @Override
     public void copyItem( final FolderItem folderItem ) {
-        final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
+        final Path path = getFolderItemPath( folderItem );
+        final CopyPopup popup = new CopyPopup( path,
+                                               new Validator() {
+                                                   @Override
+                                                   public void validate( final String value,
+                                                                         final ValidatorCallback callback ) {
+                                                       validationService.call( new RemoteCallback<Object>() {
+                                                           @Override
+                                                           public void callback( Object response ) {
+                                                               if ( Boolean.TRUE.equals( response ) ) {
+                                                                   callback.onSuccess();
+                                                               } else {
+                                                                   callback.onFailure();
+                                                               }
+                                                           }
+                                                       } ).isFileNameValid( path,
+                                                                            value );
+                                                   }
+                                               }, new CommandWithFileNameAndCommitMessage() {
             @Override
             public void execute( final FileNameAndCommitMessage details ) {
                 getView().showBusyIndicator( CommonConstants.INSTANCE.Copying() );
@@ -248,9 +296,20 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                                                           details.getNewFileName(),
                                                                                           details.getCommitMessage() );
             }
-        } );
+        }
+        );
 
         popup.show();
+    }
+
+    private Path getFolderItemPath( final FolderItem folderItem ) {
+        if ( folderItem.getItem() instanceof Package ) {
+            final Package pkg = ( (Package) folderItem.getItem() );
+            return pkg.getPackageMainSrcPath();
+        } else if ( folderItem.getItem() instanceof Path ) {
+            return (Path) folderItem.getItem();
+        }
+        return null;
     }
 
     private void loadContent( final FolderListing content ) {

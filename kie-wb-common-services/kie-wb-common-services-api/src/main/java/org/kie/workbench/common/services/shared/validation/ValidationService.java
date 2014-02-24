@@ -13,16 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.shared.validation.file;
+package org.kie.workbench.common.services.shared.validation;
+
+import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
 
 /**
- * Validation Service for file names
+ * Validation Service
  */
 @Remote
-public interface FileNameValidationService {
+public interface ValidationService {
 
-    public boolean isFileNameValid( String fileName );
+    public boolean isProjectNameValid( final String projectName );
+
+    public boolean isPackageNameValid( final String packageName );
+
+    public boolean isFileNameValid( final Path path,
+                                    final String fileName );
+
+    public boolean isFileNameValid( final String fileName );
+
+    public Map<String, Boolean> evaluateIdentifiers( final String[] identifiers );
+
+    public Map<String, Boolean> evaluateArtifactIdentifiers( final String[] identifiers );
 
 }

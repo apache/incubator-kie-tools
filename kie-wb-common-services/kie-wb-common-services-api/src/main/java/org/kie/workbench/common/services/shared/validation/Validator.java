@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.services.shared.validation.java;
-
-import java.util.Map;
-
-import org.jboss.errai.bus.server.annotations.Remote;
+package org.kie.workbench.common.services.shared.validation;
 
 /**
- * Validation Service for Java identifiers
+ * Validator
  */
-@Remote
-public interface IdentifierValidationService {
+public interface Validator {
 
-    public Map<String, Boolean> evaluateIdentifiers( String[] identifiers );
-
-    public Map<String, Boolean> evaluateArtifactIdentifiers( String[] identifiers );
+    public void validate( final String value,
+                          final ValidatorCallback callback );
 
 }

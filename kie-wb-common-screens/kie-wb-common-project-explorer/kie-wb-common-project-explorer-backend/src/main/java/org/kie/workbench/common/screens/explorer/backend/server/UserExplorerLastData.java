@@ -57,11 +57,11 @@ public class UserExplorerLastData {
 
     public boolean deleteProject( final Project project ) {
         boolean changed = false;
-        if ( lastPackage.getProject().equals( project ) ) {
+        if ( lastPackage != null && lastPackage.getProject().equals( project ) ) {
             lastPackage = null;
             changed = true;
         }
-        if ( lastFolderItem.getProject().equals( project ) ) {
+        if ( lastFolderItem != null && lastFolderItem.getProject().equals( project ) ) {
             lastFolderItem = null;
             changed = true;
         }

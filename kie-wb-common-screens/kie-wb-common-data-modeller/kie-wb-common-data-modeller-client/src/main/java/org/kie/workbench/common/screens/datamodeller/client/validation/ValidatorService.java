@@ -28,8 +28,8 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
-import org.kie.workbench.common.services.shared.validation.java.IdentifierValidationService;
 
 import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
 
@@ -37,7 +37,7 @@ import static org.kie.workbench.common.screens.datamodeller.client.util.DataMode
 public class ValidatorService {
 
     @Inject
-    private Caller<IdentifierValidationService> validationService;
+    private Caller<ValidationService> validationService;
 
     public ValidatorService() {
     }

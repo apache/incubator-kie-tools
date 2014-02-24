@@ -27,6 +27,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
@@ -69,6 +70,9 @@ public class GuvnorDefaultEditorPresenter
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
+
+    @Inject
+    private DefaultFileNameValidator fileNameValidator;
 
     @Inject
     @New
@@ -121,8 +125,10 @@ public class GuvnorDefaultEditorPresenter
             menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
             menus = menuBuilder
-                    .addCopy( path )
-                    .addRename( path )
+                    .addCopy( path,
+                              fileNameValidator )
+                    .addRename( path,
+                                fileNameValidator )
                     .addDelete( path )
                     .build();
         }

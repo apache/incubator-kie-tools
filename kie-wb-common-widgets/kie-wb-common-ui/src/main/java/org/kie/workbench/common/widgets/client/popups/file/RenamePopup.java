@@ -23,9 +23,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import org.kie.workbench.common.services.shared.validation.Validator;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.FormStylePopup;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -34,10 +38,29 @@ public class RenamePopup extends FormStylePopup {
     final private TextBox nameTextBox = new TextBox();
     final private TextBox checkInCommentTextBox = new TextBox();
 
-    public RenamePopup( final CommandWithFileNameAndCommitMessage command ) {
+    public RenamePopup( final Path path,
+                        final CommandWithFileNameAndCommitMessage command ) {
+        this( path,
+              new Validator() {
+                  @Override
+                  public void validate( final String value,
+                                        final ValidatorCallback callback ) {
+                      callback.onSuccess();
+                  }
+              },
+              command );
+    }
+
+    public RenamePopup( final Path path,
+                        final Validator validator,
+                        final CommandWithFileNameAndCommitMessage command ) {
         super( CommonImages.INSTANCE.edit(),
                CommonConstants.INSTANCE.RenamePopupTitle() );
 
+        checkNotNull( "validator",
+                      validator );
+        checkNotNull( "path",
+                      path );
         checkNotNull( "command",
                       command );
 
@@ -58,16 +81,27 @@ public class RenamePopup extends FormStylePopup {
         final HorizontalPanel hp = new HorizontalPanel();
         final Button create = new Button( CommonConstants.INSTANCE.RenamePopupRenameItem() );
         create.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick( final ClickEvent arg0 ) {
 
-                if ( nameTextBox.getText() == null || "".equals( nameTextBox.getText() ) ) {
-                    Window.alert( CommonConstants.INSTANCE.RenamePopupRenameNamePrompt() );
-                    return;
-                }
+                final String baseFileName = nameTextBox.getText();
+                final String originalFileName = path.getFileName();
+                final String extension = ( originalFileName.lastIndexOf( "." ) > 0 ? originalFileName.substring( originalFileName.lastIndexOf( "." ) ) : "" );
+                final String fileName = baseFileName + extension;
 
-                hide();
-                command.execute( new FileNameAndCommitMessage( nameTextBox.getText(),
-                                                               checkInCommentTextBox.getText() ) );
+                validator.validate( fileName,
+                                    new ValidatorCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            hide();
+                                            command.execute( new FileNameAndCommitMessage( baseFileName,
+                                                                                           checkInCommentTextBox.getText() ) );
+                                        }
+
+                                        @Override
+                                        public void onFailure() {
+                                            Window.alert( CommonConstants.INSTANCE.InvalidFileName0( baseFileName ) );
+                                        }
+                                    } );
             }
         } );
         hp.add( create );
@@ -81,6 +115,17 @@ public class RenamePopup extends FormStylePopup {
         hp.add( new HTML( "&nbsp" ) );
         hp.add( cancel );
         addAttribute( "", hp );
+    }
+
+    private String buildFileName( final String baseFileName,
+                                  final ResourceTypeDefinition resourceType ) {
+        final String suffix = resourceType.getSuffix();
+        final String prefix = resourceType.getPrefix();
+        final String extension = !( suffix == null || "".equals( suffix ) ) ? "." + resourceType.getSuffix() : "";
+        if ( baseFileName.endsWith( extension ) ) {
+            return prefix + baseFileName;
+        }
+        return prefix + baseFileName + extension;
     }
 
 }

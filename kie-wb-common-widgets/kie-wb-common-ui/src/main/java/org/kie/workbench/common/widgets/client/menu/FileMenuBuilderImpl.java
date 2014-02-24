@@ -29,6 +29,7 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.shared.validation.Validator;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithFileNameAndCommitMessage;
@@ -42,7 +43,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -141,16 +141,43 @@ public class FileMenuBuilderImpl
         this.renameCommand = new Command() {
             @Override
             public void execute() {
-                final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
-                    @Override
-                    public void execute( final FileNameAndCommitMessage details ) {
-                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
-                        renameService.call( getRenameSuccessCallback(),
-                                            new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).rename( path,
-                                                                                                                    details.getNewFileName(),
-                                                                                                                    details.getCommitMessage() );
-                    }
-                } );
+                final RenamePopup popup = new RenamePopup( path,
+                                                           new CommandWithFileNameAndCommitMessage() {
+                                                               @Override
+                                                               public void execute( final FileNameAndCommitMessage details ) {
+                                                                   busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                                                                   renameService.call( getRenameSuccessCallback(),
+                                                                                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).rename( path,
+                                                                                                                                                               details.getNewFileName(),
+                                                                                                                                                               details.getCommitMessage() );
+                                                               }
+                                                           } );
+
+                popup.show();
+            }
+        };
+
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addRename( final Path path,
+                                      final Validator validator ) {
+        this.renameCommand = new Command() {
+            @Override
+            public void execute() {
+                final RenamePopup popup = new RenamePopup( path,
+                                                           validator,
+                                                           new CommandWithFileNameAndCommitMessage() {
+                                                               @Override
+                                                               public void execute( final FileNameAndCommitMessage details ) {
+                                                                   busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                                                                   renameService.call( getRenameSuccessCallback(),
+                                                                                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).rename( path,
+                                                                                                                                                               details.getNewFileName(),
+                                                                                                                                                               details.getCommitMessage() );
+                                                               }
+                                                           } );
 
                 popup.show();
             }
@@ -181,16 +208,42 @@ public class FileMenuBuilderImpl
         this.copyCommand = new Command() {
             @Override
             public void execute() {
-                final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
-                    @Override
-                    public void execute( final FileNameAndCommitMessage details ) {
-                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
-                        copyService.call( getCopySuccessCallback(),
-                                          new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( path,
-                                                                                                                details.getNewFileName(),
-                                                                                                                details.getCommitMessage() );
-                    }
-                } );
+                final CopyPopup popup = new CopyPopup( path,
+                                                       new CommandWithFileNameAndCommitMessage() {
+                                                           @Override
+                                                           public void execute( final FileNameAndCommitMessage details ) {
+                                                               busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
+                                                               copyService.call( getCopySuccessCallback(),
+                                                                                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( path,
+                                                                                                                                                       details.getNewFileName(),
+                                                                                                                                                       details.getCommitMessage() );
+                                                           }
+                                                       } );
+                popup.show();
+            }
+        };
+
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addCopy( final Path path,
+                                    final Validator validator ) {
+        this.copyCommand = new Command() {
+            @Override
+            public void execute() {
+                final CopyPopup popup = new CopyPopup( path,
+                                                       validator,
+                                                       new CommandWithFileNameAndCommitMessage() {
+                                                           @Override
+                                                           public void execute( final FileNameAndCommitMessage details ) {
+                                                               busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
+                                                               copyService.call( getCopySuccessCallback(),
+                                                                                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( path,
+                                                                                                                                                       details.getNewFileName(),
+                                                                                                                                                       details.getCommitMessage() );
+                                                           }
+                                                       } );
                 popup.show();
             }
         };

@@ -15,8 +15,8 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
-import org.kie.workbench.common.services.shared.validation.file.FileNameValidationService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.PathLabel;
@@ -25,6 +25,8 @@ import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.wizards.WizardPresenter;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.type.AnyResourceTypeDefinition;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Handler for the creation of new Projects
@@ -44,7 +46,11 @@ public class NewProjectHandler
     private WizardPresenter wizardPresenter;
 
     @Inject
-    protected Caller<FileNameValidationService> fileNameValidationService;
+    private Caller<ValidationService> validationService;
+
+    @Inject
+    //We don't really need this for Packages but it's required by DefaultNewResourceHandler
+    private AnyResourceTypeDefinition resourceType;
 
     @Inject
     private ProjectContext context;
@@ -73,6 +79,11 @@ public class NewProjectHandler
     }
 
     @Override
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
+    }
+
+    @Override
     public void create( final Package pkg,
                         final String projectName,
                         final NewResourcePresenter presenter ) {
@@ -87,7 +98,7 @@ public class NewProjectHandler
     }
 
     @Override
-    public void validate( final String fileName,
+    public void validate( final String projectName,
                           final ValidatorWithReasonCallback callback ) {
         if ( pathLabel.getPath() == null ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.MissingPath() );
@@ -95,16 +106,16 @@ public class NewProjectHandler
             return;
         }
 
-        fileNameValidationService.call( new RemoteCallback<Boolean>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
             public void callback( final Boolean response ) {
                 if ( Boolean.TRUE.equals( response ) ) {
                     callback.onSuccess();
                 } else {
-                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( fileName ) );
+                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( projectName ) );
                 }
             }
-        } ).isFileNameValid( fileName );
+        } ).isProjectNameValid( projectName );
     }
 
     @Override

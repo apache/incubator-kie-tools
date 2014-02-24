@@ -1,6 +1,5 @@
 package org.kie.workbench.common.screens.projecteditor.client.handlers;
 
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -12,13 +11,14 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
-import org.kie.workbench.common.services.shared.validation.java.IdentifierValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.workbench.type.AnyResourceTypeDefinition;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Handler for the creation of new Folders
@@ -31,7 +31,11 @@ public class NewPackageHandler
     private Caller<ProjectService> projectService;
 
     @Inject
-    private Caller<IdentifierValidationService> validationService;
+    private Caller<ValidationService> validationService;
+
+    @Inject
+    //We don't really need this for Packages but it's required by DefaultNewResourceHandler
+    private AnyResourceTypeDefinition resourceType;
 
     @Override
     public String getDescription() {
@@ -44,7 +48,12 @@ public class NewPackageHandler
     }
 
     @Override
-    public void validate( final String fileName,
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
+    }
+
+    @Override
+    public void validate( final String packageName,
                           final ValidatorWithReasonCallback callback ) {
         if ( pathLabel.getPath() == null ) {
             Window.alert( CommonConstants.INSTANCE.MissingPath() );
@@ -52,17 +61,16 @@ public class NewPackageHandler
             return;
         }
 
-        validationService.call( new RemoteCallback<Map<String, Boolean>>() {
+        validationService.call( new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Map<String, Boolean> results ) {
-                if ( results.containsValue( Boolean.FALSE ) ) {
-                    callback.onFailure( ProjectEditorResources.CONSTANTS.InvalidPackageName( fileName ) );
-                } else {
+            public void callback( final Boolean response ) {
+                if ( Boolean.TRUE.equals( response ) ) {
                     callback.onSuccess();
+                } else {
+                    callback.onFailure( ProjectEditorResources.CONSTANTS.InvalidPackageName( packageName ) );
                 }
             }
-        } ).evaluateIdentifiers( fileName.split( "\\.",
-                                                 -1 ) );
+        } ).isPackageNameValid( packageName );
     }
 
     @Override

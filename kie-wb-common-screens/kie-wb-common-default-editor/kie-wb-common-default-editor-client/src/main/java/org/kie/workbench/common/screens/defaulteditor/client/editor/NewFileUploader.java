@@ -10,6 +10,8 @@ import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandle
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.editors.defaulteditor.DefaultEditorNewFileUpload;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.type.AnyResourceTypeDefinition;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class NewFileUploader
@@ -18,10 +20,13 @@ public class NewFileUploader
     @Inject
     private DefaultEditorNewFileUpload options;
 
+    @Inject
+    private AnyResourceTypeDefinition resourceType;
+
     @PostConstruct
     private void setupExtensions() {
-        extensions.add(new Pair<String, DefaultEditorNewFileUpload>(GuvnorDefaultEditorConstants.INSTANCE.Options(),
-                options));
+        extensions.add( new Pair<String, DefaultEditorNewFileUpload>( GuvnorDefaultEditorConstants.INSTANCE.Options(),
+                                                                      options ) );
     }
 
     @Override
@@ -35,12 +40,17 @@ public class NewFileUploader
     }
 
     @Override
-    public void create(org.guvnor.common.services.project.model.Package pkg,
-            String baseFileName,
-            NewResourcePresenter presenter) {
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
+    }
 
-        options.setFolderPath(pkg.getPackageMainResourcesPath());
-        options.setFileName(baseFileName);
+    @Override
+    public void create( org.guvnor.common.services.project.model.Package pkg,
+                        String baseFileName,
+                        NewResourcePresenter presenter ) {
+
+        options.setFolderPath( pkg.getPackageMainResourcesPath() );
+        options.setFileName( baseFileName );
 
         options.upload();
 

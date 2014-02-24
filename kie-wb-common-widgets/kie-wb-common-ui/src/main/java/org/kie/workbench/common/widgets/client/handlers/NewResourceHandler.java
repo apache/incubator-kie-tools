@@ -6,8 +6,9 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
  * Definition of Handler to support creation of new resources
@@ -25,6 +26,12 @@ public interface NewResourceHandler {
      * @return
      */
     public IsWidget getIcon();
+
+    /**
+     * Get the ResourceType represented by the Handler
+     * @return resource type
+     */
+    public ResourceTypeDefinition getResourceType();
 
     /**
      * An entry-point for the creation of the new resource
@@ -45,10 +52,10 @@ public interface NewResourceHandler {
 
     /**
      * Provide NewResourceHandlers with the ability to validate additional parameters before the creation of the new resource
-     * @param fileName The file name for the new item
+     * @param baseFileName The base file name for the new item (excluding extension)
      * @param callback Callback depending on validation result
      */
-    public void validate( final String fileName,
+    public void validate( final String baseFileName,
                           final ValidatorWithReasonCallback callback );
 
     /**

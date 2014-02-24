@@ -33,6 +33,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -74,6 +75,8 @@ public class ProjectScreenPresenter
     private Caller<ProjectScreenService> projectScreenService;
     private Caller<BuildService> buildServiceCaller;
 
+    private ProjectNameValidator projectNameValidator;
+
     private Project project;
     private ObservablePath pathToPomXML;
 
@@ -103,6 +106,7 @@ public class ProjectScreenPresenter
                                    final Event<BuildResults> buildResultsEvent,
                                    final Event<NotificationEvent> notificationEvent,
                                    final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
+                                   final ProjectNameValidator projectNameValidator,
                                    final PlaceManager placeManager,
                                    final BusyIndicatorView busyIndicatorView ) {
         this.view = view;
@@ -113,6 +117,7 @@ public class ProjectScreenPresenter
         this.buildResultsEvent = buildResultsEvent;
         this.notificationEvent = notificationEvent;
         this.changeTitleWidgetEvent = changeTitleWidgetEvent;
+        this.projectNameValidator = projectNameValidator;
         this.placeManager = placeManager;
 
         this.busyIndicatorView = busyIndicatorView;
@@ -298,24 +303,27 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                final CopyPopup popup = new CopyPopup( new CommandWithFileNameAndCommitMessage() {
-                    @Override
-                    public void execute( final FileNameAndCommitMessage details ) {
-                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
-                        projectScreenService.call(
-                                new RemoteCallback<Void>() {
+                final CopyPopup popup = new CopyPopup( project.getRootPath(),
+                                                       projectNameValidator,
+                                                       new CommandWithFileNameAndCommitMessage() {
+                                                           @Override
+                                                           public void execute( final FileNameAndCommitMessage details ) {
+                                                               busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
+                                                               projectScreenService.call(
+                                                                       new RemoteCallback<Void>() {
 
-                                    @Override
-                                    public void callback( final Void o ) {
-                                        busyIndicatorView.hideBusyIndicator();
-                                        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                                    }
-                                },
-                                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( project.getPomXMLPath(),
-                                                                                                      details.getNewFileName(),
-                                                                                                      details.getCommitMessage() );
-                    }
-                } );
+                                                                           @Override
+                                                                           public void callback( final Void o ) {
+                                                                               busyIndicatorView.hideBusyIndicator();
+                                                                               notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+                                                                           }
+                                                                       },
+                                                                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).copy( project.getPomXMLPath(),
+                                                                                                                                             details.getNewFileName(),
+                                                                                                                                             details.getCommitMessage() );
+                                                           }
+                                                       }
+                );
                 popup.show();
             }
         };
@@ -325,25 +333,27 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                final RenamePopup popup = new RenamePopup( new CommandWithFileNameAndCommitMessage() {
-                    @Override
-                    public void execute( final FileNameAndCommitMessage details ) {
-                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
-                        projectScreenService.call(
-                                new RemoteCallback<ProjectScreenModel>() {
-                                    @Override
-                                    public void callback( final ProjectScreenModel model ) {
-                                        busyIndicatorView.hideBusyIndicator();
-                                        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                final RenamePopup popup = new RenamePopup( project.getRootPath(),
+                                                           projectNameValidator,
+                                                           new CommandWithFileNameAndCommitMessage() {
+                                                               @Override
+                                                               public void execute( final FileNameAndCommitMessage details ) {
+                                                                   busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
+                                                                   projectScreenService.call(
+                                                                           new RemoteCallback<ProjectScreenModel>() {
+                                                                               @Override
+                                                                               public void callback( final ProjectScreenModel model ) {
+                                                                                   busyIndicatorView.hideBusyIndicator();
+                                                                                   notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
 
-                                    }
-                                },
-                                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).rename( project.getPomXMLPath(),
-                                                                                                        details.getNewFileName(),
-                                                                                                        details.getCommitMessage() );
-                    }
-                } );
-
+                                                                               }
+                                                                           },
+                                                                           new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).rename( project.getPomXMLPath(),
+                                                                                                                                                   details.getNewFileName(),
+                                                                                                                                                   details.getCommitMessage() );
+                                                               }
+                                                           }
+                );
                 popup.show();
             }
         };
