@@ -125,12 +125,17 @@ public class ProjectImportsScreenPresenter
         if ( isReadOnly ) {
             menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
-            menus = menuBuilder.addSave( new Command() {
-                @Override
-                public void execute() {
-                    onSave();
-                }
-            } ).build();
+            menus = menuBuilder
+                    .addSave( new Command() {
+                        @Override
+                        public void execute() {
+                            onSave();
+                        }
+                    } )
+                    .addCopy( path )
+                    .addRename( path )
+                    .addDelete( path )
+                    .build();
         }
     }
 
