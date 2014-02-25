@@ -275,6 +275,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     }
 
     public void onDisposeFileSystem( final JGitFileSystem fileSystem ) {
+        onCloseFileSystem( fileSystem );
         closedFileSystems.remove( fileSystem );
         fileSystems.remove( fileSystem.id() );
 
