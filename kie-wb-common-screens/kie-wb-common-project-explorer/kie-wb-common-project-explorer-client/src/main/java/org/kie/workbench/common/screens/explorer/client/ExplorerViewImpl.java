@@ -57,7 +57,6 @@ public class ExplorerViewImpl extends Composite implements ExplorerView {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         getElement().getStyle().setPropertyPx( "minWidth", 370 );
-        getElement().getStyle().setOverflowX( Style.Overflow.SCROLL );
     }
 
     @Override

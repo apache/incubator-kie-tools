@@ -48,35 +48,35 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
-          <configuration>
-              <includes>
-                  <include>**/*_de.properties</include>
-                  <include>**/*_es.properties</include>
-                  <include>**/*_fr.properties</include>
-                  <include>**/*_ja.properties</include>
-                  <include>**/*_pt_BR.properties</include>
-              </includes>
-              <excludes>
-                  <exclude>**/ErraiApp.properties</exclude>
-              </excludes>
-              <replacements>
-                  <replacement>
-                      <token>''</token>
-                      <value>'</value>
-                  </replacement>
-                  <replacement>
-                      <token>'</token>
-                      <value>''</value>
-                  </replacement>
-              </replacements>
-          </configuration>
+        <configuration>
+          <includes>
+            <include>**/*_de.properties</include>
+            <include>**/*_es.properties</include>
+            <include>**/*_fr.properties</include>
+            <include>**/*_ja.properties</include>
+            <include>**/*_pt_BR.properties</include>
+          </includes>
+          <excludes>
+            <exclude>**/ErraiApp.properties</exclude>
+          </excludes>
+          <replacements>
+            <replacement>
+              <token>''</token>
+              <value>'</value>
+            </replacement>
+            <replacement>
+              <token>'</token>
+              <value>''</value>
+            </replacement>
+          </replacements>
+        </configuration>
       </plugin>
 
       <!-- Zanata - translations -->
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-      </plugin> 
+      </plugin>
 
       <!-- Tests that use a M2 Repository create their files in different places depending on how they are ran - IDE or CLI -->
       <plugin>

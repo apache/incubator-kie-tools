@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.NavList;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,6 +18,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
@@ -38,9 +37,9 @@ public class Explorer extends Composite {
     }
 
     private final FlowPanel container = new FlowPanel();
-    private final Dropdown organizationUnits = new Dropdown();
-    private final Dropdown repos = new Dropdown();
-    private final Dropdown prjs = new Dropdown();
+    private final CustomDropdown organizationUnits = new CustomDropdown();
+    private final CustomDropdown repos = new CustomDropdown();
+    private final CustomDropdown prjs = new CustomDropdown();
 
     private Mode mode = Mode.REGULAR;
 
@@ -115,52 +114,48 @@ public class Explorer extends Composite {
         if ( activeOrganizationalUnit != null ) {
             this.organizationUnits.setText( activeOrganizationalUnit.getName() );
         }
-        this.organizationUnits.add( new NavList() {{
-            for ( final OrganizationalUnit ou : organizationalUnits ) {
-                add( new NavLink( ou.getName() ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            presenter.organizationalUnitSelected( ou );
-                        }
-                    } );
-                }} );
-            }
-        }} );
+        for ( final OrganizationalUnit ou : organizationalUnits ) {
+            this.organizationUnits.add( new NavLink( ou.getName() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.organizationalUnitSelected( ou );
+                    }
+                } );
+            }} );
+        }
 
         this.repos.clear();
         if ( activeRepository != null ) {
             this.repos.setText( activeRepository.getAlias() );
         }
-        this.repos.add( new NavList() {{
-            for ( final Repository repository : repositories ) {
-                add( new NavLink( repository.getAlias() ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            presenter.repositorySelected( repository );
-                        }
-                    } );
-                }} );
-            }
-        }} );
+
+        for ( final Repository repository : repositories ) {
+            this.repos.add( new NavLink( repository.getAlias() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.repositorySelected( repository );
+                    }
+                } );
+            }} );
+        }
 
         this.prjs.clear();
         if ( activeProject != null ) {
             this.prjs.setText( activeProject.getProjectName() );
         }
-        this.prjs.add( new NavList() {{
-            for ( final Project project : projects ) {
-                add( new NavLink( project.getProjectName() ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            presenter.projectSelected( project );
-                        }
-                    } );
-                }} );
-            }
-        }} );
+
+        for ( final Project project : projects ) {
+            this.prjs.add( new NavLink( project.getProjectName() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        presenter.projectSelected( project );
+                    }
+                } );
+            }} );
+        }
 
         if ( organizationalUnits.isEmpty() ) {
             this.organizationUnits.setText( ProjectExplorerConstants.INSTANCE.nullEntry() );

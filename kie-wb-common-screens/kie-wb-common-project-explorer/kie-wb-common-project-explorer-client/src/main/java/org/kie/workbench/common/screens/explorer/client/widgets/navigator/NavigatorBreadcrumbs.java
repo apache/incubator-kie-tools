@@ -2,7 +2,6 @@ package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.base.InlineLabel;
 import com.github.gwtbootstrap.client.ui.base.ListItem;
@@ -10,6 +9,7 @@ import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
+import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.uberfire.client.common.UberBreadcrumbs;
 import org.uberfire.client.resources.NavigatorResources;
@@ -46,7 +46,7 @@ public class NavigatorBreadcrumbs extends Composite {
     public void build( final List<FolderItem> segments,
                        final FolderItem file,
                        final ParameterizedCommand<FolderItem> onPathClick,
-                       final Dropdown... headers ) {
+                       final CustomDropdown... headers ) {
 
         build( headers );
 
@@ -62,7 +62,7 @@ public class NavigatorBreadcrumbs extends Composite {
                     } );
                 }} );
             }
-            if (file != null){
+            if ( file != null ) {
                 breadcrumbs.add( new ListItem( new InlineLabel( file.getFileName() ) ) {{
                     setStyleName( NavigatorResources.INSTANCE.css().directory() );
                 }} );
@@ -70,11 +70,11 @@ public class NavigatorBreadcrumbs extends Composite {
         }
     }
 
-    public void build( final Dropdown... headers ) {
+    public void build( final CustomDropdown... headers ) {
         breadcrumbs.clear();
 
         for ( int i = 0; i < headers.length; i++ ) {
-            final Dropdown header = headers[ i ];
+            final CustomDropdown header = headers[ i ];
             header.addStyleName( NavigatorResources.INSTANCE.css().breadcrumbHeader() );
             if ( i + 1 == headers.length ) {
                 header.setRightDropdown( true );

@@ -29,4 +29,6 @@ public interface StylesCss
 
     String triggerCaption();
 
+    String scrollMenu();
+
 }
