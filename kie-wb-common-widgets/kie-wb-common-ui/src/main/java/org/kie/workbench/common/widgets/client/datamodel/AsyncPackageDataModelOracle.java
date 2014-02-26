@@ -52,7 +52,7 @@ public interface AsyncPackageDataModelOracle {
 
     String[] getExternalFactTypes();
 
-    public String getFGCNByFactName(String factName);
+    public String getFQCNByFactName(String factName);
 
     /**
      * Returns fact's name from class type

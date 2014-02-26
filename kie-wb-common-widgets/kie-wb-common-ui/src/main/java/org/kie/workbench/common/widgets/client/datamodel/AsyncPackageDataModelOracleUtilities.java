@@ -342,7 +342,7 @@ public class AsyncPackageDataModelOracleUtilities {
         return "";
     }
 
-    private static ModelField[] correctModelFields(final String packageName,
+    public static ModelField[] correctModelFields(final String packageName,
             final ModelField[] originalModelFields,
             final Imports imports) {
         if ( originalModelFields == null ) {
@@ -350,30 +350,36 @@ public class AsyncPackageDataModelOracleUtilities {
         }
         final List<ModelField> correctedModelFields = new ArrayList<ModelField>();
         for ( final ModelField mf : originalModelFields ) {
-            String mfType = mf.getType();
-            String mfClassName = mf.getClassName();
-
-            final String mfClassName_QualifiedType = mfClassName;
-            final String mfClassName_PackageName = getPackageName( mfClassName_QualifiedType );
-            final String mfClassName_TypeName = getTypeName( mfClassName_QualifiedType );
-            if ( mfClassName_PackageName.equals( packageName ) || isImported( mfClassName_QualifiedType,
-                                                                              imports ) ) {
-                mfClassName = mfClassName_TypeName;
-            }
-
-            final String mfType_QualifiedType = mfType;
-            final String mfType_PackageName = getPackageName( mfType_QualifiedType );
-            final String mfType_TypeName = getTypeName( mfType_QualifiedType );
-            if ( mfType_PackageName.equals( packageName ) || isImported( mfType_QualifiedType,
-                                                                         imports ) ) {
-                mfType = mfType_TypeName;
-            }
-            correctedModelFields.add( cloneModelField( mf,
-                                                       mfClassName,
-                                                       mfType ) );
+            correctedModelFields.add(correctModelFields(packageName, imports, mf));
         }
         final ModelField[] result = new ModelField[ correctedModelFields.size() ];
         return correctedModelFields.toArray( result );
+    }
+
+    public static ModelField correctModelFields(final String packageName,
+            final Imports imports,
+            final ModelField mf) {
+        String mfType = mf.getType();
+        String mfClassName = mf.getClassName();
+
+        final String mfClassName_QualifiedType = mfClassName;
+        final String mfClassName_PackageName = getPackageName( mfClassName_QualifiedType );
+        final String mfClassName_TypeName = getTypeName( mfClassName_QualifiedType );
+        if ( mfClassName_PackageName.equals( packageName ) || isImported( mfClassName_QualifiedType,
+                                                                          imports ) ) {
+            mfClassName = mfClassName_TypeName;
+        }
+
+        final String mfType_QualifiedType = mfType;
+        final String mfType_PackageName = getPackageName( mfType_QualifiedType );
+        final String mfType_TypeName = getTypeName( mfType_QualifiedType );
+        if ( mfType_PackageName.equals( packageName ) || isImported( mfType_QualifiedType,
+                                                                     imports ) ) {
+            mfType = mfType_TypeName;
+        }
+        return cloneModelField(mf,
+                mfClassName,
+                mfType);
     }
 
     //Ensure we retain the LazyModelField information when filtering, as it's place-holder
