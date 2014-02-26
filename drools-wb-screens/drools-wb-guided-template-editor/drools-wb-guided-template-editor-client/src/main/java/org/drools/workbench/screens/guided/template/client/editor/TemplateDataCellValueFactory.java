@@ -137,6 +137,12 @@ public class TemplateDataCellValueFactory
      */
     @Override
     public String makeModelCellValue( TemplateDataColumn column ) {
+        DataType.DataTypes dataType = getDataType( column );
+        switch ( dataType ) {
+            case BOOLEAN:
+                return Boolean.FALSE.toString();
+        }
+
         return new String();
     }
 
