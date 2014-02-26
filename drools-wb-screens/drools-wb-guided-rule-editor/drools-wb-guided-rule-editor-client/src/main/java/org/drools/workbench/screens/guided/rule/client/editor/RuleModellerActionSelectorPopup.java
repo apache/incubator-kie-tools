@@ -43,7 +43,6 @@ import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.InfoPopup;
@@ -53,10 +52,10 @@ import org.uberfire.client.common.InfoPopup;
  */
 public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelectorPopup {
 
-    public RuleModellerActionSelectorPopup( RuleModel model,
-                                            RuleModeller ruleModeller,
-                                            Integer position,
-                                            AsyncPackageDataModelOracle oracle ) {
+    public RuleModellerActionSelectorPopup( final RuleModel model,
+                                            final RuleModeller ruleModeller,
+                                            final Integer position,
+                                            final AsyncPackageDataModelOracle oracle ) {
         super( model,
                ruleModeller,
                position,
@@ -95,7 +94,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             hp0.add( new HTML( GuidedRuleEditorResources.CONSTANTS.PositionColon() ) );
             hp0.add( positionCbo );
             hp0.add( new InfoPopup( GuidedRuleEditorResources.CONSTANTS.PositionColon(),
-                    GuidedRuleEditorResources.CONSTANTS.ActionPositionExplanation() ) );
+                                    GuidedRuleEditorResources.CONSTANTS.ActionPositionExplanation() ) );
             layoutPanel.addRow( hp0 );
         }
 
@@ -122,19 +121,21 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
         } );
 
-        CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
-        chkOnlyDisplayDSLConditions.setText( GuidedRuleEditorResources.CONSTANTS.OnlyDisplayDSLActions() );
-        chkOnlyDisplayDSLConditions.setValue( bOnlyShowDSLConditions );
-        chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+        //DSL might be prohibited (e.g. editing a DRL file. Only DSLR files can contain DSL)
+        if ( ruleModeller.isDSLEnabled() ) {
+            CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
+            chkOnlyDisplayDSLConditions.setText( GuidedRuleEditorResources.CONSTANTS.OnlyDisplayDSLActions() );
+            chkOnlyDisplayDSLConditions.setValue( onlyShowDSLStatements );
+            chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                bOnlyShowDSLConditions = event.getValue();
-                choicesPanel.setWidget( makeChoicesListBox() );
-            }
+                public void onValueChange( ValueChangeEvent<Boolean> event ) {
+                    onlyShowDSLStatements = event.getValue();
+                    choicesPanel.setWidget( makeChoicesListBox() );
+                }
 
-        } );
-
-        layoutPanel.addRow( chkOnlyDisplayDSLConditions );
+            } );
+            layoutPanel.addRow( chkOnlyDisplayDSLConditions );
+        }
 
         layoutPanel.addRow( hp );
 
@@ -162,7 +163,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         } );
 
         addDSLSentences();
-        if ( !bOnlyShowDSLConditions ) {
+        if ( !onlyShowDSLStatements ) {
             addUpdateNotModify();
             addGlobals();
             addRetractions();
@@ -355,7 +356,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
                 final String glob = oracle.getGlobalCollections()[ i ];
                 final String var = bf;
                 choices.addItem( GuidedRuleEditorResources.CONSTANTS.Append0ToList1( var,
-                                                                    glob ),
+                                                                                     glob ),
                                  "GLOBCOL" + glob + var );
                 cmds.put( "GLOBCOL" + glob + var,
                           new Command() {

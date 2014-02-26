@@ -38,7 +38,6 @@ import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
@@ -49,10 +48,10 @@ import org.uberfire.client.common.InfoPopup;
  */
 public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSelectorPopup {
 
-    public RuleModellerConditionSelectorPopup( RuleModel model,
-                                               RuleModeller ruleModeller,
-                                               Integer position,
-                                               AsyncPackageDataModelOracle oracle ) {
+    public RuleModellerConditionSelectorPopup( final RuleModel model,
+                                               final RuleModeller ruleModeller,
+                                               final Integer position,
+                                               final AsyncPackageDataModelOracle oracle ) {
         super( model,
                ruleModeller,
                position,
@@ -91,7 +90,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             hp0.add( new HTML( GuidedRuleEditorResources.CONSTANTS.PositionColon() ) );
             hp0.add( positionCbo );
             hp0.add( new InfoPopup( GuidedRuleEditorResources.CONSTANTS.PositionColon(),
-                    GuidedRuleEditorResources.CONSTANTS.ConditionPositionExplanation() ) );
+                                    GuidedRuleEditorResources.CONSTANTS.ConditionPositionExplanation() ) );
             layoutPanel.addRow( hp0 );
         }
 
@@ -118,19 +117,21 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             }
         } );
 
-        CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
-        chkOnlyDisplayDSLConditions.setText( GuidedRuleEditorResources.CONSTANTS.OnlyDisplayDSLConditions() );
-        chkOnlyDisplayDSLConditions.setValue( bOnlyShowDSLConditions );
-        chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+        //DSL might be prohibited (e.g. editing a DRL file. Only DSLR files can contain DSL)
+        if ( ruleModeller.isDSLEnabled() ) {
+            CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
+            chkOnlyDisplayDSLConditions.setText( GuidedRuleEditorResources.CONSTANTS.OnlyDisplayDSLConditions() );
+            chkOnlyDisplayDSLConditions.setValue( onlyShowDSLStatements );
+            chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                bOnlyShowDSLConditions = event.getValue();
-                choicesPanel.setWidget( makeChoicesListBox() );
-            }
+                public void onValueChange( ValueChangeEvent<Boolean> event ) {
+                    onlyShowDSLStatements = event.getValue();
+                    choicesPanel.setWidget( makeChoicesListBox() );
+                }
 
-        } );
-
-        layoutPanel.addRow( chkOnlyDisplayDSLConditions );
+            } );
+            layoutPanel.addRow( chkOnlyDisplayDSLConditions );
+        }
 
         layoutPanel.addRow( hp );
 
@@ -158,7 +159,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
         } );
 
         addDSLSentences();
-        if ( !bOnlyShowDSLConditions ) {
+        if ( !onlyShowDSLStatements ) {
             addFacts();
             addExistentialConditionalElements();
             addFromConditionalElements();

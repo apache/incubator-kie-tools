@@ -39,23 +39,23 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
     protected int MIN_WIDTH = 500;
     protected int MIN_HEIGHT = 200;
 
-    protected boolean bOnlyShowDSLConditions = ApplicationPreferences.getBooleanPref( "rule-modeller-onlyShowDSLStatements" );
+    protected boolean onlyShowDSLStatements = ApplicationPreferences.getBooleanPref( "rule-modeller-onlyShowDSLStatements" );
 
-    protected RuleModel model;
-    protected RuleModeller ruleModeller;
-    protected AsyncPackageDataModelOracle oracle;
-    protected Map<String, Command> cmds = new HashMap<String, Command>();
+    protected final RuleModel model;
+    protected final RuleModeller ruleModeller;
+    protected final AsyncPackageDataModelOracle oracle;
+    protected final Map<String, Command> cmds = new HashMap<String, Command>();
     protected Integer position;
 
-    protected SimplePanel choicesPanel = new SimplePanel();
-    protected FormStyleLayout layoutPanel = new FormStyleLayout();
-    protected ListBox positionCbo = new ListBox();
+    protected final SimplePanel choicesPanel = new SimplePanel();
+    protected final FormStyleLayout layoutPanel = new FormStyleLayout();
+    protected final ListBox positionCbo = new ListBox();
     protected ListBox choices;
 
-    public AbstractRuleModellerSelectorPopup( RuleModel model,
-                                              RuleModeller ruleModeller,
-                                              Integer position,
-                                              AsyncPackageDataModelOracle oracle ) {
+    public AbstractRuleModellerSelectorPopup( final RuleModel model,
+                                              final RuleModeller ruleModeller,
+                                              final Integer position,
+                                              final AsyncPackageDataModelOracle oracle ) {
         this.model = model;
         this.position = position;
         this.ruleModeller = ruleModeller;
