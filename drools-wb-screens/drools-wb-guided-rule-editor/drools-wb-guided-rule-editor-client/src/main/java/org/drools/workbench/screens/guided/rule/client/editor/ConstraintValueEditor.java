@@ -112,7 +112,7 @@ public class ConstraintValueEditor
                                   RuleModeller modeller,
                                   EventBus eventBus,
                                   boolean readOnly ) {
-        this.constraint = con;
+            this.constraint = con;
         this.constraintList = constraintList;
         this.oracle = modeller.getDataModelOracle();
         this.model = modeller.getModel();

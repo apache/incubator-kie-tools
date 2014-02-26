@@ -365,8 +365,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         ClickHandler click = new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                popupCreator.showPatternPopupForComposite( (Widget) event.getSource(),
-                                                           constraint );
+                popupCreator.showPatternPopupForComposite( constraint );
             }
         };
 
@@ -627,8 +626,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         ClickHandler click = new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                popupCreator.showPatternPopup( (Widget) event.getSource(),
-                                               fp,
+                popupCreator.showPatternPopup( fp,
                                                null,
                                                false );
             }
@@ -853,8 +851,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                                               new Callback<ModelField[]>() {
                                                                                   @Override
                                                                                   public void callback( final ModelField[] fields ) {
-                                                                                      popupCreator.showBindFieldPopup( (Widget) event.getSource(),
-                                                                                                                       pattern,
+                                                                                      popupCreator.showBindFieldPopup( pattern,
                                                                                                                        con,
                                                                                                                        fields,
                                                                                                                        popupCreator );
@@ -866,8 +863,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                                               new Callback<ModelField[]>() {
                                                                                   @Override
                                                                                   public void callback( final ModelField[] fields ) {
-                                                                                      popupCreator.showBindFieldPopup( (Widget) event.getSource(),
-                                                                                                                       pattern,
+                                                                                      popupCreator.showBindFieldPopup( pattern,
                                                                                                                        con,
                                                                                                                        fields,
                                                                                                                        popupCreator );

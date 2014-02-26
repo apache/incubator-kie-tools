@@ -113,8 +113,7 @@ public class PopupCreator {
     /**
      * Display a little editor for field bindings.
      */
-    public void showBindFieldPopup( final Widget w,
-                                    final FactPattern fp,
+    public void showBindFieldPopup( final FactPattern fp,
                                     final SingleFieldConstraint con,
                                     final ModelField[] fields,
                                     final PopupCreator popupCreator ) {
@@ -152,8 +151,7 @@ public class PopupCreator {
             sub.addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
                     popup.hide();
-                    popupCreator.showPatternPopup( w,
-                                                   fp,
+                    popupCreator.showPatternPopup( fp,
                                                    con,
                                                    true );
                 }
@@ -180,8 +178,7 @@ public class PopupCreator {
     /**
      * This shows a popup for adding fields to a composite
      */
-    public void showPatternPopupForComposite( final Widget w,
-                                              final HasConstraints hasConstraints ) {
+    public void showPatternPopupForComposite( final HasConstraints hasConstraints ) {
         final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                          GuidedRuleEditorResources.CONSTANTS.AddFieldsToThisConstraint() );
 
@@ -270,8 +267,7 @@ public class PopupCreator {
      * This shows a popup allowing you to add field constraints to a pattern
      * (its a popup).
      */
-    public void showPatternPopup( final Widget w,
-                                  final FactPattern fp,
+    public void showPatternPopup( final FactPattern fp,
                                   final SingleFieldConstraint con,
                                   final boolean isNested ) {
 
