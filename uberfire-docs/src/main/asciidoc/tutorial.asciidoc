@@ -242,7 +242,7 @@ using. Add this inside the `<project>` element, after the
     <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
     <maven.gwt.plugin.version>2.5.1</maven.gwt.plugin.version>
     <jboss-as-maven-plugin.version>7.4.Final</jboss-as-maven-plugin.version>
-    <uberfire.version>0.4.0-SNAPSHOT</uberfire.version>
+    <uberfire.version>0.4.0.Beta2</uberfire.version>
     <errai.version>2.4.3-SNAPSHOT</errai.version>
     <jboss.spec.version>3.0.2.Final</jboss.spec.version>
   </properties>
@@ -2266,7 +2266,7 @@ Or grab link:https://github.com/uberfire/uberfire-tutorial/archive/checkpoint-3.
 ======
 There was a bug in UberFire 0.4 which made it impossible to add
 items to a toolbar. This bug has been eliminated in the latest
-0.4.0-SNAPSHOT releases and all 0.5 versions.
+0.4.0.Beta2 releases and all 0.5 versions.
 ======
 
 Toolbars typically also go near the top of the screen, so let's define
