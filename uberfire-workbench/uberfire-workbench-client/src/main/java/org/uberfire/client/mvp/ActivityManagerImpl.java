@@ -139,9 +139,11 @@ public class ActivityManagerImpl implements ActivityManager {
             return emptyList();
         }
 
-        return new ArrayList<IOCBeanDef<Activity>>( 1 ) {{
-            add( activityBeansCache.getActivity( identifier ) );
-        }};
+        IOCBeanDef<Activity> beanDefActivity = activityBeansCache.getActivity(identifier);
+        if (beanDefActivity == null) {
+            throw new RuntimeException("No such activity: " + identifier);
+        }
+        return Collections.singletonList(beanDefActivity);
     }
 
     private Set<IOCBeanDef<Activity>> resolveByPath( final PathPlaceRequest place ) {
