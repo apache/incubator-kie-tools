@@ -53,6 +53,8 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.WindowCache;
+import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.PostReceiveHook;
 import org.eclipse.jgit.transport.PreReceiveHook;
@@ -984,12 +986,14 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     private boolean deleteRepo( final FileSystem fileSystem ) {
         final File gitDir = ( (JGitFileSystem) fileSystem ).gitRepo().getRepository().getDirectory();
         fileSystem.close();
+        fileSystem.dispose();
 
         try {
+            if ( System.getProperty( "os.name" ).toLowerCase().contains( "windows" ) ) {
+                //this operation forces a cache clean freeing any lock -> windows only issue!
+                WindowCache.reconfigure( new WindowCacheConfig() );
+            }
             FileUtils.delete( gitDir, FileUtils.RECURSIVE | FileUtils.RETRY );
-            closedFileSystems.remove( fileSystem );
-            fileSystems.remove( ( (JGitFileSystem) fileSystem ).id() );
-            repoIndex.remove( ( (JGitFileSystem) fileSystem ).gitRepo().getRepository() );
             return true;
         } catch ( java.io.IOException e ) {
             throw new IOException( e );

@@ -16,6 +16,7 @@
 
 package org.uberfire.java.nio.fs.jgit.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -142,12 +143,7 @@ public final class JGitUtil {
                     tw.enterSubtree();
                     continue;
                 }
-                final ObjectId entid = tw.getObjectId( 0 );
-                final FileMode entmode = tw.getFileMode( 0 );
-                final RevObject ro = rw.lookupAny( entid, entmode.getObjectType() );
-                rw.parseBody( ro );
-                final ObjectLoader ldr = git.getRepository().open( ro.getId(), Constants.OBJ_BLOB );
-                return ldr.openStream();
+                return new ByteArrayInputStream( git.getRepository().open( tw.getObjectId( 0 ), Constants.OBJ_BLOB ).getBytes() );
             }
         } catch ( final Throwable t ) {
             throw new NoSuchFileException( "Can't find '" + gitPath + "' in tree '" + treeRef + "'" );
