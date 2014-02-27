@@ -16,15 +16,16 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.util;
 
-import org.drools.core.util.MVELSafeHelper;
-import org.mvel2.MVEL;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.drools.core.util.MVELSafeHelper;
 
 /**
  * Use MVEL to load up map/list of valid items for fields - used by the Guided rule editor.
@@ -73,6 +74,7 @@ public class DataEnumLoader {
         Map<String, String[]> newMap = new HashMap<String, String[]>();
         for ( Map.Entry<String, Object> entry : map.entrySet() ) {
             String key = makeEnumKey( entry.getKey() );
+            validateKey( key );
             Object list = entry.getValue();
             if ( !( list instanceof List<?> || list instanceof String ) ) {
                 if ( list == null ) {
@@ -100,7 +102,40 @@ public class DataEnumLoader {
         return newMap;
     }
 
-    public static String addCommasForNewLines( String mvelSource ) {
+    private void validateKey( final String key ) {
+        final Pattern pattern = Pattern.compile( ".*(\\[.*\\])" );
+        final Matcher matcher = pattern.matcher( key );
+        if ( !matcher.matches() ) {
+            return;
+        }
+        if ( matcher.groupCount() > 2 ) {
+            errors.add( "Invalid dependent definition: Only [..] accepted." );
+            return;
+        }
+        final String dependencySegment = matcher.group( 1 );
+        if ( dependencySegment.equals( "[]" ) ) {
+            errors.add( "Invalid dependent definition: Empty [] detected." );
+            return;
+        }
+        if ( !dependencySegment.contains( "=" ) ) {
+            errors.add( "Invalid dependent definition: Expected to find '='." );
+            return;
+        }
+        if ( dependencySegment.contains( "[=" ) ) {
+            errors.add( "Invalid dependent definition: No field detected." );
+            return;
+        }
+        if ( dependencySegment.contains( "=]" ) ) {
+            errors.add( "Invalid dependent definition: No value detected." );
+            return;
+        }
+        if ( dependencySegment.contains( "\"" ) ) {
+            errors.add( "Invalid dependent definition: Found quote literal." );
+            return;
+        }
+    }
+
+    private String addCommasForNewLines( String mvelSource ) {
         StringTokenizer st = new StringTokenizer( mvelSource, "\r\n" );
         StringBuilder buf = new StringBuilder();
         while ( st.hasMoreTokens() ) {
