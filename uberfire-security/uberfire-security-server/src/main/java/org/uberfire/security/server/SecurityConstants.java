@@ -44,8 +44,6 @@ public interface SecurityConstants {
 
     final String RESOURCE_MANAGER_CONFIG_KEY = "org.uberfire.resource.manager.config";
 
-    final String COOKIE_NAME_KEY = "org.uberfire.cookie.id";
-
     final String AUTH_PROVIDER_KEY = "org.uberfire.auth.provider";
 
     final String HTTP_FORM_SECURITY_CHECK_URI = "/uf_security_check";

@@ -344,7 +344,6 @@ public class HttpSecurityManagerImpl implements SecurityManager {
                     }
                 }
             }
-            //            authProviders.add( new RememberMeCookieAuthProvider() );
             return this;
         }
 

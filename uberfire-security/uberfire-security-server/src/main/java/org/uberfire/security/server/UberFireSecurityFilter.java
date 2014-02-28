@@ -50,7 +50,6 @@ import org.uberfire.security.authz.ResourceDecisionManager;
 import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.authz.VotingStrategy;
 import org.uberfire.security.impl.authz.ConsensusBasedVoter;
-import org.uberfire.security.server.auth.CookieStorage;
 import org.uberfire.security.server.auth.FormAuthenticationScheme;
 import org.uberfire.security.server.auth.HttpBasicAuthenticationScheme;
 import org.uberfire.security.server.auth.HttpSessionStorage;
@@ -67,7 +66,6 @@ public class UberFireSecurityFilter implements Filter {
 
         final Map<String, String> options = buildOptions( filterConfig );
 
-        final CookieStorage cookieStorage = getCookieStorage( options );
         final AuthenticationScheme basicAuthScheme = new HttpBasicAuthenticationScheme();
         final String forceURL = getForceURL( options );
         final AuthenticationScheme authScheme = getAuthenticationScheme( options );
@@ -88,7 +86,6 @@ public class UberFireSecurityFilter implements Filter {
                 .addForceURL( forceURL )
                 .addAuthProvider( authProvider )
                 .addAuthenticatedStorageProvider( new HttpSessionStorage() )
-                .addAuthenticatedStorageProvider( cookieStorage )
                 .addRoleProvider( roleProvider )
                 .addSubjectPropertiesProvider( propertiesProvider )
                 .addAuthzManager( authzManager )
@@ -141,17 +138,6 @@ public class UberFireSecurityFilter implements Filter {
         }
 
         return result;
-    }
-
-    private CookieStorage getCookieStorage( final Map<String, String> options ) {
-        if ( hasRememerMe( options ) ) {
-            final String cookieName = options.get( COOKIE_NAME_KEY );
-            if ( cookieName == null || cookieName.trim().isEmpty() ) {
-                throw new RuntimeException( "RemememberMe option is set, but no cookie name is defined in init param " + COOKIE_NAME_KEY );
-            }
-            return new CookieStorage( cookieName );
-        }
-        return null;
     }
 
     private RoleProvider getRoleProvider( final Map<String, String> options ) {
