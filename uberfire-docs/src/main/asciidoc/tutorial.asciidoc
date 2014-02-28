@@ -2288,13 +2288,13 @@ public class AppMenuBar extends Composite implements Header {
 
 Stepping through the code, we've implemented the `asWidget()` method,
 which comes from the `Header` interface (`Header` extends `IsWidget`).
-`adWidget()` returns the view from the injected
+`asWidget()` returns the view from the injected
 `WorkbenchMenuBarPresenter`. This is the widget that will appear
 full-width across the top of the screen.
 
 The `getOrder()` method comes from the Header interface as
 well. UberFire supports any number of headers, and they are stacked
-according to their order property. Higher-numbered geaders appear
+according to their order property. Higher-numbered headers appear
 above lower-numbered headers. This menu bar returns the largest
 possible ordering number, so it will always appear at the very top of
 the screen even if there are other headers.
