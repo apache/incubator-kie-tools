@@ -18,8 +18,10 @@ package org.uberfire.client.workbench;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -105,16 +107,34 @@ public class Workbench
 
     };
 
+    private boolean isStandaloneMode = false;
+    private final Set<String> headersToKeep = new HashSet<String>();
+
     @PostConstruct
     public void setup() {
         initWidget( container );
+
+        isStandaloneMode = Window.Location.getParameterMap().containsKey( "standalone" );
+
+        for ( final Map.Entry<String, List<String>> parameter : Window.Location.getParameterMap().entrySet() ) {
+            if ( parameter.getKey().equals( "header" ) ) {
+                headersToKeep.addAll( parameter.getValue() );
+            }
+        }
     }
 
     private void setupHeaders() {
         final Collection<IOCBeanDef<Header>> headerBeans = iocManager.lookupBeans( Header.class );
         final List<Header> instances = new ArrayList<Header>();
         for ( final IOCBeanDef<Header> headerBean : headerBeans ) {
-            instances.add( headerBean.getInstance() );
+            final Header instance = headerBean.getInstance();
+            if ( isStandaloneMode ) {
+                if ( headersToKeep.contains( instance.getId() ) ) {
+                    instances.add( instance );
+                }
+            } else {
+                instances.add( instance );
+            }
         }
 
         sort( instances, new Comparator<Header>() {
@@ -140,9 +160,7 @@ public class Workbench
 
     @SuppressWarnings("unused")
     private void bootstrap( @Observes ApplicationReadyEvent event ) {
-        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            setupHeaders();
-        }
+        setupHeaders();
 
         //Container panels for workbench
         workbenchContainer = dragController.getBoundaryPanel();
@@ -172,13 +190,13 @@ public class Workbench
         } );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
-        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+        if ( !isStandaloneMode ) {
             final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
             if ( defaultPerspective != null ) {
                 placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
             }
         } else {
-            handleIntegration( Window.Location.getParameterMap() );
+            handleStandaloneMode( Window.Location.getParameterMap() );
         }
 
         //Save Workbench state when Window is closed
@@ -208,7 +226,7 @@ public class Workbench
         } );
     }
 
-    private void handleIntegration( final Map<String, List<String>> parameters ) {
+    private void handleStandaloneMode( final Map<String, List<String>> parameters ) {
         if ( parameters.containsKey( "perspective" ) && !parameters.get( "perspective" ).isEmpty() ) {
             placeManager.goTo( new DefaultPlaceRequest( parameters.get( "perspective" ).get( 0 ) ) );
         } else if ( parameters.containsKey( "path" ) && !parameters.get( "path" ).isEmpty() ) {
@@ -251,12 +269,7 @@ public class Workbench
     private void doResizeWorkbenchContainer( final int width,
                                              final int height ) {
         final int headersHeight = headers.asWidget().getOffsetHeight();
-        final int availableHeight;
-        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            availableHeight = height - headersHeight;
-        } else {
-            availableHeight = height;
-        }
+        final int availableHeight = height - headersHeight;
 
         workbenchContainer.setPixelSize( width, availableHeight );
         workbench.setPixelSize( width, availableHeight );
