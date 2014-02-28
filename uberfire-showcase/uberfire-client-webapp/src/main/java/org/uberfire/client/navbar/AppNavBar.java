@@ -23,6 +23,11 @@ public class AppNavBar
     }
 
     @Override
+    public String getId() {
+        return "AppNavBar";
+    }
+
+    @Override
     public int getOrder() {
         return MAX_VALUE;
     }
