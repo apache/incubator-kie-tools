@@ -16,11 +16,13 @@
 
 package org.uberfire.client.mvp;
 
-import java.util.ArrayList;
+import static java.util.Collections.*;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -31,8 +33,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Identity;
 import org.uberfire.security.authz.AuthorizationManager;
-
-import static java.util.Collections.*;
 
 @ApplicationScoped
 public class ActivityManagerImpl implements ActivityManager {
@@ -83,7 +83,7 @@ public class ActivityManagerImpl implements ActivityManager {
 
     @Override
     public <T extends Activity> T getActivity( final Class<T> clazz,
-                                               final PlaceRequest placeRequest ) {
+            final PlaceRequest placeRequest ) {
         final Set<Activity> activities = getActivities( placeRequest );
         if ( activities.size() == 0 ) {
             return null;
@@ -141,7 +141,9 @@ public class ActivityManagerImpl implements ActivityManager {
 
         IOCBeanDef<Activity> beanDefActivity = activityBeansCache.getActivity(identifier);
         if (beanDefActivity == null) {
-            throw new RuntimeException("No such activity: " + identifier);
+            //throw new RuntimeException("No such activity: " + identifier);
+            System.out.println("No such activity: " + identifier + " .. returning an empty list");
+            return Collections.emptyList();
         }
         return Collections.singletonList(beanDefActivity);
     }

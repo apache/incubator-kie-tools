@@ -22,8 +22,8 @@ import org.uberfire.mvp.PlaceRequest;
  * Base class for Activities
  */
 public abstract class AbstractActivity
-        implements
-        Activity {
+implements
+Activity {
 
     protected PlaceManager placeManager;
 
@@ -37,7 +37,7 @@ public abstract class AbstractActivity
 
     @Override
     public void launch( final PlaceRequest place,
-                        final Command callback ) {
+            final Command callback ) {
         this.place = place;
         this.callback = callback;
     }
@@ -52,5 +52,10 @@ public abstract class AbstractActivity
         if ( callback != null ) {
             callback.execute();
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + ": " + place;
     }
 }

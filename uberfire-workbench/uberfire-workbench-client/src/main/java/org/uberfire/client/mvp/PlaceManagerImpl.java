@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -29,9 +33,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
@@ -55,12 +56,13 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import com.google.gwt.core.client.Scheduler;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
 
 @ApplicationScoped
 public class PlaceManagerImpl
-        implements PlaceManager {
+implements PlaceManager {
 
     private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
     private final Map<PlaceRequest, PartDefinition> existingWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
@@ -98,16 +100,16 @@ public class PlaceManagerImpl
     @Inject
     private WorkbenchServicesProxy wbServices;
 
-    private Map<String, SplashScreenActivity> activeSplashScreens = new HashMap<String, SplashScreenActivity>();
-    private Map<PlaceRequest, Activity> onMayCloseList = new HashMap<PlaceRequest, Activity>();
+    private final Map<String, SplashScreenActivity> activeSplashScreens = new HashMap<String, SplashScreenActivity>();
+    private final Map<PlaceRequest, Activity> onMayCloseList = new HashMap<PlaceRequest, Activity>();
 
-    private OnLoadingPerspective loadingPerspective = new OnLoadingPerspective();
+    private final OnLoadingPerspective loadingPerspective = new OnLoadingPerspective();
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
         getPlaceHistoryHandler().register( this,
-                                           produceEventBus(),
-                                           DefaultPlaceRequest.NOWHERE );
+                produceEventBus(),
+                DefaultPlaceRequest.NOWHERE );
     }
 
     PlaceHistoryHandler getPlaceHistoryHandler() {
@@ -116,7 +118,7 @@ public class PlaceManagerImpl
 
     @Override
     public void goTo( final String identifier,
-                      final PanelDefinition panel ) {
+            final PanelDefinition panel ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
         goTo( place, null, panel );
     }
@@ -129,22 +131,22 @@ public class PlaceManagerImpl
 
     @Override
     public void goTo( final String identifier,
-                      final Command callback,
-                      final PanelDefinition panel ) {
+            final Command callback,
+            final PanelDefinition panel ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
         goTo( place, callback, panel );
     }
 
     @Override
     public void goTo( final String identifier,
-                      final Command callback ) {
+            final Command callback ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
         goTo( place, callback, null );
     }
 
     @Override
     public void goTo( final PlaceRequest place,
-                      final PanelDefinition panel ) {
+            final PanelDefinition panel ) {
         goTo( place, null, panel );
     }
 
@@ -155,7 +157,7 @@ public class PlaceManagerImpl
 
     @Override
     public void goTo( final Path path,
-                      final PanelDefinition panel ) {
+            final PanelDefinition panel ) {
         goTo( getPlace( path ), null, panel );
     }
 
@@ -166,40 +168,40 @@ public class PlaceManagerImpl
 
     @Override
     public void goTo( final Path path,
-                      final PlaceRequest placeRequest,
-                      final PanelDefinition panel ) {
+            final PlaceRequest placeRequest,
+            final PanelDefinition panel ) {
         goTo( getPlace( path, placeRequest ), null, panel );
     }
 
     @Override
     public void goTo( final Path path,
-                      final PlaceRequest placeRequest ) {
+            final PlaceRequest placeRequest ) {
         goTo( getPlace( path, placeRequest ), null, null );
     }
 
     @Override
     public void goTo( final Path path,
-                      final Command callback,
-                      final PanelDefinition panel ) {
+            final Command callback,
+            final PanelDefinition panel ) {
         goTo( getPlace( path ), callback, panel );
     }
 
     @Override
     public void goTo( Path path,
-                      Command callback ) {
+            Command callback ) {
         goTo( getPlace( path ), callback, null );
     }
 
     @Override
     public void goTo( final PlaceRequest place,
-                      final Command callback ) {
+            final Command callback ) {
         goTo( place, callback, null );
     }
 
     @Override
     public void goTo( final PlaceRequest place,
-                      final Command callback,
-                      final PanelDefinition panel ) {
+            final Command callback,
+            final PanelDefinition panel ) {
         if ( place == null || place.equals( DefaultPlaceRequest.NOWHERE ) ) {
             return;
         }
@@ -210,22 +212,22 @@ public class PlaceManagerImpl
             if ( activity instanceof WorkbenchActivity ) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
                 launchActivity( requestPair.getK2(),
-                                workbenchActivity,
-                                workbenchActivity.getDefaultPosition(),
-                                panel,
-                                callback );
+                        workbenchActivity,
+                        workbenchActivity.getDefaultPosition(),
+                        panel,
+                        callback );
             } else if ( activity instanceof PopupActivity ) {
                 launchActivity( requestPair.getK2(),
-                                (PopupActivity) activity,
-                                callback );
+                        (PopupActivity) activity,
+                        callback );
             } else if ( activity instanceof PerspectiveActivity ) {
                 final Command launchActivity = new Command() {
                     @Override
                     public void execute() {
                         if ( closeAllCurrentPanels() ) {
                             launchActivity( requestPair.getK2(),
-                                            (PerspectiveActivity) activity,
-                                            callback );
+                                    (PerspectiveActivity) activity,
+                                    callback );
                         }
 
                     }
@@ -297,6 +299,7 @@ public class PlaceManagerImpl
         final Set<Activity> activities = getActivities( place );
 
         if ( activities == null || activities.size() == 0 ) {
+            System.out.println("Launching notfound activity for placeRequest " + place);
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
             notFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
 
@@ -335,7 +338,7 @@ public class PlaceManagerImpl
 
     @Override
     public void goTo( final PartDefinition part,
-                      final PanelDefinition panel ) {
+            final PanelDefinition panel ) {
         final PlaceRequest place = part.getPlace();
         if ( place == null ) {
             return;
@@ -348,10 +351,10 @@ public class PlaceManagerImpl
             if ( activity instanceof WorkbenchActivity ) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
                 launchActivity( place,
-                                workbenchActivity,
-                                part,
-                                panel,
-                                null );
+                        workbenchActivity,
+                        part,
+                        panel,
+                        null );
             } else {
                 throw new IllegalArgumentException( "placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel." );
             }
@@ -361,7 +364,7 @@ public class PlaceManagerImpl
     }
 
     private PlaceRequest getPlace( final Path path,
-                                   final PlaceRequest placeRequest ) {
+            final PlaceRequest placeRequest ) {
         final PlaceRequest request = getPlace( path );
 
         for ( final Map.Entry<String, String> entry : placeRequest.getParameters().entrySet() ) {
@@ -414,7 +417,7 @@ public class PlaceManagerImpl
 
     @Override
     public void tryClosePlace( final PlaceRequest placeToClose,
-                               final Command onAfterClose ) {
+            final Command onAfterClose ) {
         boolean execute = false;
         if ( placeToClose == null ) {
             execute = true;
@@ -450,11 +453,11 @@ public class PlaceManagerImpl
 
     @Override
     public void registerOnOpenCallback( final PlaceRequest place,
-                                        final Command command ) {
+            final Command command ) {
         checkNotNull( "place", place );
         checkNotNull( "command", command );
         this.onOpenCallbacks.put( place,
-                                  command );
+                command );
     }
 
     @Override
@@ -492,10 +495,10 @@ public class PlaceManagerImpl
     }
 
     private void launchActivity( final PlaceRequest place,
-                                 final WorkbenchActivity activity,
-                                 final Position position,
-                                 final PanelDefinition _panel,
-                                 final Command callback ) {
+            final WorkbenchActivity activity,
+            final Position position,
+            final PanelDefinition _panel,
+            final Command callback ) {
 
         //If we're already showing this place exit.
         if ( existingWorkbenchParts.containsKey( place ) ) {
@@ -512,10 +515,10 @@ public class PlaceManagerImpl
         }
 
         launchActivity( place,
-                        activity,
-                        part,
-                        panel,
-                        callback );
+                activity,
+                part,
+                panel,
+                callback );
     }
 
     Event<SelectPlaceEvent> getSelectWorkbenchPartEvent() {
@@ -524,20 +527,20 @@ public class PlaceManagerImpl
 
     PanelDefinition addWorkbenchPanelTo( Position position ) {
         return getPanelManager().addWorkbenchPanel( getPanelManager().getRoot(),
-                                                    position );
+                position );
     }
 
     private void launchActivity( final PlaceRequest place,
-                                 final WorkbenchActivity activity,
-                                 final PartDefinition part,
-                                 final PanelDefinition panel,
-                                 final Command callback ) {
+            final WorkbenchActivity activity,
+            final PartDefinition part,
+            final PanelDefinition panel,
+            final Command callback ) {
 
         //Record new place\part\activity
         existingWorkbenchActivities.put( place,
-                                         activity );
+                activity );
         existingWorkbenchParts.put( place,
-                                    part );
+                part );
         updateHistory( place );
         checkPathDelete( place );
 
@@ -545,21 +548,22 @@ public class PlaceManagerImpl
     }
 
     private void revealActivityWithCalBackToAttachToWorkbench( final PlaceRequest place,
-                                                               final WorkbenchActivity activity,
-                                                               final PartDefinition part,
-                                                               final PanelDefinition panel,
-                                                               Command callback ) {
+            final WorkbenchActivity activity,
+            final PartDefinition part,
+            final PanelDefinition panel,
+            Command callback ) {
         final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
 
         //Reveal activity with call-back to attach to Workbench
         activity.launch( new AcceptItem() {
+            @Override
             public void add( final UIPart uiPart ) {
                 getPanelManager().addWorkbenchPart( place,
-                                                    part,
-                                                    panel,
-                                                    activity.getMenus(),
-                                                    uiPart,
-                                                    activity.contextId() );
+                        part,
+                        panel,
+                        activity.getMenus(),
+                        uiPart,
+                        activity.contextId() );
                 if ( splashScreen != null ) {
                     activeSplashScreens.put( place.getIdentifier(), splashScreen );
                     fireNewSplashScreenActiveEvent();
@@ -592,8 +596,8 @@ public class PlaceManagerImpl
     }
 
     private void launchActivity( final PlaceRequest place,
-                                 final PopupActivity activity,
-                                 final Command callback ) {
+            final PopupActivity activity,
+            final Command callback ) {
         //Record new place\part\activity
         existingWorkbenchActivities.put( place, activity );
         updateHistory( place );
@@ -603,8 +607,8 @@ public class PlaceManagerImpl
     }
 
     private void launchActivity( final PlaceRequest place,
-                                 final PerspectiveActivity activity,
-                                 final Command callback ) {
+            final PerspectiveActivity activity,
+            final Command callback ) {
         loadingPerspective.startLoading();
         activeSplashScreens.clear();
         firePerspectiveChangeEvent( activity );
@@ -655,8 +659,8 @@ public class PlaceManagerImpl
     }
 
     private void onWorkbenchPartBeforeClose( final WorkbenchActivity activity,
-                                             final PlaceRequest place,
-                                             final boolean force ) {
+            final PlaceRequest place,
+            final boolean force ) {
         if ( force || onMayCloseList.containsKey( place ) || activity.onMayClose() ) {
             onMayCloseList.remove( place );
             activity.onClose();
@@ -665,8 +669,8 @@ public class PlaceManagerImpl
     }
 
     private void onWorkbenchPartBeforeClose( final PopupActivity activity,
-                                             final PlaceRequest place,
-                                             final boolean force ) {
+            final PlaceRequest place,
+            final boolean force ) {
         if ( force || activity.onMayClose() ) {
             activity.onClose();
             workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );

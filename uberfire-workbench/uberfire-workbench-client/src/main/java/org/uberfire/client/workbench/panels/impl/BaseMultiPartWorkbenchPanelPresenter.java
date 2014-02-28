@@ -15,12 +15,14 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import static org.uberfire.workbench.model.ContextDisplayMode.*;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.workbench.PanelManager;
@@ -34,7 +36,7 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import static org.uberfire.workbench.model.ContextDisplayMode.*;
+import com.google.gwt.user.client.ui.IsWidget;
 
 public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPresenter {
 
@@ -52,7 +54,7 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
 
     private ContextActivity perspectiveContext = null;
     private ContextActivity panelContext = null;
-    private Map<PartDefinition, ContextActivity> partMap = new HashMap<PartDefinition, ContextActivity>();
+    private final Map<PartDefinition, ContextActivity> partMap = new HashMap<PartDefinition, ContextActivity>();
 
     @PostConstruct
     private void init() {
@@ -95,7 +97,7 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
 
     @Override
     public void addPart( final WorkbenchPartPresenter.View view,
-                         final String contextId ) {
+            final String contextId ) {
         getPanelView().addPart( view );
         if ( panelManager.getPerspective().getContextDisplayMode() == SHOW
                 && definition.getContextDisplayMode() == SHOW
@@ -110,7 +112,10 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
             }
             if ( activity != null ) {
                 partMap.put( view.getPresenter().getDefinition(), activity );
+            } else {
+                System.out.println("Warning: couldn't add this view to the partMap (no activity found): " + view);
             }
+
         }
     }
 
@@ -122,13 +127,13 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
 
     @Override
     public void addPanel( final PanelDefinition panel,
-                          final WorkbenchPanelView view,
-                          final Position position ) {
+            final WorkbenchPanelView view,
+            final Position position ) {
         getPanelView().addPanel( panel,
-                                 view,
-                                 position );
+                view,
+                position );
         definition.insertChild( position,
-                                panel );
+                panel );
     }
 
     @Override
@@ -138,8 +143,8 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
 
     @Override
     public void changeTitle( final PartDefinition part,
-                             final String title,
-                             final IsWidget titleDescorator ) {
+            final String title,
+            final IsWidget titleDescorator ) {
         getPanelView().changeTitle( part, title, titleDescorator );
     }
 
@@ -205,7 +210,7 @@ public class BaseMultiPartWorkbenchPanelPresenter implements WorkbenchPanelPrese
 
     @Override
     public void onResize( final int width,
-                          final int height ) {
+            final int height ) {
         getDefinition().setWidth( width == 0 ? null : width );
         getDefinition().setHeight( height == 0 ? null : height );
     }
