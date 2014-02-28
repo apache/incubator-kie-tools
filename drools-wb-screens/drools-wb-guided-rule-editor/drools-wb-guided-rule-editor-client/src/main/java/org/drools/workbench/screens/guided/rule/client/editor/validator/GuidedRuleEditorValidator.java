@@ -1,15 +1,23 @@
 package org.drools.workbench.screens.guided.rule.client.editor.validator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 
 public class GuidedRuleEditorValidator {
 
+    private final List<String> errors = new ArrayList<String>();
+    private boolean isValid = true;
+
     private final RuleModel model;
     private final Constants constants;
-    private String errorMessage = "";
 
     public GuidedRuleEditorValidator(RuleModel model, Constants constants) {
         this.model = model;
@@ -21,42 +29,72 @@ public class GuidedRuleEditorValidator {
         if (model.lhs.length == 0) {
             return true;
         } else {
-            return validateCompositeFactPatterns();
+            validateIPatterns(model.lhs);
         }
+
+        return isValid;
 
     }
 
-    private boolean validateCompositeFactPatterns() {
-        for (int i = 0; i < model.lhs.length; i++) {
-            IPattern iPattern = model.lhs[i];
+    private void validateIPatterns(IPattern[] patterns) {
+        if (patterns == null) {
+            return;
+        }
+
+        for (IPattern iPattern : patterns) {
             if (iPattern instanceof CompositeFactPattern) {
-                if (!hasPatterns((CompositeFactPattern) iPattern)) {
-                    return false;
-                }
+                CompositeFactPattern compositeFactPattern = (CompositeFactPattern) iPattern;
+
+                hasPatterns(compositeFactPattern);
+
+                validateIPatterns(compositeFactPattern.getPatterns());
+
+            } else if (iPattern instanceof FactPattern) {
+                validateFactPattern((FactPattern) iPattern);
             }
         }
-
-        return true;
     }
 
-    private boolean hasPatterns(CompositeFactPattern iPattern) {
+    private void hasPatterns(CompositeFactPattern iPattern) {
 
         if (iPattern.getPatterns() == null) {
             setMandatoryFieldsError();
-            return false;
         } else if (iPattern.getPatterns().length == 0) {
             setMandatoryFieldsError();
-            return false;
-        } else {
-            return true;
         }
     }
 
-    private void setMandatoryFieldsError() {
-        errorMessage = constants.AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
+    private void validateFactPattern(FactPattern factPattern) {
+        if (factPattern.getConstraintList() == null || factPattern.getConstraintList().getConstraints() == null) {
+            return;
+        }
+
+        for (FieldConstraint constraint : factPattern.getConstraintList().getConstraints()) {
+            if (constraint instanceof SingleFieldConstraint) {
+                SingleFieldConstraint singleFieldConstraint = (SingleFieldConstraint) constraint;
+                if (areOperatorAndValueInValid(singleFieldConstraint)) {
+                    errors.add(
+                            constants.FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator(
+                                    factPattern.getFactType(),
+                                    singleFieldConstraint.getFieldName()));
+                    isValid = false;
+                }
+            }
+        }
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    private boolean areOperatorAndValueInValid(SingleFieldConstraint singleFieldConstraint) {
+        return !singleFieldConstraint.getOperator().equals("== null")
+                && !singleFieldConstraint.getOperator().equals("!= null")
+                && (singleFieldConstraint.getOperator() != null && singleFieldConstraint.getValue() == null);
+    }
+
+    private void setMandatoryFieldsError() {
+        errors.add(constants.AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving());
+        isValid = false;
+    }
+
+    public List<String> getErrors() {
+        return errors;
     }
 }

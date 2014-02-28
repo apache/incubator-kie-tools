@@ -86,6 +86,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     private boolean isFactTypeKnown;
 
     private final Map<SingleFieldConstraint, ConstraintValueEditor> constraintValueEditors = new HashMap<SingleFieldConstraint, ConstraintValueEditor>();
+    private ConstraintValueEditor constraintValueEditor;
 
     public FactPatternWidget( RuleModeller mod,
                               EventBus eventBus,
@@ -469,7 +470,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             //Get first part of constraint.fieldName? #1=Fact1, #2=SubFact1
             inner.setWidget( row,
                              2 + col,
-                             valueEditor( constraint ) );
+                             createValueEditor(constraint) );
             inner.setWidget( row,
                              3 + col,
                              connectives.connectives( constraint ) );
@@ -575,7 +576,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                     constraint.setValue( "" );
                     inner.setWidget( row,
                                      2 + col,
-                                     valueEditor( constraint ) );
+                                     createValueEditor(constraint) );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                 }
@@ -674,126 +675,149 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
     }
 
-    private Widget valueEditor( final SingleFieldConstraint c ) {
+    private Widget createValueEditor(final SingleFieldConstraint constraint) {
 
-        //Create a new ConstraintValueEditor
-        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( c,
-                                                                                 pattern.getConstraintList(),
-                                                                                 this.getModeller(),
-                                                                                 this.getEventBus(),
-                                                                                 this.readOnly );
+        constraintValueEditor = new ConstraintValueEditor( constraint,
+                                                           pattern.getConstraintList(),
+                                                           this.getModeller(),
+                                                           this.getEventBus(),
+                                                           this.readOnly );
         //If any literal value changes set to dirty and refresh dependent enumerations
-        constraintValueEditor.setOnValueChangeCommand( new Command() {
+        constraintValueEditor.setOnValueChangeCommand(new Command() {
             public void execute() {
-                setModified( true );
-                refreshConstraintValueEditorsDropDownData( c );
+                constraintValueEditor.hideError();
+                setModified(true);
+                refreshConstraintValueEditorsDropDownData(constraint);
             }
-        } );
+        });
         //If a Template Key value changes only set to dirty
-        constraintValueEditor.setOnTemplateValueChangeCommand( new Command() {
+        constraintValueEditor.setOnTemplateValueChangeCommand(new Command() {
             public void execute() {
-                setModified( true );
+                constraintValueEditor.hideError();
+                setModified(true);
             }
-        } );
+        });
 
         //Keep a reference to the value editors so they can be refreshed for dependent enums
-        constraintValueEditors.put( c,
-                                    constraintValueEditor );
+        constraintValueEditors.put( constraint,
+                constraintValueEditor);
 
         return constraintValueEditor;
     }
 
-    private Widget operatorDropDown( final SingleFieldConstraint c,
+    private Widget operatorDropDown( final SingleFieldConstraint constraint,
                                      final DirtyableFlexTable inner,
                                      final int row,
                                      final int col ) {
         final HorizontalPanel hp = new HorizontalPanel();
         if ( !this.readOnly ) {
 
-            String fieldName;
-            String factType;
-
-            //Connectives Operators are handled in class Connectives
-            if ( c instanceof SingleFieldConstraintEBLeftSide ) {
-                SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) c;
-                factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
-                if ( factType == null ) {
-                    factType = sfexp.getExpressionLeftSide().getGenericType();
+            getOperatorDropDown(constraint, inner, row, col, new Callback<CEPOperatorsDropdown>() {
+                @Override public void callback(CEPOperatorsDropdown result) {
+                    hp.add(result);
                 }
-                fieldName = sfexp.getExpressionLeftSide().getFieldName();
-
-            } else {
-                factType = c.getFactType();
-                fieldName = c.getFieldName();
-            }
-
-            connectives.getDataModelOracle().getOperatorCompletions( factType,
-                                                                     fieldName,
-                                                                     new Callback<String[]>() {
-                                                                         @Override
-                                                                         public void callback( final String[] operators ) {
-                                                                             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
-                                                                                                                                c );
-                                                                             hp.add( w );
-
-                                                                             w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
-
-                                                                                 public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
-                                                                                     setModified( true );
-                                                                                     final OperatorSelection selection = event.getValue();
-                                                                                     final String selected = selection.getValue();
-                                                                                     final String selectedText = selection.getDisplayText();
-
-                                                                                     //Prevent recursion once operator change has been applied
-                                                                                     if ( selectedText.equals( c.getOperator() ) ) {
-                                                                                         return;
-                                                                                     }
-
-                                                                                     final boolean newOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( selected );
-                                                                                     final boolean oldOperatorRequiresExplicitList = OperatorsOracle.operatorRequiresList( c.getOperator() );
-                                                                                     c.setOperator( selected );
-                                                                                     if ( c.getOperator().equals( "" ) ) {
-                                                                                         c.setOperator( null );
-                                                                                     }
-                                                                                     if ( selectedText.equals( HumanReadableConstants.INSTANCE.isEqualToNull() ) || selectedText.equals( HumanReadableConstants.INSTANCE.isNotEqualToNull() ) ) {
-                                                                                         if ( inner != null ) {
-                                                                                             inner.getWidget( row,
-                                                                                                              col ).setVisible( false );
-                                                                                         }
-                                                                                     } else {
-                                                                                         if ( inner != null ) {
-                                                                                             inner.getWidget( row,
-                                                                                                              col ).setVisible( true );
-                                                                                         }
-                                                                                     }
-
-                                                                                     //If new operator requires a comma separated list and old did not, or vice-versa
-                                                                                     //we need to redraw the ConstraintValueEditor for the constraint
-                                                                                     if ( newOperatorRequiresExplicitList != oldOperatorRequiresExplicitList ) {
-                                                                                         if ( newOperatorRequiresExplicitList == false ) {
-                                                                                             final String[] oldValueList = c.getValue().split( "," );
-                                                                                             if ( oldValueList.length > 0 ) {
-                                                                                                 c.setValue( oldValueList[ 0 ] );
-                                                                                             }
-                                                                                         }
-
-                                                                                         //Redraw ConstraintValueEditor
-                                                                                         inner.setWidget( row,
-                                                                                                          col,
-                                                                                                          valueEditor( c ) );
-                                                                                     }
-
-                                                                                     getModeller().makeDirty();
-                                                                                 }
-                                                                             } );
-                                                                         }
-                                                                     } );
+            });
 
         } else {
-            final SmallLabel sl = new SmallLabel( "<b>" + ( c.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() ) ) + "</b>" );
+            final SmallLabel sl = new SmallLabel( "<b>" + ( constraint.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName( constraint.getOperator() ) ) + "</b>" );
             hp.add( sl );
         }
         return hp;
+    }
+
+    private void getOperatorDropDown( final SingleFieldConstraint constraint,
+                                      final DirtyableFlexTable inner,
+                                      final int row,
+                                      final int col,
+                                      final Callback<CEPOperatorsDropdown> callback) {
+        String fieldName;
+        String factType;
+
+        //Connectives Operators are handled in class Connectives
+        if ( constraint instanceof SingleFieldConstraintEBLeftSide) {
+            SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constraint;
+            factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
+            if ( factType == null ) {
+                factType = sfexp.getExpressionLeftSide().getGenericType();
+            }
+            fieldName = sfexp.getExpressionLeftSide().getFieldName();
+
+        } else {
+            factType = constraint.getFactType();
+            fieldName = constraint.getFieldName();
+        }
+
+        getOperatorCompletions(constraint, inner, row, col, callback, fieldName, factType);
+    }
+
+    private void getOperatorCompletions(final SingleFieldConstraint constraint, final DirtyableFlexTable inner, final int row, final int col, final Callback<CEPOperatorsDropdown> callback, String fieldName, String factType) {
+        connectives.getDataModelOracle().getOperatorCompletions( factType,
+                                                                 fieldName,
+                                                                 new Callback<String[]>() {
+                                                                     @Override
+                                                                     public void callback( final String[] operators ) {
+                                                                         CEPOperatorsDropdown dropdown = new CEPOperatorsDropdown( operators,
+                                                                                                                            constraint );
+                                                                         callback.callback( dropdown );
+
+                                                                         dropdown.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
+
+                                                                             public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                                                                                 onDropDownValueChanged(event, constraint, inner, row, col);
+                                                                             }
+                                                                         });
+                                                                     }
+                                                                 } );
+    }
+
+    private void onDropDownValueChanged(ValueChangeEvent<OperatorSelection> event, SingleFieldConstraint constraint, DirtyableFlexTable inner, int row, int col) {
+        setModified(true);
+        final String selected = event.getValue().getValue();
+        final String selectedText = event.getValue().getDisplayText();
+
+        //Prevent recursion once operator change has been applied
+        if (selectedText.equals(constraint.getOperator())) {
+            return;
+        }
+
+        constraint.setOperator(selected);
+        if (constraint.getOperator().equals("")) {
+            constraint.setOperator(null);
+            constraintValueEditor.hideError();
+        } else {
+            constraintValueEditor.showError();
+        }
+
+        if (inner != null) {
+            if (isWidgetForValueNeeded(selectedText)) {
+                inner.getWidget(row, col).setVisible(false);
+            } else {
+                inner.getWidget(row, col).setVisible(true);
+            }
+        }
+
+        //If new operator requires a comma separated list and old did not, or vice-versa
+        //we need to redraw the ConstraintValueEditor for the constraint
+        if (OperatorsOracle.operatorRequiresList(selected) != OperatorsOracle.operatorRequiresList(constraint.getOperator())) {
+            if (OperatorsOracle.operatorRequiresList(selected) == false) {
+                final String[] oldValueList = constraint.getValue().split(",");
+                if (oldValueList.length > 0) {
+                    constraint.setValue(oldValueList[0]);
+                }
+            }
+
+            //Redraw ConstraintValueEditor
+            inner.setWidget(
+                    row,
+                    col,
+                    createValueEditor(constraint));
+        }
+
+        getModeller().makeDirty();
+    }
+
+    private boolean isWidgetForValueNeeded(String selectedText) {
+        return selectedText.equals(HumanReadableConstants.INSTANCE.isEqualToNull()) || selectedText.equals(HumanReadableConstants.INSTANCE.isNotEqualToNull());
     }
 
     private HorizontalPanel expressionBuilderLS( final SingleFieldConstraintEBLeftSide con,

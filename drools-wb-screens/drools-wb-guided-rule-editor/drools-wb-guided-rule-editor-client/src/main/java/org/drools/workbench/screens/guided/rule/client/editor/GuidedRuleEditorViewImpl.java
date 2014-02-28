@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -73,8 +74,7 @@ public class GuidedRuleEditorViewImpl
 
     @Override
     public String getTitle(String fileName) {
-        Constants constants = GWT.create(Constants.class);
-        return constants.GuidedRuleEditorTitle() + " [" + fileName + "]";
+        return GuidedRuleEditorResources.CONSTANTS.GuidedRuleEditorTitle() + " [" + fileName + "]";
     }
 
     @Override

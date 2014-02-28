@@ -408,20 +408,21 @@ public class GuidedRuleEditorPresenter {
             new SaveOperationService().save( path,
                                              new CommandWithCommitMessage() {
                                                  @Override
-                                                 public void execute( final String commitMessage ) {
-                                                     view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                     service.call( getSaveSuccessCallback(),
-                                                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                                                            view.getContent(),
-                                                                                                                            metadataWidget.getContent(),
-                                                                                                                            commitMessage );
+                                                 public void execute(final String commitMessage) {
+                                                     view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                                                     service.call(getSaveSuccessCallback(),
+                                                             new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
+                                                             view.getContent(),
+                                                             metadataWidget.getContent(),
+                                                             commitMessage);
+
                                                  }
                                              }
                                            );
 
             concurrentUpdateSessionInfo = null;
         } else {
-            ErrorPopup.showMessage( validator.getErrorMessage() );
+            ErrorPopup.showMessage(validator.getErrors().get(0));
         }
     }
 
