@@ -15,10 +15,10 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.data;
 
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 
 /**
  * A grouped row of data in the Decision Table. This object represents the row
@@ -67,7 +67,7 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
      * Caution should be exercised if the value was first read from a
      * GroupedDynamicDataRow as the value will be a GroupedCellValue which, if
      * added back to the row, will not give the desired result.
-     * @param element The CellValue
+     * @param e The CellValue
      */
     @Override
     public boolean add( CellValue<? extends Comparable<?>> e ) {
@@ -124,24 +124,6 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
             groupedRow.remove( index );
         }
         return super.remove( index );
-    }
-
-    /**
-     * Move an element at the given source index to the given target index. This
-     * should be used in preference to calling add\remove when repositioning
-     * elements is required.
-     * @param targetColumnIndex
-     * @param sourceColumnIndex
-     */
-    @Override
-    public void move( int targetColumnIndex,
-                      int sourceColumnIndex ) {
-        for ( DynamicDataRow groupedRow : this.groupedRows ) {
-            groupedRow.add( targetColumnIndex,
-                            groupedRow.remove( sourceColumnIndex ) );
-        }
-        super.move( targetColumnIndex,
-                    sourceColumnIndex );
     }
 
 }

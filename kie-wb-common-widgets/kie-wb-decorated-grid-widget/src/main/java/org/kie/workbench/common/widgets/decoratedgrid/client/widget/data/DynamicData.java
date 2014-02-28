@@ -15,14 +15,14 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.data;
 
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.SortConfiguration;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.SortConfiguration;
 
 /**
  * A simple container for rows of data.
@@ -94,6 +94,23 @@ public class DynamicData
         visibleColumns.add( index,
                             isVisible );
 
+        assertModelMerging();
+    }
+
+    /**
+     * Move a column
+     * @param sourceColumnIndex
+     * @param targetColumnIndex
+     */
+    public void moveColumn( int sourceColumnIndex,
+                            int targetColumnIndex ) {
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            row.add( targetColumnIndex,
+                     row.remove( sourceColumnIndex ) );
+        }
+        visibleColumns.add( targetColumnIndex,
+                            visibleColumns.remove( sourceColumnIndex ) );
         assertModelMerging();
     }
 
@@ -454,6 +471,8 @@ public class DynamicData
                 int newRow = iRow;
                 int newCol = colCount;
                 CellValue<? extends Comparable<?>> indexCell = row.get( iCol );
+                indexCell.setCoordinate( new Coordinate( iRow,
+                                                         iCol ) );
 
                 // Don't index hidden columns; indexing is used to
                 // map between HTML elements and the data behind
@@ -474,9 +493,13 @@ public class DynamicData
                         newRow = priorHtmlCoordinate.getRow();
                         newCol = priorHtmlCoordinate.getCol();
                     }
+                } else {
+                    final int priorColIndex = ( iCol > 0 ? iCol - 1 : 0 );
+                    CellValue<? extends Comparable<?>> priorCell = row.get( priorColIndex );
+                    Coordinate priorHtmlCoordinate = priorCell.getHtmlCoordinate();
+                    newRow = priorHtmlCoordinate.getRow();
+                    newCol = priorHtmlCoordinate.getCol();
                 }
-                indexCell.setCoordinate( new Coordinate( iRow,
-                                                         iCol ) );
                 indexCell.setHtmlCoordinate( new Coordinate( newRow,
                                                              newCol ) );
             }

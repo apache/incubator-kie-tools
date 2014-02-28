@@ -1079,10 +1079,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                                       isVisible );
             showColumn( index );
         } else if ( !isVisible && columns.get( index ).isVisible() ) {
+            hideColumn( index );
             columns.get( index ).setVisible( isVisible );
             data.setColumnVisibility( index,
                                       isVisible );
-            hideColumn( index );
         }
     }
 
@@ -1147,23 +1147,24 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         //Move source columns and data to destination
         if ( targetColumnIndex > sourceColumnIndex ) {
             for ( int iCol = 0; iCol < numberOfColumns; iCol++ ) {
+//                this.data.addColumn( targetColumnIndex,
+//                                     this.data.removeColumn( sourceColumnIndex ),
+//                                     this.columns.get( sourceColumnIndex ).isVisible() );
                 this.columns.add( targetColumnIndex,
                                   this.columns.remove( sourceColumnIndex ) );
-                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                    DynamicDataRow row = data.get( iRow );
-                    row.move( targetColumnIndex,
-                              sourceColumnIndex );
-                }
+                this.data.moveColumn( sourceColumnIndex,
+                                      targetColumnIndex );
+
             }
         } else if ( targetColumnIndex < sourceColumnIndex ) {
             for ( int iCol = 0; iCol < numberOfColumns; iCol++ ) {
+//                this.data.addColumn( targetColumnIndex,
+//                                     this.data.removeColumn( sourceColumnIndex ),
+//                                     this.columns.get( sourceColumnIndex ).isVisible() );
                 this.columns.add( targetColumnIndex,
                                   this.columns.remove( sourceColumnIndex ) );
-                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                    DynamicDataRow row = data.get( iRow );
-                    row.move( targetColumnIndex,
-                              sourceColumnIndex );
-                }
+                this.data.moveColumn( sourceColumnIndex,
+                                      targetColumnIndex );
                 sourceColumnIndex++;
                 targetColumnIndex++;
             }

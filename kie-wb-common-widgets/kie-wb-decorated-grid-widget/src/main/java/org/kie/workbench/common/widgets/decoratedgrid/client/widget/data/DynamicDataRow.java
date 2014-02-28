@@ -92,10 +92,4 @@ public class DynamicDataRow
         return creationIndex;
     }
 
-    public void move( int targetColumnIndex,
-                      int sourceColumnIndex ) {
-        rowData.add( targetColumnIndex,
-                     rowData.remove( sourceColumnIndex ) );
-    }
-
 }

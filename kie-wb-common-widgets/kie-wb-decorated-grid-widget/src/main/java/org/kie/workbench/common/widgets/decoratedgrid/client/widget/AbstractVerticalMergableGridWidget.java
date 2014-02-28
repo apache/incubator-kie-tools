@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget;
 
+import java.util.Set;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
@@ -37,8 +39,6 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.resources.i18n.Cons
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateSelectedCellsEvent;
-
-import java.util.Set;
 
 /**
  * A Vertical implementation of MergableGridWidget, that renders columns as erm,
