@@ -27,8 +27,8 @@ public class HttpSecurityContext extends MapSecurityContext {
     private final HttpServletResponse response;
 
     public HttpSecurityContext( final HttpServletRequest httpRequest,
-                                final HttpServletResponse httpResponse,
-                                final Object... objects ) {
+            final HttpServletResponse httpResponse,
+            final Object... objects ) {
         super( buildResource( httpRequest ) );
         this.request = httpRequest;
         this.response = httpResponse;
@@ -54,4 +54,10 @@ public class HttpSecurityContext extends MapSecurityContext {
     public String getRequestURI() {
         return request.getRequestURI();
     }
+
+    @Override
+    public String toString() {
+        return "HttpSecurityContext [resource=" + resource + ", content=" + content + ", subject=" + subject + "]";
+    }
+
 }

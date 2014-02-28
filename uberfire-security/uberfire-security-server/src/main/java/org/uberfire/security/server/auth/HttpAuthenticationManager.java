@@ -16,12 +16,16 @@
 
 package org.uberfire.security.server.auth;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.security.auth.AuthenticationStatus.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.inject.Alternative;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 
 import org.uberfire.security.ResourceManager;
@@ -39,16 +43,7 @@ import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.auth.SubjectPropertiesProvider;
 import org.uberfire.security.impl.IdentityImpl;
-import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.server.HttpSecurityContext;
-import org.uberfire.security.server.SecurityConstants;
-import org.uberfire.security.server.cdi.SecurityFactory;
-
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.security.Role.*;
-import static org.uberfire.security.auth.AuthenticationStatus.*;
 
 @Alternative
 public class HttpAuthenticationManager implements AuthenticationManager {
@@ -66,12 +61,12 @@ public class HttpAuthenticationManager implements AuthenticationManager {
     //if System.getProperty("java.security.auth.login.config") != null => create a JAASProvider
 
     public HttpAuthenticationManager( final List<AuthenticationScheme> authScheme,
-                                      final String forceURL,
-                                      final List<AuthenticationProvider> authProviders,
-                                      final List<RoleProvider> roleProviders,
-                                      final List<SubjectPropertiesProvider> subjectPropertiesProviders,
-                                      final List<AuthenticatedStorageProvider> authStorageProviders,
-                                      final ResourceManager resourceManager ) {
+            final String forceURL,
+            final List<AuthenticationProvider> authProviders,
+            final List<RoleProvider> roleProviders,
+            final List<SubjectPropertiesProvider> subjectPropertiesProviders,
+            final List<AuthenticatedStorageProvider> authStorageProviders,
+            final ResourceManager resourceManager ) {
         this.forceURL = forceURL;
         this.authSchemes = checkNotEmpty( "authScheme", authScheme );
         this.authProviders = checkNotEmpty( "authProviders", authProviders );
@@ -85,67 +80,20 @@ public class HttpAuthenticationManager implements AuthenticationManager {
     public Subject authenticate( final SecurityContext context ) throws AuthenticationException {
         final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
 
+        if ( !resourceManager.requiresAuthentication( httpContext.getResource() ) ) {
+            return null;
+        }
+
+        saveTargetUrlForAfterAuthentication( httpContext );
+
         Principal principal = null;
-        for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
-            principal = storeProvider.load( httpContext );
-            if ( principal != null ) {
-                break;
-            }
-        }
 
-        if ( principal != null && principal instanceof Subject ) {
-            return (Subject) principal;
-        }
-
-        boolean isRememberOp = principal != null;
-
-        final boolean requiresAuthentication = resourceManager.requiresAuthentication( httpContext.getResource() );
-
-        if ( principal == null ) {
+        all_auth:
             for ( final AuthenticationScheme authScheme : authSchemes ) {
-                if ( authScheme.isAuthenticationRequest( httpContext ) ) {
-                    break;
-                } else if ( requiresAuthentication ) {
-                    if ( !requestCache.containsKey( httpContext.getRequest().getSession().getId() ) ) {
-
-                        String preservedQueryStr = httpContext.getRequest().getQueryString();
-
-                        if ( preservedQueryStr == null ) {
-                            preservedQueryStr = "";
-                        } else {
-                            preservedQueryStr = "?" + preservedQueryStr;
-                        }
-
-                        // this is for the benefit of dev mode logins: the uf_security_check form
-                        // won't have the gwt.codeserver parameter on it, but the referer will
-                        String referer = httpContext.getRequest().getHeader( "Referer" );
-                        if ( preservedQueryStr.equals( "" ) && referer != null && referer.indexOf( '?' ) >= 0 ) {
-                            preservedQueryStr = referer.substring( referer.indexOf( '?' ) );
-                        }
-
-                        if ( forceURL != null ) {
-
-                            // prepend context path for context-relative forceURLs
-                            String contextPrefix = "";
-                            if ( forceURL.startsWith( "/" ) ) {
-                                contextPrefix = httpContext.getRequest().getContextPath();
-                            }
-
-                            requestCache.put( httpContext.getRequest().getSession().getId(), contextPrefix + forceURL + preservedQueryStr );
-                        } else {
-                            requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + preservedQueryStr );
-                        }
-                    }
-                    authScheme.challengeClient( httpContext );
+                if ( !authScheme.isAuthenticationRequest( httpContext ) ) {
+                    continue;
                 }
-            }
 
-            if ( !requiresAuthentication ) {
-                return null;
-            }
-
-            all_auth:
-            for ( final AuthenticationScheme authScheme : authSchemes ) {
                 final Credential credential = authScheme.buildCredential( httpContext );
 
                 if ( credential == null ) {
@@ -163,6 +111,17 @@ public class HttpAuthenticationManager implements AuthenticationManager {
                     }
                 }
             }
+
+        // since this wasn't a login attempt but the resource requires authentication, look for cached auth info
+        if ( principal == null ) {
+            for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
+                principal = storeProvider.load( httpContext );
+                if ( principal != null && principal instanceof Subject ) {
+
+                    // return immediately; we should not attempt to build up a new Subject
+                    return (Subject) principal;
+                }
+            }
         }
 
         if ( principal == null ) {
@@ -170,9 +129,6 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
 
         final List<Role> roles = new ArrayList<Role>();
-        if ( isRememberOp ) {
-            roles.add( new RoleImpl( ROLE_REMEMBER_ME ) );
-        }
 
         for ( final RoleProvider roleProvider : roleProviders ) {
             roles.addAll( roleProvider.loadRoles( principal ) );
@@ -191,7 +147,9 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
 
         final String originalRequest = requestCache.remove( httpContext.getRequest().getSession().getId() );
-        if ( originalRequest != null && !originalRequest.isEmpty() && !httpContext.getResponse().isCommitted() ) {
+        if ( originalRequest != null && !originalRequest.isEmpty()
+                && !isSameLocation( originalRequest, httpContext.getRequestURI() )
+                && !httpContext.getResponse().isCommitted() ) {
             try {
                 httpContext.getResponse().sendRedirect( originalRequest );
             } catch ( Exception e ) {
@@ -200,6 +158,56 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
 
         return result;
+    }
+
+    /**
+     * Compares the two URL or URI fragments ignoring their query strings.
+     * 
+     * @return true if both requests are for the same location without considering their query parameters.
+     */
+    private boolean isSameLocation( String originalRequest, String currentRequest ) {
+        int queryIdx = originalRequest.indexOf( '?' );
+        if (queryIdx >= 0) {
+            originalRequest = originalRequest.substring( 0, queryIdx );
+        }
+        queryIdx = currentRequest.indexOf( '?' );
+        if ( queryIdx >= 0) {
+            currentRequest = currentRequest.substring( 0, queryIdx );
+        }
+        return originalRequest.equals( currentRequest );
+    }
+
+    private void saveTargetUrlForAfterAuthentication( final HttpSecurityContext httpContext ) {
+        if ( !requestCache.containsKey( httpContext.getRequest().getSession().getId() ) ) {
+
+            String preservedQueryStr = httpContext.getRequest().getQueryString();
+
+            if ( preservedQueryStr == null ) {
+                preservedQueryStr = "";
+            } else {
+                preservedQueryStr = "?" + preservedQueryStr;
+            }
+
+            // this is for the benefit of dev mode logins: the uf_security_check form
+            // won't have the gwt.codeserver parameter on it, but the referer will
+            String referer = httpContext.getRequest().getHeader( "Referer" );
+            if ( preservedQueryStr.equals( "" ) && referer != null && referer.indexOf( '?' ) >= 0 ) {
+                preservedQueryStr = referer.substring( referer.indexOf( '?' ) );
+            }
+
+            if ( forceURL != null ) {
+
+                // prepend context path for context-relative forceURLs
+                String contextPrefix = "";
+                if ( forceURL.startsWith( "/" ) ) {
+                    contextPrefix = httpContext.getRequest().getContextPath();
+                }
+
+                requestCache.put( httpContext.getRequest().getSession().getId(), contextPrefix + forceURL + preservedQueryStr );
+            } else {
+                requestCache.put( httpContext.getRequest().getSession().getId(), httpContext.getRequest().getRequestURI() + preservedQueryStr );
+            }
+        }
     }
 
     @Override

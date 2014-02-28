@@ -35,4 +35,9 @@ public class RolesResourceImpl implements RolesResource {
         return roles;
     }
 
+    @Override
+    public String toString() {
+        return "RolesResourceImpl [roles=" + roles + "]";
+    }
+
 }

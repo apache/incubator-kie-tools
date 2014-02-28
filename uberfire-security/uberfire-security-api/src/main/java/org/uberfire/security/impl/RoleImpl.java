@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.uberfire.security.Role;
 
 public class RoleImpl implements Role,
-                                 Serializable {
+Serializable {
 
     private static final long serialVersionUID = 8713460024436782774L;
 
@@ -20,6 +20,11 @@ public class RoleImpl implements Role,
 
     @Override
     public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
         return name;
     }
 }

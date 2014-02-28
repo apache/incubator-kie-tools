@@ -16,23 +16,8 @@
 
 package org.uberfire.security.server;
 
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static org.uberfire.security.server.SecurityConstants.AUTHZ_MANAGER_KEY;
-import static org.uberfire.security.server.SecurityConstants.AUTH_FORCE_URL;
-import static org.uberfire.security.server.SecurityConstants.AUTH_MANAGER_KEY;
-import static org.uberfire.security.server.SecurityConstants.AUTH_PROVIDER_KEY;
-import static org.uberfire.security.server.SecurityConstants.AUTH_REMEMBER_ME_SCHEME_KEY;
-import static org.uberfire.security.server.SecurityConstants.AUTH_SCHEME_KEY;
-import static org.uberfire.security.server.SecurityConstants.COOKIE_NAME_KEY;
-import static org.uberfire.security.server.SecurityConstants.FORM;
-import static org.uberfire.security.server.SecurityConstants.LOGOUT_URI;
-import static org.uberfire.security.server.SecurityConstants.RESOURCE_MANAGER_CONFIG_KEY;
-import static org.uberfire.security.server.SecurityConstants.RESOURCE_MANAGER_KEY;
-import static org.uberfire.security.server.SecurityConstants.ROLE_DECISION_MANAGER_KEY;
-import static org.uberfire.security.server.SecurityConstants.ROLE_PROVIDER_KEY;
-import static org.uberfire.security.server.SecurityConstants.SUBJECT_PROPERTIES_PROVIDER_KEY;
-import static org.uberfire.security.server.SecurityConstants.URL_ACCESS_DECISION_MANAGER_KEY;
-import static org.uberfire.security.server.SecurityConstants.URL_VOTING_MANAGER_KEY;
+import static javax.servlet.http.HttpServletResponse.*;
+import static org.uberfire.security.server.SecurityConstants.*;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -69,7 +54,6 @@ import org.uberfire.security.server.auth.CookieStorage;
 import org.uberfire.security.server.auth.FormAuthenticationScheme;
 import org.uberfire.security.server.auth.HttpBasicAuthenticationScheme;
 import org.uberfire.security.server.auth.HttpSessionStorage;
-import org.uberfire.security.server.auth.RememberMeCookieAuthScheme;
 import org.uberfire.security.server.cdi.SecurityFactory;
 
 public class UberFireSecurityFilter implements Filter {
@@ -85,7 +69,6 @@ public class UberFireSecurityFilter implements Filter {
 
         final CookieStorage cookieStorage = getCookieStorage( options );
         final AuthenticationScheme basicAuthScheme = new HttpBasicAuthenticationScheme();
-        final AuthenticationScheme rememberMeAuthScheme = getRememberMeAuthScheme( options, cookieStorage );
         final String forceURL = getForceURL( options );
         final AuthenticationScheme authScheme = getAuthenticationScheme( options );
         final AuthenticationManager authManager = getAuthenticationManager( options );
@@ -101,7 +84,6 @@ public class UberFireSecurityFilter implements Filter {
         this.securityManager = HttpSecurityManagerImpl.newBuilder()
                 .addAuthManager( authManager )
                 .addAuthScheme( basicAuthScheme )
-                .addAuthScheme( rememberMeAuthScheme )
                 .addAuthScheme( authScheme )
                 .addForceURL( forceURL )
                 .addAuthProvider( authProvider )
@@ -119,15 +101,6 @@ public class UberFireSecurityFilter implements Filter {
 
         LOG.debug("Starting security manager with the following configuration:\n" + securityManager);
         securityManager.start();
-    }
-
-    private AuthenticationScheme getRememberMeAuthScheme( final Map<String, String> options,
-                                                          final CookieStorage cookieStorage ) {
-        if ( hasRememerMe( options ) ) {
-            return new RememberMeCookieAuthScheme( cookieStorage );
-        }
-
-        return null;
     }
 
     private boolean hasRememerMe( final Map<String, String> options ) {
@@ -263,9 +236,9 @@ public class UberFireSecurityFilter implements Filter {
 
     @Override
     public void doFilter( final ServletRequest request,
-                          final ServletResponse rawResponse,
-                          final FilterChain chain )
-            throws IOException, ServletException {
+            final ServletResponse rawResponse,
+            final FilterChain chain )
+                    throws IOException, ServletException {
 
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
         final HttpServletResponse httpResponse = new HttpServletResponseWrapper((HttpServletResponse) rawResponse);
@@ -288,14 +261,14 @@ public class UberFireSecurityFilter implements Filter {
                 httpResponse.sendError( 401, e.getMessage() );
             }
             else {
-              LOG.debug("Authentication failure on already-committed response. NOT sending HTTP 401.", e);
+                LOG.debug("Authentication failure on already-committed response. NOT sending HTTP 401.", e);
             }
         }
     }
 
     private void logout( final SecurityContext context,
-                         final HttpServletRequest httpRequest,
-                         final HttpServletResponse httpResponse ) {
+            final HttpServletRequest httpRequest,
+            final HttpServletResponse httpResponse ) {
         if ( httpResponse.isCommitted() ) {
             return;
         }
@@ -328,8 +301,8 @@ public class UberFireSecurityFilter implements Filter {
     }
 
     private void authenticate( final SecurityContext context,
-                               final HttpServletResponse httpResponse )
-            throws AuthenticationException {
+            final HttpServletResponse httpResponse )
+                    throws AuthenticationException {
         if ( httpResponse.isCommitted() ) {
             return;
         }
@@ -339,8 +312,8 @@ public class UberFireSecurityFilter implements Filter {
     }
 
     private void authorize( final SecurityContext context,
-                            final HttpServletResponse httpResponse )
-            throws IOException {
+            final HttpServletResponse httpResponse )
+                    throws IOException {
         if ( httpResponse.isCommitted() ) {
             return;
         }
@@ -353,7 +326,7 @@ public class UberFireSecurityFilter implements Filter {
     }
 
     private <T> T loadConfigClazz( final String clazzName,
-                                   final Class<T> typeOf ) {
+            final Class<T> typeOf ) {
 
         if ( clazzName == null || clazzName.isEmpty() ) {
             return null;

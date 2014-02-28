@@ -14,6 +14,7 @@ import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.impl.IdentityImpl;
 import org.uberfire.security.impl.RoleImpl;
+import org.uberfire.security.impl.auth.UserNameCredential;
 
 
 public class MockAuthenticationProvider implements AuthenticationProvider {
@@ -31,19 +32,20 @@ public class MockAuthenticationProvider implements AuthenticationProvider {
     @Override
     public AuthenticationResult authenticate( final Credential credential, final SecurityContext securityContext ) throws AuthenticationException {
         return new AuthenticationResult() {
-            
+
             @Override
             public AuthenticationStatus getStatus() {
                 return AuthenticationStatus.SUCCESS;
             }
-            
+
             @Override
             public Principal getPrincipal() {
                 List<Role> roles = new ArrayList<Role>();
-                roles.add(new RoleImpl( "test-role" ));
-                return new IdentityImpl("test-user", roles);
+                String userName = ((UserNameCredential) credential).getUserName();
+                roles.add( new RoleImpl( userName ) );
+                return new IdentityImpl( userName, roles );
             }
-            
+
             @Override
             public List<String> getMessages() {
                 throw new UnsupportedOperationException( "Not implemented." );

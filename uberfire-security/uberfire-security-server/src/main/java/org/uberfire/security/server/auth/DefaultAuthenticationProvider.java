@@ -16,7 +16,9 @@
 
 package org.uberfire.security.server.auth;
 
-import java.util.ArrayList;
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +32,6 @@ import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.impl.auth.PrincipalImpl;
 import org.uberfire.security.impl.auth.UserNameCredential;
-
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class DefaultAuthenticationProvider implements AuthenticationProvider {
 
@@ -59,9 +58,8 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
             return new AuthenticationResult() {
                 @Override
                 public List<String> getMessages() {
-                    return new ArrayList<String>( 1 ) {{
-                        add( "Credential not supported by " + DefaultAuthenticationProvider.class.getName() );
-                    }};
+                    return singletonList(
+                            "Credential not supported by " + DefaultAuthenticationProvider.class.getName() );
                 }
 
                 @Override
@@ -82,9 +80,7 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
             return new AuthenticationResult() {
                 @Override
                 public List<String> getMessages() {
-                    return new ArrayList<String>( 1 ) {{
-                        add( "Invalid credentials." );
-                    }};
+                    return singletonList( "Invalid credentials." );
                 }
 
                 @Override

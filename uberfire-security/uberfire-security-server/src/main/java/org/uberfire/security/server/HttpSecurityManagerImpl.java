@@ -16,11 +16,9 @@
 
 package org.uberfire.security.server;
 
-import static java.util.Collections.emptyList;
-import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -52,26 +50,25 @@ import org.uberfire.security.impl.authz.DefaultAuthorizationManager;
 import org.uberfire.security.impl.authz.DefaultRoleDecisionManager;
 import org.uberfire.security.server.auth.DefaultAuthenticationProvider;
 import org.uberfire.security.server.auth.HttpAuthenticationManager;
-import org.uberfire.security.server.auth.RememberMeCookieAuthProvider;
 import org.uberfire.security.server.authz.URLAccessDecisionManager;
 
 public class HttpSecurityManagerImpl implements SecurityManager {
 
     private AuthenticationManager authManager;
-    private List<AuthorizationManager> authzManagers = new ArrayList<AuthorizationManager>();
+    private final List<AuthorizationManager> authzManagers = new ArrayList<AuthorizationManager>();
 
     private HttpSecurityManagerImpl( final AuthenticationManager authManager,
-                                     final List<AuthenticationScheme> authSchemes,
-                                     final String forceURL,
-                                     final List<AuthenticationProvider> authProviders,
-                                     final List<RoleProvider> roleProviders,
-                                     final List<SubjectPropertiesProvider> subjectPropertiesProviders,
-                                     final List<AuthenticatedStorageProvider> authStorageProviders,
-                                     final List<AuthorizationManager> authzManagers,
-                                     final ResourceManager resourceManager,
-                                     final Collection<ResourceDecisionManager> resourceDecisionManagers,
-                                     final VotingStrategy votingStrategy,
-                                     final RoleDecisionManager roleDecisionManager ) {
+            final List<AuthenticationScheme> authSchemes,
+            final String forceURL,
+            final List<AuthenticationProvider> authProviders,
+            final List<RoleProvider> roleProviders,
+            final List<SubjectPropertiesProvider> subjectPropertiesProviders,
+            final List<AuthenticatedStorageProvider> authStorageProviders,
+            final List<AuthorizationManager> authzManagers,
+            final ResourceManager resourceManager,
+            final Collection<ResourceDecisionManager> resourceDecisionManagers,
+            final VotingStrategy votingStrategy,
+            final RoleDecisionManager roleDecisionManager ) {
         if ( authManager == null ) {
             this.authManager = new HttpAuthenticationManager( authSchemes, forceURL, authProviders, roleProviders, subjectPropertiesProviders, authStorageProviders, resourceManager );
         } else {
@@ -253,13 +250,13 @@ public class HttpSecurityManagerImpl implements SecurityManager {
         private VotingStrategy votingStrategy = null;
         private ResourceManager resourceManager = null;
         private String forceURL = null;
-        private List<AuthorizationManager> authzManagers = new ArrayList<AuthorizationManager>();
-        private List<AuthenticationScheme> authSchemes = new ArrayList<AuthenticationScheme>();
-        private List<AuthenticationProvider> authProviders = new ArrayList<AuthenticationProvider>();
-        private List<RoleProvider> roleProviders = new ArrayList<RoleProvider>();
-        private List<SubjectPropertiesProvider> subjectPropertiesProviders = new ArrayList<SubjectPropertiesProvider>();
-        private List<AuthenticatedStorageProvider> authStorageProviders = new ArrayList<AuthenticatedStorageProvider>();
-        private List<ResourceDecisionManager> accessDecisionManagers = new ArrayList<ResourceDecisionManager>();
+        private final List<AuthorizationManager> authzManagers = new ArrayList<AuthorizationManager>();
+        private final List<AuthenticationScheme> authSchemes = new ArrayList<AuthenticationScheme>();
+        private final List<AuthenticationProvider> authProviders = new ArrayList<AuthenticationProvider>();
+        private final List<RoleProvider> roleProviders = new ArrayList<RoleProvider>();
+        private final List<SubjectPropertiesProvider> subjectPropertiesProviders = new ArrayList<SubjectPropertiesProvider>();
+        private final List<AuthenticatedStorageProvider> authStorageProviders = new ArrayList<AuthenticatedStorageProvider>();
+        private final List<ResourceDecisionManager> accessDecisionManagers = new ArrayList<ResourceDecisionManager>();
 
         HttpSecurityManagerImpl build( final Map<String, String> options ) {
 
@@ -270,7 +267,7 @@ public class HttpSecurityManagerImpl implements SecurityManager {
             }
 
             return new HttpSecurityManagerImpl( authManager, authSchemes, forceURL, authProviders, roleProviders, subjectPropertiesProviders, authStorageProviders,
-                                                authzManagers, resourceManager, accessDecisionManagers, votingStrategy, roleDecisionManager );
+                    authzManagers, resourceManager, accessDecisionManagers, votingStrategy, roleDecisionManager );
         }
 
         HttpSecurityManagerBuilder addAuthScheme( final AuthenticationScheme authScheme ) {
@@ -347,7 +344,7 @@ public class HttpSecurityManagerImpl implements SecurityManager {
                     }
                 }
             }
-            authProviders.add( new RememberMeCookieAuthProvider() );
+            //            authProviders.add( new RememberMeCookieAuthProvider() );
             return this;
         }
 
@@ -364,9 +361,9 @@ public class HttpSecurityManagerImpl implements SecurityManager {
 
     @Override
     public String toString() {
-      return "HttpSecurityManagerImpl [\n"
-              + "  Authentication Manager: " + authManager + ",\n"
-              + "  Authorization Managers: " + authzManagers + "]";
+        return "HttpSecurityManagerImpl [\n"
+                + "  Authentication Manager: " + authManager + ",\n"
+                + "  Authorization Managers: " + authzManagers + "]";
     }
 
 }
