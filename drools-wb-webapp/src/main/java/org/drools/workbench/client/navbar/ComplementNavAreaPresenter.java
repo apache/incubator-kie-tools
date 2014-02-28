@@ -34,6 +34,11 @@ public class ComplementNavAreaPresenter implements Header {
     public View view;
 
     @Override
+    public String getId() {
+        return "ComplementNavArea";
+    }
+
+    @Override
     public int getOrder() {
         return 0;
     }
