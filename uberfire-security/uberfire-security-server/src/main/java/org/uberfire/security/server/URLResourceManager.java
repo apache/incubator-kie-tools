@@ -16,6 +16,11 @@
 
 package org.uberfire.security.server;
 
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.security.server.SecurityConstants.*;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,11 +36,6 @@ import org.uberfire.security.Role;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.server.util.AntPathMatcher;
 import org.yaml.snakeyaml.Yaml;
-
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.security.server.SecurityConstants.*;
 
 public class URLResourceManager implements ResourceManager {
 
@@ -90,12 +90,19 @@ public class URLResourceManager implements ResourceManager {
             return false;
         }
 
-        if ( !excludeCache.contains( urlResource.getURL() ) ) {
+        // don't include query params when matching
+        String url = urlResource.getURL();
+        int queryIndex = url.indexOf( '?' );
+        if ( queryIndex >= 0 ) {
+            url = url.substring( 0, queryIndex );
+        }
+
+        if ( !excludeCache.contains( url ) ) {
             boolean isExcluded = false;
             for ( String excluded : resources.getExcludedResources() ) {
-                if ( ANT_PATH_MATCHER.match( excluded, urlResource.getURL() ) ) {
+                if ( ANT_PATH_MATCHER.match( excluded, url ) ) {
                     isExcluded = true;
-                    excludeCache.add( urlResource.getURL() );
+                    excludeCache.add( url );
                     break;
                 }
             }

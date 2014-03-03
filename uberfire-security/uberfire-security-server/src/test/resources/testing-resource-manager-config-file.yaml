@@ -1,0 +1,3 @@
+exclude:
+ - /login.jsp
+ - /excluded/*
