@@ -33,7 +33,7 @@ public class CategoryMigrater {
         Categories vfsCategories = new Categories();
         loadChildCategories("/", vfsCategories);        
 
-        categoriesService.save(migrationPathManager.generatePathForModule("categories.xml"), vfsCategories);
+        categoriesService.save(migrationPathManager.generatePathForModule("categories.xml"), vfsCategories,null,"");
         
         System.out.println( "  Category migration ended" );
     }
