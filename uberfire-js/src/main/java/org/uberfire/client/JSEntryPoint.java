@@ -1,15 +1,14 @@
 package org.uberfire.client;
 
+import static com.google.gwt.core.client.ScriptInjector.*;
+import static org.jboss.errai.ioc.client.QualifierUtil.*;
+
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.ScriptInjector;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.framework.BusState;
-import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -21,27 +20,28 @@ import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.client.workbench.events.ApplicationReadyEvent;
+import org.uberfire.client.workbench.Workbench;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static com.google.gwt.core.client.ScriptInjector.*;
-import static org.jboss.errai.ioc.client.QualifierUtil.*;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.ScriptInjector;
 
 @EntryPoint
 public class JSEntryPoint {
 
     @Inject
-    private RuntimePluginsServiceProxy runtimePluginsService;
+    private Workbench workbench;
 
     @Inject
-    private Event<ApplicationReadyEvent> appReady;
+    private RuntimePluginsServiceProxy runtimePluginsService;
 
     @Inject
     private ClientMessageBus bus;
 
     @PostConstruct
     public void init() {
+        workbench.addStartupBlocker( JSEntryPoint.class );
         publish();
     }
 
@@ -61,7 +61,7 @@ public class JSEntryPoint {
                                 ScriptInjector.fromString( s ).setWindow( TOP_WINDOW ).inject();
                             }
                         } finally {
-                            appReady.fire( new ApplicationReadyEvent() );
+                            workbench.removeStartupBlocker( JSEntryPoint.class );
                         }
 
                     }

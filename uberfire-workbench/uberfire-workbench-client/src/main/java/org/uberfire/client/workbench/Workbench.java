@@ -15,15 +15,37 @@
  */
 package org.uberfire.client.workbench;
 
+import static java.util.Collections.*;
+import static org.uberfire.workbench.model.PanelType.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ApplicationReadyEvent;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -40,28 +62,22 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
-
-import static java.util.Collections.*;
-import static org.uberfire.workbench.model.PanelType.*;
 
 @ApplicationScoped
 public class Workbench
-        extends Composite
-        implements RequiresResize {
+extends Composite
+implements RequiresResize {
+
+    /**
+     * List of classes who want to do stuff (often server communication) before the workbench shows up.
+     */
+    private final Set<Class<?>> startupBlockers = new HashSet<Class<?>>();
+
+    /**
+     * Fired when all startup blockers have cleared and just before the workbench starts to build its components.
+     */
+    @Inject
+    private Event<ApplicationReadyEvent> appReady;
 
     private final FlowPanel container = new FlowPanel();
 
@@ -92,9 +108,9 @@ public class Workbench
     @Inject
     private VFSServiceProxy vfsService;
 
-    private WorkbenchCloseHandler workbenchCloseHandler = GWT.create( WorkbenchCloseHandler.class );
+    private final WorkbenchCloseHandler workbenchCloseHandler = GWT.create( WorkbenchCloseHandler.class );
 
-    private Command workbenchCloseCommand = new Command() {
+    private final Command workbenchCloseCommand = new Command() {
         @Override
         public void execute() {
             final PerspectiveDefinition perspective = panelManager.getPerspective();
@@ -104,6 +120,31 @@ public class Workbench
         }
 
     };
+
+    public void addStartupBlocker( Class<?> responsibleParty ) {
+        startupBlockers.add( responsibleParty );
+        System.out.println( responsibleParty.getName() + " is blocking workbench startup." );
+    }
+
+    public void removeStartupBlocker( Class<?> responsibleParty ) {
+        if (startupBlockers.remove( responsibleParty ) ) {
+            System.out.println( responsibleParty.getName() + " is no longer blocking startup." );
+        } else {
+            System.out.println( responsibleParty.getName() + " tried to unblock startup, but it wasn't blocking to begin with!");
+        }
+
+        if ( startupBlockers.isEmpty() ) {
+            bootstrap();
+        }
+    }
+
+    @AfterInitialization
+    private void startIfNotBlocked() {
+        System.out.println(startupBlockers.size() + " workbench startup blockers remain.");
+        if ( startupBlockers.isEmpty() ) {
+            bootstrap();
+        }
+    }
 
     @PostConstruct
     public void setup() {
@@ -120,7 +161,7 @@ public class Workbench
         sort( instances, new Comparator<Header>() {
             @Override
             public int compare( final Header o1,
-                                final Header o2 ) {
+                    final Header o2 ) {
                 if ( o1.getOrder() < o2.getOrder() ) {
                     return 1;
                 } else if ( o1.getOrder() > o2.getOrder() ) {
@@ -138,8 +179,9 @@ public class Workbench
         container.add( headers );
     }
 
-    @SuppressWarnings("unused")
-    private void bootstrap( @Observes ApplicationReadyEvent event ) {
+    private void bootstrap() {
+        System.out.println("Workbench starting...");
+
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
             setupHeaders();
         }
@@ -166,7 +208,7 @@ public class Workbench
                 final int width = Window.getClientWidth();
                 final int height = Window.getClientHeight();
                 doResizeWorkbenchContainer( width,
-                                            height );
+                        height );
             }
 
         } );
@@ -196,7 +238,7 @@ public class Workbench
             @Override
             public void onResize( ResizeEvent event ) {
                 doResizeWorkbenchContainer( event.getWidth(),
-                                            event.getHeight() );
+                        event.getHeight() );
             }
         } );
 
@@ -249,7 +291,7 @@ public class Workbench
     }
 
     private void doResizeWorkbenchContainer( final int width,
-                                             final int height ) {
+            final int height ) {
         final int headersHeight = headers.asWidget().getOffsetHeight();
         final int availableHeight;
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
