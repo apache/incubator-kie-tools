@@ -32,6 +32,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
@@ -63,6 +64,48 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * Responsible for bootstrapping the client-side Workbench user interface. Normally this happens automatically with no
+ * need for assistance or interference from the application. Thus, applications don't usually need to do anything with
+ * the Workbench class directly.
+ * 
+ * <h2>Delaying Workbench Startup</h2>
+ * 
+ * In special cases, applications may wish to delay the startup of the workbench. For example, an application that
+ * relies on global variables (also known as singletons or Application Scoped beans) that are initialized based on
+ * response data from the server doesn't want UberFire to start initializing its widgets until that server response has
+ * come in.
+ * <p>
+ * To delay startup, add a <i>Startup Blocker</i> before Errai starts calling {@link AfterInitialization} methods.
+ * The best place to do this is in the {@link PostConstruct} method of an {@link EntryPoint} bean. You would then
+ * remove the startup blocker from within the callback from the server:
+ * 
+ * <pre>
+ *   {@code @EntryPoint}
+ *   public class MyMutableGlobal() {
+ *     {@code @Inject private Workbench workbench;}
+ *     {@code @Inject private Caller<MyRemoteService> remoteService;}
+ * 
+ *     // set up by a server call. don't start the app until it's populated!
+ *     {@code private MyParams params;}
+ * 
+ *     {@code @PostConstruct}
+ *     private void earlyInit() {
+ *       workbench.addStartupBlocker(MyMutableGlobal.class);
+ *     }
+ * 
+ *     {@code @AfterInitialization}
+ *     private void lateInit() {
+ *       remoteService.call(new {@code RemoteCallback<MyParams>}{
+ *         public void callback(MyParams params) {
+ *           MyMutableGlobal.this.params = params;
+ *           workbench.removeStartupBlocker(MyMutableGlobal.class);
+ *         }
+ *       }).fetchParameters();
+ *     }
+ *   }
+ * </pre>
+ */
 @ApplicationScoped
 public class Workbench
 extends Composite
@@ -121,11 +164,26 @@ implements RequiresResize {
 
     };
 
+    /**
+     * Requests that the workbench does not attempt to create any UI parts until the given responsible party has
+     * been removed as a startup blocker.
+     * 
+     * @param responsibleParty
+     *            any Class object; typically it will be the class making the call to this method.
+     *            Must not be null.
+     */
     public void addStartupBlocker( Class<?> responsibleParty ) {
         startupBlockers.add( responsibleParty );
         System.out.println( responsibleParty.getName() + " is blocking workbench startup." );
     }
 
+    /**
+     * Causes the given responsible party to no longer block workbench initialization.
+     * 
+     * @param responsibleParty
+     *            any Class object that was previously passed to {@link #addStartupBlocker(Class)}.
+     *            Must not be null.
+     */
     public void removeStartupBlocker( Class<?> responsibleParty ) {
         if (startupBlockers.remove( responsibleParty ) ) {
             System.out.println( responsibleParty.getName() + " is no longer blocking startup." );
