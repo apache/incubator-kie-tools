@@ -1,5 +1,7 @@
 package org.drools.workbench.jcr2vfsmigration.migrater.asset;
 
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,13 +16,14 @@ import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.StandardCopyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-public class GuidedScoreCardMigrater {
+public class GuidedScoreCardMigrater extends BaseAssetMigrater {
 
     protected static final Logger logger = LoggerFactory.getLogger( GuidedScoreCardMigrater.class );
 
@@ -40,8 +43,9 @@ public class GuidedScoreCardMigrater {
     @Inject
     protected PackageImportHelper packageImportHelper;
 
-    public void migrate( Module jcrModule,
-                         AssetItem jcrAssetItem ) {
+    public Path migrate( Module jcrModule,
+                         AssetItem jcrAssetItem,
+                         Path previousVersionPath) {
         if ( !AssetFormats.SCORECARD_GUIDED.equals( jcrAssetItem.getFormat() ) ) {
             throw new IllegalArgumentException( "The jcrAsset (" + jcrAssetItem.getName() + ") has the wrong format (" + jcrAssetItem.getFormat() + ")." );
         }
@@ -49,8 +53,9 @@ public class GuidedScoreCardMigrater {
         Path path = migrationPathManager.generatePathForAsset( jcrModule,
                                                                jcrAssetItem );
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-        if ( !Files.exists( nioPath ) ) {
-            ioService.createFile( nioPath );
+        //The asset was renamed in this version. We move this asset first.
+        if(previousVersionPath != null && !previousVersionPath.equals(path)) {
+            ioService.move(Paths.convert( previousVersionPath ), nioPath, StandardCopyOption.REPLACE_EXISTING);
         }
 
 /*        ScorecardsContentHandler h = new ScorecardsContentHandler();
@@ -65,9 +70,12 @@ public class GuidedScoreCardMigrater {
 
         ioService.write( nioPath,
                          sourceContentWithPackage,
+                         migrateMetaData(jcrModule, jcrAssetItem),
                          new CommentedOption( jcrAssetItem.getLastContributor(),
                                               null,
                                               jcrAssetItem.getCheckinComment(),
                                               jcrAssetItem.getLastModified().getTime() ) );
+        
+        return path;
     }
 }

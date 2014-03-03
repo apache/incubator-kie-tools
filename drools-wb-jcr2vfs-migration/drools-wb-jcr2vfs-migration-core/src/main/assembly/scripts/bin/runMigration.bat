@@ -23,9 +23,8 @@ goto setArgs
 :doneSetArgs
 
 rem You can use -Xmx128m or less too, but it might be slower
-rem Change guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.5.1-<snapshot-version>-jars-as-uberjar.jar to a release version once available
 if exist %JAVA_HOME%\bin\java.exe (
-    %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp ..\libs\guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.5.1-20130910.170942-136-jars-as-uberjar.jar;..\libs\*; %mainClass% %CMD_LINE_ARGS%
+    %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp ..\libs\guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.6.0.Final-jars-as-uberjar.jar;..\libs\*; %mainClass% %CMD_LINE_ARGS%
 ) else (
-    java -Xms256m -Xmx512m -cp ..\libs\guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.5.1-20130910.170942-136-jars-as-uberjar.jar;..\libs\*; %mainClass% %CMD_LINE_ARGS%
+    java -Xms256m -Xmx512m -cp ..\libs\guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.6.0.Final-jars-as-uberjar.jar;..\libs\*; %mainClass% %CMD_LINE_ARGS%
 )

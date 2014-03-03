@@ -1,5 +1,10 @@
 package org.drools.workbench.jcr2vfsmigration.migrater.asset;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,6 +21,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
@@ -24,13 +30,14 @@ import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.StandardCopyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-public class GuidedEditorMigrater {
+public class GuidedEditorMigrater extends BaseAssetMigrater {
 
     protected static final Logger logger = LoggerFactory.getLogger( GuidedEditorMigrater.class );
 
@@ -57,14 +64,15 @@ public class GuidedEditorMigrater {
     @Inject
     PackageImportHelper packageImportHelper;
 
-    public void migrate( Module jcrModule,
-                         AssetItem jcrAssetItem ) {
+    public Path migrate( Module jcrModule,
+                         AssetItem jcrAssetItem,
+                         Path previousVersionPath) {
         if ( !AssetFormats.BUSINESS_RULE.equals( jcrAssetItem.getFormat() ) ) {
             throw new IllegalArgumentException( "The jcrAsset (" + jcrAssetItem.getName() + ") has the wrong format (" + jcrAssetItem.getFormat() + ")." );
         }
 
         try {
-            Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset( jcrAssetItem.getUUID() );
+           // Asset jcrAsset = jcrRepositoryAssetService.loadRuleAsset( jcrAssetItem.getUUID() );
 
             RuleModel ruleModel = getBrlXmlPersistence().unmarshal( jcrAssetItem.getContent() );
 
@@ -80,37 +88,47 @@ public class GuidedEditorMigrater {
             }
 
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-            if ( !Files.exists( nioPath ) ) {
-                ioService.createFile( nioPath );
+
+            //The asset was renamed in this version. We move this asset first.
+            if(previousVersionPath != null && !previousVersionPath.equals(path)) {
+                ioService.move(Paths.convert( previousVersionPath ), nioPath, StandardCopyOption.REPLACE_EXISTING);
             }
 
             StringBuilder sb = new StringBuilder();
             BRMSPackageBuilder builder = new BRMSPackageBuilder( rulesRepository.loadModuleByUUID( jcrModule.getUuid() ) );
             BRLContentHandler handler = new BRLContentHandler();
+
             handler.assembleDRL( builder,
-                                 jcrAsset,
+                                 jcrAssetItem,
                                  sb );
 
             //Support for # has been removed from Drools Expert
             String content = sb.toString().replaceAll( "#",
                                                        "//" );
 
-            String sourceDRLWithImport = drlTextEditorServiceImpl.assertPackageName( content,
+            content = getExtendExpression(jcrModule,jcrAssetItem,content);
+
+            String sourceDRLWithImport = packageImportHelper.assertPackageImportDRL( content,
                                                                                      path );
-            sourceDRLWithImport = packageImportHelper.assertPackageImportDRL( sourceDRLWithImport,
+            sourceDRLWithImport = packageImportHelper.assertPackageName( sourceDRLWithImport,
                                                                               path );
 
             ioService.write( nioPath,
                              sourceDRLWithImport,
+                             migrateMetaData(jcrModule, jcrAssetItem),
                              new CommentedOption( jcrAssetItem.getLastContributor(),
                                                   null,
                                                   jcrAssetItem.getCheckinComment(),
                                                   jcrAssetItem.getLastModified().getTime() ) );
+            
+            return path;
 
-        } catch ( SerializationException e ) {
+        } catch ( Exception e ) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        return null;
     }
 
     protected BRLPersistence getBrlXmlPersistence() {

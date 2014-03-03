@@ -16,9 +16,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.httpclient.util.URIUtil;
 import org.drools.workbench.models.commons.backend.imports.ImportsParser;
+import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
+import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.datamodel.packages.HasPackageName;
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
@@ -38,7 +43,17 @@ public class PackageImportHelper {
     public String assertPackageNameXML( final String xml,
                                         final Path resource ) {
         final Package pkg = projectService.resolvePackage( resource );
-        final String requiredPackageName = ( pkg == null ? null : pkg.getPackageName() );
+        String pkName =null;
+        try{
+            pkName =pkg.getPackageName();
+
+            if(pkName!=null && pkg.getPackageName().endsWith(URIUtil.decode(resource.getFileName()))){
+                pkName = pkg.getPackageName().substring(0,pkg.getPackageName().indexOf(URIUtil.decode(resource.getFileName()))-1);
+            }
+        }catch (Exception e){
+        }
+        final String requiredPackageName = pkName;
+
         if ( requiredPackageName == null || "".equals( requiredPackageName ) ) {
             return xml;
         }
@@ -55,6 +70,10 @@ public class PackageImportHelper {
             }
 
             Element root = doc.getDocumentElement();
+//            Element nameElement = doc.createElement( "name" );
+//            nameElement.appendChild( doc.createTextNode( resource.getFileName()) );
+//            root.appendChild( nameElement );
+
             Element packageElement = doc.createElement( "packageName" );
             packageElement.appendChild( doc.createTextNode( requiredPackageName ) );
             root.appendChild( packageElement );
@@ -72,7 +91,8 @@ public class PackageImportHelper {
 
             trans.transform( s, result );
             String xmlString = sw.toString();
-
+            if(xmlString!=null)
+                xmlString =xmlString.substring(xmlString.indexOf(">")+1);
             return xmlString;
         } catch ( TransformerConfigurationException e ) {
             e.printStackTrace();
@@ -98,7 +118,7 @@ public class PackageImportHelper {
         }
 
         final Imports imports = ImportsParser.parseImports( packageHeaderInfo.getHeader() );
-        if ( imports == null ) {
+        if ( imports == null || drl.toLowerCase().indexOf("import ")!=-1) {
             return drl;
         }
         StringBuilder sb = new StringBuilder();
@@ -132,15 +152,29 @@ public class PackageImportHelper {
                 return xml;
             }
 
+            /* The imports should have following format (used by the workbench):
+             *  <imports>
+             *    <imports>
+             *      <org.drools.workbench.models.datamodel.imports.Import>
+             *        <type>java.lang.Number</type>
+             *      </org.drools.workbench.models.datamodel.imports.Import>
+             *   </imports>
+             *  </imports>
+             */
             Element root = doc.getDocumentElement();
-            Element importsElement = doc.createElement( "imports" );
+            Element topImportsElement = doc.createElement( "imports" );
+            Element nestedImportsElement = doc.createElement( "imports" );
+            topImportsElement.appendChild(nestedImportsElement);
+
             for ( final Import i : imports.getImports() ) {
-                Element importElement = doc.createElement( "import" );
-                importElement.appendChild( doc.createTextNode( i.getType() ) );
-                importsElement.appendChild( importElement );
+                Element importElement = doc.createElement( Import.class.getCanonicalName() );
+                Element typeElement = doc.createElement( "type" );
+                typeElement.appendChild( doc.createTextNode( i.getType() ) );
+                importElement.appendChild( typeElement );
+                nestedImportsElement.appendChild( importElement );
             }
 
-            root.appendChild( importsElement );
+            root.appendChild( topImportsElement );
 
             //output xml with pretty format
             TransformerFactory transfac = TransformerFactory.newInstance();
@@ -155,7 +189,8 @@ public class PackageImportHelper {
 
             trans.transform( s, result );
             String xmlString = sw.toString();
-
+            if(xmlString!=null)
+                xmlString =xmlString.substring(xmlString.indexOf(">")+1);
             return xmlString;
         } catch ( TransformerConfigurationException e ) {
             e.printStackTrace();
@@ -172,5 +207,48 @@ public class PackageImportHelper {
         }
 
         return xml;
+    }
+
+    public String assertPackageName( final String drl,
+                                     final Path resource ) {
+        try {
+            final String existingPackageName = PackageNameParser.parsePackageName(drl);
+            if ( !"".equals( existingPackageName ) ) {
+                return drl;
+            }
+
+            final Package pkg = projectService.resolvePackage( resource );
+            String pkName =null;
+            try{
+                pkName =pkg.getPackageName();
+                if(pkName!=null && pkg.getPackageName().endsWith(URIUtil.decode(resource.getFileName()))){
+                    pkName = pkg.getPackageName().substring(0,pkg.getPackageName().indexOf(URIUtil.decode(resource.getFileName()))-1);
+                }
+            }catch (Exception e){
+
+            }
+            final String requiredPackageName = pkName;
+
+            final HasPackageName mockHasPackageName = new HasPackageName() {
+
+                @Override
+                public String getPackageName() {
+                    return requiredPackageName;
+                }
+
+                @Override
+                public void setPackageName( final String packageName ) {
+                    //Nothing to do here
+                }
+            };
+            final StringBuilder sb = new StringBuilder();
+            PackageNameWriter.write(sb,
+                    mockHasPackageName);
+            sb.append( drl );
+            return sb.toString();
+
+        } catch ( Exception e ) {
+            throw ExceptionUtilities.handleException(e);
+        }
     }
 }

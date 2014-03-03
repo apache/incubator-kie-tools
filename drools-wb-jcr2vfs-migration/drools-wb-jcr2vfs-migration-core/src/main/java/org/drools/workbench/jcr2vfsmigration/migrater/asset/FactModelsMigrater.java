@@ -21,20 +21,20 @@ import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.uberfire.io.IOService;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.*;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.StandardCopyOption;
 
 @ApplicationScoped
-public class FactModelsMigrater {
+public class FactModelsMigrater extends BaseAssetMigrater {
 
     protected static final Logger logger = LoggerFactory.getLogger(FactModelsMigrater.class);
 
@@ -60,20 +60,25 @@ public class FactModelsMigrater {
     private Map <String, String> orderedBaseTypes = new TreeMap<String, String>();
     private Map<String, AnnotationDefinitionTO> annotationDefinitions;
     
-    public void migrate(Module jcrModule, AssetItem jcrAssetItem) {
+    public Path migrate(Module jcrModule, AssetItem jcrAssetItem, Path previousVersionPath) {
         if (!AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
                     + ") has the wrong format (" + jcrAssetItem.getFormat() + ").");
         }
         
         Path path = migrationPathManager.generatePathForAsset(jcrModule, jcrAssetItem);   
+        //The asset was renamed in this version. We move this asset first.
+        if(previousVersionPath != null && !previousVersionPath.equals(path)) {
+             ioService.move(Paths.convert( previousVersionPath ), Paths.convert( path ), StandardCopyOption.REPLACE_EXISTING);
+        }
+        
         Project project = projectService.resolveProject(path);
         
         initBasePropertyTypes();
         initAnnotationDefinitions();        
         
         if(project == null) {
-        	Path projectRootPath = migrationPathManager.generatePathForModule(jcrModule);
+        	Path projectRootPath = migrationPathManager.generatePathForModule(jcrModule.getName());
         	//Quick hack to pass mock values for pomPath etc, to make Project constructor happy. We only use projectRootPath anyway
         	project = new Project( projectRootPath,
         			projectRootPath,
@@ -89,13 +94,16 @@ public class FactModelsMigrater {
             DataModelTO dataModelTO  = new DataModelTO();
             
             String packageName = getPackageName(jcrModule);
-            
+            packageName = migrationPathManager.normalizePackageName(packageName);
+            AnnotationDefinitionTO positionAnnotationDef = getPositionAnnotationDefinition();
+
             for ( FactMetaModel factMetaModel : factModels.models ) {
                 DataObjectTO dataObjectTO = createDataObject(packageName, factMetaModel.getName(), factMetaModel.getSuperType());
             	List<AnnotationMetaModel> annotationMetaModel = factMetaModel.getAnnotations();                
             	addAnnotations(dataObjectTO, annotationMetaModel);
                 List<FieldMetaModel> fields = factMetaModel.getFields();
-                
+
+                int position = 0;
                 for(FieldMetaModel fieldMetaModel : fields) {
                 	String filedName = fieldMetaModel.name;
                 	String fildType = fieldMetaModel.type;
@@ -105,7 +113,9 @@ public class FactModelsMigrater {
                     ObjectPropertyTO property = new ObjectPropertyTO(filedName,
                     		fildType,
                             isMultiple,
-                            isBaseType);              
+                            isBaseType);
+                    property.addAnnotation(positionAnnotationDef, AnnotationDefinitionTO.VALUE_PARAM, position+"" );
+                    position++;
                 	//field has no annotation in Guvnor 5.5 (and earlier)
                     dataObjectTO.getProperties().add(property);
                 }
@@ -119,18 +129,32 @@ public class FactModelsMigrater {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        return path;
      }
+
+
+    private AnnotationDefinitionTO getPositionAnnotationDefinition() {
+        AnnotationDefinition positionAnnotationDef = PositionAnnotationDefinition.getInstance();
+        AnnotationDefinitionTO positionAnnotationDefTO = new AnnotationDefinitionTO(positionAnnotationDef.getName(), positionAnnotationDef.getClassName(), positionAnnotationDef.getShortDescription(), positionAnnotationDef.getDescription(), positionAnnotationDef.isObjectAnnotation(), positionAnnotationDef.isPropertyAnnotation());
+        AnnotationMemberDefinitionTO memberDefinitionTO;
+        for (AnnotationMemberDefinition memberDefinition : positionAnnotationDef.getAnnotationMembers()) {
+            memberDefinitionTO = new AnnotationMemberDefinitionTO(memberDefinition.getName(), memberDefinition.getClassName(), memberDefinition.isPrimitiveType(), memberDefinition.isEnum(), memberDefinition.defaultValue(), memberDefinition.getShortDescription(), memberDefinition.getDescription());
+            positionAnnotationDefTO.addMember(memberDefinitionTO);
+        }
+        return positionAnnotationDefTO;
+    }
 
     //The JCR Module name also contains the project name. This code attempts to create a package name
     //from the full JCR Module name (assuming they're formatted "projectName.subModule1.subModule2" etc
     private String getPackageName(Module jcrModule) {
         String packageName = jcrModule.getName();
         int dotIndex = packageName.indexOf( "." );
-        if(dotIndex==-1) {
-            packageName="";
-        } else {
-            packageName = packageName.substring( dotIndex +1 );
-        }
+//        if(dotIndex==-1) {
+            //packageName="";
+//        } else {
+//            packageName = packageName.substring( dotIndex +1 );
+//        }
         return packageName;
     }
     

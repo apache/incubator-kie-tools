@@ -4,6 +4,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.httpclient.util.URIUtil;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
@@ -18,16 +19,17 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.StandardCopyOption;
 
 @ApplicationScoped
-public class GuidedDecisionTableMigrater {
+public class GuidedDecisionTableMigrater extends BaseAssetMigrater {
 
     protected static final Logger logger = LoggerFactory.getLogger( GuidedDecisionTableMigrater.class );
 
@@ -53,8 +55,9 @@ public class GuidedDecisionTableMigrater {
     @Inject
     private PackageHeaderInfo packageHeaderInfo;
 
-    public void migrate( Module jcrModule,
-                         AssetItem jcrAssetItem ) {
+    public Path migrate( Module jcrModule,
+                         AssetItem jcrAssetItem,
+                         Path previousVersionPath) {
         if ( !AssetFormats.DECISION_TABLE_GUIDED.equals( jcrAssetItem.getFormat() ) ) {
             throw new IllegalArgumentException( "The jcrAsset (" + jcrAssetItem.getName() + ") has the wrong format (" + jcrAssetItem.getFormat() + ")." );
         }
@@ -62,8 +65,9 @@ public class GuidedDecisionTableMigrater {
         Path path = migrationPathManager.generatePathForAsset( jcrModule,
                                                                jcrAssetItem );
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-        if ( !Files.exists( nioPath ) ) {
-            ioService.createFile( nioPath );
+        //The asset was renamed in this version. We move this asset first.
+        if(previousVersionPath != null && !previousVersionPath.equals(path)) {
+            ioService.move(Paths.convert( previousVersionPath ), nioPath, StandardCopyOption.REPLACE_EXISTING);
         }
 
         String content = jcrAssetItem.getContent();
@@ -79,10 +83,19 @@ public class GuidedDecisionTableMigrater {
 
         //Add package
         final Package pkg = projectService.resolvePackage( path );
-        final String requiredPackageName = ( pkg == null ? null : pkg.getPackageName() );
+        String pkName =pkg.getPackageName();
+        try{
+            if(pkName!=null && pkg.getPackageName().endsWith(path.getFileName())){
+                pkName = pkg.getPackageName().substring(0,pkg.getPackageName().indexOf(path.getFileName())-1);
+            }
+        }catch (Exception e){
+
+        }
+        final String requiredPackageName = pkName;
         if ( requiredPackageName != null || !"".equals( requiredPackageName ) ) {
             model.setPackageName( requiredPackageName );
         }
+        model.setParentName(getExtendedRuleFromCategoryRules(jcrModule,jcrAssetItem,""));
 
         //Add import
         if ( packageHeaderInfo.getHeader() != null ) {
@@ -104,9 +117,12 @@ public class GuidedDecisionTableMigrater {
 
         ioService.write( nioPath,
                          sourceContent,
+                         migrateMetaData(jcrModule, jcrAssetItem),
                          new CommentedOption( jcrAssetItem.getLastContributor(),
                                               null,
                                               jcrAssetItem.getCheckinComment(),
                                               jcrAssetItem.getLastModified().getTime() ) );
+        
+        return path;
     }
 }

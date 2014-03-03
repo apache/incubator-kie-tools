@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-wb-jcr2vfs-migration</artifactId>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>6.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-wb-jcr2vfs-migration-core</artifactId>
@@ -65,8 +65,8 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!--  Temporary hack until we fix the dependency problem. jbpm-bpmn2 resolves to 6.0.0-SNAPSHOT:
-    org.jbpm:jbpm-bpmn2:jar:6.0.0-SNAPSHOT:compile (version managed from 5.4.1-SNAPSHOT)-->
+    <!--  Temporary hack until we fix the dependency problem. jbpm-bpmn2 resolves to 6.0.1-SNAPSHOT:
+    org.jbpm:jbpm-bpmn2:jar:6.0.1-SNAPSHOT:compile (version managed from 5.4.1-SNAPSHOT)-->
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-bpmn2</artifactId>
@@ -108,6 +108,35 @@
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
       <version>2.4.1</version>
+    </dependency>
+
+    <!-- VFS Guvnor (Drools Workbench) dependencies -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.helix</groupId>
+          <artifactId>helix-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-jgit</artifactId>
+    </dependency>
+    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
     </dependency>
 
     <dependency>
@@ -178,23 +207,25 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-server</artifactId>
+      <artifactId>uberfire-security-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.apache.helix</groupId>
-          <artifactId>helix-core</artifactId>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-user</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- VFS Guvnor (Drools Workbench) dependencies -->
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-    </dependency>
-    <!-- mandatory dynamic dependency - reported as unused by dependency:analyze -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
+      <artifactId>uberfire-backend-server</artifactId>
     </dependency>
 
     <!-- Other external dependencies -->

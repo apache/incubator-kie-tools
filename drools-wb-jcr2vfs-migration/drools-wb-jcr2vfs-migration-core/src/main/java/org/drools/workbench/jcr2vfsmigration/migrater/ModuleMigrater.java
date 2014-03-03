@@ -45,6 +45,8 @@ public class ModuleMigrater {
 
     private void migrate( Module jcrModule ) {
         //Set up project structure:
+        jcrModule.setName(migrationPathManager.normalizePackageName(jcrModule.getName()));
+
         String [] nameSplit = jcrModule.getName().split("\\.");
         String groupId=nameSplit[0];
         String artifactId=nameSplit[nameSplit.length-1];
