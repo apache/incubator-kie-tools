@@ -476,7 +476,11 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
         if (fields == null || fields.length == 0) {
             fields = projectModelFields.get(factTypeName);
-            AsyncPackageDataModelOracleUtilities.correctModelFields(packageName, fields, imports);
+            if (isLazyProxy(fields)) {
+                fields = null;
+            } else {
+                AsyncPackageDataModelOracleUtilities.correctModelFields(packageName, fields, imports);
+            }
         }
 
         //Load incremental content
@@ -589,7 +593,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public String getFieldClassName( final String modelClassName,
                                      final String fieldName ) {
-        final ModelField field = getField( modelClassName,
+        final ModelField field = getField( modelClassName,  
                                            fieldName );
         return field == null ? null : field.getClassName();
     }
