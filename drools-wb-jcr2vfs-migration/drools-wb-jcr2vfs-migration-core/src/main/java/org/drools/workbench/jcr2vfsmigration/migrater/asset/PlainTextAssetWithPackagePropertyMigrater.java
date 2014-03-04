@@ -32,14 +32,8 @@ public class PlainTextAssetWithPackagePropertyMigrater extends BaseAssetMigrater
     protected static final Logger logger = LoggerFactory.getLogger( PlainTextAssetWithPackagePropertyMigrater.class );
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    protected MigrationPathManager migrationPathManager;
 
     @Inject
     DRLTextEditorService drlTextEditorServiceImpl;

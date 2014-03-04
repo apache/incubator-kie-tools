@@ -144,7 +144,7 @@ public class AssetMigrater {
                     for (AssetPageRow row : response.getPageRowList()) {
                         AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
                         assetName =assetItemJCR.getName();
-                        System.out.format("    Asset [%s] with format [%s] is being migrated... \n",
+                        System.out.format("    Asset [%s] with format [%s] is being migrated... %n",
                                 assetItemJCR.getName(), assetItemJCR.getFormat());
                         //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
                         //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
@@ -156,8 +156,7 @@ public class AssetMigrater {
                         //control, its just the current content on jcr node) is equal to the latest version that had been checked in. 
                         //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.    
                         migrate(jcrModule, assetItemJCR, null);
-                        System.out.format("    Done.\n",
-                                assetItemJCR.getName(), assetItemJCR.getFormat());
+                        System.out.format("    Done.%n");
                     }
                 } catch (SerializationException e) {
                     System.out.println("SerializationException migrating asset: " + assetName +" from module: "+jcrModule.getName());
@@ -232,7 +231,7 @@ public class AssetMigrater {
             //Ignore
         } else { //another format is migrated as a attachmentAsset
             Jcr2VfsMigrationApp.hasWarnings = true;
-            System.out.format("    WARNING: asset [%s] with format[%s] is not a known format by migration tool. It will be migrated as attachmentAsset \n", jcrAssetItem.getName(), jcrAssetItem.getFormat());
+            System.out.format("    WARNING: asset [%s] with format[%s] is not a known format by migration tool. It will be migrated as attachmentAsset %n", jcrAssetItem.getName(), jcrAssetItem.getFormat());
             return attachementAssetMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
         }
 
@@ -267,7 +266,7 @@ public class AssetMigrater {
             logger.debug("    Asset ({}) with format ({}) migrated: version [{}], comment[{}], lastModified[{}]",
                     historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(), historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified().getTime());
         }
-        } catch (Exception e){
+        } catch (RuntimeException e){
             System.out.println("Exception migrating assetHistory at version: "+currentVersionAssetName +" from module: "+jcrModule.getName());
         }
     }

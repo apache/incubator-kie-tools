@@ -33,7 +33,7 @@ public class ModuleMigrater {
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
         for ( Module jcrModule : jcrModules ) {
             migrate( jcrModule );
-            System.out.format( "    Module [%s] migrated. \n", jcrModule.getName() );
+            System.out.format( "    Module [%s] migrated. %n", jcrModule.getName() );
         }
         
         Module globalModule = jcrRepositoryModuleService.loadGlobalModule();
@@ -47,14 +47,17 @@ public class ModuleMigrater {
         //Set up project structure:
         jcrModule.setName(migrationPathManager.normalizePackageName(jcrModule.getName()));
 
-        String [] nameSplit = jcrModule.getName().split("\\.");
-        String groupId=nameSplit[0];
-        String artifactId=nameSplit[nameSplit.length-1];
+        String[] nameSplit = jcrModule.getName().split("\\.");
 
-        for(int i =1 ;i< nameSplit.length-1;i++){
-            groupId +="."+ nameSplit[i];
+        StringBuilder groupIdBuilder = new StringBuilder();
+        groupIdBuilder.append(nameSplit[0]);
+        for (int i = 1; i < nameSplit.length - 1; i++) {
+            groupIdBuilder.append(".");
+            groupIdBuilder.append(nameSplit[i]);
         }
 
+        String groupId = groupIdBuilder.toString();
+        String artifactId = nameSplit[nameSplit.length - 1];
         GAV gav = new GAV(groupId,
                           artifactId,
                           "0.0.1");

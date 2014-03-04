@@ -36,7 +36,7 @@ public class MigrationConfig {
 
     private static String DEFAULT_MIGRATION_FILE_SYSTEM = "guvnor-jcr2vfs-migration";
 
-    public static String formatstr = "runMigration  [options...]";
+    public static final String formatstr = "runMigration  [options...]";
 
     private File inputJcrRepository;
     private File outputVfsRepository;
@@ -130,7 +130,11 @@ public class MigrationConfig {
             System.out.println( "The outputVfsRepository (" + outputVfsRepository + ") has issues: " + e );
             return false;
         }
-        outputVfsRepository.mkdirs();
+        try {
+            FileUtils.forceMkdir(outputVfsRepository);
+        } catch (IOException e) {
+            throw new RuntimeException("Can't create the output VFS directory!", e);
+        }
 
         return true;
     }

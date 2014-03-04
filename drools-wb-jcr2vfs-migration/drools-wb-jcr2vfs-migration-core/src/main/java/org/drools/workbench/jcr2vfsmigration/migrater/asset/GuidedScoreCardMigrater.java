@@ -28,13 +28,7 @@ public class GuidedScoreCardMigrater extends BaseAssetMigrater {
     protected static final Logger logger = LoggerFactory.getLogger( GuidedScoreCardMigrater.class );
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
     protected GuidedRuleEditorService guidedRuleEditorService;
-
-    @Inject
-    protected MigrationPathManager migrationPathManager;
 
     @Inject
     @Named("ioStrategy")

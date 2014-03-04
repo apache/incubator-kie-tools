@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +17,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.google.common.base.Charsets;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
@@ -63,7 +65,7 @@ public class PackageImportHelper {
         try {
             DocumentBuilder dombuilder = domfac.newDocumentBuilder();
 
-            Document doc = dombuilder.parse( new ByteArrayInputStream( xml.getBytes() ) );
+            Document doc = dombuilder.parse( new ByteArrayInputStream( xml.getBytes( Charsets.UTF_8 ) ) );
 
             if ( doc.getElementsByTagName( "packageName" ).getLength() != 0 ) {
                 return xml;
@@ -146,7 +148,7 @@ public class PackageImportHelper {
 
         try {
             DocumentBuilder dombuilder = domfac.newDocumentBuilder();
-            Document doc = dombuilder.parse( new ByteArrayInputStream( xml.getBytes() ) );
+            Document doc = dombuilder.parse( new ByteArrayInputStream( xml.getBytes( Charsets.UTF_8 ) ) );
 
             if ( doc.getElementsByTagName( "imports" ).getLength() != 0 ) {
                 return xml;
