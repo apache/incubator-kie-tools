@@ -6,6 +6,8 @@ import java.util.List;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
@@ -42,16 +44,42 @@ public class GuidedRuleEditorValidator {
         }
 
         for (IPattern iPattern : patterns) {
-            if (iPattern instanceof CompositeFactPattern) {
-                CompositeFactPattern compositeFactPattern = (CompositeFactPattern) iPattern;
-
-                hasPatterns(compositeFactPattern);
-
-                validateIPatterns(compositeFactPattern.getPatterns());
-
+            if (iPattern instanceof FromAccumulateCompositeFactPattern) {
+                validateFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) iPattern);
+            } else if (iPattern instanceof FromCompositeFactPattern) {
+                validateFromCompositeFactPattern((FromCompositeFactPattern) iPattern);
+            } else if (iPattern instanceof CompositeFactPattern) {
+                validateCompositeFactPattern((CompositeFactPattern) iPattern);
             } else if (iPattern instanceof FactPattern) {
                 validateFactPattern((FactPattern) iPattern);
             }
+        }
+    }
+
+    private void validateCompositeFactPattern(CompositeFactPattern compositeFactPattern) {
+        hasPatterns(compositeFactPattern);
+
+        validateIPatterns(compositeFactPattern.getPatterns());
+    }
+
+    private void validateFromCompositeFactPattern(FromCompositeFactPattern fromCompositeFactPattern) {
+        hasExpressionBinding(fromCompositeFactPattern);
+
+        validateFactPattern(fromCompositeFactPattern.getFactPattern());
+    }
+
+    private void validateFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern) {
+        IPattern sourcePattern = fromAccumulateCompositeFactPattern.getSourcePattern();
+        if (sourcePattern instanceof FactPattern) {
+            validateFactPattern((FactPattern) sourcePattern);
+        }
+    }
+
+    private void hasExpressionBinding(FromCompositeFactPattern fromCompositeFactPattern) {
+        if (fromCompositeFactPattern.getExpression().getBinding() == null) {
+            errors.add(
+                    constants.WhenUsingFromTheSourceNeedsToBeSet());
+            isValid = false;
         }
     }
 
@@ -84,9 +112,10 @@ public class GuidedRuleEditorValidator {
     }
 
     private boolean areOperatorAndValueInValid(SingleFieldConstraint singleFieldConstraint) {
-        return !singleFieldConstraint.getOperator().equals("== null")
+        return singleFieldConstraint.getOperator() != null
+                && !singleFieldConstraint.getOperator().equals("== null")
                 && !singleFieldConstraint.getOperator().equals("!= null")
-                && (singleFieldConstraint.getOperator() != null && singleFieldConstraint.getValue() == null);
+                && singleFieldConstraint.getValue() == null;
     }
 
     private void setMandatoryFieldsError() {
