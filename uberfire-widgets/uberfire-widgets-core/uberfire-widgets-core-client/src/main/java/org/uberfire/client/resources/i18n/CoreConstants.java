@@ -152,4 +152,5 @@ public interface CoreConstants
 
     String Revert();
 
+    String textResourceTypeDescription();
 }
