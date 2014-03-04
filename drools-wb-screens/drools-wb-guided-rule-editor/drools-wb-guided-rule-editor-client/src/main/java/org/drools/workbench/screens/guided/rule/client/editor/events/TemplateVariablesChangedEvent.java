@@ -32,7 +32,7 @@ public class TemplateVariablesChangedEvent
         void onTemplateVariablesChanged( TemplateVariablesChangedEvent event );
     }
 
-    public static Type<Handler> TYPE = new Type<Handler>();
+    public static final Type<Handler> TYPE = new Type<Handler>();
 
     private RuleModel model;
 

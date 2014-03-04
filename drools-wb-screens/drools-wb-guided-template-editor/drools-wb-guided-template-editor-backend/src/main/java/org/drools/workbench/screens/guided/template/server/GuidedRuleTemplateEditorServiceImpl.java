@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
@@ -267,7 +268,10 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             final List<ValidationMessage> messages = validateTemplateVariables( path,
                                                                                 model );
             messages.addAll( genericValidator.validate( path,
-                                                        new ByteArrayInputStream( RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ).getBytes() ),
+                                                        new ByteArrayInputStream(
+                                                                RuleTemplateModelXMLPersistenceImpl.getInstance()
+                                                                        .marshal( model ).getBytes( Charsets.UTF_8 )
+                                                        ),
                                                         FILTER_JAVA,
                                                         FILTER_GLOBALS,
                                                         FILTER_DSLS ) );

@@ -194,10 +194,10 @@ public class JobRequestHelper {
             pom.getGav().setVersion( "1.0" );
 
             try {
-                Project project = projectService.newProject( makeRepository( Paths.convert( repositoryPath ) ),
-                                                             projectName,
-                                                             pom,
-                                                             "/" );
+                projectService.newProject( makeRepository( Paths.convert( repositoryPath ) ),
+                                           projectName,
+                                           pom,
+                                           "/" );
             } catch ( org.uberfire.java.nio.file.FileAlreadyExistsException e ) {
                 result.setStatus( JobStatus.DUPLICATE_RESOURCE );
                 result.setResult( "Project [" + projectName + "] already exists" );
@@ -350,13 +350,13 @@ public class JobRequestHelper {
                     jobResultEvent.fire( result );
                 }
 
-                //@Override
+                @Override
                 public Event<TestResultMessage> select( Annotation... qualifiers ) {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                //@Override
+                @Override
                 public <U extends TestResultMessage> Event<U> select(
                         Class<U> subtype,
                         Annotation... qualifiers ) {
@@ -364,13 +364,6 @@ public class JobRequestHelper {
                     return null;
                 }
 
-                //@Override
-                public <U extends TestResultMessage> Event<U> select(
-                        TypeLiteral<U> subtype,
-                        Annotation... qualifiers ) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
             } );
         }
     }
@@ -426,7 +419,7 @@ public class JobRequestHelper {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
-        if ( organizationalUnitName == null || organizationalUnitName == null ) {
+        if ( organizationalUnitName == null || organizationalUnitOwner == null ) {
             result.setStatus( JobStatus.BAD_REQUEST );
             result.setResult( "OrganizationalUnit name and owner must be provided" );
             jobResultEvent.fire( result );

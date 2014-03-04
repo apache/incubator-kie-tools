@@ -143,7 +143,7 @@ public class TemplateDataCellValueFactory
                 return Boolean.FALSE.toString();
         }
 
-        return new String();
+        return "";
     }
 
     /**
@@ -206,7 +206,7 @@ public class TemplateDataCellValueFactory
             case NUMERIC_BYTE:
                 Byte byteValue = null;
                 try {
-                    byteValue = new Byte( dcv );
+                    byteValue = Byte.valueOf( dcv );
                 } catch ( Exception e ) {
                 }
                 cell = makeNewByteCellValue( byteValue );
@@ -230,7 +230,7 @@ public class TemplateDataCellValueFactory
             case NUMERIC_INTEGER:
                 Integer integerValue = null;
                 try {
-                    integerValue = new Integer( dcv );
+                    integerValue = Integer.valueOf( dcv );
                 } catch ( Exception e ) {
                 }
                 cell = makeNewIntegerCellValue( integerValue );
@@ -238,7 +238,7 @@ public class TemplateDataCellValueFactory
             case NUMERIC_LONG:
                 Long longValue = null;
                 try {
-                    longValue = new Long( dcv );
+                    longValue = Long.valueOf( dcv );
                 } catch ( Exception e ) {
                 }
                 cell = makeNewLongCellValue( longValue );
@@ -246,7 +246,7 @@ public class TemplateDataCellValueFactory
             case NUMERIC_SHORT:
                 Short shortValue = null;
                 try {
-                    shortValue = new Short( dcv );
+                    shortValue = Short.valueOf( dcv );
                 } catch ( Exception e ) {
                 }
                 cell = makeNewShortCellValue( shortValue );

@@ -608,7 +608,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                             BRLConditionVariableColumn brl = (BRLConditionVariableColumn) cc;
                             String field = brl.getFactField();
                             label.append( field == null ? "" : field );
-                        } else if ( cc instanceof ConditionCol52 ) {
+                        } else {
                             String factField = cc.getFactField();
                             if ( factField != null && factField.length() > 0 ) {
                                 label.append( factField );

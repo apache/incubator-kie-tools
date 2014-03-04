@@ -39,23 +39,24 @@ public class DateConditionDetector extends ConditionDetector<DateConditionDetect
                                   String operator ) {
         super( pattern, factField );
         if ( operator.equals( "==" ) ) {
-            from = value;
+            // java.util.Date is mutable so it is always better to make a defensive copy
+            from = new Date(value.getTime());
             fromInclusive = true;
-            to = value;
+            to = new Date(value.getTime());
             toInclusive = true;
         } else if ( operator.equals( "!=" ) ) {
             disallowedList.add( value );
         } else if ( operator.equals( "<" ) ) {
-            to = value;
+            to = new Date(value.getTime());
             toInclusive = false;
         } else if ( operator.equals( "<=" ) ) {
-            to = value;
+            to = new Date(value.getTime());
             toInclusive = true;
         } else if ( operator.equals( ">" ) ) {
-            from = value;
+            from = new Date(value.getTime());
             fromInclusive = false;
         } else if ( operator.equals( ">=" ) ) {
-            from = value;
+            from = new Date(value.getTime());
             fromInclusive = true;
         } else {
             hasUnrecognizedConstraint = true;

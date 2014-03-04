@@ -509,15 +509,12 @@ public class ActionValueEditor
             if ( !this.variableType.equals( DataType.TYPE_COMPARABLE ) ) {
                 return false;
             }
-            FieldConstraint fc = this.modeller.getModel().getLHSBoundField( boundVariable );
-            if ( fc instanceof SingleFieldConstraint ) {
-                String fieldName = ( (SingleFieldConstraint) fc ).getFieldName();
-                String parentFactTypeForBinding = this.modeller.getModel().getLHSParentFactPatternForBinding( boundVariable ).getFactType();
-                String[] dd = this.modeller.getDataModelOracle().getEnumValues( parentFactTypeForBinding,
-                                                                                fieldName );
-                return isEnumEquivalent( dd );
-            }
-            return false;
+            SingleFieldConstraint fc = this.modeller.getModel().getLHSBoundField( boundVariable );
+            String fieldName = fc.getFieldName();
+            String parentFactTypeForBinding = this.modeller.getModel().getLHSParentFactPatternForBinding( boundVariable ).getFactType();
+            String[] dd = this.modeller.getDataModelOracle().getEnumValues( parentFactTypeForBinding,
+                                                                            fieldName );
+            return isEnumEquivalent( dd );
         }
 
         //If the fieldTypes are identical (and not SuggestionCompletionEngine.TYPE_COMPARABLE) then return true
@@ -554,10 +551,7 @@ public class ActionValueEditor
     }
 
     private boolean isEnumEquivalent( String[] values ) {
-        if ( values == null && this.enums.getFixedList() != null ) {
-            return false;
-        }
-        if ( values != null && this.enums.getFixedList() == null ) {
+        if ( values == null || this.enums.getFixedList() == null ) {
             return false;
         }
         if ( values.length != this.enums.getFixedList().length ) {

@@ -229,16 +229,12 @@ public class ConstraintValueEditorHelper {
                 callback.callback( false );
                 return;
             }
-            FieldConstraint fc = this.model.getLHSBoundField( boundVariable );
-            if ( fc instanceof SingleFieldConstraint ) {
-                String fieldName = ( (SingleFieldConstraint) fc ).getFieldName();
-                String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding( boundVariable ).getFactType();
-                String[] dd = this.oracle.getEnumValues( parentFactTypeForBinding,
-                                                         fieldName );
-                callback.callback( isEnumEquivalent( dd ) );
-                return;
-            }
-            callback.callback( false );
+            SingleFieldConstraint fc = this.model.getLHSBoundField( boundVariable );
+            String fieldName = fc.getFieldName();
+            String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding( boundVariable ).getFactType();
+            String[] dd = this.oracle.getEnumValues( parentFactTypeForBinding,
+                                                     fieldName );
+            callback.callback( isEnumEquivalent( dd ) );
             return;
         }
 
@@ -247,6 +243,9 @@ public class ConstraintValueEditorHelper {
     }
 
     private boolean isEnumEquivalent( String[] values ) {
+        if ( values == null && this.dropDownData.getFixedList() == null ) {
+            return true;
+        }
         if ( values == null && this.dropDownData.getFixedList() != null ) {
             return false;
         }

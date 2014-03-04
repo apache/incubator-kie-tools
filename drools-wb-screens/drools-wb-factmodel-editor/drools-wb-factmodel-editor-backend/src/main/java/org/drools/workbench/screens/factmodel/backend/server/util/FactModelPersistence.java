@@ -20,6 +20,7 @@ import org.drools.workbench.screens.factmodel.model.AnnotationMetaModel;
 import org.drools.workbench.screens.factmodel.model.FactMetaModel;
 import org.drools.workbench.screens.factmodel.model.FactModels;
 import org.drools.workbench.screens.factmodel.model.FieldMetaModel;
+import org.uberfire.commons.validation.Preconditions;
 
 import static java.util.Collections.*;
 
@@ -113,7 +114,9 @@ public class FactModelPersistence {
 
     private static List<FactMetaModel> toModel( String drl )
             throws DroolsParserException {
-        if ( drl != null && ( drl.startsWith( "#advanced" ) || drl.startsWith( "//advanced" ) ) ) {
+        Preconditions.checkNotNull(drl, "The string representing DRL can't be null!");
+
+        if ( drl.startsWith( "#advanced" ) || drl.startsWith( "//advanced" ) ) {
             throw new DroolsParserException( "Using advanced editor" );
         }
         final DrlParser parser = new DrlParser();

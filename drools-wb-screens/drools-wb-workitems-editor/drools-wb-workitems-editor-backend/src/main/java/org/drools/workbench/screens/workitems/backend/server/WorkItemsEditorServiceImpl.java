@@ -160,8 +160,8 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
             if ( defaultDefinition == null ) {
                 defaultDefinition = "";
             }
-            defaultDefinition.replaceAll( "\\|",
-                                          "" );
+            defaultDefinition = defaultDefinition.replaceAll( "\\|",
+                                                              "" );
 
             //Write file to VFS
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );

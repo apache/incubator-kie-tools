@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.drltext.backend.server;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.base.Charsets;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
@@ -237,7 +239,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                                              final String content ) {
         try {
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream( content.getBytes() ),
+                                              new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) ),
                                               FILTER_JAVA,
                                               FILTER_DRLS );
 

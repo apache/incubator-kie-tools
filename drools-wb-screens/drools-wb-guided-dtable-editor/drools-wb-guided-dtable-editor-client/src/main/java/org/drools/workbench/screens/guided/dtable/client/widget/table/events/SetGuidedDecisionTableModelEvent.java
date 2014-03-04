@@ -28,7 +28,7 @@ public class SetGuidedDecisionTableModelEvent extends SetModelEvent<GuidedDecisi
         super( model );
     }
 
-    public static GwtEvent.Type<SetModelEvent.Handler<GuidedDecisionTable52>> TYPE = new GwtEvent.Type<SetModelEvent.Handler<GuidedDecisionTable52>>();
+    public static final GwtEvent.Type<SetModelEvent.Handler<GuidedDecisionTable52>> TYPE = new GwtEvent.Type<SetModelEvent.Handler<GuidedDecisionTable52>>();
 
     @Override
     public GwtEvent.Type<SetModelEvent.Handler<GuidedDecisionTable52>> getAssociatedType() {

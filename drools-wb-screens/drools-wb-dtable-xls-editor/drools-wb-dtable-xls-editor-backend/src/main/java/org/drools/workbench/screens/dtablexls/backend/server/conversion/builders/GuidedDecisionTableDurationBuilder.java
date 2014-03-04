@@ -50,7 +50,7 @@ public class GuidedDecisionTableDurationBuilder extends AbstractGuidedDecisionTa
                               final String value ) {
         final DTCellValue52 dcv = new DTCellValue52();
         try {
-            dcv.setNumericValue( new Long( value ) );
+            dcv.setNumericValue( Long.valueOf( value ) );
         } catch ( NumberFormatException nfe ) {
             final String message = "Duration is not an long literal, in cell " + RuleSheetParserUtil.rc2name( row,
                                                                                                               column );

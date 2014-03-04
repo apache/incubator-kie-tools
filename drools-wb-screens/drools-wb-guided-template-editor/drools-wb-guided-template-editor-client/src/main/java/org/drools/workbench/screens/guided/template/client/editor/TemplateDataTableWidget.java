@@ -60,10 +60,6 @@ public class TemplateDataTableWidget extends Composite
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
     private EventBus eventBus = new SimpleEventBus();
 
-    //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
-    @SuppressWarnings("unused")
-    private EventBus globalEventBus;
-
     //Rows that have been copied in a copy-paste operation
     private List<String[]> copiedRows = new ArrayList<String[]>();
 
@@ -86,7 +82,6 @@ public class TemplateDataTableWidget extends Composite
             throw new IllegalArgumentException( "globalEventBus cannot be null" );
         }
         this.model = model;
-        this.globalEventBus = globalEventBus;
 
         //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists 
         //for dependent enumerations. This needs to be called before the columns are created.

@@ -23,7 +23,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 
 public class GuidedRuleEditorImages508 {
 
-    public static GuidedRuleEditorImages508 INSTANCE = new GuidedRuleEditorImages508();
+    public static final GuidedRuleEditorImages508 INSTANCE = new GuidedRuleEditorImages508();
 
     private GuidedRuleEditorImages508() {
     }

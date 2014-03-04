@@ -144,7 +144,7 @@ public class VerifyRulesFiredWidget extends Composite {
                         num.setVisible( true );
                         v.setExpectedFire( null );
                         num.setText( "1" );
-                        v.setExpectedCount( new Integer( 1 ) );
+                        v.setExpectedCount( Integer.valueOf( 1 ) );
                     }
                 }
             } );
@@ -153,7 +153,7 @@ public class VerifyRulesFiredWidget extends Composite {
 
             num.addChangeHandler( new ChangeHandler() {
                 public void onChange( ChangeEvent event ) {
-                    v.setExpectedCount( new Integer( num.getText() ) );
+                    v.setExpectedCount( Integer.valueOf( num.getText() ) );
                 }
             } );
 

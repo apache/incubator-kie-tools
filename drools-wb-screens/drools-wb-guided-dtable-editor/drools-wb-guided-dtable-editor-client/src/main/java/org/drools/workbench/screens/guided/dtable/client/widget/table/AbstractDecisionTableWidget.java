@@ -1265,7 +1265,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Calculate the diffs between original and edit pattern
-        if (origPattern != null) patternDiff = origPattern.diff( editPattern );
+        patternDiff = origPattern.diff( editPattern );
 
         //Add pattern to model, if applicable
         if ( !existPattern ) {

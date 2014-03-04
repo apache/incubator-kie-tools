@@ -492,7 +492,9 @@ public class GuidedScoreCardEditor extends Composite {
             } else if ( "String".equalsIgnoreCase( field ) ) {
                 newOptions = Arrays.asList( stringOperators );
             }
-            dynamicSelectionCell.setOptions( newOptions );
+            if ( newOptions != null ) {
+                dynamicSelectionCell.setOptions( newOptions );
+            }
             if ( newAttribute != null ) {
                 if ( newOptions != null ) {
                     newAttribute.setOperator( newOptions.get( 0 ) );

@@ -273,7 +273,7 @@ public class FactDataWidgetFactory {
         }
     }
 
-    class RowIndexByFieldName {
+    static class RowIndexByFieldName {
 
         private Map<String, Integer> rows = new HashMap<String, Integer>();
 

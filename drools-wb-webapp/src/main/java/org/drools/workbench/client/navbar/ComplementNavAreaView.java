@@ -64,9 +64,6 @@ public class ComplementNavAreaView
 
     @Override
     public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-//        panel.setPixelSize( width, height );
     }
 
 }

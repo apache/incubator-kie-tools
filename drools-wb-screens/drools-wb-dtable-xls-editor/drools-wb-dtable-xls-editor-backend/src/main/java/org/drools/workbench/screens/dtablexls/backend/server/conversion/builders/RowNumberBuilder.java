@@ -35,7 +35,7 @@ public class RowNumberBuilder
         for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
             dtable.getData().add( new ArrayList<DTCellValue52>() );
             final DTCellValue52 dcv = this.values.get( iRow );
-            dcv.setNumericValue( new Integer( iRow + 1 ) );
+            dcv.setNumericValue( Integer.valueOf( iRow + 1 ) );
             dtable.getData().get( iRow ).add( 0,
                                               dcv );
         }

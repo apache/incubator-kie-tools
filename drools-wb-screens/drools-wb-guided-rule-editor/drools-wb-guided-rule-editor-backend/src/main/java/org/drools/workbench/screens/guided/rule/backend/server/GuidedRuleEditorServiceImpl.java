@@ -23,6 +23,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.base.Charsets;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -278,7 +279,7 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             final String source = toSourceUnexpanded( path,
                                                       content );
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream( source.getBytes() ),
+                                              new ByteArrayInputStream( source.getBytes( Charsets.UTF_8 ) ),
                                               FILTER_JAVA,
                                               FILTER_GLOBALS,
                                               FILTER_DSLS,

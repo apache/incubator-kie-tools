@@ -38,13 +38,13 @@ public class DynamicSelectionCell extends AbstractInputCell<String, String> {
     interface Template extends SafeHtmlTemplates {
 
         @Template("<option value=\"{0}\">{0}</option>")
-        SafeHtml deselected( String option );
+        SafeHtml deselected(String option);
 
         @Template("<option value=\"{0}\" selected=\"selected\">{0}</option>")
-        SafeHtml selected( String option );
+        SafeHtml selected(String option);
     }
 
-    private static Template template;
+    private static Template template = GWT.create(Template.class);
 
     private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
 
@@ -52,108 +52,104 @@ public class DynamicSelectionCell extends AbstractInputCell<String, String> {
 
     /**
      * Construct a new {@link com.google.gwt.cell.client.SelectionCell} with the specified options.
+     *
      * @param options the options in the cell
      */
-    public DynamicSelectionCell( final List<String> options ) {
-        super( "change" );
-        if ( template == null ) {
-            template = GWT.create( Template.class );
-        }
-        this.options = new ArrayList<String>( options );
+    public DynamicSelectionCell(final List<String> options) {
+        super("change");
+        this.options = new ArrayList<String>(options);
         int index = 0;
-        for ( String option : options ) {
-            indexForOption.put( option,
-                                index++ );
+        for (String option : options) {
+            indexForOption.put(option,
+                    index++);
         }
     }
 
-    public void addOption( final String newOp ) {
-        String option = new String( newOp );
-        options.add( option );
+    public void addOption(final String newOp) {
+        options.add(newOp);
         refreshIndexes();
     }
 
-    public void setOptions( final List<String> newOptions ) {
+    public void setOptions(final List<String> newOptions) {
         options.clear();
         indexForOption.clear();
-        options.addAll( newOptions );
+        options.addAll(newOptions);
         int index = 0;
-        for ( String option : options ) {
-            indexForOption.put( option,
-                                index++ );
+        for (String option : options) {
+            indexForOption.put(option,
+                    index++);
         }
         refreshIndexes();
     }
 
-    public void removeOption( final String op ) {
-        String option = new String( op );
-        options.remove( indexForOption.get( option ) );
+    public void removeOption(final String op) {
+        options.remove(op);
         refreshIndexes();
     }
 
     private void refreshIndexes() {
         int index = 0;
-        for ( String option : options ) {
-            indexForOption.put( option,
-                                index++ );
+        for (String option : options) {
+            indexForOption.put(option,
+                    index++);
         }
     }
 
     @Override
-    public void onBrowserEvent( final Context context,
-                                final Element parent,
-                                final String value,
-                                final NativeEvent event,
-                                final ValueUpdater<String> valueUpdater ) {
-        super.onBrowserEvent( context,
-                              parent,
-                              value,
-                              event,
-                              valueUpdater );
+    public void onBrowserEvent(final Context context,
+            final Element parent,
+            final String value,
+            final NativeEvent event,
+            final ValueUpdater<String> valueUpdater) {
+        super.onBrowserEvent(context,
+                parent,
+                value,
+                event,
+                valueUpdater);
         final String type = event.getType();
-        if ( "change".equals( type ) ) {
+        if ("change".equals(type)) {
             final Object key = context.getKey();
             final SelectElement select = parent.getFirstChild().cast();
-            final String newValue = options.get( select.getSelectedIndex() );
-            setViewData( key, newValue );
-            finishEditing( parent,
-                           newValue,
-                           key,
-                           valueUpdater );
-            if ( valueUpdater != null ) {
-                valueUpdater.update( newValue );
+            final String newValue = options.get(select.getSelectedIndex());
+            setViewData(key, newValue);
+            finishEditing(parent,
+                    newValue,
+                    key,
+                    valueUpdater);
+            if (valueUpdater != null) {
+                valueUpdater.update(newValue);
             }
         }
     }
 
     @Override
-    public void render( final Context context,
-                        final String value,
-                        final SafeHtmlBuilder sb ) {
+    public void render(final Context context,
+            final String value,
+            final SafeHtmlBuilder sb) {
         // Get the view data.
         final Object key = context.getKey();
-        String viewData = getViewData( key );
-        if ( viewData != null && viewData.equals( value ) ) {
-            clearViewData( key );
+        String viewData = getViewData(key);
+        if (viewData != null && viewData.equals(value)) {
+            clearViewData(key);
             viewData = null;
         }
 
-        final int selectedIndex = getSelectedIndex( viewData == null ? value : viewData );
-        sb.appendHtmlConstant( "<select tabindex=\"-1\">" );
+        final int selectedIndex = getSelectedIndex(viewData == null ? value : viewData);
+        sb.appendHtmlConstant("<select tabindex=\"-1\">");
         int index = 0;
-        for ( String option : options ) {
-            if ( index++ == selectedIndex ) {
-                sb.append( template.selected( option ) );
+        for (String option : options) {
+            if (index++ == selectedIndex) {
+                sb.append(template.selected(option));
             } else {
-                sb.append( template.deselected( option ) );
+                sb.append(template.deselected(option));
             }
         }
-        sb.appendHtmlConstant( "</select>" );
+        sb.appendHtmlConstant("</select>");
     }
 
-    private int getSelectedIndex( final String value ) {
-        final Integer index = indexForOption.get( value );
-        if ( index == null ) {
+    private int getSelectedIndex(final String value) {
+        final Integer index = indexForOption.get(value);
+        if (index == null) {
             return -1;
         }
         return index.intValue();

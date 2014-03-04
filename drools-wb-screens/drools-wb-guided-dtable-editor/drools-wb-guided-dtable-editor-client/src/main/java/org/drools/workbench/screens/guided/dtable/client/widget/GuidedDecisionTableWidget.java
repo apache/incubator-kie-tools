@@ -95,7 +95,6 @@ public class GuidedDecisionTableWidget extends Composite
     private VerticalPanel conditionsConfigWidget;
     private VerticalPanel actionsConfigWidget;
     private GuidedDecisionTable52 model;
-    private GuidedDecisionTableUtils utils;
     private AsyncPackageDataModelOracle oracle;
     private Caller<RuleNamesService> ruleNameService;
     private BRLRuleModel rm;

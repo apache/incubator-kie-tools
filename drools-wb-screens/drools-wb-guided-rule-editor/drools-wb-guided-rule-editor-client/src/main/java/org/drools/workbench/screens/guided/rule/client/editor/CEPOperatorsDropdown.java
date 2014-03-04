@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

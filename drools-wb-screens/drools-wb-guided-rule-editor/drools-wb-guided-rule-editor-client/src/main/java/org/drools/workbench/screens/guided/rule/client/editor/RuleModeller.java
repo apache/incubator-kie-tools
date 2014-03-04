@@ -63,8 +63,6 @@ public class RuleModeller extends DirtyableComposite
         implements
         RuleModelEditor {
 
-    private WorkingSetManager workingSetManager = null;
-
     private DirtyableFlexTable layout;
     private RuleModel model;
     private AsyncPackageDataModelOracle oracle;

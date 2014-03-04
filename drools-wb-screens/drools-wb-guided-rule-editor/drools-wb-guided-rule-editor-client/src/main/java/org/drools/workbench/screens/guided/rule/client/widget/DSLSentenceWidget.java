@@ -199,7 +199,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         return -1;
     }
 
-    class NewLine extends Widget {
+    static class NewLine extends Widget {
 
     }
 

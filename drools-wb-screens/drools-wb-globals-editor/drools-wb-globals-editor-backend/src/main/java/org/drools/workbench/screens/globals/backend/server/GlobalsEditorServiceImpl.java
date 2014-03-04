@@ -25,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.globals.backend.server.util.GlobalsPersistence;
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
@@ -244,7 +245,9 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
                                              final GlobalsModel content ) {
         try {
             return genericValidator.validate( path,
-                                              new ByteArrayInputStream( GlobalsPersistence.getInstance().marshal( content ).getBytes() ),
+                                              new ByteArrayInputStream(
+                                                      GlobalsPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
+                                              ),
                                               FILTER_JAVA );
 
         } catch ( Exception e ) {

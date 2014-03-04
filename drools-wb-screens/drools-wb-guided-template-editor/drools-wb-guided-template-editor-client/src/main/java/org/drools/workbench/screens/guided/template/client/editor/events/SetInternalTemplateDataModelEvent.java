@@ -30,7 +30,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetIn
 public class SetInternalTemplateDataModelEvent
         extends SetInternalModelEvent<TemplateModel, TemplateDataColumn> {
 
-    public static GwtEvent.Type<SetInternalModelEvent.Handler<TemplateModel, TemplateDataColumn>> TYPE = new GwtEvent.Type<SetInternalModelEvent.Handler<TemplateModel, TemplateDataColumn>>();
+    public static final GwtEvent.Type<SetInternalModelEvent.Handler<TemplateModel, TemplateDataColumn>> TYPE = new GwtEvent.Type<SetInternalModelEvent.Handler<TemplateModel, TemplateDataColumn>>();
 
     public SetInternalTemplateDataModelEvent( TemplateModel model,
                                               DynamicData data,

@@ -85,7 +85,6 @@ public class DefaultValueWidgetFactory {
                                         final boolean isReadOnly,
                                         final DefaultValueChangedEventHandler defaultValueChangedEventHandler ) {
         Widget editor = null;
-        final AttributeCol52 originCol = ac;
         final String attributeName = ac.getAttribute();
         if ( attributeName.equals( RuleAttributeWidget.RULEFLOW_GROUP_ATTR )
                 || attributeName.equals( RuleAttributeWidget.AGENDA_GROUP_ATTR )
@@ -129,9 +128,9 @@ public class DefaultValueWidgetFactory {
                     public void onValueChange( ValueChangeEvent<String> event ) {
                         DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                         try {
-                            defaultValue.setNumericValue( new Integer( event.getValue() ) );
+                            defaultValue.setNumericValue( Integer.valueOf( event.getValue() ) );
                         } catch ( NumberFormatException nfe ) {
-                            defaultValue.setNumericValue( new Integer( "0" ) );
+                            defaultValue.setNumericValue( 0 );
                             tb.setValue( "0" );
                         } finally {
                             defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
@@ -159,9 +158,9 @@ public class DefaultValueWidgetFactory {
                     public void onValueChange( ValueChangeEvent<String> event ) {
                         DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                         try {
-                            defaultValue.setNumericValue( new Long( event.getValue() ) );
+                            defaultValue.setNumericValue( Long.valueOf( event.getValue() ) );
                         } catch ( NumberFormatException nfe ) {
-                            defaultValue.setNumericValue( new Long( "0" ) );
+                            defaultValue.setNumericValue( 0L );
                             tb.setValue( "0" );
                         } finally {
                             defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
@@ -274,9 +273,9 @@ public class DefaultValueWidgetFactory {
     private static void assertIntegerDefaultValue( final DTCellValue52 dcv ) {
         if ( dcv.getNumericValue() == null ) {
             try {
-                dcv.setNumericValue( new Integer( dcv.getStringValue() ) );
+                dcv.setNumericValue( Integer.valueOf ( dcv.getStringValue() ) );
             } catch ( NumberFormatException nfe ) {
-                dcv.setNumericValue( new Integer( "0" ) );
+                dcv.setNumericValue( 0 );
             }
         }
     }
@@ -285,9 +284,9 @@ public class DefaultValueWidgetFactory {
     private static void assertLongDefaultValue( final DTCellValue52 dcv ) {
         if ( dcv.getNumericValue() == null ) {
             try {
-                dcv.setNumericValue( new Long( dcv.getStringValue() ) );
+                dcv.setNumericValue( Long.valueOf( dcv.getStringValue() ) );
             } catch ( NumberFormatException nfe ) {
-                dcv.setNumericValue( new Long( "0" ) );
+                dcv.setNumericValue( 0L );
             }
         }
     }
@@ -295,7 +294,7 @@ public class DefaultValueWidgetFactory {
     //Legacy DefaultValues always used String to store the value; so attempt to convert it
     private static void assertBooleanDefaultValue( final DTCellValue52 dcv ) {
         if ( dcv.getBooleanValue() == null ) {
-            dcv.setBooleanValue( new Boolean( dcv.getStringValue() ) );
+            dcv.setBooleanValue( Boolean.valueOf( dcv.getStringValue() ) );
         }
     }
 

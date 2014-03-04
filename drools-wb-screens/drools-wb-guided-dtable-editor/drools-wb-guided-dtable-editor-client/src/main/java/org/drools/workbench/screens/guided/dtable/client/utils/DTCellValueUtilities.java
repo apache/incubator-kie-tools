@@ -308,7 +308,7 @@ public class DTCellValueUtilities {
         String text = dcv.getStringValue();
         switch ( dataType ) {
             case BOOLEAN:
-                dcv.setBooleanValue( ( text == null ? false : Boolean.valueOf( text ) ) );
+                dcv.setBooleanValue( ( text == null ? Boolean.FALSE : Boolean.valueOf( text ) ) );
                 break;
             case DATE:
                 Date d = null;
@@ -357,7 +357,7 @@ public class DTCellValueUtilities {
                 Byte byteValue = null;
                 try {
                     if ( text != null ) {
-                        byteValue = new Byte( text );
+                        byteValue = Byte.valueOf( text );
                     }
                 } catch ( Exception e ) {
                 }
@@ -367,7 +367,7 @@ public class DTCellValueUtilities {
                 Double doubleValue = null;
                 try {
                     if ( text != null ) {
-                        doubleValue = new Double( text );
+                        doubleValue = Double.valueOf( text );
                     }
                 } catch ( Exception e ) {
                 }
@@ -377,7 +377,7 @@ public class DTCellValueUtilities {
                 Float floatValue = null;
                 try {
                     if ( text != null ) {
-                        floatValue = new Float( text );
+                        floatValue = Float.valueOf( text );
                     }
                 } catch ( Exception e ) {
                 }
@@ -387,7 +387,7 @@ public class DTCellValueUtilities {
                 Integer integerValue = null;
                 try {
                     if ( text != null ) {
-                        integerValue = new Integer( text );
+                        integerValue = Integer.valueOf( text );
                     }
                 } catch ( Exception e ) {
                 }
@@ -397,7 +397,7 @@ public class DTCellValueUtilities {
                 Long longValue = null;
                 try {
                     if ( text != null ) {
-                        longValue = new Long( text );
+                        longValue = Long.valueOf( text );
                     }
                 } catch ( Exception e ) {
                 }
@@ -407,7 +407,7 @@ public class DTCellValueUtilities {
                 Short shortValue = null;
                 try {
                     if ( text != null ) {
-                        shortValue = new Short( text );
+                        shortValue = Short.valueOf( text );
                     }
                 } catch ( Exception e ) {
                 }

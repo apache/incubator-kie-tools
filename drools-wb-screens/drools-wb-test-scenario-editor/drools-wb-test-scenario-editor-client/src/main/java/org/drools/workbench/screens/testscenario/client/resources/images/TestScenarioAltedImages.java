@@ -6,7 +6,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class TestScenarioAltedImages {
 
-    public static TestScenarioAltedImages INSTANCE = new TestScenarioAltedImages();
+    public static final TestScenarioAltedImages INSTANCE = new TestScenarioAltedImages();
 
     public Image RuleAsset() {
         Image image = new Image(TestScenarioImages.INSTANCE.RuleAsset());

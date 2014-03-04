@@ -394,7 +394,7 @@ public class GuidedDecisionTableUtils {
                 }
             }
         }
-        return new String();
+        return "";
     }
 
     /**

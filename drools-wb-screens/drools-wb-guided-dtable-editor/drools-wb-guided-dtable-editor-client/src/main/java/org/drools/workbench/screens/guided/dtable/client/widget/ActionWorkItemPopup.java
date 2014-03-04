@@ -54,7 +54,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
 
     private ActionWorkItemCol52 editingCol;
     private GuidedDecisionTable52 model;
-    private Path path;
     private WorkItemParametersWidget workItemInputParameters;
     private Map<String, PortableWorkDefinition> workItemDefinitionsMap;
     private int workItemInputParametersIndex;
@@ -70,7 +69,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                 final boolean isNew,
                                 final boolean isReadOnly ) {
         this.editingCol = cloneActionWorkItemColumn( col );
-        this.path = path;
         this.model = model;
         this.isReadOnly = isReadOnly;
 

@@ -29,7 +29,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetIn
  */
 public class SetInternalDecisionTableModelEvent extends SetInternalModelEvent<GuidedDecisionTable52, BaseColumn> {
 
-    public static GwtEvent.Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, BaseColumn>> TYPE = new GwtEvent.Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, BaseColumn>>();
+    public static final GwtEvent.Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, BaseColumn>> TYPE = new GwtEvent.Type<SetInternalModelEvent.Handler<GuidedDecisionTable52, BaseColumn>>();
 
     public SetInternalDecisionTableModelEvent( GuidedDecisionTable52 model,
                                                DynamicData data,

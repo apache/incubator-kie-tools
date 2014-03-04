@@ -38,8 +38,6 @@ public class ConfigWorkDefinitionsLoader {
     @Inject
     private ConfigurationService configurationService;
 
-    private FileExtensionFilter widFilter = new FileExtensionFilter( ".wid" );
-
     public Map<String, WorkDefinition> loadWorkDefinitions() {
         //Find all configured WIDs
         final Map<String, WorkDefinition> workDefinitions = new HashMap<String, WorkDefinition>();

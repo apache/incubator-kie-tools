@@ -28,7 +28,7 @@ public class SetTemplateDataEvent extends SetModelEvent<TemplateModel> {
         super( model );
     }
 
-    public static GwtEvent.Type<SetModelEvent.Handler<TemplateModel>> TYPE = new GwtEvent.Type<SetModelEvent.Handler<TemplateModel>>();
+    public static final GwtEvent.Type<SetModelEvent.Handler<TemplateModel>> TYPE = new GwtEvent.Type<SetModelEvent.Handler<TemplateModel>>();
 
     @Override
     public GwtEvent.Type<SetModelEvent.Handler<TemplateModel>> getAssociatedType() {

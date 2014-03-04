@@ -687,13 +687,13 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange( ValueChangeEvent<String> event ) {
                     try {
-                        value.setNumericValue( new Byte( event.getValue() ) );
+                        value.setNumericValue( Byte.valueOf( event.getValue() ) );
                     } catch ( NumberFormatException nfe ) {
                         if ( allowEmptyValues ) {
                             value.setNumericValue( (Byte) null );
                             tb.setValue( "" );
                         } else {
-                            value.setNumericValue( new Byte( "0" ) );
+                            value.setNumericValue( Byte.valueOf( "0" ) );
                             tb.setValue( "0" );
                         }
                     }
@@ -774,13 +774,13 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange( ValueChangeEvent<String> event ) {
                     try {
-                        value.setNumericValue( new Integer( event.getValue() ) );
+                        value.setNumericValue( Integer.valueOf( event.getValue() ) );
                     } catch ( NumberFormatException nfe ) {
                         if ( allowEmptyValues ) {
                             value.setNumericValue( (Integer) null );
                             tb.setValue( "" );
                         } else {
-                            value.setNumericValue( new Integer( "0" ) );
+                            value.setNumericValue( 0 );
                             tb.setValue( "0" );
                         }
                     }
@@ -803,13 +803,13 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange( ValueChangeEvent<String> event ) {
                     try {
-                        value.setNumericValue( new Long( event.getValue() ) );
+                        value.setNumericValue( Long.valueOf( event.getValue() ) );
                     } catch ( NumberFormatException nfe ) {
                         if ( allowEmptyValues ) {
                             value.setNumericValue( (Long) null );
                             tb.setValue( "" );
                         } else {
-                            value.setNumericValue( new Long( "0" ) );
+                            value.setNumericValue( 0L );
                             tb.setValue( "0" );
                         }
                     }
@@ -832,13 +832,13 @@ public class DTCellValueWidgetFactory {
 
                 public void onValueChange( ValueChangeEvent<String> event ) {
                     try {
-                        value.setNumericValue( new Short( event.getValue() ) );
+                        value.setNumericValue( Short.valueOf( event.getValue() ) );
                     } catch ( NumberFormatException nfe ) {
                         if ( allowEmptyValues ) {
                             value.setNumericValue( (Short) null );
                             tb.setValue( "" );
                         } else {
-                            value.setNumericValue( new Short( "0" ) );
+                            value.setNumericValue( Short.valueOf( "0" ) );
                             tb.setValue( "0" );
                         }
                     }

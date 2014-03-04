@@ -38,7 +38,7 @@ public class InsertInternalDecisionTableColumnEvent extends InsertInternalColumn
                redraw );
     }
 
-    public static GwtEvent.Type<InsertInternalColumnEvent.Handler<BaseColumn>> TYPE = new GwtEvent.Type<InsertInternalColumnEvent.Handler<BaseColumn>>();
+    public static final GwtEvent.Type<InsertInternalColumnEvent.Handler<BaseColumn>> TYPE = new GwtEvent.Type<InsertInternalColumnEvent.Handler<BaseColumn>>();
 
     @Override
     public GwtEvent.Type<InsertInternalColumnEvent.Handler<BaseColumn>> getAssociatedType() {

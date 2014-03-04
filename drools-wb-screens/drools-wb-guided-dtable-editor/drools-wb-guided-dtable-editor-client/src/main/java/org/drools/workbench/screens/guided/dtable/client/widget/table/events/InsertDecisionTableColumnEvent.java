@@ -63,7 +63,7 @@ public class InsertDecisionTableColumnEvent extends InsertColumnEvent<BaseColumn
                index );
     }
 
-    public static GwtEvent.Type<InsertColumnEvent.Handler<BaseColumn, DTCellValue52>> TYPE = new GwtEvent.Type<InsertColumnEvent.Handler<BaseColumn, DTCellValue52>>();
+    public static final GwtEvent.Type<InsertColumnEvent.Handler<BaseColumn, DTCellValue52>> TYPE = new GwtEvent.Type<InsertColumnEvent.Handler<BaseColumn, DTCellValue52>>();
 
     @Override
     public GwtEvent.Type<InsertColumnEvent.Handler<BaseColumn, DTCellValue52>> getAssociatedType() {
