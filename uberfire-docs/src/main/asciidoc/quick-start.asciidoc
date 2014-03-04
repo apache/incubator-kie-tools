@@ -49,9 +49,9 @@ and started.
 
 [horizontal]
 JBoss AS 7.1.1, EAP 6.2::
-  link:https://repository.jboss.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.uberfire&a=showcase-distribution-wars&v=0.4.0.Beta3&e=0.war&c=jboss-as7[Download WAR file]
+  link:https://repository.jboss.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.uberfire&a=showcase-distribution-wars&v=0.4.0-SNAPSHOT&e=0.war&c=jboss-as7[Download WAR file]
 Tomcat 7::
-  link:https://repository.jboss.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.uberfire&a=showcase-distribution-wars&v=0.4.0.Beta3&e=0.war&c=tomcat7[Download WAR file]
+  link:https://repository.jboss.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.uberfire&a=showcase-distribution-wars&v=0.4.0-SNAPSHOT&e=0.war&c=tomcat7[Download WAR file]
 
 == Deploy the WAR
 
