@@ -60,4 +60,6 @@ public interface ProjectExplorerConstants
     public String showAsFolders();
     public String showAsLinks();
 
+    public String miscellaneous_files();
+
 }

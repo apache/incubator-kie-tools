@@ -73,7 +73,6 @@ public class BusinessViewWidget extends Composite implements View {
 
     private static BusinessViewImplBinder uiBinder = GWT.create( BusinessViewImplBinder.class );
 
-    private static final String MISCELLANEOUS = "Miscellaneous";
     private static final String ID_CLEANUP_PATTERN = "[^a-zA-Z0-9]";
 
     @UiField
@@ -201,7 +200,7 @@ public class BusinessViewWidget extends Composite implements View {
 
     private String getResourceTypeDescription( final ClientResourceType resourceType ) {
         String description = resourceType.getDescription();
-        description = ( description == null || description.isEmpty() ) ? MISCELLANEOUS : description;
+        description = ( description == null || description.isEmpty() ) ? ProjectExplorerConstants.INSTANCE.miscellaneous_files() : description;
         return description;
     }
 
