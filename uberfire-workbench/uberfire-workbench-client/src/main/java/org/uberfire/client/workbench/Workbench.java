@@ -166,7 +166,8 @@ implements RequiresResize {
 
     /**
      * Requests that the workbench does not attempt to create any UI parts until the given responsible party has
-     * been removed as a startup blocker.
+     * been removed as a startup blocker. Blockers are tracked as a set, so adding the same class more than once has no
+     * effect.
      * 
      * @param responsibleParty
      *            any Class object; typically it will be the class making the call to this method.
@@ -179,6 +180,12 @@ implements RequiresResize {
 
     /**
      * Causes the given responsible party to no longer block workbench initialization.
+     * If the given responsible party was not already in the blocking set (either because
+     * it was never added, or it has already been removed) then the method call has no effect.
+     * <p>
+     * After removing the blocker, if there are no more blockers left in the blocking set, the workbench UI is
+     * bootstrapped immediately. If there are still one or more blockers left in the blocking set, the workbench UI
+     * remains uninitialized.
      * 
      * @param responsibleParty
      *            any Class object that was previously passed to {@link #addStartupBlocker(Class)}.

@@ -16,8 +16,12 @@
 package org.uberfire.client.mvp;
 
 import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -25,8 +29,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
 public class PlaceHistoryHandler {
@@ -37,19 +39,22 @@ public class PlaceHistoryHandler {
      * Default implementation of {@link Historian}, based on {@link History}.
      */
     public static class DefaultHistorian
-            implements
-            Historian {
+    implements
+    Historian {
 
+        @Override
         public com.google.gwt.event.shared.HandlerRegistration addValueChangeHandler( final ValueChangeHandler<String> valueChangeHandler ) {
             return History.addValueChangeHandler( valueChangeHandler );
         }
 
+        @Override
         public String getToken() {
             return History.getToken();
         }
 
+        @Override
         public void newItem( String token,
-                             boolean issueEvent ) {
+                boolean issueEvent ) {
             History.newItem( token, issueEvent );
         }
     }
@@ -80,7 +85,7 @@ public class PlaceHistoryHandler {
          * to be called as well.
          */
         void newItem( final String token,
-                      final boolean issueEvent );
+                final boolean issueEvent );
     }
 
     private final Historian historian;
@@ -112,8 +117,8 @@ public class PlaceHistoryHandler {
      * @return a registration object to de-register the handler
      */
     public HandlerRegistration register( final PlaceManager placeManager,
-                                         final EventBus eventBus,
-                                         final PlaceRequest defaultPlaceRequest ) {
+            final EventBus eventBus,
+            final PlaceRequest defaultPlaceRequest ) {
         this.placeManager = placeManager;
         this.defaultPlaceRequest = defaultPlaceRequest;
         /*
@@ -127,6 +132,7 @@ public class PlaceHistoryHandler {
 
         final HandlerRegistration historyReg =
                 historian.addValueChangeHandler( new ValueChangeHandler<String>() {
+                    @Override
                     public void onValueChange( ValueChangeEvent<String> event ) {
                         String token = event.getValue();
                         handleHistoryToken( token );
@@ -134,6 +140,7 @@ public class PlaceHistoryHandler {
                 } );
 
         return new HandlerRegistration() {
+            @Override
             public void removeHandler() {
                 PlaceHistoryHandler.this.defaultPlaceRequest = DefaultPlaceRequest.NOWHERE;
                 PlaceHistoryHandler.this.placeManager = null;
@@ -144,7 +151,9 @@ public class PlaceHistoryHandler {
     }
 
     public void onPlaceChange( final PlaceRequest placeRequest ) {
-        historian.newItem( tokenForPlace( placeRequest ), false );
+        if ( placeRequest.isUpdateLocationBarAllowed() ) {
+            historian.newItem( tokenForPlace( placeRequest ), false );
+        }
     }
 
     /**

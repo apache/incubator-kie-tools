@@ -16,6 +16,7 @@
 
 package org.uberfire.mvp.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,30 +24,48 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.mvp.PlaceRequest;
 
-/**
- * Default implementation of PlaceRequest
- */
 @Portable
 public class DefaultPlaceRequest
-        implements
-        PlaceRequest {
+implements
+PlaceRequest {
 
     protected final String identifier;
 
     protected final Map<String, String> parameters = new HashMap<String, String>();
 
+    private final boolean updateLocationBar;
+
     public DefaultPlaceRequest() {
-        this.identifier = "";
+        this( "" );
     }
 
     public DefaultPlaceRequest( final String identifier ) {
-        this.identifier = identifier;
+        this( identifier, Collections.<String, String>emptyMap(), true );
     }
 
     public DefaultPlaceRequest( final String identifier,
                                 final Map<String, String> parameters ) {
-        this( identifier );
+        this( identifier, parameters, true );
+    }
+
+    /**
+     * Creates a place request for the given place ID, with the given state parameters for that place, and the given
+     * preference of whether or not the browser's location bar should be updated.
+     * 
+     * @param identifier
+     *            The place ID, or an empty string for the default place.
+     * @param parameters
+     *            Place-specific parameters to pass to the place. Must not be null.
+     * @param updateLocationBar
+     *            If true, the browser's history will be updated with this place request. If false, the location bar
+     *            will not be modified as a result of this place request.
+     */
+    public DefaultPlaceRequest( final String identifier,
+                                final Map<String, String> parameters,
+                                final boolean updateLocationBar ) {
+        this.identifier = identifier;
         this.parameters.putAll( parameters );
+        this.updateLocationBar = updateLocationBar;
     }
 
     @Override
@@ -133,6 +152,11 @@ public class DefaultPlaceRequest
     }
 
     @Override
+    public boolean isUpdateLocationBarAllowed() {
+        return updateLocationBar;
+    }
+
+    @Override
     public int hashCode() {
         int result = identifier.hashCode();
         result = 31 * result + parameters.hashCode();
@@ -141,7 +165,7 @@ public class DefaultPlaceRequest
 
     @Override
     public String toString() {
-      return "DefaultPlaceRequest [identifier=" + identifier + ", parameters=" + parameters + "]";
+        return "DefaultPlaceRequest [identifier=" + identifier + ", parameters=" + parameters + "]";
     }
 
 }

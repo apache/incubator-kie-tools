@@ -21,6 +21,13 @@ import java.util.Set;
 
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
+/**
+ * A request to navigate to a particular UberFire Workbench Place (a WorkbenchPerspective, a WorkbenchScreen, or a
+ * WorkbenchEditor). Can include optional state parameters that are made available to the requested place.
+ * <p>
+ * Place requests can be serialized to and created from a valid URL fragment identifier (the string that goes after the
+ * {@code #} in the browser's location bar).
+ */
 public interface PlaceRequest {
 
     public static final PlaceRequest NOWHERE = new DefaultPlaceRequest( "NOWHERE" );
@@ -42,5 +49,10 @@ public interface PlaceRequest {
     PlaceRequest getPlace();
 
     PlaceRequest clone();
+
+    /**
+     * Indicates whether or not the Workbench framework should add a browser history item when navigating to this place.
+     */
+    boolean isUpdateLocationBarAllowed();
 
 }

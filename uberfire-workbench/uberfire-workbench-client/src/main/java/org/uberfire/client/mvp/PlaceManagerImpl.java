@@ -118,7 +118,7 @@ implements PlaceManager {
 
     @Override
     public void goTo( final String identifier,
-            final PanelDefinition panel ) {
+                      final PanelDefinition panel ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
         goTo( place, null, panel );
     }
@@ -131,22 +131,22 @@ implements PlaceManager {
 
     @Override
     public void goTo( final String identifier,
-            final Command callback,
-            final PanelDefinition panel ) {
+                      final Command callback,
+                      final PanelDefinition panel ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
         goTo( place, callback, panel );
     }
 
     @Override
     public void goTo( final String identifier,
-            final Command callback ) {
+                      final Command callback ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
         goTo( place, callback, null );
     }
 
     @Override
     public void goTo( final PlaceRequest place,
-            final PanelDefinition panel ) {
+                      final PanelDefinition panel ) {
         goTo( place, null, panel );
     }
 
@@ -157,7 +157,7 @@ implements PlaceManager {
 
     @Override
     public void goTo( final Path path,
-            final PanelDefinition panel ) {
+                      final PanelDefinition panel ) {
         goTo( getPlace( path ), null, panel );
     }
 
@@ -168,40 +168,40 @@ implements PlaceManager {
 
     @Override
     public void goTo( final Path path,
-            final PlaceRequest placeRequest,
-            final PanelDefinition panel ) {
+                      final PlaceRequest placeRequest,
+                      final PanelDefinition panel ) {
         goTo( getPlace( path, placeRequest ), null, panel );
     }
 
     @Override
     public void goTo( final Path path,
-            final PlaceRequest placeRequest ) {
+                      final PlaceRequest placeRequest ) {
         goTo( getPlace( path, placeRequest ), null, null );
     }
 
     @Override
     public void goTo( final Path path,
-            final Command callback,
-            final PanelDefinition panel ) {
+                      final Command callback,
+                      final PanelDefinition panel ) {
         goTo( getPlace( path ), callback, panel );
     }
 
     @Override
     public void goTo( Path path,
-            Command callback ) {
+                      Command callback ) {
         goTo( getPlace( path ), callback, null );
     }
 
     @Override
     public void goTo( final PlaceRequest place,
-            final Command callback ) {
+                      final Command callback ) {
         goTo( place, callback, null );
     }
 
     @Override
     public void goTo( final PlaceRequest place,
-            final Command callback,
-            final PanelDefinition panel ) {
+                      final Command callback,
+                      final PanelDefinition panel ) {
         if ( place == null || place.equals( DefaultPlaceRequest.NOWHERE ) ) {
             return;
         }
@@ -288,6 +288,22 @@ implements PlaceManager {
         return result;
     }
 
+    /**
+     * Resolves the given place request into an Activity instance, if one can be found. This method is responsible
+     * for substituting special "not found" or "too many" place requests when the resolution doesn't work.
+     * <p>
+     * The behaviour of this method is affected by the boolean-valued
+     * {@code org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces} property in {@link UberFirePreferences}.
+     * 
+     * @param place
+     *            A non-null place request that could have originated from within application code, from within the
+     *            framework, or by parsing a hash fragment from a browser history event.
+     * @return a non-null Pair, where:
+     * <ul>
+     *  <li>the K1 value is either the unambiguous resolved Activity instance, or null if the activity was not resolvable;
+     *  <li>the K2 value is a substitute PlaceRequest that should be navigated to recursively.
+     * </ul>
+     */
     private Pair<Activity, PlaceRequest> resolveActivity( final PlaceRequest place ) {
 
         final Pair<Activity, PlaceRequest> existingPair = resolveExistingParts( place );
@@ -299,6 +315,11 @@ implements PlaceManager {
         final Set<Activity> activities = getActivities( place );
 
         if ( activities == null || activities.size() == 0 ) {
+            boolean ignoreUnknown = (Boolean) UberFirePreferences.getProperty("org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces", false);
+            if ( ignoreUnknown ) {
+                return Pair.newPair( null, PlaceRequest.NOWHERE );
+            }
+
             System.out.println("Launching notfound activity for placeRequest " + place);
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
             notFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
@@ -338,7 +359,7 @@ implements PlaceManager {
 
     @Override
     public void goTo( final PartDefinition part,
-            final PanelDefinition panel ) {
+                      final PanelDefinition panel ) {
         final PlaceRequest place = part.getPlace();
         if ( place == null ) {
             return;
@@ -364,7 +385,7 @@ implements PlaceManager {
     }
 
     private PlaceRequest getPlace( final Path path,
-            final PlaceRequest placeRequest ) {
+                                   final PlaceRequest placeRequest ) {
         final PlaceRequest request = getPlace( path );
 
         for ( final Map.Entry<String, String> entry : placeRequest.getParameters().entrySet() ) {
@@ -417,7 +438,7 @@ implements PlaceManager {
 
     @Override
     public void tryClosePlace( final PlaceRequest placeToClose,
-            final Command onAfterClose ) {
+                               final Command onAfterClose ) {
         boolean execute = false;
         if ( placeToClose == null ) {
             execute = true;
@@ -453,7 +474,7 @@ implements PlaceManager {
 
     @Override
     public void registerOnOpenCallback( final PlaceRequest place,
-            final Command command ) {
+                                        final Command command ) {
         checkNotNull( "place", place );
         checkNotNull( "command", command );
         this.onOpenCallbacks.put( place,
@@ -495,10 +516,10 @@ implements PlaceManager {
     }
 
     private void launchActivity( final PlaceRequest place,
-            final WorkbenchActivity activity,
-            final Position position,
-            final PanelDefinition _panel,
-            final Command callback ) {
+                                 final WorkbenchActivity activity,
+                                 final Position position,
+                                 final PanelDefinition _panel,
+                                 final Command callback ) {
 
         //If we're already showing this place exit.
         if ( existingWorkbenchParts.containsKey( place ) ) {
@@ -531,10 +552,10 @@ implements PlaceManager {
     }
 
     private void launchActivity( final PlaceRequest place,
-            final WorkbenchActivity activity,
-            final PartDefinition part,
-            final PanelDefinition panel,
-            final Command callback ) {
+                                 final WorkbenchActivity activity,
+                                 final PartDefinition part,
+                                 final PanelDefinition panel,
+                                 final Command callback ) {
 
         //Record new place\part\activity
         existingWorkbenchActivities.put( place,
@@ -548,10 +569,10 @@ implements PlaceManager {
     }
 
     private void revealActivityWithCalBackToAttachToWorkbench( final PlaceRequest place,
-            final WorkbenchActivity activity,
-            final PartDefinition part,
-            final PanelDefinition panel,
-            Command callback ) {
+                                                               final WorkbenchActivity activity,
+                                                               final PartDefinition part,
+                                                               final PanelDefinition panel,
+                                                               Command callback ) {
         final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
 
         //Reveal activity with call-back to attach to Workbench
@@ -596,8 +617,8 @@ implements PlaceManager {
     }
 
     private void launchActivity( final PlaceRequest place,
-            final PopupActivity activity,
-            final Command callback ) {
+                                 final PopupActivity activity,
+                                 final Command callback ) {
         //Record new place\part\activity
         existingWorkbenchActivities.put( place, activity );
         updateHistory( place );
@@ -607,8 +628,8 @@ implements PlaceManager {
     }
 
     private void launchActivity( final PlaceRequest place,
-            final PerspectiveActivity activity,
-            final Command callback ) {
+                                 final PerspectiveActivity activity,
+                                 final Command callback ) {
         loadingPerspective.startLoading();
         activeSplashScreens.clear();
         firePerspectiveChangeEvent( activity );
@@ -659,8 +680,8 @@ implements PlaceManager {
     }
 
     private void onWorkbenchPartBeforeClose( final WorkbenchActivity activity,
-            final PlaceRequest place,
-            final boolean force ) {
+                                             final PlaceRequest place,
+                                             final boolean force ) {
         if ( force || onMayCloseList.containsKey( place ) || activity.onMayClose() ) {
             onMayCloseList.remove( place );
             activity.onClose();
@@ -669,8 +690,8 @@ implements PlaceManager {
     }
 
     private void onWorkbenchPartBeforeClose( final PopupActivity activity,
-            final PlaceRequest place,
-            final boolean force ) {
+                                             final PlaceRequest place,
+                                             final boolean force ) {
         if ( force || activity.onMayClose() ) {
             activity.onClose();
             workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
