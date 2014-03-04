@@ -69,7 +69,7 @@ public class CustomDropdown extends Dropdown {
         content.clear();
         if ( filter != null && !filter.trim().isEmpty() ) {
             for ( final Map.Entry<String, NavLink> entry : contentMap.entrySet() ) {
-                if ( entry.getKey().startsWith( filter ) ) {
+                if ( entry.getKey().startsWith( filter.trim() ) ) {
                     content.add( entry.getValue() );
                 }
             }
