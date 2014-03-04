@@ -44,4 +44,5 @@ public interface ScoreCardXLSEditorConstants
 
     public String ScoreCardXLEditorTitle();
 
+    String scoreCardXLSResourceTypeDescription();
 }

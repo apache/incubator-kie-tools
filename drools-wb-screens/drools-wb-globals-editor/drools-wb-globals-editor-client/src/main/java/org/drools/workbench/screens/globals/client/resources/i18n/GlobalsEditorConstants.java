@@ -56,4 +56,5 @@ public interface GlobalsEditorConstants
 
     String promptForRemovalOfGlobal0( String alias );
 
+    String globalsResourceTypeDescription();
 }

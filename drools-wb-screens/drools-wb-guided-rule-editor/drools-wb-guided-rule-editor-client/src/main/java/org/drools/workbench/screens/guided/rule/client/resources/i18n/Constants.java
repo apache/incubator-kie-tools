@@ -348,4 +348,8 @@ public interface Constants
     String AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
 
     String GuidedRuleEditorTitle();
+
+    String guidedRuleDRLResourceTypeDescription();
+
+    String guidedRuleDSLResourceTypeDescription();
 }

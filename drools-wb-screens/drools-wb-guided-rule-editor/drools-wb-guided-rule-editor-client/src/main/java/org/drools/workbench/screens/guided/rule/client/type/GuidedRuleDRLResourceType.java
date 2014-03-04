@@ -20,4 +20,10 @@ public class GuidedRuleDRLResourceType
         return IMAGE;
     }
 
+    @Override
+    public String getDescription() {
+        String desc = GuidedRuleEditorResources.CONSTANTS.guidedRuleDRLResourceTypeDescription();
+        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        return desc;
+    }
 }

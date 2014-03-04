@@ -5,6 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEditorResources;
+import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.type.ScoreCardXLSResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -20,4 +21,10 @@ public class ScoreCardXLSResourceType
         return IMAGE;
     }
 
+    @Override
+    public String getDescription() {
+        String desc = ScoreCardXLSEditorConstants.INSTANCE.scoreCardXLSResourceTypeDescription();
+        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        return desc;
+    }
 }

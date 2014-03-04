@@ -50,4 +50,5 @@ public interface DecisionTableXLSEditorConstants
 
     String DecisionTableEditorTitle();
 
+    String dTableResourceTypeDescription();
 }

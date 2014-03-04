@@ -40,4 +40,5 @@ public interface WorkItemsEditorConstants
 
     String BrowserTitle();
 
+    String workItemResourceTypeDescription();
 }

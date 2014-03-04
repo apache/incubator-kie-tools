@@ -448,4 +448,5 @@ public interface GuidedDecisionTableConstants
 
     String GuidedDecisionTableEditorTitle();
 
+    String guidedDecisionTableResourceTypeDescription();
 }

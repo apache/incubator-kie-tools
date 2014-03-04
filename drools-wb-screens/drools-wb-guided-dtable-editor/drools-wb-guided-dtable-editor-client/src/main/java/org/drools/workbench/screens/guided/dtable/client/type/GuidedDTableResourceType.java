@@ -5,6 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -20,4 +21,10 @@ public class GuidedDTableResourceType
         return IMAGE;
     }
 
+    @Override
+    public String getDescription() {
+        String desc = GuidedDecisionTableConstants.INSTANCE.guidedDecisionTableResourceTypeDescription();
+        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        return desc;
+    }
 }

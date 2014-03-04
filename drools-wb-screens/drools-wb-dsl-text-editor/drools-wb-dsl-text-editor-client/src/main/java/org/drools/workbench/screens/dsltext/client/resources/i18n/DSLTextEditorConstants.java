@@ -34,4 +34,5 @@ public interface DSLTextEditorConstants
 
     String DslEditorTitle();
 
+    String dslResourceTypeDescription();
 }

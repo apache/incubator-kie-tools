@@ -88,4 +88,5 @@ public interface GuidedScoreCardConstants
 
     public String ScoreCardEditorTitle();
 
+    String guidedScoreCardResourceTypeDescription();
 }

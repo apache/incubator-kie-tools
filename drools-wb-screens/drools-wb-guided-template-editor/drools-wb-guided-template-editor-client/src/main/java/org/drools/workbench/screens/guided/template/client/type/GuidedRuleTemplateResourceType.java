@@ -5,6 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.template.client.resources.GuidedTemplateEditorResources;
+import org.drools.workbench.screens.guided.template.client.resources.i18n.GuidedTemplateEditorConstants;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -20,4 +21,10 @@ public class GuidedRuleTemplateResourceType
         return IMAGE;
     }
 
+    @Override
+    public String getDescription() {
+        String desc = GuidedTemplateEditorConstants.INSTANCE.guidedTemplateResourceTypeDescription();
+        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        return desc;
+    }
 }
