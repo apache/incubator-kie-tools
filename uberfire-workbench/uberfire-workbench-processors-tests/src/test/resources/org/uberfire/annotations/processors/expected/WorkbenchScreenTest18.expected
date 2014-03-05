@@ -54,8 +54,14 @@ public class WorkbenchScreenTest18Activity extends AbstractWorkbenchScreenActivi
     }
 
     @Override
+    public void onOpen() {
+        super.onOpen();
+        realPresenter.onOpen();
+    }
+
+    @Override
     public String getTitle() {
-        return realPresenter.getTitle();
+        return realPresenter.inheritedGetTitle();
     }
 
     @Override
