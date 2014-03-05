@@ -17,34 +17,264 @@ package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.util.HashMap;
 
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.services.datamodel.model.LazyModelField;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
+import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class AsyncPackageDataModelOracleImplTest {
 
+    private AsyncPackageDataModelOracle oracle;
+    private PackageDataModelOracleIncrementalPayload personPayload;
+    private PackageDataModelOracleIncrementalPayload addressPayload;
+    private PackageDataModelOracleIncrementalPayload giantPayload;
+
+    @Before
+    public void setUp() throws Exception {
+        AsyncPackageDataModelOracleImpl oracle = new AsyncPackageDataModelOracleImpl();
+        oracle.service = new Service();
+
+        personPayload = createPersonPayload();
+        addressPayload = createAddressPayload();
+        giantPayload = createGiantPayload();
+
+        oracle.addGlobals(createGlobals());
+
+        oracle.projectModelFields.putAll(createProjectModelFields());
+
+        oracle.filter(createImports());
+
+        this.oracle = oracle;
+    }
+
+    private HashMap<String, ModelField[]> createProjectModelFields() {
+        HashMap<String, ModelField[]> map = new HashMap<String, ModelField[]>();
+        map.put("org.test.Person", new ModelField[]{getLazyThisField("org.test.Person")});
+        map.put("org.Address", new ModelField[]{getLazyThisField("org.Address")});
+        map.put("org.globals.GiantContainerOfInformation", new ModelField[]{getLazyThisField("org.globals.GiantContainerOfInformation")});
+        return map;
+    }
+
+    private Imports createImports() {
+        Imports imports = new Imports();
+        imports.addImport(new Import("org.test.Person"));
+        imports.addImport(new Import("org.globals.GiantContainerOfInformation"));
+        return imports;
+    }
+
+    private PackageDataModelOracleIncrementalPayload createGiantPayload() {
+        PackageDataModelOracleIncrementalPayload payload = new PackageDataModelOracleIncrementalPayload();
+        HashMap<String, ModelField[]> addressModelFields = new HashMap<String, ModelField[]>();
+        addressModelFields.put("org.globals.GiantContainerOfInformation", new ModelField[]{
+                new ModelField("this", "org.globals.GiantContainerOfInformation", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.SELF, FieldAccessorsAndMutators.ACCESSOR, "this")});
+        payload.setModelFields(addressModelFields);
+
+        return payload;
+    }
+
+    private PackageDataModelOracleIncrementalPayload createAddressPayload() {
+        PackageDataModelOracleIncrementalPayload payload = new PackageDataModelOracleIncrementalPayload();
+        HashMap<String, ModelField[]> addressModelFields = new HashMap<String, ModelField[]>();
+        addressModelFields.put("org.Address", new ModelField[]{
+                new ModelField("this", "org.Address", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.SELF, FieldAccessorsAndMutators.ACCESSOR, "this"),
+                new ModelField("street", "String", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.DECLARED, FieldAccessorsAndMutators.BOTH, DataType.TYPE_STRING),
+                new ModelField("homeAddress", "Boolean", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.DECLARED, FieldAccessorsAndMutators.BOTH, DataType.TYPE_BOOLEAN)});
+        payload.setModelFields(addressModelFields);
+
+        return payload;
+    }
+
+    private PackageDataModelOracleIncrementalPayload createPersonPayload() {
+        PackageDataModelOracleIncrementalPayload payload = new PackageDataModelOracleIncrementalPayload();
+        HashMap<String, ModelField[]> personModelFields = new HashMap<String, ModelField[]>();
+        personModelFields.put("org.test.Person", new ModelField[]{
+                new ModelField("this", "org.test.Person", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.SELF, FieldAccessorsAndMutators.ACCESSOR, "this"),
+                new ModelField("address", "org.Address", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.DECLARED, FieldAccessorsAndMutators.BOTH, "Address")});
+
+        payload.setModelFields(personModelFields);
+
+        return payload;
+    }
+
+    private HashMap<String, String> createGlobals() {
+        HashMap<String, String> globals = new HashMap<String, String>();
+
+        globals.put("giant", "org.globals.GiantContainerOfInformation");
+
+        return globals;
+    }
+
     @Test
     public void testName() throws Exception {
-        AsyncPackageDataModelOracleImpl oracle = new AsyncPackageDataModelOracleImpl();
-
-        oracle.setPackageName("org.test");
-
-        oracle.projectModelFields = new HashMap<String, ModelField[]>();
-        oracle.projectModelFields.put(
-                "org.test.Person",
-                new ModelField[]{
-                        new ModelField("this", "org.test.Person", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.SELF, FieldAccessorsAndMutators.ACCESSOR, "this"),
-                        new ModelField("address", "org.test.Address", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.DECLARED, FieldAccessorsAndMutators.BOTH, "org.test.Address")
-                }
-        );
-
-        oracle.filter();
-
         assertEquals("org.test.Person", oracle.getFQCNByFactName("Person"));
         assertEquals("Person", oracle.getFieldClassName("Person", "this"));
+    }
 
-        assertEquals("Address", oracle.getFieldClassName("Person", "address"));
+    @Test
+    public void testGetFieldCompletitions() throws Exception {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
+            @Override
+            public void callback(ModelField[] result) {
+                assertEquals(2, result.length);
+
+                assertEquals("Address", oracle.getFieldType("Person", "address"));
+                assertEquals("org.Address", oracle.getFieldClassName("Person", "address"));
+
+            }
+        });
+
+        oracle.getFieldCompletions("Person", callback);
+
+        verify(callback).callback(any(ModelField[].class));
+    }
+
+    @Test
+    public void testGetFieldCompletitionsForField() throws Exception {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
+            @Override
+            public void callback(ModelField[] result) {
+                assertEquals(3, result.length);
+
+                assertEquals("org.Address", oracle.getFieldClassName("Address", "this"));
+                assertEquals("this", oracle.getFieldType("Address", "this"));
+                assertEquals("String", oracle.getFieldClassName("Address", "street"));
+                assertEquals("String", oracle.getFieldType("Address", "street"));
+                assertEquals("Boolean", oracle.getFieldClassName("Address", "homeAddress"));
+                assertEquals("Boolean", oracle.getFieldType("Address", "homeAddress"));
+            }
+        });
+
+        oracle.getFieldCompletions("Address", callback);
+
+        verify(callback).callback(any(ModelField[].class));
+
+    }
+
+    @Test
+    public void testGetFieldCompletitionsMutators() throws Exception {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
+            @Override
+            public void callback(ModelField[] result) {
+                assertEquals(2, result.length);
+            }
+        });
+
+        oracle.getFieldCompletions("Address", FieldAccessorsAndMutators.MUTATOR, callback);
+
+        verify(callback).callback(any(ModelField[].class));
+
+    }
+
+    @Test
+    public void testGetFieldCompletionsForGlobalVariable() throws Exception {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
+            @Override
+            public void callback(ModelField[] result) {
+                assertEquals(1, result.length);
+            }
+        });
+
+        oracle.getFieldCompletionsForGlobalVariable("giant", callback);
+
+        verify(callback).callback(any(ModelField[].class));
+    }
+
+    @Test
+    /**
+     * Person is imported, but Person has an address that is not. Asking connective operator completions for Address.street should still work.
+     */
+    public void testGetConnectiveOperatorCompletions() throws Exception {
+        final Callback<String[]> connectiveOperatorsCallback = spy(new Callback<String[]>() {
+            @Override public void callback(String[] result) {
+                assertEquals(OperatorsOracle.STRING_CONNECTIVES.length, result.length);
+                for(String connective:OperatorsOracle.STRING_CONNECTIVES){
+                    boolean foundIt=false;
+                    for(String resultConnective:result){
+                        if(connective.equals(resultConnective)){
+                            foundIt=true;
+                            break;
+                        }
+                    }
+                    assertTrue(foundIt);
+                }
+            }
+        });
+
+        Callback<ModelField[]> fieldCompletionsCallback = spy(new Callback<ModelField[]>() {
+            @Override public void callback(ModelField[] result) {
+
+                // We can't really know about the fields of Address before we query them.
+                // This is why we call getFieldCompletions() before getConnectiveOperatorCompletions()
+                oracle.getConnectiveOperatorCompletions("Address", "street", connectiveOperatorsCallback);
+
+            }
+        });
+
+        oracle.getFieldCompletions("Address", fieldCompletionsCallback);
+
+        verify(fieldCompletionsCallback).callback(any(ModelField[].class));
+        verify(connectiveOperatorsCallback).callback(any(String[].class));
+    }
+
+    private LazyModelField getLazyThisField(String clazz) {
+        return new LazyModelField(
+                "this",
+                clazz,
+                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                ModelField.FIELD_ORIGIN.SELF,
+                FieldAccessorsAndMutators.ACCESSOR,
+                "this");
+    }
+
+    private class Service
+            implements Caller<IncrementalDataModelService> {
+
+        private RemoteCallback<PackageDataModelOracleIncrementalPayload> callback;
+        private IncrementalDataModelService service = new IncrementalDataModelService() {
+            @Override
+            public PackageDataModelOracleIncrementalPayload getUpdates(Path resourcePath, Imports imports, String factType) {
+                if (factType.equals("org.test.Person")) {
+                    callback.callback(personPayload);
+                } else if (factType.equals("org.Address")) {
+                    callback.callback(addressPayload);
+                } else if (factType.equals("org.globals.GiantContainerOfInformation")) {
+                    callback.callback(giantPayload);
+                }
+
+                return null;
+            }
+        };
+
+        @Override
+        public IncrementalDataModelService call() {
+            return service;
+        }
+
+        @Override
+        public IncrementalDataModelService call(RemoteCallback<?> remoteCallback) {
+            callback = (RemoteCallback<PackageDataModelOracleIncrementalPayload>) remoteCallback;
+            return service;
+        }
+
+        @Override
+        public IncrementalDataModelService call(RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback) {
+            callback = (RemoteCallback<PackageDataModelOracleIncrementalPayload>) remoteCallback;
+            return service;
+        }
     }
 }
