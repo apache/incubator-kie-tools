@@ -15,6 +15,8 @@
  */
 package org.uberfire.annotations.processors;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
@@ -31,8 +34,6 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
-
-import static org.junit.Assert.*;
 
 /**
  * Base miscfeatures to generate source code with an Annotation Processor
@@ -73,7 +74,7 @@ public abstract class AbstractProcessorTest {
      * @return
      */
     public List<Diagnostic<? extends JavaFileObject>> compile( final Processor annotationProcessor,
-                                                               final String compilationUnit ) {
+            final String compilationUnit ) {
 
         final DiagnosticCollector<JavaFileObject> diagnosticListener = new DiagnosticCollector<JavaFileObject>();
 
@@ -81,8 +82,8 @@ public abstract class AbstractProcessorTest {
 
             final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             final StandardJavaFileManager fileManager = compiler.getStandardFileManager( diagnosticListener,
-                                                                                         null,
-                                                                                         null );
+                    null,
+                    null );
 
             //Convert compilation unit to file path and add to items to compile
             final String path = this.getClass().getResource( "/" + compilationUnit + SOURCE_FILETYPE ).getPath();
@@ -90,11 +91,11 @@ public abstract class AbstractProcessorTest {
 
             //Compile with provide annotation processor
             final CompilationTask task = compiler.getTask( null,
-                                                           fileManager,
-                                                           diagnosticListener,
-                                                           null,
-                                                           null,
-                                                           compilationUnits );
+                    fileManager,
+                    diagnosticListener,
+                    null,
+                    null,
+                    compilationUnits );
             task.setProcessors( Arrays.asList( annotationProcessor ) );
             task.call();
 
@@ -142,7 +143,7 @@ public abstract class AbstractProcessorTest {
      * @param diagnostics
      */
     public void assertSuccessfulCompilation( final List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
-        assertFalse( hasErrors( diagnostics ) );
+        assertFalse( diagnostics.toString(), hasErrors( diagnostics ) );
     }
 
     /**
@@ -171,7 +172,7 @@ public abstract class AbstractProcessorTest {
     public void assertCompilationError( List<Diagnostic<? extends JavaFileObject>> diagnostics,
                                         final String message ) {
         final List<String> messages = getMessages( diagnostics,
-                                                   Kind.ERROR );
+                Kind.ERROR );
         assertTrue( messages.contains( "error: " + message ) || messages.contains( message ) );
     }
 
@@ -184,12 +185,12 @@ public abstract class AbstractProcessorTest {
     public void assertCompilationWarning( List<Diagnostic<? extends JavaFileObject>> diagnostics,
                                           final String message ) {
         final List<String> messages = getMessages( diagnostics,
-                                                   Kind.WARNING );
+                Kind.WARNING );
         assertTrue( messages.contains( "warning: " + message ) || messages.contains( message ) );
     }
 
     private List<String> getMessages( final List<Diagnostic<? extends JavaFileObject>> diagnostics,
-                                      final Kind kind ) {
+            final Kind kind ) {
         final List<String> messages = new ArrayList<String>();
         for ( Diagnostic<? extends JavaFileObject> diagnostic : diagnostics ) {
             if ( diagnostic.getKind().equals( kind ) ) {
