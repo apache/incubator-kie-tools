@@ -707,13 +707,6 @@ public class DataModelerScreenPresenter {
 
     private void makeMenuBar() {
 
-        org.uberfire.mvp.Command newDataObjectCommand = new org.uberfire.mvp.Command() {
-            @Override
-            public void execute() {
-                onNewDataObject();
-            }
-        };
-
         org.uberfire.mvp.Command saveCommand = new org.uberfire.mvp.Command() {
             @Override
             public void execute() {
@@ -722,9 +715,6 @@ public class DataModelerScreenPresenter {
         };
 
         menus = MenuFactory
-                .newTopLevelMenu( Constants.INSTANCE.modelEditor_menu_new_dataObject() )
-                .respondsWith( newDataObjectCommand )
-                .endMenu()
                 .newTopLevelMenu( Constants.INSTANCE.modelEditor_menu_save() )
                 .respondsWith( saveCommand )
                 .endMenu()
