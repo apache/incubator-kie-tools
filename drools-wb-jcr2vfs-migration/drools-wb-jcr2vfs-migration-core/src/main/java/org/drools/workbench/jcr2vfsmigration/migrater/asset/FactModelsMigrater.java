@@ -39,12 +39,6 @@ public class FactModelsMigrater extends BaseAssetMigrater {
     protected static final Logger logger = LoggerFactory.getLogger(FactModelsMigrater.class);
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
-    protected MigrationPathManager migrationPathManager;
-    
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
     
@@ -149,12 +143,6 @@ public class FactModelsMigrater extends BaseAssetMigrater {
     //from the full JCR Module name (assuming they're formatted "projectName.subModule1.subModule2" etc
     private String getPackageName(Module jcrModule) {
         String packageName = jcrModule.getName();
-        int dotIndex = packageName.indexOf( "." );
-//        if(dotIndex==-1) {
-            //packageName="";
-//        } else {
-//            packageName = packageName.substring( dotIndex +1 );
-//        }
         return packageName;
     }
     

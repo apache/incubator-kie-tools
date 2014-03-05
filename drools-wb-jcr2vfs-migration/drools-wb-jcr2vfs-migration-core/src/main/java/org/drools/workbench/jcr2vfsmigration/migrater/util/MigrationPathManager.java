@@ -36,10 +36,6 @@ public class MigrationPathManager {
     @Named("ioStrategy")
     private IOService ioService;
 
-
-
-    private Map<String, Path> uuidToPathMap = new HashMap<String, Path>();
-    private Map<Path, String> pathToUuidMap = new HashMap<Path, String>();
     private FileSystem fs;
 
     private static final String[] JAVA_KEYWORDS = { "package", "import",
@@ -55,13 +51,9 @@ public class MigrationPathManager {
     // Generate methods
 
     public Path generateRootPath() {
-
         final org.uberfire.java.nio.file.Path _path = getFileSystem().getPath( "/" );
 
         return Paths.convert( _path );
-
-//        final Path path = PathFactory.newPath( Paths.convert( _path.getFileSystem() ), _path.getFileName().toString(), _path.toUri().toString() );
-//        return path;
     }
 
     public Path generatePathForModule( String jcrModuleName ) {
@@ -87,8 +79,6 @@ public class MigrationPathManager {
             assetPath = modulePath.resolve( "src/main/resources/" +dotToSlash(jcrModule.getName())+"/"+ jcrAsset.getName() + "." + jcrAsset.getFormat() );
         }
 
-        //final org.uberfire.java.nio.file.Path _path = fs.getPath( "/" + escapePathEntry( jcrModule.getName() ) + "/" + escapePathEntry( jcrAsset.getName() ) + "." + jcrAsset.getFormat() );
-
         final Path path = PathFactory.newPath( Paths.convert( assetPath.getFileSystem() ), assetPath.getFileName().toString(), assetPath.toUri().toString() );
 
         return path;
@@ -111,8 +101,6 @@ public class MigrationPathManager {
         final org.uberfire.java.nio.file.Path modulePath = getFileSystem().getPath( "/" + escapePathEntry( jcrModule.getName())  );
 
         org.uberfire.java.nio.file.Path assetPath = null;
-
-
 
         if ( AssetFormats.BUSINESS_RULE.equals( jcrAssetItem.getFormat() ) && !hasDSL ) {
             assetPath = modulePath.resolve( "src/main/resources/" +dotToSlash(jcrModule.getName())+"/"+ jcrAssetItem.getName() + ".rdrl" );
@@ -152,20 +140,21 @@ public class MigrationPathManager {
 
     public String normalizePackageName( String stringToEscape ) {
         String [] nameSplit = stringToEscape.split("\\.");
-        String normalizedStr="";
+        StringBuilder normalizedPkgNameBuilder = new StringBuilder();
 
-        for(int j =0 ;j< nameSplit.length;j++){
-            int i=0;
-            if(j>0 && j< nameSplit.length) normalizedStr+= ".";
-            for(;i<JAVA_KEYWORDS.length;i++){
-                if(JAVA_KEYWORDS[i].equals(nameSplit[j])){
-                    normalizedStr+= "mod_"+nameSplit[j].toLowerCase();
+        for (int j = 0; j < nameSplit.length; j++) {
+            int i = 0;
+            if (j > 0 && j < nameSplit.length) normalizedPkgNameBuilder.append(".");
+            for (; i < JAVA_KEYWORDS.length; i++) {
+                if (JAVA_KEYWORDS[i].equals(nameSplit[j])) {
+                    normalizedPkgNameBuilder.append("mod_");
+                    normalizedPkgNameBuilder.append(nameSplit[j].toLowerCase());
                     break;
                 }
             }
-            if(i==JAVA_KEYWORDS.length) normalizedStr+= nameSplit[j].toLowerCase();
+            if (i == JAVA_KEYWORDS.length) normalizedPkgNameBuilder.append(nameSplit[j].toLowerCase());
         }
-        return normalizedStr;
+        return normalizedPkgNameBuilder.toString();
     }
 
     public String dotToSlash( String pathEntry ) {

@@ -98,20 +98,22 @@ public class BaseAssetMigrater {
         }
         // Now iterate by the asset categories, and construct  the extendRuleExpression if the category is in catRuleHashMap
         List<org.drools.repository.CategoryItem> assetCategories = jcrAssetItem.getCategories();
-        String extendCategories = "";
+        StringBuilder extendCategoriesBuilder = new StringBuilder();
         int i = 0;
         for (CategoryItem categoryItem : assetCategories) {
             ruleName = (String) catRuleHashMap.get(categoryItem.getName());
             if (ruleName != null) {
-                if (i != 0) extendCategories += ", ";
+                if (i != 0) extendCategoriesBuilder.append(", ");
                 // prepared for multiple hierarchy,
                 // but in the old platform the multiple hierarchy was not supported
-                extendCategories += ruleDelimiter + ruleName + ruleDelimiter;
+                extendCategoriesBuilder.append(ruleDelimiter);
+                extendCategoriesBuilder.append(ruleName);
+                extendCategoriesBuilder.append(ruleDelimiter);
                 i++;
             }
         }
         // extendCategories has Delimiter+ rule1Name + Delimiter + added by the packageCategoryRules definition
-        return extendCategories;
+        return extendCategoriesBuilder.toString();
     }
 
     /**
@@ -136,11 +138,12 @@ public class BaseAssetMigrater {
             } else {
                 contentSplit[0] += "," + extendedRules;
             }
-            String str="";
-            for (String s:contentSplit){
-                str+=s+"\n";
+            StringBuilder contentWithExtendsBuilder = new StringBuilder();
+            for (String s : contentSplit) {
+                contentWithExtendsBuilder.append(s);
+                contentWithExtendsBuilder.append("\n");
             }
-            return str;
+            return contentWithExtendsBuilder.toString();
         }
         return content;
     }

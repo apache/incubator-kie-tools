@@ -42,17 +42,11 @@ public class GuidedEditorMigrater extends BaseAssetMigrater {
     protected static final Logger logger = LoggerFactory.getLogger( GuidedEditorMigrater.class );
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
     @Preferred
     private RulesRepository rulesRepository;
 
     @Inject
     protected GuidedRuleEditorService guidedRuleEditorService;
-
-    @Inject
-    protected MigrationPathManager migrationPathManager;
 
     @Inject
     @Named("ioStrategy")

@@ -29,12 +29,6 @@ public class TestScenarioMigrater extends BaseAssetMigrater {
     protected static final Logger logger = LoggerFactory.getLogger( TestScenarioMigrater.class );
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
-    protected MigrationPathManager migrationPathManager;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
 

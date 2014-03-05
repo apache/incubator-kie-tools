@@ -25,14 +25,8 @@ public class PlainTextAssetMigrater extends BaseAssetMigrater {
     protected static final Logger logger = LoggerFactory.getLogger( PlainTextAssetMigrater.class );
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    protected MigrationPathManager migrationPathManager;
 
     public Path migrate( Module jcrModule,
                          AssetItem jcrAssetItem,

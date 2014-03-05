@@ -31,18 +31,12 @@ public class GlobalMigrater extends BaseAssetMigrater {
     private static final String GLOBAL_KEYWORD = "global ";
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
     private Paths paths;
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
-    protected MigrationPathManager migrationPathManager;
-    
     @Inject
     private PackageHeaderInfo packageHeaderInfo;
     

@@ -34,13 +34,7 @@ public class GuidedDecisionTableMigrater extends BaseAssetMigrater {
     protected static final Logger logger = LoggerFactory.getLogger( GuidedDecisionTableMigrater.class );
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
-
-    @Inject
     protected GuidedRuleEditorService guidedRuleEditorService;
-
-    @Inject
-    protected MigrationPathManager migrationPathManager;
 
     @Inject
     @Named("ioStrategy")
@@ -72,10 +66,6 @@ public class GuidedDecisionTableMigrater extends BaseAssetMigrater {
 
         String content = jcrAssetItem.getContent();
         
-/*        while(content.indexOf("<auditLog>") > -1) {
-            content  = content.replaceAll(content.substring(content.indexOf("<auditLog>"), content.indexOf("</auditLog>")+11), "");
-        }
-        */
         content = content.replaceAll( "org.drools.guvnor.client.modeldriven.dt52.Pattern52",
                                       "Pattern52" );
 
@@ -92,7 +82,7 @@ public class GuidedDecisionTableMigrater extends BaseAssetMigrater {
 
         }
         final String requiredPackageName = pkName;
-        if ( requiredPackageName != null || !"".equals( requiredPackageName ) ) {
+        if ( requiredPackageName != null && !"".equals( requiredPackageName ) ) {
             model.setPackageName( requiredPackageName );
         }
         model.setParentName(getExtendedRuleFromCategoryRules(jcrModule,jcrAssetItem,""));
@@ -107,14 +97,6 @@ public class GuidedDecisionTableMigrater extends BaseAssetMigrater {
 
         String sourceContent = GuidedDTXMLPersistence.getInstance().marshal( model );
         
-/*        GuidedDTContentHandler h = new GuidedDTContentHandler();
-        String sourceContent = h.getRawDRL(jcrAssetItem);*/
-
-        //String sourceContent = jcrAssetItem.getContent();
-
-        //String sourceContentWithPackage = packageImportHelper.assertPackageNameXML(sourceContent, path);
-        //sourceContentWithPackage = packageImportHelper.assertPackageImportXML(sourceContentWithPackage, path);
-
         ioService.write( nioPath,
                          sourceContent,
                          migrateMetaData(jcrModule, jcrAssetItem),
@@ -122,7 +104,6 @@ public class GuidedDecisionTableMigrater extends BaseAssetMigrater {
                                               null,
                                               jcrAssetItem.getCheckinComment(),
                                               jcrAssetItem.getLastModified().getTime() ) );
-        
         return path;
     }
 }
