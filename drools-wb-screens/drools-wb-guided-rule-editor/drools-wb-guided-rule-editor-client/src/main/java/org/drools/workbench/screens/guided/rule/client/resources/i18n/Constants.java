@@ -188,6 +188,8 @@ public interface Constants
 
     String AddFreeFormDrl();
 
+    String AddFreeFormDrlDotDotDot();
+
     String ThisIsADrlExpressionFreeForm();
 
     String RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt();

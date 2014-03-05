@@ -16,23 +16,19 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.github.gwtbootstrap.client.ui.TextArea;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
-import org.drools.workbench.screens.guided.rule.client.editor.DynamicTextArea;
-import org.drools.workbench.screens.guided.rule.client.editor.FreeFormLinePopup;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
-import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.uberfire.client.common.DirtyableFlexTable;
 
 /**
@@ -42,8 +38,10 @@ public class FreeFormLineWidget extends RuleModellerWidget {
 
     private FreeFormLine action;
     private DirtyableFlexTable layout = new DirtyableFlexTable();
-    private DynamicTextArea textArea = new DynamicTextArea();
+    private TextArea textArea = new TextArea();
     private boolean readOnly;
+
+    private Constants constants = GWT.create( Constants.class );
 
     public FreeFormLineWidget( RuleModeller mod,
                                EventBus eventBus,
@@ -75,23 +73,17 @@ public class FreeFormLineWidget extends RuleModellerWidget {
             this.readOnly = readOnly;
         }
 
-        textArea.setMaxLines( 5 );
+        layout.setWidth( "100%" );
+        textArea.setWidth( "100%" );
 
         layout.setWidget( 0,
                           0,
                           createTextBox() );
-        layout.setWidget( 0,
-                          1,
-                          createEditIcon() );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setAlignment( 0,
                                 0,
                                 HasHorizontalAlignment.ALIGN_LEFT,
                                 HasVerticalAlignment.ALIGN_BOTTOM );
-        //Let the TextArea expand the first cell to fit
-        formatter.setWidth( 0,
-                            0,
-                            "1px" );
 
         formatter.setAlignment( 0,
                                 1,
@@ -103,52 +95,24 @@ public class FreeFormLineWidget extends RuleModellerWidget {
         }
 
         initWidget( layout );
-
     }
 
     private Widget createTextBox() {
         textArea.setTitle( GuidedRuleEditorResources.CONSTANTS.ThisIsADrlExpressionFreeForm() );
         textArea.setText( this.action.getText() );
-        textArea.addValueChangeHandler( new ValueChangeHandler<String>() {
-
-            public void onValueChange( ValueChangeEvent<String> event ) {
-                action.setText( textArea.getText() );
-                setModified( true );
-            }
-
-        } );
-        return textArea;
-    }
-
-    private Widget createEditIcon() {
-
-        Image btn;
+        textArea.setEnabled( !this.readOnly );
+        textArea.setPlaceholder( constants.AddFreeFormDrlDotDotDot() );
         if ( !this.readOnly ) {
-            btn = GuidedRuleEditorImages508.INSTANCE.Edit();
-            btn.addClickHandler( new ClickHandler() {
+            textArea.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-                public void onClick( ClickEvent event ) {
-                    final FreeFormLinePopup popup = new FreeFormLinePopup( GuidedRuleEditorResources.CONSTANTS.FreeFormDrl(),
-                                                                           action.getText() );
-                    popup.addOKClickHandler( new ClickHandler() {
-
-                        public void onClick( ClickEvent event ) {
-                            action.setText( popup.getText() );
-                            textArea.setText( action.getText() );
-                            setModified( true );
-                            popup.hide();
-                        }
-
-                    } );
-                    popup.show();
+                public void onValueChange( ValueChangeEvent<String> event ) {
+                    action.setText( textArea.getText() );
+                    setModified( true );
                 }
 
             } );
-        } else {
-            btn = new Image( GuidedRuleEditorResources.INSTANCE.images().editDisabled() );
         }
-
-        return btn;
+        return textArea;
     }
 
     @Override

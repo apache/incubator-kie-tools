@@ -148,17 +148,27 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
     public RuleModel load( final Path path ) {
         try {
             final String drl = ioService.readAllString( Paths.convert( path ) );
-            final String[] dsls = utilities.loadDslsForPackage( path );
             final List<String> globals = utilities.loadGlobalsForPackage( path );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+
+            RuleModel rm = null;
+            if ( dslrResourceType.accept( path ) ) {
+                final String[] dsls = utilities.loadDslsForPackage( path );
+                rm = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
+                                                                                  globals,
+                                                                                  oracle,
+                                                                                  dsls );
+            } else {
+                rm = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                          globals,
+                                                                          oracle );
+            }
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
                                                                sessionInfo ) );
 
-            return RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
-                                                                                globals,
-                                                                                dataModelService.getDataModel( path ),
-                                                                                dsls );
+            return rm;
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
