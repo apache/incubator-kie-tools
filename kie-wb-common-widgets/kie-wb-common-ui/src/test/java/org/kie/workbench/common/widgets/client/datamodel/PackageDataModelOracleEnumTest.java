@@ -135,7 +135,8 @@ public class PackageDataModelOracleEnumTest {
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
-                .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2' : ['val3', 'val4'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']" )
+                .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2' : ['val3', 'val4'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']",
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -447,7 +448,8 @@ public class PackageDataModelOracleEnumTest {
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
-                .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']" )
+                .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']",
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -501,7 +503,8 @@ public class PackageDataModelOracleEnumTest {
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
-                .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b']" )
+                .addEnum( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b']",
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -566,14 +569,22 @@ public class PackageDataModelOracleEnumTest {
                                            FieldAccessorsAndMutators.BOTH,
                                            DataType.TYPE_STRING ) )
                 .end()
-                .addEnum( "'Fact.field1' : ['val1', 'val2']" )
-                .addEnum( "'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b']" )
-                .addEnum( "'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']" )
-                .addEnum( "'Fact.field3[field2=f1val1a]' : ['f1val1a1a', 'f1val1a1b']" )
-                .addEnum( "'Fact.field3[field2=f1val1b]' : ['f1val1b1a', 'f1val1b1b']" )
-                .addEnum( "'Fact.field3[field2=f1val2a]' : ['f1val2a1a', 'f1val2a1b']" )
-                .addEnum( "'Fact.field3[field2=f1val2b]' : ['f1val2a2a', 'f1val2b2b']" )
-                .addEnum( "'Fact.field4' : ['f4val1', 'f4val2']" )
+                .addEnum( "'Fact.field1' : ['val1', 'val2']",
+                          Thread.currentThread().getContextClassLoader() )
+                .addEnum( "'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b']",
+                          Thread.currentThread().getContextClassLoader() )
+                .addEnum( "'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']",
+                          Thread.currentThread().getContextClassLoader() )
+                .addEnum( "'Fact.field3[field2=f1val1a]' : ['f1val1a1a', 'f1val1a1b']",
+                          Thread.currentThread().getContextClassLoader() )
+                .addEnum( "'Fact.field3[field2=f1val1b]' : ['f1val1b1a', 'f1val1b1b']",
+                          Thread.currentThread().getContextClassLoader() )
+                .addEnum( "'Fact.field3[field2=f1val2a]' : ['f1val2a1a', 'f1val2a1b']",
+                          Thread.currentThread().getContextClassLoader() )
+                .addEnum( "'Fact.field3[field2=f1val2b]' : ['f1val2a2a', 'f1val2b2b']",
+                          Thread.currentThread().getContextClassLoader() )
+                .addEnum( "'Fact.field4' : ['f4val1', 'f4val2']",
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();

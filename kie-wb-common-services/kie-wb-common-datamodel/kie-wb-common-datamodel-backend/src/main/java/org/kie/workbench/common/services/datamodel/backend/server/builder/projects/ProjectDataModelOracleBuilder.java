@@ -87,13 +87,17 @@ public final class ProjectDataModelOracleBuilder {
         return this;
     }
 
-    public ProjectDataModelOracleBuilder addEnum( final String enumDefinition ) {
-        parseEnumDefinition( enumDefinition );
+    public ProjectDataModelOracleBuilder addEnum( final String enumDefinition,
+                                                  final ClassLoader classLoader ) {
+        parseEnumDefinition( enumDefinition,
+                             classLoader );
         return this;
     }
 
-    private void parseEnumDefinition( final String enumDefinition ) {
-        final DataEnumLoader enumLoader = new DataEnumLoader( enumDefinition );
+    private void parseEnumDefinition( final String enumDefinition,
+                                      final ClassLoader classLoader ) {
+        final DataEnumLoader enumLoader = new DataEnumLoader( enumDefinition,
+                                                              classLoader );
         if ( enumLoader.hasErrors() ) {
             logEnumErrors( enumLoader );
         } else {
@@ -112,7 +116,6 @@ public final class ProjectDataModelOracleBuilder {
 
         return oracle;
     }
-
 
     private void loadPackageNames() {
         oracle.addProjectPackageNames( packageNames );

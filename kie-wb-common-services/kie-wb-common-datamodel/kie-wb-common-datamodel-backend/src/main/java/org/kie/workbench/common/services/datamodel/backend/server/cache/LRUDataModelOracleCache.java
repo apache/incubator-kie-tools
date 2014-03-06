@@ -12,21 +12,24 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
+import org.guvnor.common.services.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.api.builder.KieModule;
+import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.backend.file.EnumerationsFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
 
 /**
  * A simple LRU cache for Package DataModelOracles
@@ -54,6 +57,9 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private LRUBuilderCache builderCache;
 
     public synchronized void invalidatePackageCache( @Observes final InvalidateDMOPackageCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
@@ -122,6 +128,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
         //Add Guvnor enumerations
         loadEnumsForPackage( dmoBuilder,
+                             project,
                              pkg );
 
         //Add DSLs
@@ -143,13 +150,17 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
     }
 
     private void loadEnumsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
+                                      final Project project,
                                       final Package pkg ) {
+        final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
+        final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
         final Collection<org.uberfire.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                             FILTER_ENUMERATIONS );
+                                                                                                          FILTER_ENUMERATIONS );
         for ( final org.uberfire.java.nio.file.Path path : enumFiles ) {
             final String enumDefinition = ioService.readAllString( path );
-            dmoBuilder.addEnum( enumDefinition );
+            dmoBuilder.addEnum( enumDefinition,
+                                classLoader );
         }
     }
 
@@ -157,7 +168,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
                                      final Package pkg ) {
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
         final Collection<org.uberfire.java.nio.file.Path> dslFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                            FILTER_DSLS );
+                                                                                                         FILTER_DSLS );
         for ( final org.uberfire.java.nio.file.Path path : dslFiles ) {
             final String dslDefinition = ioService.readAllString( path );
             dmoBuilder.addDsl( dslDefinition );
@@ -168,7 +179,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
                                         final Package pkg ) {
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( pkg.getPackageMainResourcesPath() );
         final Collection<org.uberfire.java.nio.file.Path> globalFiles = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                               FILTER_GLOBALS );
+                                                                                                            FILTER_GLOBALS );
         for ( final org.uberfire.java.nio.file.Path path : globalFiles ) {
             final String definition = ioService.readAllString( path );
             dmoBuilder.addGlobals( definition );

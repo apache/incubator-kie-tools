@@ -14,11 +14,11 @@ import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracle
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.data.Pair;
 
 /**
  * Builder for PackageDataModelOracle
@@ -68,13 +68,17 @@ public final class PackageDataModelOracleBuilder {
         return this;
     }
 
-    public PackageDataModelOracleBuilder addEnum( final String enumDefinition ) {
-        parseEnumDefinition( enumDefinition );
+    public PackageDataModelOracleBuilder addEnum( final String enumDefinition,
+                                                  final ClassLoader classLoader ) {
+        parseEnumDefinition( enumDefinition,
+                             classLoader );
         return this;
     }
 
-    private void parseEnumDefinition( final String enumDefinition ) {
-        final DataEnumLoader enumLoader = new DataEnumLoader( enumDefinition );
+    private void parseEnumDefinition( final String enumDefinition,
+                                      final ClassLoader classLoader ) {
+        final DataEnumLoader enumLoader = new DataEnumLoader( enumDefinition,
+                                                              classLoader );
         if ( !enumLoader.hasErrors() ) {
             factFieldEnums.putAll( enumLoader.getData() );
         }

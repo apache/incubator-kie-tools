@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +27,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.core.util.MVELSafeHelper;
+import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 
 /**
  * Use MVEL to load up map/list of valid items for fields - used by the Guided rule editor.
@@ -39,11 +43,22 @@ public class DataEnumLoader {
      * This is the source of the asset, which is an MVEL map (minus the outer "[") of course.
      */
     public DataEnumLoader( final String mvelSource ) {
-        this.errors = new ArrayList<String>();
-        this.data = loadEnum( mvelSource );
+        this( mvelSource,
+              Thread.currentThread().getContextClassLoader() );
     }
 
-    private Map<String, String[]> loadEnum( String mvelSource ) {
+    /**
+     * This is the source of the asset, which is an MVEL map (minus the outer "[") of course.
+     */
+    public DataEnumLoader( final String mvelSource,
+                           final ClassLoader classLoader ) {
+        this.errors = new ArrayList<String>();
+        this.data = loadEnum( mvelSource,
+                              classLoader );
+    }
+
+    private Map<String, String[]> loadEnum( String mvelSource,
+                                            ClassLoader classLoader ) {
 
         if ( mvelSource == null || ( mvelSource.trim().equals( "" ) ) ) {
             return Collections.emptyMap();
@@ -54,9 +69,19 @@ public class DataEnumLoader {
             mvelSource = "[ " + addCommasForNewLines( mvelSource ) + " ]";
         }
         final Object mvelData;
+
         try {
-            mvelData = MVELSafeHelper.getEvaluator().eval( mvelSource,
-                                                           new HashMap<String, Object>() );
+
+            final ParserConfiguration pconf = new ParserConfiguration();
+            final ParserContext pctx = new ParserContext( pconf );
+            pconf.setClassLoader( classLoader );
+
+            final Serializable compiled = MVEL.compileExpression( mvelSource,
+                                                                  pctx );
+
+            mvelData = MVELSafeHelper.getEvaluator().executeExpression( compiled,
+                                                                        new HashMap<String, Object>() );
+
         } catch ( RuntimeException e ) {
             addError( "Unable to load enumeration data." );
             addError( e.getMessage() );
