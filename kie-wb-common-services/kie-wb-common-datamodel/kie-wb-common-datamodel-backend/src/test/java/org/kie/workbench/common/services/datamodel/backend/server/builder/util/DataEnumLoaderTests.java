@@ -40,15 +40,23 @@ public class DataEnumLoaderTests {
     }
 
     @Test
-    public void testInvalidDependentEnum_NoEquals() {
-        final String e = "'Fact.field2[field1]':'[1, 2, 3]'";
+    public void testInvalidDependentEnum_EqualsNoFieldNoValue1() {
+        final String e = "'Fact.field2[=]':'[1, 2, 3]'";
         final DataEnumLoader loader = new DataEnumLoader( e );
         assertTrue( loader.hasErrors() );
-        assertTrue( loader.getErrors().contains( "Invalid dependent definition: Expected to find '='." ) );
+        assertTrue( loader.getErrors().contains( "Invalid dependent definition: No field or value detected." ) );
     }
 
     @Test
-    public void testInvalidDependentEnum_EqualsNoField() {
+    public void testInvalidDependentEnum_EqualsNoFieldNoValue2() {
+        final String e = "'Fact.field2[  =  ]':'[1, 2, 3]'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertTrue( loader.hasErrors() );
+        assertTrue( loader.getErrors().contains( "Invalid dependent definition: No field or value detected." ) );
+    }
+
+    @Test
+    public void testInvalidDependentEnum_EqualsNoField1() {
         final String e = "'Fact.field2[=A]':'[1, 2, 3]'";
         final DataEnumLoader loader = new DataEnumLoader( e );
         assertTrue( loader.hasErrors() );
@@ -56,8 +64,24 @@ public class DataEnumLoaderTests {
     }
 
     @Test
-    public void testInvalidDependentEnum_EqualsNoValue() {
+    public void testInvalidDependentEnum_EqualsNoField2() {
+        final String e = "'Fact.field2[  =A]':'[1, 2, 3]'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertTrue( loader.hasErrors() );
+        assertTrue( loader.getErrors().contains( "Invalid dependent definition: No field detected." ) );
+    }
+
+    @Test
+    public void testInvalidDependentEnum_EqualsNoValue1() {
         final String e = "'Fact.field2[field1=]':'[1, 2, 3]'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertTrue( loader.hasErrors() );
+        assertTrue( loader.getErrors().contains( "Invalid dependent definition: No value detected." ) );
+    }
+
+    @Test
+    public void testInvalidDependentEnum_EqualsNoValue2() {
+        final String e = "'Fact.field2[field1=  ]':'[1, 2, 3]'";
         final DataEnumLoader loader = new DataEnumLoader( e );
         assertTrue( loader.hasErrors() );
         assertTrue( loader.getErrors().contains( "Invalid dependent definition: No value detected." ) );
@@ -86,5 +110,52 @@ public class DataEnumLoaderTests {
         assertTrue( loader.hasErrors() );
         assertTrue( loader.getErrors().contains( "Invalid dependent definition: Found quote literal." ) );
     }
+
+    @Test
+    public void testInvalidDependentEnum_AdvancedEnum1() {
+        final String e = "'Fact.field[dependentField1, dependentField2]' : '(new org.company.DataHelper()).getList(\"@{dependentField1}\", \"@{dependentField2}\")'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertFalse( loader.hasErrors() );
+    }
+
+    @Test
+    public void testInvalidDependentEnum_AdvancedEnum2() {
+        final String e = "'Fact.field[dependentField1]' : '(new org.company.DataHelper()).getList(\"@{dependentField1}\")'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertFalse( loader.hasErrors() );
+    }
+
+    @Test
+    public void testInvalidDependentEnum_AdvancedEnum3() {
+        final String e = "'Fact.field[dependentField1,]' : '(new org.company.DataHelper()).getList(\"@{dependentField1}\")'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertTrue( loader.hasErrors() );
+        assertTrue( loader.getErrors().contains( "Invalid definition: Field definitions are incomplete." ) );
+    }
+
+    @Test
+    public void testInvalidDependentEnum_AdvancedEnum4() {
+        final String e = "'Fact.field[,dependentField1]' : '(new org.company.DataHelper()).getList(\"@{dependentField1}\")'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertTrue( loader.hasErrors() );
+        assertTrue( loader.getErrors().contains( "Invalid definition: Field definitions are incomplete." ) );
+    }
+
+    @Test
+    public void testInvalidDependentEnum_AdvancedEnum5() {
+        final String e = "'Fact.field[,]' : '(new org.company.DataHelper()).getList(\"@{dependentField1}\")'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertTrue( loader.hasErrors() );
+        assertTrue( loader.getErrors().contains( "Invalid definition: Field definitions are incomplete." ) );
+    }
+
+    @Test
+    public void testInvalidDependentEnum_AdvancedEnum6() {
+        final String e = "'Fact.field[  ,  ]' : '(new org.company.DataHelper()).getList(\"@{dependentField1}\")'";
+        final DataEnumLoader loader = new DataEnumLoader( e );
+        assertTrue( loader.hasErrors() );
+        assertTrue( loader.getErrors().contains( "Invalid definition: Field definitions are incomplete." ) );
+    }
+
 
 }

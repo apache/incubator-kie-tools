@@ -142,20 +142,43 @@ public class DataEnumLoader {
             errors.add( "Invalid dependent definition: Empty [] detected." );
             return;
         }
-        if ( !dependencySegment.contains( "=" ) ) {
-            errors.add( "Invalid dependent definition: Expected to find '='." );
+        if ( dependencySegment.contains( "\"" ) ) {
+            errors.add( "Invalid dependent definition: Found quote literal." );
             return;
         }
-        if ( dependencySegment.contains( "[=" ) ) {
+        if ( dependencySegment.contains( "=" ) ) {
+            validateSimpleEnumKey( dependencySegment );
+        } else {
+            validateAdvancedEnumKey( dependencySegment );
+        }
+    }
+
+    private void validateSimpleEnumKey( final String dependencySegment ) {
+        if ( dependencySegment.matches( "\\[\\s*=\\s*\\]" ) ) {
+            errors.add( "Invalid dependent definition: No field or value detected." );
+            return;
+        }
+        if ( dependencySegment.matches( "\\[\\s*=\\S+\\]" ) ) {
             errors.add( "Invalid dependent definition: No field detected." );
             return;
         }
-        if ( dependencySegment.contains( "=]" ) ) {
+        if ( dependencySegment.matches( "\\[\\S+=\\s*\\]" ) ) {
             errors.add( "Invalid dependent definition: No value detected." );
             return;
         }
-        if ( dependencySegment.contains( "\"" ) ) {
-            errors.add( "Invalid dependent definition: Found quote literal." );
+    }
+
+    private void validateAdvancedEnumKey( final String dependencySegment ) {
+        if ( dependencySegment.matches( "\\[\\s*,\\s*\\]" ) ) {
+            errors.add( "Invalid definition: Field definitions are incomplete." );
+            return;
+        }
+        if ( dependencySegment.matches( "\\[\\s*,\\S+\\]" ) ) {
+            errors.add( "Invalid definition: Field definitions are incomplete." );
+            return;
+        }
+        if ( dependencySegment.matches( "\\[\\S+,\\s*\\]" ) ) {
+            errors.add( "Invalid definition: Field definitions are incomplete." );
             return;
         }
     }
