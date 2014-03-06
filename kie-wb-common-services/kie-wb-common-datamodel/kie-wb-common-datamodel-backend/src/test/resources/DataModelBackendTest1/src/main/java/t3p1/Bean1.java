@@ -1,5 +1,8 @@
 package t3p1;
 
+import org.kie.api.definition.type.Role;
+
+@Role(Role.Type.EVENT)
 public class Bean1 {
 
     private String field1;

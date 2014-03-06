@@ -20,7 +20,7 @@ import static org.kie.workbench.common.services.datamodel.backend.server.Project
 /**
  * Tests for DataModelService
  */
-public class ProjectDataModelSuperTypesTests {
+public class ProjectDataModelServiceTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -44,14 +44,14 @@ public class ProjectDataModelSuperTypesTests {
     }
 
     @Test
-    public void testProjectSuperTypes() throws Exception {
+    public void testProjectDataModelOracle() throws Exception {
         final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
         final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendSuperTypesTest1/src/main/java/t2p1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest1/src/main/java/t3p1" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
@@ -59,24 +59,51 @@ public class ProjectDataModelSuperTypesTests {
 
         assertNotNull( oracle );
 
-        assertEquals( 4,
+        assertEquals( 2,
                       oracle.getProjectModelFields().size() );
-        assertContains( "t2p1.Bean1",
+        assertContains( "t3p1.Bean1",
                         oracle.getProjectModelFields().keySet() );
-        assertContains( "t2p1.Bean2",
-                        oracle.getProjectModelFields().keySet() );
-        assertContains( "t2p2.Bean3",
-                        oracle.getProjectModelFields().keySet() );
-        assertContains( "t2p1.Bean4",
+        assertContains( "t3p2.Bean2",
                         oracle.getProjectModelFields().keySet() );
 
-        assertNull( oracle.getProjectSuperTypes().get( "t2p1.Bean1" ) );
-        assertEquals( "t2p1.Bean1",
-                      oracle.getProjectSuperTypes().get( "t2p1.Bean2" ) );
-        assertEquals( "t2p1.Bean1",
-                      oracle.getProjectSuperTypes().get( "t2p2.Bean3" ) );
-        assertEquals( "t2p2.Bean3",
-                      oracle.getProjectSuperTypes().get( "t2p1.Bean4" ) );
+        assertTrue( oracle.getProjectEventTypes().get( "t3p1.Bean1" ) );
+        assertFalse( oracle.getProjectEventTypes().get( "t3p2.Bean2" ) );
+
+        assertEquals( 3,
+                      oracle.getProjectModelFields().get( "t3p1.Bean1" ).length );
+        assertContains( "this",
+                        oracle.getProjectModelFields().get( "t3p1.Bean1" ) );
+        assertContains( "field1",
+                        oracle.getProjectModelFields().get( "t3p1.Bean1" ) );
+        assertContains( "field2",
+                        oracle.getProjectModelFields().get( "t3p1.Bean1" ) );
+
+        assertEquals( 2,
+                      oracle.getProjectModelFields().get( "t3p2.Bean2" ).length );
+        assertContains( "this",
+                        oracle.getProjectModelFields().get( "t3p2.Bean2" ) );
+        assertContains( "field1",
+                        oracle.getProjectModelFields().get( "t3p2.Bean2" ) );
+    }
+
+    @Test
+    public void testProjectDataModelOracleJavaDefaultPackage() throws Exception {
+        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
+        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
+                                                                                               DataModelService.class,
+                                                                                               cc );
+
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest2/src/main/java" );
+        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
+        final Path packagePath = paths.convert( nioPackagePath );
+
+        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( packagePath );
+
+        assertNotNull( oracle );
+
+        assertEquals( 0,
+                      oracle.getProjectModelFields().size() );
     }
 
 }
