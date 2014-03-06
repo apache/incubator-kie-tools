@@ -363,7 +363,8 @@ public class RowExpanderTests {
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .setProjectOracle( projectLoader )
-                .addEnum( "'Driver.name' : ['f1a', 'f1b'], 'Driver.age' : ['f2a', 'f2b'], 'Driver.dateOfBirth' : ['f3a', 'f3b'], 'Driver.approved' : ['f4a', 'f4b']" )
+                .addEnum( "'Driver.name' : ['f1a', 'f1b'], 'Driver.age' : ['f2a', 'f2b'], 'Driver.dateOfBirth' : ['f3a', 'f3b'], 'Driver.approved' : ['f4a', 'f4b']",
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         //Emulate server-to-client conversions
@@ -511,7 +512,8 @@ public class RowExpanderTests {
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .setProjectOracle( projectLoader )
-                .addEnum( enumDefinitions )
+                .addEnum( enumDefinitions,
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         //Emulate server-to-client conversions
@@ -701,7 +703,8 @@ public class RowExpanderTests {
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .setProjectOracle( projectLoader )
-                .addEnum( enumDefinitions )
+                .addEnum( enumDefinitions,
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         //Emulate server-to-client conversions
@@ -847,7 +850,8 @@ public class RowExpanderTests {
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .setProjectOracle( projectLoader )
-                .addEnum( enumDefinitions )
+                .addEnum( enumDefinitions,
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         //Emulate server-to-client conversions
@@ -971,7 +975,8 @@ public class RowExpanderTests {
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .setProjectOracle( projectLoader )
-                .addEnum( enumDefinitions )
+                .addEnum( enumDefinitions,
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         //Emulate server-to-client conversions
@@ -1095,7 +1100,8 @@ public class RowExpanderTests {
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .setProjectOracle( projectLoader )
-                .addEnum( enumDefinitions )
+                .addEnum( enumDefinitions,
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         //Emulate server-to-client conversions
@@ -2447,7 +2453,8 @@ public class RowExpanderTests {
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
                 .setProjectOracle( projectLoader )
-                .addEnum( "'Driver.gender' : ['M', 'F']" )
+                .addEnum( "'Driver.gender' : ['M', 'F']",
+                          Thread.currentThread().getContextClassLoader() )
                 .build();
 
         //Emulate server-to-client conversions

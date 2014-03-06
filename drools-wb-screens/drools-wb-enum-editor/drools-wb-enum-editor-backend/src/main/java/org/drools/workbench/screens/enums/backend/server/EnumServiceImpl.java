@@ -30,7 +30,10 @@ import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -38,11 +41,13 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
+import org.kie.api.builder.KieModule;
+import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
@@ -85,6 +90,12 @@ public class EnumServiceImpl implements EnumService {
 
     @Inject
     private EnumResourceTypeDefinition resourceTypeDefinition;
+
+    @Inject
+    private ProjectService projectService;
+
+    @Inject
+    private LRUBuilderCache builderCache;
 
     @Override
     public Path create( final Path context,
@@ -225,7 +236,11 @@ public class EnumServiceImpl implements EnumService {
     private List<ValidationMessage> doValidation( final Path path,
                                                   final String content ) {
         try {
-            final DataEnumLoader loader = new DataEnumLoader( content );
+            final Project project = projectService.resolveProject( path );
+            final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
+            final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
+            final DataEnumLoader loader = new DataEnumLoader( content,
+                                                              classLoader );
             if ( !loader.hasErrors() ) {
                 return Collections.emptyList();
             } else {
