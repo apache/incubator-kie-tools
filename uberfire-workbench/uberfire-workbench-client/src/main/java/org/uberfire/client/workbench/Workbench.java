@@ -124,7 +124,9 @@ implements RequiresResize {
 
     private final FlowPanel container = new FlowPanel();
 
-    private final FlowPanel headers = new FlowPanel();
+    private FlowPanel headers;
+
+    private FlowPanel footers;
 
     private final SimplePanel workbench = new SimplePanel();
 
@@ -216,17 +218,17 @@ implements RequiresResize {
         initWidget( container );
     }
 
-    private void setupHeaders() {
-        final Collection<IOCBeanDef<Header>> headerBeans = iocManager.lookupBeans( Header.class );
-        final List<Header> instances = new ArrayList<Header>();
-        for ( final IOCBeanDef<Header> headerBean : headerBeans ) {
+    private <T extends OrderableIsWidget> FlowPanel setupMarginWidgets( Class<T> marginType ) {
+        final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
+        final List<OrderableIsWidget> instances = new ArrayList<OrderableIsWidget>();
+        for ( final IOCBeanDef<T> headerBean : headerBeans ) {
             instances.add( headerBean.getInstance() );
         }
 
-        sort( instances, new Comparator<Header>() {
+        sort( instances, new Comparator<OrderableIsWidget>() {
             @Override
-            public int compare( final Header o1,
-                    final Header o2 ) {
+            public int compare( final OrderableIsWidget o1,
+                                final OrderableIsWidget o2 ) {
                 if ( o1.getOrder() < o2.getOrder() ) {
                     return 1;
                 } else if ( o1.getOrder() > o2.getOrder() ) {
@@ -237,24 +239,33 @@ implements RequiresResize {
             }
         } );
 
-        for ( final Header header : instances ) {
-            headers.add( header.asWidget() );
+        FlowPanel marginContainer = new FlowPanel();
+
+        for ( final OrderableIsWidget widget : instances ) {
+            marginContainer.add( widget.asWidget() );
         }
 
-        container.add( headers );
+        return marginContainer;
     }
 
     private void bootstrap() {
         System.out.println("Workbench starting...");
 
+        headers = setupMarginWidgets( Header.class );
+        footers = setupMarginWidgets( Footer.class );
+
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            setupHeaders();
+            container.add( headers );
         }
 
         //Container panels for workbench
         workbenchContainer = dragController.getBoundaryPanel();
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
+
+        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+            container.add( footers );
+        }
 
         //Clear environment
         workbench.clear();
@@ -356,11 +367,12 @@ implements RequiresResize {
     }
 
     private void doResizeWorkbenchContainer( final int width,
-            final int height ) {
+                                             final int height ) {
         final int headersHeight = headers.asWidget().getOffsetHeight();
+        final int footersHeight = footers.asWidget().getOffsetHeight();
         final int availableHeight;
         if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
-            availableHeight = height - headersHeight;
+            availableHeight = height - headersHeight - footersHeight;
         } else {
             availableHeight = height;
         }
