@@ -43,6 +43,7 @@ public class AsyncPackageDataModelOracleImplTest {
     private PackageDataModelOracleIncrementalPayload personPayload;
     private PackageDataModelOracleIncrementalPayload addressPayload;
     private PackageDataModelOracleIncrementalPayload giantPayload;
+    private PackageDataModelOracleIncrementalPayload defaultPayload;
 
     @Before
     public void setUp() throws Exception {
@@ -52,6 +53,7 @@ public class AsyncPackageDataModelOracleImplTest {
         personPayload = createPersonPayload();
         addressPayload = createAddressPayload();
         giantPayload = createGiantPayload();
+        defaultPayload = createDefaultPayload();
 
         oracle.addGlobals(createGlobals());
 
@@ -75,6 +77,10 @@ public class AsyncPackageDataModelOracleImplTest {
         imports.addImport(new Import("org.test.Person"));
         imports.addImport(new Import("org.globals.GiantContainerOfInformation"));
         return imports;
+    }
+
+    private PackageDataModelOracleIncrementalPayload createDefaultPayload() {
+        return new PackageDataModelOracleIncrementalPayload();
     }
 
     private PackageDataModelOracleIncrementalPayload createGiantPayload() {
@@ -160,6 +166,21 @@ public class AsyncPackageDataModelOracleImplTest {
         });
 
         oracle.getFieldCompletions("Address", callback);
+
+        verify(callback).callback(any(ModelField[].class));
+
+    }
+
+    @Test
+    public void testGetFieldCompletitionsForSomethingThatDoesNotReturnFields() throws Exception {
+        Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
+            @Override
+            public void callback(ModelField[] result) {
+                assertEquals(0, result.length);
+            }
+        });
+
+        oracle.getFieldCompletions("I.do.not.Exist", callback);
 
         verify(callback).callback(any(ModelField[].class));
 
@@ -254,7 +275,10 @@ public class AsyncPackageDataModelOracleImplTest {
                     callback.callback(addressPayload);
                 } else if (factType.equals("org.globals.GiantContainerOfInformation")) {
                     callback.callback(giantPayload);
+                } else {
+                    callback.callback(defaultPayload);
                 }
+
 
                 return null;
             }
