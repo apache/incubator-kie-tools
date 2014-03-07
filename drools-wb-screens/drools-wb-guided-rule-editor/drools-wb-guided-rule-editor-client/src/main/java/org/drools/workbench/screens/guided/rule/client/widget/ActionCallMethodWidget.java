@@ -163,6 +163,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                                        checkIfReadOnly(null);
 
                                        setMethodInfos(methodInfos, factType);
+                                       isBoundFact = true;
 
                                    }
                                } );
@@ -188,26 +189,17 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             i++;
         }
         this.variableClass = factType;
-        this.isBoundFact = true;
     }
 
     private void getMethodInfosForGlobalVariable() {
         oracle.getMethodInfosForGlobalVariable( model.getVariable(),
                                                 new Callback<List<MethodInfo>>() {
                                                     @Override
-                                                    public void callback( final List<MethodInfo> infos ) {
-                                                        if ( infos != null ) {
-                                                            ActionCallMethodWidget.this.fieldCompletionTexts = new String[ infos.size() ];
-                                                            ActionCallMethodWidget.this.fieldCompletionValues = new String[ infos.size() ];
-                                                            int i = 0;
-                                                            for ( MethodInfo info : infos ) {
-                                                                ActionCallMethodWidget.this.fieldCompletionTexts[ i ] = info.getName();
-                                                                ActionCallMethodWidget.this.fieldCompletionValues[ i ] = info.getNameWithParameters();
-                                                                i++;
-                                                            }
-
-                                                            ActionCallMethodWidget.this.variableClass = oracle.getGlobalVariable( model.getVariable() );
-
+                                                    public void callback( final List<MethodInfo> methodInfos ) {
+                                                        if ( methodInfos != null ) {
+                                                            checkIfFactTypeKnown(methodInfos);
+                                                            setMethodInfos(methodInfos, oracle.getGlobalVariable(model.getVariable()));
+                                                            checkIfReadOnly(null);
                                                         } else {
                                                             ActionCallMethodWidget.this.fieldCompletionTexts = new String[ 0 ];
                                                             ActionCallMethodWidget.this.fieldCompletionValues = new String[ 0 ];
