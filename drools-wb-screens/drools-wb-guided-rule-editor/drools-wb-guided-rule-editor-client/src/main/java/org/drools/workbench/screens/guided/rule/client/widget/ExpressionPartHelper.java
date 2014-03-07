@@ -61,7 +61,7 @@ public class ExpressionPartHelper {
         final String fieldGenericType = oracle.getFieldType( factName, fieldName );
 
         //Ensure ModelField details for type have been loaded
-        oracle.getFieldCompletions( fieldGenericType,
+        oracle.getFieldCompletions( fieldClassName,
                                     new Callback<ModelField[]>() {
 
                                         @Override
