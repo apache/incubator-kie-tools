@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.screens.workitems.client.resources.i18n.WorkItemsEditorConstants;
 import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
+import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.uberfire.client.mvp.UberView;
 
 public class WorkItemDefinitionElementsBrowser extends Composite implements HasWorkItemDefinitionElements,
@@ -144,9 +145,23 @@ public class WorkItemDefinitionElementsBrowser extends Composite implements HasW
     public void setDefinitionElements( final WorkItemDefinitionElements metaData ) {
         final Map<String, String> workItemElementDefinitions = metaData.getDefinitionElements();
         for ( Map.Entry<String, String> entry : workItemElementDefinitions.entrySet() ) {
-            elementsPanel.add( new PanelButton( entry.getKey(),
+            elementsPanel.add( new PanelButton( getButtonDescription(entry.getKey()),
                                                 entry.getValue() ) );
         }
+    }
+    private String getButtonDescription(String buttonKey){
+        if(buttonKey==null || buttonKey.trim().length()==0){
+            return "";
+        } else if(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DEFINITION.equals(buttonKey)){
+            return WorkItemsEditorConstants.INSTANCE.Definition();
+        } else if(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_DISPLAY_NAME.equals(buttonKey)){
+            return WorkItemsEditorConstants.INSTANCE.DisplayName();
+        } else if(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_PARAMETER.equals(buttonKey)){
+            return WorkItemsEditorConstants.INSTANCE.Parameter();
+        } else if(WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS_RESULT.equals(buttonKey)){
+            return WorkItemsEditorConstants.INSTANCE.Result();
+        }
+        return buttonKey;
     }
 
     public void setImages( final List<String> workItemImages ) {
