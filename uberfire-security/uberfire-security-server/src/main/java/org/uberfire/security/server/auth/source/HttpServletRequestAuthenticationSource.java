@@ -41,6 +41,9 @@ public class HttpServletRequestAuthenticationSource extends JACCAuthenticationSo
 
                 try {
                     request.login( userNameCredential.getUserName(), ( (UsernamePasswordCredential) userNameCredential ).getPassword().toString() );
+		    if (subject == null) {
+			return true;
+		    }
                 } catch ( final ServletException ex ) {
                     return false;
                 }
