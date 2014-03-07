@@ -16,6 +16,7 @@
 package org.drools.workbench.common.services.rest;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.api.cdi.KSession;
@@ -23,20 +24,21 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.JobStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Service class to approve requests for jobs
  */
-@ApplicationScoped
+
 public class JobRequestApprovalService {
 
     private static final Logger logger = LoggerFactory.getLogger( JobRequestApprovalService.class );
 
     @Inject
     @KSession("ksession1")
-    KieSession ksession = null;
+    private Instance<KieSession> ksessionInjected = null;
 
     public JobResult requestApproval( final JobRequest jobRequest ) {
         logger.info( "Approval request for Job: " + jobRequest.getJobId() + " received." );
@@ -44,8 +46,10 @@ public class JobRequestApprovalService {
         jobResult.setJobId( jobRequest.getJobId() );
         jobResult.setStatus( jobRequest.getStatus() );
 
+        KieSession ksession = getKieSession();
         //If no ksession is available default to true
         if ( ksession == null ) {
+            jobResult.setStatus(JobStatus.APPROVED);
             return jobResult;
         }
 
@@ -66,6 +70,14 @@ public class JobRequestApprovalService {
         }
         logger.info( "Approval request for Job: " + jobRequest.getJobId() + " result: " + jobRequest.getStatus() );
         return jobResult;
+    }
+
+    public KieSession getKieSession() {
+        if (!ksessionInjected.isUnsatisfied()) {
+            return ksessionInjected.get();
+        }
+
+        return null;
     }
 
 }
