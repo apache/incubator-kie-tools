@@ -15,12 +15,16 @@
  */
 package org.kie.workbench.common.widgets.client.datamodel;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.jboss.errai.common.client.api.Caller;
@@ -58,10 +62,18 @@ public class AsyncPackageDataModelOracleImplTest {
         oracle.addGlobals(createGlobals());
 
         oracle.projectModelFields.putAll(createProjectModelFields());
+        oracle.projectMethodInformation.putAll(createProjectMethodInformation());
 
         oracle.filter(createImports());
 
         this.oracle = oracle;
+    }
+
+    private Map<String, List<MethodInfo>> createProjectMethodInformation() {
+        HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
+
+        map.put("org.globals.GiantContainerOfInformation", Collections.EMPTY_LIST);
+        return map;
     }
 
     private HashMap<String, ModelField[]> createProjectModelFields() {
@@ -202,6 +214,21 @@ public class AsyncPackageDataModelOracleImplTest {
     }
 
     @Test
+    public void testGetMethodInfosForGlobalVariable() throws Exception {
+
+        Callback<List<MethodInfo>> callback = spy(new Callback<List<MethodInfo>>() {
+            @Override
+            public void callback(List<MethodInfo> result) {
+                assertEquals(0, result.size());
+            }
+        });
+
+        oracle.getMethodInfosForGlobalVariable("giant", callback);
+
+        verify(callback).callback(anyList());
+    }
+
+    @Test
     public void testGetFieldCompletionsForGlobalVariable() throws Exception {
         Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
             @Override
@@ -223,11 +250,11 @@ public class AsyncPackageDataModelOracleImplTest {
         final Callback<String[]> connectiveOperatorsCallback = spy(new Callback<String[]>() {
             @Override public void callback(String[] result) {
                 assertEquals(OperatorsOracle.STRING_CONNECTIVES.length, result.length);
-                for(String connective:OperatorsOracle.STRING_CONNECTIVES){
-                    boolean foundIt=false;
-                    for(String resultConnective:result){
-                        if(connective.equals(resultConnective)){
-                            foundIt=true;
+                for (String connective : OperatorsOracle.STRING_CONNECTIVES) {
+                    boolean foundIt = false;
+                    for (String resultConnective : result) {
+                        if (connective.equals(resultConnective)) {
+                            foundIt = true;
                             break;
                         }
                     }
@@ -278,7 +305,6 @@ public class AsyncPackageDataModelOracleImplTest {
                 } else {
                     callback.callback(defaultPayload);
                 }
-
 
                 return null;
             }

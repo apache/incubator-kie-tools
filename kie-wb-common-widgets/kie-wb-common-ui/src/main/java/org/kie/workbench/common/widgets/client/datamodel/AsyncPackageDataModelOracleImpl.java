@@ -923,7 +923,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public void getMethodInfosForGlobalVariable( final String varName,
                                                  final Callback<List<MethodInfo>> callback ) {
-        final String factType = getGlobalVariable( varName );
+        final String factType = packageGlobalTypes.get( varName );
         final List<MethodInfo> methodInformation = projectMethodInformation.get( factType );
 
         //Load incremental content
@@ -934,8 +934,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                 public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
                     AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
                                                                                   dataModel );
-                    final List<MethodInfo> methodInformation = projectMethodInformation.get( factType );
-                    callback.callback( methodInformation );
+                    callback.callback( projectMethodInformation.get( factType ) );
                 }
             } ).getUpdates( resourcePath,
                             imports,
