@@ -23,7 +23,6 @@ import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
-import org.drools.workbench.models.datamodel.rule.HasOperator;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -47,7 +46,7 @@ public class ConstraintValueEditorHelper {
             String fieldName,
             BaseSingleFieldConstraint constraint,
             String fieldType,
-            DropDownData dropDownData) {
+            DropDownData dropDownData ) {
         this.model = model;
         this.oracle = oracle;
         this.factType = factType;
@@ -57,240 +56,311 @@ public class ConstraintValueEditorHelper {
         this.dropDownData = dropDownData;
     }
 
-    public void isBoundVariableApplicable(final String boundVariable, final Callback<Boolean> callback) {
+    public void isBoundVariableApplicable( final String boundVariable,
+                                           final Callback<Boolean> callback ) {
 
-        isBoundVariableApplicableByField(boundVariable, new Callback<Boolean>() {
+        isBoundVariableApplicableByField( boundVariable, new Callback<Boolean>() {
             @Override
-            public void callback(Boolean result) {
-                if (result) {
-                    callback.callback(true);
+            public void callback( Boolean result ) {
+                if ( result ) {
+                    callback.callback( true );
+                    return;
+
                 } else {
-                    isBoundVariableApplicableByFactType(boundVariable, callback);
+                    isBoundVariableApplicableByFactType( boundVariable,
+                                                         callback );
                 }
             }
-        });
+        } );
 
     }
 
-    public void isApplicableBindingsInScope(final String binding,
-            final Callback<Boolean> callback) {
+    public void isApplicableBindingsInScope( final String binding,
+                                             final Callback<Boolean> callback ) {
 
         //LHS FactPattern
-        isLHSFactTypeEquivalent(binding,
-                new Callback<Boolean>() {
-                    @Override
-                    public void callback(Boolean result) {
-                        if (result) {
-                            callback.callback(true);
-                        } else {
-                            //LHS FieldConstraint
-                            isBoundVariableApplicableByField(binding, callback);
-                        }
-                    }
-                });
+        isLHSFactTypeEquivalent( binding,
+                                 new Callback<Boolean>() {
+                                     @Override
+                                     public void callback( Boolean result ) {
+                                         if ( result ) {
+                                             callback.callback( true );
+                                             return;
+
+                                         } else {
+                                             //LHS FieldConstraint
+                                             isBoundVariableApplicableByField( binding,
+                                                                               callback );
+                                         }
+                                     }
+                                 } );
     }
 
-    private void isBoundVariableApplicableByField(final String boundVariable, final Callback<Boolean> callback) {
+    private void isBoundVariableApplicableByField( final String boundVariable,
+                                                   final Callback<Boolean> callback ) {
 
-        isLHSFieldTypeEquivalent(boundVariable,
-                new Callback<Boolean>() {
-                    @Override
-                    public void callback(Boolean result) {
-                        if (result) {
-                            callback.callback(true);
-                        } else {
-                            SingleFieldConstraint lhsBoundField = model.getLHSBoundField(boundVariable);
+        isLHSFieldTypeEquivalent( boundVariable,
+                                  new Callback<Boolean>() {
+                                      @Override
+                                      public void callback( Boolean result ) {
+                                          if ( result ) {
+                                              callback.callback( true );
+                                          } else {
+                                              SingleFieldConstraint lhsBoundField = model.getLHSBoundField( boundVariable );
 
-                            if (lhsBoundField != null) {
-                                final String boundClassName = oracle.getFieldClassName(lhsBoundField.getFactType(), lhsBoundField.getFieldName());
+                                              if ( lhsBoundField != null ) {
+                                                  final String boundClassName = oracle.getFieldClassName( lhsBoundField.getFactType(), lhsBoundField.getFieldName() );
 
-                                if (getFieldTypeClazz().equals(boundClassName)) {
-                                    callback.callback(true);
-                                }
+                                                  if ( getFieldTypeClazz().equals( boundClassName ) ) {
+                                                      callback.callback( true );
+                                                      return;
+                                                  }
 
-                                oracle.getSuperTypes(boundClassName, new Callback<List<String>>() {
-                                    @Override
-                                    public void callback(List<String> superTypes) {
-                                        callback.callback(checkSuperTypes(superTypes));
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
+                                                  oracle.getSuperTypes( boundClassName, new Callback<List<String>>() {
+                                                      @Override
+                                                      public void callback( List<String> superTypes ) {
+                                                          callback.callback( checkSuperTypes( superTypes ) );
+                                                          return;
+                                                      }
+                                                  } );
+                                              } else {
+                                                  callback.callback( false );
+                                              }
+                                          }
+                                      }
+                                  } );
     }
 
-    private void isBoundVariableApplicableByFactType(final String boundVariable,
-            final Callback<Boolean> callback) {
-        FactPattern lhsBoundFact = model.getLHSBoundFact(boundVariable);
+    private void isBoundVariableApplicableByFactType( final String boundVariable,
+                                                      final Callback<Boolean> callback ) {
+        FactPattern lhsBoundFact = model.getLHSBoundFact( boundVariable );
 
-        if (lhsBoundFact != null) {
+        if ( lhsBoundFact != null ) {
             String boundFactType = lhsBoundFact.getFactType();
 
             //For collection, present the list of possible bound variable
-            String factCollectionType = oracle.getParametricFieldType(this.factType,
-                    this.fieldName);
-            if (boundFactType != null && factCollectionType != null && boundFactType.equals(factCollectionType)) {
-                callback.callback(true);
+            String factCollectionType = oracle.getParametricFieldType( this.factType,
+                                                                       this.fieldName );
+            if ( boundFactType != null && factCollectionType != null && boundFactType.equals( factCollectionType ) ) {
+                callback.callback( true );
                 return;
             }
 
         }
+        callback.callback( false );
     }
 
-    private void isBoundVariableApplicableByFieldType(String boundFieldType,
-            final Callback<Boolean> callback) {
+    private void isBoundVariableApplicableByFieldType( final String boundFieldType,
+                                                       final Callback<Boolean> callback ) {
 
         //'this' can be compared to bound events if using a CEP operator
-        if (this.fieldName.equals(DataType.TYPE_THIS)) {
-            oracle.isFactTypeAnEvent(boundFieldType,
-                    new Callback<Boolean>() {
-                        @Override
-                        public void callback(final Boolean result) {
-                            if (Boolean.TRUE.equals(result)) {
-                                if (constraint instanceof HasOperator) {
-                                    HasOperator hop = (HasOperator) constraint;
-                                    if (CEPOracle.isCEPOperator(hop.getOperator())) {
-                                        callback.callback(true);
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    });
+        if ( this.fieldName.equals( DataType.TYPE_THIS ) ) {
+            oracle.isFactTypeAnEvent( boundFieldType,
+                                      new Callback<Boolean>() {
+                                          @Override
+                                          public void callback( final Boolean result ) {
+                                              if ( Boolean.TRUE.equals( result ) ) {
+                                                  oracle.isFactTypeAnEvent( fieldType,
+                                                                            new Callback<Boolean>() {
+                                                                                @Override
+                                                                                public void callback( final Boolean result ) {
+                                                                                    if ( Boolean.TRUE.equals( result ) ) {
+                                                                                        if ( CEPOracle.isCEPOperator( constraint.getOperator() ) ) {
+                                                                                            callback.callback( true );
+                                                                                            return;
+                                                                                        }
+                                                                                    } else {
+                                                                                        callback.callback( false );
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                            } );
+                                              } else {
+                                                  callback.callback( false );
+                                                  return;
+                                              }
+                                          }
+                                      } );
         }
 
         //'this' can be compared to bound Dates if using a CEP operator
-        if (this.fieldName.equals(DataType.TYPE_THIS) && boundFieldType.equals(DataType.TYPE_DATE)) {
-            if (this.constraint instanceof HasOperator) {
-                HasOperator hop = (HasOperator) this.constraint;
-                if (CEPOracle.isCEPOperator(hop.getOperator())) {
-                    callback.callback(true);
-                    return;
-                }
+        if ( this.fieldName.equals( DataType.TYPE_THIS ) && boundFieldType.equals( DataType.TYPE_DATE ) ) {
+            if ( CEPOracle.isCEPOperator( constraint.getOperator() ) ) {
+                callback.callback( true );
+                return;
             }
         }
 
         //Dates can be compared to bound events if using a CEP operator
-        if (this.fieldType.equals(DataType.TYPE_DATE)) {
-            oracle.isFactTypeAnEvent(boundFieldType,
-                    new Callback<Boolean>() {
-                        @Override
-                        public void callback(final Boolean result) {
-                            if (Boolean.TRUE.equals(result)) {
-                                if (constraint instanceof HasOperator) {
-                                    HasOperator hop = (HasOperator) constraint;
-                                    if (CEPOracle.isCEPOperator(hop.getOperator())) {
-                                        callback.callback(true);
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    });
+        if ( this.fieldType.equals( DataType.TYPE_DATE ) ) {
+            oracle.isFactTypeAnEvent( boundFieldType,
+                                      new Callback<Boolean>() {
+                                          @Override
+                                          public void callback( final Boolean result ) {
+                                              if ( Boolean.TRUE.equals( result ) ) {
+                                                  if ( CEPOracle.isCEPOperator( constraint.getOperator() ) ) {
+                                                      callback.callback( true );
+                                                      return;
+                                                  }
+                                              }
+                                          }
+                                      } );
         }
 
         //For collection, present the list of possible bound variable
-        String factCollectionType = oracle.getParametricFieldType(this.factType,
-                this.fieldName);
-        if (factCollectionType != null && factCollectionType.equals(boundFieldType)) {
-            callback.callback(true);
+        String factCollectionType = oracle.getParametricFieldType( this.factType,
+                                                                   this.fieldName );
+        if ( factCollectionType != null && factCollectionType.equals( boundFieldType ) ) {
+            callback.callback( true );
             return;
         }
 
-        callback.callback(false);
+        callback.callback( false );
     }
 
-    private void isLHSFieldTypeEquivalent(final String boundVariable,
-            final Callback<Boolean> callback) {
+    private void isLHSFieldTypeEquivalent( final String boundVariable,
+                                           final Callback<Boolean> callback ) {
 
-        String boundFieldType = this.model.getLHSBindingType(boundVariable);
+        String boundFieldType = this.model.getLHSBindingType( boundVariable );
 
         //If the fieldTypes are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-        if (boundFieldType.equals(DataType.TYPE_COMPARABLE)) {
-            if (!this.fieldType.equals(DataType.TYPE_COMPARABLE)) {
-                callback.callback(false);
+        if ( boundFieldType.equals( DataType.TYPE_COMPARABLE ) ) {
+            if ( !this.fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
+                callback.callback( false );
                 return;
             }
-            FieldConstraint fc = this.model.getLHSBoundField(boundVariable);
-            if (fc instanceof SingleFieldConstraint) {
-                String fieldName = ((SingleFieldConstraint) fc).getFieldName();
-                String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding(boundVariable).getFactType();
-                String[] dd = this.oracle.getEnumValues(parentFactTypeForBinding,
-                        fieldName);
-                callback.callback(isEnumEquivalent(dd));
+            FieldConstraint fc = this.model.getLHSBoundField( boundVariable );
+            if ( fc instanceof SingleFieldConstraint ) {
+                String fieldName = ( (SingleFieldConstraint) fc ).getFieldName();
+                String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding( boundVariable ).getFactType();
+                String[] dd = this.oracle.getEnumValues( parentFactTypeForBinding,
+                                                         fieldName );
+                callback.callback( isEnumEquivalent( dd ) );
                 return;
             }
-            callback.callback(false);
+            callback.callback( false );
             return;
         }
 
-        isBoundVariableApplicableByFieldType(boundVariable,
-                callback);
+        isBoundVariableApplicableByFieldType( boundFieldType,
+                                              callback );
     }
 
-    private boolean isEnumEquivalent(String[] values) {
-        if (values == null && this.dropDownData.getFixedList() != null) {
+    private boolean isEnumEquivalent( String[] values ) {
+        if ( values == null && this.dropDownData.getFixedList() != null ) {
             return false;
         }
-        if (values != null && this.dropDownData.getFixedList() == null) {
+        if ( values != null && this.dropDownData.getFixedList() == null ) {
             return false;
         }
-        if (values.length != this.dropDownData.getFixedList().length) {
+        if ( values.length != this.dropDownData.getFixedList().length ) {
             return false;
         }
-        for (int i = 0; i < values.length; i++) {
-            if (!values[i].equals(this.dropDownData.getFixedList()[i])) {
+        for ( int i = 0; i < values.length; i++ ) {
+            if ( !values[ i ].equals( this.dropDownData.getFixedList()[ i ] ) ) {
                 return false;
             }
         }
         return true;
     }
 
-    private void isLHSFactTypeEquivalent(final String boundVariable,
-            final Callback<Boolean> callback) {
-        FactPattern factPattern = model.getLHSBoundFact(boundVariable);
+    private void isLHSFactTypeEquivalent( final String boundVariable,
+                                          final Callback<Boolean> callback ) {
+        FactPattern factPattern = model.getLHSBoundFact( boundVariable );
 
-        if (factPattern == null) {
-            callback.callback(false);
+        if ( factPattern == null ) {
+            callback.callback( false );
             return;
         }
 
+        //Both types are identical
         final String boundFactType = factPattern.getFactType();
+        final String fieldType = getFieldTypeClazz();
+        if ( fieldType.equals( boundFactType ) ) {
+            callback.callback( true );
+            return;
 
-        if (getFieldTypeClazz().equals(boundFactType)) {
-
-            callback.callback(true);
-
-        } else if (boundFactType.equals(DataType.TYPE_COMPARABLE)) {
-            //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-            if (!fieldType.equals(DataType.TYPE_COMPARABLE)) {
-                callback.callback(false);
-                return;
-            }
-            String[] dd = oracle.getEnumValues(boundFactType,
-                    fieldName);
-            callback.callback(isEnumEquivalent(dd));
         } else {
-
-            this.oracle.getSuperTypes(boundFactType, new Callback<List<String>>() {
-                @Override
-                public void callback(List<String> superTypes) {
-                    if (checkSuperTypes(superTypes)) {
-                        callback.callback(true);
-                    } else {
-                        isBoundVariableApplicable(boundVariable,
-                                callback);
-                    }
-                }
-            });
+            isLHSFactTypeAnEvent( boundVariable,
+                                  boundFactType,
+                                  fieldType,
+                                  callback );
         }
     }
 
-    private boolean checkSuperTypes(List<String> superTypes) {
-        if (superTypes != null) {
-            for (String superType : superTypes) {
-                if (getFieldTypeClazz().equals(superType)) {
+    //Both types are events
+    private void isLHSFactTypeAnEvent( final String boundVariable,
+                                       final String boundFactType,
+                                       final String fieldType,
+                                       final Callback<Boolean> callback ) {
+        oracle.isFactTypeAnEvent( boundFactType,
+                                  new Callback<Boolean>() {
+                                      @Override
+                                      public void callback( final Boolean result ) {
+                                          if ( Boolean.TRUE.equals( result ) ) {
+                                              oracle.isFactTypeAnEvent( fieldType,
+                                                                        new Callback<Boolean>() {
+                                                                            @Override
+                                                                            public void callback( final Boolean result ) {
+                                                                                if ( Boolean.TRUE.equals( result ) ) {
+                                                                                    if ( CEPOracle.isCEPOperator( constraint.getOperator() ) ) {
+                                                                                        callback.callback( true );
+                                                                                        return;
+                                                                                    } else {
+                                                                                        isLHSFactTypeAssignable( boundVariable,
+                                                                                                                 boundFactType,
+                                                                                                                 callback );
+                                                                                    }
+                                                                                } else {
+                                                                                    isLHSFactTypeAssignable( boundVariable,
+                                                                                                             boundFactType,
+                                                                                                             callback );
+                                                                                }
+                                                                            }
+                                                                        } );
+                                          } else {
+                                              isLHSFactTypeAssignable( boundVariable,
+                                                                       boundFactType,
+                                                                       callback );
+                                          }
+                                      }
+                                  } );
+
+    }
+
+    private void isLHSFactTypeAssignable( final String boundVariable,
+                                          final String boundFactType,
+                                          final Callback<Boolean> callback ) {
+        if ( boundFactType.equals( DataType.TYPE_COMPARABLE ) ) {
+            //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
+            if ( !fieldType.equals( DataType.TYPE_COMPARABLE ) ) {
+                callback.callback( false );
+                return;
+            }
+            String[] dd = oracle.getEnumValues( boundFactType,
+                                                fieldName );
+            callback.callback( isEnumEquivalent( dd ) );
+        } else {
+
+            this.oracle.getSuperTypes( boundFactType, new Callback<List<String>>() {
+                @Override
+                public void callback( List<String> superTypes ) {
+                    if ( checkSuperTypes( superTypes ) ) {
+                        callback.callback( true );
+                        return;
+                    } else {
+                        isBoundVariableApplicable( boundVariable,
+                                                   callback );
+                    }
+                }
+            } );
+        }
+    }
+
+    private boolean checkSuperTypes( List<String> superTypes ) {
+        if ( superTypes != null ) {
+            for ( String superType : superTypes ) {
+                if ( getFieldTypeClazz().equals( superType ) ) {
                     return true;
                 }
             }
@@ -299,7 +369,7 @@ public class ConstraintValueEditorHelper {
     }
 
     private String getFieldTypeClazz() {
-        String fieldClassName = oracle.getFieldClassName(factType, fieldName);
+        String fieldClassName = oracle.getFieldClassName( factType, fieldName );
         return fieldClassName;
     }
 }
