@@ -360,4 +360,6 @@ public interface Constants
     String FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator(String factType, String fieldName);
 
     String WhenUsingFromTheSourceNeedsToBeSet();
+
+    String PleaseSetTheEntryPoint();
 }

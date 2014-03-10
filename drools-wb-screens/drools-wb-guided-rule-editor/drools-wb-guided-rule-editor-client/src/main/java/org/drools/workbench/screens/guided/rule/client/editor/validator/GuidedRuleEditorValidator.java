@@ -8,6 +8,7 @@ import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
@@ -16,7 +17,6 @@ import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 public class GuidedRuleEditorValidator {
 
     private final List<String> errors = new ArrayList<String>();
-    private boolean isValid = true;
 
     private final RuleModel model;
     private final Constants constants;
@@ -34,7 +34,7 @@ public class GuidedRuleEditorValidator {
             validateIPatterns(model.lhs);
         }
 
-        return isValid;
+        return errors.isEmpty();
 
     }
 
@@ -44,15 +44,32 @@ public class GuidedRuleEditorValidator {
         }
 
         for (IPattern iPattern : patterns) {
-            if (iPattern instanceof FromAccumulateCompositeFactPattern) {
-                validateFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) iPattern);
-            } else if (iPattern instanceof FromCompositeFactPattern) {
-                validateFromCompositeFactPattern((FromCompositeFactPattern) iPattern);
-            } else if (iPattern instanceof CompositeFactPattern) {
-                validateCompositeFactPattern((CompositeFactPattern) iPattern);
-            } else if (iPattern instanceof FactPattern) {
-                validateFactPattern((FactPattern) iPattern);
-            }
+            validateIPattern(iPattern);
+        }
+    }
+
+    private void validateIPattern(IPattern iPattern) {
+        if (iPattern instanceof FromEntryPointFactPattern) {
+            validateFromEntryPointFactPattern((FromEntryPointFactPattern) iPattern);
+        } else if (iPattern instanceof FromAccumulateCompositeFactPattern) {
+            validateFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) iPattern);
+        } else if (iPattern instanceof FromCompositeFactPattern) {
+            validateFromCompositeFactPattern((FromCompositeFactPattern) iPattern);
+        } else if (iPattern instanceof CompositeFactPattern) {
+            validateCompositeFactPattern((CompositeFactPattern) iPattern);
+        } else if (iPattern instanceof FactPattern) {
+            validateFactPattern((FactPattern) iPattern);
+        }
+    }
+
+    private void validateFromEntryPointFactPattern(FromEntryPointFactPattern fromEntryPointFactPattern) {
+        hasFactPatternSet(fromEntryPointFactPattern);
+        hasEntryPoint(fromEntryPointFactPattern);
+    }
+
+    private void hasEntryPoint(FromEntryPointFactPattern fromEntryPointFactPattern) {
+        if (isStringNullOrEmpty(fromEntryPointFactPattern.getEntryPointName())) {
+            errors.add(constants.PleaseSetTheEntryPoint());
         }
     }
 
@@ -63,37 +80,66 @@ public class GuidedRuleEditorValidator {
     }
 
     private void validateFromCompositeFactPattern(FromCompositeFactPattern fromCompositeFactPattern) {
+        hasFactPatternSet(fromCompositeFactPattern);
         hasExpressionBinding(fromCompositeFactPattern);
-
         validateFactPattern(fromCompositeFactPattern.getFactPattern());
     }
 
-    private void validateFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern) {
-        IPattern sourcePattern = fromAccumulateCompositeFactPattern.getSourcePattern();
-        if (sourcePattern instanceof FactPattern) {
-            validateFactPattern((FactPattern) sourcePattern);
+    private void hasFactPatternSet(FromCompositeFactPattern fromCompositeFactPattern) {
+        if (fromCompositeFactPattern.getFactPattern() == null) {
+            reportMandatoryFieldsError();
         }
     }
 
-    private void hasExpressionBinding(FromCompositeFactPattern fromCompositeFactPattern) {
-        if (fromCompositeFactPattern.getExpression().getBinding() == null) {
-            errors.add(
-                    constants.WhenUsingFromTheSourceNeedsToBeSet());
-            isValid = false;
+    private void validateFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern) {
+        validateIPattern(fromAccumulateCompositeFactPattern.getSourcePattern());
+        validateIPattern(fromAccumulateCompositeFactPattern.getFactPattern());
+
+        if (isExpressionBindingMissing(fromAccumulateCompositeFactPattern)
+                && isStringNullOrEmpty(fromAccumulateCompositeFactPattern.getFunction())
+                && isAccumulateMissing(fromAccumulateCompositeFactPattern)) {
+            reportMissingSource();
         }
+    }
+
+    private boolean isAccumulateMissing(FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern) {
+        return isStringNullOrEmpty(fromAccumulateCompositeFactPattern.getActionCode())
+                && isStringNullOrEmpty(fromAccumulateCompositeFactPattern.getResultCode())
+                && isStringNullOrEmpty(fromAccumulateCompositeFactPattern.getResultCode())
+                && isStringNullOrEmpty(fromAccumulateCompositeFactPattern.getInitCode());
+    }
+
+    private boolean isStringNullOrEmpty(String actionCode) {
+        return actionCode == null || actionCode.isEmpty();
+    }
+
+    private void hasExpressionBinding(FromCompositeFactPattern fromCompositeFactPattern) {
+        if (isExpressionBindingMissing(fromCompositeFactPattern)) {
+            reportMissingSource();
+        }
+    }
+
+    private void reportMissingSource() {
+        errors.add(
+                constants.WhenUsingFromTheSourceNeedsToBeSet());
+    }
+
+    private boolean isExpressionBindingMissing(FromCompositeFactPattern fromCompositeFactPattern) {
+        return fromCompositeFactPattern.getExpression().getBinding() == null
+                && fromCompositeFactPattern.getExpression().getParts().isEmpty();
     }
 
     private void hasPatterns(CompositeFactPattern iPattern) {
 
         if (iPattern.getPatterns() == null) {
-            setMandatoryFieldsError();
+            reportMandatoryFieldsError();
         } else if (iPattern.getPatterns().length == 0) {
-            setMandatoryFieldsError();
+            reportMandatoryFieldsError();
         }
     }
 
     private void validateFactPattern(FactPattern factPattern) {
-        if (factPattern.getConstraintList() == null || factPattern.getConstraintList().getConstraints() == null) {
+        if (factPattern == null || factPattern.getConstraintList() == null || factPattern.getConstraintList().getConstraints() == null) {
             return;
         }
 
@@ -105,7 +151,6 @@ public class GuidedRuleEditorValidator {
                             constants.FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator(
                                     factPattern.getFactType(),
                                     singleFieldConstraint.getFieldName()));
-                    isValid = false;
                 }
             }
         }
@@ -118,9 +163,8 @@ public class GuidedRuleEditorValidator {
                 && singleFieldConstraint.getValue() == null;
     }
 
-    private void setMandatoryFieldsError() {
+    private void reportMandatoryFieldsError() {
         errors.add(constants.AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving());
-        isValid = false;
     }
 
     public List<String> getErrors() {

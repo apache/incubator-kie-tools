@@ -2,9 +2,11 @@ package org.drools.workbench.screens.guided.rule.client.validator;
 
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
+import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
@@ -21,6 +23,7 @@ public class GuidedRuleEditorValidatorTest {
     private static final String MISSING_FACT_PATTERN = "Missing fact pattern";
     private static final String MISSING_VALUE_WHEN_OPERATOR_IS_SET = "Missing value when operator is set";
     private static final String MISSING_RHS_FROM = "Missing RHS from";
+    private static final String MISSING_ENTRY_POINT = "Missing Entry Point";
 
     private RuleModel model;
     private GuidedRuleEditorValidator validator;
@@ -45,6 +48,11 @@ public class GuidedRuleEditorValidatorTest {
                 constants.WhenUsingFromTheSourceNeedsToBeSet()
         ).thenReturn(
                 MISSING_RHS_FROM
+        );
+        when(
+                constants.PleaseSetTheEntryPoint()
+        ).thenReturn(
+                MISSING_ENTRY_POINT
         );
 
         validator = new GuidedRuleEditorValidator(model, constants);
@@ -217,6 +225,37 @@ public class GuidedRuleEditorValidatorTest {
     }
 
     @Test
+    public void testEmptyFrom() throws Exception {
+
+        model.lhs = new IPattern[]{new FromCompositeFactPattern()};
+
+        assertFalse(validator.isValid());
+
+        assertEquals(2, validator.getErrors().size());
+        assertEquals(MISSING_FACT_PATTERN, validator.getErrors().get(0));
+        assertEquals(MISSING_RHS_FROM, validator.getErrors().get(1));
+
+        verify(constants).AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
+        verify(constants).WhenUsingFromTheSourceNeedsToBeSet();
+    }
+
+    @Test
+    public void testValidFromCompositeFactPattern() throws Exception {
+
+        FactPattern factPattern = new FactPattern("SomeList");
+        factPattern.setBoundName("list");
+
+        FromCompositeFactPattern fromCompositeFactPattern = new FromCompositeFactPattern();
+        fromCompositeFactPattern.setFactPattern(new FactPattern("Person"));
+        ExpressionFormLine expression = new ExpressionFormLine();
+        expression.appendPart(new ExpressionVariable("list", "SomeList", "SomeList"));
+        fromCompositeFactPattern.setExpression(expression);
+        model.lhs = new IPattern[]{fromCompositeFactPattern};
+
+        assertTrue(validator.isValid());
+    }
+
+    @Test
     public void testMissingRHSPartInFrom() throws Exception {
 
         FactPattern pattern = new FactPattern("Address");
@@ -260,36 +299,111 @@ public class GuidedRuleEditorValidatorTest {
         expression.setBinding("person.addresses");
         fromAccumulateCompositeFactPattern.setExpression(expression);
 
-
         model.lhs = new IPattern[]{fromAccumulateCompositeFactPattern};
 
         assertTrue(validator.isValid());
     }
 
-//    @Test
-//    public void testFromAccumulateCompositePatternMissingValues() throws Exception {
-//        FactPattern pattern1 = new FactPattern("Person");
-//        SingleFieldConstraint constraint1 = new SingleFieldConstraint("name");
-//        constraint1.setOperator("==");
-//        pattern1.addConstraint(constraint1);
-//
-//        FactPattern pattern2 = new FactPattern("Address");
-//        SingleFieldConstraint constraint2 = new SingleFieldConstraint("street");
-//        constraint2.setOperator("!=");
-//        pattern2.addConstraint(constraint2);
-//
-//        FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern = new FromAccumulateCompositeFactPattern();
-//        fromAccumulateCompositeFactPattern.setSourcePattern(pattern1);
-//        fromAccumulateCompositeFactPattern.setFactPattern(pattern2);
-//        fromAccumulateCompositeFactPattern.setFunction("test()");
-//
-//        model.lhs = new IPattern[]{fromAccumulateCompositeFactPattern};
-//
-//        assertFalse(validator.isValid());
-////        assertEquals(3, validator.getErrors().size());
-//
-//        verify(constants).WhenUsingFromTheSourceNeedsToBeSet();
-//        verify(constants).FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator("Person", "name");
-//        verify(constants).FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator("Address", "street");
-//    }
+    @Test
+    public void testFromAccumulateCompositePatternMissingValues() throws Exception {
+        FactPattern pattern1 = new FactPattern("Person");
+        SingleFieldConstraint constraint1 = new SingleFieldConstraint("name");
+        constraint1.setOperator("==");
+        pattern1.addConstraint(constraint1);
+
+        FactPattern pattern2 = new FactPattern("Address");
+        SingleFieldConstraint constraint2 = new SingleFieldConstraint("street");
+        constraint2.setOperator("!=");
+        pattern2.addConstraint(constraint2);
+
+        FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern = new FromAccumulateCompositeFactPattern();
+        fromAccumulateCompositeFactPattern.setSourcePattern(pattern1);
+        fromAccumulateCompositeFactPattern.setFactPattern(pattern2);
+        fromAccumulateCompositeFactPattern.setFunction("test()");
+
+        model.lhs = new IPattern[]{fromAccumulateCompositeFactPattern};
+
+        assertFalse(validator.isValid());
+        assertEquals(2, validator.getErrors().size());
+
+        verify(constants, never()).WhenUsingFromTheSourceNeedsToBeSet();
+        verify(constants).FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator("Person", "name");
+        verify(constants).FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator("Address", "street");
+    }
+
+    @Test
+    public void testFromAccumulateCompositePatternMissingValues2() throws Exception {
+        FactPattern pattern1 = new FactPattern("Person");
+
+        FactPattern pattern2 = new FactPattern("Address");
+
+        FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern = new FromAccumulateCompositeFactPattern();
+        fromAccumulateCompositeFactPattern.setSourcePattern(pattern1);
+        fromAccumulateCompositeFactPattern.setFactPattern(pattern2);
+        fromAccumulateCompositeFactPattern.setFunction("");
+        fromAccumulateCompositeFactPattern.setReverseCode("");
+        fromAccumulateCompositeFactPattern.setInitCode("");
+        fromAccumulateCompositeFactPattern.setActionCode("");
+        fromAccumulateCompositeFactPattern.setResultCode("");
+
+        model.lhs = new IPattern[]{fromAccumulateCompositeFactPattern};
+
+        assertFalse(validator.isValid());
+        assertEquals(1, validator.getErrors().size());
+
+        verify(constants).WhenUsingFromTheSourceNeedsToBeSet();
+    }
+
+    @Test
+    public void testFromAccumulateCompositePatternMissingValuesWithExistingFrom() throws Exception {
+        FactPattern pattern1 = new FactPattern("Person");
+        SingleFieldConstraint constraint1 = new SingleFieldConstraint("name");
+        constraint1.setOperator("==");
+        pattern1.addConstraint(constraint1);
+
+        FactPattern pattern2 = new FactPattern("Address");
+        SingleFieldConstraint constraint2 = new SingleFieldConstraint("street");
+        constraint2.setOperator("!=");
+        pattern2.addConstraint(constraint2);
+
+        FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern = new FromAccumulateCompositeFactPattern();
+        fromAccumulateCompositeFactPattern.setSourcePattern(pattern1);
+        fromAccumulateCompositeFactPattern.setFactPattern(pattern2);
+        fromAccumulateCompositeFactPattern.setInitCode("int i = 0");
+        fromAccumulateCompositeFactPattern.setActionCode(" i++;");
+        fromAccumulateCompositeFactPattern.setReverseCode("i--;");
+        fromAccumulateCompositeFactPattern.setResultCode("return i");
+
+        model.lhs = new IPattern[]{fromAccumulateCompositeFactPattern};
+
+        assertFalse(validator.isValid());
+        assertEquals(2, validator.getErrors().size());
+
+        verify(constants, never()).WhenUsingFromTheSourceNeedsToBeSet();
+        verify(constants).FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator("Person", "name");
+        verify(constants).FactType0HasAField1ThatHasAnOperatorSetButNoValuePleaseAddAValueOrRemoveTheOperator("Address", "street");
+    }
+
+    @Test
+    public void testEmptyFromEntryPointFactPattern() throws Exception {
+        model.lhs = new IPattern[]{new FromEntryPointFactPattern()};
+
+        assertFalse(validator.isValid());
+        assertEquals(2, validator.getErrors().size());
+        assertEquals(MISSING_FACT_PATTERN, validator.getErrors().get(0));
+        assertEquals(MISSING_ENTRY_POINT, validator.getErrors().get(1));
+
+        verify(constants).AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
+        verify(constants).PleaseSetTheEntryPoint();
+    }
+
+    @Test
+    public void testValidFromEntryPointFactPattern() throws Exception {
+        FromEntryPointFactPattern fromEntryPointFactPattern = new FromEntryPointFactPattern();
+        fromEntryPointFactPattern.setFactPattern(new FactPattern("Person"));
+        fromEntryPointFactPattern.setEntryPointName("entryPoint");
+        model.lhs = new IPattern[]{fromEntryPointFactPattern};
+
+        assertTrue(validator.isValid());
+    }
 }
