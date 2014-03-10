@@ -485,13 +485,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                 }
             }
 
-            if ( !this.readOnly ) {
-                inner.setWidget( row,
-                                 4 + col,
-                                 createAddConnectiveImageButton( modeller,
-                                                                 constraint ) );
-            }
-
         } else if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_PREDICATE ) {
             inner.setWidget( row,
                              1,
@@ -500,21 +493,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                      1,
                                                      5 );
         }
-    }
-
-    private Image createAddConnectiveImageButton( final RuleModeller modeller,
-                                                  final SingleFieldConstraint constraint ) {
-        Image addConnective = GuidedRuleEditorImages508.INSTANCE.AddConnective();
-        addConnective.setTitle( GuidedRuleEditorResources.CONSTANTS.AddMoreOptionsToThisFieldsValues() );
-        addConnective.addClickHandler( new ClickHandler() {
-
-            public void onClick( ClickEvent event ) {
-                setModified( true );
-                constraint.addNewConnective();
-                modeller.refreshWidget();
-            }
-        } );
-        return addConnective;
     }
 
     //Widget for CEP 'windows'

@@ -64,12 +64,6 @@ public class GuidedRuleEditorImages508 {
         return image;
     }
 
-    public Image AddConnective() {
-        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().addConnective() );
-        image.setAltText( GuidedRuleEditorResources.CONSTANTS.AddMoreOptionsToThisFieldsValues() );
-        return image;
-    }
-
     public Image AddFieldToFact() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().addFieldToFact() );
         image.setAltText( GuidedRuleEditorResources.CONSTANTS.AddAFieldToThisExpectation() );
