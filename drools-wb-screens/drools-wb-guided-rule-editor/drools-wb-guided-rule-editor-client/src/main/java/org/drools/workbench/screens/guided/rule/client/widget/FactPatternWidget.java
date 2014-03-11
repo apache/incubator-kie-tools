@@ -790,8 +790,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                     col,
                     createValueEditor(constraint));
         }
-
-        getModeller().makeDirty();
     }
 
     private boolean isWidgetForValueNeeded(String selectedText) {
