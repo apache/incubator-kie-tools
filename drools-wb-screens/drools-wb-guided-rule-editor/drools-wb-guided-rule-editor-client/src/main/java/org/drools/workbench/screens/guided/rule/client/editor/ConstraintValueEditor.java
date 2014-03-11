@@ -465,12 +465,6 @@ public class ConstraintValueEditor
                 this.constraint.getExpressionValue(),
                 this.readOnly);
 
-        builder.addExpressionTypeChangeHandler(new ExpressionTypeChangeHandler() {
-
-            public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
-                System.out.println("type changed: " + event.getOldType() + " -> " + event.getNewType());
-            }
-        });
         builder.addOnModifiedCommand(new Command() {
 
             public void execute() {
