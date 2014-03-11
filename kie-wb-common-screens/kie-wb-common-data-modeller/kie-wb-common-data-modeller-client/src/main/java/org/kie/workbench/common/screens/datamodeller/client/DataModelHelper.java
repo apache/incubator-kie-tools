@@ -38,8 +38,8 @@ public class DataModelHelper {
     // Map linking DataObjects with the Objects they are referencing by (e.g. u.v.B --> {x.y.A} means B references A)
     private Map<String, Set<String>> references = new HashMap<String, Set<String>>(10);
 
-    // Map that keeps track of the siblings a parent class has.
-    private Map<String, Set<String>> siblingsMap = new HashMap<String, Set<String>>(10);
+    // Map that keeps track of the offspring a parent class has.
+    private Map<String, Set<String>> offspringMap = new HashMap<String, Set<String>>(10);
 
     // Map of all class names and their corresponding labels (if any) that coexist within a project
     private Map<String, String> classNames = new HashMap<String, String>(10);
@@ -54,10 +54,19 @@ public class DataModelHelper {
     public DataModelHelper() {
     }
 
-    public Boolean isDataObjectReferenced(String className) {
-        Set<String> refs = referencedBy.get(className);
-        if ( (refs != null && refs.size() > 0) || siblingsMap.containsKey(className)) return true;
-        return false;
+    public Collection<String> getDataObjectReferences( String className ) {
+        Collection<String> c = new TreeSet<String>();
+
+        Set<String> s = referencedBy.get( className );
+        if ( s != null ) {
+            c.addAll( s );
+        }
+
+        s = offspringMap.get( className );
+        if ( s != null ) {
+            c.addAll( s );
+        }
+        return c;
     }
 
     public String getObjectLabelByClassName(String className) {
@@ -119,11 +128,11 @@ public class DataModelHelper {
                 }
             }
         }
-        s = siblingsMap.get(oldClassName);
+        s = offspringMap.get(oldClassName);
         if ( s != null && s.size() != 0 ) {
-            for (String siblingClassName : s) {
-                DataObjectTO sibling = dataModel.getDataObjectByClassName(siblingClassName);
-                sibling.setSuperClassName(newClassname);
+            for (String offspringClassName : s) {
+                DataObjectTO offspring = dataModel.getDataObjectByClassName(offspringClassName);
+                offspring.setSuperClassName(newClassname);
             }
         }
     }
@@ -136,8 +145,8 @@ public class DataModelHelper {
         objectUnReferenced(objectClassName, subjectClassName);
     }
 
-    public void dataObjectExtended(String parentClassName, String siblingClassName, Boolean _extends) {
-        objectExtended(parentClassName, siblingClassName, _extends);
+    public void dataObjectExtended(String parentClassName, String offspringClassName, Boolean _extends) {
+        objectExtended(parentClassName, offspringClassName, _extends);
     }
 
     public void dataObjectDeleted(String objectClassName) {
@@ -160,22 +169,22 @@ public class DataModelHelper {
 
     /**
      * Evaluate if an object can safely extend another one (at least as far as the extension hierarchy is concerned).
-     * @param siblingCandidate The class name of the extending object
+     * @param offspringCandidate The class name of the extending object
      * @param parentCandidate The class name of the extended object
      * @return True if the extension does not provoke a conflict with the existing extension hierarchy.
      */
-    public Boolean isAssignableFrom(String siblingCandidate, String parentCandidate) {
-        if (siblingCandidate == null || siblingCandidate.length() == 0 ||
+    public Boolean isAssignableFrom(String offspringCandidate, String parentCandidate) {
+        if (offspringCandidate == null || offspringCandidate.length() == 0 ||
             parentCandidate == null || parentCandidate.length() == 0 ||
-            siblingCandidate.equals(parentCandidate)) return false;
+            offspringCandidate.equals(parentCandidate)) return false;
 
-        Set<String> candidatesSiblings = siblingsMap.get(siblingCandidate);
-        boolean candidateHasSiblings = candidatesSiblings != null && candidatesSiblings.size() > 0;
+        Set<String> candidatesOffspring = offspringMap.get(offspringCandidate);
+        boolean candidateHasOffspring = candidatesOffspring != null && candidatesOffspring.size() > 0;
 
-        if (candidateHasSiblings) {
-            if (candidatesSiblings.contains(parentCandidate)) return false;
-            for (String newSiblingCandidate : candidatesSiblings) {
-                if (!isAssignableFrom(newSiblingCandidate, parentCandidate)) return false;
+        if (candidateHasOffspring) {
+            if (candidatesOffspring.contains(parentCandidate)) return false;
+            for (String newOffspringCandidate : candidatesOffspring) {
+                if (!isAssignableFrom(newOffspringCandidate, parentCandidate)) return false;
             }
         }
 
@@ -203,7 +212,7 @@ public class DataModelHelper {
         references.clear();
         classNames.clear();
         labelledClassNames.clear();
-        siblingsMap.clear();
+        offspringMap.clear();
         if (dataModel != null) {
             for (DataObjectTO extClassName : dataModel.getExternalClasses()) {
                 classNames.put(extClassName.getClassName(), null);
@@ -252,19 +261,19 @@ public class DataModelHelper {
 //        else ("Error de-referencing data object (referring object)."));
     }
 
-    private void objectExtended(String parentClassName, String siblingClassName, Boolean _extends) {
-        Set<String> _siblings = siblingsMap.get(parentClassName);
+    private void objectExtended(String parentClassName, String offspringClassName, Boolean _extends) {
+        Set<String> _offspring = offspringMap.get(parentClassName);
 
         if (_extends) {
-            if (_siblings != null ) _siblings.add(siblingClassName);
+            if (_offspring != null ) _offspring.add(offspringClassName);
             else {
-                _siblings = new HashSet<String>();
-                _siblings.add(siblingClassName);
-                siblingsMap.put(parentClassName, _siblings);
+                _offspring = new HashSet<String>();
+                _offspring.add(offspringClassName);
+                offspringMap.put(parentClassName, _offspring);
             }
         } else {
-            if (_siblings != null && _siblings.size() > 0) _siblings.remove(siblingClassName);
-            if (_siblings.size() == 0) siblingsMap.remove(parentClassName);
+            if (_offspring != null && _offspring.size() > 0) _offspring.remove(offspringClassName);
+            if (_offspring.size() == 0) offspringMap.remove(parentClassName);
 //            else ("Superclass referencing error"));
         }
     }

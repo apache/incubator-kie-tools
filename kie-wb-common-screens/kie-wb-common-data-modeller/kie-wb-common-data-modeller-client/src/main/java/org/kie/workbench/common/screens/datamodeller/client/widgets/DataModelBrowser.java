@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.enterprise.event.Event;
@@ -366,25 +367,24 @@ public class DataModelBrowser extends Composite {
     private void deleteDataObject( final DataObjectTO dataObjectTO,
                                    final int index ) {
 
-        validatorService.canDeleteDataObject( getContext(), dataObjectTO, getDataModel(), new ValidatorCallback() {
-            @Override
-            public void onFailure() {
-                ErrorPopup.showMessage( Constants.INSTANCE.validation_error_cannot_delete_object( DataModelerUtils.getDataObjectUILabel( dataObjectTO ) ) );
+        Collection<String> refs = validatorService.canDeleteDataObject(getContext(), dataObjectTO, getDataModel());
+        if ( refs != null && refs.size() > 0) {
+            StringBuilder refString = new StringBuilder("<br><br>");
+            for ( String ref : refs ) {
+                refString.append("    --> " + ref + "<br>");
             }
+            ErrorPopup.showMessage( Constants.INSTANCE.validation_error_cannot_delete_object( DataModelerUtils.getDataObjectUILabel( dataObjectTO ), refString.toString() ) );
+        } else {
+            if ( Window.confirm( Constants.INSTANCE.modelEditor_confirm_delete() ) ) {
+                getDataModel().removeDataObject( dataObjectTO );
 
-            @Override
-            public void onSuccess() {
-                if ( Window.confirm( Constants.INSTANCE.modelEditor_confirm_delete() ) ) {
-                    getDataModel().removeDataObject( dataObjectTO );
+                dataObjectsProvider.getList().remove( index );
+                dataObjectsProvider.flush();
+                dataObjectsProvider.refresh();
 
-                    dataObjectsProvider.getList().remove( index );
-                    dataObjectsProvider.flush();
-                    dataObjectsProvider.refresh();
-
-                    notifyObjectDeleted( dataObjectTO );
-                }
+                notifyObjectDeleted( dataObjectTO );
             }
-        } );
+        }
     }
 
     // Event Observers

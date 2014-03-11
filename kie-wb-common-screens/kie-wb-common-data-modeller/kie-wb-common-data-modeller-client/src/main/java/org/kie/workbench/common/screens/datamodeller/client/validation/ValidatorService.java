@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.validation;
 
+import java.util.Collection;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -145,14 +146,9 @@ public class ValidatorService {
         }
     }
 
-    public void canDeleteDataObject( DataModelerContext context,
+    public Collection<String> canDeleteDataObject( DataModelerContext context,
                                      DataObjectTO object,
-                                     DataModelTO model,
-                                     ValidatorCallback callback ) {
-        if ( !context.getHelper().isDataObjectReferenced( object.getClassName() ) ) {
-            callback.onSuccess();
-        } else {
-            callback.onFailure();
-        }
+                                     DataModelTO model ) {
+         return context.getHelper().getDataObjectReferences( object.getClassName() );
     }
 }
