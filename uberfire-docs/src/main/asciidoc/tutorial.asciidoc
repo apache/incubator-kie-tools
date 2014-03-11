@@ -241,7 +241,6 @@ using. Add this inside the `<project>` element, after the
     <maven.deploy.plugin.version>2.7</maven.deploy.plugin.version>
     <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
     <maven.gwt.plugin.version>2.5.1</maven.gwt.plugin.version>
-    <jboss-as-maven-plugin.version>7.4.Final</jboss-as-maven-plugin.version>
     <uberfire.version>0.5.0-SNAPSHOT</uberfire.version>
     <errai.version>3.0-SNAPSHOT</errai.version>
     <errai.devmode.version>3.0-SNAPSHOT</errai.devmode.version>
@@ -330,6 +329,7 @@ of this after the `<dependencyManagement>` section:
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-security-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -355,31 +355,43 @@ of this after the `<dependencyManagement>` section:
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widget-markdown</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javaee-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-jboss</artifactId>
+      <version>${errai.devmode.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -463,6 +475,9 @@ several plugins we'll need in order to get the project built. The
       </resource>
       <resource>
         <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>log4j.properties</exclude>
+        </excludes>
       </resource>
       <resource>
         <directory>target/generated-sources/annotations</directory>
@@ -490,7 +505,11 @@ source files are on the classpath too.
 The reason we add `src/main/resources` redundantly is because the
 Maven integration in IntelliJ IDEA does not retain this default
 resource directory when you add a new one. Adding it explicitly
-provides maximum compatibility.
+provides maximum compatibility. We exclude log4j.properties here
+because its existence overrides the JBoss Logging setup. We want JBoss
+Logging to be in charge on the server, but we want Log4j to be in
+charge in the GWT Dev Mode VM. This configuration accomplishes that
+balance.
 
 Now, speaking of the GWT compiler, we need to invoke it during our
 project's build. How do we teach Maven to do this and other build
@@ -565,7 +584,7 @@ Next up, the all-important `gwt-maven-plugin`.
 
           <!-- do not insert line breaks in this string; it breaks
           Windows compatibility -->
-          <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.jboss.javaopts=-XX:MaxPermSize=256m -Derrai.dev.context=${project.artifactId} -Derrai.jboss.javaagent.path=${settings.localRepository}/org/jboss/errai/errai-client-local-class-hider/${errai.devmode.version}/errai-client-local-class-hider-${errai.devmode.version}.jar</extraJvmArgs>
+          <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.jboss.javaopts=-XX:MaxPermSize=256m -Derrai.dev.context=${project.artifactId} -Derrai.jboss.javaagent.path=${settings.localRepository}/org/jboss/errai/errai-client-local-class-hider/${errai.devmode.version}/errai-client-local-class-hider-${errai.devmode.version}.jar=classPattern=${project.groupId}.client/.*</extraJvmArgs>
 
         </configuration>
         <executions>
@@ -875,6 +894,7 @@ be easy to adapt to the VCS you're using:
 .factorypath
 .niogit/
 .project
+nb-configuration.xml
 .settings/
 target/
 war/
@@ -939,6 +959,10 @@ Here's what you need in a typical UberFire `web.xml`. Create a file
     <servlet-name>ErraiServlet</servlet-name>
     <url-pattern>*.erraiBus</url-pattern>
   </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+  </welcome-file-list>
 
 </web-app>
 ---------
@@ -2251,6 +2275,11 @@ public class AppMenuBar extends Composite implements Header {
     return Integer.MAX_VALUE;
   }
 
+  @Override
+  public String getId() {
+    return getClass().getName();
+  }
+
   @PostConstruct
   private void initMenus() {
     Menus menus =
@@ -2375,6 +2404,11 @@ public class AppToolBar extends Composite implements Header {
   @Override
   public int getOrder() {
     return 0;
+  }
+
+  @Override
+  public String getId() {
+    return getClass().getName();
   }
 
 }
