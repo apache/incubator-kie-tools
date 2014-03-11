@@ -56,6 +56,7 @@ import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.util.URIUtil;
 
@@ -157,7 +158,7 @@ public class CloneRepositoryForm
         organizationalUnitService.call( new RemoteCallback<Collection<OrganizationalUnit>>() {
                                             @Override
                                             public void callback( Collection<OrganizationalUnit> organizationalUnits ) {
-                                                organizationalUnitDropdown.addItem( "--- Select ---" );
+                                                organizationalUnitDropdown.addItem( CoreConstants.INSTANCE.SelectEntry() );
                                                 if ( organizationalUnits != null && !organizationalUnits.isEmpty() ) {
                                                     for ( OrganizationalUnit organizationalUnit : organizationalUnits ) {
                                                         organizationalUnitDropdown.addItem( organizationalUnit.getName(),
@@ -172,7 +173,7 @@ public class CloneRepositoryForm
                                             @Override
                                             public boolean error( final Message message,
                                                                   final Throwable throwable ) {
-                                                ErrorPopup.showMessage( "Can't load Organizational Units. \n" + throwable.getMessage() );
+                                                ErrorPopup.showMessage(CoreConstants.INSTANCE.CantLoadOrganizationalUnits()+" \n" + throwable.getMessage() );
 
                                                 return false;
                                             }
@@ -185,11 +186,11 @@ public class CloneRepositoryForm
 
         if ( gitURLTextBox.getText() == null || gitURLTextBox.getText().trim().isEmpty() ) {
             urlGroup.setType( ControlGroupType.ERROR );
-            urlHelpInline.setText( "URL is mandatory" );
+            urlHelpInline.setText( CoreConstants.INSTANCE.URLMandatory() );
             return;
         } else if ( !URIUtil.isValid( gitURLTextBox.getText().trim() ) ) {
             urlGroup.setType( ControlGroupType.ERROR );
-            urlHelpInline.setText( "Invalid URL format" );
+            urlHelpInline.setText( CoreConstants.INSTANCE.InvalidUrlFormat() );
             return;
         } else {
             urlGroup.setType( ControlGroupType.NONE );
@@ -197,7 +198,7 @@ public class CloneRepositoryForm
         final String organizationalUnit = organizationalUnitDropdown.getValue( organizationalUnitDropdown.getSelectedIndex() );
         if ( mandatoryOU && !availableOrganizationalUnits.containsKey( organizationalUnit ) ) {
             organizationalUnitGroup.setType( ControlGroupType.ERROR );
-            organizationalUnitHelpInline.setText( "Organizational Unit is mandatory" );
+            organizationalUnitHelpInline.setText( CoreConstants.INSTANCE.OrganizationalUnitMandatory() );
             return;
         } else {
             organizationalUnitGroup.setType( ControlGroupType.NONE );
@@ -205,14 +206,14 @@ public class CloneRepositoryForm
 
         if ( nameTextBox.getText() == null || nameTextBox.getText().trim().isEmpty() ) {
             nameGroup.setType( ControlGroupType.ERROR );
-            nameHelpInline.setText( "Repository Name is mandatory" );
+            nameHelpInline.setText( CoreConstants.INSTANCE.RepositoryNaneMandatory() );
             return;
         } else {
             repositoryService.call( new RemoteCallback<String>() {
                 @Override
                 public void callback( String normalizedName ) {
                     if ( !nameTextBox.getText().equals( normalizedName ) ) {
-                        if ( !Window.confirm( "Repository Name contained illegal characters and will be generated as \"" + normalizedName + "\". Do you agree?" ) ) {
+                        if ( !Window.confirm( CoreConstants.INSTANCE.RepositoryNameInvalid()+" \"" + normalizedName + "\". "+CoreConstants.INSTANCE.DoYouAgree() ) ) {
                             return;
                         }
                         nameTextBox.setText( normalizedName );
@@ -234,7 +235,7 @@ public class CloneRepositoryForm
                                                 @Override
                                                 public void callback( Repository o ) {
                                                     BusyPopup.close();
-                                                    Window.alert( "The repository is cloned successfully" );
+                                                    Window.alert( CoreConstants.INSTANCE.RepoCloneSuccess() );
                                                     hide();
                                                     placeManager.goTo( new DefaultPlaceRequest( "RepositoryEditor" ).addParameter( "alias", o.getAlias() ) );
                                                 }
@@ -246,9 +247,9 @@ public class CloneRepositoryForm
                                                     try {
                                                         throw throwable;
                                                     } catch ( RepositoryAlreadyExistsException ex ) {
-                                                        ErrorPopup.showMessage( "Repository already exists." );
+                                                        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoAlreadyExists() );
                                                     } catch ( Throwable ex ) {
-                                                        ErrorPopup.showMessage( "Can't clone repository. \n" + throwable.getMessage() );
+                                                        ErrorPopup.showMessage( CoreConstants.INSTANCE.RepoCloneFail()+" \n" + throwable.getMessage() );
                                                     }
                                                     unlockScreen();
                                                     return true;
@@ -262,7 +263,7 @@ public class CloneRepositoryForm
     }
 
     private void lockScreen() {
-        BusyPopup.showMessage( "Cloning repository..." );
+        BusyPopup.showMessage( CoreConstants.INSTANCE.Cloning() );
         popup.setCloseVisible( false );
         clone.setEnabled( false );
         cancel.setEnabled( false );

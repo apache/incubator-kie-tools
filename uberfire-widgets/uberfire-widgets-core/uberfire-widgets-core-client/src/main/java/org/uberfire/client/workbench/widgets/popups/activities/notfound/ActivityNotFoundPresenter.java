@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -68,7 +69,7 @@ public class ActivityNotFoundPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Activity not found";
+        return CoreConstants.INSTANCE.ActivityNotFound();
     }
 
     @WorkbenchPartView

@@ -48,4 +48,109 @@ public interface CoreConstants
 
     String ConfirmDeleteRepository0( String repositoryAlias );
 
+    String Downloading();
+
+    String SelectFileToUpload();
+
+    String UploadSuccess();
+
+    String UploadFail();
+
+    String Uploading();
+
+    String DefaultEditor();
+
+    String Download();
+
+    String FileExplorer();
+
+    String Navigator();
+
+    String EmptyEntry();
+
+    String MetaFileEditor();
+
+    String CantLoadOrganizationalUnits();
+
+    String SelectEntry();
+
+    String URLMandatory();
+
+    String InvalidUrlFormat();
+
+    String OrganizationalUnitMandatory();
+
+    String RepositoryNaneMandatory();
+
+    String RepositoryNameInvalid();
+
+    String DoYouAgree();
+
+    String RepoCloneSuccess();
+
+    String RepoAlreadyExists();
+
+    String RepoCloneFail();
+
+    String Cloning();
+
+    String RepoInformation();
+
+    String IsRequired();
+
+    String RepoName();
+
+    String RepoNameHolder();
+
+    String OrganizationalUnit();
+
+    String GitUrl();
+
+    String GitUrlHolder();
+
+    String UserName();
+
+    String UserNameHolder();
+
+    String Password();
+
+    String PasswordHolder();
+
+    String Cancel();
+
+    String Clone();
+
+    String RepoCreationSuccess();
+
+    String RepoCreationFail();
+
+    String Create();
+
+    String RepositoryEditor();
+
+    String AvailableProtocols();
+
+    String Reverting();
+
+    String GeneralInformation();
+
+    String CommitHistory();
+
+    String LoadMore();
+
+    String TextEditor();
+
+    String ConfirmStateRevert();
+
+    String ActivityNotFound();
+
+    String CloneRepository();
+
+    String CreateRepository();
+
+    String Empty();
+
+    String Revert();
+
+    String textResourceTypeDescription();
 }

@@ -17,7 +17,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-
+    <ui:with field="i18n"
+             type="org.uberfire.client.resources.i18n.CommonConstants"/>
   <ui:style>
     .relative {
       position: relative;
@@ -29,8 +30,8 @@
     <div class="input-append">
       <input ui:field="file" type="file" style="display:none"/>
       <input ui:field="fileText" class="input-large" type="text"/>
-      <a class="btn" ui:field="chooseButton">Choose File...</a>
-      <a class="btn" ui:field="uploadButton">Upload</a>
+      <a class="btn" ui:field="chooseButton" ><ui:text from="{i18n.ChooseFile}"/></a>
+      <a class="btn" ui:field="uploadButton"><ui:text from="{i18n.Upload}"/></a>
     </div>
   </g:HTMLPanel>
 

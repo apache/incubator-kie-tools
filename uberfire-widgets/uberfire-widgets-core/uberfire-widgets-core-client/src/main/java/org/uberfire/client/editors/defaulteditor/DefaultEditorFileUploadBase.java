@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.common.FileUpload;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.mvp.Command;
 
 public abstract class DefaultEditorFileUploadBase
@@ -54,7 +55,7 @@ public abstract class DefaultEditorFileUploadBase
                 String fileName = fileUpload.getFilename();
                 if (isNullOrEmpty(fileName)) {
                     BusyPopup.close();
-                    Window.alert("Please select a file to upload");
+                    Window.alert(CoreConstants.INSTANCE.SelectFileToUpload());
                     event.cancel();
                 }
             }
@@ -67,9 +68,9 @@ public abstract class DefaultEditorFileUploadBase
         form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
             public void onSubmitComplete(final FormPanel.SubmitCompleteEvent event) {
                 if ("OK".equalsIgnoreCase(event.getResults())) {
-                    Window.alert("Uploaded successfully");
+                    Window.alert(CoreConstants.INSTANCE.UploadSuccess());
                 } else if ("FAIL".equalsIgnoreCase(event.getResults())) {
-                    Window.alert("Uploading failed");
+                    Window.alert(CoreConstants.INSTANCE.UploadFail());
                 }
                 BusyPopup.close();
             }
@@ -80,7 +81,7 @@ public abstract class DefaultEditorFileUploadBase
         return new FileUpload(new Command() {
             @Override
             public void execute() {
-                BusyPopup.showMessage("Uploading");
+                BusyPopup.showMessage(CoreConstants.INSTANCE.Uploading());
 
                 form.setAction(GWT.getModuleBaseURL() + "defaulteditor/upload" + createParametersForURL());
 

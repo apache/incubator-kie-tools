@@ -70,7 +70,7 @@ public class RepositoriesView extends Composite
         final RepositoriesViewItem item = new RepositoriesViewItem( repository.getAlias(),
                                                                     null,
                                                                     repository.getPublicURIs(),
-                                                                    "[empty]",
+                                                                    CoreConstants.INSTANCE.Empty(),
                                                                     new Command() {
 
                                                                         @Override

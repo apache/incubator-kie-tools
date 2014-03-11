@@ -28,6 +28,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.DotResourceType;
 import org.uberfire.lifecycle.IsDirty;
@@ -54,14 +55,14 @@ public class TextEditorWorkbenchEditor
             @Override
             public void callback(String response) {
                 if (response == null) {
-                    view.setContent("-- empty --");
+                    view.setContent(CoreConstants.INSTANCE.EmptyEntry());
                 } else {
                     view.setContent(response);
                 }
                 changeTitleWidgetEvent.fire(
                         new ChangeTitleWidgetEvent(
                                 placeRequest,
-                                "Text Editor [" + path.getFileName() + "]"));
+                                CoreConstants.INSTANCE.TextEditor() +" [" + path.getFileName() + "]"));
 
             }
         }).readAllString(path);
@@ -94,7 +95,7 @@ public class TextEditorWorkbenchEditor
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Text Editor";
+        return CoreConstants.INSTANCE.TextEditor();
     }
 
     @WorkbenchPartView

@@ -31,6 +31,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -81,7 +82,7 @@ public class RepositoryEditorPresenter {
                 view.setRepositoryInfo( repo.getAlias(),
                                         repo.getOwner(),
                                         repo.getPublicURIs(),
-                                        "[empty]",
+                                        CoreConstants.INSTANCE.Empty(),
                                         repo.getInitialVersionList() );
             }
         } ).getRepositoryInfo( alias );
@@ -112,7 +113,7 @@ public class RepositoryEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "RepositoryEditor [" + alias + "]";
+        return CoreConstants.INSTANCE.RepositoryEditor() +" [" + alias + "]";
     }
 
     @WorkbenchPartView

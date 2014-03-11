@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnStartup;
 
@@ -61,7 +62,7 @@ public abstract class TextEditorPresenter {
             @Override
             public void callback( String response ) {
                 if ( response == null ) {
-                    view.setContent( "-- empty --" );
+                    view.setContent(CoreConstants.INSTANCE.EmptyEntry() );
                 } else {
                     view.setContent( response );
                 }

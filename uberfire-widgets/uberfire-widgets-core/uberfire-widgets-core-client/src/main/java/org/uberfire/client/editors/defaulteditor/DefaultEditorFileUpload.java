@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.resources.i18n.CoreConstants;
 
 public class DefaultEditorFileUpload
         extends DefaultEditorFileUploadBase {
@@ -28,7 +29,7 @@ public class DefaultEditorFileUpload
     public void download() {
 
         Window.open(getFileDownloadURL(),
-                "downloading",
+                CoreConstants.INSTANCE.Downloading(),
                 "resizable=no,scrollbars=yes,status=no");
     }
 

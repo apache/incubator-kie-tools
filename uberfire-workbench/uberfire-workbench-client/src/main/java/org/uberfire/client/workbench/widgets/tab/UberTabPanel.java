@@ -220,25 +220,7 @@ public class UberTabPanel
     }
 
     private void scheduleResize( final Widget widget ) {
-        final Widget parent = getParent();
-
-        if ( parent != null ) {
-            final int width;
-            final int height;
-            if ( parent.getParent() != null ) {
-                if ( parent.getParent().getParent() != null ) {
-                    width = parent.getParent().getParent().getOffsetWidth();
-                    height = parent.getParent().getParent().getOffsetHeight();
-                } else {
-                    width = parent.getParent().getOffsetWidth();
-                    height = parent.getParent().getOffsetHeight();
-                }
-            } else {
-                width = parent.getOffsetWidth();
-                height = parent.getOffsetHeight();
-            }
-
-            widget.setPixelSize( width, height - getTabHeight() );
+        if ( getParent() != null ) {
             if ( widget instanceof RequiresResize ) {
                 Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
                     @Override

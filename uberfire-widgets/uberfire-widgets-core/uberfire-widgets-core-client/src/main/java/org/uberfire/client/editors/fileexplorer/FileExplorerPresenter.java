@@ -41,6 +41,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -144,7 +145,7 @@ public class FileExplorerPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "File Explorer";
+        return CoreConstants.INSTANCE.FileExplorer();
     }
 
     @WorkbenchPartView

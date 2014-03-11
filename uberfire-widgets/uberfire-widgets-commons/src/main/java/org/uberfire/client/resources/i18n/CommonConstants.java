@@ -73,4 +73,11 @@ public interface CommonConstants
 
     String ConcurrentDelete( String identity,
                              String pathURI );
+
+    String ChooseFile();
+
+    String Upload();
+
+    String More();
+    String Active();
 }

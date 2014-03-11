@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.backend.repositories.PublicURI;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.navigator.CommitNavigator;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -103,7 +104,7 @@ public class RepositoryEditorView extends Composite
         int count = 0;
         if ( publicURIs.size() > 0 ) {
             linksPanel.add( new InlineHTML() {{
-                setText( "Available protocol(s): " );
+                setText( CoreConstants.INSTANCE.AvailableProtocols() );
                 getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
             }} );
         }
@@ -131,7 +132,7 @@ public class RepositoryEditorView extends Composite
                 setOnRevertCommand( new ParameterizedCommand<VersionRecord>() {
                     @Override
                     public void execute( final VersionRecord record ) {
-                        BusyPopup.showMessage( "Reverting..." );
+                        BusyPopup.showMessage( CoreConstants.INSTANCE.Reverting() );
                         presenter.revert( record );
                     }
                 } );

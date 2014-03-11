@@ -36,6 +36,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnStartup;
 
 @Dependent
@@ -95,7 +96,7 @@ public class RepositoriesPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "RepositoriesEditor";
+        return CoreConstants.INSTANCE.RepositoryEditor();
     }
 
     @WorkbenchPartView

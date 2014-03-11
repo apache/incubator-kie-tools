@@ -128,6 +128,9 @@ implements RequiresResize {
 
     private FlowPanel footers;
 
+    private boolean isStandaloneMode = false;
+    private final Set<String> headersToKeep = new HashSet<String>();
+
     private final SimplePanel workbench = new SimplePanel();
 
     private AbsolutePanel workbenchContainer;
@@ -216,15 +219,28 @@ implements RequiresResize {
     @PostConstruct
     public void setup() {
         initWidget( container );
+
+        isStandaloneMode = Window.Location.getParameterMap().containsKey( "standalone" );
+
+        for ( final Map.Entry<String, List<String>> parameter : Window.Location.getParameterMap().entrySet() ) {
+            if ( parameter.getKey().equals( "header" ) ) {
+                headersToKeep.addAll( parameter.getValue() );
+            }
+        }
     }
 
     private <T extends OrderableIsWidget> FlowPanel setupMarginWidgets( Class<T> marginType ) {
         final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
         final List<OrderableIsWidget> instances = new ArrayList<OrderableIsWidget>();
         for ( final IOCBeanDef<T> headerBean : headerBeans ) {
-            instances.add( headerBean.getInstance() );
-        }
+            OrderableIsWidget instance = headerBean.getInstance();
 
+            // for regular mode (not standalone) we add every header and footer widget;
+            // for standalone mode, we only add the ones requested in the URL
+            if ( (!isStandaloneMode) || headersToKeep.contains( instance.getId() ) ) {
+                instances.add( instance );
+            }
+        }
         sort( instances, new Comparator<OrderableIsWidget>() {
             @Override
             public int compare( final OrderableIsWidget o1,
@@ -254,7 +270,7 @@ implements RequiresResize {
         headers = setupMarginWidgets( Header.class );
         footers = setupMarginWidgets( Footer.class );
 
-        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+        if ( !isStandaloneMode ) {
             container.add( headers );
         }
 
@@ -263,7 +279,7 @@ implements RequiresResize {
         workbenchContainer.add( workbench );
         container.add( workbenchContainer );
 
-        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+        if ( !isStandaloneMode ) {
             container.add( footers );
         }
 
@@ -290,13 +306,13 @@ implements RequiresResize {
         } );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
-        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+        if ( !isStandaloneMode ) {
             final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
             if ( defaultPerspective != null ) {
                 placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
             }
         } else {
-            handleIntegration( Window.Location.getParameterMap() );
+            handleStandaloneMode( Window.Location.getParameterMap() );
         }
 
         //Save Workbench state when Window is closed
@@ -326,7 +342,7 @@ implements RequiresResize {
         } );
     }
 
-    private void handleIntegration( final Map<String, List<String>> parameters ) {
+    private void handleStandaloneMode( final Map<String, List<String>> parameters ) {
         if ( parameters.containsKey( "perspective" ) && !parameters.get( "perspective" ).isEmpty() ) {
             placeManager.goTo( new DefaultPlaceRequest( parameters.get( "perspective" ).get( 0 ) ) );
         } else if ( parameters.containsKey( "path" ) && !parameters.get( "path" ).isEmpty() ) {
@@ -371,7 +387,7 @@ implements RequiresResize {
         final int headersHeight = headers.asWidget().getOffsetHeight();
         final int footersHeight = footers.asWidget().getOffsetHeight();
         final int availableHeight;
-        if ( !Window.Location.getParameterMap().containsKey( "standalone" ) ) {
+        if ( !isStandaloneMode ) {
             availableHeight = height - headersHeight - footersHeight;
         } else {
             availableHeight = height;
