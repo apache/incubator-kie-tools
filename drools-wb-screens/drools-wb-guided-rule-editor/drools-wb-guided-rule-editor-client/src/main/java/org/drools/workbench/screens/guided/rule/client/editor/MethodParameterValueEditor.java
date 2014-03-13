@@ -38,10 +38,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
-import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
-import org.drools.workbench.models.datamodel.rule.FieldNature;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
@@ -61,7 +59,7 @@ public class MethodParameterValueEditor
 
     private ActionFieldFunction methodParameter;
     private DropDownData enums;
-    private SimplePanel root;
+    private SimplePanel root = new SimplePanel();
     private RuleModeller model = null;
     private String parameterType = null;
     private Command onValueChangeCommand = null;
@@ -69,20 +67,22 @@ public class MethodParameterValueEditor
     public MethodParameterValueEditor( final ActionFieldFunction val,
                                        final DropDownData enums,
                                        RuleModeller model,
-                                       String parameterType,
                                        Command onValueChangeCommand ) {
-        if ( val.getType().equals( DataType.TYPE_BOOLEAN ) ) {
+        this.methodParameter = val;
+        this.model = model;
+        this.parameterType = val.getType();
+        this.onValueChangeCommand = onValueChangeCommand;
+        setEnums(enums);
+        refresh();
+        initWidget( root );
+    }
+
+    private void setEnums(DropDownData enums) {
+        if ( methodParameter.getType().equals( DataType.TYPE_BOOLEAN ) ) {
             this.enums = DropDownData.create( new String[]{ "true", "false" } );
         } else {
             this.enums = enums;
         }
-        this.root = new SimplePanel();
-        this.methodParameter = val;
-        this.model = model;
-        this.parameterType = parameterType;
-        this.onValueChangeCommand = onValueChangeCommand;
-        refresh();
-        initWidget( root );
     }
 
     private void refresh() {
@@ -92,11 +92,7 @@ public class MethodParameterValueEditor
                                         new DropDownValueChanged() {
                                             public void valueChanged( String newText,
                                                                       String newValue ) {
-                                                methodParameter.setValue( newValue );
-                                                if ( onValueChangeCommand != null ) {
-                                                    onValueChangeCommand.execute();
-                                                }
-                                                makeDirty();
+                                                setMethodParameterValue(newValue);
                                             }
                                         },
                                         enums ) );
@@ -108,15 +104,13 @@ public class MethodParameterValueEditor
                 root.add( choice() );
             } else {
                 if ( methodParameter.getNature() == FieldNatureType.TYPE_VARIABLE ) {
-                    ListBox list = boundVariable( methodParameter );
+                    ListBox list = boundVariable( );
                     root.add( list );
                 } else if ( methodParameter.getNature() == FieldNatureType.TYPE_FORMULA ) {
-                    TextBox box = boundFormulaTextBox( this.methodParameter );
-                    root.add( box );
+                    root.add( boundFormulaTextBox() );
 
                 } else {
-                    TextBox box = boundLiteralTextBox( this.methodParameter );
-                    root.add( box );
+                    root.add( boundLiteralTextBox() );
                 }
 
             }
@@ -124,7 +118,7 @@ public class MethodParameterValueEditor
         }
     }
 
-    private ListBox boundVariable( final FieldNature c ) {
+    private ListBox boundVariable() {
         /*
          * If there is a bound variable that is the same type of the current
          * variable type, then propose a list
@@ -165,71 +159,76 @@ public class MethodParameterValueEditor
                 }
             }
         }
-        if ( listVariable.getItemCount() > 0 ) {
+        if (listVariable.getItemCount() > 0) {
 
-            listVariable.addChangeHandler( new ChangeHandler() {
+            listVariable.addChangeHandler(new ChangeHandler() {
 
-                public void onChange( ChangeEvent event ) {
+                public void onChange(ChangeEvent event) {
                     ListBox w = (ListBox) event.getSource();
-                    methodParameter.setValue( w.getValue( w.getSelectedIndex() ) );
-                    if ( onValueChangeCommand != null ) {
-                        onValueChangeCommand.execute();
-                    }
-                    makeDirty();
+
+                    setMethodParameterValue(w.getValue(w.getSelectedIndex()));
                     refresh();
                 }
 
-            } );
+            });
         }
         return listVariable;
     }
 
-    private TextBox boundLiteralTextBox( final ActionFieldValue c ) {
+    private TextBox boundLiteralTextBox( ) {
         final TextBox box = TextBoxFactory.getTextBox( methodParameter.getType() );
+
+        // We need both handlers, since The textbox TextBoxFactory can return a box that changes the value in itself
+        box.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                setMethodParameterValue(box.getValue());
+            }
+        });
+        box.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                setMethodParameterValue(box.getValue());
+            }
+        });
+
         box.setStyleName( "constraint-value-Editor" );
-        if ( c.getValue() == null ) {
-            box.setText( "" );
-        } else {
-            box.setText( c.getValue() );
+        if ( this.methodParameter.getValue() != null || this.methodParameter.getValue().isEmpty()) {
+            box.setValue(this.methodParameter.getValue());
         }
 
-        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+        // This updates the model
+        setMethodParameterValue(box.getValue());
 
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                c.setValue( event.getValue() );
-                if ( onValueChangeCommand != null ) {
-                    onValueChangeCommand.execute();
-                }
-                makeDirty();
-            }
-
-        } );
 
         return box;
     }
 
-    private TextBox boundFormulaTextBox( final ActionFieldValue c ) {
+    private TextBox boundFormulaTextBox( ) {
         final TextBox box = new TextBox();
         box.setStyleName( "constraint-value-Editor" );
-        if ( c.getValue() == null ) {
-            box.setText( "" );
+        if ( this.methodParameter .getValue() == null ) {
+            box.setValue("");
         } else {
-            box.setText( c.getValue() );
+            box.setValue(this.methodParameter.getValue());
         }
 
-        box.addValueChangeHandler( new ValueChangeHandler<String>() {
-
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                c.setValue( event.getValue() );
-                if ( onValueChangeCommand != null ) {
-                    onValueChangeCommand.execute();
-                }
-                makeDirty();
+        box.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                setMethodParameterValue(box.getValue());
             }
-
-        } );
+        });
 
         return box;
+    }
+
+    private void setMethodParameterValue(String value) {
+        methodParameter.setValue(value);
+        if (onValueChangeCommand != null) {
+            onValueChangeCommand.execute();
+        }
+        makeDirty();
     }
 
     private Widget choice() {

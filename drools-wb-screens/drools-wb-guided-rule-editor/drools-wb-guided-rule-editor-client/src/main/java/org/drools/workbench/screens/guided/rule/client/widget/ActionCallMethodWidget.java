@@ -220,7 +220,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
             inner.setWidget( i,
                              0,
-                             fieldSelector( val ) );
+                             typeLabel(val.getType()) );
             inner.setWidget( i,
                              1,
                              valueEditor( val ) );
@@ -276,46 +276,58 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.ChooseAMethodToInvoke(),
                             box );
-        box.addChangeHandler( new ChangeHandler() {
+        box.addChangeHandler(new ChangeHandler() {
 
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
 
-                final String methodName = box.getValue( box.getSelectedIndex() );
-                final String methodNameWithParams = box.getItemText( box.getSelectedIndex() );
+                final String methodNameWithParams = box.getItemText(box.getSelectedIndex());
 
-                model.setMethodName( methodName );
-                model.setState( ActionCallMethod.TYPE_DEFINED );
+                oracle.getMethodParams(variableClass,
+                        methodNameWithParams,
+                        new Callback<List<String>>() {
+                            @Override
+                            public void callback(final List<String> methodParameters) {
+                                final String methodName = box.getValue(box.getSelectedIndex());
 
-                oracle.getMethodParams( variableClass,
-                                        methodNameWithParams,
-                                        new Callback<List<String>>() {
-                                            @Override
-                                            public void callback( final List<String> methodParameters ) {
-                                                int i = 0;
-                                                for ( String methodParameter : methodParameters ) {
-                                                    model.addFieldValue( new ActionFieldFunction( methodName,
-                                                                                                  null,
-                                                                                                  methodParameter ) );
-                                                    i++;
-                                                }
-                                            }
-                                        } );
+                                model.setMethodName(methodName);
+                                model.setState(ActionCallMethod.TYPE_DEFINED);
 
-                getModeller().refreshWidget();
-                popup.hide();
+                                for (String methodParameter : methodParameters) {
+                                    model.addFieldValue(
+                                            new ActionFieldFunction(methodName,
+                                                    null,
+                                                    methodParameter));
+                                }
+
+                                getModeller().refreshWidget();
+                                popup.hide();
+
+                            }
+                        });
+
             }
-        } );
+        });
         popup.setPopupPosition( w.getAbsoluteLeft(),
                                 w.getAbsoluteTop() );
         popup.show();
 
     }
 
-    private Widget valueEditor( final ActionFieldFunction val ) {
+    private Widget valueEditor(final ActionFieldFunction val) {
+        return new MethodParameterValueEditor(
+                val,
+                getEnums(val.getField()),
+                this.getModeller(),
+                new Command() {
 
-        AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
+                    public void execute() {
+                        setModified(true);
+                    }
+                });
+    }
 
-        String type = "";
+    private String getVariableType() {
+        String type;
         if ( oracle.isGlobalVariable( this.model.getVariable() ) ) {
             type = oracle.getGlobalVariable( this.model.getVariable() );
         } else {
@@ -324,25 +336,17 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                 type = this.getModeller().getModel().getRHSBoundFact( this.model.getVariable() ).getFactType();
             }
         }
-
-        DropDownData enums = oracle.getEnums( type,
-                                              val.getField(),
-                                              FieldNatureUtil.toMap( this.model.getFieldValues() ) );
-
-        return new MethodParameterValueEditor( val,
-                                               enums,
-                                               this.getModeller(),
-                                               val.getType(),
-                                               new Command() {
-
-                                                   public void execute() {
-                                                       setModified( true );
-                                                   }
-                                               } );
+        return type;
     }
 
-    private Widget fieldSelector( final ActionFieldFunction val ) {
-        return new SmallLabel( val.getType() );
+    private DropDownData getEnums(String field) {
+        return oracle.getEnums( getVariableType(),
+                                field,
+                                FieldNatureUtil.toMap(this.model.getFieldValues()) );
+    }
+
+    private Widget typeLabel(String type) {
+        return new SmallLabel(type);
     }
 
     /**
