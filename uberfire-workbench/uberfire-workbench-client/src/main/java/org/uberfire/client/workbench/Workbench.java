@@ -208,8 +208,9 @@ implements RequiresResize {
         }
     }
 
+    // package-private so tests can call in
     @AfterInitialization
-    private void startIfNotBlocked() {
+    void startIfNotBlocked() {
         System.out.println(startupBlockers.size() + " workbench startup blockers remain.");
         if ( startupBlockers.isEmpty() ) {
             bootstrap();
@@ -266,6 +267,7 @@ implements RequiresResize {
 
     private void bootstrap() {
         System.out.println("Workbench starting...");
+        appReady.fire( new ApplicationReadyEvent() );
 
         headers = setupMarginWidgets( Header.class );
         footers = setupMarginWidgets( Footer.class );
