@@ -21,7 +21,9 @@ import javax.inject.Inject;
 
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
+import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
 
@@ -32,6 +34,9 @@ public class GuidedScoreCardSourceService
     @Inject
     private GuidedScoreCardResourceTypeDefinition resourceType;
 
+    @Inject
+    private GuidedScoreCardEditorService guidedScoreCardEditorService;
+
     @Override
     public String getPattern() {
         return resourceType.getSuffix();
@@ -41,6 +46,11 @@ public class GuidedScoreCardSourceService
     public String getSource( final Path path,
                              final ScoreCardModel model ) {
         return new StringBuilder().append( GuidedScoreCardDRLPersistence.marshal( model ) ).toString();
+    }
+
+    @Override
+    public String getSource(Path path) {
+        return getSource(path, guidedScoreCardEditorService.load(Paths.convert(path)));
     }
 
 }

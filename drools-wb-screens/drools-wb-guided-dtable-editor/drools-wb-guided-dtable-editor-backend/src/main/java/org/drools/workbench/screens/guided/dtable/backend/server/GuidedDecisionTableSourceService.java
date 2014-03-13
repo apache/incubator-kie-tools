@@ -21,7 +21,9 @@ import javax.inject.Inject;
 
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
 
@@ -32,6 +34,9 @@ public class GuidedDecisionTableSourceService
     @Inject
     private GuidedDTableResourceTypeDefinition resourceType;
 
+    @Inject
+    private GuidedDecisionTableEditorService guidedDecisionTableEditorService;
+
     @Override
     public String getPattern() {
         return resourceType.getSuffix();
@@ -41,6 +46,11 @@ public class GuidedDecisionTableSourceService
     public String getSource( final Path path,
                              final GuidedDecisionTable52 model ) {
         return new StringBuilder().append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
+    }
+
+    @Override
+    public String getSource(Path path) {
+        return getSource(path, guidedDecisionTableEditorService.load(Paths.convert(path)));
     }
 
 }

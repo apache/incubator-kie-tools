@@ -31,6 +31,7 @@ import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -54,6 +55,9 @@ public class GuidedRuleDSLRSourceService
     private GuidedRuleDSLRResourceTypeDefinition resourceType;
 
     @Inject
+    private GuidedRuleEditorService guidedRuleEditorService;
+
+    @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
@@ -75,6 +79,11 @@ public class GuidedRuleDSLRSourceService
         final Expander expander = getDSLExpander( path );
         final String drl = expander.expand( dslr );
         return drl;
+    }
+
+    @Override
+    public String getSource(Path path) {
+        return getSource(path, guidedRuleEditorService.load(Paths.convert(path)));
     }
 
     /**

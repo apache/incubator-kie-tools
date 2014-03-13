@@ -21,7 +21,9 @@ import javax.inject.Inject;
 
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelDRLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
 
@@ -32,6 +34,9 @@ public class GuidedRuleTemplateSourceService
     @Inject
     private GuidedRuleTemplateResourceTypeDefinition resourceType;
 
+    @Inject
+    private GuidedRuleTemplateEditorService guidedRuleTemplateEditorService;
+
     @Override
     public String getPattern() {
         return resourceType.getSuffix();
@@ -41,6 +46,11 @@ public class GuidedRuleTemplateSourceService
     public String getSource( final Path path,
                              final TemplateModel model ) {
         return new StringBuilder().append( RuleTemplateModelDRLPersistenceImpl.getInstance().marshal( model ) ).toString();
+    }
+
+    @Override
+    public String getSource(Path path) {
+        return getSource(path, guidedRuleTemplateEditorService.load(Paths.convert(path)));
     }
 
 }
