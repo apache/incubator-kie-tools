@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.widgets.client.datamodel;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,7 @@ public class AsyncPackageDataModelOracleImplTest {
     private PackageDataModelOracleIncrementalPayload personPayload;
     private PackageDataModelOracleIncrementalPayload addressPayload;
     private PackageDataModelOracleIncrementalPayload giantPayload;
+    private PackageDataModelOracleIncrementalPayload stringPayload;
     private PackageDataModelOracleIncrementalPayload defaultPayload;
 
     @Before
@@ -57,6 +59,7 @@ public class AsyncPackageDataModelOracleImplTest {
         personPayload = createPersonPayload();
         addressPayload = createAddressPayload();
         giantPayload = createGiantPayload();
+        stringPayload = createStringPayload();
         defaultPayload = createDefaultPayload();
 
         oracle.addGlobals(createGlobals());
@@ -73,12 +76,19 @@ public class AsyncPackageDataModelOracleImplTest {
         HashMap<String, List<MethodInfo>> map = new HashMap<String, List<MethodInfo>>();
 
         map.put("org.globals.GiantContainerOfInformation", Collections.EMPTY_LIST);
+        ArrayList<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+
+        ArrayList<String> params = new ArrayList<String>();
+        params.add("Integer");
+        methodInfos.add(new MethodInfo("valueOf", params, "java.lang.String", null, "String"));
+        map.put("java.lang.String", methodInfos);
         return map;
     }
 
     private HashMap<String, ModelField[]> createProjectModelFields() {
         HashMap<String, ModelField[]> map = new HashMap<String, ModelField[]>();
         map.put("org.test.Person", new ModelField[]{getLazyThisField("org.test.Person")});
+        map.put("java.lang.String", new ModelField[]{getLazyThisField("java.lang.String")});
         map.put("org.Address", new ModelField[]{getLazyThisField("org.Address")});
         map.put("org.globals.GiantContainerOfInformation", new ModelField[]{getLazyThisField("org.globals.GiantContainerOfInformation")});
         return map;
@@ -87,6 +97,7 @@ public class AsyncPackageDataModelOracleImplTest {
     private Imports createImports() {
         Imports imports = new Imports();
         imports.addImport(new Import("org.test.Person"));
+        imports.addImport(new Import("java.lang.String"));
         imports.addImport(new Import("org.globals.GiantContainerOfInformation"));
         return imports;
     }
@@ -100,6 +111,16 @@ public class AsyncPackageDataModelOracleImplTest {
         HashMap<String, ModelField[]> addressModelFields = new HashMap<String, ModelField[]>();
         addressModelFields.put("org.globals.GiantContainerOfInformation", new ModelField[]{
                 new ModelField("this", "org.globals.GiantContainerOfInformation", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.SELF, FieldAccessorsAndMutators.ACCESSOR, "this")});
+        payload.setModelFields(addressModelFields);
+
+        return payload;
+    }
+
+    private PackageDataModelOracleIncrementalPayload createStringPayload() {
+        PackageDataModelOracleIncrementalPayload payload = new PackageDataModelOracleIncrementalPayload();
+        HashMap<String, ModelField[]> addressModelFields = new HashMap<String, ModelField[]>();
+        addressModelFields.put("java.lang.String", new ModelField[]{
+                new ModelField("this", "java.lang.String", ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS, ModelField.FIELD_ORIGIN.SELF, FieldAccessorsAndMutators.ACCESSOR, "this")});
         payload.setModelFields(addressModelFields);
 
         return payload;
@@ -243,6 +264,19 @@ public class AsyncPackageDataModelOracleImplTest {
     }
 
     @Test
+    public void testGetMethodParamsString() throws Exception {
+        Callback<List<String>> callback = new Callback<List<String>>() {
+            @Override
+            public void callback(List<String> result) {
+                // In real life this returns 58 values. Using a mock here
+                assertEquals(1, result.size());
+            }
+        };
+        oracle.getMethodParams("String", "valueOf(Integer)", callback);
+        verify(callback).callback(anyList());
+    }
+
+    @Test
     /**
      * Person is imported, but Person has an address that is not. Asking connective operator completions for Address.street should still work.
      */
@@ -298,6 +332,8 @@ public class AsyncPackageDataModelOracleImplTest {
             public PackageDataModelOracleIncrementalPayload getUpdates(Path resourcePath, Imports imports, String factType) {
                 if (factType.equals("org.test.Person")) {
                     callback.callback(personPayload);
+                } else if (factType.equals("java.lang.String")) {
+                    callback.callback(stringPayload);
                 } else if (factType.equals("org.Address")) {
                     callback.callback(addressPayload);
                 } else if (factType.equals("org.globals.GiantContainerOfInformation")) {

@@ -809,6 +809,8 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void getMethodParams( final String factType,
                                  final String methodNameWithParams,
                                  final Callback<List<String>> callback ) {
+        final String fqcnFactName = getFQCNByFactName(factType);
+
         final List<MethodInfo> methodInformation = projectMethodInformation.get( factType );
 
         //Load incremental content
@@ -819,13 +821,13 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                 public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
                     AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
                                                                                   dataModel );
-                    final List<MethodInfo> methodInformation = projectMethodInformation.get( factType );
+                    final List<MethodInfo> methodInformation = projectMethodInformation.get( fqcnFactName );
                     callback.callback( getMethodParams( methodInformation,
                                                         methodNameWithParams ) );
                 }
             } ).getUpdates( resourcePath,
                             imports,
-                            factType );
+                            fqcnFactName );
 
         } else {
             callback.callback( getMethodParams( methodInformation,
