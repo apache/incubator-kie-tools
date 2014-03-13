@@ -29,6 +29,11 @@ public interface SourceService<T> {
      */
     String getSource( final Path path,
                       final T model );
+    /**
+     * @param path path to the file
+     * @return Source generated from the model, that the path points to.
+     */
+    String getSource(Path path);
 
     String getPattern();
 

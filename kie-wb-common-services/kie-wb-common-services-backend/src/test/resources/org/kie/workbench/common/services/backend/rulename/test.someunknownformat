@@ -1,0 +1,4 @@
+rule hello
+  when
+  then
+end

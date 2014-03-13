@@ -16,10 +16,18 @@
 
 package org.kie.workbench.common.services.backend.source;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
 public abstract class DRLBaseSourceService
         extends BaseSourceService<String> {
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Override
     public String getSource( final Path path,
@@ -27,4 +35,8 @@ public abstract class DRLBaseSourceService
         return drl;
     }
 
+    @Override
+    public String getSource(Path path) {
+        return ioService.readAllString(path);
+    }
 }

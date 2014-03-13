@@ -1,0 +1,6 @@
+package some.pkg
+
+rule test
+  when
+  then
+end

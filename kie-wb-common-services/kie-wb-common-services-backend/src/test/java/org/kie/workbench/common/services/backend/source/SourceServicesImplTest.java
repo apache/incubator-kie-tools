@@ -112,7 +112,12 @@ public class SourceServicesImplTest {
 
             @Override
             public String getSource(Path path, Object model) {
-                return null;  //TODO -Rikkola-
+                return null;
+            }
+
+            @Override
+            public String getSource(Path path) {
+                return null;
             }
 
             @Override
