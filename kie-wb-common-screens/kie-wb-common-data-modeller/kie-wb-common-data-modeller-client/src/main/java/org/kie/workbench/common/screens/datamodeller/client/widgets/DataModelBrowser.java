@@ -367,7 +367,7 @@ public class DataModelBrowser extends Composite {
     private void deleteDataObject( final DataObjectTO dataObjectTO,
                                    final int index ) {
 
-        Collection<String> refs = validatorService.canDeleteDataObject(getContext(), dataObjectTO, getDataModel());
+        Collection<String> refs = validatorService.getDataObjectExternalReferences(getContext(), dataObjectTO, getDataModel());
         if ( refs != null && refs.size() > 0) {
             StringBuilder refString = new StringBuilder("<br><br>");
             for ( String ref : refs ) {

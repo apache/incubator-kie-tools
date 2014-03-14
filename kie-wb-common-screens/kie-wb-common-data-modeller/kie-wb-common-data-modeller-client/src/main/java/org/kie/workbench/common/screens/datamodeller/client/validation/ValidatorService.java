@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.validation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
@@ -146,9 +147,13 @@ public class ValidatorService {
         }
     }
 
-    public Collection<String> canDeleteDataObject( DataModelerContext context,
+    public Collection<String> getDataObjectExternalReferences( DataModelerContext context,
                                      DataObjectTO object,
                                      DataModelTO model ) {
-         return context.getHelper().getDataObjectReferences( object.getClassName() );
+        Collection<String> self = new ArrayList<String>(1);
+        self.add( object.getClassName() );
+        Collection<String> refs = context.getHelper().getDataObjectReferences( object.getClassName() );
+        refs.removeAll( self );
+        return refs;
     }
 }
