@@ -205,15 +205,16 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         if ( utils.hasValueList( col ) ) {
             return makeValueListCell( col );
 
-        } else if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
-            return makeMultipleSelectEnumCell( factType,
-                                               fieldName );
-
         } else if ( oracle.hasEnums( factType,
                                      fieldName ) ) {
-            return makeSingleSelectionEnumCell( factType,
-                                                fieldName,
-                                                dataType );
+            if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
+                return makeMultipleSelectEnumCell( factType,
+                                                   fieldName );
+            } else {
+                return makeSingleSelectionEnumCell( factType,
+                                                    fieldName,
+                                                    dataType );
+            }
         }
 
         return derieveCellFromModel( col );
@@ -226,15 +227,17 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
         final String factType = col.getFactType();
         final String fieldName = col.getFactField();
         final String dataType = utils.getType( col );
-        if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
-            return makeMultipleSelectEnumCell( factType,
-                                               fieldName );
+        if ( oracle.hasEnums( factType,
+                              fieldName ) ) {
+            if ( OperatorsOracle.operatorRequiresList( col.getOperator() ) ) {
+                return makeMultipleSelectEnumCell( factType,
+                                                   fieldName );
 
-        } else if ( oracle.hasEnums( factType,
-                                     fieldName ) ) {
-            return makeSingleSelectionEnumCell( factType,
-                                                fieldName,
-                                                dataType );
+            } else {
+                return makeSingleSelectionEnumCell( factType,
+                                                    fieldName,
+                                                    dataType );
+            }
         }
 
         return derieveCellFromModel( col );
