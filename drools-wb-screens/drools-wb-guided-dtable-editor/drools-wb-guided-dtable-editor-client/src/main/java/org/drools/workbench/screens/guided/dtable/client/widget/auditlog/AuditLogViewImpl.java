@@ -233,7 +233,7 @@ public class AuditLogViewImpl extends Modal
     }
 
     private List<AuditLogEntry> filterDeletedEntries( final List<AuditLogEntry> entries ) {
-        if ( identity.hasRole( AppRoles.ADMIN ) ) {
+        if ( !identity.hasRole( AppRoles.ADMIN ) ) {
             return entries;
         }
         final List<AuditLogEntry> filteredEntries = new ArrayList<AuditLogEntry>();
