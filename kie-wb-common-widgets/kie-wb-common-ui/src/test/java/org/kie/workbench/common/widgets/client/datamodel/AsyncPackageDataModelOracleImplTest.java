@@ -265,13 +265,13 @@ public class AsyncPackageDataModelOracleImplTest {
 
     @Test
     public void testGetMethodParamsString() throws Exception {
-        Callback<List<String>> callback = new Callback<List<String>>() {
+        Callback<List<String>> callback = spy(new Callback<List<String>>() {
             @Override
             public void callback(List<String> result) {
                 // In real life this returns 58 values. Using a mock here
                 assertEquals(1, result.size());
             }
-        };
+        });
         oracle.getMethodParams("String", "valueOf(Integer)", callback);
         verify(callback).callback(anyList());
     }
