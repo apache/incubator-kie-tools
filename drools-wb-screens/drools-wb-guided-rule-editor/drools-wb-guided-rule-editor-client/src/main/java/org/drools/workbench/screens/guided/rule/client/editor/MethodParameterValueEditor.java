@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -38,13 +39,14 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
-import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
-import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
+import org.drools.workbench.screens.guided.rule.client.editor.util.SuperTypeMatcher;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.common.DirtyableComposite;
 import org.uberfire.client.common.DropDownValueChanged;
 import org.uberfire.client.common.FormStylePopup;
@@ -57,6 +59,7 @@ import org.uberfire.client.common.SmallLabel;
 public class MethodParameterValueEditor
         extends DirtyableComposite {
 
+    private AsyncPackageDataModelOracle oracle;
     private ActionFieldFunction methodParameter;
     private DropDownData enums;
     private SimplePanel root = new SimplePanel();
@@ -64,22 +67,25 @@ public class MethodParameterValueEditor
     private String parameterType = null;
     private Command onValueChangeCommand = null;
 
-    public MethodParameterValueEditor( final ActionFieldFunction val,
-                                       final DropDownData enums,
-                                       RuleModeller model,
-                                       Command onValueChangeCommand ) {
+    public MethodParameterValueEditor(
+            final AsyncPackageDataModelOracle oracle,
+            final ActionFieldFunction val,
+            final DropDownData enums,
+            RuleModeller model,
+            Command onValueChangeCommand) {
+        this.oracle = oracle;
         this.methodParameter = val;
         this.model = model;
         this.parameterType = val.getType();
         this.onValueChangeCommand = onValueChangeCommand;
         setEnums(enums);
         refresh();
-        initWidget( root );
+        initWidget(root);
     }
 
     private void setEnums(DropDownData enums) {
-        if ( methodParameter.getType().equals( DataType.TYPE_BOOLEAN ) ) {
-            this.enums = DropDownData.create( new String[]{ "true", "false" } );
+        if (methodParameter.getType().equals(DataType.TYPE_BOOLEAN)) {
+            this.enums = DropDownData.create(new String[]{"true", "false"});
         } else {
             this.enums = enums;
         }
@@ -87,30 +93,28 @@ public class MethodParameterValueEditor
 
     private void refresh() {
         root.clear();
-        if ( enums != null && ( enums.getFixedList() != null || enums.getQueryExpression() != null ) ) {
-            root.add( new EnumDropDown( methodParameter.getValue(),
-                                        new DropDownValueChanged() {
-                                            public void valueChanged( String newText,
-                                                                      String newValue ) {
-                                                setMethodParameterValue(newValue);
-                                            }
-                                        },
-                                        enums ) );
+        if (enums != null && (enums.getFixedList() != null || enums.getQueryExpression() != null)) {
+            root.add(new EnumDropDown(methodParameter.getValue(),
+                    new DropDownValueChanged() {
+                        public void valueChanged(String newText,
+                                String newValue) {
+                            setMethodParameterValue(newValue);
+                        }
+                    },
+                    enums));
         } else {
 
-            if ( methodParameter.getNature() == FieldNatureType.TYPE_UNDEFINED && methodParameter.getValue() == null ) {
+            if (methodParameter.getNature() == FieldNatureType.TYPE_UNDEFINED && methodParameter.getValue() == null) {
                 // we have a blank slate..
                 // have to give them a choice
-                root.add( choice() );
+                root.add(choice());
             } else {
-                if ( methodParameter.getNature() == FieldNatureType.TYPE_VARIABLE ) {
-                    ListBox list = boundVariable( );
-                    root.add( list );
-                } else if ( methodParameter.getNature() == FieldNatureType.TYPE_FORMULA ) {
-                    root.add( boundFormulaTextBox() );
-
+                if (methodParameter.getNature() == FieldNatureType.TYPE_VARIABLE) {
+                    root.add(boundVariable());
+                } else if (methodParameter.getNature() == FieldNatureType.TYPE_FORMULA) {
+                    root.add(boundFormulaTextBox());
                 } else {
-                    root.add( boundLiteralTextBox() );
+                    root.add(boundLiteralTextBox());
                 }
 
             }
@@ -119,64 +123,23 @@ public class MethodParameterValueEditor
     }
 
     private ListBox boundVariable() {
-        /*
-         * If there is a bound variable that is the same type of the current
-         * variable type, then propose a list
-         */
-        ListBox listVariable = new ListBox();
-        List<String> vars = model.getModel().getLHSBoundFacts();
-        for ( String v : vars ) {
-            FactPattern factPattern = model.getModel().getLHSBoundFact( v );
-            if ( factPattern.getFactType().equals( this.methodParameter.getType() ) ) {
-                // First selection is empty
-                if ( listVariable.getItemCount() == 0 ) {
-                    listVariable.addItem( "..." );
-                }
+        BoundListBox boundListBox = new BoundListBox(model, methodParameter, new SuperTypeMatcher(oracle));
 
-                listVariable.addItem( v );
+        boundListBox.addChangeHandler(new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                ListBox w = (ListBox) event.getSource();
+
+                setMethodParameterValue(w.getValue(w.getSelectedIndex()));
+                refresh();
             }
-        }
-        /*
-         * add the bound variable of the rhs
-         */
-        List<String> vars2 = model.getModel().getRHSBoundFacts();
-        for ( String v : vars2 ) {
-            ActionInsertFact factPattern = model.getModel().getRHSBoundFact( v );
-            if ( factPattern.getFactType().equals( this.methodParameter.getType() ) ) {
-                // First selection is empty
-                if ( listVariable.getItemCount() == 0 ) {
-                    listVariable.addItem( "..." );
-                }
-                listVariable.addItem( v );
-            }
-        }
-        if ( methodParameter.getValue().equals( "=" ) ) {
-            listVariable.setSelectedIndex( 0 );
-        } else {
-            for ( int i = 0; i < listVariable.getItemCount(); i++ ) {
-                if ( listVariable.getItemText( i ).equals( methodParameter.getValue() ) ) {
-                    listVariable.setSelectedIndex( i );
-                }
-            }
-        }
-        if (listVariable.getItemCount() > 0) {
 
-            listVariable.addChangeHandler(new ChangeHandler() {
-
-                public void onChange(ChangeEvent event) {
-                    ListBox w = (ListBox) event.getSource();
-
-                    setMethodParameterValue(w.getValue(w.getSelectedIndex()));
-                    refresh();
-                }
-
-            });
-        }
-        return listVariable;
+        });
+        return boundListBox;
     }
 
-    private TextBox boundLiteralTextBox( ) {
-        final TextBox box = TextBoxFactory.getTextBox( methodParameter.getType() );
+    private TextBox boundLiteralTextBox() {
+        final TextBox box = TextBoxFactory.getTextBox(methodParameter.getType());
 
         // We need both handlers, since The textbox TextBoxFactory can return a box that changes the value in itself
         box.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -192,22 +155,21 @@ public class MethodParameterValueEditor
             }
         });
 
-        box.setStyleName( "constraint-value-Editor" );
-        if ( this.methodParameter.getValue() != null || this.methodParameter.getValue().isEmpty()) {
+        box.setStyleName("constraint-value-Editor");
+        if (this.methodParameter.getValue() != null || this.methodParameter.getValue().isEmpty()) {
             box.setValue(this.methodParameter.getValue());
         }
 
         // This updates the model
         setMethodParameterValue(box.getValue());
 
-
         return box;
     }
 
-    private TextBox boundFormulaTextBox( ) {
+    private TextBox boundFormulaTextBox() {
         final TextBox box = new TextBox();
-        box.setStyleName( "constraint-value-Editor" );
-        if ( this.methodParameter .getValue() == null ) {
+        box.setStyleName("constraint-value-Editor");
+        if (this.methodParameter.getValue() == null) {
             box.setValue("");
         } else {
             box.setValue(this.methodParameter.getValue());
@@ -233,111 +195,130 @@ public class MethodParameterValueEditor
 
     private Widget choice() {
         Image clickme = GuidedRuleEditorImages508.INSTANCE.Edit();
-        clickme.addClickHandler( new ClickHandler() {
+        clickme.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                showTypeChoice( (Widget) event.getSource() );
+            public void onClick(ClickEvent event) {
+                showTypeChoice();
             }
-        } );
+        });
         return clickme;
     }
 
-    protected void showTypeChoice( Widget w ) {
-        final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                        GuidedRuleEditorResources.CONSTANTS.FieldValue() );
+    protected void showTypeChoice() {
+        final FormStylePopup form = new FormStylePopup(GuidedRuleEditorImages508.INSTANCE.Wizard(),
+                GuidedRuleEditorResources.CONSTANTS.FieldValue());
 
         //Literal values
-        Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
-        lit.addClickHandler( new ClickHandler() {
+        Button lit = new Button(GuidedRuleEditorResources.CONSTANTS.LiteralValue());
+        lit.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                methodParameter.setNature( FieldNatureType.TYPE_LITERAL );
-                methodParameter.setValue( "" );
+            public void onClick(ClickEvent event) {
+                methodParameter.setNature(FieldNatureType.TYPE_LITERAL);
+                methodParameter.setValue("");
                 makeDirty();
                 refresh();
                 form.hide();
             }
 
-        } );
+        });
 
-        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
-                           widgets( lit,
-                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
-                                                   GuidedRuleEditorResources.CONSTANTS.LiteralValTip() ) ) );
-        // Bound variables
-        List<String> vars = model.getModel().getLHSBoundFacts();
-        List<String> vars2 = model.getModel().getRHSBoundFacts();
-        for ( String i : vars2 ) {
-            vars.add( i );
-        }
-        boolean createBoundVariableHeader = true;
-        for ( String v : vars ) {
-            boolean createBoundVariableButton = false;
-            Button variable = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
-            if ( vars2.contains( v ) == false ) {
-                FactPattern factPattern = model.getModel().getLHSBoundFact( v );
-                if ( factPattern.getFactType().equals( this.parameterType ) ) {
-                    createBoundVariableButton = true;
-                }
-            } else {
-                ActionInsertFact factPattern = model.getModel().getRHSBoundFact( v );
-                if ( factPattern.getFactType().equals( this.parameterType ) ) {
-                    createBoundVariableButton = true;
-                }
-            }
-            if ( createBoundVariableButton == true ) {
-                if ( createBoundVariableHeader ) {
-                    form.addRow( new HTML( "<hr/>" ) );
-                    form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
-                    createBoundVariableHeader = false;
-                }
-                form.addAttribute( GuidedRuleEditorResources.CONSTANTS.BoundVariable() + ":",
-                                   variable );
-                variable.addClickHandler( new ClickHandler() {
+        form.addAttribute(GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
+                widgets(lit,
+                        new InfoPopup(GuidedRuleEditorResources.CONSTANTS.Literal(),
+                                GuidedRuleEditorResources.CONSTANTS.LiteralValTip())));
 
-                    public void onClick( ClickEvent event ) {
-                        methodParameter.setNature( FieldNatureType.TYPE_VARIABLE );
-                        methodParameter.setValue( "=" );
+        canTheVariableButtonBeShown(new Callback<Boolean>() {
+            @Override public void callback(Boolean result) {
+
+                if (result) {
+                    addBoundVariableButton(form);
+
+                    form.addRow(new HTML("<hr/>"));
+                    form.addRow(new SmallLabel(GuidedRuleEditorResources.CONSTANTS.AdvancedSection()));
+                }
+
+                //Formulas
+                Button formula = new Button(GuidedRuleEditorResources.CONSTANTS.NewFormula());
+                formula.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+                        methodParameter.setNature(FieldNatureType.TYPE_FORMULA);
                         makeDirty();
                         refresh();
                         form.hide();
                     }
+                });
 
-                } );
-                break;
+                form.addAttribute(GuidedRuleEditorResources.CONSTANTS.AFormula() + ":",
+                        widgets(formula,
+                                new InfoPopup(GuidedRuleEditorResources.CONSTANTS.AFormula(),
+                                        GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip())));
+
+                form.show();
             }
+        });
 
-        }
+    }
 
-        //Formulas
-        if ( createBoundVariableHeader ) {
-            form.addRow( new HTML( "<hr/>" ) );
-            form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
-        }
-        Button formula = new Button( GuidedRuleEditorResources.CONSTANTS.NewFormula() );
-        formula.addClickHandler( new ClickHandler() {
+    private void addBoundVariableButton(
+            final FormStylePopup form) {
+        form.addRow(new HTML("<hr/>"));
+        form.addRow(new SmallLabel(GuidedRuleEditorResources.CONSTANTS.AdvancedSection()));
+        Button variableButton = new Button(GuidedRuleEditorResources.CONSTANTS.BoundVariable());
+        form.addAttribute(GuidedRuleEditorResources.CONSTANTS.BoundVariable() + ":",
+                variableButton);
+        variableButton.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                methodParameter.setNature( FieldNatureType.TYPE_FORMULA );
+            public void onClick(ClickEvent event) {
+                methodParameter.setNature(FieldNatureType.TYPE_VARIABLE);
+                methodParameter.setValue("=");
                 makeDirty();
                 refresh();
                 form.hide();
             }
-        } );
 
-        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.AFormula() + ":",
-                           widgets( formula,
-                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.AFormula(),
-                                                   GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip() ) ) );
-
-        form.show();
+        });
     }
 
-    private Widget widgets( Button lit,
-                            InfoPopup popup ) {
+    private List<String> getVariableNames() {
+        List<String> variables = model.getModel().getLHSBoundFacts();
+        variables.addAll(model.getModel().getRHSBoundFacts());
+        return variables;
+    }
+
+    private void canTheVariableButtonBeShown(
+            final Callback<Boolean> callback) {
+
+        List<String> factTypes = new ArrayList<String>();
+
+        for (String variable : getVariableNames()) {
+            String factType = getFactType(variable);
+
+            factTypes.add(factType);
+
+            if (factType.equals(this.parameterType)) {
+                callback.callback(true);
+                return;
+            }
+        }
+
+        new SuperTypeMatcher(oracle).isThereAMatchingSuperType(factTypes, parameterType, callback);
+    }
+
+    private String getFactType(String variable) {
+        if (model.getModel().getRHSBoundFacts().contains(variable) == false) {
+            return model.getModel().getLHSBoundFact(variable).getFactType();
+
+        } else {
+            return model.getModel().getRHSBoundFact(variable).getFactType();
+        }
+    }
+
+    private Widget widgets(Button lit,
+            InfoPopup popup) {
         HorizontalPanel h = new HorizontalPanel();
-        h.add( lit );
-        h.add( popup );
+        h.add(lit);
+        h.add(popup);
         return h;
     }
 

@@ -315,6 +315,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
     private Widget valueEditor(final ActionFieldFunction val) {
         return new MethodParameterValueEditor(
+                oracle,
                 val,
                 getEnums(val.getField()),
                 this.getModeller(),
