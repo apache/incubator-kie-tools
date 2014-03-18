@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -34,6 +34,8 @@ import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+
+import org.junit.Test;
 
 /**
  * Base miscfeatures to generate source code with an Annotation Processor
@@ -165,28 +167,38 @@ public abstract class AbstractProcessorTest {
 
     /**
      * Assert that the given error message is contained in the compilation
-     * diagnostics
-     * @param diagnostics
-     * @param message
+     * diagnostics.
+     *
+     * @param diagnostics the list of diagnostic messages from the compiler
+     * @param message the message to search for. If any ERROR message in the given list ends with this string, the assertion passes.
      */
     public void assertCompilationError( List<Diagnostic<? extends JavaFileObject>> diagnostics,
                                         final String message ) {
-        final List<String> messages = getMessages( diagnostics,
-                Kind.ERROR );
-        assertTrue( messages.contains( "error: " + message ) || messages.contains( message ) );
+        for (String msg : getMessages( diagnostics, Kind.ERROR )) {
+            if ( msg.endsWith( message ) ) {
+                return;
+            }
+        }
+
+        fail ("Diagnostics did not contain the expected ERROR message: " + message + ".");
     }
 
     /**
      * Assert that the given warning message is contained in the compilation
-     * diagnostics
-     * @param diagnostics
-     * @param message
+     * diagnostics.
+     *
+     * @param diagnostics the list of diagnostic messages from the compiler
+     * @param message the message to search for. If any WARNING diagnostic in the given list ends with this string, the assertion passes.
      */
     public void assertCompilationWarning( List<Diagnostic<? extends JavaFileObject>> diagnostics,
                                           final String message ) {
-        final List<String> messages = getMessages( diagnostics,
-                Kind.WARNING );
-        assertTrue( messages.contains( "warning: " + message ) || messages.contains( message ) );
+        for (String msg : getMessages( diagnostics, Kind.WARNING )) {
+            if ( msg.endsWith( message ) ) {
+                return;
+            }
+        }
+
+        fail ("Diagnostics did not contain the expected WARNING message: " + message + ".");
     }
 
     private List<String> getMessages( final List<Diagnostic<? extends JavaFileObject>> diagnostics,
@@ -201,4 +213,31 @@ public abstract class AbstractProcessorTest {
         return messages;
     }
 
+    /**
+     * Returns the annotation processor being tested by the current test. This processor should be
+     * created with a GenerationCompleteCallback that will capture the output of the processor so it can be examined
+     * by test assertions.
+     */
+    protected abstract AbstractErrorAbsorbingProcessor getProcessorUnderTest();
+
+    /**
+     * Regression test for UF-44: Annotation Processors can put eclipse into an infinite loop.
+     */
+    @Test
+    public void shouldNotAllowClassNotFoundExceptionThrough() throws Exception {
+        AbstractErrorAbsorbingProcessor processorUnderTest = null;
+        try {
+            AbstractGenerator.FAIL_FOR_TESTING = true;
+            processorUnderTest = getProcessorUnderTest();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail("The annotation processor's constructor threw an exception. This is bad for Eclipse!");
+        } finally {
+            AbstractGenerator.FAIL_FOR_TESTING = false;
+        }
+
+        // ensure the error message was preserved so the user has a hope of tracking down the problem!
+        List<Diagnostic<? extends JavaFileObject>> messages = compile( processorUnderTest, "org/uberfire/annotations/processors/AnnotatedWithEverything" );
+        assertCompilationError( messages, "Failing for testing purposes" );
+    }
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,7 +19,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
-import javax.annotation.processing.AbstractProcessor;
+
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -41,25 +41,32 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
  */
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchPerspective")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class PerspectiveProcessor extends AbstractProcessor {
+public class PerspectiveProcessor extends AbstractErrorAbsorbingProcessor {
 
-    private static final Logger                logger            = LoggerFactory.getLogger( PerspectiveProcessor.class );
+    private static final Logger logger = LoggerFactory.getLogger( PerspectiveProcessor.class );
 
-    private final PerspectiveActivityGenerator activityGenerator = new PerspectiveActivityGenerator();
-
-    private GenerationCompleteCallback         callback          = null;
+	private final PerspectiveActivityGenerator activityGenerator;
+	private GenerationCompleteCallback callback;
 
     public PerspectiveProcessor() {
+        PerspectiveActivityGenerator ag = null;
+        try {
+            ag = new PerspectiveActivityGenerator();
+        } catch (Throwable t) {
+            rememberInitializationError(t);
+        }
+        activityGenerator = ag;
     }
 
     //Constructor for tests only, to prevent code being written to file. The generated code will be sent to the call-back
     PerspectiveProcessor(final GenerationCompleteCallback callback) {
+    	this();
         this.callback = callback;
         logger.info( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
     }
 
     @Override
-    public boolean process(Set< ? extends TypeElement> annotations,
+    public boolean processWithExceptions(Set< ? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
         //We don't have any post-processing
         if ( roundEnv.processingOver() ) {

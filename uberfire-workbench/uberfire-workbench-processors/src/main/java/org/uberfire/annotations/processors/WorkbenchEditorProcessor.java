@@ -19,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -41,25 +42,32 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
  */
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchEditor")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class WorkbenchEditorProcessor extends AbstractProcessor {
+public class WorkbenchEditorProcessor extends AbstractErrorAbsorbingProcessor {
 
-    private static final Logger           logger            = LoggerFactory.getLogger( WorkbenchEditorProcessor.class );
+    private static final Logger logger = LoggerFactory.getLogger( WorkbenchEditorProcessor.class );
 
-    private final EditorActivityGenerator activityGenerator = new EditorActivityGenerator();
-
-    private GenerationCompleteCallback    callback          = null;
+    private final EditorActivityGenerator activityGenerator;
+    private GenerationCompleteCallback callback = null;
 
     public WorkbenchEditorProcessor() {
+        EditorActivityGenerator ag = null;
+        try {
+            ag = new EditorActivityGenerator();
+        } catch (Throwable t) {
+            rememberInitializationError(t);
+        }
+        activityGenerator = ag;
     }
 
     //Constructor for tests only, to prevent code being written to file. The generated code will be sent to the call-back
     WorkbenchEditorProcessor(final GenerationCompleteCallback callback) {
+        this();
         this.callback = callback;
         logger.info( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
     }
 
     @Override
-    public boolean process(Set< ? extends TypeElement> annotations,
+    public boolean processWithExceptions(Set< ? extends TypeElement> annotations,
                            RoundEnvironment roundEnv) {
         //We don't have any post-processing
         if ( roundEnv.processingOver() ) {

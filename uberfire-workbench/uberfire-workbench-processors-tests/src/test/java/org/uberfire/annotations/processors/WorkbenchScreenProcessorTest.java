@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -30,16 +30,22 @@ import org.junit.Test;
  */
 public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
-    @Test
-    public void testNoWorkbenchScreenAnnotation() throws FileNotFoundException {
-        final Result result = new Result();
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
+    Result result = new Result();
 
+    @Override
+    protected AbstractErrorAbsorbingProcessor getProcessorUnderTest() {
+        return new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
             @Override
             public void generationComplete( final String code ) {
                 result.setActualCode( code );
             }
-        } ),
+        } );
+    }
+
+    @Test
+    public void testNoWorkbenchScreenAnnotation() throws FileNotFoundException {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/WorkbenchScreenTest1" );
         assertSuccessfulCompilation( diagnostics );
         assertNull( result.getActualCode() );
@@ -47,14 +53,9 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
     @Test
     public void testWorkbenchScreenMissingViewAnnotation() {
-        final Result result = new Result();
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), "org/uberfire/annotations/processors/WorkbenchScreenTest2" );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                "org/uberfire/annotations/processors/WorkbenchScreenTest2" );
 
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
@@ -64,14 +65,8 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
     @Test
     public void testWorkbenchScreenHasViewAnnotationMissingTitleAnnotation() {
-        final Result result = new Result();
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/WorkbenchScreenTest3" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
@@ -81,14 +76,8 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
     @Test
     public void testWorkbenchScreenMissingViewAnnotationHasTitleAnnotation() {
-        final Result result = new Result();
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/WorkbenchScreenTest4" );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
@@ -101,17 +90,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest5";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest5.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -124,17 +107,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest6";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest6.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -147,17 +124,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest7";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest7.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
                 "The WorkbenchScreen both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
@@ -172,17 +143,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest8";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest8.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -195,17 +160,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest9";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest9.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -218,17 +177,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest10";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest10.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -241,17 +194,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest11";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest11.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -264,17 +211,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest12";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest12.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -287,17 +228,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest13";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest13.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
                 "The WorkbenchScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
@@ -312,17 +247,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest14";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest14.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -335,17 +264,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest15";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest15.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -357,15 +280,9 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
     public void testWorkbenchScreenHasTitleWidget() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest16";
 
-        final Result result = new Result();
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertCompilationError( diagnostics,
                 "org.uberfire.annotations.processors.WorkbenchScreenTest16Activity: The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         assertNull( result.getActualCode() );
@@ -376,17 +293,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest17";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest17.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -399,17 +310,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest18";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest18.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ),
-        pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
