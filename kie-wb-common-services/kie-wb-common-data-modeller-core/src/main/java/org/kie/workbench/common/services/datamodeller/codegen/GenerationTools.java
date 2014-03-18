@@ -51,8 +51,9 @@ public class GenerationTools {
         return buf.toString();
     }
 
-    public String toJavaGetter(String name) {
-        return toJavaAccessor("get", name);
+    public String toJavaGetter(String name, String className) {
+        String prefix = NamingUtils.BOOLEAN.equals(className != null ? className.trim() : null) ? "is" : "get";
+        return toJavaAccessor(prefix, name);
     }
 
     public String toJavaSetter(String name) {
