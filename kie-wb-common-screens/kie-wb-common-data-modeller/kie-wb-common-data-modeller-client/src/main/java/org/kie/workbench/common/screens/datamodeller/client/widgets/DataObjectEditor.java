@@ -300,7 +300,7 @@ public class DataObjectEditor extends Composite {
         final String newValue = name.getValue();
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
-        if ( oldValue.equalsIgnoreCase( newValue ) ) {
+        if ( oldValue.equals( newValue ) ) {
             nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
             return;
         }
@@ -446,8 +446,8 @@ public class DataObjectEditor extends Composite {
         final String oldSuperClass = getDataObject().getSuperClassName();
 
         // No notification needed
-        if ( ( ( "".equalsIgnoreCase( newSuperClass ) || SuperclassSelector.NOT_SELECTED.equals( newSuperClass ) ) && oldSuperClass == null ) ||
-                newSuperClass.equalsIgnoreCase( oldSuperClass ) ) {
+        if ( ( ( "".equals( newSuperClass ) || SuperclassSelector.NOT_SELECTED.equals( newSuperClass ) ) && oldSuperClass == null ) ||
+                newSuperClass.equals( oldSuperClass ) ) {
             superclassLabel.setStyleName( DEFAULT_LABEL_CLASS );
             return;
         }

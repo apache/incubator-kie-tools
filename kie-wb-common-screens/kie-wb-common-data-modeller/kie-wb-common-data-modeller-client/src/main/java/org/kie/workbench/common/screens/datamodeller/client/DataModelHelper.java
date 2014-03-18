@@ -120,9 +120,9 @@ public class DataModelHelper {
             // Get the object referencing the modified object
             for (String refHolderClassName : s) {
                 // Go get the referencing object (in case of a 'self' reference, find it through the new name!)
-                DataObjectTO refHolder = dataModel.getDataObjectByClassName(oldClassName.equalsIgnoreCase(refHolderClassName) ? newClassname : refHolderClassName);
+                DataObjectTO refHolder = dataModel.getDataObjectByClassName(oldClassName.equals(refHolderClassName) ? newClassname : refHolderClassName);
                 for (ObjectPropertyTO prop : refHolder.getProperties()) {
-                    if (oldClassName.equalsIgnoreCase(prop.getClassName())) {
+                    if (oldClassName.equals(prop.getClassName())) {
                         prop.setClassName(newClassname);
                     }
                 }
