@@ -1,6 +1,8 @@
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
+import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -17,6 +19,9 @@ import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -37,6 +42,12 @@ public class ProjectScreenServiceImpl
 
     @Inject
     private ValidationService validationService;
+
+    @Inject
+    private Identity identity;
+
+    @Inject
+    private SessionInfo sessionInfo;
 
     @Inject
     @Named("ioStrategy")
@@ -72,7 +83,7 @@ public class ProjectScreenServiceImpl
         final Project project = projectService.resolveProject( pathToPomXML );
 
         try {
-            ioService.startBatch();
+            ioService.startBatch( makeCommentedOption( comment ) );
             pomService.save( pathToPomXML,
                              model.getPOM(),
                              model.getPOMMetaData(),
@@ -132,6 +143,33 @@ public class ProjectScreenServiceImpl
         final boolean validVersion = !( version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ) );
 
         return validName && validGroupId && validArtifactId && validVersion;
+    }
+
+    private CommentedOption makeCommentedOption( final String commitMessage ) {
+        final String name = getIdentityName();
+        final Date when = new Date();
+        final CommentedOption co = new CommentedOption( getSessionId(),
+                                                        name,
+                                                        null,
+                                                        commitMessage,
+                                                        when );
+        return co;
+    }
+
+    protected String getIdentityName() {
+        try {
+            return identity.getName();
+        } catch ( ContextNotActiveException e ) {
+            return "unknown";
+        }
+    }
+
+    protected String getSessionId() {
+        try {
+            return sessionInfo.getId();
+        } catch ( ContextNotActiveException e ) {
+            return "--";
+        }
     }
 
 }
