@@ -41,6 +41,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollectionIndex;
+import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFieldVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
@@ -327,14 +328,14 @@ public class ExpressionBuilder extends RuleModellerWidget
             onChangeSelectionUpdateExpressionWidget( oldType );
 
         } else if ( DataType.TYPE_STRING.equals( getCurrentGenericType() ) ) {
-            if ( "size".equals( value ) ) {
-                expression.appendPart( new ExpressionMethod( "size",
-                                                             "int",
+            if ( "length".equals( value ) ) {
+                expression.appendPart( new ExpressionField( "length",
+                                                            "Integer",
                                                              DataType.TYPE_NUMERIC_INTEGER ) );
             } else if ( "isEmpty".equals( value ) ) {
-                expression.appendPart( new ExpressionText( ".size() == 0",
-                                                           "",
-                                                           DataType.TYPE_NUMERIC_INTEGER ) );
+                expression.appendPart( new ExpressionField( "empty",
+                                                            "Boolean",
+                                                            DataType.TYPE_BOOLEAN ) );
             }
             onChangeSelectionUpdateExpressionWidget( oldType );
 
@@ -429,8 +430,8 @@ public class ExpressionBuilder extends RuleModellerWidget
     private LinkedHashMap<String, String> getStringMethods() {
         LinkedHashMap<String, String> completions = new LinkedHashMap<String, String>();
 
-        completions.put( "size()",
-                         "size" );
+        completions.put( "length()",
+                         "length" );
         completions.put( "isEmpty()",
                          "isEmpty" );
 
