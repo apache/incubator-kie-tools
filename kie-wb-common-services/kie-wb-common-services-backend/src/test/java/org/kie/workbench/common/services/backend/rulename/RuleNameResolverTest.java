@@ -30,7 +30,7 @@ public class RuleNameResolverTest {
                 "rule test\n" +
                         "when\n" +
                         "then\n" +
-                        "end").resolve();
+                        "end").getRuleNames();
 
         assertEquals(1, ruleNames.size());
         assertEquals("test", ruleNames.get(0));
@@ -42,7 +42,7 @@ public class RuleNameResolverTest {
                 "rule \"test rule\"\n" +
                         "when\n" +
                         "then\n" +
-                        "end").resolve();
+                        "end").getRuleNames();
 
         assertEquals(1, ruleNames.size());
         assertEquals("test rule", ruleNames.get(0));
@@ -54,7 +54,7 @@ public class RuleNameResolverTest {
                 "rule test extends parentRule\n" +
                         "when\n" +
                         "then\n" +
-                        "end").resolve();
+                        "end").getRuleNames();
 
         assertEquals(1, ruleNames.size());
         assertEquals("test", ruleNames.get(0));
@@ -66,7 +66,7 @@ public class RuleNameResolverTest {
                 getRuleDRL(1)
                         + getRuleDRL(2)
                         + getRuleDRL(3)
-                        + getRuleDRL(4)).resolve();
+                        + getRuleDRL(4)).getRuleNames();
 
         assertEquals(4, ruleList.size());
         assertEquals("test row 1", ruleList.get(0));
@@ -88,7 +88,7 @@ public class RuleNameResolverTest {
                         + "/*"
                         + getRuleDRL(4)
                         + "*/"
-                        + getRuleDRL(5)).resolve();
+                        + getRuleDRL(5)).getRuleNames();
 
         assertEquals(3, ruleList.size());
         assertEquals("test row 1", ruleList.get(0));
@@ -98,8 +98,9 @@ public class RuleNameResolverTest {
 
     @Test
     public void testIgnoreSingleLineCommentedRules() throws Exception {
-        List<String> ruleList = new RuleNameResolver(
+        RuleNameResolver resolver = new RuleNameResolver(
                 getRuleDRL(1)
+                        + "package org.test;\n"
                         + "// rule \"I'm not here\"\n"
                         + "// when\n" +
                         "// then\n"
@@ -108,8 +109,10 @@ public class RuleNameResolverTest {
                         + "// Just for fun, I'll end the line with //\n"
                         + getRuleDRL(4)
                         + getRuleDRL(5)
-                        + "// end of file").resolve();
+                        + "// end of file");
+        List<String> ruleList = resolver.getRuleNames();
 
+        assertEquals("org.test", resolver.getPackageName());
         assertEquals(4, ruleList.size());
         assertEquals("test row 1", ruleList.get(0));
         assertEquals("test row 3", ruleList.get(1));
@@ -119,12 +122,15 @@ public class RuleNameResolverTest {
 
     @Test
     public void testSimpleWithSomeSpaces() throws Exception {
-        List<String> ruleNames = new RuleNameResolver(
-                "rule            test\n" +
+        RuleNameResolver resolver = new RuleNameResolver(
+                "package org.test2\n" +
+                        "rule            test\n" +
                         "when\n" +
                         "then\n" +
-                        "end").resolve();
+                        "end");
+        List<String> ruleNames = resolver.getRuleNames();
 
+        assertEquals("org.test2", resolver.getPackageName());
         assertEquals(1, ruleNames.size());
         assertEquals("test", ruleNames.get(0));
     }

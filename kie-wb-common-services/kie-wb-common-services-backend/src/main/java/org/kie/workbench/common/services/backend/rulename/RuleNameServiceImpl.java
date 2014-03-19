@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.backend.rulename;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,7 @@ public class RuleNameServiceImpl
     private SourceServices sourceServices;
 
     private final Map<String, List<String>> ruleNames = new HashMap<String, List<String>>();
+    private final Map<Path, PathHandle> pathHandles = new HashMap<Path, PathHandle>();
 
     @Inject
     public RuleNameServiceImpl(SourceServices sourceServices) {
@@ -48,21 +50,21 @@ public class RuleNameServiceImpl
 
     public void processResourceAdd(@Observes final ResourceAddedEvent resourceAddedEvent) {
         if (isObservableResource(resourceAddedEvent.getPath())) {
-            org.uberfire.java.nio.file.Path convertedPath = Paths.convert(resourceAddedEvent.getPath());
-
-            String drl = sourceServices.getServiceFor(
-                    convertedPath).getSource(convertedPath);
-
-            // Needs package resolver
-            ruleNames.put("some.pkg", new RuleNameResolver(drl).resolve());
+            addRuleNames(resourceAddedEvent.getPath());
         }
     }
 
     public void processResourceDelete(@Observes final ResourceDeletedEvent resourceDeletedEvent) {
-
+        if (isObservableResource(resourceDeletedEvent.getPath())) {
+            deleteRuleNames(resourceDeletedEvent.getPath());
+        }
     }
 
     public void processResourceUpdate(@Observes final ResourceUpdatedEvent resourceUpdatedEvent) {
+        if (isObservableResource(resourceUpdatedEvent.getPath())) {
+            deleteRuleNames(resourceUpdatedEvent.getPath());
+            addRuleNames(resourceUpdatedEvent.getPath());
+        }
     }
 
     public void processResourceCopied(@Observes final ResourceCopiedEvent resourceCopiedEvent) {
@@ -73,6 +75,32 @@ public class RuleNameServiceImpl
 
     public void processBatchChanges(@Observes final ResourceBatchChangesEvent resourceBatchChangesEvent) {
 
+    }
+
+    private void addRuleNames(Path path) {
+        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
+
+        String drl = sourceServices.getServiceFor(
+                convertedPath).getSource(convertedPath);
+
+        RuleNameResolver ruleNameResolver = new RuleNameResolver(drl);
+        if (ruleNames.containsKey(ruleNameResolver.getPackageName())) {
+            ruleNames.get(ruleNameResolver.getPackageName()).addAll(ruleNameResolver.getRuleNames());
+        } else {
+            ruleNames.put(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames());
+        }
+        pathHandles.put(path, new PathHandle(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames()));
+    }
+
+    private void deleteRuleNames(Path path) {
+        if (pathHandles.containsKey(path)) {
+            PathHandle pathHandle = pathHandles.get(path);
+
+            for (String deleteRuleName : pathHandle.ruleNames) {
+                List<String> strings = this.ruleNames.get(pathHandle.packageName);
+                strings.remove(deleteRuleName);
+            }
+        }
     }
 
     private boolean isObservableResource(Path path) {
@@ -92,6 +120,17 @@ public class RuleNameServiceImpl
             return Collections.emptyList();
         } else {
             return result;
+        }
+    }
+
+    private class PathHandle {
+
+        String packageName;
+        List<String> ruleNames;
+
+        public PathHandle(String packageName, ArrayList<String> ruleNames) {
+            this.packageName = packageName;
+            this.ruleNames = ruleNames;
         }
     }
 }

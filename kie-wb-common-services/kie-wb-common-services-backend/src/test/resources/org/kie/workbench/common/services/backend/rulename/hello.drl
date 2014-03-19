@@ -1,0 +1,21 @@
+package org.test
+
+rule hello1
+  when
+  then
+end
+
+rule hello2
+  when
+  then
+end
+
+rule hello3
+  when
+  then
+end
+
+rule hello4
+  when
+  then
+end

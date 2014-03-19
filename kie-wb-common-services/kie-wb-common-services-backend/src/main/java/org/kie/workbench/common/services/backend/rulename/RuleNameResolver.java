@@ -26,12 +26,15 @@ public class RuleNameResolver {
     private String drl;
 
     private boolean currentRuleNameHasQuotes = false;
+    private String packageName;
 
     public RuleNameResolver(String drl) {
         this.drl = drl;
+
+        resolve();
     }
 
-    public List<String> resolve() {
+    private List<String> resolve() {
 
         // Strip comments
         while (drl.contains("//")) {
@@ -48,6 +51,8 @@ public class RuleNameResolver {
             clearMultiLineComment();
         }
 
+        findPackage();
+
         while (hasRule()) {
             String ruleLine = getNextRuleHeaderLine();
 
@@ -57,6 +62,32 @@ public class RuleNameResolver {
         }
 
         return ruleNames;
+    }
+
+    private void findPackage() {
+        if (drl.contains("package ")) {
+            String text = drl.substring(drl.indexOf("package") + "package".length()).trim();
+            int endIndex = getEndOfPackageLine(text);
+
+            packageName = text.substring(0, endIndex).trim();
+        } else {
+            packageName = "";
+        }
+    }
+
+    private int getEndOfPackageLine(String text) {
+        int endIndex = 0;
+        int colonIndex = text.indexOf(";");
+        int eofIndex = text.indexOf("\n");
+
+        if (colonIndex == -1) {
+            endIndex = eofIndex;
+        } else if (colonIndex > eofIndex) {
+            endIndex = eofIndex;
+        } else if (colonIndex < eofIndex) {
+            endIndex = colonIndex;
+        }
+        return endIndex;
     }
 
     private void clearMultiLineComment() {
@@ -148,5 +179,13 @@ public class RuleNameResolver {
         } else {
             return "rule".length();
         }
+    }
+
+    public ArrayList<String> getRuleNames() {
+        return new ArrayList<String>(ruleNames);
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 }

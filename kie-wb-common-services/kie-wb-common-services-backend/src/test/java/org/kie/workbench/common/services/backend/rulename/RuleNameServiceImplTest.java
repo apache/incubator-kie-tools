@@ -33,6 +33,8 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -40,22 +42,21 @@ import static org.mockito.Mockito.*;
 public class RuleNameServiceImplTest {
 
     private RuleNameService service;
-    private SourceServices sourceServices;
     private SimpleFileSystemProvider simpleFileSystemProvider;
+    private ArrayList<SourceService> sourceServicesList = new ArrayList<SourceService>();
 
     @Before
     public void setUp() throws Exception {
         simpleFileSystemProvider = new SimpleFileSystemProvider();
         simpleFileSystemProvider.forceAsDefault();
 
-        ArrayList<SourceService> services = new ArrayList<SourceService>();
-        services.add(new MockSourceService("rdrl"));
-        services.add(new MockSourceService("drl"));
+        sourceServicesList.add(new MockSourceService("rdrl"));
+        sourceServicesList.add(new MockSourceService("drl"));
 
         Instance instance = mock(Instance.class);
-        when(instance.iterator()).thenReturn(services.iterator());
+        when(instance.iterator()).thenReturn(sourceServicesList.iterator());
 
-        sourceServices = new SourceServicesImpl(instance);
+        SourceServices sourceServices = new SourceServicesImpl(instance);
         service = new RuleNameServiceImpl(sourceServices);
     }
 
@@ -68,7 +69,7 @@ public class RuleNameServiceImplTest {
     public void testDRLAdded() throws Exception {
         final Path testPath = simpleFileSystemProvider.getPath(this.getClass().getResource("test.drl").toURI());
 
-        fireEvent(getResourceAddedEvent(testPath));
+        fireResourceAddedEvent(testPath);
 
         assertEquals(1, service.getRuleNames("some.pkg").size());
         assertEquals("test", service.getRuleNames("some.pkg").get(0));
@@ -78,7 +79,7 @@ public class RuleNameServiceImplTest {
     public void testRDRLAdded() throws Exception {
         final Path testPath = simpleFileSystemProvider.getPath(this.getClass().getResource("hello.rdrl").toURI());
 
-        fireEvent(getResourceAddedEvent(testPath));
+        fireResourceAddedEvent(testPath);
 
         assertEquals(1, service.getRuleNames("org.test").size());
         assertEquals("hello", service.getRuleNames("org.test").get(0));
@@ -89,34 +90,124 @@ public class RuleNameServiceImplTest {
         final Path drlPath = simpleFileSystemProvider.getPath(this.getClass().getResource("test.drl").toURI());
         final Path rdrlPath = simpleFileSystemProvider.getPath(this.getClass().getResource("hello.rdrl").toURI());
 
-        ResourceAddedEvent drlAddedEvent = getResourceAddedEvent(drlPath);
-        ResourceAddedEvent rdrlAddedEvent = getResourceAddedEvent(rdrlPath);
-
-        fireEvent(drlAddedEvent);
-        fireEvent(rdrlAddedEvent);
+        fireResourceAddedEvent(drlPath);
+        fireResourceAddedEvent(rdrlPath);
 
         assertEquals(1, service.getRuleNames("some.pkg").size());
-        assertEquals("hello", service.getRuleNames("some.pkg").get(0));
+        assertEquals("test", service.getRuleNames("some.pkg").get(0));
         assertEquals(1, service.getRuleNames("org.test").size());
-        assertEquals("test", service.getRuleNames("org.test").get(0));
+        assertEquals("hello", service.getRuleNames("org.test").get(0));
     }
 
     @Test
     public void testNoSourceServiceForFile() throws Exception {
         final Path testPath = simpleFileSystemProvider.getPath(this.getClass().getResource("test.someunknownformat").toURI());
 
-        fireEvent(getResourceAddedEvent(testPath));
+        fireResourceAddedEvent(testPath);
 
         assertEquals(0, service.getRuleNames("some.package").size());
     }
 
-    private void fireEvent(ResourceAddedEvent resourceAddedEvent) {
-        ((RuleNameServiceImpl) service).processResourceAdd(resourceAddedEvent);
+    @Test
+    public void testDelete() throws Exception {
+        final Path testPath = simpleFileSystemProvider.getPath(this.getClass().getResource("hello.rdrl").toURI());
+        final Path testPath2 = simpleFileSystemProvider.getPath(this.getClass().getResource("hello.drl").toURI());
+
+        fireResourceAddedEvent(testPath);
+        fireResourceAddedEvent(testPath2);
+
+        assertEquals(5, service.getRuleNames("org.test").size());
+        assertTrue(service.getRuleNames("org.test").contains("hello"));
+
+        fireResourceDeletedEvent(testPath);
+
+        assertEquals(4, service.getRuleNames("org.test").size());
+        assertFalse(service.getRuleNames("org.test").contains("hello"));
+    }
+
+    @Test
+    public void testNoSourceServiceForFileDelete() throws Exception {
+        final Path testPath = simpleFileSystemProvider.getPath(this.getClass().getResource("test.someunknownformat").toURI());
+
+        fireResourceDeletedEvent(testPath);
+
+        assertEquals(0, service.getRuleNames("some.package").size());
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+
+        DTableSourceServiceMock sourceService = new DTableSourceServiceMock("gdst");
+        sourceServicesList.add(sourceService);
+
+        final Path testPath = simpleFileSystemProvider.getPath(this.getClass().getResource("empty.gdst").toURI());
+
+        fireResourceAddedEvent(testPath);
+
+        assertEquals(1, service.getRuleNames("org.test").size());
+        assertEquals("test", service.getRuleNames("org.test").get(0));
+
+        sourceService.source =
+                "package test.org\n"
+                        + "rule newName\n"
+                        + "when\n"
+                        + "then\n"
+                        + "end\n";
+
+        fireResourceUpdatedEvent(testPath);
+
+        assertEquals(1, service.getRuleNames("org.test").size());
+        assertEquals("newName", service.getRuleNames("org.test").get(0));
+    }
+
+    // COPIED
+    // RENAME
+    // BATCH CHANGE
+
+    private void fireResourceUpdatedEvent(Path path) {
+        ((RuleNameServiceImpl) service).processResourceUpdate(getResourceUpdateEvent(path));
+    }
+
+    private ResourceUpdatedEvent getResourceUpdateEvent(Path path) {
+        SessionInfo sessionInfo = mock(SessionInfo.class);
+        return new ResourceUpdatedEvent(Paths.convert(path), sessionInfo);
+    }
+
+    private void fireResourceDeletedEvent(Path path) {
+        ((RuleNameServiceImpl) service).processResourceDelete(getResourceDeletedEvent(path));
+    }
+
+    private void fireResourceAddedEvent(Path path) {
+        ((RuleNameServiceImpl) service).processResourceAdd(getResourceAddedEvent(path));
+    }
+
+    private ResourceDeletedEvent getResourceDeletedEvent(Path path) {
+        SessionInfo sessionInfo = mock(SessionInfo.class);
+        return new ResourceDeletedEvent(Paths.convert(path), sessionInfo);
     }
 
     private ResourceAddedEvent getResourceAddedEvent(Path path) {
         SessionInfo sessionInfo = mock(SessionInfo.class);
         return new ResourceAddedEvent(Paths.convert(path), sessionInfo);
+    }
+
+    class DTableSourceServiceMock extends MockSourceService {
+
+        String source =
+                "package test.org\n"
+                        + "rule test\n"
+                        + "when\n"
+                        + "then\n"
+                        + "end\n";
+
+        public DTableSourceServiceMock(String pattern) {
+            super(pattern);
+        }
+
+        @Override
+        public String getSource(Path path) {
+            return source;
+        }
     }
 
     class MockSourceService extends BaseSourceService {
@@ -132,7 +223,8 @@ public class RuleNameServiceImplTest {
             return null;
         }
 
-        @Override public String getSource(Path path) {
+        @Override
+        public String getSource(Path path) {
             InputStream resourceAsStream = getClass().getResourceAsStream(path.getFileName().toString());
 
             StringBuilder drl = new StringBuilder();
