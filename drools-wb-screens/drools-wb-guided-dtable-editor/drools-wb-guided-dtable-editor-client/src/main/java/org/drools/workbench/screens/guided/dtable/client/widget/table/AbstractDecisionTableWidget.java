@@ -1020,7 +1020,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         deleteColumns( firstColumnIndex,
                        numberOfColumns,
                        true );
-        model.getConditions().remove( origColumn );
+        model.getActionCols().remove( origColumn );
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
@@ -1321,7 +1321,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
             deleteColumn( origColumnIndex,
                           true );
-            
+
             //Log change to column definition
             List<BaseColumnFieldDiff> diffs = origColumn.diff( editColumn );
             if ( patternDiff != null && !patternDiff.isEmpty() ) {
