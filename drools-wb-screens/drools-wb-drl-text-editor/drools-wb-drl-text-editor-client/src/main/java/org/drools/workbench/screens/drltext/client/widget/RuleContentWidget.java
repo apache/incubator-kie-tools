@@ -16,13 +16,13 @@
 
 package org.drools.workbench.screens.drltext.client.widget;
 
+import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextArea;
 import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 
 /**
@@ -37,6 +37,7 @@ public class RuleContentWidget
     public RuleContentWidget() {
         text = new TextArea();
         text.setWidth( "100%" );
+        text.setVisibleLines( 15 );
 
         text.getElement().setAttribute( "spellcheck",
                                         "false" );
@@ -65,16 +66,13 @@ public class RuleContentWidget
         initWidget( text );
     }
 
-    public void setContent( final String input,
-                            final int visibleLines ) {
+    public void setContent( final String input ) {
         final String content;
         if ( input == null ) {
             content = "";
         } else {
             content = input;
         }
-
-        text.setVisibleLines( ( visibleLines == -1 ) ? 16 : visibleLines );
         text.setText( content );
     }
 

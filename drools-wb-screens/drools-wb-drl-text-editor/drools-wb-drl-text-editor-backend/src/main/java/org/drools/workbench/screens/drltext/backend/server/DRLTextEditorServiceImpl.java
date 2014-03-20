@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.drltext.backend.server;
 
 import java.io.ByteArrayInputStream;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -29,12 +28,14 @@ import javax.inject.Named;
 import com.google.common.base.Charsets;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.packages.HasPackageName;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
+import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
+import org.drools.workbench.screens.drltext.type.DSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
@@ -46,13 +47,14 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.file.DrlFileFilter;
+import org.kie.workbench.common.services.backend.file.DslFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
@@ -64,7 +66,9 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
 
-    private static final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> FILTER_DRLS = new FileExtensionFilter( ".drl" );
+    private static final DrlFileFilter FILTER_DRLS = new DrlFileFilter();
+
+    private static final DslFileFilter FILTER_DSLS = new DslFileFilter();
 
     @Inject
     @Named("ioStrategy")
@@ -99,6 +103,12 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
     @Inject
     private GenericValidator genericValidator;
+
+    @Inject
+    private DRLResourceTypeDefinition drlResourceType;
+
+    @Inject
+    private DSLRResourceTypeDefinition dslrResourceType;
 
     @Override
     public Path create( final Path context,
@@ -147,11 +157,15 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     public DrlModelContent loadContent( final Path path ) {
         try {
             final String drl = load( path );
-            final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes( oracle );
+            final List<DSLSentence> dslConditions = oracle.getPackageDslConditionSentences();
+            final List<DSLSentence> dslActions = oracle.getPackageDslActionSentences();
 
             return new DrlModelContent( drl,
-                                        Arrays.asList( fullyQualifiedClassNames ) );
+                                        Arrays.asList( fullyQualifiedClassNames ),
+                                        dslConditions,
+                                        dslActions );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -162,7 +176,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     public List<String> loadClassFields( final Path path,
                                          final String fullyQualifiedClassName ) {
         try {
-            final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final String[] fieldNames = DataModelOracleUtilities.getFieldNames( oracle,
                                                                                 fullyQualifiedClassName );
             return Arrays.asList( fieldNames );
@@ -238,10 +252,20 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     public List<ValidationMessage> validate( final Path path,
                                              final String content ) {
         try {
-            return genericValidator.validate( path,
-                                              new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) ),
-                                              FILTER_JAVA,
-                                              FILTER_DRLS );
+            if ( drlResourceType.accept( path ) ) {
+                return genericValidator.validate( path,
+                                                  new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) ),
+                                                  FILTER_JAVA,
+                                                  FILTER_DRLS );
+            } else if ( dslrResourceType.accept( path ) ) {
+                return genericValidator.validate( path,
+                                                  new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) ),
+                                                  FILTER_JAVA,
+                                                  FILTER_DRLS,
+                                                  FILTER_DSLS );
+            }
+
+            throw new IllegalArgumentException( "Path '" + path.toURI() + "' is not a DRL or DSLR file." );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

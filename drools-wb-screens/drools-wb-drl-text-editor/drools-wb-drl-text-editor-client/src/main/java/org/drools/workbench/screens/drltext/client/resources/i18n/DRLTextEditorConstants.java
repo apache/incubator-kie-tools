@@ -38,7 +38,21 @@ public interface DRLTextEditorConstants
 
     String DRL();
 
-    String DrlEditorTitle();
+    String drlEditorTitle();
 
     String drlResourceTypeDescription();
+
+    String dslrEditorTitle();
+
+    String dslrResourceTypeDescription();
+
+    String useDSL();
+
+    String showDSLConditions();
+
+    String showDSLActions();
+
+    String dslConditions();
+
+    String dslActions();
 }

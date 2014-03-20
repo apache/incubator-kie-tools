@@ -21,17 +21,17 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
-public class DRLResourceTypeDefinition
+public class DSLRResourceTypeDefinition
         implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {
-        return "drl";
+        return "dslr";
     }
 
     @Override
     public String getDescription() {
-        return "DRL";
+        return "DSLR";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class DRLResourceTypeDefinition
 
     @Override
     public String getSuffix() {
-        return "drl";
+        return "dslr";
     }
 
     @Override

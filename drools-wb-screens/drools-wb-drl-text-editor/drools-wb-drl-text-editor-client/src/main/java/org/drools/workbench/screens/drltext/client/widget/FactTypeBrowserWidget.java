@@ -48,6 +48,8 @@ public class FactTypeBrowserWidget
 
     private final Tree tree;
 
+    private boolean isDSLR;
+
     public FactTypeBrowserWidget( final ClickEvent ev ) {
         this.tree = new Tree();
 
@@ -83,7 +85,8 @@ public class FactTypeBrowserWidget
             public void onSelection( SelectionEvent<TreeItem> event ) {
                 Object o = event.getSelectedItem().getUserObject();
                 if ( o instanceof ClassUserObject ) {
-                    ev.selected( ( (ClassUserObject) o ).textToInsert );
+                    final String text = ( (ClassUserObject) o ).textToInsert;
+                    ev.selected( isDSLR ? ">" + text : text );
                 } else if ( o instanceof String ) {
                     ev.selected( (String) o );
                 }
@@ -129,6 +132,10 @@ public class FactTypeBrowserWidget
         this.presenter = presenter;
     }
 
+    public void setDSLR( final boolean isDSLR ) {
+        this.isDSLR = isDSLR;
+    }
+
     public void setFullyQualifiedClassNames( final List<String> fullyQualifiedClassNames ) {
         if ( tree.getItem( 0 ) != null ) {
             tree.clear();
@@ -150,11 +157,6 @@ public class FactTypeBrowserWidget
 
     private boolean needsLoading( final TreeItem item ) {
         return item.getChildCount() == 1 && LAZY_LOAD.equals( item.getChild( 0 ).getText() );
-    }
-
-    public static interface ClickEvent {
-
-        public void selected( String text );
     }
 
     private static class ClassUserObject {

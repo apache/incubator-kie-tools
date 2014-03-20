@@ -25,8 +25,10 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.type.DRLResourceType;
+import org.drools.workbench.screens.drltext.client.type.DSLRResourceType;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
@@ -75,7 +77,7 @@ import static org.uberfire.client.common.ConcurrentChangePopup.*;
  * This is the default rule editor widget (just text editor based).
  */
 @Dependent
-@WorkbenchEditor(identifier = "DRLEditor", supportedTypes = { DRLResourceType.class })
+@WorkbenchEditor(identifier = "DRLEditor", supportedTypes = { DRLResourceType.class, DSLRResourceType.class })
 public class DRLEditorPresenter {
 
     @Inject
@@ -103,7 +105,10 @@ public class DRLEditorPresenter {
     private MultiPageEditor multiPage;
 
     @Inject
-    private DRLResourceType type;
+    private DRLResourceType resourceTypeDRL;
+
+    @Inject
+    private DSLRResourceType resourceTypeDSLR;
 
     @Inject
     private DefaultFileNameValidator fileNameValidator;
@@ -116,6 +121,7 @@ public class DRLEditorPresenter {
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
+    private boolean isDSLR;
     private String version;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
@@ -131,6 +137,7 @@ public class DRLEditorPresenter {
         this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) != null;
         this.version = place.getParameter( "version", null );
+        this.isDSLR = resourceTypeDSLR.accept( path );
 
         this.path.onRename( new Command() {
             @Override
@@ -247,18 +254,31 @@ public class DRLEditorPresenter {
                     }
                 } );
 
-                final String drl = content.getDrl();
+                final String drl = assertContent( content.getDrl() );
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
+                final List<DSLSentence> dslConditions = content.getDslConditions();
+                final List<DSLSentence> dslActions = content.getDslActions();
 
                 //Populate view
-                if ( drl == null || drl.isEmpty() ) {
-                    view.setContent( fullyQualifiedClassNames );
+                if ( isDSLR ) {
+                    view.setContent( drl,
+                                     fullyQualifiedClassNames,
+                                     dslConditions,
+                                     dslActions );
                 } else {
                     view.setContent( drl,
                                      fullyQualifiedClassNames );
                 }
                 view.hideBusyIndicator();
             }
+
+            private String assertContent( final String drl ) {
+                if ( drl == null || drl.isEmpty() ) {
+                    return "";
+                }
+                return drl;
+            }
+
         };
     }
 
@@ -405,12 +425,22 @@ public class DRLEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( path,
-                                                        type );
+        String title = "";
+        String fileName = "";
+        if ( resourceTypeDRL.accept( path ) ) {
+            title = DRLTextEditorConstants.INSTANCE.drlEditorTitle();
+            fileName = FileNameUtil.removeExtension( path,
+                                                     resourceTypeDRL );
+        } else if ( resourceTypeDSLR.accept( path ) ) {
+            title = DRLTextEditorConstants.INSTANCE.dslrEditorTitle();
+            fileName = FileNameUtil.removeExtension( path,
+                                                     resourceTypeDSLR );
+        }
+
         if ( version != null ) {
             fileName = fileName + " v" + version;
         }
-        return DRLTextEditorConstants.INSTANCE.DrlEditorTitle() + " [" + fileName + "]";
+        return title + " [" + fileName + "]";
     }
 
     @WorkbenchPartView

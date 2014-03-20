@@ -21,12 +21,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
-import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
+import org.drools.workbench.screens.drltext.type.DSLRResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
-public class DRLResourceType
-        extends DRLResourceTypeDefinition
+public class DSLRResourceType
+        extends DSLRResourceTypeDefinition
         implements ClientResourceType {
 
     private static final Image IMAGE = new Image( DRLTextEditorResources.INSTANCE.images().typeDRL() );
@@ -38,7 +38,7 @@ public class DRLResourceType
 
     @Override
     public String getDescription() {
-        String desc = DRLTextEditorConstants.INSTANCE.drlResourceTypeDescription();
+        String desc = DRLTextEditorConstants.INSTANCE.dslrResourceTypeDescription();
         if ( desc == null || desc.isEmpty() ) {
             return super.getDescription();
         }

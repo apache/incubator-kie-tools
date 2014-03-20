@@ -24,6 +24,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
+import org.drools.workbench.screens.drltext.client.widget.ClickEvent;
+import org.drools.workbench.screens.drltext.client.widget.DSLSentenceBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.RuleContentWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -34,18 +39,21 @@ public class DRLEditorViewImpl
         implements DRLEditorView {
 
     private RuleContentWidget ruleContentWidget = null;
-    private FactTypeBrowserWidget browser = null;
+    private FactTypeBrowserWidget factTypeBrowser = null;
+    private DSLSentenceBrowserWidget dslConditionsBrowser = null;
+    private DSLSentenceBrowserWidget dslActionsBrowser = null;
+    private VerticalPanel browsers = new VerticalPanel();
 
     @Override
     public void init( final DRLEditorPresenter presenter ) {
-        this.browser.init( presenter );
+        this.factTypeBrowser.init( presenter );
     }
 
     @PostConstruct
     public void init() {
         this.ruleContentWidget = new RuleContentWidget();
 
-        final FactTypeBrowserWidget.ClickEvent ce = new FactTypeBrowserWidget.ClickEvent() {
+        final ClickEvent ce = new ClickEvent() {
             public void selected( String text ) {
                 ruleContentWidget.insertText( text );
             }
@@ -54,11 +62,20 @@ public class DRLEditorViewImpl
         final Grid layout = new Grid( 1,
                                       2 );
 
-        this.browser = new FactTypeBrowserWidget( ce );
+        this.factTypeBrowser = new FactTypeBrowserWidget( ce );
+        this.dslConditionsBrowser = new DSLSentenceBrowserWidget( ce,
+                                                                  DRLTextEditorConstants.INSTANCE.showDSLConditions(),
+                                                                  DRLTextEditorConstants.INSTANCE.dslConditions() );
+        this.dslActionsBrowser = new DSLSentenceBrowserWidget( ce,
+                                                               DRLTextEditorConstants.INSTANCE.showDSLActions(),
+                                                               DRLTextEditorConstants.INSTANCE.dslActions() );
+        browsers.add( factTypeBrowser );
+        browsers.add( dslConditionsBrowser );
+        browsers.add( dslActionsBrowser );
 
         layout.setWidget( 0,
                           0,
-                          browser );
+                          browsers );
         layout.setWidget( 0,
                           1,
                           ruleContentWidget );
@@ -81,17 +98,27 @@ public class DRLEditorViewImpl
     }
 
     @Override
-    public void setContent( final List<String> fullyQualifiedClassNames ) {
-        setContent( "",
-                    fullyQualifiedClassNames );
+    public void setContent( final String drl,
+                            final List<String> fullyQualifiedClassNames ) {
+        dslConditionsBrowser.setVisible( false );
+        dslActionsBrowser.setVisible( false );
+        ruleContentWidget.setContent( drl );
+        factTypeBrowser.setFullyQualifiedClassNames( fullyQualifiedClassNames );
+        factTypeBrowser.setDSLR( false );
     }
 
     @Override
-    public void setContent( final String content,
-                            final List<String> fullyQualifiedClassNames ) {
-        ruleContentWidget.setContent( content,
-                                      15 );
-        browser.setFullyQualifiedClassNames( fullyQualifiedClassNames );
+    public void setContent( final String dslr,
+                            final List<String> fullyQualifiedClassNames,
+                            final List<DSLSentence> dslConditions,
+                            final List<DSLSentence> dslActions ) {
+        dslConditionsBrowser.setVisible( true );
+        dslActionsBrowser.setVisible( true );
+        ruleContentWidget.setContent( dslr );
+        factTypeBrowser.setFullyQualifiedClassNames( fullyQualifiedClassNames );
+        factTypeBrowser.setDSLR( true );
+        dslConditionsBrowser.setDSLSentences( dslConditions );
+        dslActionsBrowser.setDSLSentences( dslActions );
     }
 
     @Override
