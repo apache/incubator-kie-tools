@@ -4,6 +4,7 @@
 <module>
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.UberfireMarkdownWidget"/>
+  <inherits name="org.uberfire.properties.editor.PropertiesEditorClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>
