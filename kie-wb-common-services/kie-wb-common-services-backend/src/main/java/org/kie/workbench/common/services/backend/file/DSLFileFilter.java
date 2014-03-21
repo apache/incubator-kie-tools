@@ -19,14 +19,14 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Path;
 
 /**
- * Filter to match Enumeration Definitions source files
+ * Filter to match DSL source files
  */
-public class EnumerationsFileFilter implements DirectoryStream.Filter<Path> {
+public class DSLFileFilter implements DirectoryStream.Filter<Path> {
 
     @Override
     public boolean accept( final Path path ) {
         final String fileName = path.getFileName().toString();
-        return fileName.toLowerCase().endsWith( ".enumeration" );
+        return fileName.toLowerCase().endsWith( ".dsl" );
     }
 
 }

@@ -21,7 +21,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.services.backend.file.DslFileFilter;
+import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.EnumerationsFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
@@ -42,7 +42,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     private static final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> FILTER_GLOBALS = new GlobalsFileFilter();
 
-    private static final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> FILTER_DSLS = new DslFileFilter();
+    private static final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> FILTER_DSLS = new DSLFileFilter();
 
     @Inject
     @Named("ioStrategy")
