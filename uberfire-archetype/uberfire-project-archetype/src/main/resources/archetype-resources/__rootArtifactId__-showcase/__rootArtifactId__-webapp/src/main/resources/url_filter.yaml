@@ -1,0 +1,6 @@
+exclude:
+   - /*.ico
+   - /${package}.${capitalizedRootArtifactId}Showcase/images/**
+   - /${package}.${capitalizedRootArtifactId}Showcase/css/**
+   - /css/**
+   - /plugins/**

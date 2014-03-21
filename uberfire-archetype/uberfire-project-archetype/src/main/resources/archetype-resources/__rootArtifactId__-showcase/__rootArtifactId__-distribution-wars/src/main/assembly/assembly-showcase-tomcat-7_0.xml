@@ -1,0 +1,69 @@
+#set( $symbol_dollar = '$' )
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <id>tomcat7.0</id>
+  <formats>
+    <format>war</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${symbol_dollar}{project.basedir}/src/main/tomcat7</directory>
+      <outputDirectory>.</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>${groupId}:${rootArtifactId}-webapp:war</include>
+      </includes>
+      <outputDirectory>.</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>WEB-INF/jetty-env.xml</exclude>
+          <exclude>WEB-INF/web.xml</exclude>
+
+          <!-- Client Component -->
+          <exclude>WEB-INF/lib/${rootArtifactId}-component-client-*.jar</exclude>
+
+          <!-- UF Client Related -->
+          <exclude>WEB-INF/lib/uberfire-js-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-client-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widget-markdown-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
+
+          <!-- GWT Client Related -->
+          <exclude>WEB-INF/lib/gwt-bootstrap-*.jar</exclude>
+          <exclude>WEB-INF/lib/gwt-user-*.jar</exclude>
+          <exclude>WEB-INF/lib/guava-gwt-*.jar</exclude>
+          <exclude>WEB-INF/lib/gwt-dnd-*.jar</exclude>
+          <exclude>WEB-INF/lib/gchart-*.jar</exclude>
+
+          <exclude>WEB-INF/lib/*-sources.jar</exclude>
+          <exclude>WEB-INF/lib/el-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
+
+          <!-- Errai -->
+          <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
+          <exclude>WEB-INF/lib/errai-jboss-as-support-*.jar</exclude>
+
+          <!-- Jetty -->
+          <exclude>WEB-INF/lib/jetty-*.jar</exclude>
+          <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
+          <exclude>WEB-INF/lib/servlet-api-*.jar</exclude>
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>
