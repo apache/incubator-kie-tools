@@ -25,7 +25,7 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.backend.file.DslFileFilter;
+import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -42,7 +42,7 @@ public class GuidedRuleEditorServiceUtilities {
 
     private static final GlobalsFileFilter FILTER_GLOBALS = new GlobalsFileFilter();
 
-    private static final DslFileFilter FILTER_DSLS = new DslFileFilter();
+    private static final DSLFileFilter FILTER_DSLS = new DSLFileFilter();
 
     @Inject
     private Identity identity;

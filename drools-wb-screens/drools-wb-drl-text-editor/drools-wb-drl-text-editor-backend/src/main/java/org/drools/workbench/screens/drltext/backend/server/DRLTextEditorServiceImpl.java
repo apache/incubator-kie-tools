@@ -47,8 +47,12 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.backend.file.DrlFileFilter;
-import org.kie.workbench.common.services.backend.file.DslFileFilter;
+import org.kie.workbench.common.services.backend.file.DRLFileFilter;
+import org.kie.workbench.common.services.backend.file.DSLFileFilter;
+import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
+import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
+import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
+import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
@@ -64,11 +68,14 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @ApplicationScoped
 public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
+    //Filters to include *all* applicable resources
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
-
-    private static final DrlFileFilter FILTER_DRLS = new DrlFileFilter();
-
-    private static final DslFileFilter FILTER_DSLS = new DslFileFilter();
+    private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
+    private static final DSLRFileFilter FILTER_DSLR = new DSLRFileFilter();
+    private static final DSLFileFilter FILTER_DSL = new DSLFileFilter();
+    private static final RDRLFileFilter FILTER_RDRL = new RDRLFileFilter();
+    private static final RDSLRFileFilter FILTER_RDSLR = new RDSLRFileFilter();
+    private static final GlobalsFileFilter FILTER_GLOBAL = new GlobalsFileFilter();
 
     @Inject
     @Named("ioStrategy")
@@ -252,20 +259,15 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     public List<ValidationMessage> validate( final Path path,
                                              final String content ) {
         try {
-            if ( drlResourceType.accept( path ) ) {
-                return genericValidator.validate( path,
-                                                  new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) ),
-                                                  FILTER_JAVA,
-                                                  FILTER_DRLS );
-            } else if ( dslrResourceType.accept( path ) ) {
-                return genericValidator.validate( path,
-                                                  new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) ),
-                                                  FILTER_JAVA,
-                                                  FILTER_DRLS,
-                                                  FILTER_DSLS );
-            }
-
-            throw new IllegalArgumentException( "Path '" + path.toURI() + "' is not a DRL or DSLR file." );
+            return genericValidator.validate( path,
+                                              new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) ),
+                                              FILTER_JAVA,
+                                              FILTER_DRL,
+                                              FILTER_DSLR,
+                                              FILTER_DSL,
+                                              FILTER_RDRL,
+                                              FILTER_RDSLR,
+                                              FILTER_GLOBAL );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

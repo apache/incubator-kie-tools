@@ -34,7 +34,7 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.backend.file.DslFileFilter;
+import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class GuidedRuleDSLRSourceService
 
     private static final Logger logger = LoggerFactory.getLogger( GuidedRuleDSLRSourceService.class );
 
-    private static final DslFileFilter FILTER_DSLS = new DslFileFilter();
+    private static final DSLFileFilter FILTER_DSLS = new DSLFileFilter();
 
     @Inject
     private GuidedRuleDSLRResourceTypeDefinition resourceType;

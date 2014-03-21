@@ -46,8 +46,12 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.backend.file.DslFileFilter;
+import org.kie.workbench.common.services.backend.file.DRLFileFilter;
+import org.kie.workbench.common.services.backend.file.DSLFileFilter;
+import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
+import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
+import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -65,11 +69,14 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @ApplicationScoped
 public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTableEditorService {
 
+    //Filters to include *all* applicable resources
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
-
-    private static final DslFileFilter FILTER_DSLS = new DslFileFilter();
-
-    private static final GlobalsFileFilter FILTER_GLOBALS = new GlobalsFileFilter();
+    private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
+    private static final DSLRFileFilter FILTER_DSLR = new DSLRFileFilter();
+    private static final DSLFileFilter FILTER_DSL = new DSLFileFilter();
+    private static final RDRLFileFilter FILTER_RDRL = new RDRLFileFilter();
+    private static final RDSLRFileFilter FILTER_RDSLR = new RDSLRFileFilter();
+    private static final GlobalsFileFilter FILTER_GLOBAL = new GlobalsFileFilter();
 
     @Inject
     @Named("ioStrategy")
@@ -277,8 +284,12 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                                                       GuidedDTXMLPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
                                               ),
                                               FILTER_JAVA,
-                                              FILTER_GLOBALS,
-                                              FILTER_DSLS );
+                                              FILTER_DRL,
+                                              FILTER_DSLR,
+                                              FILTER_DSL,
+                                              FILTER_RDRL,
+                                              FILTER_RDSLR,
+                                              FILTER_GLOBAL );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
