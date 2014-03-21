@@ -61,7 +61,7 @@ public class BoundListBox
 
     private void getLHSFacTypes() {
         for (String variable : model.getModel().getAllLHSVariables()) {
-            factTypesByVariables.put(variable, model.getModel().getLHSBoundFact(variable).getFactType());
+            factTypesByVariables.put(variable, model.getModel().getLHSBindingType(variable));
         }
     }
 

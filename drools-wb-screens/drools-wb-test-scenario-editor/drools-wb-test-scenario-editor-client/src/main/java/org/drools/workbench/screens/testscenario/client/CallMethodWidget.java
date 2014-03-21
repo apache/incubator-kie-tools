@@ -246,36 +246,10 @@ public class CallMethodWidget extends DirtyableComposite {
                                                    } );
     }
 
-    /**
-     * This will return a keyboard listener for field setters, which will obey
-     * numeric conventions - it will also allow formulas (a formula is when the
-     * first value is a "=" which means it is meant to be taken as the user
-     * typed)
-     */
-    public static KeyPressHandler getNumericFilter( final TextBox box ) {
-        return new KeyPressHandler() {
-
-            public void onKeyPress( KeyPressEvent event ) {
-                TextBox w = (TextBox) event.getSource();
-                char c = event.getCharCode();
-                if ( Character.isLetter( c ) && c != '=' && !( box.getText().startsWith( "=" ) ) ) {
-                    ( (TextBox) w ).cancelKey();
-                }
-
-            }
-        };
-    }
-
     private Widget fieldSelector( final CallFieldValue val ) {
         return new SmallLabel( val.type );
     }
 
-    /**
-     * This returns true if the values being set are on a fact.
-     */
-    public boolean isBoundFact() {
-        return isBoundFact;
-    }
 
     public boolean isDirty() {
         return layout.hasDirty();

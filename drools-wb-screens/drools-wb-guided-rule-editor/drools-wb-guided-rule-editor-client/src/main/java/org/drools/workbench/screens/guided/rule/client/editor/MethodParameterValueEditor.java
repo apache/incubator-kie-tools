@@ -280,18 +280,12 @@ public class MethodParameterValueEditor
         });
     }
 
-    private List<String> getVariableNames() {
-        List<String> variables = model.getModel().getLHSBoundFacts();
-        variables.addAll(model.getModel().getRHSBoundFacts());
-        return variables;
-    }
-
     private void canTheVariableButtonBeShown(
             final Callback<Boolean> callback) {
 
         List<String> factTypes = new ArrayList<String>();
 
-        for (String variable : getVariableNames()) {
+        for (String variable : model.getModel().getAllVariables()) {
             String factType = getFactType(variable);
 
             factTypes.add(factType);
@@ -307,7 +301,7 @@ public class MethodParameterValueEditor
 
     private String getFactType(String variable) {
         if (model.getModel().getRHSBoundFacts().contains(variable) == false) {
-            return model.getModel().getLHSBoundFact(variable).getFactType();
+            return model.getModel().getLHSBindingType(variable);
 
         } else {
             return model.getModel().getRHSBoundFact(variable).getFactType();
