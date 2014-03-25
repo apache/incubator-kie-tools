@@ -9,8 +9,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 /**
- * In Property editor, PropertyEditorCategory is a group of PropertyEditorFieldInfo.
- * The priority value is used to sort the categories. (zero means the the highest priority).
+ * A grouping of PropertyEditorFieldInfo in a property editor.
+ * The priority value is used to sort the categories. (lower values toward the beginning).
  */
 public class PropertyEditorCategory {
 

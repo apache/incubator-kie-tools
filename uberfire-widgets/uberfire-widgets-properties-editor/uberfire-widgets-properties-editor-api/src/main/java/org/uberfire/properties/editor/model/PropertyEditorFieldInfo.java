@@ -77,8 +77,8 @@ public class PropertyEditorFieldInfo {
     }
 
     /**
-     * The priority value is used to sort the categories.
-     * @param priority  (zero means the the highest priority).
+     * The priority value is used to sort the categories (lower values toward the beginning).
+     * @param priority
      * @return
      */
     public PropertyEditorFieldInfo withPriority( int priority ) {

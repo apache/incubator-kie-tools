@@ -3,6 +3,7 @@ package org.uberfire.properties.editor.model;
 /**
  * A Property Editor CDI event.
  * Class that groups a PropertyEditorChangeEvent information.
+ * This event is fired by property editor when a fields has its value changed.
  */
 public class PropertyEditorChangeEvent {
 
@@ -13,7 +14,7 @@ public class PropertyEditorChangeEvent {
     /**
      * Creates a new PropertyEditorChangeEvent
      * @param property the property changed
-     * @param newValue the new value
+     * @param newValue the new  value of the field
      */
     public PropertyEditorChangeEvent( PropertyEditorFieldInfo property,
                                       String newValue ) {
