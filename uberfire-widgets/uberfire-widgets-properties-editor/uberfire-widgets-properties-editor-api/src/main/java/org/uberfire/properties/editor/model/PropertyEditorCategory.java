@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 @Portable
 /**
  * A grouping of PropertyEditorFieldInfo in a property editor.

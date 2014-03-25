@@ -8,6 +8,8 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.properties.editor.model.validators.PropertyFieldValidator;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 @Portable
 /**
  * In Property Editor, PropertyEditorFieldInfo is a child of PropertyEditorCategory.
