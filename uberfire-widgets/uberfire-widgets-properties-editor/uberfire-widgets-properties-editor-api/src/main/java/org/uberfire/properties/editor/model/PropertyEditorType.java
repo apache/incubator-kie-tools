@@ -7,6 +7,9 @@ import org.uberfire.properties.editor.model.validators.LongValidator;
 import org.uberfire.properties.editor.model.validators.PropertyFieldValidator;
 import org.uberfire.properties.editor.model.validators.TextValidator;
 
+/**
+ * PropertyEditorType define the type of a PropertyEditorField
+ */
 public enum PropertyEditorType {
 
     TEXT {

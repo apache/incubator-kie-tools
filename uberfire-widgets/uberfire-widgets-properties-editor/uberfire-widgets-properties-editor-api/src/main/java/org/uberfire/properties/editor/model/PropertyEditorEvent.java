@@ -6,12 +6,18 @@ import java.util.List;
 
 import static java.util.Collections.*;
 
+/**
+ * A Property Editor CDI Event. Id event its a parameter to identify the originator of the event.
+ * A Property Editor event contains one or multiples PropertyEditorCategory.
+ */
 public class PropertyEditorEvent {
 
     private List<PropertyEditorCategory> properties = new ArrayList<PropertyEditorCategory>();
 
     public PropertyEditorEvent( String idEvent,
                                 List<PropertyEditorCategory> properties ) {
+        checkNotNull( "idEvent", idEvent );
+        checkNotNull( "properties", properties );
         for (PropertyEditorCategory property: properties  ){
             property.setIdEvent( idEvent );
         }
@@ -19,10 +25,17 @@ public class PropertyEditorEvent {
     }
 
     public PropertyEditorEvent( String idEvent,PropertyEditorCategory property ) {
+        checkNotNull( "idEvent", idEvent );
+        checkNotNull( "property", property );
         property.setIdEvent( idEvent );
         this.properties.add( property );
     }
 
+    /**
+     * Get Properties from a event ordered by priority.
+     * The categories and fields are ordered by priority. (zero is the highest priority)
+     * @return
+     */
     public List<PropertyEditorCategory> getSortedProperties() {
         sortCategoriesAndFieldsByPriority( properties );
         return properties;

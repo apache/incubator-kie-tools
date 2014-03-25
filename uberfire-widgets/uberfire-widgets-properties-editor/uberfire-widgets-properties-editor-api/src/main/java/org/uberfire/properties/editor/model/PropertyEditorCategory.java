@@ -1,11 +1,17 @@
 package org.uberfire.properties.editor.model;
 
+import java.lang.Override;
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
+/**
+ * In Property editor, PropertyEditorCategory is a group of PropertyEditorFieldInfo.
+ * The priority value is used to sort the categories. (zero means the the highest priority).
+ */
 public class PropertyEditorCategory {
 
     private String name;
@@ -17,16 +23,20 @@ public class PropertyEditorCategory {
 
     }
     public PropertyEditorCategory(String name) {
-        this.name = name;
+        this.name = checkNotNull( "name", name );
     }
 
     public PropertyEditorCategory( String name,
                                    int priority ) {
-        this.name = name;
-        this.priority = priority;
+        this.name = checkNotNull( "name", name );
+        this.priority = checkNotNull( "name", priority );
     }
 
+    /**
+     * Add a field to a PropertyEditorCategory
+     */
     public PropertyEditorCategory withField( PropertyEditorFieldInfo field ) {
+        checkNotNull( "field", field );
         field.setPropertyEditorCategory( this );
         fields.add( field );
         return this;
@@ -59,4 +69,15 @@ public class PropertyEditorCategory {
     public void setIdEvent( String idEvent ) {
         this.idEvent = idEvent;
     }
+
+    @Override
+    public String toString() {
+        return "PropertyEditorCategory{" +
+                "name=" + name +
+                ", priority=" + priority +
+                ", fields=" + fields +
+                ", idEvent=" + idEvent +
+                '}';
+    }
+
 }

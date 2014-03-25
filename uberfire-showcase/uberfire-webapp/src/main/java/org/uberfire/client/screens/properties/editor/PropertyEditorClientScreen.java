@@ -54,9 +54,6 @@ public class PropertyEditorClientScreen
     @Inject
     Event<PropertyEditorEvent> event;
 
-    @Inject
-    private Caller<BeanPropertyEditorBuilderService> beanPropertyEditorBuilderCaller;
-
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
     @PostConstruct
