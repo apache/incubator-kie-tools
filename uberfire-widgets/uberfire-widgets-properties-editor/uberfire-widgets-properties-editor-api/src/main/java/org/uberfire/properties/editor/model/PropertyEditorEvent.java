@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A Property Editor CDI Event handled by Property Editor.

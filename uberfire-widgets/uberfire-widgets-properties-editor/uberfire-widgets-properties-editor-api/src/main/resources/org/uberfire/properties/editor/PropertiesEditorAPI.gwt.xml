@@ -3,6 +3,7 @@
 
 <module>
   <inherits name="org.jboss.errai.bus.ErraiBus"/>
+  <inherits name="org.uberfire.commons.UberfireCommons"/>
 
   <source path='model'/>
   <source path='service'/>
