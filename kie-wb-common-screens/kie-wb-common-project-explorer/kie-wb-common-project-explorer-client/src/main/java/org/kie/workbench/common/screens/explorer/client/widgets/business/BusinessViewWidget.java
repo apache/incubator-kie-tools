@@ -149,7 +149,7 @@ public class BusinessViewWidget extends Composite implements View {
 
                 final Collapse collapse = new Collapse();
                 collapse.setExistTrigger( true );
-                collapse.setId( getCollapseId(e.getKey()) );
+                collapse.setId( getCollapseId( e.getKey() ) );
                 final NavList itemsNavList = new NavList();
                 collapse.add( itemsNavList );
                 for ( FolderItem folderItem : e.getValue() ) {
@@ -210,6 +210,7 @@ public class BusinessViewWidget extends Composite implements View {
         if ( !( resourceType instanceof AnyResourceType ) ) {
             fileName = Utils.getBaseFileName( fileName );
         }
+        fileName = fileName.replaceAll( " ", "\u00a0" );
         final NavLink navLink = new NavLink( fileName );
         navLink.addClickHandler( new ClickHandler() {
 

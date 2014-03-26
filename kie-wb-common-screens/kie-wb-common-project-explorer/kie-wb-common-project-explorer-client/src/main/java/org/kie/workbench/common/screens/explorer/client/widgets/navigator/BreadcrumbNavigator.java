@@ -171,7 +171,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         navigator.setWidget( row, col, new Icon( iconType ) {{
             addStyleName( style );
         }} );
-        navigator.setWidget( row, ++col, new Anchor( folderItem.getFileName() ) {{
+        navigator.setWidget( row, ++col, new Anchor( folderItem.getFileName().replaceAll( " ", "\u00a0" ) ) {{
             addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {

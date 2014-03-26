@@ -90,12 +90,12 @@ public class TreeNavigator extends Composite implements Navigator {
         if ( item == null ) {
             if ( content.getSegments().isEmpty() ) {
                 final FolderItem rootItem = content.getItem();
-                item = new TreeItem( TreeItem.Type.FOLDER, rootItem.getFileName() );
+                item = new TreeItem( TreeItem.Type.FOLDER, rootItem.getFileName().replaceAll( " ", "\u00a0" ) );
                 tree.addItem( item );
                 item.setUserObject( rootItem );
             } else {
                 final TreeItem parent = loadRoots( content.getSegments() );
-                item = parent.addItem( TreeItem.Type.FOLDER, content.getItem().getFileName() );
+                item = parent.addItem( TreeItem.Type.FOLDER, content.getItem().getFileName().replaceAll( " ", "\u00a0" ) );
                 item.setUserObject( content.getItem() );
             }
         }
@@ -126,7 +126,7 @@ public class TreeNavigator extends Composite implements Navigator {
         for ( final FolderItem segment : segments ) {
             TreeItem item;
             if ( tree.isEmpty() ) {
-                item = new TreeItem( TreeItem.Type.FOLDER, segment.getFileName() );
+                item = new TreeItem( TreeItem.Type.FOLDER, segment.getFileName().replaceAll( " ", "\u00a0" ) );
                 item.setUserObject( segment );
                 tree.addItem( item );
                 parent = item;
@@ -136,7 +136,7 @@ public class TreeNavigator extends Composite implements Navigator {
                 } else {
                     item = findItemInTree( segment );
                     if ( item == null ) {
-                        item = parent.addItem( TreeItem.Type.FOLDER, segment.getFileName() );
+                        item = parent.addItem( TreeItem.Type.FOLDER, segment.getFileName().replaceAll( " ", "\u00a0" ) );
                         item.setUserObject( segment );
                     } else if ( needsLoading( item ) ) {
                         item.getChild( 0 ).getElement().getStyle().setDisplay( Style.Display.NONE );
@@ -243,7 +243,7 @@ public class TreeNavigator extends Composite implements Navigator {
                 }
             }
 
-            final TreeItem newDirectory = parent.addItem( TreeItem.Type.FOLDER, child.getFileName() );
+            final TreeItem newDirectory = parent.addItem( TreeItem.Type.FOLDER, child.getFileName().replaceAll( " ", "\u00a0" ) );
             newDirectory.addItem( TreeItem.Type.LOADING, LAZY_LOAD );
             newDirectory.setUserObject( child );
         }
@@ -257,7 +257,7 @@ public class TreeNavigator extends Composite implements Navigator {
                 }
             }
 
-            final TreeItem newFile = parent.addItem( TreeItem.Type.ITEM, child.getFileName() );
+            final TreeItem newFile = parent.addItem( TreeItem.Type.ITEM, child.getFileName().replaceAll( " ", "\u00a0" ) );
             newFile.setUserObject( child );
         }
 
