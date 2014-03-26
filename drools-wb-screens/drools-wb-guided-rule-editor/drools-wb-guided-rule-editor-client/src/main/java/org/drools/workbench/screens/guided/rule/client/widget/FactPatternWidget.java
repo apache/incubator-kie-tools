@@ -335,8 +335,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                         int tabs ) {
         //if nesting, or predicate, then it will need to span 5 cols.
         if ( constraint instanceof SingleFieldConstraint ) {
-            renderSingleFieldConstraint( this.getModeller(),
-                                         inner,
+            renderSingleFieldConstraint( inner,
                                          row,
                                          (SingleFieldConstraint) constraint,
                                          hasConstraints,
@@ -430,8 +429,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     /**
      * Applies a single field constraint to the given table, and start row.
      */
-    private void renderSingleFieldConstraint( final RuleModeller modeller,
-                                              final DirtyableFlexTable inner,
+    private void renderSingleFieldConstraint( final DirtyableFlexTable inner,
                                               final int row,
                                               final SingleFieldConstraint constraint,
                                               final HasConstraints hasConstraints,
@@ -448,8 +446,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             HorizontalPanel ebContainer = null;
             if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
                 ebContainer = expressionBuilderLS( (SingleFieldConstraintEBLeftSide) constraint,
-                                                   showBinding,
-                                                   tabs * 20 );
+                                                   showBinding);
                 inner.setWidget( row,
                                  0 + col,
                                  ebContainer );
@@ -714,9 +711,9 @@ public class FactPatternWidget extends RuleModellerWidget {
         //Connectives Operators are handled in class Connectives
         if ( constraint instanceof SingleFieldConstraintEBLeftSide) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constraint;
-            factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
+            factType = sfexp.getExpressionLeftSide().getPreviousClassType();
             if ( factType == null ) {
-                factType = sfexp.getExpressionLeftSide().getGenericType();
+                factType = sfexp.getExpressionLeftSide().getClassType();
             }
             fieldName = sfexp.getExpressionLeftSide().getFieldName();
 
@@ -797,8 +794,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private HorizontalPanel expressionBuilderLS( final SingleFieldConstraintEBLeftSide con,
-                                                 boolean showBinding,
-                                                 int padding ) {
+                                                 boolean showBinding) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
 
