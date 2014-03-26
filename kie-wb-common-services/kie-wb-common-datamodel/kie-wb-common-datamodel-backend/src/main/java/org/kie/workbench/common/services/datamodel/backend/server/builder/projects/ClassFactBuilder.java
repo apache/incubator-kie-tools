@@ -40,6 +40,8 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private final Set<Annotation> annotations = new LinkedHashSet<Annotation>();
     private final Map<String, Set<Annotation>> fieldAnnotations = new HashMap<String, Set<Annotation>>();
 
+    private final Map<String,FactBuilder> fieldFactBuilders = new HashMap<String, FactBuilder>();
+
     public ClassFactBuilder( final ProjectDataModelOracleBuilder builder,
                              final Class<?> clazz,
                              final boolean isEvent,
@@ -181,12 +183,14 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
                 final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.BOTH;
 
-                addField( new ModelField( fieldName,
-                                          returnType.getName(),
-                                          ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                          declaredClassFields.contains( field ) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
-                                          accessorAndMutator,
-                                          genericReturnType ) );
+                fieldFactBuilders.put(genericReturnType, new ClassFactBuilder(builder, returnType, false, typeSource));
+
+                addField(new ModelField(fieldName,
+                        returnType.getName(),
+                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                        declaredClassFields.contains(field) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
+                        accessorAndMutator,
+                        genericReturnType));
 
                 addEnumsForField( factType,
                                   fieldName,
@@ -384,4 +388,11 @@ public class ClassFactBuilder extends BaseFactBuilder {
         return loadableTypeFieldsAnnotations;
     }
 
+    @Override
+    public Map<String, FactBuilder> getInternalBuilders() {
+        for (final FactBuilder factBuilder : new ArrayList<FactBuilder>(this.fieldFactBuilders.values())) {
+            this.fieldFactBuilders.putAll(factBuilder.getInternalBuilders());
+        }
+        return fieldFactBuilders;
+    }
 }

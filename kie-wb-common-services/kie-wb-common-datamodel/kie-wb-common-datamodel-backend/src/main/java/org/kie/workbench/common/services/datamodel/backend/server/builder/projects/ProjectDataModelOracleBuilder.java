@@ -19,7 +19,7 @@ public final class ProjectDataModelOracleBuilder {
 
     private ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
 
-    private List<FactBuilder> factTypeBuilders = new ArrayList<FactBuilder>();
+    private Map<String, FactBuilder> factTypeBuilders = new HashMap<String, FactBuilder>();
     private Map<String, String[]> factFieldEnums = new HashMap<String, String[]>();
     private List<String> packageNames = new ArrayList<String>();
 
@@ -51,7 +51,7 @@ public final class ProjectDataModelOracleBuilder {
                                                                  factType,
                                                                  isEvent,
                                                                  typeSource );
-        factTypeBuilders.add( builder );
+        factTypeBuilders.put(factType, builder);
         return builder;
     }
 
@@ -74,7 +74,7 @@ public final class ProjectDataModelOracleBuilder {
                                                           clazz,
                                                           isEvent,
                                                           typeSource );
-        factTypeBuilders.add( builder );
+        factTypeBuilders.put(clazz.getName(), builder);
         return this;
     }
 
@@ -82,8 +82,8 @@ public final class ProjectDataModelOracleBuilder {
                                                   final String fieldName,
                                                   final String[] values ) {
         final String qualifiedFactField = factType + "#" + fieldName;
-        factFieldEnums.put( qualifiedFactField,
-                            values );
+        factFieldEnums.put(qualifiedFactField,
+                values);
         return this;
     }
 
@@ -106,7 +106,7 @@ public final class ProjectDataModelOracleBuilder {
     }
 
     private void logEnumErrors( final DataEnumLoader enumLoader ) {
-        errors.addAll( enumLoader.getErrors() );
+        errors.addAll(enumLoader.getErrors());
     }
 
     public ProjectDataModelOracle build() {
@@ -118,13 +118,19 @@ public final class ProjectDataModelOracleBuilder {
     }
 
     private void loadPackageNames() {
-        oracle.addProjectPackageNames( packageNames );
+        oracle.addProjectPackageNames(packageNames);
     }
 
     private void loadFactTypes() {
-        for ( final FactBuilder factBuilder : this.factTypeBuilders ) {
-            factBuilder.build( oracle );
+
+        for (final FactBuilder factBuilder : new ArrayList<FactBuilder>(this.factTypeBuilders.values())) {
+            this.factTypeBuilders.putAll(factBuilder.getInternalBuilders());
         }
+
+        for (final FactBuilder factBuilder : this.factTypeBuilders.values()) {
+            factBuilder.build(oracle);
+        }
+
     }
 
     private void loadEnums() {

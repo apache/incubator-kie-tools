@@ -17,14 +17,14 @@ import org.drools.workbench.models.datamodel.oracle.TypeSource;
  */
 public abstract class BaseFactBuilder implements FactBuilder {
 
-    private final ProjectDataModelOracleBuilder builder;
+    protected final ProjectDataModelOracleBuilder builder;
 
     private final String type;
     private final List<ModelField> fields = new ArrayList<ModelField>();
 
     private final boolean isCollection;
     private final boolean isEvent;
-    private final TypeSource typeSource;
+    protected final TypeSource typeSource;
 
     public BaseFactBuilder( final ProjectDataModelOracleBuilder builder,
                             final Class<?> clazz,

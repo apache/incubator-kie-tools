@@ -1,6 +1,7 @@
 package org.kie.workbench.common.services.datamodel.backend.server.cache;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -97,6 +98,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
                     pdBuilder.addClass( clazz,
                                         typeMetaInfo.isEvent(),
                                         typeSource );
+
                 } catch ( Throwable e ) {
                     log.error( e.getMessage() );
                 }
