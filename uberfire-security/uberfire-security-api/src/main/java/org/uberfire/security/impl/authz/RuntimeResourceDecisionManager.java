@@ -32,6 +32,7 @@ import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.authz.RolesResource;
 import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.authz.VotingStrategy;
+import org.uberfire.workbench.type.Cacheable;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;
@@ -66,10 +67,13 @@ public class RuntimeResourceDecisionManager implements ResourceDecisionManager {
         if (!(resource instanceof RuntimeResource)) {
             throw new IllegalArgumentException("Parameter named 'resource' is not instance of clazz 'RuntimeResource'!");
         }
-
+        boolean refreshCache = false;
+        if (resource instanceof Cacheable) {
+            refreshCache = ((Cacheable) resource).requiresRefresh();
+        }
         final RuntimeResource runtimeResource = (RuntimeResource) resource;
 
-        if (cache.notContains(subject, runtimeResource)) {
+        if (cache.notContains(subject, runtimeResource) || refreshCache) {
             if (!resourceManager.requiresAuthentication(runtimeResource)) {
                 return ACCESS_ABSTAIN;
             }
@@ -113,6 +117,9 @@ public class RuntimeResourceDecisionManager implements ResourceDecisionManager {
             } else {
                 cache.put(subject, runtimeResource, result);
             }
+            if (resource instanceof Cacheable) {
+                ((Cacheable) resource).markAsCached();
+            }
         }
 
         return cache.get(subject, runtimeResource);
@@ -137,7 +144,8 @@ public class RuntimeResourceDecisionManager implements ResourceDecisionManager {
                 internal.put(resource.getSignatureId(), new HashMap<String, AuthorizationResult>());
             }
             final Map<String, AuthorizationResult> result = internal.get(resource.getSignatureId());
-            if (result.containsKey(subject.getName())) {
+            AuthorizationResult knowValue = result.get(subject.getName());
+            if (result.containsKey(subject.getName()) && knowValue.equals(authzResult)) {
                 return;
             }
             result.put(subject.getName(), authzResult);

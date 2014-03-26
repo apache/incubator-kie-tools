@@ -27,6 +27,7 @@ import org.uberfire.security.ResourceManager;
 import org.uberfire.security.Role;
 import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.impl.RoleImpl;
+import org.uberfire.workbench.type.Cacheable;
 
 import static java.util.Collections.*;
 
@@ -35,10 +36,6 @@ public class RuntimeResourceManager implements ResourceManager {
     final Map<String, RuntimeRestriction> restrictions = new HashMap<String, RuntimeRestriction>();
 
     private RuntimeRestriction addResource( final RuntimeResource resource ) {
-
-        if ( restrictions.containsKey( resource.getSignatureId() ) ) {
-            return null;
-        }
 
         final RuntimeRestriction runtimeRestriction = new RuntimeRestriction( resource.getRoles(), resource.getTraits() );
         restrictions.put( resource.getSignatureId(), runtimeRestriction );
@@ -64,11 +61,16 @@ public class RuntimeResourceManager implements ResourceManager {
             throw new IllegalArgumentException( "Parameter named 'resource' is not instance of clazz 'RuntimeResource'!" );
         }
 
+        boolean refreshCache = false;
+        if (resource instanceof Cacheable) {
+            refreshCache = ((Cacheable) resource).requiresRefresh();
+        }
+
         final RuntimeResource runtimeResource = (RuntimeResource) resource;
 
         RuntimeRestriction restriction = restrictions.get( runtimeResource.getSignatureId() );
 
-        if ( restriction == null ) {
+        if ( restriction == null || refreshCache ) {
             restriction = addResource( runtimeResource );
         }
 

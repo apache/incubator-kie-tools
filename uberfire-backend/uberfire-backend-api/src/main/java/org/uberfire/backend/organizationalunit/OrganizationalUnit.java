@@ -4,8 +4,9 @@ import java.util.Collection;
 
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.workbench.type.Cacheable;
 
-public interface OrganizationalUnit extends RuntimeResource {
+public interface OrganizationalUnit extends RuntimeResource, Cacheable {
 
     String getName();
 
