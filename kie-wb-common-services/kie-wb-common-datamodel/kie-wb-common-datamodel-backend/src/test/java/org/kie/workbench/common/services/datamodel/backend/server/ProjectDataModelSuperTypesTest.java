@@ -60,7 +60,7 @@ public class ProjectDataModelSuperTypesTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 4,
+        assertEquals( 6,
                       oracle.getProjectModelFields().size() );
         assertContains( "t2p1.Bean1",
                         oracle.getProjectModelFields().keySet() );

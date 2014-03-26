@@ -65,7 +65,7 @@ public class PackageDataModelParametricTypesTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 2,
+        assertEquals( 3,
                       oracle.getFactTypes().length );
 
         List<String> list = Arrays.asList( oracle.getFactTypes() );

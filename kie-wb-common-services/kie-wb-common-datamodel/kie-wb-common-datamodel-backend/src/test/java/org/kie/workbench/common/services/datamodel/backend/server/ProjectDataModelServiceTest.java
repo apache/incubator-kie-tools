@@ -59,7 +59,7 @@ public class ProjectDataModelServiceTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 2,
+        assertEquals( 4,
                       oracle.getProjectModelFields().size() );
         assertContains( "t3p1.Bean1",
                         oracle.getProjectModelFields().keySet() );

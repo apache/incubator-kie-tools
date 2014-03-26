@@ -53,10 +53,10 @@ public class PackageDataModelGlobalsTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       oracle.getFactTypes().length );
         assertEquals( "Product",
-                      oracle.getFactTypes()[ 0 ] );
+                      oracle.getFactTypes()[ 1 ] );
 
         assertEquals( 1,
                       oracle.getGlobalVariables().length );

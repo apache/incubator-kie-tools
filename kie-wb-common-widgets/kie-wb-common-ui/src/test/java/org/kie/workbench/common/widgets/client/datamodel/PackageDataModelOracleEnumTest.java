@@ -641,10 +641,10 @@ public class PackageDataModelOracleEnumTest {
                                                                  oracle,
                                                                  dataModel );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       oracle.getFactTypes().length );
         assertEquals( TestJavaEnum1.class.getSimpleName(),
-                      oracle.getFactTypes()[ 0 ] );
+                      oracle.getFactTypes()[ 1 ] );
 
         final DropDownData dd = oracle.getEnums( TestJavaEnum1.class.getSimpleName(),
                                                  "field1" );
@@ -694,10 +694,10 @@ public class PackageDataModelOracleEnumTest {
                                                                  oracle,
                                                                  dataModel );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       oracle.getFactTypes().length );
         assertEquals( TestJavaEnum2.class.getSimpleName(),
-                      oracle.getFactTypes()[ 0 ] );
+                      oracle.getFactTypes()[ 1 ] );
 
         final DropDownData dd = oracle.getEnums( TestJavaEnum2.class.getSimpleName(),
                                                  "field1" );
