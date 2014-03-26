@@ -144,6 +144,25 @@ public class ClassDescr extends ModifiersContainerDescr {
         return result;
     }
 
+    //TODO add method signature in order to support overloading
+    //By now we remove all the methods with the given name since we are going to remove only setter and getters.
+    public boolean removeMethod( String name ) {
+        List<MethodDescr> methods = getMethods();
+        IdentifierDescr identifier;
+        boolean result = false;
+        if (methods != null) {
+            for (MethodDescr methodDescr : methods) {
+                if ( ((identifier = methodDescr.getIdentifier()) != null) && name.equals( identifier.getIdentifier() ) ) {
+                    if( getElements().remove( methodDescr ) ) {
+                        result = true;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
     public JavaTokenDescr getClassToken( ) {
         return ( JavaTokenDescr ) getElements( ).getFirst( ElementType.JAVA_CLASS );
     }

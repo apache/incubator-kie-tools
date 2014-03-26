@@ -467,7 +467,7 @@ modifiers
     }
     @after {
         modifiers = popModifierList();
-        if (modifiers != null) {
+        if (modifiers != null && modifiers.size() > 0) {
             updateOnAfter(modifiers, $text, (CommonToken)$stop);
             processModifiers(modifiers);
             log("End of modifier list declaration.");
@@ -503,7 +503,7 @@ variableModifiers
     }
     @after {
         modifiers = popModifierList();
-        if (modifiers != null) {
+        if (modifiers != null && modifiers.size() > 0) {
             updateOnAfter(modifiers, $text, (CommonToken)$stop);
             processModifiers(modifiers);
             log("End of variable modifiers list declaration.");
@@ -511,7 +511,7 @@ variableModifiers
             log("A ModifierListDescr is expected");
         }
     }
-    :   (   s= 'final'      { modifiers.add( new ModifierDescr($s.text, -1, -1, line($s), position($s), $s.text) ); }
+    :   (   s= 'final'      { modifiers.add( new ModifierDescr($s.text, start((CommonToken)$s), stop((CommonToken)$s), line($s), position($s), $s.text) ); }
         |   annotation
         )*
     ;

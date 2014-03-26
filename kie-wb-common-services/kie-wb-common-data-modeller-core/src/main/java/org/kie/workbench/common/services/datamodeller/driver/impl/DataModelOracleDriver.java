@@ -55,8 +55,23 @@ public class DataModelOracleDriver implements ModelDriver {
 
     private Map<String, AnnotationDriver> annotationDrivers = new HashMap<String, AnnotationDriver>();
 
+    private ProjectDataModelOracle oracleDataModel;
+
+    private ClassLoader projectClassLoader;
+
+
     public static DataModelOracleDriver getInstance() {
         return new DataModelOracleDriver();
+    }
+
+    public static DataModelOracleDriver getInstance(ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader) {
+        return new DataModelOracleDriver(oracleDataModel, projectClassLoader);
+    }
+
+    protected DataModelOracleDriver( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) {
+        this();
+        this.oracleDataModel = oracleDataModel;
+        this.projectClassLoader = projectClassLoader;
     }
 
     protected DataModelOracleDriver() {
@@ -124,7 +139,11 @@ public class DataModelOracleDriver implements ModelDriver {
         return ModelFactoryImpl.getInstance().newModel();
     }
 
-    public DataModel loadModel( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) throws ModelDriverException {
+    @Override public DataModel loadModel( ) throws ModelDriverException {
+        return loadModel( oracleDataModel, projectClassLoader );
+    }
+
+    private DataModel loadModel( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) throws ModelDriverException {
 
         DataModel dataModel = createModel();
 

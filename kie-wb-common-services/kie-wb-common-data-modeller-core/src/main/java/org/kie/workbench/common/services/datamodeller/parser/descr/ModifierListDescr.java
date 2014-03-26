@@ -41,6 +41,12 @@ public class ModifierListDescr extends ElementDescriptor {
         getElements( ).add( modifierDescr );
     }
 
+    public int size() {
+        List<ModifierDescr> modifiers = getModifiers();
+        return modifiers != null ? modifiers.size() : 0;
+
+    }
+
     public List<ModifierDescr> getModifiers( ) {
         List<ModifierDescr> modifiers = new ArrayList<ModifierDescr>( );
         for ( ElementDescriptor modifier : getElements( ).getElementsByType( ElementType.MODIFIER ) ) {

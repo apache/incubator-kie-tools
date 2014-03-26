@@ -21,7 +21,7 @@ import java.io.InputStream;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FileDescr;
 import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
 
-public class JavaFileHandlerImpl {
+public class JavaFileHandlerImpl implements JavaFileHandler {
 
     private StringBuilder source = null;
 
@@ -33,6 +33,11 @@ public class JavaFileHandlerImpl {
         //TODO implement better exceptions handling
         source = new StringBuilder( ParserUtil.readString( inputStream ) );
         parseSource( );
+    }
+
+    public JavaFileHandlerImpl (String sourceString) throws Exception {
+        source = new StringBuilder( sourceString );
+        parseSource();
     }
 
     public FileDescr getFileDescr( ) {

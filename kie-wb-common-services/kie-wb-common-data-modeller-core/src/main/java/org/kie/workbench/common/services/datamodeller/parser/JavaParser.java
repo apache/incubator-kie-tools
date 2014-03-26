@@ -1,4 +1,4 @@
-// $ANTLR 3.5 src/main/resources/org/kie/workbench/common/services/datamodeller/parser/Java.g 2014-03-24 12:21:05
+// $ANTLR 3.5 src/main/resources/org/kie/workbench/common/services/datamodeller/parser/Java.g 2014-03-26 17:54:14
 
 
 /*
@@ -1376,7 +1376,7 @@ public class JavaParser extends JavaParserBase {
 
 			if ( state.backtracking==0 ) {
 			        modifiers = popModifierList();
-			        if (modifiers != null) {
+			        if (modifiers != null && modifiers.size() > 0) {
 			            updateOnAfter(modifiers, input.toString(retval.start,input.LT(-1)), (CommonToken)(retval.stop));
 			            processModifiers(modifiers);
 			            log("End of modifier list declaration.");
@@ -1443,7 +1443,7 @@ public class JavaParser extends JavaParserBase {
 					// src/main/resources/org/kie/workbench/common/services/datamodeller/parser/Java.g:514:13: s= 'final'
 					{
 					s=(Token)match(input,FINAL,FOLLOW_FINAL_in_variableModifiers1036); if (state.failed) return retval;
-					if ( state.backtracking==0 ) { modifiers.add( new ModifierDescr((s!=null?s.getText():null), -1, -1, line(s), position(s), (s!=null?s.getText():null)) ); }
+					if ( state.backtracking==0 ) { modifiers.add( new ModifierDescr((s!=null?s.getText():null), start((CommonToken)s), stop((CommonToken)s), line(s), position(s), (s!=null?s.getText():null)) ); }
 					}
 					break;
 				case 2 :
@@ -1467,7 +1467,7 @@ public class JavaParser extends JavaParserBase {
 
 			if ( state.backtracking==0 ) {
 			        modifiers = popModifierList();
-			        if (modifiers != null) {
+			        if (modifiers != null && modifiers.size() > 0) {
 			            updateOnAfter(modifiers, input.toString(retval.start,input.LT(-1)), (CommonToken)(retval.stop));
 			            processModifiers(modifiers);
 			            log("End of variable modifiers list declaration.");

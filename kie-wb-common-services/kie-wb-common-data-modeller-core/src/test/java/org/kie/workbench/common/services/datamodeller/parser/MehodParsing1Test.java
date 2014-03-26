@@ -138,7 +138,7 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         method.setIdentifier( new IdentifierDescr( "MethodParsing1", -1, -1, -1, -1 ) );
 
         param1 = new NormalParameterDescr( );
-        param1.setModifiers( new ModifierListDescr( ) );
+        //param1.setModifiers( new ModifierListDescr( ) );
         param1.setType( new TypeDescr( null, -1, -1 ) );
         param1.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "String", -1, -1 ) );
         param1.setIdentifier( new IdentifierDescr( "field1", -1, -1, -1, -1 ) );
@@ -155,13 +155,13 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         method.setIdentifier( new IdentifierDescr( "MethodParsing1", -1, -1, -1, -1 ) );
 
         param1 = new NormalParameterDescr( );
-        param1.setModifiers( new ModifierListDescr( ) );
+        //param1.setModifiers( new ModifierListDescr( ) );
         param1.setType( new TypeDescr( null, -1, -1 ) );
         param1.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "int" ) );
         param1.setIdentifier( new IdentifierDescr( "a", -1, -1, -1, -1 ) );
 
         param2 = new NormalParameterDescr( );
-        param2.setModifiers( new ModifierListDescr( ) );
+        //param2.setModifiers( new ModifierListDescr( ) );
         param2.setType( new TypeDescr( null, -1, -1 ) );
         param2.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "int" ) );
         param2.setIdentifier( new IdentifierDescr( "b", -1, -1, -1, -1 ) );
@@ -179,19 +179,19 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         method.setIdentifier( new IdentifierDescr( "MethodParsing1", -1, -1, -1, -1 ) );
 
         param1 = new NormalParameterDescr( );
-        param1.setModifiers( new ModifierListDescr( ) );
+        //param1.setModifiers( new ModifierListDescr( ) );
         param1.setType( new TypeDescr( null, -1, -1 ) );
         param1.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "int" ) );
         param1.setIdentifier( new IdentifierDescr( "a", -1, -1, -1, -1 ) );
 
         param2 = new NormalParameterDescr( );
-        param2.setModifiers( new ModifierListDescr( ) );
+        //param2.setModifiers( new ModifierListDescr( ) );
         param2.setType( new TypeDescr( null, -1, -1 ) );
         param2.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "int" ) );
         param2.setIdentifier( new IdentifierDescr( "b", -1, -1, -1, -1 ) );
 
         param3 = new NormalParameterDescr( );
-        param3.setModifiers( new ModifierListDescr( ) );
+        //param3.setModifiers( new ModifierListDescr( ) );
         param3.setType( new TypeDescr( null, -1, -1 ) );
         param3.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "byte" ) );
         param3.setIdentifier( new IdentifierDescr( "c", -1, -1, -1, -1 ) );
@@ -220,7 +220,7 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         method.getType( ).setVoidType( new JavaTokenDescr( ElementDescriptor.ElementType.JAVA_VOID, "void", -1, -1, -1, -1 ) );
         method.setIdentifier( new IdentifierDescr( "getField1", -1, -1, -1, -1 ) );
         param1 = new NormalParameterDescr( );
-        param1.setModifiers( new ModifierListDescr( ) );
+        //param1.setModifiers( new ModifierListDescr( ) );
         param1.setType( new TypeDescr( null, -1, -1 ) );
         param1.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "String", -1, -1 ) );
         param1.setIdentifier( new IdentifierDescr( "field1", -1, -1, -1, -1 ) );
@@ -277,13 +277,13 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         method.getType( ).setVoidType( new JavaTokenDescr( ElementDescriptor.ElementType.JAVA_VOID, "void", -1, -1, -1, -1 ) );
         method.setIdentifier( new IdentifierDescr( "method5", -1, -1, -1, -1 ) );
         param1 = new NormalParameterDescr( );
-        param1.setModifiers( new ModifierListDescr( ) );
+        //param1.setModifiers( new ModifierListDescr( ) );
         param1.setType( new TypeDescr( null, -1, -1 ) );
         param1.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "java.lang.Integer", -1, -1 ) );
         param1.setIdentifier( new IdentifierDescr( "param1", -1, -1, -1, -1 ) );
 
         param2 = new NormalParameterDescr( );
-        param2.setModifiers( new ModifierListDescr( ) );
+        //param2.setModifiers( new ModifierListDescr( ) );
         param2.setType( new TypeDescr( null, -1, -1 ) );
         param2.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "int" ) );
         param2.setIdentifier( new IdentifierDescr( "param2", -1, -1, -1, -1 ) );
@@ -297,7 +297,7 @@ public class MehodParsing1Test extends JavaParserBaseTest {
 
         //"java.util.List<java.lang.String> method6() { return null;    }"
         method = new MethodDescr( null, -1, -1 );
-        method.setModifiers( new ModifierListDescr( ) );
+        //method.setModifiers( new ModifierListDescr( ) );
         method.setType( new TypeDescr( null, -1, -1 ) );
         method.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "java.util.List<java.lang.String>", -1, -1 ) );
         method.setIdentifier( new IdentifierDescr( "method6", -1, -1, -1, -1 ) );
@@ -319,13 +319,13 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         param1.setIdentifier( new IdentifierDescr( "param1", -1, -1, -1, -1 ) );
 
         param2 = new NormalParameterDescr( );
-        param2.setModifiers( new ModifierListDescr( ) );
+        //param2.setModifiers( new ModifierListDescr( ) );
         param2.setType( new TypeDescr( null, -1, -1 ) );
         param2.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "java.lang.Integer", -1, -1 ) );
         param2.setIdentifier( new IdentifierDescr( "param2", -1, -1, -1, -1 ) );
 
         param3 = new NormalParameterDescr( );
-        param3.setModifiers( new ModifierListDescr( ) );
+        //param3.setModifiers( new ModifierListDescr( ) );
         param3.setType( new TypeDescr( null, -1, -1 ) );
         param3.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "java.util.List<java.lang.Integer>", -1, -1 ) );
         param3.setIdentifier( new IdentifierDescr( "param3", -1, -1, -1, -1 ) );
@@ -339,7 +339,7 @@ public class MehodParsing1Test extends JavaParserBaseTest {
 
         //"int method8  ( final int   param1 ,  java.lang.Integer   param2)[][] { return null; }"
         method = new MethodDescr( null, -1, -1 );
-        method.setModifiers( new ModifierListDescr( ) );
+        //method.setModifiers( new ModifierListDescr( ) );
         method.setType( new TypeDescr( null, -1, -1 ) );
         method.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "int" ) );
         method.setIdentifier( new IdentifierDescr( "method8", -1, -1, -1, -1 ) );
@@ -352,7 +352,7 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         param1.setIdentifier( new IdentifierDescr( "param1", -1, -1, -1, -1 ) );
 
         param2 = new NormalParameterDescr( );
-        param2.setModifiers( new ModifierListDescr( ) );
+        //param2.setModifiers( new ModifierListDescr( ) );
         param2.setType( new TypeDescr( null, -1, -1 ) );
         param2.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "java.lang.Integer", -1, -1 ) );
         param2.setIdentifier( new IdentifierDescr( "param2", -1, -1, -1, -1 ) );
@@ -367,7 +367,7 @@ public class MehodParsing1Test extends JavaParserBaseTest {
 
         //"int method9 ( final Object ...  param1) { return -1;}"
         method = new MethodDescr( null, -1, -1 );
-        method.setModifiers( new ModifierListDescr( ) );
+        //method.setModifiers( new ModifierListDescr( ) );
         method.setType( new TypeDescr( null, -1, -1 ) );
         method.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "int" ) );
         method.setIdentifier( new IdentifierDescr( "method9", -1, -1, -1, -1 ) );
@@ -400,13 +400,13 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         param1.setIdentifier( new IdentifierDescr( "param1", -1, -1, -1, -1 ) );
 
         param2 = new NormalParameterDescr( );
-        param2.setModifiers( new ModifierListDescr( ) );
+        //param2.setModifiers( new ModifierListDescr( ) );
         param2.setType( new TypeDescr( null, -1, -1 ) );
         param2.getType( ).setPrimitiveType( new PrimitiveTypeDescr( null, -1, -1, "int" ) );
         param2.setIdentifier( new IdentifierDescr( "param2", -1, -1, -1, -1 ) );
 
         ellipsisParam = new EllipsisParameterDescr( );
-        ellipsisParam.setModifiers( new ModifierListDescr( ) );
+        //ellipsisParam.setModifiers( new ModifierListDescr( ) );
         ellipsisParam.setType( new TypeDescr( null, -1, -1 ) );
         ellipsisParam.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "List<java.util.List<String>>", -1, -1 ) );
         ellipsisParam.setIdentifier( new IdentifierDescr( "param3", -1, -1, -1, -1 ) );

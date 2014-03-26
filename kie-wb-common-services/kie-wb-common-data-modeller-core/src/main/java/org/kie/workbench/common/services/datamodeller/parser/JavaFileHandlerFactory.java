@@ -16,13 +16,19 @@
 
 package org.kie.workbench.common.services.datamodeller.parser;
 
-import org.kie.workbench.common.services.datamodeller.parser.descr.FileDescr;
+import java.io.InputStream;
 
-public interface JavaFileHandler {
+public class JavaFileHandlerFactory {
 
-    FileDescr getFileDescr( );
+    public static JavaFileHandlerFactory getInstance() {
+        return new JavaFileHandlerFactory();
+    }
 
-    String getOriginalContent( );
+    public JavaFileHandler newHandler( final InputStream inputStream ) throws Exception {
+        return new JavaFileHandlerImpl( inputStream );
+    }
 
-    String buildResult( );
+    public JavaFileHandler newHandler( final String source ) throws Exception {
+        return new JavaFileHandlerImpl( source );
+    }
 }

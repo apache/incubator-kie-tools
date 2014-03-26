@@ -30,7 +30,7 @@ public class FileHashingTest {
     @Test
     public void testFilesHashing() {
 
-        DataModelOracleDriver dataModelOracleDriver = DataModelOracleDriver.getInstance();
+        DataModelOracleDriver dataModelOracleDriver = DataModelOracleDriver.getInstance( );
         DataModel dataModel = dataModelOracleDriver.createModel();
 
         DataObject dataObject;

@@ -290,7 +290,7 @@ public class FieldParsing1Test extends JavaParserBaseTest {
         //"Boolean field14 =   false, field15=true, field16 = !true ;"
 
         fieldDeclaration = new FieldDescr( );
-        fieldDeclaration.setModifiers( new ModifierListDescr( ) );
+        //fieldDeclaration.setModifiers( new ModifierListDescr( ) );
         fieldDeclaration.setType( new TypeDescr( null, -1, -1 ) );
         fieldDeclaration.getType( ).setClassOrInterfaceType( new ClassOrInterfaceTypeDescr( "Boolean", -1, -1 ) );
         var = new VariableDeclarationDescr( );
