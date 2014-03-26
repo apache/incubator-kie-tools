@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.services.datamodel.backend.server;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,11 +45,27 @@ public class DataModelOracleUtilities {
      * @param oracle The DMO representing a project
      * @return
      */
-    public static String[] getFactTypes( final ProjectDataModelOracle oracle ) {
+    public static String[] getFactTypes(final ProjectDataModelOracle oracle) {
+
+        List<String> packageNames = oracle.getProjectPackageNames();
+
         final Map<String, ModelField[]> modelFields = oracle.getProjectModelFields();
-        final String[] types = modelFields.keySet().toArray( new String[ modelFields.size() ] );
-        Arrays.sort( types );
-        return types;
+        final List<String> types = new ArrayList<String>();
+        for (String type : modelFields.keySet()) {
+            int beginIndex = type.lastIndexOf('.');
+
+            if (beginIndex < 0) {
+                types.add(type);
+            } else {
+                String substring = type.substring(0, beginIndex);
+                if (packageNames.contains(substring)) {
+                    types.add(type);
+                }
+            }
+        }
+        Collections.sort(types);
+
+        return types.toArray(new String[types.size()]);
     }
 
     /**
