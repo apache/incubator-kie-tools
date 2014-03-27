@@ -143,7 +143,7 @@ public class DataModelOracleDriver implements ModelDriver {
         return loadModel( oracleDataModel, projectClassLoader );
     }
 
-    private DataModel loadModel( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) throws ModelDriverException {
+    public DataModel loadModel( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) throws ModelDriverException {
 
         DataModel dataModel = createModel();
 

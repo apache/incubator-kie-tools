@@ -49,7 +49,7 @@ public class DataModelerServiceHelper {
         return dataModel;
     }
 
-    public DataModelTO domain2To(DataModel dataModel, Integer initialStatus, boolean calculateFingerprints) throws Exception {
+    public DataModelTO domain2To(DataModel dataModel, DataModelTO.TOStatus initialStatus, boolean calculateFingerprints) throws Exception {
         DataModelTO dataModelTO = new DataModelTO();
         List<DataObject> dataObjects = new ArrayList<DataObject>();
         List<DataObject> externalDataObjects = new ArrayList<DataObject>();
@@ -66,7 +66,7 @@ public class DataModelerServiceHelper {
                 if (initialStatus != null) {
                     dataObjectTO.setStatus(initialStatus);
                 }
-                domain2To(dataObject, dataObjectTO);
+                domain2To(dataObject, dataObjectTO, initialStatus);
                 dataModelTO.getDataObjects().add(dataObjectTO);
                 if (calculateFingerprints) {
                     dataObjectTO.setFingerPrint(calculateFingerPrint(dataObjectTO.getStringId()));
@@ -90,7 +90,7 @@ public class DataModelerServiceHelper {
         return dataModelTO;
     }
 
-    public void domain2To(DataObject dataObject, DataObjectTO dataObjectTO) {
+    public void domain2To(DataObject dataObject, DataObjectTO dataObjectTO, DataModelTO.TOStatus initialStatus) {
         dataObjectTO.setName(dataObject.getName());
         dataObjectTO.setOriginalClassName(dataObject.getClassName());
         dataObjectTO.setSuperClassName(dataObject.getSuperClassName());
@@ -111,7 +111,11 @@ public class DataModelerServiceHelper {
         ObjectPropertyTO propertyTO;
         for (ObjectProperty property : properties) {
             propertyTO = new ObjectPropertyTO(property.getName(), property.getClassName(), property.isMultiple(), typeFactory.isBasePropertyType(property.getClassName()), property.getBag());
-            propertiesTO.add(propertyTO);
+            propertyTO.setOriginalName( property.getName() );
+            if (initialStatus != null) {
+                propertyTO.setStatus( initialStatus );
+            }
+            propertiesTO.add( propertyTO );
             //process member level annotations.
             for (Annotation annotation : property.getAnnotations()) {
                 AnnotationTO annotationTO = domain2To(annotation);
@@ -150,6 +154,17 @@ public class DataModelerServiceHelper {
                 }
             }
         }
+    }
+
+    public ObjectProperty to2Domain(ObjectPropertyTO propertyTO) {
+        ObjectPropertyImpl property = new ObjectPropertyImpl( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag() );
+        for (AnnotationTO annotationTO : propertyTO.getAnnotations()) {
+            Annotation annotation = to2Domain(annotationTO);
+            if (annotation != null) {
+                property.addAnnotation(annotation);
+            }
+        }
+        return property;
     }
 
     public Annotation to2Domain(AnnotationTO annotationTO) {

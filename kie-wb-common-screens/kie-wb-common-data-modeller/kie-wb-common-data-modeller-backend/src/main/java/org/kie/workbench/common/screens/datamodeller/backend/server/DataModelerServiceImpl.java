@@ -42,16 +42,32 @@ import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionT
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.datamodeller.codegen.GenerationTools;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleDriver;
+import org.kie.workbench.common.services.datamodeller.driver.impl.JavaModelDriver;
+import org.kie.workbench.common.services.datamodeller.parser.JavaFileHandler;
+import org.kie.workbench.common.services.datamodeller.parser.JavaFileHandlerFactory;
+import org.kie.workbench.common.services.datamodeller.parser.JavaFileHandlerImpl;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ClassDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactory;
+import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactoryImpl;
+import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.FileDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.IdentifierDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.VariableDeclarationDescr;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
@@ -145,12 +161,14 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel( projectPath );
 
-            DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
-            dataModel = driver.loadModel( projectDataModelOracle, getProjectClassLoader(project) );
+            DataModelOracleDriver driver = DataModelOracleDriver.getInstance( projectDataModelOracle, getProjectClassLoader(project) );
+            //dataModel = driver.loadModel();
+            ModelDriver modelDriver = new JavaModelDriver( ioService, Paths.convert( defaultPackage.getPackageMainSrcPath() ) , true, getProjectClassLoader(project) );
+            dataModel = modelDriver.loadModel();
 
             //Objects read from persistent .java format are tagged as PERSISTENT objects
-            DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To( dataModel, DataObjectTO.PERSISTENT, true );
-            if (checkExternalModifications) calculateReadonlyStatus( dataModelTO, Paths.convert( defaultPackage.getPackageMainSrcPath() ) );
+            DataModelTO dataModelTO = DataModelerServiceHelper.getInstance().domain2To( dataModel, DataModelTO.TOStatus.PERSISTENT, true );
+            //if (checkExternalModifications) calculateReadonlyStatus( dataModelTO, Paths.convert( defaultPackage.getPackageMainSrcPath() ) );
 
             Long endTime = System.currentTimeMillis();
             if ( logger.isDebugEnabled() ) {
@@ -190,6 +208,313 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Override
     public GenerationResult saveModel( DataModelTO dataModel,
+            final Project project,
+            final boolean overwrite ) {
+
+        Path projectPath = project.getRootPath();
+        Long startTime = System.currentTimeMillis();
+        boolean onBatch = false;
+
+        try {
+            //ensure java sources directory exists.
+            org.uberfire.java.nio.file.Path javaPath = ensureProjectJavaPath( Paths.convert( projectPath ) );
+
+            //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
+            //to it must be treated carefully.
+            CommentedOption option = makeCommentedOption( );
+            ioService.startBatch();
+            onBatch = true;
+
+            generateModel( dataModel, javaPath, option );
+
+            onBatch = false;
+            ioService.endBatch();
+
+            Long endTime = System.currentTimeMillis();
+            if ( logger.isDebugEnabled() ) {
+                logger.debug( "Time elapsed when saving " + projectPath.getFileName() + ": " + ( endTime - startTime ) + " ms" );
+            }
+
+            GenerationResult result = new GenerationResult();
+            result.setGenerationTime( endTime - startTime );
+            result.setObjectFingerPrints( DataModelerServiceHelper.getInstance().claculateFingerPrints( dataModel ) );
+            return result;
+
+        } catch ( Exception e ) {
+            logger.error( "An error was produced during data model generation, dataModel: " + dataModel + ", path: " + projectPath, e );
+            if ( onBatch ) {
+                try {
+                    logger.warn( "IOService batch method is still on, trying to end batch processing." );
+                    ioService.endBatch();
+                    logger.warn( "IOService batch method is was successfully finished. The user will still get the exception, but the batch processing was finished." );
+                } catch ( Exception ex ) {
+                    logger.error( "An error was produced when the IOService.endBatch processing was executed.", ex );
+                }
+            }
+            throw new ServiceException( "Data model: " + dataModel.getParentProjectName() + ", couldn't be generated due to the following error. " + e );
+        }
+    }
+
+
+    private Map<String, String> calculateRenamedObjects(DataModelTO dataModelTO) {
+        Map<String, String> renames = new HashMap<String, String>(  );
+        for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
+            if (dataObjectTO.classNameChanged()) {
+                renames.put( dataObjectTO.getClassName(), dataObjectTO.getOriginalClassName() );
+            }
+        }
+        return renames;
+    }
+
+    private Map<String, Map<String, String>> calculateRenamedFields(DataModelTO dataModelTO) {
+        Map<String, Map<String, String>> renames = new HashMap<String, Map<String, String>>(  );
+        Map<String, String> fieldRenames;
+        for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
+            for ( ObjectPropertyTO propertyTO : dataObjectTO.getProperties() ) {
+                if (propertyTO.nameChanged()) {
+                    if ( (fieldRenames = renames.get( dataObjectTO.getClassName() )) == null)  {
+                        fieldRenames = new HashMap<String, String>(  );
+                        renames.put( dataObjectTO.getClassName(), fieldRenames );
+                    }
+                    fieldRenames.put( propertyTO.getName(), propertyTO.getOriginalName() );
+                }
+            }
+        }
+        return renames;
+    }
+
+    private void generateModel ( DataModelTO dataModelTO,
+            org.uberfire.java.nio.file.Path javaRootPath,
+            CommentedOption option ) throws Exception {
+
+        org.uberfire.java.nio.file.Path sourceFile;
+        org.uberfire.java.nio.file.Path targetFile;
+        org.uberfire.java.nio.file.Path deletedObjectFile;
+        String newSource;
+        String originalSource;
+
+        //process deleted objects.
+        for ( DataObjectTO dataObjectTO : dataModelTO.getDeletedDataObjects() ) {
+            if ( dataObjectTO.isPersistent() ) {
+                deletedObjectFile = calculateFilePath( dataObjectTO.getOriginalClassName(), javaRootPath );
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug( "Data object: " + dataObjectTO.getClassName() + " was deleted in the UI, associated .java file should be deleted.");
+                    logger.debug( "current class name is: " + dataObjectTO.getClassName() );
+                    logger.debug( "original class name is: " + dataObjectTO.getOriginalClassName() );
+                    logger.debug( "file to be deleted is: " + deletedObjectFile );
+                }
+
+                ioService.deleteIfExists( deletedObjectFile, option );
+            }
+        }
+
+        for ( DataObjectTO dataObjectTO : dataModelTO.getDataObjects() ) {
+
+            if ( dataObjectTO.isVolatile() ) {
+                //data object created in the UI
+
+                targetFile = calculateFilePath( dataObjectTO.getClassName(), javaRootPath );
+                if (logger.isDebugEnabled()) logger.debug( "Data object: " + dataObjectTO.getClassName() + " is a new object created in the UI, java source code will be generated from scratch and written into file: " + targetFile );
+                newSource = generateJavaSource( dataObjectTO );
+                ioService.write( targetFile, newSource, option );
+
+            } else if ( hasUIChanges( dataObjectTO ) ) {
+                //data object that was read from a .java file and was modified in the UI.
+
+                if (logger.isDebugEnabled()) logger.debug( "Data object: " + dataObjectTO.getClassName() + " needs to be updated with UI changes." );
+
+                if (dataObjectTO.classNameChanged()) {
+                    sourceFile = calculateFilePath( dataObjectTO.getOriginalClassName(), javaRootPath );
+                    targetFile = calculateFilePath( dataObjectTO.getClassName(), javaRootPath );
+                    if (logger.isDebugEnabled()) logger.debug( "Data object was renamed form class name: " + dataObjectTO.getOriginalClassName() + " to: " + dataObjectTO.getClassName() );
+
+                } else {
+                    sourceFile = calculateFilePath( dataObjectTO.getClassName(), javaRootPath );
+                    targetFile = sourceFile;
+                }
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug( "original content will be read from file: " + sourceFile );
+                    logger.debug( "updated content will be written into file: " + targetFile );
+                }
+
+                if (ioService.exists( sourceFile )) {
+                    //common case, by construction the file should exist.
+                    //originalSource = ioService.readAllString( sourceFile );
+                    newSource = updateJavaSource( dataObjectTO, sourceFile );
+                } else {
+                    //uncommon case
+                    if (logger.isDebugEnabled()) logger.debug( "original content file: " + sourceFile + ", seems to not exists. Java source code will be generated from scratch.");
+                    newSource = generateJavaSource( dataObjectTO );
+                }
+
+                ioService.write( targetFile, newSource, option );
+
+                if (!sourceFile.equals( targetFile )) {
+                    if (logger.isDebugEnabled()) logger.debug( "original content file: " + sourceFile + " needs to be deleted." );
+                    ioService.deleteIfExists( sourceFile );
+                }
+            } else {
+                logger.debug( "Data object: " + dataObjectTO.getClassName() + " wasn't changed in the UI, NO file update is needed." );
+            }
+        }
+
+    }
+
+    private String updateJavaSource( DataObjectTO dataObjectTO, org.uberfire.java.nio.file.Path path ) throws Exception {
+
+        String originalSource;
+        String newSource;
+        JavaFileHandler fileHandler;
+
+        if (logger.isDebugEnabled()) logger.debug( "Starting java source update for class: " + dataObjectTO.getClassName() + ", and path: " + path );
+        originalSource = ioService.readAllString( path );
+
+        if (logger.isDebugEnabled()) logger.debug( "original source is: " + originalSource );
+
+        fileHandler = JavaFileHandlerFactory.getInstance().newHandler( originalSource );
+        updateJavaFileDescr(dataObjectTO, fileHandler.getFileDescr());
+        newSource = fileHandler.buildResult();
+
+        if (logger.isDebugEnabled()) logger.debug( "updated source is: " + newSource );
+        return newSource;
+    }
+
+    private String generateJavaSource(DataObjectTO dataObject) {
+        return "the new class";
+    }
+
+    private void updateJavaFileDescr(DataObjectTO dataObjectTO, FileDescr fileDescr) throws Exception {
+
+
+        if (fileDescr == null) {
+            logger.warn( "A null FileDescr was provided, no processing will be done." );
+            return;
+        }
+
+        if (fileDescr.getClassDescr() == null) {
+            logger.warn( "ClassDescr is null, no processing will be done." );
+            return;
+        }
+
+        ClassDescr classDescr = fileDescr.getClassDescr();
+        Map<String, FieldDescr> currentFields = new HashMap<String, FieldDescr>( );
+        Map<String, String> preservedFields = new HashMap<String, String>( );
+        DataModelerServiceHelper helper = DataModelerServiceHelper.getInstance();
+        ObjectProperty property;
+
+        for (FieldDescr fieldDescr : classDescr.getFields()) {
+            for (VariableDeclarationDescr variableDescr : fieldDescr.getVariableDeclarations()) {
+                currentFields.put( variableDescr.getIdentifier().getIdentifier(), fieldDescr );
+            }
+        }
+
+        for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
+
+            property = helper.to2Domain( propertyTO );
+
+            if (propertyTO.isVolatile()) {
+                if (currentFields.containsKey( propertyTO.getName() )) {
+                    removeField( classDescr, propertyTO.getName() );
+                }
+                createField( classDescr, property );
+                preservedFields.put( property.getName(), property.getName() );
+            } else {
+                if (propertyTO.nameChanged()) {
+                    if (currentFields.containsKey( propertyTO.getOriginalName() )) {
+                        updateField( classDescr, propertyTO.getOriginalName(), property );
+                        preservedFields.put( propertyTO.getName(), propertyTO.getName() );
+                    } else {
+                        if (currentFields.containsKey( propertyTO.getName() )) {
+                            removeField( classDescr, propertyTO.getName() );
+                        }
+                        createField( classDescr, property );
+                        preservedFields.put( property.getName(), property.getName() );
+                    }
+                } else {
+                    if (currentFields.containsKey( propertyTO.getName() )) {
+                        updateField( classDescr, propertyTO.getName(), property );
+                    } else {
+                        createField( classDescr, property );
+                    }
+                    preservedFields.put( property.getName(), property.getName() );
+                }
+            }
+
+        }
+
+        List<String> removableFields = new ArrayList<String>(  );
+        for (FieldDescr fieldDescr : classDescr.getFields()) {
+            for (VariableDeclarationDescr variableDescr : fieldDescr.getVariableDeclarations()) {
+                if (!preservedFields.containsKey( variableDescr.getIdentifier().getIdentifier() )) {
+                    removableFields.add( variableDescr.getIdentifier().getIdentifier() );
+                }
+            }
+        }
+        for (String fieldName : removableFields) {
+            classDescr.removeField( fieldName );
+        }
+
+    }
+
+    private void updateField(ClassDescr classDescr, String fieldName, ObjectProperty property) {
+
+    }
+
+    private void createField(ClassDescr classDescr, ObjectProperty property) throws Exception {
+
+        String fieldSource = "private " + property.getClassName() + " " + property.getName() + ";";
+        FieldDescr fieldDescr;
+
+        DescriptorFactory descriptorFactory = DescriptorFactoryImpl.getInstance();
+        fieldDescr = descriptorFactory.createFieldDescr( fieldSource );
+        classDescr.addField( fieldDescr );
+
+    }
+
+
+    /**
+     * Takes care of field and the corresponding setter/getter removal.
+     */
+    private void removeField(ClassDescr classDescr, String fieldName) {
+        logger.debug( "Removing field: " + fieldName + ", from class: " + classDescr.getIdentifier().getIdentifier() );
+
+        FieldDescr fieldDescr = classDescr.getField( fieldName );
+        String fieldType;
+        boolean removed = false;
+        GenerationTools genTools = new GenerationTools();
+        String accessorName;
+
+        if ( fieldDescr != null ) {
+            if ( fieldDescr.getType().isClassOrInterfaceType() ) {
+                fieldType = fieldDescr.getType().getClassOrInterfaceType().getClassName();
+            } else {
+                fieldType = fieldDescr.getType().getPrimitiveType().getName();
+            }
+
+            removed = classDescr.removeField( fieldName );
+            if (removed) logger.debug( "field: " + fieldName + " was removed." );
+
+            accessorName = genTools.toJavaGetter( fieldName, fieldType );
+            logger.debug( "Removing getter: " + accessorName + " for field: " + fieldName );
+            removed = classDescr.removeMethod( accessorName );
+            if (removed) logger.debug( "getter: " + accessorName + " was removed.");
+            accessorName = genTools.toJavaSetter( fieldName );
+            logger.debug( "Removing setter: " + accessorName + " for field: " + fieldName );
+            removed = classDescr.removeMethod( accessorName );
+            if (removed) logger.debug( "setter: " + accessorName + " was removed." );
+
+        } else {
+            logger.debug( "Field field: " + fieldName + " was not found in class: " + classDescr.getIdentifier().getIdentifier() );
+        }
+    }
+
+    private boolean isProcessableField(String fieldName) {
+        return true;
+    }
+
+    public GenerationResult saveModelOld( DataModelTO dataModel,
                                        final Project project,
                                        final boolean overwrite ) {
 
@@ -225,7 +550,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             //delete removed data objects
             cleanupFiles( deleteableFiles, option );
             javaPath = ensureProjectJavaPath( Paths.convert( projectPath ) );
-            DataModelOracleDriver driver = DataModelOracleDriver.getInstance();
+            DataModelOracleDriver driver = DataModelOracleDriver.getInstance( );
 
             generationListener.setCurrentProject( project );
             generationListener.setOption( option );
@@ -384,7 +709,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     private void calculateReadonlyStatus( DataModelTO dataModelTO, org.uberfire.java.nio.file.Path javaPath ) {
         for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
             if (wasModified(dataObjectTO, javaPath)) {
-                dataObjectTO.setStatus(DataObjectTO.PERSISTENT_EXTERNALLY_MODIFIED);
+                dataObjectTO.setStatus( DataModelTO.TOStatus.PERSISTENT_EXTERNALLY_MODIFIED);
             }
         }
     }
@@ -468,6 +793,13 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
 
         return deleteableFiles;
+    }
+
+    private boolean hasUIChanges(DataObjectTO dataObjectTO) {
+        String newFingerPrint = DataModelerServiceHelper.getInstance().calculateFingerPrint( dataObjectTO.getStringId() );
+        boolean result = !newFingerPrint.equals( dataObjectTO.getFingerPrint() );
+        if (!result) logger.debug( "The class : " + dataObjectTO.getClassName() + " wasn't modified" );
+        return  result;
     }
 
     private void removeUnmodifiedObjects( final DataModel dataModelDomain,

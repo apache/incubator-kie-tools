@@ -47,6 +47,28 @@ public class DataModelTO {
     //only to distinguish models created in memory
     private int id = modelIds++;
 
+
+    public static enum TOStatus {
+
+        /**
+         * An element that was read form persistent status, .java files.
+         */
+        PERSISTENT,
+
+        /**
+         * An element that was created in memory an was not saved to persistent .java file yet.
+         */
+        VOLATILE,
+
+        /**
+         * Data objects that wasn't created by the data modeller, or was modified by an external editor and pushed to
+         * the project repository.
+         */
+        PERSISTENT_EXTERNALLY_MODIFIED
+
+    }
+
+
     public DataModelTO() {
     }
 
@@ -96,7 +118,11 @@ public class DataModelTO {
         for (DataObjectTO dataObjectTO : dataObjects) {
             if (includeReadonlyObjects || !dataObjectTO.isExternallyModified()) {
                 dataObjectTO.setOriginalClassName(dataObjectTO.getClassName());
-                dataObjectTO.setStatus(DataObjectTO.PERSISTENT);
+                dataObjectTO.setStatus(TOStatus.PERSISTENT);
+                for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
+                    propertyTO.setOriginalName( propertyTO.getName() );
+                    propertyTO.setStatus( TOStatus.PERSISTENT );
+                }
             }
         }
     }
@@ -108,7 +134,11 @@ public class DataModelTO {
             if (fingerPrint != null) {
                 if (dataObject.isExternallyModified() && !fingerPrint.equals(dataObject.getFingerPrint())) {
                     dataObject.setOriginalClassName(dataObject.getClassName());
-                    dataObject.setStatus(DataObjectTO.PERSISTENT);
+                    dataObject.setStatus(TOStatus.PERSISTENT);
+                    for (ObjectPropertyTO property : dataObject.getProperties()) {
+                        property.setOriginalName( property.getName() );
+                        property.setStatus( TOStatus.PERSISTENT );
+                    }
                 }
                 dataObject.setFingerPrint(fingerPrint);
             }

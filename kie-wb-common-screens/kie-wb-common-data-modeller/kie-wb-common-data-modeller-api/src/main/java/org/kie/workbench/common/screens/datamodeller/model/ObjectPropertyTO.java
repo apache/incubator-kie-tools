@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,10 @@ public class ObjectPropertyTO {
 
     private String name;
 
+    //Remembers the original name for the DataObject.
+    //This value shouldn't be changed in the UI.
+    private String originalName;
+
     private boolean multiple = false;
 
     private boolean baseType = true;
@@ -37,6 +42,8 @@ public class ObjectPropertyTO {
     private List<AnnotationTO> annotations = new ArrayList<AnnotationTO>();
     
     private static final String DEFAULT_PROPERTY_BAG = "java.util.List";
+
+    private DataModelTO.TOStatus status = DataModelTO.TOStatus.VOLATILE;
 
     public ObjectPropertyTO() {
     }
@@ -99,6 +106,30 @@ public class ObjectPropertyTO {
         this.bag = bag;
     }
 
+    public String getOriginalName() {
+        return originalName;
+    }
+
+    public void setOriginalName( String originalName ) {
+        this.originalName = originalName;
+    }
+
+    public DataModelTO.TOStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus( DataModelTO.TOStatus status ) {
+        this.status = status;
+    }
+
+    public boolean isVolatile() {
+        return getStatus() == DataModelTO.TOStatus.VOLATILE;
+    }
+
+    public boolean isPersistent() {
+        return getStatus() == DataModelTO.TOStatus.PERSISTENT;
+    }
+
     public List<AnnotationTO> getAnnotations() {
         return annotations;
     }
@@ -142,6 +173,10 @@ public class ObjectPropertyTO {
             strId.append(annotationTO.getStringId());
         }
         return strId.toString();
+    }
+
+    public boolean nameChanged() {
+        return !getName().equals(getOriginalName());
     }
 
     private Integer _getAnnotation(String annotationClassName) {

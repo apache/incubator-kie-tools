@@ -48,7 +48,7 @@ public class DataObjectTO {
     
     private String superClassName;
     
-    private int status = VOLATILE;
+    private DataModelTO.TOStatus status = DataModelTO.TOStatus.VOLATILE;
 
 
     //Remembers the original name for the DataObject.
@@ -134,11 +134,11 @@ public class DataObjectTO {
         this.superClassName = superClassName;
     }
 
-    public int getStatus() {
+    public DataModelTO.TOStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(DataModelTO.TOStatus status) {
         this.status = status;
     }
 
@@ -151,15 +151,15 @@ public class DataObjectTO {
     }
 
     public boolean isVolatile() {
-        return getStatus() == VOLATILE;
+        return getStatus() == DataModelTO.TOStatus.VOLATILE;
     }
     
     public boolean isPersistent() {
-        return getStatus() == PERSISTENT;
+        return getStatus() == DataModelTO.TOStatus.PERSISTENT;
     }
 
     public boolean isExternallyModified() {
-        return getStatus() == PERSISTENT_EXTERNALLY_MODIFIED;
+        return getStatus() == DataModelTO.TOStatus.PERSISTENT_EXTERNALLY_MODIFIED;
     }
 
     public boolean classNameChanged() {
