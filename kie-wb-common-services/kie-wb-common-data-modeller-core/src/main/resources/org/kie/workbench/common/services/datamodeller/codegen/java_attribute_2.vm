@@ -1,0 +1,1 @@
+private $nameTool.resolveAttributeType( $attr) $nameTool.toJavaVar( $attr.name );

@@ -22,6 +22,8 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.HasAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +31,13 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Properties;
 
 /**
  * Simple velocity based code generation engine.
  */
+//TODO Eventually, weed out everything that is no longer needed (unused templates, listener, unused context attributes - currentDataObject for example, or context alltoghether, ... )
 public class GenerationEngine {
     
     private static final Logger logger = LoggerFactory.getLogger(GenerationEngine.class);
@@ -175,7 +179,7 @@ public class GenerationEngine {
     public void generateHashCode(GenerationContext generationContext, String template) throws Exception {
         generateSubTemplate(generationContext, template);
     }
-    
+
     public void generateTypeAnnotation(GenerationContext generationContext, Annotation annotation, String template) throws Exception {
         generateSubTemplate(generationContext, template);
     }
@@ -194,6 +198,133 @@ public class GenerationEngine {
         } catch (Exception e) {
             logger.error("An error was produced during template generation: template: " + template + ", templatePath: " + templatePath, e);
         }
+    }
+
+    public String generateDefaultConstructorString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("currentDataObject", dataObject);
+        return generateSubTemplateString(generationContext, "java_default_constructor");
+    }
+
+    public String generateAllFieldsConstructorString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("currentDataObject", dataObject);
+        return generateSubTemplateString(generationContext, "java_allfields_constructor");
+    }
+
+    public String generateKeyFieldsConstructorString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("currentDataObject", dataObject);
+        return generateSubTemplateString(generationContext, "java_keyfields_constructor");
+    }
+
+    public String generateAnnotationString(GenerationContext generationContext, Annotation annotation) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("annotation", annotation);
+        return generateSubTemplateString(generationContext, "java_annotation");
+    }
+
+    public String generateFieldString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("attr", attribute);
+        return generateSubTemplateString(generationContext, "java_attribute_2");
+    }
+
+    public String generateFieldGetterString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("attr", attribute);
+        return generateSubTemplateString(generationContext, "java_getter");
+    }
+
+    public String generateFieldSetterString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("attr", attribute);
+        return generateSubTemplateString(generationContext, "java_setter");
+    }
+
+    public String generateEqualsString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("currentDataObject", dataObject);
+        return generateSubTemplateString(generationContext, "java_equals2");
+    }
+
+    public String generateHashCodeString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("currentDataObject", dataObject);
+        return generateSubTemplateString(generationContext, "java_hashCode2");
+    }
+
+    // Shortcuts
+
+    /**
+     * Generate all constructors
+     */
+    public String generateAllConstructorsString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append( generateDefaultConstructorString( generationContext, dataObject ) ).append(GenerationTools.EOL).append( GenerationTools.EOL );
+        sb.append( generateAllFieldsConstructorString( generationContext, dataObject ) ).append(GenerationTools.EOL).append(GenerationTools.EOL);
+        sb.append( generateKeyFieldsConstructorString( generationContext, dataObject ) ).append(GenerationTools.EOL);
+        return sb.toString();
+    }
+
+    /**
+     * Generate all annotations for a specific element (field or class)
+     */
+    public String generateAllAnnotationsString(GenerationContext generationContext, HasAnnotations hasAnnotations) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        StringBuilder sb = new StringBuilder();
+        List<Annotation> annotations = ( (GenerationTools) vc.get( "nameTool" ) ).sortedAnnotations( hasAnnotations );
+        for ( Annotation a : annotations) {
+            sb.append( generateAnnotationString( generationContext, a ) ).append(GenerationTools.EOL);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Generate the complete code fragment for a field (annotations + field declaration)
+     */
+    public String generateCompleteFieldString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append( generateAllAnnotationsString( generationContext, attribute ) );
+        sb.append( generateFieldString( generationContext, attribute ) ).append(GenerationTools.EOL).append(GenerationTools.EOL);
+        return sb.toString();
+    }
+
+    /**
+     * Generate getter + setter for a field
+     */
+    public String generateFieldGetterSetterString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append( generateFieldGetterString( generationContext, attribute ) ).append(GenerationTools.EOL).append(GenerationTools.EOL);
+        sb.append( generateFieldSetterString( generationContext, attribute ) ).append(GenerationTools.EOL);
+        return sb.toString();
+    }
+
+    /**
+     * Generate the complete java class code
+     */
+    // TODO indentation
+    public String generateJavaClassString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("currentDataObject", dataObject);
+        return generateSubTemplateString(generationContext, "java_class2");
+    }
+
+    //TODO We could dispense with the use of templates alltogether
+    public String generateSubTemplateString(GenerationContext generationContext, String template) throws Exception {
+        StringWriter writer = new StringWriter();
+        // This is necessary to cover possible included sub-templates
+        generationContext.setCurrentOutput(writer);
+        //read the template to use
+        String templatePath = null;
+        try {
+            templatePath = getFullVelocityPath(generationContext.getTemplatesPath(), template);
+            Template t = velocityEngine.getTemplate(templatePath);
+            t.merge(generationContext.getVelocityContext(), writer);
+        } catch (Exception e) {
+            logger.error("An error was produced during template generation: template: " + template + ", templatePath: " + templatePath, e);
+        }
+        return writer.toString();
     }
 
     /**

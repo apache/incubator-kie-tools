@@ -67,6 +67,7 @@ public class GenerationContext {
     /**
      * Iteration variable, keeps a reference to the next data object to be generated.
      */
+    //TODO eliminate this if no longer needed
     private DataObject currentDataObject;
 
     public GenerationContext(DataModel dataModel, boolean defaultTemplates) {

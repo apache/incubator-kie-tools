@@ -33,9 +33,10 @@ import java.util.*;
  */
 public class GenerationTools {
 
+    public static final String EOL = System.getProperty("line.separator");
+
     private static final Logger logger = LoggerFactory.getLogger(GenerationTools.class);
     private static final String TAB = "    ";
-    private static final String EOL = System.getProperty("line.separator");
 
     public String fitToSize(int size, String name, char padChar) {
         int n = size - name.length();
@@ -286,6 +287,11 @@ public class GenerationTools {
         }
     }
 
+    // for new template
+    public String resolveEquals(DataObject dataObject) {
+        return resolveEquals(dataObject, "");
+    }
+
     private void addEqualsTermForPrimitive(StringBuilder sb, String _propName, String primitive) {
         if (NamingUtils.DOUBLE.equals(primitive)) {
             // if (Double.compare(that._double, _double) != 0) return false;
@@ -342,6 +348,11 @@ public class GenerationTools {
         }
     }
 
+    // for new template
+    public String resolveHashCode(DataObject dataObject) {
+        return resolveHashCode(dataObject, "");
+    }
+
     private void addHashCodeTermForPrimitive(StringBuilder sb, String _propName, String primitive) {
 
         if (NamingUtils.BYTE.equals(primitive) || NamingUtils.CHAR.equals(primitive) || NamingUtils.SHORT.equals(primitive)) {
@@ -365,11 +376,22 @@ public class GenerationTools {
         }
     }
 
+    //TODO replace indent String with an integer that represents the indent level and get rid of duplicate methods (created not to affect existing generation)
     public String resolveAllFieldsConstructor(DataObject dataObject, String indent) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
             sortedProperties.addAll(dataObject.getProperties().values());
             return resolveConstructor(dataObject, sortByPosition(sortByName(sortedProperties)), indent);
+        }
+        return "";
+    }
+
+    // for new template
+    public String resolveAllFieldsConstructor(DataObject dataObject) {
+        if (!dataObject.getProperties().isEmpty()) {
+            List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
+            sortedProperties.addAll(dataObject.getProperties().values());
+            return resolveConstructor2(dataObject, sortByPosition(sortByName(sortedProperties)), "    ");
         }
         return "";
     }
@@ -385,6 +407,23 @@ public class GenerationTools {
             }
             if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
                 return resolveConstructor(dataObject, sortByPosition(sortByName(sortedProperties)), indent);
+            }
+        }
+        return "";
+    }
+
+    // for new template
+    public String resolveKeyFieldsConstructor(DataObject dataObject) {
+        if (!dataObject.getProperties().isEmpty()) {
+            List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
+            for (ObjectProperty property : dataObject.getProperties().values()) {
+                if (property.getAnnotation(KeyAnnotationDefinition.getInstance().getClassName()) != null) {
+                    //the property is marked as key.
+                    sortedProperties.add(property);
+                }
+            }
+            if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
+                return resolveConstructor2(dataObject, sortByPosition(sortByName(sortedProperties)), "    ");
             }
         }
         return "";
@@ -416,7 +455,7 @@ public class GenerationTools {
 
     public List<Annotation> sortedAnnotations(HasAnnotations hasAnnotations) {
         List<Annotation> sortedAnnotations = new ArrayList<Annotation>();
-        if (!hasAnnotations.getAnnotations().isEmpty()) {
+        if (hasAnnotations != null && !hasAnnotations.getAnnotations().isEmpty()) {
             sortedAnnotations.addAll(hasAnnotations.getAnnotations());
         }
         return sortAnnotationsByName(sortedAnnotations);
@@ -424,7 +463,7 @@ public class GenerationTools {
 
     public List<ObjectProperty> sortedProperties(DataObject dataObject) {
         List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
-        if (!dataObject.getProperties().isEmpty()) {
+        if (dataObject != null && !dataObject.getProperties().isEmpty()) {
             sortedProperties.addAll(dataObject.getProperties().values());
         }
         return sortByName(sortedProperties);
@@ -530,6 +569,47 @@ public class GenerationTools {
         head.append(") {" + EOL);
         head.append(body);
         head.append(indent + "}");
+
+        return head.toString();
+    }
+
+    // Same as above, but removed some indents that are not wanted for partial code generation purposes
+    // TODO to be refactored
+    public String resolveConstructor2(DataObject dataObject, List<ObjectProperty> properties, String indent) {
+
+        StringBuilder head = new StringBuilder();
+        StringBuilder body = new StringBuilder();
+
+        head.append("public " + dataObject.getName() + "(");
+
+        if (properties != null && properties.size() > 0) {
+            boolean isFirst = true;
+            String propertyName;
+            for (ObjectProperty property : properties) {
+                if (!isFirst) {
+                    head.append(", ");
+                    body.append(EOL);
+                }
+                propertyName = toJavaVar(property.getName());
+                head.append(resolveAttributeType(property));
+                head.append(" ");
+                head.append(propertyName);
+
+                body.append(indent);
+                body.append("this.");
+                body.append(propertyName);
+                body.append(" = ");
+                body.append(propertyName);
+                body.append(";");
+
+                isFirst = false;
+            }
+            body.append(EOL);
+        }
+
+        head.append(") {" + EOL);
+        head.append(body);
+        head.append("}");
 
         return head.toString();
     }
