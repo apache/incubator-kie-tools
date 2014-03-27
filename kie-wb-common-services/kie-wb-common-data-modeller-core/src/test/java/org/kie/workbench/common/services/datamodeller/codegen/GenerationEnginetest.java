@@ -25,7 +25,6 @@ public class GenerationEnginetest {
     @Before
     public void setup() {
         try {
-            //TODO complete test results
             InputStream in = this.getClass().getResourceAsStream( "GenerationTestResults.properties" );
             results.load(in);
             in.close();
@@ -317,7 +316,7 @@ public class GenerationEnginetest {
 
         try {
             String result = engine.generateFieldGetterString(generationContext, property);
-            System.out.println( result );
+            assertEquals( results.getProperty( "testFieldAccessorStringGeneration" ), result );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -334,7 +333,7 @@ public class GenerationEnginetest {
 
         try {
             String result = engine.generateFieldSetterString(generationContext, property);
-            System.out.println( result );
+            assertEquals( results.getProperty( "testFieldMutatorStringGeneration" ), result );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -383,7 +382,7 @@ public class GenerationEnginetest {
 
         try {
             String result = engine.generateEqualsString(generationContext, object1);
-            System.out.println( result );
+            assertEquals( results.getProperty( "testEqualsStringGeneration" ), result );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -426,7 +425,7 @@ public class GenerationEnginetest {
 
         try {
             String result = engine.generateHashCodeString(generationContext, object1);
-            System.out.println( result );
+            assertEquals( results.getProperty( "testHashCodeStringGeneration" ), result );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
