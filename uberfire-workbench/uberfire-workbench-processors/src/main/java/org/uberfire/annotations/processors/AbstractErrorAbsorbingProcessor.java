@@ -24,7 +24,12 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
 			// eclipse JDT goes into an infinite loop when the annotation processor throws any exception
 			// so we have to catch EVERYTHING, even Errors.
 
-		    final String errorMessage = "Internal error in " + getClass().getName() + ": " + e;
+		    StringBuilder causeChain = new StringBuilder();
+		    while (e != null) {
+		        causeChain.append( " Caused by: " ).append( e.toString() );
+		        e = e.getCause();
+		    }
+		    final String errorMessage = "Internal error in " + getClass().getName() + causeChain.toString();
 
 		    boolean emittedSpecificError = false;
 		    for (TypeElement annotation : annotations) {
