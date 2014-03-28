@@ -16,14 +16,15 @@
 
 package org.uberfire.security;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.uberfire.security.auth.Principal;
-
-public interface Subject extends Principal {
+public interface Subject extends Serializable {
 
     public static final String ANONYMOUS = "Anonymous";
+
+    String getName();
 
     List<Role> getRoles();
 

@@ -21,7 +21,7 @@ import org.uberfire.security.Subject;
 
 public interface AuthenticatedStorageProvider {
 
-    Principal load(final SecurityContext context);
+    Subject load(final SecurityContext context);
 
     void store(final SecurityContext context, final Subject subject);
 

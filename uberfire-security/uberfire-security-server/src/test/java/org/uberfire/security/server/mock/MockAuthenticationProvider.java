@@ -1,10 +1,8 @@
 package org.uberfire.security.server.mock;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.uberfire.security.Role;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationProvider;
@@ -12,8 +10,7 @@ import org.uberfire.security.auth.AuthenticationResult;
 import org.uberfire.security.auth.AuthenticationStatus;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
-import org.uberfire.security.impl.SubjectImpl;
-import org.uberfire.security.impl.RoleImpl;
+import org.uberfire.security.impl.auth.PrincipalImpl;
 import org.uberfire.security.impl.auth.UserNameCredential;
 
 
@@ -40,10 +37,7 @@ public class MockAuthenticationProvider implements AuthenticationProvider {
 
             @Override
             public Principal getPrincipal() {
-                List<Role> roles = new ArrayList<Role>();
-                String userName = ((UserNameCredential) credential).getUserName();
-                roles.add( new RoleImpl( userName ) );
-                return new SubjectImpl( userName, roles );
+                return new PrincipalImpl(((UserNameCredential) credential).getUserName());
             }
 
             @Override

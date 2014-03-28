@@ -61,12 +61,12 @@ public class HttpAuthenticationManager implements AuthenticationManager {
     //if System.getProperty("java.security.auth.login.config") != null => create a JAASProvider
 
     public HttpAuthenticationManager( final List<AuthenticationScheme> authScheme,
-            final String forceURL,
-            final List<AuthenticationProvider> authProviders,
-            final List<RoleProvider> roleProviders,
-            final List<SubjectPropertiesProvider> subjectPropertiesProviders,
-            final List<AuthenticatedStorageProvider> authStorageProviders,
-            final ResourceManager resourceManager ) {
+                                      final String forceURL,
+                                      final List<AuthenticationProvider> authProviders,
+                                      final List<RoleProvider> roleProviders,
+                                      final List<SubjectPropertiesProvider> subjectPropertiesProviders,
+                                      final List<AuthenticatedStorageProvider> authStorageProviders,
+                                      final ResourceManager resourceManager ) {
         this.forceURL = forceURL;
         this.authSchemes = checkNotEmpty( "authScheme", authScheme );
         this.authProviders = checkNotEmpty( "authProviders", authProviders );
@@ -115,11 +115,11 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         // since this wasn't a login attempt but the resource requires authentication, look for cached auth info
         if ( principal == null ) {
             for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
-                principal = storeProvider.load( httpContext );
-                if ( principal != null && principal instanceof Subject ) {
+                Subject subjectInSession = storeProvider.load( httpContext );
+                if ( subjectInSession != null ) {
 
                     // return immediately; we should not attempt to build up a new Subject
-                    return (Subject) principal;
+                    return subjectInSession;
                 }
             }
         }

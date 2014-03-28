@@ -18,8 +18,18 @@ package org.uberfire.security.auth;
 
 import java.io.Serializable;
 
+import org.uberfire.security.Subject;
+
+/**
+ * Lightweight interim placeholder for a user who has been authenticated but for whom we are still in the process of
+ * building up a {@link Subject}. This type is only of interest to those who are extending UberFire security with
+ * additional Authorization, Authentication, Role, or Property providers.
+ */
 public interface Principal extends Serializable {
 
+    /**
+     * Returns the name of the user who has been authenticated. Usually, this will be the same as the username
+     * credential that was used in the successful login attempt.
+     */
     String getName();
-
 }

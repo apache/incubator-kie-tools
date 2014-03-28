@@ -16,24 +16,23 @@
 
 package org.uberfire.security.server.auth;
 
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.security.server.SecurityConstants.*;
+
 import javax.servlet.http.HttpSession;
 
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.Subject;
 import org.uberfire.security.auth.AuthenticatedStorageProvider;
-import org.uberfire.security.auth.Principal;
 import org.uberfire.security.server.HttpSecurityContext;
-
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.security.server.SecurityConstants.*;
 
 public class HttpSessionStorage implements AuthenticatedStorageProvider {
 
     @Override
-    public Principal load(final SecurityContext context) {
+    public Subject load(final SecurityContext context) {
         final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
 
-        return (Principal) httpContext.getRequest().getSession().getAttribute(SUBJECT_ON_SESSION_KEY);
+        return (Subject) httpContext.getRequest().getSession().getAttribute(SUBJECT_ON_SESSION_KEY);
     }
 
     @Override
