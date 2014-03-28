@@ -2,6 +2,7 @@ package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -12,7 +13,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.security.Identity;
+
+import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -29,7 +31,7 @@ public class PespectiveContextMenusView
     private AuthorizationManager authzManager;
 
     @Inject
-    private Identity identity;
+    private Subject identity;
 
     NavPills menuBar = new NavPills();
 

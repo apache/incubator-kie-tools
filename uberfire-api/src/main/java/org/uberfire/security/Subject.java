@@ -23,6 +23,8 @@ import org.uberfire.security.auth.Principal;
 
 public interface Subject extends Principal {
 
+    public static final String ANONYMOUS = "Anonymous";
+
     List<Role> getRoles();
 
     boolean hasRole( final Role role );

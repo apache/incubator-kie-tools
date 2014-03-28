@@ -31,7 +31,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
@@ -47,7 +47,7 @@ public class ActivityManagerImpl implements ActivityManager {
     private ActivityBeansCache activityBeansCache;
 
     @Inject
-    private Identity identity;
+    private Subject identity;
 
     @Override
     public <T extends Activity> Set<T> getActivities( final Class<T> clazz ) {

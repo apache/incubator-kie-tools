@@ -1,20 +1,21 @@
 package org.uberfire.security.impl;
 
-import static java.util.Collections.unmodifiableMap;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import java.io.Serializable;
+import java.security.Identity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
+import org.uberfire.security.Subject;
 
-public class IdentityImpl implements Identity,
-                                     Serializable {
+public class SubjectImpl implements Subject,
+Serializable {
 
     private static final long serialVersionUID = 3172905561115755369L;
 
@@ -22,20 +23,20 @@ public class IdentityImpl implements Identity,
     private String name;
     private final Map<String, String> properties = new HashMap<String, String>();
 
-    public IdentityImpl() {
+    public SubjectImpl() {
     }
 
-    public IdentityImpl( final String name ) {
+    public SubjectImpl( final String name ) {
         this( name, Collections.<Role>emptyList() );
     }
 
-    public IdentityImpl( final String name,
+    public SubjectImpl( final String name,
                          final List<Role> roles ) {
         this.name = name;
         this.roles.addAll( roles );
     }
 
-    public IdentityImpl( final String name,
+    public SubjectImpl( final String name,
                          final List<Role> roles,
                          final Map<String, String> properties ) {
         this.name = name;
@@ -99,7 +100,7 @@ public class IdentityImpl implements Identity,
             return false;
         }
 
-        Identity identity = (Identity) o;
+        Subject identity = (Subject) o;
 
         return name.equals( identity.getName() );
     }
@@ -111,7 +112,7 @@ public class IdentityImpl implements Identity,
 
     @Override
     public String toString() {
-      return "IdentityImpl [roles=" + roles + ", name=" + name + ", properties=" + properties + "]";
+        return "IdentityImpl [roles=" + roles + ", name=" + name + ", properties=" + properties + "]";
     }
 
 }

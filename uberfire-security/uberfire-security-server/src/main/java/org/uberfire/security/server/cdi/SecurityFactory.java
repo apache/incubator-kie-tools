@@ -19,21 +19,21 @@ package org.uberfire.security.server.cdi;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 
-import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
 import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.IdentityImpl;
+import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.impl.RoleImpl;
 
 public class SecurityFactory {
 
     private static final List<Role> ANONYMOUS_ROLE = new ArrayList<Role>() {{
-        add( new RoleImpl( Identity.ANONYMOUS ) );
+        add( new RoleImpl( Subject.ANONYMOUS ) );
     }};
     private static final ThreadLocal<Subject> subjects = new ThreadLocal<Subject>();
 
@@ -49,11 +49,11 @@ public class SecurityFactory {
 
     @Produces
     @RequestScoped
-    public static Identity getIdentity() {
+    public static Subject getIdentity() {
         if ( subjects.get() == null ) {
-            return new IdentityImpl( Identity.ANONYMOUS, ANONYMOUS_ROLE, Collections.<String, String>emptyMap() );
+            return new SubjectImpl( Subject.ANONYMOUS, ANONYMOUS_ROLE, Collections.<String, String>emptyMap() );
         }
-        return new IdentityImpl( subjects.get().getName(), subjects.get().getRoles(), subjects.get().getProperties() );
+        return new SubjectImpl( subjects.get().getName(), subjects.get().getRoles(), subjects.get().getProperties() );
     }
 
     @Produces

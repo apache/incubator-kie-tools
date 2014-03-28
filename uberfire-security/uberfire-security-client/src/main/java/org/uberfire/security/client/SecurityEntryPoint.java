@@ -16,43 +16,44 @@
 
 package org.uberfire.security.client;
 
+import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.gwt.json.client.JSONObject;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.bus.client.api.messaging.MessageBus;
 import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 import org.jboss.errai.common.client.protocols.MessageParts;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
+import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationException;
 
-import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.security.Identity.*;
+import com.google.gwt.json.client.JSONObject;
 
 @EntryPoint
 public class SecurityEntryPoint {
 
-    private Identity currentIdentity = null;
+    private Subject currentSubject = null;
 
     @Inject
     private MessageBus bus;
 
     @Produces
     @ApplicationScoped
-    public Identity currentUser() {
-        if ( currentIdentity == null ) {
+    public Subject currentUser() {
+        if ( currentSubject == null ) {
             setup();
         }
-        return currentIdentity;
+        return currentSubject;
     }
 
     public void setup() {
@@ -62,11 +63,11 @@ public class SecurityEntryPoint {
         final Map<String, String> properties = new HashMap<String, String>();
 
         if ( clientSubject == null ) {
-            name = ANONYMOUS;
+            name = Subject.ANONYMOUS;
             roles.add( new Role() {
                 @Override
                 public String getName() {
-                    return ANONYMOUS;
+                    return Subject.ANONYMOUS;
                 }
             } );
 
@@ -88,7 +89,7 @@ public class SecurityEntryPoint {
             }
         }
 
-        this.currentIdentity = new Identity() {
+        this.currentSubject = new Subject() {
             @Override
             public List<Role> getRoles() {
                 return roles;
@@ -113,12 +114,12 @@ public class SecurityEntryPoint {
             @Override
             public void aggregateProperty( final String name,
                                            final String value ) {
-                throw new RuntimeException( "Identity.aggregateProperty method not allowed" );
+                throw new RuntimeException( "Not allowed on this kind of Subject" );
             }
 
             @Override
             public void removeProperty( final String name ) {
-                throw new RuntimeException( "Identity.removeProperty method not allowed" );
+                throw new RuntimeException( "Not allowed on this kind of Subject" );
             }
 
             @Override

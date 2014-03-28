@@ -2,6 +2,7 @@ package org.uberfire.backend.vfs.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
@@ -15,7 +16,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.workbench.events.ResourceCopied;
@@ -268,7 +269,7 @@ public class ObservablePathImpl implements ObservablePath {
     private void executeConcurrentRenameCommand( final Path path,
                                                  final Path destinationPath,
                                                  final String sessionId,
-                                                 final Identity identity ) {
+                                                 final Subject identity ) {
         if ( !onConcurrentRenameCommand.isEmpty() ) {
             for ( final ParameterizedCommand<OnConcurrentRenameEvent> command : onConcurrentRenameCommand ) {
                 final OnConcurrentRenameEvent event = new OnConcurrentRenameEvent() {
@@ -288,7 +289,7 @@ public class ObservablePathImpl implements ObservablePath {
                     }
 
                     @Override
-                    public Identity getIdentity() {
+                    public Subject getIdentity() {
                         return identity;
                     }
                 };
@@ -308,7 +309,7 @@ public class ObservablePathImpl implements ObservablePath {
     private void executeConcurrentCopyCommand( final Path path,
                                                final Path destinationPath,
                                                final String sessionId,
-                                               final Identity identity ) {
+                                               final Subject identity ) {
         if ( !onConcurrentCopyCommand.isEmpty() ) {
             final OnConcurrentCopyEvent copyEvent = new OnConcurrentCopyEvent() {
                 @Override
@@ -327,7 +328,7 @@ public class ObservablePathImpl implements ObservablePath {
                 }
 
                 @Override
-                public Identity getIdentity() {
+                public Subject getIdentity() {
                     return identity;
                 }
             };
@@ -347,7 +348,7 @@ public class ObservablePathImpl implements ObservablePath {
 
     private void executeConcurrentUpdateCommand( final Path path,
                                                  final String sessionId,
-                                                 final Identity identity ) {
+                                                 final Subject identity ) {
         if ( !onConcurrentUpdateCommand.isEmpty() ) {
             final OnConcurrentUpdateEvent event = new OnConcurrentUpdateEvent() {
                 @Override
@@ -361,7 +362,7 @@ public class ObservablePathImpl implements ObservablePath {
                 }
 
                 @Override
-                public Identity getIdentity() {
+                public Subject getIdentity() {
                     return identity;
                 }
             };
@@ -381,7 +382,7 @@ public class ObservablePathImpl implements ObservablePath {
 
     private void executeConcurrentDeleteCommand( final Path path,
                                                  final String sessionId,
-                                                 final Identity identity ) {
+                                                 final Subject identity ) {
         if ( !onConcurrentDeleteCommand.isEmpty() ) {
             final OnConcurrentDelete event = new OnConcurrentDelete() {
                 @Override
@@ -395,7 +396,7 @@ public class ObservablePathImpl implements ObservablePath {
                 }
 
                 @Override
-                public Identity getIdentity() {
+                public Subject getIdentity() {
                     return identity;
                 }
             };

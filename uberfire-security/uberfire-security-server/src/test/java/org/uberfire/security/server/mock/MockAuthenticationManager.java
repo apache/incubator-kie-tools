@@ -10,7 +10,7 @@ import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationScheme;
-import org.uberfire.security.impl.IdentityImpl;
+import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.impl.RoleImpl;
 
 /**
@@ -28,7 +28,7 @@ public class MockAuthenticationManager implements AuthenticationManager {
     public Subject authenticate( SecurityContext context ) throws AuthenticationException {
         List<Role> roles = new ArrayList<Role>();
         roles.add(new RoleImpl( "test-role" ));
-        return new IdentityImpl("test-user", roles);
+        return new SubjectImpl("test-user", roles);
     }
 
     @Override

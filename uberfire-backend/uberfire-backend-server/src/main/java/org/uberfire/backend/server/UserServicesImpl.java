@@ -20,14 +20,14 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 @ApplicationScoped
 public class UserServicesImpl {
 
     @Inject
     @SessionScoped
-    private Identity identity;
+    private Subject identity;
 
     @Inject
     private UserServicesBackendImpl userServicesBackend;

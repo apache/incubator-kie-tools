@@ -19,7 +19,7 @@ import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.auth.SubjectPropertiesProvider;
-import org.uberfire.security.impl.IdentityImpl;
+import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.server.UserPassSecurityContext;
 import org.uberfire.security.server.auth.DefaultAuthenticationProvider;
 
@@ -89,7 +89,7 @@ public class SimpleUserPassAuthenticationManager implements AuthenticationManage
             }
         }};
 
-        return new IdentityImpl( principal.getName(), roles, properties );
+        return new SubjectImpl( principal.getName(), roles, properties );
     }
 
     @Override

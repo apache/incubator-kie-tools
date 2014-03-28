@@ -19,23 +19,24 @@ package org.uberfire.backend;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
+import org.uberfire.security.Subject;
 
 @Singleton
 @Alternative
 public class TestIdentityFactory {
 
-    private Identity identity;
+    private Subject subject;
 
     @PostConstruct
     public void onStartup() {
-        identity = new Identity() {
+        subject = new Subject() {
 
             @Override
             public String getName() {
@@ -77,8 +78,8 @@ public class TestIdentityFactory {
 
     @Produces
     @Alternative
-    public Identity getIdentity() {
-        return identity;
+    public Subject getIdentity() {
+        return subject;
     }
 
 }

@@ -17,6 +17,7 @@ package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Dropdown;
@@ -30,7 +31,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.security.Identity;
+
+import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -59,7 +61,7 @@ public class WorkbenchMenuBarView extends Composite
     private AuthorizationManager authzManager;
 
     @Inject
-    private Identity identity;
+    private Subject identity;
 
     @UiField
     public Nav menuBarLeft;

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -32,7 +33,7 @@ import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 import static org.uberfire.backend.server.util.Paths.*;
 
@@ -53,7 +54,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private ConfigGroupMarshaller marshaller;
 
     @Inject
-    private Identity identity;
+    private Subject identity;
 
     //Cache of ConfigGroups to avoid reloading them from file
     private final Map<ConfigType, List<ConfigGroup>> configuration = new ConcurrentHashMap<ConfigType, List<ConfigGroup>>();

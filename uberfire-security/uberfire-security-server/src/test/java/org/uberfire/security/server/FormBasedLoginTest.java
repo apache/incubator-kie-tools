@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
-import org.uberfire.security.impl.IdentityImpl;
+import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.server.auth.FormAuthenticationScheme;
 import org.uberfire.security.server.cdi.SecurityFactory;
 import org.uberfire.security.server.mock.MockAuthenticationManager;
@@ -211,7 +211,7 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         RequestDispatcher requestDispatcher = mock( RequestDispatcher.class );
 
         // we assume this works because it's tested in SessionStorageAuthProviderTest
-        IdentityImpl previouslyLoggedInUser = new IdentityImpl("previously_logged_in");
+        SubjectImpl previouslyLoggedInUser = new SubjectImpl("previously_logged_in");
         mockHttpSession.setAttribute( SUBJECT_ON_SESSION_KEY, previouslyLoggedInUser );
 
         HttpServletRequest request = mock( HttpServletRequest.class );
@@ -290,7 +290,7 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         final String forceUri = "/force-uri.html";
 
         // we assume this works because it's tested in SessionStorageAuthProviderTest
-        IdentityImpl previouslyLoggedInUser = new IdentityImpl("previously_logged_in");
+        SubjectImpl previouslyLoggedInUser = new SubjectImpl("previously_logged_in");
         mockHttpSession.setAttribute( SUBJECT_ON_SESSION_KEY, previouslyLoggedInUser );
 
         filterConfig.initParams.put( SecurityConstants.AUTH_FORCE_URL, forceUri );
@@ -326,7 +326,7 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         final String forceUri = "/force-uri.html";
 
         // we assume this works because it's tested in SessionStorageAuthProviderTest
-        IdentityImpl previouslyLoggedInUser = new IdentityImpl("previously_logged_in");
+        SubjectImpl previouslyLoggedInUser = new SubjectImpl("previously_logged_in");
         mockHttpSession.setAttribute( SUBJECT_ON_SESSION_KEY, previouslyLoggedInUser );
 
         filterConfig.initParams.put( SecurityConstants.AUTH_FORCE_URL, forceUri );

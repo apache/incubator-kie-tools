@@ -42,7 +42,7 @@ import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.auth.SubjectPropertiesProvider;
-import org.uberfire.security.impl.IdentityImpl;
+import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.server.HttpSecurityContext;
 
 @Alternative
@@ -140,7 +140,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
 
         final String name = principal.getName();
-        final Subject result = new IdentityImpl( name, roles, properties );
+        final Subject result = new SubjectImpl( name, roles, properties );
 
         for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
             storeProvider.store( httpContext, result );

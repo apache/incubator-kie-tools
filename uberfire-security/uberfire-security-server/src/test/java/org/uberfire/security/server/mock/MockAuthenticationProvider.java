@@ -12,7 +12,7 @@ import org.uberfire.security.auth.AuthenticationResult;
 import org.uberfire.security.auth.AuthenticationStatus;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
-import org.uberfire.security.impl.IdentityImpl;
+import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.impl.auth.UserNameCredential;
 
@@ -43,7 +43,7 @@ public class MockAuthenticationProvider implements AuthenticationProvider {
                 List<Role> roles = new ArrayList<Role>();
                 String userName = ((UserNameCredential) credential).getUserName();
                 roles.add( new RoleImpl( userName ) );
-                return new IdentityImpl( userName, roles );
+                return new SubjectImpl( userName, roles );
             }
 
             @Override

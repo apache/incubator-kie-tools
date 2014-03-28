@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -32,7 +33,7 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 @EntryPoint
 public class WorkbenchEntryPoint {
@@ -41,7 +42,7 @@ public class WorkbenchEntryPoint {
     private Workbench workbench;
 
     @Inject
-    private Identity identity;
+    private Subject identity;
 
     @Inject
     private ClientMessageBus bus;

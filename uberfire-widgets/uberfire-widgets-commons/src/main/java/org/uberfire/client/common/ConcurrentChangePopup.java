@@ -19,7 +19,7 @@ package org.uberfire.client.common;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
 
@@ -45,7 +45,7 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
     }
 
     public static ConcurrentChangePopup newConcurrentUpdate( final Path path,
-                                                             final Identity identity,
+                                                             final Subject identity,
                                                              final Command onForceSave,
                                                              final Command onCancel,
                                                              final Command onReOpen ) {
@@ -56,7 +56,7 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
 
     public static ConcurrentChangePopup newConcurrentRename( final Path source,
                                                              final Path target,
-                                                             final Identity identity,
+                                                             final Subject identity,
                                                              final Command onIgnore,
                                                              final Command onReOpen ) {
         final String message = CommonConstants.INSTANCE.ConcurrentRename( identity.getName(), source.toURI(), target.toURI() );
@@ -64,7 +64,7 @@ public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
     }
 
     public static ConcurrentChangePopup newConcurrentDelete( final Path path,
-                                                             final Identity identity,
+                                                             final Subject identity,
                                                              final Command onIgnore,
                                                              final Command onClose ) {
         final String message = CommonConstants.INSTANCE.ConcurrentDelete( identity.getName(), path.toURI() );

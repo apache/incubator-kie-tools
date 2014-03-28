@@ -3,7 +3,7 @@ package org.uberfire.rpc.impl;
 import javax.enterprise.inject.Alternative;
 
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
+import org.uberfire.security.Subject;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -11,18 +11,18 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 public class SessionInfoImpl implements SessionInfo {
 
     private String id;
-    private Identity identity;
+    private Subject identity;
 
     public SessionInfoImpl() {
     }
 
     public SessionInfoImpl( final String id,
-                            final Identity identity ) {
+                            final Subject identity ) {
         this.id = checkNotEmpty( "id", id );
         this.identity = checkNotNull( "identity", identity );
     }
 
-    public SessionInfoImpl( final Identity identity ) {
+    public SessionInfoImpl( final Subject identity ) {
         this.identity = checkNotNull( "identity", identity );
     }
 
@@ -36,7 +36,7 @@ public class SessionInfoImpl implements SessionInfo {
     }
 
     @Override
-    public Identity getIdentity() {
+    public Subject getIdentity() {
         return identity;
     }
 

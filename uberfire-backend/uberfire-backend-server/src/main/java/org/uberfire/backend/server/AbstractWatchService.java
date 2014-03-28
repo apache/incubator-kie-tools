@@ -25,7 +25,7 @@ import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.security.impl.IdentityImpl;
+import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.workbench.events.ResourceAdded;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -264,6 +264,6 @@ public abstract class AbstractWatchService implements IOWatchService {
             user = context.getUser();
         }
 
-        return new SessionInfoImpl( sessionId, new IdentityImpl( user ) );
+        return new SessionInfoImpl( sessionId, new SubjectImpl( user ) );
     }
 }
