@@ -22,4 +22,12 @@ public interface DescriptorFactory {
 
     FieldDescr createFieldDescr( String source ) throws Exception;
 
+    IdentifierDescr createIdentifierDescr( String source ) throws Exception;
+
+    TypeDescr createTypeDescr( String source ) throws Exception;
+
+    PackageDescr createPackageDescr ( String source ) throws Exception;
+
+    QualifiedNameDescr createQualifiedName ( String source ) throws Exception;
+
 }

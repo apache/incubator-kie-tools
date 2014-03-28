@@ -128,6 +128,12 @@ public class DataModelerServiceHelper {
         dataObjectTO.setProperties(propertiesTO);
     }
 
+    public DataObject to2Domain(DataObjectTO dataObjectTO) {
+        DataObject dataObject = new DataObjectImpl( dataObjectTO.getPackageName(), dataObjectTO.getName() );
+        to2Domain( dataObjectTO, dataObject );
+        return dataObject;
+    }
+
     public void to2Domain(DataObjectTO dataObjectTO, DataObject dataObject) {
         dataObject.setName(dataObjectTO.getName());
         List<ObjectPropertyTO> properties = dataObjectTO.getProperties();

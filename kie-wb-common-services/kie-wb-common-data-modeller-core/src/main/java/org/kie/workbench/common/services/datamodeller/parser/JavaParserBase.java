@@ -55,7 +55,8 @@ public class JavaParserBase extends Parser {
         PARSE_CLASS,
         PARSE_METHOD,
         PARSE_FIELD,
-        PARSE_ANNOTATION
+        PARSE_ANNOTATION,
+        PARSE_PACKAGE, PARSE_QUALIFIED_NAME, PARSE_TYPE
     }
 
     public JavaParserBase( TokenStream input, RecognizerSharedState state ) {
@@ -505,4 +506,17 @@ public class JavaParserBase extends Parser {
             }
         }
     }
+
+    protected void processClassBodyStart( JavaTokenDescr bodyStart ) {
+        if (isDeclaringMainClass()) {
+            peekClass().setBodyStartBrace( bodyStart );
+        }
+    }
+
+    protected void processClassBodyStop( JavaTokenDescr bodyStop ) {
+        if (isDeclaringMainClass()) {
+            peekClass().setBodyStopBrace( bodyStop );
+        }
+    }
+
 }

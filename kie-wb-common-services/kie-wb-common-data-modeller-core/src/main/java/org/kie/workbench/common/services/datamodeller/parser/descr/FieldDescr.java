@@ -83,4 +83,13 @@ public class FieldDescr extends ModifiersContainerDescr implements HasType {
         }
         return null;
     }
+
+    public FieldDescr removeVariableDeclaration( String name ) {
+        VariableDeclarationDescr variableDeclarationDescr = getVariableDeclaration( name );
+        if (variableDeclarationDescr != null) {
+            removeVariableDeclaration( variableDeclarationDescr );
+        }
+        return this;
+    }
+
 }

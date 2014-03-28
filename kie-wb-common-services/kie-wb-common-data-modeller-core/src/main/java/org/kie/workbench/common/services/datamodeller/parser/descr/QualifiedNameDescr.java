@@ -40,9 +40,11 @@ public class QualifiedNameDescr extends ElementDescriptor {
         super( ElementType.QUALIFIED_NAME, text, start, stop, line, position );
     }
 
+    /*
     public void addPart( IdentifierDescr identifierDescr ) {
         getElements( ).add( identifierDescr );
     }
+    */
 
     public List<IdentifierDescr> getParts( ) {
         List<IdentifierDescr> identifiers = new ArrayList<IdentifierDescr>( );
@@ -53,6 +55,10 @@ public class QualifiedNameDescr extends ElementDescriptor {
     }
 
     public String getName( ) {
+        /*simplification by now I won't process the qualified name in parts*/
+
+        /*
+
         StringBuilder nameBuilder = new StringBuilder( );
         boolean first = true;
         for ( IdentifierDescr identifier : getParts( ) ) {
@@ -63,5 +69,8 @@ public class QualifiedNameDescr extends ElementDescriptor {
             first = false;
         }
         return nameBuilder.toString( );
+        */
+
+        return getText();
     }
 }

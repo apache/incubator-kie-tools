@@ -637,11 +637,11 @@ typeList
         )*
     ;
 
-classBody 
-    :   '{' 
+classBody
+    :   lb='{' { processClassBodyStart(new JavaTokenDescr(ElementType.JAVA_LBRACE, $lb.text,  start((CommonToken)$lb), stop((CommonToken)$lb), line($lb), position($lb))); }
         (classBodyDeclaration
         )* 
-        '}'
+        rb='}' { processClassBodyStop(new JavaTokenDescr(ElementType.JAVA_RBRACE, $rb.text,  start((CommonToken)$rb), stop((CommonToken)$rb), line($rb), position($rb))); }
     ;
 
 interfaceBody 
@@ -823,32 +823,32 @@ interfaceFieldDeclaration
     ;
 
 
-type
+type returns [ TypeDescr typeDescr ]
     @init {
-        TypeDescr type = null;
+        $typeDescr = null;
         if (!isBacktracking()) {
             log("Start type declaration.");
-            type = new TypeDescr($text, start((CommonToken)$start), -1, line((CommonToken)$start), position((CommonToken)$start));
-            context.push(type);
+            $typeDescr = new TypeDescr($text, start((CommonToken)$start), -1, line((CommonToken)$start), position((CommonToken)$start));
+            context.push($typeDescr);
         }
     }
     @after {
-        type = popType();
-        if (type != null) {
-            updateOnAfter(type, $text, (CommonToken)$stop);
-            processType(type);
+        $typeDescr = popType();
+        if ($typeDescr != null) {
+            updateOnAfter($typeDescr, $text, (CommonToken)$stop);
+            processType($typeDescr);
         } else {
             //TODO warning, by construction current type is expected
         }
     }
     :   classOrInterfaceType
-        (p1='[' p2=']' { type.addDimension(new DimensionDescr("", start((CommonToken)$p1), stop((CommonToken)$p2), line($p1), position($p1),
+        (p1='[' p2=']' { $typeDescr.addDimension(new DimensionDescr("", start((CommonToken)$p1), stop((CommonToken)$p2), line($p1), position($p1),
                                                                 new JavaTokenDescr(ElementType.JAVA_LBRACKET, $p1.text, start((CommonToken)$p1), stop((CommonToken)$p1), line($p1), position($p1)),
                                                                 new JavaTokenDescr(ElementType.JAVA_RBRACKET, $p2.text, start((CommonToken)$p2), stop((CommonToken)$p2), line($p2), position($p2))));
         }
         )*
     |   primitiveType
-        (p1='[' p2=']' { type.addDimension(new DimensionDescr("", start((CommonToken)$p1), stop((CommonToken)$p2), line($p1), position($p1),
+        (p1='[' p2=']' { $typeDescr.addDimension(new DimensionDescr("", start((CommonToken)$p1), stop((CommonToken)$p2), line($p1), position($p1),
                                                                 new JavaTokenDescr(ElementType.JAVA_LBRACKET, $p1.text, start((CommonToken)$p1), stop((CommonToken)$p1), line($p1), position($p1)),
                                                                 new JavaTokenDescr(ElementType.JAVA_RBRACKET, $p2.text, start((CommonToken)$p2), stop((CommonToken)$p2), line($p2), position($p2))));
         }
@@ -1119,8 +1119,8 @@ qualifiedName returns [ QualifiedNameDescr qnameDec ]
              //TODO warning, by construction current qualifiedname param is expected
          }
      }
-    :   id1=IDENTIFIER { $qnameDec.addPart( new IdentifierDescr($id1.text, start((CommonToken)$id1), stop((CommonToken)$id1),line($id1), position($id1)) ); }
-        ('.' id2=IDENTIFIER { $qnameDec.addPart( new IdentifierDescr($id2.text,  start((CommonToken)$id2), stop((CommonToken)$id2), line($id2), position($id2)) ); }
+    :   id1=IDENTIFIER { /* simplification by now I won't process the qualified name in parts $qnameDec.addPart( new IdentifierDescr($id1.text, start((CommonToken)$id1), stop((CommonToken)$id1),line($id1), position($id1)) ); */ }
+        ('.' id2=IDENTIFIER { /* $qnameDec.addPart( new IdentifierDescr($id2.text,  start((CommonToken)$id2), stop((CommonToken)$id2), line($id2), position($id2)) ); */ }
         )*
     ;
 

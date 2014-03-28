@@ -49,6 +49,8 @@ public class ElementDescriptor {
         JAVA_EQUALS,
         JAVA_LBRACKET,
         JAVA_RBRACKET,
+        JAVA_LBRACE,
+        JAVA_RBRACE,
         JAVA_DOT,
         JAVA_GT,
         JAVA_LT,

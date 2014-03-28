@@ -44,10 +44,42 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_FIELD );
         parser.fieldDeclaration( );
         FieldDescr fieldDescr = parser.getFieldDescr( );
-        //TODO the parser should set the source the his children
+        //TODO the parser should set the source for his children
         ParserUtil.setSourceBufferTMP( fieldDescr, parser.getSourceBuffer( ) );
         ParserUtil.populateUnManagedElements( fieldDescr );
         ParserUtil.setSourceBufferTMP( fieldDescr, parser.getSourceBuffer( ) );
         return fieldDescr;
     }
+
+    @Override
+    public IdentifierDescr createIdentifierDescr( String source ) throws Exception {
+        IdentifierDescr identifierDescr = new IdentifierDescr( source, 0, source.length()-1, 1, 0 );
+        identifierDescr.setSourceBuffer( new StringBuilder( source ) );
+        return identifierDescr;
+    }
+
+    @Override
+    public TypeDescr createTypeDescr( String source ) throws Exception {
+        JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_TYPE );
+        TypeDescr result = parser.type().typeDescr;
+        ParserUtil.setSourceBufferTMP( result, parser.getSourceBuffer() );
+        return result;
+    }
+
+    @Override
+    public PackageDescr createPackageDescr( String source ) throws Exception {
+        JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_PACKAGE );
+        PackageDescr result = parser.packageDeclaration().packageDec;
+        ParserUtil.setSourceBufferTMP( result, parser.getSourceBuffer() );
+        return result;
+    }
+
+    @Override
+    public QualifiedNameDescr createQualifiedName( String source ) throws Exception {
+        JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_QUALIFIED_NAME);
+        QualifiedNameDescr result = parser.qualifiedName().qnameDec;
+        ParserUtil.setSourceBufferTMP( result, parser.getSourceBuffer() );
+        return result;
+    }
+
 }

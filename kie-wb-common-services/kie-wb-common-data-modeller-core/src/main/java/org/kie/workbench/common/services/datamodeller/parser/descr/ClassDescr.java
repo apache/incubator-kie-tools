@@ -67,11 +67,20 @@ public class ClassDescr extends ModifiersContainerDescr {
 
     public void addField( FieldDescr fieldDescr ) {
         int index = getElements( ).lastIndexOf( ElementType.FIELD );
+        if (index < 0) {
+            index = getElements().indexOf( ElementType.JAVA_LBRACE );
+        }
         getElements( ).add( index + 1, fieldDescr );
     }
 
     public void addMethod( MethodDescr methodDescr ) {
         int index = getElements( ).lastIndexOf( ElementType.METHOD );
+        if (index < 0) {
+            index = getElements().lastIndexOf( ElementType.FIELD );
+            if (index < 0) {
+                index = getElements().indexOf( ElementType.JAVA_LBRACE );
+            }
+        }
         getElements( ).add( index + 1, methodDescr );
     }
 
@@ -199,4 +208,21 @@ public class ClassDescr extends ModifiersContainerDescr {
         getElements( ).add( implementsToken );
     }
 
+    public JavaTokenDescr getBodyStartBrace( ) {
+        return ( JavaTokenDescr ) getElements( ).getFirst( ElementType.JAVA_LBRACE );
+    }
+
+    public void setBodyStartBrace( JavaTokenDescr bodyStart ) {
+        getElements( ).removeFirst( ElementType.JAVA_LBRACE );
+        getElements( ).add( bodyStart );
+    }
+
+    public JavaTokenDescr getBodyStopBrace( ) {
+        return ( JavaTokenDescr ) getElements( ).getFirst( ElementType.JAVA_RBRACE );
+    }
+
+    public void setBodyStopBrace( JavaTokenDescr bodyStop ) {
+        getElements( ).removeFirst( ElementType.JAVA_RBRACE );
+        getElements( ).add( bodyStop );
+    }
 }
