@@ -56,26 +56,38 @@ public class AsyncPackageDataModelOracleUtilities {
     }
 
     //Filter and rename Model Fields based on package name and imports
-    public static Map<String, ModelField[]> filterModelFields(final String packageName,
+    public static Map<String, ModelField[]> filterModelFields(
+            final String packageName,
             final Imports imports,
             final Map<String, ModelField[]> projectModelFields,
             final FactNameToFQCNHandleRegistry registry) {
+
         final Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
-        for ( Map.Entry<String, ModelField[]> e : projectModelFields.entrySet() ) {
-            final String mfQualifiedType = e.getKey();
+
+        for ( Map.Entry<String, ModelField[]> entry : projectModelFields.entrySet() ) {
+            final String mfQualifiedType = entry.getKey();
             final String mfPackageName = getPackageName( mfQualifiedType );
             final String mfTypeName = getTypeName( mfQualifiedType );
 
-            registry.add(mfTypeName, mfQualifiedType);
+            if (registry.contains(mfTypeName)) {
+                Set<String> importStrings = imports.getImportStrings();
+                if (mfPackageName.equals(packageName) || importStrings.contains(mfQualifiedType)) {
+                    // Override existing
+                    registry.add(mfTypeName, mfQualifiedType);
+                }
+            } else {
+                registry.add(mfTypeName, mfQualifiedType);
+            }
 
             if ( mfPackageName.equals( packageName ) || isImported( mfQualifiedType,
                                                                     imports ) ) {
                 scopedModelFields.put( mfTypeName,
-                                       correctModelFields( packageName,
-                                                           e.getValue(),
-                                                           imports ) );
+                                       correctModelFields(packageName,
+                                               entry.getValue(),
+                                               imports) );
             }
         }
+
         return scopedModelFields;
     }
 

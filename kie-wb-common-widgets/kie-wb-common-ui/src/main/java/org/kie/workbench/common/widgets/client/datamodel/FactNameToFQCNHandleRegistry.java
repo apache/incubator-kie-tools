@@ -14,4 +14,8 @@ public class FactNameToFQCNHandleRegistry {
     public String get(String factName) {
         return map.get(factName);
     }
+
+    public boolean contains(String mfTypeName) {
+        return map.keySet().contains(mfTypeName);
+    }
 }
