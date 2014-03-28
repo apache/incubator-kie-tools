@@ -50,7 +50,7 @@ in your application:
 ** Each file in the VFS supports change tracking, revision control, and update notification
 ** File types can be associated with custom viewers and editors
 ** The contents of the VFS can also be searched using a performant full-text search engine
-    (TODO: is this correct? I think this is the purpose of UberFire-metadata)
+    (TODO: is this correct? I think this is the purpose of uberfire-metadata)
 * Application components can be written in Java or JavaScript. Components can interoperate
   regardless of which language they are implemented in.
 
@@ -63,7 +63,7 @@ UberFire may still be a good choice.
 UberFire Core Concepts
 ~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the core `UberFire-api` module,
+These concepts are expressed in the core `uberfire-api` module,
 footnote:[A few of these concepts actually come from Errai and GWT,
 but the distinction isn't important when getting started with
 UberFire.] so they permeate all parts of the UberFire framework:
@@ -114,7 +114,7 @@ items, icons, types
 * File Navigators
 * Identity
 * Marshalling
-* Workbench Events (TODO: why are these defined globally rather than in the UberFire-workbench module?)
+* Workbench Events (TODO: why are these defined globally rather than in the uberfire-workbench module?)
 ** ApplicationReadyEvent
 +
 Signal when certain resources have been injected into the GWT Host Page and other bootstrap processes complete. Raised by UberFire. 
@@ -167,7 +167,7 @@ Signal a Place has been selected. Raised by Uberfire.
 +
 TODO
 
-* VFS Events (TODO: why are these defined globally rather than in the UberFire-workbench module?)
+* VFS Events (TODO: why are these defined globally rather than in the uberfire-workbench module?)
 ** ResourceAddedEvent
 +
 Signal a resource has been added to a VFS. Raised by VFS.
@@ -193,7 +193,7 @@ Signal a resource has been modified within a VFS. Raised by VFS.
 UberFire Backend API Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-backend-api` module, which
+These concepts are expressed in the `uberfire-backend-api` module, which
 TODO: characterize this module; it's (mostly) not just for the server-side.
 
 * Deployment
@@ -206,7 +206,7 @@ TODO: characterize this module; it's (mostly) not just for the server-side.
 UberFire Client API Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-client-api` package,
+These concepts are expressed in the `uberfire-client-api` package,
 which defines an API that's only accessible to client-side
 (in-browser) code.
 
@@ -279,7 +279,7 @@ Extends ResourceTypeDefinition which is a server-side model for a resource type;
 UberFire Commons Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-commons` package,
+These concepts are expressed in the `uberfire-commons` package,
 which contains a mix of server-only definitions shared client/server definitions.
 
 * Clustering (server-only, see also UberFire I/O)
@@ -296,7 +296,7 @@ which contains a mix of server-only definitions shared client/server definitions
 UberFire I/O Concepts
 ~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-io` package,
+These concepts are expressed in the `uberfire-io` package,
 which contains mostly server-only code.
 
 * Dublin Core (TM) metadata
@@ -326,7 +326,7 @@ applications partly or entirely in JavaScript.
 UberFire Metadata Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-metadata` package,
+These concepts are expressed in the `uberfire-metadata` package,
 which appears to be a full-text search and indexing feature (TODO: is this correct?)
 
 The UberFire Metadata module includes an API submodule which defines
@@ -348,7 +348,7 @@ backend") that relies on Apache Lucene:
 * Date range
 * Search index
 
-There is also a small submodule called `UberFire-metadata-commons-io`
+There is also a small submodule called `uberfire-metadata-commons-io`
 which introduces the following concepts:
 
 * Batch index
@@ -358,9 +358,9 @@ which introduces the following concepts:
 UberFire NIO2 Concepts
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The `UberFire-nio2-backport` module includes a backport of the Java SE
+The `uberfire-nio2-backport` module includes a backport of the Java SE
 7 "new new IO" APIs to Java SE 6. The backport is repackaged under the
-org.UberFire.java.nio.* namespace. It also provides a couple of utility
+org.uberfire.java.nio.* namespace. It also provides a couple of utility
 classes in the `org.apache.commons.io` package.
 
 The UberFire NIO2 API is only intended for use on the server side.
@@ -373,7 +373,7 @@ virtual filesystem.
 UberFire Security Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-security-api` package,
+These concepts are expressed in the `uberfire-security-api` package,
 and they are all available to both client- and server-side code.
 
 * Security interceptor annotations (for types and methods)
@@ -407,11 +407,11 @@ and they are all available to both client- and server-side code.
 * Security Manager
 * Subject
 
-There is an `UberFire-security-client` module, but it's just
+There is an `uberfire-security-client` module, but it's just
 "plumbing:" it doesn't expose any concepts that are used directly in
 application code.
 
-These concepts are expressed in the `UberFire-security-server`
+These concepts are expressed in the `uberfire-security-server`
 package, which contains a variety of server-side implementations of
 the UberFire Security API types:
 
@@ -435,7 +435,7 @@ Plus some new concepts:
 UberFire Server Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-server` package,
+These concepts are expressed in the `uberfire-server` package,
 which contains some server-side functionality.
 
 * UberFire Image Servlet
@@ -448,10 +448,10 @@ UberFire Widgets Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 UberFire Widgets are packaged into three modules:
-`UberFire-widgets-commons`, `UberFire-widgets-core-client`, and
-`UberFire-widget-markdown`.
+`uberfire-widgets-commons`, `uberfire-widgets-core-client`, and
+`uberfire-widget-markdown`.
 
-The `UberFire-widgets-commons` module introduces the following concepts:
+The `uberfire-widgets-commons` module introduces the following concepts:
 
 * Fade in and Fade out animations
 * Sequenced Animations
@@ -481,9 +481,9 @@ The `UberFire-widgets-commons` module introduces the following concepts:
 * Common resources: images, alted images, css, general resources
 * Simple and paged tables: cells, columns, titled cells; sortable headers, sort direction
 * Comparable image resources
-* A collection of built-in images (gif & png) for corners, pager buttons, dialog status icons, and more (see also UberFire-widgets-core-client)
+* A collection of built-in images (gif & png) for corners, pager buttons, dialog status icons, and more (see also uberfire-widgets-core-client)
 
-The `UberFire-widgets-core-client` module introduces the following concepts:
+The `uberfire-widgets-core-client` module introduces the following concepts:
 
 * Navigator, Breadcrumb navigator, Tree navigator
 * Explorer
@@ -506,9 +506,9 @@ The `UberFire-widgets-core-client` module introduces the following concepts:
 * Core images
 * Core resources
 * Core constants
-* More built-in gif & png images (see also UberFire-widgets-commons)
+* More built-in gif & png images (see also uberfire-widgets-commons)
 
-The `UberFire-widget-markdown` module introduces the following concepts:
+The `uberfire-widget-markdown` module introduces the following concepts:
 
 * Markdown
 * Markdown type
@@ -518,9 +518,9 @@ The `UberFire-widget-markdown` module introduces the following concepts:
 UberFire Workbench Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-workbench` package,
+These concepts are expressed in the `uberfire-workbench` package,
 which provides annotation processors for the core annotations in
-`UberFire-client-api`, as well as the foundation for the client-side
+`uberfire-client-api`, as well as the foundation for the client-side
 MVP (model, view, presenter) framework.
 
 * The Workbench widget hierarchy: App Widget < Workbench < Container < { Headers, Workbench Container < The Workbench Root Panel }
