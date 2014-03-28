@@ -269,7 +269,8 @@ A convenience interface to support linking a View to it's Presenter as required 
 
 * Events
 ** ChangeTitleWidgetEvent
-+ CDI Event that provide support for @WorkbenchEditors and @Workbench screens to inform the framework that their title or decoration should be updated.
++
+A CDI event that provides support for @WorkbenchEditors and @Workbench screens to inform the framework that their title or decoration should be updated.
 
 * Types
 ** ClientResourceType
