@@ -1803,10 +1803,11 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
         final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
 
+        final boolean hasCommit;
         if ( batchState && batchCommitInfo != null ) {
-            JGitUtil.commit( git, branchName, batchCommitInfo, amend, commitContent );
+            hasCommit = JGitUtil.commit( git, branchName, batchCommitInfo, amend, commitContent );
         } else {
-            JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
+            hasCommit = JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
         }
 
         if ( !batchState ) {
@@ -1824,7 +1825,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         }
 
         if ( state == FileSystemState.BATCH && !hadCommitOnBatchState ) {
-            hadCommitOnBatchState = true;
+            hadCommitOnBatchState = hasCommit;
         }
     }
 

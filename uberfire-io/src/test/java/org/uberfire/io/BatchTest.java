@@ -9,7 +9,6 @@ import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
@@ -23,11 +22,11 @@ import static org.junit.Assert.*;
 
 public class BatchTest {
 
-    final IOService ioService = new IOServiceDotFileImpl();
+    final static IOService ioService = new IOServiceDotFileImpl();
     private static File path = null;
 
-    @Before
-    public void setup() throws IOException {
+    @BeforeClass
+    public static void setup() throws IOException {
         path = CommonIOServiceDotFileTest.createTempDirectory();
         System.setProperty( "org.uberfire.nio.git.dir", path.getAbsolutePath() );
         System.out.println( ".niogit: " + path.getAbsolutePath() );
@@ -35,6 +34,12 @@ public class BatchTest {
         final URI newRepo = URI.create( "git://amend-repo-test" );
 
         ioService.newFileSystem( newRepo, new HashMap<String, Object>() );
+
+        final URI newRepo2 = URI.create( "git://check-amend-repo-test" );
+
+        ioService.newFileSystem( newRepo2, new HashMap<String, Object>() {{
+            put( "init", "true" );
+        }} );
     }
 
     @AfterClass
@@ -104,4 +109,67 @@ public class BatchTest {
         assertEquals( 1, v2.readAttributes().history().records().size() );
     }
 
+    @Test
+    public void testBatch2() throws IOException, InterruptedException {
+        final Path f1 = ioService.get( URI.create( "git://check-amend-repo-test/f1.txt" ) );
+        final Path f2 = ioService.get( URI.create( "git://check-amend-repo-test/f2.txt" ) );
+        final Path f3 = ioService.get( URI.create( "git://check-amend-repo-test/f3.txt" ) );
+
+        ioService.write( f1, "init f1!" );
+        ioService.write( f2, "init f2!" );
+
+        final WatchService ws = f1.getFileSystem().newWatchService();
+
+        ioService.startBatch();
+        ioService.write( f1, "f1-u1!" );
+        assertNull( ws.poll() );
+        ioService.write( f2, "f2-u1!" );
+        assertNull( ws.poll() );
+        ioService.write( f3, "f3-u1!" );
+        assertNull( ws.poll() );
+        ioService.endBatch();
+
+        {
+            List<WatchEvent<?>> events = ws.poll().pollEvents();
+            assertEquals( 3, events.size() ); //adds files
+
+            final VersionAttributeView v = ioService.getFileAttributeView( f1, VersionAttributeView.class );
+            assertNotNull( v );
+            assertEquals( 2, v.readAttributes().history().records().size() );
+
+            final VersionAttributeView v2 = ioService.getFileAttributeView( f2, VersionAttributeView.class );
+            assertNotNull( v2 );
+            assertEquals( 2, v2.readAttributes().history().records().size() );
+
+            final VersionAttributeView v3 = ioService.getFileAttributeView( f3, VersionAttributeView.class );
+            assertNotNull( v3 );
+            assertEquals( 1, v3.readAttributes().history().records().size() );
+        }
+
+        ioService.startBatch();
+        ioService.write( f1, "f1-u1!" );
+        assertNull( ws.poll() );
+        ioService.write( f2, "f2-u2!" );
+        assertNull( ws.poll() );
+        ioService.write( f3, "f3-u2!" );
+        assertNull( ws.poll() );
+        ioService.endBatch();
+
+        {
+            List<WatchEvent<?>> events = ws.poll().pollEvents();
+            assertEquals( 2, events.size() ); //adds files
+
+            final VersionAttributeView v = ioService.getFileAttributeView( f1, VersionAttributeView.class );
+            assertNotNull( v );
+            assertEquals( 2, v.readAttributes().history().records().size() );
+
+            final VersionAttributeView v2 = ioService.getFileAttributeView( f2, VersionAttributeView.class );
+            assertNotNull( v2 );
+            assertEquals( 3, v2.readAttributes().history().records().size() );
+
+            final VersionAttributeView v3 = ioService.getFileAttributeView( f3, VersionAttributeView.class );
+            assertNotNull( v3 );
+            assertEquals( 2, v3.readAttributes().history().records().size() );
+        }
+    }
 }

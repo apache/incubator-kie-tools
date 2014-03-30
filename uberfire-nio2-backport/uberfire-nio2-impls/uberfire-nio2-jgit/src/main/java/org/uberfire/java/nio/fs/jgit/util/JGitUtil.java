@@ -52,7 +52,6 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
-import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
@@ -61,7 +60,6 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -368,25 +366,25 @@ public final class JGitUtil {
         commit( git, branchName, new CommitInfo( null, name, email, message, timeZone, when ), amend, new DefaultCommitContent( content ) );
     }
 
-    public static void commit( final Git git,
-                               final String branchName,
-                               final CommitInfo commitInfo,
-                               final boolean amend,
-                               final CommitContent content ) {
+    public static boolean commit( final Git git,
+                                  final String branchName,
+                                  final CommitInfo commitInfo,
+                                  final boolean amend,
+                                  final CommitContent content ) {
         if ( content instanceof RevertCommitContent ) {
-            commit( git, branchName, commitInfo, amend, resolveObjectId( git, ( (RevertCommitContent) content ).getRefTree() ), content );
+            return commit( git, branchName, commitInfo, amend, resolveObjectId( git, ( (RevertCommitContent) content ).getRefTree() ), content );
         } else {
-            commit( git, branchName, commitInfo, amend, null, content );
+            return commit( git, branchName, commitInfo, amend, null, content );
         }
     }
 
-    public static void commit( final Git git,
-                               final String branchName,
-                               final CommitInfo commitInfo,
-                               final boolean amend,
-                               final ObjectId _originId,
-                               final CommitContent content ) {
-
+    public static boolean commit( final Git git,
+                                  final String branchName,
+                                  final CommitInfo commitInfo,
+                                  final boolean amend,
+                                  final ObjectId _originId,
+                                  final CommitContent content ) {
+        boolean hadEffecitiveCommit = true;
         final PersonIdent author = buildPersonIdent( git, commitInfo.getName(), commitInfo.getEmail(), commitInfo.getTimeZone(), commitInfo.getWhen() );
 
         try {
@@ -472,7 +470,7 @@ public final class JGitUtil {
                         revWalk.release();
                     }
                 } else {
-                    //empty commit
+                    hadEffecitiveCommit = false;
                 }
             } finally {
                 odi.release();
@@ -480,6 +478,7 @@ public final class JGitUtil {
         } catch ( final Throwable t ) {
             throw new RuntimeException( t );
         }
+        return hadEffecitiveCommit;
     }
 
     private static PersonIdent buildPersonIdent( final Git git,
