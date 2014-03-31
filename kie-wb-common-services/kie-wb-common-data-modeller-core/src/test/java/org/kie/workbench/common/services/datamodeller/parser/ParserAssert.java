@@ -148,6 +148,7 @@ public class ParserAssert {
 
     public static void assertEqualsMethodDeclaration( StringBuffer buffer, MethodDescr method1, MethodDescr method2 ) {
         if ( method1 != null && method2 != null ) {
+            assertEqualsIdentifier( buffer, method1.getIdentifier(), method2.getIdentifier() );
             assertEqualsModifiers( buffer, method1.getModifiers( ), method2.getModifiers( ) );
             assertEqualsType( buffer, method1.getType( ), method2.getType( ) );
             assertEqualsParameterList( buffer, method1.getParamsList( ), method2.getParamsList( ) );

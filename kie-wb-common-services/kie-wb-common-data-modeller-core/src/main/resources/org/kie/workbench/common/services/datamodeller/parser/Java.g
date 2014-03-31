@@ -690,7 +690,7 @@ methodDeclaration returns [ MethodDescr method ]
          modifiers
         (typeParameters
         )?
-        IDENTIFIER
+        i1=IDENTIFIER { $method.setIdentifier( new IdentifierDescr($i1.text, start((CommonToken)$i1), stop((CommonToken)$i1), line($i1), position($i1)) );}
         formalParameters
         ('throws' qualifiedNameList
         )?
@@ -711,7 +711,7 @@ methodDeclaration returns [ MethodDescr method ]
                         $method.setType(type);
                       }
         )
-        i=IDENTIFIER { $method.setIdentifier( new IdentifierDescr($i.text, start((CommonToken)$i), stop((CommonToken)$i), line($i), position($i)) ); }
+        i2=IDENTIFIER { $method.setIdentifier( new IdentifierDescr($i2.text, start((CommonToken)$i2), stop((CommonToken)$i2), line($i2), position($i2)) ); }
         formalParameters
         (p1='[' p2=']'   {
                 $method.addDimension(new DimensionDescr("", start((CommonToken)$p1), stop((CommonToken)$p2), line($p1), position($p1),
@@ -729,20 +729,20 @@ methodDeclaration returns [ MethodDescr method ]
     ;
 
 
-fieldDeclaration
+fieldDeclaration returns [ FieldDescr field ]
     @init {
-        FieldDescr field = null;
+        $field = null;
         if (!isBacktracking()) {
             log("Start field declaration.");
-            field = new FieldDescr($text, start((CommonToken)$start), -1, line((CommonToken)$start), position((CommonToken)$start));
-            context.push(field);
+            $field = new FieldDescr($text, start((CommonToken)$start), -1, line((CommonToken)$start), position((CommonToken)$start));
+            context.push($field);
         }
     }
     @after {
-        field = popField();
-        if (field != null) {
-            updateOnAfter(field, $text, (CommonToken)$stop);
-            processField(field);
+        $field = popField();
+        if ($field != null) {
+            updateOnAfter($field, $text, (CommonToken)$stop);
+            processField($field);
             log("End of field declaration.");
         } else {
             log("A FieldDescr is expected");
@@ -750,15 +750,15 @@ fieldDeclaration
     }
     :   modifiers
         type
-        v1=variableDeclarator        { if (field != null) field.addVariableDeclaration($v1.varDec); }
+        v1=variableDeclarator        { if ($field != null) $field.addVariableDeclaration($v1.varDec); }
         (c=',' v2=variableDeclarator {
                                        JavaTokenDescr comma =  new JavaTokenDescr(ElementType.JAVA_COMMA, $c.text, start((CommonToken)$c), stop((CommonToken)$c), line($c), position($c));
                                        $v2.varDec.setStartComma(comma);
                                        $v2.varDec.setStart(comma.getStart());
-                                       if (field != null) field.addVariableDeclaration($v2.varDec);
+                                       if ($field != null) $field.addVariableDeclaration($v2.varDec);
                                      }
         )*
-        s=';' { if (field != null) field.setEndSemiColon(new JavaTokenDescr(ElementType.JAVA_SEMI_COLON, $s.text, start((CommonToken)$s), stop((CommonToken)$s), line($s), position($s))); }
+        s=';' { if ($field != null) $field.setEndSemiColon(new JavaTokenDescr(ElementType.JAVA_SEMI_COLON, $s.text, start((CommonToken)$s), stop((CommonToken)$s), line($s), position($s))); }
     ;
 
 variableDeclarator returns [ VariableDeclarationDescr varDec ]

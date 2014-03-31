@@ -218,7 +218,7 @@ public class MehodParsing1Test extends JavaParserBaseTest {
         method.addModifier( new ModifierDescr( null, -1, -1, "public" ) );
         method.setType( new TypeDescr( ) );
         method.getType( ).setVoidType( new JavaTokenDescr( ElementDescriptor.ElementType.JAVA_VOID, "void", -1, -1, -1, -1 ) );
-        method.setIdentifier( new IdentifierDescr( "getField1", -1, -1, -1, -1 ) );
+        method.setIdentifier( new IdentifierDescr( "setField1", -1, -1, -1, -1 ) );
         param1 = new NormalParameterDescr( );
         //param1.setModifiers( new ModifierListDescr( ) );
         param1.setType( new TypeDescr( null, -1, -1 ) );

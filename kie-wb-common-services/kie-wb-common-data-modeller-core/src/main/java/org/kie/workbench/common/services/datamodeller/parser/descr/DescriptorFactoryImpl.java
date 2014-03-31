@@ -30,8 +30,8 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
     @Override
     public MethodDescr createMethodDescr( String source ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_METHOD );
-        parser.methodDeclaration( );
-        MethodDescr methodDescr = parser.getMethodDescr( );
+        //TODO add parse error controls
+        MethodDescr methodDescr = parser.methodDeclaration().method;
         //TODO the parser should set the source for the elements
         ParserUtil.setSourceBufferTMP( methodDescr, parser.getSourceBuffer( ) );
         ParserUtil.populateUnManagedElements( methodDescr );
@@ -42,8 +42,8 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
     @Override
     public FieldDescr createFieldDescr( String source ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_FIELD );
-        parser.fieldDeclaration( );
-        FieldDescr fieldDescr = parser.getFieldDescr( );
+        //TODO add parse error controls
+        FieldDescr fieldDescr = parser.fieldDeclaration().field;
         //TODO the parser should set the source for his children
         ParserUtil.setSourceBufferTMP( fieldDescr, parser.getSourceBuffer( ) );
         ParserUtil.populateUnManagedElements( fieldDescr );
@@ -61,6 +61,7 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
     @Override
     public TypeDescr createTypeDescr( String source ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_TYPE );
+        //TODO add parse error controls
         TypeDescr result = parser.type().typeDescr;
         ParserUtil.setSourceBufferTMP( result, parser.getSourceBuffer() );
         return result;
@@ -69,6 +70,7 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
     @Override
     public PackageDescr createPackageDescr( String source ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_PACKAGE );
+        //TODO add parse error controls
         PackageDescr result = parser.packageDeclaration().packageDec;
         ParserUtil.setSourceBufferTMP( result, parser.getSourceBuffer() );
         return result;
@@ -77,6 +79,7 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
     @Override
     public QualifiedNameDescr createQualifiedNameDescr( String source ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_QUALIFIED_NAME);
+        //TODO add parse error controls
         QualifiedNameDescr result = parser.qualifiedName().qnameDec;
         ParserUtil.setSourceBufferTMP( result, parser.getSourceBuffer() );
         return result;
