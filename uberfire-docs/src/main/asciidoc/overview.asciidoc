@@ -448,41 +448,86 @@ which contains some server-side functionality.
 UberFire Widgets Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+UberFire is not a widget library but does include a number of useful widgets 
+for that can be re-used.
+
 UberFire Widgets are packaged into three modules:
 `uberfire-widgets-commons`, `uberfire-widgets-core-client`, and
 `uberfire-widget-markdown`.
 
 The `uberfire-widgets-commons` module introduces the following concepts:
 
-* Fade in and Fade out animations
-* Sequenced Animations
-* Concurrent change popup
-* Lazy stack panel and the LoadContentCommand
-* Restricted entry text box
-* Busy popup
-* Clickable label
-* Context dropdown button
-* Decorated disclosure panel
-* Dirtyable: widgets, composites, containers, horizontal panes, vertical panes, and FlexTables
-* Editor widget
-* Form style layout
-* Form style popup
-* Pretty form layout
-* Image button
-* Info cube
-* Info popup
-* Modal Footer buttons
-* Multi-page editor
-* Numeric text boxes (for each Java numeric type from byte to BigDecimal)
-* Page
+* Animations
+** Fade in animation
++
+Simple linear animation to fade a Widgets transaparency from 100% to 0%.
+** Fade out animation
++
+Simple linear animation to fade a Widgets transaparency from 0% to 100%.
+** Sequenced Animations
++
+An extension of GWT's Animation allowing animations to be sequenced one after another.
+** Sequencer
++
+A utility class to place numerous SequencedAnimations into a List and run the whole as a single animation.
+
 * Popups
-* Resizable textarea
-* Small label
-* UberBreadcrumbs
-* Common resources: images, alted images, css, general resources
-* Simple and paged tables: cells, columns, titled cells; sortable headers, sort direction
-* Comparable image resources
-* A collection of built-in images (gif & png) for corners, pager buttons, dialog status icons, and more (see also uberfire-widgets-core-client)
+** ErrorPopup
++
+A generic popup to show an error message.
+** ConcurrentChangePopup
++
+A popup allowing the user to take different actions when a concurrent modification to a Path has been detected by the framework.
+** ModalFooterOKButton
++
+Popup footer showing an "OK" button. Action for button is a Command.
+** Busy popup
++
+A popup that can be used to show a message when a log running task is being executed.
+** ModalFooterOKCancelButtons
++
+Popup footer showing "OK" and "Cancel" buttons. Actions for buttons are Commands.
+** ModalFooterYesNoCancelButtons
++
+Popup footer showing "Yes", "No" and "Cancel" buttons. Actions for buttons are Commands.
+
+* MultiPageEditor
++
+UberFire's implementation of a TabBar that allows the tab section to be located in different positions.
+
+** Page
++
+A page that can be added to the MultiPageEditor.
+
+* Miscellaneous
++
+There are a number of miscellaneous widgets that largely exist in UberFire to demonstrate a "show case" web application.
+Furthermore a large number of them exist solely because UberFire eminated from a need to develop a Workbench for
+Drools Guvnor 6.0.x. Historically a lot of existing Drools Guvnor widgets were moved into `uberfire-widgets-commons`
+however should be considered deprecated.
+ 
+** Lazy stack panel and the LoadContentCommand
+** Restricted entry text box
+** Clickable label
+** Context dropdown button
+** Decorated disclosure panel
+** Dirtyable: widgets, composites, containers, horizontal panes, vertical panes, and FlexTables
+** Editor widget
+** Form style layout
+** Form style popup
+** Pretty form layout
+** Image button
+** Info cube
+** Info popup
+** Numeric text boxes (for each Java numeric type from byte to BigDecimal)
+** Popups
+** Resizable textarea
+** Small label
+** UberBreadcrumbs
+** Common resources: images, alted images, css, general resources
+** Simple and paged tables: cells, columns, titled cells; sortable headers, sort direction
+** Comparable image resources
+** A collection of built-in images (gif & png) for corners, pager buttons, dialog status icons, and more (see also uberfire-widgets-core-client)
 
 The `uberfire-widgets-core-client` module introduces the following concepts:
 
