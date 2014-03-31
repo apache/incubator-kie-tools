@@ -75,11 +75,29 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
     }
 
     @Override
-    public QualifiedNameDescr createQualifiedName( String source ) throws Exception {
+    public QualifiedNameDescr createQualifiedNameDescr( String source ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_QUALIFIED_NAME);
         QualifiedNameDescr result = parser.qualifiedName().qnameDec;
         ParserUtil.setSourceBufferTMP( result, parser.getSourceBuffer() );
         return result;
     }
 
+    @Override
+    public JavaTokenDescr createJavaTokenDescr(  ElementDescriptor.ElementType tokenType,  String source ) {
+        JavaTokenDescr javaTokenDescr = new JavaTokenDescr( tokenType, source, 0, source.length()-1, 1, 0 );
+        javaTokenDescr.setSourceBuffer( new StringBuilder( source ) );
+        return javaTokenDescr;
+    }
+
+    @Override
+    public JavaTokenDescr createExtendsTokenDescr() {
+        return createJavaTokenDescr( ElementDescriptor.ElementType.JAVA_EXTENDS, "extends" );
+    }
+
+    @Override
+    public TextTokenElementDescr createTextTokenDescr( String text ) {
+        TextTokenElementDescr textTokenDescr = new TextTokenElementDescr( text, 0, text.length()-1, 1, 0 );
+        textTokenDescr.setSourceBuffer( new StringBuilder( text ) );
+        return textTokenDescr;
+    }
 }

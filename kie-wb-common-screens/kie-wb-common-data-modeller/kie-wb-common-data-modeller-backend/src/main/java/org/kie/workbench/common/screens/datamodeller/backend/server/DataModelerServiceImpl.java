@@ -61,13 +61,16 @@ import org.kie.workbench.common.services.datamodeller.parser.JavaFileHandlerFact
 import org.kie.workbench.common.services.datamodeller.parser.descr.ClassDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactory;
 import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactoryImpl;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ElementDescriptor;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FileDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.IdentifierDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.JavaTokenDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.MethodDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ModifierDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.PackageDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.QualifiedNameDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.TextTokenElementDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TypeDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.VariableDeclarationDescr;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
@@ -275,7 +278,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
                 targetFile = calculateFilePath( dataObjectTO.getClassName(), javaRootPath );
                 if (logger.isDebugEnabled()) logger.debug( "Data object: " + dataObjectTO.getClassName() + " is a new object created in the UI, java source code will be generated from scratch and written into file: " + targetFile );
-                newSource = generateJavaSource( helper.to2Domain( dataObjectTO ) );
+                newSource = createJavaSource( helper.to2Domain( dataObjectTO ) );
                 ioService.write( targetFile, newSource, option );
 
             } else if ( hasUIChanges( dataObjectTO ) ) {
@@ -304,7 +307,7 @@ public class DataModelerServiceImpl implements DataModelerService {
                 } else {
                     //uncommon case
                     if (logger.isDebugEnabled()) logger.debug( "original content file: " + sourceFile + ", seems to not exists. Java source code will be generated from scratch.");
-                    newSource = generateJavaSource( helper.to2Domain( dataObjectTO ) );
+                    newSource = createJavaSource( helper.to2Domain( dataObjectTO ) );
                 }
 
                 ioService.write( targetFile, newSource, option );
@@ -317,7 +320,22 @@ public class DataModelerServiceImpl implements DataModelerService {
                 logger.debug( "Data object: " + dataObjectTO.getClassName() + " wasn't changed in the UI, NO file update is needed." );
             }
         }
+    }
 
+    private String createJavaSource(DataObject dataObject) throws Exception {
+
+        GenerationContext generationContext = new GenerationContext( null );
+        String source;
+        GenerationEngine engine;
+
+        try {
+            engine = GenerationEngine.getInstance();
+            source = engine.generateJavaClassString( generationContext, dataObject  );
+        } catch ( Exception e ) {
+            logger.error( "Java source for dataObject: " + dataObject.getClassName() + " couldn't be created.", e );
+            throw e;
+        }
+        return source;
     }
 
     private String updateJavaSource( DataObjectTO dataObjectTO, org.uberfire.java.nio.file.Path path ) throws Exception {
@@ -339,32 +357,11 @@ public class DataModelerServiceImpl implements DataModelerService {
         return newSource;
     }
 
-    private String generateJavaSource(DataObject dataObject) throws Exception {
-
-        GenerationContext generationContext = new GenerationContext( null );
-        String source;
-        GenerationEngine engine;
-
-        try {
-            engine = GenerationEngine.getInstance();
-            source = engine.generateJavaClassString( generationContext, dataObject  );
-        } catch ( Exception e ) {
-            logger.error( "Java source for dataObject: " + dataObject.getClassName() + " couldn't be created.", e );
-            throw e;
-        }
-        return source;
-    }
-
     private void updateJavaFileDescr(DataObjectTO dataObjectTO, FileDescr fileDescr) throws Exception {
 
 
-        if (fileDescr == null) {
-            logger.warn( "A null FileDescr was provided, no processing will be done." );
-            return;
-        }
-
-        if (fileDescr.getClassDescr() == null) {
-            logger.warn( "ClassDescr is null, no processing will be done." );
+        if (fileDescr == null || fileDescr.getClassDescr() == null) {
+            logger.warn( "A null FileDescr or ClassDescr was provided, no processing will be done. fileDescr: " + fileDescr + " classDescr: " + ( fileDescr != null ? fileDescr.getClassDescr() : null) );
             return;
         }
 
@@ -372,34 +369,18 @@ public class DataModelerServiceImpl implements DataModelerService {
         Map<String, FieldDescr> currentFields = new HashMap<String, FieldDescr>( );
         Map<String, String> preservedFields = new HashMap<String, String>( );
         DataModelerServiceHelper helper = DataModelerServiceHelper.getInstance();
-        DescriptorFactory descriptorFactory = DescriptorFactoryImpl.getInstance();
         ObjectProperty property;
 
 
         //TODO update type annotations
 
-        //update package, class and superClassName if needed
-        if (dataObjectTO.getPackageName() == null && fileDescr.getPackageDescr() != null) {
-            fileDescr.getElements().remove( fileDescr.getPackageDescr() );
-        } else if (dataObjectTO.getPackageName() != null && fileDescr.getPackageDescr() == null) {
-            PackageDescr packageDescr = descriptorFactory.createPackageDescr( "package " + dataObjectTO.getPackageName() + ";" );
-            fileDescr.getElements().add( 0, packageDescr );
-        } else if (dataObjectTO.getPackageName() != null && fileDescr.getPackageDescr() != null && !dataObjectTO.getPackageName().equals( fileDescr.getPackageDescr().getPackageName() )) {
-            PackageDescr packageDescr = fileDescr.getPackageDescr();
-            QualifiedNameDescr oldPackageName = packageDescr.getQualifiedName();
-            QualifiedNameDescr newPackageName = descriptorFactory.createQualifiedName( dataObjectTO.getPackageName() );
-            packageDescr.getElements().addMemberBefore( oldPackageName, newPackageName );
-            packageDescr.getElements().remove( oldPackageName );
-        }
+        //update package, class name, and super class name if needed.
+        updatePackage( fileDescr, dataObjectTO.getPackageName() );
+        updateClassName( classDescr, dataObjectTO.getName() );
+        updateSuperClassName( classDescr, dataObjectTO.getSuperClassName() );
 
-        if (!dataObjectTO.getName().equals( classDescr.getName() )) {
-            IdentifierDescr oldIdentifier = classDescr.getIdentifier();
-            IdentifierDescr newIdentifier = descriptorFactory.createIdentifierDescr( dataObjectTO.getName() );
-            classDescr.getElements().addMemberBefore( oldIdentifier, newIdentifier );
-            classDescr.getElements().remove( oldIdentifier );
-        }
 
-        //create new fields, update existing.
+        //create new fields and update existing.
         for (FieldDescr fieldDescr : classDescr.getFields()) {
             for (VariableDeclarationDescr variableDescr : fieldDescr.getVariableDeclarations()) {
                 currentFields.put( variableDescr.getIdentifier().getIdentifier(), fieldDescr );
@@ -440,6 +421,10 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         }
 
+
+        //update constructors, equals and hashCode methods.
+        updateConstructors( classDescr, helper.to2Domain( dataObjectTO ) );
+
         //delete fields from .java file that not exists in the DataObject.
         List<String> removableFields = new ArrayList<String>(  );
         for (FieldDescr fieldDescr : classDescr.getFields()) {
@@ -452,6 +437,195 @@ public class DataModelerServiceImpl implements DataModelerService {
         for (String fieldName : removableFields) {
             removeField( classDescr, fieldName );
         }
+    }
+
+    private void updateConstructors(ClassDescr classDescr, DataObject dataObject ) throws Exception {
+
+        //TODO First implementation deletes all constructors and creates them again.
+        //Next iteration should take into account only the needed ones, etc.
+
+        DescriptorFactory descriptorFactory = DescriptorFactoryImpl.getInstance();
+        GenerationContext generationContext = new GenerationContext( null );
+        GenerationEngine engine = GenerationEngine.getInstance();
+
+        MethodDescr defaultConstructor = null;
+        MethodDescr allFieldsConstructor = null;
+        MethodDescr keyFieldsConstructor = null;
+        MethodDescr equalsMethod = null;
+        MethodDescr hashCodeMethod = null;
+        boolean needsKeyFieldsConstructor;
+        int keyFieldsCount = 0;
+        boolean needsAllFieldsConstructor;
+
+        List<MethodDescr> currentConstructors;
+        MethodDescr currentEquals;
+        MethodDescr currentHashCode;
+        ElementDescriptor constructorsInsertionPoint = null;
+        ElementDescriptor equalsInsertionPoint = null;
+        ElementDescriptor hashCodeInsertionPoint = null;
+
+        needsAllFieldsConstructor = dataObject.getProperties() != null && dataObject.getProperties().size() > 0;
+        keyFieldsCount = keyFieldsCount( dataObject );
+        needsKeyFieldsConstructor =  keyFieldsCount > 0 &&  ( keyFieldsCount < (dataObject.getProperties() != null ? dataObject.getProperties().size() : 0) );
+        currentConstructors = classDescr.getConstructors();
+        if (currentConstructors != null && currentConstructors.size() > 0) {
+            constructorsInsertionPoint = currentConstructors.get( currentConstructors.size() - 1 );
+        } else {
+            List<FieldDescr> fields = classDescr.getFields();
+            if (fields != null && fields.size() > 0) {
+                constructorsInsertionPoint = fields.get( fields.size() -1 );
+            } else {
+                constructorsInsertionPoint = classDescr.getBodyStartBrace();
+            }
+        }
+        currentEquals = classDescr.getMethod( "equals" );
+        currentHashCode = classDescr.getMethod( "hashCode" );
+
+        defaultConstructor = descriptorFactory.createMethodDescr( engine.generateDefaultConstructorString( generationContext, dataObject  ) );
+        if (needsAllFieldsConstructor) allFieldsConstructor = descriptorFactory.createMethodDescr( engine.generateAllFieldsConstructorString( generationContext, dataObject ) );
+        if (needsKeyFieldsConstructor) {
+            keyFieldsConstructor = descriptorFactory.createMethodDescr( engine.generateKeyFieldsConstructorString( generationContext, dataObject ) );
+        }
+        if (keyFieldsCount > 0) {
+            equalsMethod = descriptorFactory.createMethodDescr( engine.generateEqualsString( generationContext, dataObject ) );
+            hashCodeMethod = descriptorFactory.createMethodDescr( engine.generateHashCodeString( generationContext, dataObject ) );
+
+            //calculate equals and hashCode insertion point.
+
+            if (currentEquals != null) {
+                equalsInsertionPoint = currentEquals;
+            } else {
+                List<MethodDescr> methods = classDescr.getMethods();
+                if (methods != null && methods.size() > 0) {
+                    equalsInsertionPoint = methods.get( methods.size() - 1 );
+                } else if (keyFieldsConstructor != null) {
+                   equalsInsertionPoint = keyFieldsConstructor;
+                } else if (allFieldsConstructor != null) {
+                    equalsInsertionPoint = allFieldsConstructor;
+                } else {
+                    equalsInsertionPoint = defaultConstructor;
+                }
+            }
+
+            if (currentHashCode != null) {
+                hashCodeInsertionPoint = currentHashCode;
+            } else {
+                hashCodeInsertionPoint = equalsMethod;
+            }
+        }
+
+        //add the generated methods to the ClassDescr and remove the oldOnes
+        if (defaultConstructor != null) {
+            classDescr.getElements().addElementAfter( constructorsInsertionPoint, defaultConstructor );
+            constructorsInsertionPoint = defaultConstructor;
+        }
+        if (allFieldsConstructor != null) {
+            classDescr.getElements().addElementAfter( constructorsInsertionPoint, allFieldsConstructor );
+            constructorsInsertionPoint = allFieldsConstructor;
+        }
+        if (keyFieldsConstructor != null) {
+            classDescr.getElements().addElementAfter( constructorsInsertionPoint, keyFieldsConstructor );
+        }
+        if (keyFieldsCount > 0) {
+            classDescr.getElements().addElementAfter( equalsInsertionPoint, equalsMethod );
+            classDescr.getElements().addElementAfter( hashCodeInsertionPoint, hashCodeMethod );
+        }
+
+        //finally remove old constructors, and old equals and hashCode implementation
+        if (currentConstructors != null) {
+            for (MethodDescr constructor : currentConstructors) {
+                classDescr.getElements().remove( constructor );
+            }
+        }
+        if (currentEquals != null) {
+            classDescr.getElements().remove( currentEquals );
+        }
+        if (currentHashCode != null) {
+            classDescr.getElements().remove( currentHashCode );
+        }
+    }
+
+    private int keyFieldsCount( DataObject dataObject ) {
+        int result = 0;
+        for (ObjectProperty property : dataObject.getProperties().values()) {
+            if (property.getAnnotation( org.kie.api.definition.type.Key.class.getName() ) != null) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private boolean updatePackage(FileDescr fileDescr, String packageName) throws Exception {
+
+        DescriptorFactory descriptorFactory = DescriptorFactoryImpl.getInstance();
+        boolean hasChanged = false;
+
+        if (packageName == null && fileDescr.getPackageDescr() != null) {
+            fileDescr.getElements().remove( fileDescr.getPackageDescr() );
+            hasChanged = true;
+        } else if (packageName != null && fileDescr.getPackageDescr() == null) {
+            PackageDescr packageDescr = descriptorFactory.createPackageDescr( "package " + packageName + ";" );
+            fileDescr.getElements().add( 0, packageDescr );
+            hasChanged = true;
+        } else if (packageName != null && fileDescr.getPackageDescr() != null && !packageName.equals( fileDescr.getPackageDescr().getPackageName() )) {
+            PackageDescr packageDescr = fileDescr.getPackageDescr();
+            QualifiedNameDescr oldPackageName = packageDescr.getQualifiedName();
+            QualifiedNameDescr newPackageName = descriptorFactory.createQualifiedNameDescr( packageName );
+            packageDescr.getElements().addMemberBefore( oldPackageName, newPackageName );
+            packageDescr.getElements().remove( oldPackageName );
+            hasChanged = true;
+        }
+
+        return hasChanged;
+    }
+
+    private boolean updateClassName( ClassDescr classDescr, String name ) throws Exception {
+
+        DescriptorFactory descriptorFactory = DescriptorFactoryImpl.getInstance();
+        boolean hasChanged = false;
+
+        if (!name.equals( classDescr.getName() )) {
+            IdentifierDescr oldIdentifier = classDescr.getIdentifier();
+            IdentifierDescr newIdentifier = descriptorFactory.createIdentifierDescr( name );
+            classDescr.getElements().addMemberBefore( oldIdentifier, newIdentifier );
+            classDescr.getElements().remove( oldIdentifier );
+            hasChanged = true;
+        }
+
+        return hasChanged;
+    }
+
+    private boolean updateSuperClassName( ClassDescr classDescr, String superClassName ) throws Exception {
+
+        DescriptorFactory descriptorFactory = DescriptorFactoryImpl.getInstance();
+        boolean hasChanged = false;
+
+        if (superClassName == null && classDescr.hasSuperClass()) {
+            classDescr.getElements().remove( classDescr.getExtendsToken() );
+            classDescr.getElements().remove( classDescr.getSuperClass() );
+            hasChanged = true;
+        } else if ( superClassName != null && !classDescr.hasSuperClass()) {
+            TypeDescr superClassType = descriptorFactory.createTypeDescr( superClassName );
+            JavaTokenDescr extendsToken = descriptorFactory.createExtendsTokenDescr();
+            TextTokenElementDescr space1 = descriptorFactory.createTextTokenDescr( " " );
+            TextTokenElementDescr space2 = descriptorFactory.createTextTokenDescr( " " );
+            TextTokenElementDescr space3 = descriptorFactory.createTextTokenDescr( " " );
+
+            classDescr.getElements().addElementAfter( classDescr.getIdentifier(), space1 );
+            classDescr.getElements().addElementAfter( space1, extendsToken );
+            classDescr.getElements().addElementAfter( extendsToken, space2 );
+            classDescr.getElements().addElementAfter( space2, superClassType );
+            classDescr.getElements().addElementAfter( superClassType, space3 );
+            hasChanged = true;
+        } else if ( superClassName != null && classDescr.hasSuperClass() && !superClassName.equals( classDescr.getSuperClass().getName() ) ) {
+            TypeDescr oldSuperClass = classDescr.getSuperClass();
+            TypeDescr newSuperClass = descriptorFactory.createTypeDescr( superClassName );
+            classDescr.getElements().addMemberBefore( oldSuperClass, newSuperClass );
+            classDescr.getElements().remove( oldSuperClass );
+            hasChanged = true;
+        }
+
+        return hasChanged;
     }
 
     private void updateField(ClassDescr classDescr, String fieldName, ObjectProperty property) throws Exception {

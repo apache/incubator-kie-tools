@@ -83,4 +83,15 @@ public class TypeDescr extends ElementDescriptor implements HasClassOrInterfaceT
         return this;
     }
 
+    public String getName() {
+        if (isPrimitiveType()) {
+            return getPrimitiveType().getName();
+        } else if (isClassOrInterfaceType()) {
+            return getClassOrInterfaceType().getClassName();
+        } else if (isVoidType()) {
+            return getVoidType().getText();
+        }
+        return null;
+    }
+
 }

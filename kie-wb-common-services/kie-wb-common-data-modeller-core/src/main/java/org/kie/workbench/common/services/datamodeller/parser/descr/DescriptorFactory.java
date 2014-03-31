@@ -28,6 +28,12 @@ public interface DescriptorFactory {
 
     PackageDescr createPackageDescr ( String source ) throws Exception;
 
-    QualifiedNameDescr createQualifiedName ( String source ) throws Exception;
+    QualifiedNameDescr createQualifiedNameDescr ( String source ) throws Exception;
+
+    JavaTokenDescr createJavaTokenDescr ( ElementDescriptor.ElementType tokenType, String source );
+
+    JavaTokenDescr createExtendsTokenDescr ( );
+
+    TextTokenElementDescr createTextTokenDescr ( String text );
 
 }

@@ -499,6 +499,8 @@ public class DataModelerScreenPresenter {
 
         @Override
         public void callback(Boolean verifiesHash) {
+            /**
+             TODO, review this !!!!!!!
             if (!verifiesHash) {
                 InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo, currentProject, path);
                 getContext().setLastJavaFileChangeEvent(event);
@@ -507,6 +509,7 @@ public class DataModelerScreenPresenter {
                     notifyExternalDMOChange(event);
                 }
             }
+            **/
         }
     }
 

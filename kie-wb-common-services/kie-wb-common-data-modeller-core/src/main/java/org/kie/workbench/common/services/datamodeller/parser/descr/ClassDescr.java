@@ -108,6 +108,17 @@ public class ClassDescr extends ModifiersContainerDescr {
         return null;
     }
 
+    public List<MethodDescr> getConstructors() {
+        List<MethodDescr> allMethods = getMethods();
+        List<MethodDescr> constructors = new ArrayList<MethodDescr>(  );
+        for (MethodDescr method : allMethods) {
+            if (method.isConstructor()) {
+                constructors.add( method );
+            }
+        }
+        return constructors;
+    }
+
     public List<FieldDescr> getFields( ) {
         List<FieldDescr> fields = new ArrayList<FieldDescr>( );
         for ( ElementDescriptor member : getElements( ).getElementsByType( ElementType.FIELD ) ) {
@@ -188,6 +199,10 @@ public class ClassDescr extends ModifiersContainerDescr {
     public void setExtendsToken( JavaTokenDescr extendsToken ) {
         getElements( ).removeFirst( ElementType.JAVA_EXTENDS );
         getElements( ).add( extendsToken );
+    }
+
+    public boolean hasSuperClass() {
+        return getSuperClass() != null;
     }
 
     public TypeDescr getSuperClass( ) {
