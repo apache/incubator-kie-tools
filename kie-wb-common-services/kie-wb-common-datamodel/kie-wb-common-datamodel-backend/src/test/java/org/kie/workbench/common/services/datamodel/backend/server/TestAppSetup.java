@@ -20,6 +20,7 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.servlet.ServletContext;
 
 import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.m2repo.service.M2RepoService;
@@ -66,6 +67,12 @@ public class TestAppSetup {
     @Alternative
     public SessionInfo sessionInfo() {
         return mock( SessionInfo.class );
+    }
+
+    @Produces
+    @Named("uf")
+    public ServletContext servletContext() {
+        return mock( ServletContext.class );
     }
 
 }
