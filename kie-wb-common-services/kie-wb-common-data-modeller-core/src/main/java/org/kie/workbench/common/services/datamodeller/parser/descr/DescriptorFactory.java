@@ -20,7 +20,11 @@ public interface DescriptorFactory {
 
     MethodDescr createMethodDescr( String source ) throws Exception;
 
+    MethodDescr createMethodDescr( String source, boolean includeIndent ) throws Exception;
+
     FieldDescr createFieldDescr( String source ) throws Exception;
+
+    FieldDescr createFieldDescr( String source, boolean includeIndent) throws Exception;
 
     IdentifierDescr createIdentifierDescr( String source ) throws Exception;
 

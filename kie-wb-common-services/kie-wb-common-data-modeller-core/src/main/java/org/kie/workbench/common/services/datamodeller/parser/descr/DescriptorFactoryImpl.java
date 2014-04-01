@@ -29,24 +29,42 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
 
     @Override
     public MethodDescr createMethodDescr( String source ) throws Exception {
+        return createMethodDescr( source, false );
+    }
+
+    @Override
+    public MethodDescr createMethodDescr( String source, boolean includeIndent ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_METHOD );
         //TODO add parse error controls
         MethodDescr methodDescr = parser.methodDeclaration().method;
         //TODO the parser should set the source for the elements
         ParserUtil.setSourceBufferTMP( methodDescr, parser.getSourceBuffer( ) );
-        ParserUtil.populateUnManagedElements( methodDescr );
+        if (includeIndent) {
+            ParserUtil.populateUnManagedElements( 0, parser.getSourceBuffer().length()-1, methodDescr );
+        } else {
+            ParserUtil.populateUnManagedElements( methodDescr );
+        }
         ParserUtil.setSourceBufferTMP( methodDescr, parser.getSourceBuffer( ) );
         return methodDescr;
     }
 
     @Override
     public FieldDescr createFieldDescr( String source ) throws Exception {
+        return createFieldDescr( source, false );
+    }
+
+    @Override
+    public FieldDescr createFieldDescr( String source, boolean includeIndent ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_FIELD );
         //TODO add parse error controls
         FieldDescr fieldDescr = parser.fieldDeclaration().field;
         //TODO the parser should set the source for his children
         ParserUtil.setSourceBufferTMP( fieldDescr, parser.getSourceBuffer( ) );
-        ParserUtil.populateUnManagedElements( fieldDescr );
+        if (includeIndent) {
+            ParserUtil.populateUnManagedElements( 0, parser.getSourceBuffer().length()-1, fieldDescr );
+        } else {
+            ParserUtil.populateUnManagedElements( fieldDescr );
+        }
         ParserUtil.setSourceBufferTMP( fieldDescr, parser.getSourceBuffer( ) );
         return fieldDescr;
     }

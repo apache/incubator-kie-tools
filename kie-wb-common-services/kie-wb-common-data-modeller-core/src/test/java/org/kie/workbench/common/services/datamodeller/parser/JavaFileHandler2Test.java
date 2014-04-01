@@ -39,7 +39,7 @@ public class JavaFileHandler2Test extends JavaFileHandlerBaseTest {
         }
     }
 
-    @Ignore
+    @Test
     public void test( ) {
         try {
 
@@ -51,7 +51,7 @@ public class JavaFileHandler2Test extends JavaFileHandlerBaseTest {
             FieldDescr field = DescriptorFactoryImpl.getInstance( ).createFieldDescr( "\n\n\tpublic /*eso*/static   int value  = (2+4), otro=1  /**/ ; /**/" );
 
             ParserUtil.setSourceBufferTMP( field, field.getSourceBuffer( ) );
-            ParserUtil.populateUnManagedElements( 0, field );
+            ParserUtil.populateUnManagedElements( 0, field.getSourceBuffer().length()-1, field );
             ParserUtil.setSourceBufferTMP( field, field.getSourceBuffer( ) );
 
             classDescr.addField( field );

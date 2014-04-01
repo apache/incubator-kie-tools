@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class GenerationEnginetest {
+public class GenerationEngineTest {
 
     private GenerationEngine engine;
     private DataModelOracleDriver dataModelOracleDriver;

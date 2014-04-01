@@ -28,8 +28,11 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Properties;
@@ -325,6 +328,24 @@ public class GenerationEngine {
             logger.error("An error was produced during template generation: template: " + template + ", templatePath: " + templatePath, e);
         }
         return writer.toString();
+    }
+
+    public static String indentLines(String source, String indent) throws Exception {
+        BufferedReader reader = new BufferedReader( new StringReader( source ) );
+        StringBuilder out = new StringBuilder( );
+        String line;
+        String lineSeparator = System.getProperty( "line.separator" );
+        line = reader.readLine( );
+        if ( line != null ) {
+            out.append( indent );
+            out.append( line );
+            while ( ( line = reader.readLine( ) ) != null ) {
+                out.append( lineSeparator );
+                out.append( indent );
+                out.append( line );
+            }
+        }
+        return out.toString();
     }
 
     /**

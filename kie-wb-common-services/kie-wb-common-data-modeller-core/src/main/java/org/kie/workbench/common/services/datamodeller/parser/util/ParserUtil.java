@@ -60,6 +60,10 @@ public class ParserUtil {
     }
 
     public static void populateUnManagedElements( int startIndex, ElementDescriptor element ) {
+        populateUnManagedElements( startIndex, -1, element );
+    }
+
+    public static void populateUnManagedElements( int startIndex, int endIndex, ElementDescriptor element ) {
 
         String text;
         TextTokenElementDescr unmanagedToken;
@@ -89,6 +93,17 @@ public class ParserUtil {
                 unmanagedToken = new TextTokenElementDescr( );
                 unmanagedToken.setStart( startIndex );
                 unmanagedToken.setStop( element.getStop( ) );
+                unmanagedToken.setSourceBuffer( element.getSourceBuffer( ) );
+
+                text = unmanagedToken.getSourceBuffer( ).substring( unmanagedToken.getStart( ), unmanagedToken.getStop( ) + 1 );
+                unmanagedToken.setText( text );
+                element.getElements( ).add( unmanagedToken );
+            }
+
+            if (endIndex > 0 && endIndex > element.getStop() && endIndex < element.getSourceBuffer().length()) {
+                unmanagedToken = new TextTokenElementDescr( );
+                unmanagedToken.setStart( element.getStop() + 1 );
+                unmanagedToken.setStop( endIndex );
                 unmanagedToken.setSourceBuffer( element.getSourceBuffer( ) );
 
                 text = unmanagedToken.getSourceBuffer( ).substring( unmanagedToken.getStart( ), unmanagedToken.getStop( ) + 1 );

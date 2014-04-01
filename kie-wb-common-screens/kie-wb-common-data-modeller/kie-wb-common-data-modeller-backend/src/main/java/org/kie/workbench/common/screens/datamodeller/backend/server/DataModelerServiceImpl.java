@@ -119,6 +119,10 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
 
+    private static final String START_INDENT = "\n";
+    private static final String LINE_INDENT = "    ";
+    private static final String END_INDENT = "\n";
+
     public DataModelerServiceImpl() {
     }
 
@@ -481,14 +485,14 @@ public class DataModelerServiceImpl implements DataModelerService {
         currentEquals = classDescr.getMethod( "equals" );
         currentHashCode = classDescr.getMethod( "hashCode" );
 
-        defaultConstructor = descriptorFactory.createMethodDescr( engine.generateDefaultConstructorString( generationContext, dataObject  ) );
-        if (needsAllFieldsConstructor) allFieldsConstructor = descriptorFactory.createMethodDescr( engine.generateAllFieldsConstructorString( generationContext, dataObject ) );
+        defaultConstructor = descriptorFactory.createMethodDescr( indent( engine.generateDefaultConstructorString( generationContext, dataObject ) ), true );
+        if (needsAllFieldsConstructor) allFieldsConstructor = descriptorFactory.createMethodDescr( indent( engine.generateAllFieldsConstructorString( generationContext, dataObject ) ), true );
         if (needsKeyFieldsConstructor) {
-            keyFieldsConstructor = descriptorFactory.createMethodDescr( engine.generateKeyFieldsConstructorString( generationContext, dataObject ) );
+            keyFieldsConstructor = descriptorFactory.createMethodDescr( indent( engine.generateKeyFieldsConstructorString( generationContext, dataObject ) ), true );
         }
         if (keyFieldsCount > 0) {
-            equalsMethod = descriptorFactory.createMethodDescr( engine.generateEqualsString( generationContext, dataObject ) );
-            hashCodeMethod = descriptorFactory.createMethodDescr( engine.generateHashCodeString( generationContext, dataObject ) );
+            equalsMethod = descriptorFactory.createMethodDescr( indent( engine.generateEqualsString( generationContext, dataObject ) ), true );
+            hashCodeMethod = descriptorFactory.createMethodDescr( indent( engine.generateHashCodeString( generationContext, dataObject ) ), true );
 
             //calculate equals and hashCode insertion point.
 
@@ -647,7 +651,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         if (fieldDescr.getVariableDeclarations().size() > 1) {
             variable = fieldDescr.getVariableDeclaration( fieldName );
             String fieldStr = copyFieldVariableToString( fieldDescr, fieldName );
-            targetFieldDescr = descriptorFactory.createFieldDescr( fieldStr );
+            targetFieldDescr = descriptorFactory.createFieldDescr( indent( fieldStr ), true );
             fieldDescr.removeVariableDeclaration( variable );
             classDescr.addField( targetFieldDescr );
         } else {
@@ -695,12 +699,12 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             //and generate the new ones
             //TODO check if I need to do something aditional when annotations starts to being included
-            methodSource = engine.generateFieldGetterString( context, property );
-            methodDescr = descriptorFactory.createMethodDescr( methodSource );
+            methodSource = indent( engine.generateFieldGetterString( context, property ) );
+            methodDescr = descriptorFactory.createMethodDescr( methodSource, true );
             classDescr.addMethod( methodDescr );
 
-            methodSource = engine.generateFieldSetterString( context, property );
-            methodDescr = descriptorFactory.createMethodDescr( methodSource );
+            methodSource = indent( engine.generateFieldSetterString( context, property ) );
+            methodDescr = descriptorFactory.createMethodDescr( methodSource, true );
             classDescr.addMethod( methodDescr );
         }
     }
@@ -772,18 +776,18 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             engine = GenerationEngine.getInstance();
 
-            fieldSource = engine.generateCompleteFieldString( generationContext, property);
-            fieldDescr = descriptorFactory.createFieldDescr( fieldSource );
+            fieldSource = indent( engine.generateCompleteFieldString( generationContext, property) );
+            fieldDescr = descriptorFactory.createFieldDescr( fieldSource, true );
             classDescr.addField( fieldDescr );
 
-            methodSource = engine.generateFieldGetterString( generationContext, property );
-            methodDescr = descriptorFactory.createMethodDescr( methodSource );
+            methodSource = indent( engine.generateFieldGetterString( generationContext, property ) );
+            methodDescr = descriptorFactory.createMethodDescr( methodSource, true );
             methodName = genTools.toJavaGetter( property.getName(), property.getClassName() );
             classDescr.removeMethod( methodName );
             classDescr.addMethod( methodDescr );
 
-            methodSource = engine.generateFieldSetterString( generationContext, property );
-            methodDescr = descriptorFactory.createMethodDescr( methodSource );
+            methodSource = indent( engine.generateFieldSetterString( generationContext, property ) );
+            methodDescr = descriptorFactory.createMethodDescr( methodSource, true );
             methodName = genTools.toJavaSetter( property.getName() );
             classDescr.removeMethod( methodName );
             classDescr.addMethod( methodDescr );
@@ -891,6 +895,10 @@ public class DataModelerServiceImpl implements DataModelerService {
         boolean result = !newFingerPrint.equals( dataObjectTO.getFingerPrint() );
         if (!result) logger.debug( "The class : " + dataObjectTO.getClassName() + " wasn't modified" );
         return  result;
+    }
+
+    private String indent(String source) throws Exception {
+        return START_INDENT + GenerationEngine.indentLines( source, LINE_INDENT ) + END_INDENT;
     }
 
     private void cleanupEmptyDirs( org.uberfire.java.nio.file.Path pojectPath ) {
