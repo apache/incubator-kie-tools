@@ -213,12 +213,12 @@ which defines an API that's only accessible to client-side
 * Annotations
 ** DefaultPosition
 +
-Marker annotation to allow either @WorkbenchEditors or @WorkbenchScreens to declare a method that returns the default location of the component in a perspective when opened by the framework. NOTE: This is specific to the NSEW perspective type. Work is in progress to provide support for additional types of perspective.
+Marker annotation to allow either `@WorkbenchEditor` 's or `@WorkbenchScreen` 's to declare a method that returns the default location of the component in a perspective when opened by the framework. NOTE: This is specific to the NSEW perspective type. Work is in progress to provide support for additional types of perspective.
 ** Intercept
 +
 TODO
 ** Perspective
-+Marker annotation to allow a @WorkbenchPerspective to declare a method that returns a PerspectiveDefinition object, defining the workbench perspective.
++Marker annotation to allow a `@WorkbenchPerspective` to declare a method that returns a PerspectiveDefinition object, defining the workbench perspective.
 ** SplashBodySize
 +
 TODO
@@ -236,19 +236,19 @@ TODO
 A marker annotation to declare a class as being a Workbench Editor. Editors relate to specific resources within the framework, defined by their ResourceTypeDefinition.
 ** WorkbenchMenu
 +
-A marker annotation to declare a method within a @WorkbenchPerspective, @WorkbenchEditor or @WorkbenchScreen that returns a Menus object defining a menu to be shown by the framework when the perspective, editor or screen is displayed.
+A marker annotation to declare a method within a `@WorkbenchPerspective`, `@WorkbenchEditor` or `@WorkbenchScreen` that returns a Menus object defining a menu to be shown by the framework when the perspective, editor or screen is displayed.
 ** WorkbenchPartTitle
 +
-A marker annotation to declare a method within a @WorkbenchEditor or @WorkbenchScreen that returns a String defining the title for the component.
+A marker annotation to declare a method within a `@WorkbenchEditor` or `@WorkbenchScreen` that returns a String defining the title for the component.
 ** WorkbenchPartTitleDecoration
 +
-A marker annotation to declare a method within a @WorkbenchEditor or @WorkbenchScreen that returns an IsWidget object to be used as a decoration, beside the @WorkbenchPartTitle.
+A marker annotation to declare a method within a `@WorkbenchEditor` or `@WorkbenchScreen` that returns an IsWidget object to be used as a decoration, beside the @WorkbenchPartTitle.
 ** WorkbenchPartView
 +
-A marker annotation to declare a method within a @WorkbenchEditor or @WorkbenchScreen that returns a IsWidget object representing the view (or user-interface) of the component.
+A marker annotation to declare a method within a `@WorkbenchEditor` or `@WorkbenchScreen` that returns a IsWidget object representing the view (or user-interface) of the component.
 ** WorkbenchPerspective
 +
-Marker annotation to declare a class as providing a perspective definition. The definition itself is returned from a method within the @WorkbenchPerspective annotated with @Perspective. 
+Marker annotation to declare a class as providing a perspective definition. The definition itself is returned from a method within the `@WorkbenchPerspective` annotated with @Perspective. 
 ** WorkbenchPopup
 +
 Marker annotation to declare a class as being a popup that can be displayed by the framework.
@@ -260,7 +260,7 @@ A marker annotation to declare a class as being a Workbench Screen. Screens woul
 TODO
 ** WorkbenchToolbar
 +
-A marker annotation to declare a method within a @WorkbenchPerspective, @WorkbenchEditor or @WorkbenchScreen that returns a ToolBar object defining a toolbar to be shown by the framework when the perspective, editor or screen is displayed.
+A marker annotation to declare a method within a `@WorkbenchPerspective`, `@WorkbenchEditor` or `@WorkbenchScreen` that returns a ToolBar object defining a toolbar to be shown by the framework when the perspective, editor or screen is displayed.
 
 * Interfaces
 ** UberView
@@ -270,12 +270,12 @@ A convenience interface to support linking a View to it's Presenter as required 
 * Events
 ** ChangeTitleWidgetEvent
 +
-A CDI event that provides support for @WorkbenchEditors and @Workbench screens to inform the framework that their title or decoration should be updated.
+A CDI event that provides support for `@WorkbenchEditor` 's and @Workbench screens to inform the framework that their title or decoration should be updated.
 
 * Types
 ** ClientResourceType
 +
-Extends ResourceTypeDefinition which is a server-side model for a resource type; allowing @WorkbenchEditors to specify the types of resource they are capable of handling.
+Extends ResourceTypeDefinition which is a server-side model for a resource type; allowing `@WorkbenchEditor` 's to specify the types of resource they are capable of handling.
 
 UberFire Commons Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -451,7 +451,7 @@ UberFire Widgets Concepts
 UberFire is not a widget library but does include a number of useful widgets 
 for that can be re-used.
 
-UberFire Widgets are packaged into three modules:
+UberFire Widgets are packaged into modules:
 `uberfire-widgets-commons`, `uberfire-widgets-core-client`, and
 `uberfire-widget-markdown`.
 
@@ -531,34 +531,42 @@ however should be considered deprecated.
 
 The `uberfire-widgets-core-client` module introduces the following concepts:
 
-* Navigator, Breadcrumb navigator, Tree navigator
-* Explorer
-* Tree, tree item
 * Components implemented as MVP:
-** File editor
-** File explorer
-** File navigator
-** Meta file editor
-** Clone repository form
-** Create repository form
-** Repository editor
-** Repositories and repositories item
-** Text editor
-** iframe screen
-** Multi-page wizards: wizard context, wizard page, assorted events
-** "Multipe activities found" popup
-** "Activity not found" popup
-* Core CSS resources
-* Core images
-* Core resources
-* Core constants
-* More built-in gif & png images (see also uberfire-widgets-commons)
+** DefaultFileEditor
++
+A `@WorkbenchEditor` that provides the ability to upload and download any file not explicitly handled by another `@WorkbenchEditor`'s ResourceType.
+** TextEditor
++
+A `@WorkbenchEditor` that provides the ability to edit text files (*.txt) or "dot" files (file names prefixed with a ".", otherwise known as "Meta data" files) in a TextArea.
+** FileExplorer
++
+A `@WorkbenchScreen` that provides a simple Tree based explorer of an underlying VFS. Clicking a file launches the corresponding `@WorkbenchEditor`.
+The FileExplorer also registers a menu with the UberFire framework that gives users access to the RepositoriesEditor and ability to clone or create new Repositories.
+** FileNavigator
++
+A `@WorkbenchScreen` that provides more sophisticated navigation of an underlying VFS. 
+** MetaFileEditor
++
+A `@WorkbenchEditor` that provides the ability to edit "Meta data" files (file names prefixed with a ".") in a TextArea. "Meta data" files are also called "dot" files.
+** RepositoriesEditor
++
+A `@WorkbenchScreen` that provides the ability to view Repositories configured within the underlying VFS.
+** RepositoryEditor
++
+A `@WorkbenchScreen` that shows details of a Repository configured within the underlying VFS.
+** IFrameScreen
++
+A simple `@WorkbenchScreen` that supports showing content from a URL within an IFRAME.
+** Wizard framework
++
+A simple framework to support the implementation of "Wizard" type dialogs, where content is completed over a series of pages.
 
 The `uberfire-widget-markdown` module introduces the following concepts:
 
 * Markdown
-* Markdown type
-* Markdown live editor (MVP)
++
+An example `@WorkbenchScreen` that demonstrates a "live" editor for the Markdown text formatting syntax (http://en.wikipedia.org/wiki/Markdown).
+The editor is sub-divided into two region; one allows entry of text markdown and the other shows a "live" (i.e. updated in real-time) preview of the rendered mark-down.
 
 
 UberFire Workbench Concepts
@@ -566,14 +574,38 @@ UberFire Workbench Concepts
 
 These concepts are expressed in the `uberfire-workbench` package,
 which provides annotation processors for the core annotations in
-`uberfire-client-api`, as well as the foundation for the client-side
-MVP (model, view, presenter) framework.
+`uberfire-client-api`. 
 
-* The Workbench widget hierarchy: App Widget < Workbench < Container < { Headers, Workbench Container < The Workbench Root Panel }
-* Annotation processors for `@WorkbenchPerspective`,
-  `@WorkbenchContext`, `@WorkbenchEditor`, `@WorkbenchPopup`,
-  `@WorkbenchScreen`, `@WorkbenchPerspective`, `@WorkbenchContext`,
-  `@WorkbenchEditor`, `@WorkbenchPopup`, and `@WorkbenchScreen`.
+UberFire supports re-use or authoring of any widgets however promotes use of the MVP (Model, View, Presenter) design 
+pattern. Both `@WorkbenchScreen` 's and `@WorkbenchEditor` 's need only declare a minimal number of "hooks" to UberFire. 
+Legacy widgets too can be simply wrapped to work within UberFire.  
+
+* The Workbench physical hierarchy (top to bottom): 
+** User application
+** UberFire Workbench
+** UberFire `@WorkbenchPerspective`
+** UbefFire `@WorkbenchScreen` or `@WorkbenchEditor`
+
+* The Workbench logical hierachy (top to bottom):
+** User application
+** Workbench
+** Perspective
+** Panel
+** Part
+
+* The Workbench logical-to-physical mapping (top to bottom):
+** Perspective -> `@WorkbenchPerspective`
+** Part -> `@WorkbenchScreen` or `@WorkbenchEditor`
+
+* The Workbench relationships:
+** Workbench -> [1..n] -> Perspective -> [1..n] -> Panel -> [1..n] -> Part
+
+* Annotation processors for:
+** `@WorkbenchPerspective`
+** `@WorkbenchContext`
+** `@WorkbenchEditor`
+** `@WorkbenchScreen`
+** `@WorkbenchPopup`
 * GWT Bootstrap and UberFireConfigurator
 ** FontAwesome resources
 * Workbench Parts
