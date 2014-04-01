@@ -25,21 +25,21 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-import org.uberfire.security.Role;
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
 
 @Singleton
 @Alternative
 public class TestIdentityFactory {
 
-    private Subject subject;
+    private User user;
 
     @PostConstruct
     public void onStartup() {
-        subject = new Subject() {
+        user = new User() {
 
             @Override
-            public String getName() {
+            public String getIdentifier() {
                 return "testUser";
             }
 
@@ -59,8 +59,8 @@ public class TestIdentityFactory {
             }
 
             @Override
-            public void aggregateProperty( String name,
-                                           String value ) {
+            public void setProperty( String name,
+                                     String value ) {
             }
 
             @Override
@@ -68,8 +68,7 @@ public class TestIdentityFactory {
             }
 
             @Override
-            public String getProperty( String name,
-                                       String defaultValue ) {
+            public String getProperty( String name ) {
                 return null;
             }
 
@@ -78,8 +77,8 @@ public class TestIdentityFactory {
 
     @Produces
     @Alternative
-    public Subject getIdentity() {
-        return subject;
+    public User getIdentity() {
+        return user;
     }
 
 }

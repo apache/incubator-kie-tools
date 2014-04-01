@@ -50,7 +50,7 @@
 
     <version.xml-apis>1.3.04</version.xml-apis>
 
-    <version.org.jboss.errai>3.0.0.20131205-M3</version.org.jboss.errai>
+    <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
 
     <version.commons-httpclient>3.1</version.commons-httpclient>
     <version.commons-io>2.1</version.commons-io>
@@ -373,6 +373,12 @@
             <artifactId>slf4j-log4j12</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-security-server</artifactId>
+        <version>${version.org.jboss.errai}</version>
       </dependency>
 
       <!-- Weld Modules -->

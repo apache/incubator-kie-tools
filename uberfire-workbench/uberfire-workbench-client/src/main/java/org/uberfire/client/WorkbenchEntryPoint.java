@@ -28,12 +28,12 @@ import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.Workbench;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.security.Subject;
 
 @EntryPoint
 public class WorkbenchEntryPoint {
@@ -42,7 +42,7 @@ public class WorkbenchEntryPoint {
     private Workbench workbench;
 
     @Inject
-    private Subject identity;
+    private User identity;
 
     @Inject
     private ClientMessageBus bus;

@@ -16,7 +16,7 @@
 
 package org.uberfire.shared.security;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.Role;
 
 public enum AppRoles implements Role {
     ADMIN, SUDO, MANAGER, DIRECTOR;

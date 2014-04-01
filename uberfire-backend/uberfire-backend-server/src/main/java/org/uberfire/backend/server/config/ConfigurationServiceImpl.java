@@ -18,6 +18,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOService;
@@ -33,7 +34,6 @@ import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
-import org.uberfire.security.Subject;
 
 import static org.uberfire.backend.server.util.Paths.*;
 
@@ -54,7 +54,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private ConfigGroupMarshaller marshaller;
 
     @Inject
-    private Subject identity;
+    private User identity;
 
     //Cache of ConfigGroups to avoid reloading them from file
     private final Map<ConfigType, List<ConfigGroup>> configuration = new ConcurrentHashMap<ConfigType, List<ConfigGroup>>();
@@ -218,7 +218,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     protected String getIdentityName() {
         try {
-            return identity.getName();
+            return identity.getIdentifier();
         } catch ( ContextNotActiveException e ) {
             return "unknown";
         }

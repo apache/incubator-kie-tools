@@ -33,12 +33,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.SecurityManager;
-import org.uberfire.security.Subject;
 import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationProvider;
@@ -293,8 +293,8 @@ public class UberFireSecurityFilter implements Filter {
             return;
         }
 
-        final Subject subject = securityManager.authenticate( context );
-        SecurityFactory.setSubject( subject );
+        final User user = securityManager.authenticate( context );
+        SecurityFactory.setSubject( user );
     }
 
     private void authorize( final SecurityContext context,

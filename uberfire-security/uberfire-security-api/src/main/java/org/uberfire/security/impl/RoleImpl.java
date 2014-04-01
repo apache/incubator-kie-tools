@@ -2,8 +2,11 @@ package org.uberfire.security.impl;
 
 import java.io.Serializable;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jboss.errai.security.shared.api.Role;
 
+@Portable
 public class RoleImpl implements Role,
 Serializable {
 
@@ -14,7 +17,7 @@ Serializable {
     public RoleImpl() {
     }
 
-    public RoleImpl( String name ) {
+    public RoleImpl(@MapsTo("name") String name) {
         this.name = name;
     }
 

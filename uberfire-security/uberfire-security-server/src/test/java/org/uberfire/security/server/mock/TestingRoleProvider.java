@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.impl.RoleImpl;

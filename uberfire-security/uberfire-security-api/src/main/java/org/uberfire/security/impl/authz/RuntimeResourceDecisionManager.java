@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.Resource;
-import org.uberfire.security.Role;
-import org.uberfire.security.Subject;
 import org.uberfire.security.annotations.All;
 import org.uberfire.security.annotations.Authorized;
 import org.uberfire.security.annotations.Deny;
@@ -61,7 +61,7 @@ public class RuntimeResourceDecisionManager implements ResourceDecisionManager {
     }
 
     @Override
-    public AuthorizationResult decide(final Resource resource, final Subject subject, final RoleDecisionManager roleDecisionManager) {
+    public AuthorizationResult decide(final Resource resource, final User user, final RoleDecisionManager roleDecisionManager) {
         checkNotNull("roleDecisionManager", roleDecisionManager);
         if (!(resource instanceof RuntimeResource)) {
             throw new IllegalArgumentException("Parameter named 'resource' is not instance of clazz 'RuntimeResource'!");
@@ -69,7 +69,7 @@ public class RuntimeResourceDecisionManager implements ResourceDecisionManager {
 
         final RuntimeResource runtimeResource = (RuntimeResource) resource;
 
-        if (cache.notContains(subject, runtimeResource)) {
+        if (cache.notContains(user, runtimeResource)) {
             if (!resourceManager.requiresAuthentication(runtimeResource)) {
                 return ACCESS_ABSTAIN;
             }
@@ -87,7 +87,7 @@ public class RuntimeResourceDecisionManager implements ResourceDecisionManager {
                 if (trait.equals(All.class.getName())) {
                     votingStrategy = ALL_VOTER;
                 } else if (trait.equals(Authorized.class.getName())) {
-                    if (subject != null) {
+                    if (user != null) {
                         return ACCESS_GRANTED;
                     }
                 } else if (trait.equals(Deny.class.getName())) {
@@ -106,50 +106,50 @@ public class RuntimeResourceDecisionManager implements ResourceDecisionManager {
                 }
             };
 
-            final AuthorizationResult result = votingStrategy.vote(roleDecisionManager.decide(rolesResource, subject));
+            final AuthorizationResult result = votingStrategy.vote(roleDecisionManager.decide(rolesResource, user));
 
             if (invertResult) {
-                cache.put(subject, runtimeResource, result.invert());
+                cache.put(user, runtimeResource, result.invert());
             } else {
-                cache.put(subject, runtimeResource, result);
+                cache.put(user, runtimeResource, result);
             }
         }
 
-        return cache.get(subject, runtimeResource);
+        return cache.get(user, runtimeResource);
     }
 
     class RuntimeAuthzCache {
 
         final Map<String, Map<String, AuthorizationResult>> internal = new HashMap<String, Map<String, AuthorizationResult>>();
 
-        public boolean notContains(final Subject subject, final RuntimeResource resource) {
+        public boolean notContains(final User user, final RuntimeResource resource) {
 
             final Map<String, AuthorizationResult> result = internal.get(resource.getSignatureId());
             if (result == null) {
                 return true;
             }
 
-            return !result.containsKey(subject.getName());
+            return !result.containsKey(user.getIdentifier());
         }
 
-        public void put(final Subject subject, final RuntimeResource resource, final AuthorizationResult authzResult) {
+        public void put(final User user, final RuntimeResource resource, final AuthorizationResult authzResult) {
             if (!internal.containsKey(resource.getSignatureId())) {
                 internal.put(resource.getSignatureId(), new HashMap<String, AuthorizationResult>());
             }
             final Map<String, AuthorizationResult> result = internal.get(resource.getSignatureId());
-            if (result.containsKey(subject.getName())) {
+            if (result.containsKey(user.getIdentifier())) {
                 return;
             }
-            result.put(subject.getName(), authzResult);
+            result.put(user.getIdentifier(), authzResult);
         }
 
-        public AuthorizationResult get(final Subject subject, final RuntimeResource resource) {
+        public AuthorizationResult get(final User user, final RuntimeResource resource) {
             final Map<String, AuthorizationResult> result = internal.get(resource.getSignatureId());
             if (result == null) {
                 return ACCESS_DENIED;
             }
 
-            final AuthorizationResult decision = result.get(subject.getName());
+            final AuthorizationResult decision = result.get(user.getIdentifier());
             if (decision == null) {
                 return ACCESS_DENIED;
             }

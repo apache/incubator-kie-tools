@@ -6,8 +6,8 @@ import java.io.OutputStream;
 
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.UploadPack;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 
 public class GitUploadCommand extends BaseGitCommand {
@@ -24,7 +24,7 @@ public class GitUploadCommand extends BaseGitCommand {
     }
 
     @Override
-    protected void execute( final Subject user,
+    protected void execute( final User user,
                             final Repository repository,
                             final InputStream in,
                             final OutputStream out,

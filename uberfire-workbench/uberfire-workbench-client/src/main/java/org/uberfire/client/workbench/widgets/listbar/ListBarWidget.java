@@ -52,6 +52,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
@@ -61,7 +62,6 @@ import org.uberfire.client.workbench.widgets.dnd.DragArea;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
@@ -94,7 +94,7 @@ public class ListBarWidget
     private AuthorizationManager authzManager;
 
     @Inject
-    private Subject identity;
+    private User identity;
 
     @UiField
     FocusPanel container;

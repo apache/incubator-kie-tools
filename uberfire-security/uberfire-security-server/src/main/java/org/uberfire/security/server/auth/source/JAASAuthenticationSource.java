@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -16,7 +17,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.Credential;

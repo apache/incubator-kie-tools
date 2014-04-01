@@ -16,6 +16,9 @@
 
 package org.uberfire.security;
 
+/**
+ * It's just a marker interface.
+ */
 public interface Resource {
 
 }

@@ -28,10 +28,11 @@ import java.util.Map;
 import javax.enterprise.inject.Alternative;
 import javax.servlet.ServletException;
 
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.ResourceManager;
-import org.uberfire.security.Role;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.Subject;
 import org.uberfire.security.auth.AuthenticatedStorageProvider;
 import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
@@ -42,7 +43,6 @@ import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.auth.SubjectPropertiesProvider;
-import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.server.HttpSecurityContext;
 
 @Alternative
@@ -77,7 +77,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
     }
 
     @Override
-    public Subject authenticate( final SecurityContext context ) throws AuthenticationException {
+    public User authenticate( final SecurityContext context ) throws AuthenticationException {
         final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
 
         if ( !resourceManager.requiresAuthentication( httpContext.getResource() ) ) {
@@ -115,7 +115,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         // since this wasn't a login attempt but the resource requires authentication, look for cached auth info
         if ( principal == null ) {
             for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
-                Subject subjectInSession = storeProvider.load( httpContext );
+                User subjectInSession = storeProvider.load( httpContext );
                 if ( subjectInSession != null ) {
 
                     // return immediately; we should not attempt to build up a new Subject
@@ -140,7 +140,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
 
         final String name = principal.getName();
-        final Subject result = new SubjectImpl( name, roles, properties );
+        final User result = new UserImpl( name, roles, properties );
 
         for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
             storeProvider.store( httpContext, result );

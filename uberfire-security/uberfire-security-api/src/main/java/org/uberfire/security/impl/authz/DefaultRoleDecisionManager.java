@@ -18,8 +18,8 @@ package org.uberfire.security.impl.authz;
 
 import java.util.Iterator;
 
-import org.uberfire.security.Role;
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.authz.RolesResource;
@@ -30,9 +30,9 @@ import static org.uberfire.security.authz.AuthorizationResult.*;
 public class DefaultRoleDecisionManager implements RoleDecisionManager {
 
     @Override
-    public Iterable<AuthorizationResult> decide(final RolesResource resource, final Subject subject) {
+    public Iterable<AuthorizationResult> decide(final RolesResource resource, final User user) {
         checkNotNull("resource", resource);
-        checkNotNull("subject", subject);
+        checkNotNull("subject", user);
 
         return new Iterable<AuthorizationResult>() {
             @Override
@@ -50,7 +50,7 @@ public class DefaultRoleDecisionManager implements RoleDecisionManager {
                     public AuthorizationResult next() {
                         final Role role = iterator.next();
 
-                        for (final Role activeSubjectRole : subject.getRoles()) {
+                        for (final Role activeSubjectRole : user.getRoles()) {
                             if (role.getName().equals(activeSubjectRole.getName())) {
                                 return ACCESS_GRANTED;
                             }

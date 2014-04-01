@@ -24,23 +24,23 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 
-import org.uberfire.security.Role;
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.impl.RoleImpl;
 
 public class SecurityFactory {
 
     private static final List<Role> ANONYMOUS_ROLE = new ArrayList<Role>() {{
-        add( new RoleImpl( Subject.ANONYMOUS ) );
+        add( new RoleImpl( User.ANONYMOUS ) );
     }};
-    private static final ThreadLocal<Subject> subjects = new ThreadLocal<Subject>();
+    private static final ThreadLocal<User> users = new ThreadLocal<User>();
 
     static private AuthorizationManager authzManager = null;
 
-    public static void setSubject( final Subject subject ) {
-        subjects.set( subject );
+    public static void setSubject( final User user ) {
+        users.set( user );
     }
 
     public static void setAuthzManager( final AuthorizationManager authzManager ) {
@@ -49,11 +49,11 @@ public class SecurityFactory {
 
     @Produces
     @RequestScoped
-    public static Subject getIdentity() {
-        if ( subjects.get() == null ) {
-            return new SubjectImpl( Subject.ANONYMOUS, ANONYMOUS_ROLE, Collections.<String, String>emptyMap() );
+    public static User getIdentity() {
+        if ( users.get() == null ) {
+            return new UserImpl( User.ANONYMOUS, ANONYMOUS_ROLE, Collections.<String, String>emptyMap() );
         }
-        return new SubjectImpl( subjects.get().getName(), subjects.get().getRoles(), subjects.get().getProperties() );
+        return new UserImpl( users.get().getIdentifier(), users.get().getRoles(), users.get().getProperties() );
     }
 
     @Produces

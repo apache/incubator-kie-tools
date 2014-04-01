@@ -424,7 +424,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                         public void onPostReceive( final ReceivePack rp,
                                                    final Collection<ReceiveCommand> commands ) {
                             for ( Map.Entry<String, ObjectId> oldTreeRef : oldTreeRefs.entrySet() ) {
-                                notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", req.getUser().getName(), oldTreeRef.getValue(), JGitUtil.getTreeRefObjectId( db, oldTreeRef.getKey() ) );
+                                notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", req.getUser().getIdentifier(), oldTreeRef.getValue(), JGitUtil.getTreeRefObjectId( db, oldTreeRef.getKey() ) );
                             }
 
                             if ( clusterService != null ) {

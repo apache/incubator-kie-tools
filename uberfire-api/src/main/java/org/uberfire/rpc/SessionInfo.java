@@ -1,11 +1,11 @@
 package org.uberfire.rpc;
 
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.identity.User;
 
 public interface SessionInfo {
 
     String getId();
 
-    Subject getIdentity();
+    User getIdentity();
 
 }

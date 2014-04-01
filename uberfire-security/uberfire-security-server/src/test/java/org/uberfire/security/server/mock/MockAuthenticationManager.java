@@ -3,14 +3,14 @@ package org.uberfire.security.server.mock;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.Subject;
 import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationScheme;
-import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.impl.RoleImpl;
 
 /**
@@ -25,10 +25,10 @@ import org.uberfire.security.impl.RoleImpl;
 public class MockAuthenticationManager implements AuthenticationManager {
 
     @Override
-    public Subject authenticate( SecurityContext context ) throws AuthenticationException {
+    public User authenticate( SecurityContext context ) throws AuthenticationException {
         List<Role> roles = new ArrayList<Role>();
         roles.add(new RoleImpl( "test-role" ));
-        return new SubjectImpl("test-user", roles);
+        return new UserImpl("test-user", roles);
     }
 
     @Override

@@ -3,12 +3,13 @@ package org.uberfire.security.server.auth.source.adapter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.jboss.errai.security.shared.api.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.security.Role;
 import org.uberfire.security.impl.RoleImpl;
 
 public class WebSphereRolesAdapter implements RolesAdapter {

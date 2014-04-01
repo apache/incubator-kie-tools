@@ -19,22 +19,22 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.security.Subject;
 
 @ApplicationScoped
 public class UserServicesImpl {
 
     @Inject
     @SessionScoped
-    private Subject identity;
+    private User identity;
 
     @Inject
     private UserServicesBackendImpl userServicesBackend;
 
     public Path buildPath( final String serviceType,
                            final String relativePath ) {
-        return userServicesBackend.buildPath( identity.getName(), serviceType, relativePath );
+        return userServicesBackend.buildPath( identity.getIdentifier(), serviceType, relativePath );
     }
 
 }

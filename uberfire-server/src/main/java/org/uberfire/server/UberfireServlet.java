@@ -36,10 +36,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateRuntime;
-import org.uberfire.security.Role;
-import org.uberfire.security.Subject;
 import org.uberfire.security.server.cdi.SecurityFactory;
 import org.uberfire.server.cdi.UberFireGeneralFactory;
 
@@ -142,13 +142,13 @@ public class UberfireServlet extends HttpServlet {
 
     private void loadApp( PrintWriter writer,
                           Locale locale ) {
-        final Subject subject = SecurityFactory.getIdentity();
+        final User user = SecurityFactory.getIdentity();
         final String localeTag = locale.getLanguage() + "_" + locale.getCountry();
 
         final Map<String, String> map = new HashMap<String, String>() {{
-            put( "name", subject.getName() );
-            put( "roles", collectionAsString( subject.getRoles() ) );
-            put( "properties", mapAsString( subject.getProperties() ) );
+            put( "name", user.getIdentifier() );
+            put( "roles", collectionAsString( user.getRoles() ) );
+            put( "properties", mapAsString( user.getProperties() ) );
             put( "locale", localeTag );
         }};
 
@@ -168,12 +168,12 @@ public class UberfireServlet extends HttpServlet {
     }
 
     private void loadUserInfo( PrintWriter writer ) {
-        final Subject subject = SecurityFactory.getIdentity();
+        final User user = SecurityFactory.getIdentity();
 
         final Map<String, String> map = new HashMap<String, String>() {{
-            put( "name", subject.getName() );
-            put( "roles", collectionAsString( subject.getRoles() ) );
-            put( "properties", mapAsString( subject.getProperties() ) );
+            put( "name", user.getIdentifier() );
+            put( "roles", collectionAsString( user.getRoles() ) );
+            put( "properties", mapAsString( user.getProperties() ) );
         }};
 
         final String content = TemplateRuntime.execute( userDataTemplate, map ).toString();

@@ -10,8 +10,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Test;
-import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.security.server.cdi.SecurityFactory;
 
 
@@ -21,7 +21,7 @@ public class SessionStorageAuthProviderTest extends BaseSecurityFilterTest {
     public void existingUserInSessionShouldBeAllowedIn() throws Exception {
         final String contextPath = "/test-context";
 
-        SubjectImpl alreadyLoggedInUser = new SubjectImpl("already_logged_in");
+        UserImpl alreadyLoggedInUser = new UserImpl("already_logged_in");
         mockHttpSession.setAttribute( SecurityConstants.SUBJECT_ON_SESSION_KEY, alreadyLoggedInUser );
 
         HttpServletRequest request = mock( HttpServletRequest.class );
@@ -38,7 +38,7 @@ public class SessionStorageAuthProviderTest extends BaseSecurityFilterTest {
         uberFireFilter.init( filterConfig );
         uberFireFilter.doFilter( request, response, filterChain );
 
-        assertEquals( "already_logged_in", SecurityFactory.getIdentity().getName() );
+        assertEquals( "already_logged_in", SecurityFactory.getIdentity().getIdentifier() );
         verify( response, never() ).sendRedirect( anyString() );
         verify( response, never() ).sendError( anyInt() );
         verify( filterChain ).doFilter( any( ServletRequest.class ), any( ServletResponse.class) );

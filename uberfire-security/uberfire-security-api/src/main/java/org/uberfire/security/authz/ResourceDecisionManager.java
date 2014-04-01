@@ -16,12 +16,12 @@
 
 package org.uberfire.security.authz;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.Resource;
-import org.uberfire.security.Subject;
 
 public interface ResourceDecisionManager {
 
     boolean supports(final Resource resource);
 
-    AuthorizationResult decide(final Resource resource, final Subject subject, final RoleDecisionManager roleDecisionManager);
+    AuthorizationResult decide(final Resource resource, final User user, final RoleDecisionManager roleDecisionManager);
 }

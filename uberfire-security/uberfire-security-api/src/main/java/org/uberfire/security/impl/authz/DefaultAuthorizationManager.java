@@ -23,9 +23,9 @@ import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
-import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationException;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
@@ -55,7 +55,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
     }
 
     @Override
-    public boolean authorize(final Resource resource, final Subject subject) throws AuthorizationException {
+    public boolean authorize(final Resource resource, final User user) throws AuthorizationException {
         if (decisionManagers.isEmpty()) {
             return true;
         }
@@ -64,7 +64,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
             return true;
         }
 
-        checkNotNull("subject", subject);
+        checkNotNull("subject", user);
 
         final Iterable<AuthorizationResult> results = new Iterable<AuthorizationResult>() {
             @Override
@@ -79,7 +79,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
                     @Override
                     public AuthorizationResult next() {
                         ResourceDecisionManager resourceDecisionManager = decisionManagerIterator.next();
-                        return resourceDecisionManager.decide(resource, subject, roleDecisionManager);
+                        return resourceDecisionManager.decide(resource, user, roleDecisionManager);
                     }
 
                     @Override

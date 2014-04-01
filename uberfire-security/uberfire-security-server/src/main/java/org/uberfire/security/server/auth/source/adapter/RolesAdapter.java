@@ -2,7 +2,7 @@ package org.uberfire.security.server.auth.source.adapter;
 
 import java.util.List;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.Role;
 
 public interface RolesAdapter {
 

@@ -18,10 +18,10 @@ package org.uberfire.security.server.authz;
 
 import java.util.List;
 
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
-import org.uberfire.security.Role;
-import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.ResourceDecisionManager;
 import org.uberfire.security.authz.RoleDecisionManager;
@@ -56,7 +56,7 @@ public class URLAccessDecisionManager implements ResourceDecisionManager {
     }
 
     @Override
-    public AuthorizationResult decide(final Resource resource, final Subject subject, final RoleDecisionManager roleDecisionManager) {
+    public AuthorizationResult decide(final Resource resource, final User user, final RoleDecisionManager roleDecisionManager) {
         final URLResource urlResource = checkInstanceOf("resource", resource, URLResource.class);
         final List<Role> roles = resourceManager.getMandatoryRoles(urlResource);
 
@@ -64,6 +64,6 @@ public class URLAccessDecisionManager implements ResourceDecisionManager {
             return ACCESS_ABSTAIN;
         }
 
-        return DEFAULT_VOTER.vote(roleDecisionManager.decide(new RolesResourceImpl(roles), subject));
+        return DEFAULT_VOTER.vote(roleDecisionManager.decide(new RolesResourceImpl(roles), user));
     }
 }

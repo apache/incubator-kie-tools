@@ -7,10 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -25,7 +27,6 @@ import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.security.impl.SubjectImpl;
 import org.uberfire.workbench.events.ResourceAdded;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -264,6 +265,6 @@ public abstract class AbstractWatchService implements IOWatchService {
             user = context.getUser();
         }
 
-        return new SessionInfoImpl( sessionId, new SubjectImpl( user ) );
+        return new SessionInfoImpl( sessionId, new UserImpl( user ) );
     }
 }

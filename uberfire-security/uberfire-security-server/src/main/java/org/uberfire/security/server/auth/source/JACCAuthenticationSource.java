@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+
 import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.Credential;

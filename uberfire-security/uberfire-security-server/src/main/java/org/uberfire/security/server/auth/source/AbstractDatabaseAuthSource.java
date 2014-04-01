@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.errai.security.shared.api.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.security.Role;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.Credential;

@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
-import org.uberfire.security.Role;
 import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.impl.RoleImpl;
 

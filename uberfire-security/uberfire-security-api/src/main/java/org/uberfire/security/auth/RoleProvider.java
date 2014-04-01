@@ -19,7 +19,7 @@ package org.uberfire.security.auth;
 import java.util.List;
 import java.util.Map;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.Role;
 
 public interface RoleProvider {
 

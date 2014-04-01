@@ -2,8 +2,8 @@ package org.uberfire.rpc.impl;
 
 import javax.enterprise.inject.Alternative;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Subject;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -11,18 +11,18 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 public class SessionInfoImpl implements SessionInfo {
 
     private String id;
-    private Subject identity;
+    private User identity;
 
     public SessionInfoImpl() {
     }
 
     public SessionInfoImpl( final String id,
-                            final Subject identity ) {
+                            final User identity ) {
         this.id = checkNotEmpty( "id", id );
         this.identity = checkNotNull( "identity", identity );
     }
 
-    public SessionInfoImpl( final Subject identity ) {
+    public SessionInfoImpl( final User identity ) {
         this.identity = checkNotNull( "identity", identity );
     }
 
@@ -36,7 +36,7 @@ public class SessionInfoImpl implements SessionInfo {
     }
 
     @Override
-    public Subject getIdentity() {
+    public User getIdentity() {
         return identity;
     }
 
@@ -55,14 +55,14 @@ public class SessionInfoImpl implements SessionInfo {
             return false;
         }
 
-        return getIdentity().getName().equals( that.getIdentity().getName() );
+        return getIdentity().getIdentifier().equals( that.getIdentity().getIdentifier() );
 
     }
 
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + identity.getName().hashCode();
+        result = 31 * result + identity.getIdentifier().hashCode();
         return result;
     }
 

@@ -33,8 +33,9 @@ import org.jboss.errai.bus.client.api.messaging.MessageBus;
 import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 import org.jboss.errai.common.client.protocols.MessageParts;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.uberfire.security.Role;
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.RoleImpl;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationException;
 
 import com.google.gwt.json.client.JSONObject;
@@ -42,14 +43,14 @@ import com.google.gwt.json.client.JSONObject;
 @EntryPoint
 public class SecurityEntryPoint {
 
-    private Subject currentSubject = null;
+    private User currentSubject = null;
 
     @Inject
     private MessageBus bus;
 
     @Produces
     @ApplicationScoped
-    public Subject currentUser() {
+    public User currentUser() {
         if ( currentSubject == null ) {
             setup();
         }
@@ -63,24 +64,14 @@ public class SecurityEntryPoint {
         final Map<String, String> properties = new HashMap<String, String>();
 
         if ( clientSubject == null ) {
-            name = Subject.ANONYMOUS;
-            roles.add( new Role() {
-                @Override
-                public String getName() {
-                    return Subject.ANONYMOUS;
-                }
-            } );
+            name = User.ANONYMOUS;
+            roles.add( new RoleImpl(User.ANONYMOUS) );
 
         } else {
             name = clientSubject.getName();
             for ( int i = 0; i < clientSubject.getRoles().length(); i++ ) {
                 final String roleName = clientSubject.getRoles().get( i );
-                roles.add( new Role() {
-                    @Override
-                    public String getName() {
-                        return roleName;
-                    }
-                } );
+                roles.add( new RoleImpl( roleName ) );
             }
 
             final JSONObject json = new JSONObject( clientSubject.getProperties() );
@@ -89,7 +80,7 @@ public class SecurityEntryPoint {
             }
         }
 
-        this.currentSubject = new Subject() {
+        this.currentSubject = new User() {
             @Override
             public List<Role> getRoles() {
                 return roles;
@@ -112,8 +103,8 @@ public class SecurityEntryPoint {
             }
 
             @Override
-            public void aggregateProperty( final String name,
-                                           final String value ) {
+            public void setProperty( final String name,
+                                     final String value ) {
                 throw new RuntimeException( "Not allowed on this kind of Subject" );
             }
 
@@ -123,17 +114,12 @@ public class SecurityEntryPoint {
             }
 
             @Override
-            public String getProperty( final String name,
-                                       final String defaultValue ) {
-                final String value = properties.get( name );
-                if ( value == null ) {
-                    return defaultValue;
-                }
-                return value;
+            public String getProperty( final String name ) {
+                return properties.get( name );
             }
 
             @Override
-            public String getName() {
+            public String getIdentifier() {
                 return name;
             }
         };

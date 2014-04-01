@@ -21,26 +21,26 @@ import static org.uberfire.security.server.SecurityConstants.*;
 
 import javax.servlet.http.HttpSession;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.Subject;
 import org.uberfire.security.auth.AuthenticatedStorageProvider;
 import org.uberfire.security.server.HttpSecurityContext;
 
 public class HttpSessionStorage implements AuthenticatedStorageProvider {
 
     @Override
-    public Subject load(final SecurityContext context) {
+    public User load(final SecurityContext context) {
         final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
 
-        return (Subject) httpContext.getRequest().getSession().getAttribute(SUBJECT_ON_SESSION_KEY);
+        return (User) httpContext.getRequest().getSession().getAttribute(SUBJECT_ON_SESSION_KEY);
     }
 
     @Override
-    public void store(final SecurityContext context, final Subject subject) {
+    public void store(final SecurityContext context, final User user) {
         final HttpSecurityContext httpContext = checkInstanceOf("context", context, HttpSecurityContext.class);
 
         final HttpSession session = httpContext.getRequest().getSession();
-        session.setAttribute(SUBJECT_ON_SESSION_KEY, subject);
+        session.setAttribute(SUBJECT_ON_SESSION_KEY, user);
     }
 
     @Override

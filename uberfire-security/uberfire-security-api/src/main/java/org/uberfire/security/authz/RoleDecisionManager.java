@@ -16,10 +16,10 @@
 
 package org.uberfire.security.authz;
 
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.identity.User;
 
 public interface RoleDecisionManager {
 
-    Iterable<AuthorizationResult> decide(final RolesResource resource, final Subject subject);
+    Iterable<AuthorizationResult> decide(final RolesResource resource, final User user);
 
 }

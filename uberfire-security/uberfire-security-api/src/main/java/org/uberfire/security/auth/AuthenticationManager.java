@@ -16,12 +16,12 @@
 
 package org.uberfire.security.auth;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.Subject;
 
 public interface AuthenticationManager {
 
-    Subject authenticate(final SecurityContext context) throws AuthenticationException;
+    User authenticate(final SecurityContext context) throws AuthenticationException;
 
     void logout(final SecurityContext context) throws AuthenticationException;
 

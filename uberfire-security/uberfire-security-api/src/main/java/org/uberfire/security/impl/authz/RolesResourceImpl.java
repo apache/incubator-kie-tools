@@ -16,18 +16,19 @@
 
 package org.uberfire.security.impl.authz;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.security.authz.RolesResource;
 
 public class RolesResourceImpl implements RolesResource {
 
     private final List<Role> roles;
 
-    public RolesResourceImpl(final List<Role> roles) {
-        this.roles = roles;
+    public RolesResourceImpl(final Collection<? extends Role> roles) {
+        this.roles = new ArrayList<Role>(roles);
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -31,7 +31,7 @@ public class PespectiveContextMenusView
     private AuthorizationManager authzManager;
 
     @Inject
-    private Subject identity;
+    private User identity;
 
     NavPills menuBar = new NavPills();
 

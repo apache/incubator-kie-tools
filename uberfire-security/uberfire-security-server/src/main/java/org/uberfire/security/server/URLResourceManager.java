@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
-import org.uberfire.security.Role;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.server.util.AntPathMatcher;
 import org.yaml.snakeyaml.Yaml;

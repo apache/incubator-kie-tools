@@ -18,11 +18,11 @@ package org.uberfire.security.auth;
 
 import java.io.Serializable;
 
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.identity.User;
 
 /**
  * Lightweight interim placeholder for a user who has been authenticated but for whom we are still in the process of
- * building up a {@link Subject}. This type is only of interest to those who are extending UberFire security with
+ * building up a {@link User}. This type is only of interest to those who are extending UberFire security with
  * additional Authorization, Authentication, Role, or Property providers.
  */
 public interface Principal extends Serializable {

@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -61,7 +61,7 @@ public class WorkbenchMenuBarView extends Composite
     private AuthorizationManager authzManager;
 
     @Inject
-    private Subject identity;
+    private User identity;
 
     @UiField
     public Nav menuBarLeft;

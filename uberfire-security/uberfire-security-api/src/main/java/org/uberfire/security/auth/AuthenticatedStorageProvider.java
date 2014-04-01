@@ -16,14 +16,14 @@
 
 package org.uberfire.security.auth;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.Subject;
 
 public interface AuthenticatedStorageProvider {
 
-    Subject load(final SecurityContext context);
+    User load(final SecurityContext context);
 
-    void store(final SecurityContext context, final Subject subject);
+    void store(final SecurityContext context, final User user);
 
     void cleanup(final SecurityContext context);
 }

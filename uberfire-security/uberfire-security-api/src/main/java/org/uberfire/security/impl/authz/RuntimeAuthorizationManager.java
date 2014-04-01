@@ -23,8 +23,8 @@ import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.Resource;
-import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationException;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
@@ -45,15 +45,15 @@ public class RuntimeAuthorizationManager implements AuthorizationManager {
 
     @Override
     public boolean authorize( final Resource resource,
-                              final Subject subject )
+                              final User user )
             throws AuthorizationException {
         if ( !resourceManager.requiresAuthentication( resource ) ) {
             return true;
         }
 
-        checkNotNull( "subject", subject );
+        checkNotNull( "subject", user );
 
-        final AuthorizationResult finalResult = decisionManager.decide( resource, subject, roleDecisionManager );
+        final AuthorizationResult finalResult = decisionManager.decide( resource, user, roleDecisionManager );
 
         if ( finalResult.equals( ACCESS_ABSTAIN ) || finalResult.equals( ACCESS_GRANTED ) ) {
             return true;

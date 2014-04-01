@@ -57,7 +57,7 @@ public class HttpSecurityContext extends MapSecurityContext {
 
     @Override
     public String toString() {
-        return "HttpSecurityContext [resource=" + resource + ", content=" + content + ", subject=" + subject + "]";
+        return "HttpSecurityContext [resource=" + resource + ", content=" + content + ", subject=" + user + "]";
     }
 
 }

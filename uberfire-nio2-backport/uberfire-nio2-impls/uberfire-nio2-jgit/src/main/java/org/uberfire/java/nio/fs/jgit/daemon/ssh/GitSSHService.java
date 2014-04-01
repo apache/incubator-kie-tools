@@ -11,8 +11,8 @@ import org.apache.sshd.server.command.UnknownCommand;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.security.Subject;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.server.UserPassSecurityContext;
@@ -58,7 +58,7 @@ public class GitSSHService {
                                          final ServerSession session ) {
                 try {
                     final UserPassSecurityContext context = new UserPassSecurityContext( null, username, password );
-                    final Subject result = getAuthenticationManager().authenticate( context );
+                    final User result = getAuthenticationManager().authenticate( context );
                     if ( result != null ) {
                         session.setAttribute( BaseGitCommand.SUBJECT_KEY, result );
                     }

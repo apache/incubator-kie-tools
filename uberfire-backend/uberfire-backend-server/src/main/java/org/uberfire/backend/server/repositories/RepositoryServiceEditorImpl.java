@@ -47,7 +47,7 @@ public class RepositoryServiceEditorImpl implements RepositoryServiceEditor {
             comment = _comment;
         }
 
-        ioService.move( history, Paths.convert( path ), REPLACE_EXISTING, new CommentedOption( sessionInfo.getId(), sessionInfo.getIdentity().getName(), null, comment ) );
+        ioService.move( history, Paths.convert( path ), REPLACE_EXISTING, new CommentedOption( sessionInfo.getId(), sessionInfo.getIdentity().getIdentifier(), null, comment ) );
 
         return new ArrayList<VersionRecord>( repositoryService.getRepositoryInfo( alias ).getInitialVersionList() );
     }

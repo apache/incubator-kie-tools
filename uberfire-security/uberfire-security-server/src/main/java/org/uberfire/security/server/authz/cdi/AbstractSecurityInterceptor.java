@@ -5,12 +5,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
-import org.uberfire.security.Subject;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
 import org.uberfire.security.authz.AuthorizationException;
@@ -26,7 +27,7 @@ public abstract class AbstractSecurityInterceptor {
 
     @Inject
     @SessionScoped
-    private Subject subject;
+    private User user;
 
     @AroundInvoke
     public Object interceptInvoke( final InvocationContext ctx ) throws Exception {
@@ -96,7 +97,7 @@ public abstract class AbstractSecurityInterceptor {
             }
         };
 
-        if ( !authzManager.authorize( resource, subject ) ) {
+        if ( !authzManager.authorize( resource, user ) ) {
             throw new AuthorizationException( "Invalid credentials." );
         }
 

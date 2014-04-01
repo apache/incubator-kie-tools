@@ -34,17 +34,17 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemResourceAdaptor;
-import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationManager;
 
 public abstract class BaseGitCommand implements Command,
                                                 SessionAware,
                                                 Runnable {
 
-    public final static Session.AttributeKey<Subject> SUBJECT_KEY = new Session.AttributeKey<Subject>();
+    public final static Session.AttributeKey<User> SUBJECT_KEY = new Session.AttributeKey<User>();
 
     protected final String command;
     protected final String repositoryName;
@@ -55,7 +55,7 @@ public abstract class BaseGitCommand implements Command,
     private OutputStream out;
     private OutputStream err;
     private ExitCallback callback;
-    private Subject user;
+    private User user;
 
     public BaseGitCommand( final String command,
                            final AuthorizationManager authorizationManager,
@@ -150,7 +150,7 @@ public abstract class BaseGitCommand implements Command,
         }
     }
 
-    protected abstract void execute( final Subject subject,
+    protected abstract void execute( final User user,
                                      final Repository repository,
                                      final InputStream in,
                                      final OutputStream out,
@@ -159,7 +159,7 @@ public abstract class BaseGitCommand implements Command,
     public void destroy() {
     }
 
-    public Subject getUser() {
+    public User getUser() {
         return user;
     }
 
