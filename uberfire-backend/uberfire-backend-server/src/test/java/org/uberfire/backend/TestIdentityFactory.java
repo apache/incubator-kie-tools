@@ -17,8 +17,8 @@
 package org.uberfire.backend;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Alternative;
@@ -44,13 +44,18 @@ public class TestIdentityFactory {
             }
 
             @Override
-            public List<Role> getRoles() {
-                return Collections.emptyList();
+            public Set<Role> getRoles() {
+                return Collections.emptySet();
             }
 
             @Override
-            public boolean hasRole( Role role ) {
-                return true;
+            public boolean hasAllRoles( String... roleNames ) {
+                return false;
+            }
+
+            @Override
+            public boolean hasAnyRoles( String... roleNames ) {
+                return false;
             }
 
             @Override

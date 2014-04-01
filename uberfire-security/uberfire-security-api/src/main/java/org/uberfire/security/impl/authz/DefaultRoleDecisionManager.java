@@ -16,6 +16,9 @@
 
 package org.uberfire.security.impl.authz;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.security.authz.AuthorizationResult.*;
+
 import java.util.Iterator;
 
 import org.jboss.errai.security.shared.api.Role;
@@ -23,9 +26,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.authz.RolesResource;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.security.authz.AuthorizationResult.*;
 
 public class DefaultRoleDecisionManager implements RoleDecisionManager {
 
@@ -49,13 +49,9 @@ public class DefaultRoleDecisionManager implements RoleDecisionManager {
                     @Override
                     public AuthorizationResult next() {
                         final Role role = iterator.next();
-
-                        for (final Role activeSubjectRole : user.getRoles()) {
-                            if (role.getName().equals(activeSubjectRole.getName())) {
-                                return ACCESS_GRANTED;
-                            }
+                        if ( user.getRoles().contains( role ) ) {
+                            return ACCESS_GRANTED;
                         }
-
                         return ACCESS_ABSTAIN;
                     }
 

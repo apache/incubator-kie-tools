@@ -17,12 +17,11 @@
 package org.uberfire.security.client;
 
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -36,6 +35,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.security.authz.AuthorizationException;
 
 import com.google.gwt.json.client.JSONObject;
@@ -60,7 +60,7 @@ public class SecurityEntryPoint {
     public void setup() {
         final JSONSubject clientSubject = loadCurrentSubject();
         final String name;
-        final List<Role> roles = new ArrayList<Role>();
+        final Set<Role> roles = new HashSet<Role>();
         final Map<String, String> properties = new HashMap<String, String>();
 
         if ( clientSubject == null ) {
@@ -80,49 +80,7 @@ public class SecurityEntryPoint {
             }
         }
 
-        this.currentSubject = new User() {
-            @Override
-            public List<Role> getRoles() {
-                return roles;
-            }
-
-            @Override
-            public boolean hasRole( final Role role ) {
-                checkNotNull( "role", role );
-                for ( final Role activeRole : roles ) {
-                    if ( activeRole.getName().equals( role.getName() ) ) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public Map<String, String> getProperties() {
-                return properties;
-            }
-
-            @Override
-            public void setProperty( final String name,
-                                     final String value ) {
-                throw new RuntimeException( "Not allowed on this kind of Subject" );
-            }
-
-            @Override
-            public void removeProperty( final String name ) {
-                throw new RuntimeException( "Not allowed on this kind of Subject" );
-            }
-
-            @Override
-            public String getProperty( final String name ) {
-                return properties.get( name );
-            }
-
-            @Override
-            public String getIdentifier() {
-                return name;
-            }
-        };
+        this.currentSubject = new UserImpl(name, roles, properties);
 
         bus.subscribe( CLIENT_ERROR_SUBJECT, new MessageCallback() {
             @Override
