@@ -18,6 +18,7 @@ package org.uberfire.security.auth;
 
 import java.util.Map;
 
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
 
 public interface AuthenticationProvider {
@@ -26,6 +27,6 @@ public interface AuthenticationProvider {
 
     boolean supportsCredential(final Credential credential);
 
-    AuthenticationResult authenticate(final Credential credential, final SecurityContext securityContext) throws AuthenticationException;
+    AuthenticationResult authenticate(final Credential credential, final SecurityContext securityContext) throws UnauthenticatedException;
 
 }

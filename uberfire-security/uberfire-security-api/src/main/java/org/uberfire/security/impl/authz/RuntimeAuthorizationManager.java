@@ -16,16 +16,15 @@
 
 package org.uberfire.security.impl.authz;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.security.authz.AuthorizationResult.ACCESS_ABSTAIN;
-import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.security.authz.AuthorizationResult.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.uberfire.security.Resource;
-import org.uberfire.security.authz.AuthorizationException;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
@@ -46,7 +45,7 @@ public class RuntimeAuthorizationManager implements AuthorizationManager {
     @Override
     public boolean authorize( final Resource resource,
                               final User user )
-            throws AuthorizationException {
+            throws UnauthorizedException {
         if ( !resourceManager.requiresAuthentication( resource ) ) {
             return true;
         }

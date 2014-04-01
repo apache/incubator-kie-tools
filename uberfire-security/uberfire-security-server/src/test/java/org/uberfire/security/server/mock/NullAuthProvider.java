@@ -2,8 +2,8 @@ package org.uberfire.security.server.mock;
 
 import java.util.Map;
 
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationResult;
 import org.uberfire.security.auth.Credential;
@@ -24,7 +24,7 @@ public class NullAuthProvider implements AuthenticationProvider {
     }
 
     @Override
-    public AuthenticationResult authenticate( Credential credential, SecurityContext securityContext ) throws AuthenticationException {
+    public AuthenticationResult authenticate( Credential credential, SecurityContext securityContext ) throws UnauthenticatedException {
         throw new UnsupportedOperationException("Should not have been called");
     }
 

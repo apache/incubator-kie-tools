@@ -17,12 +17,13 @@
 package org.uberfire.security.authz;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.uberfire.security.Resource;
 
 public interface AuthorizationManager {
 
     boolean supports(final Resource resource);
 
-    boolean authorize(final Resource resource, final User user) throws AuthorizationException;
+    boolean authorize(final Resource resource, final User user) throws UnauthorizedException;
 
 }

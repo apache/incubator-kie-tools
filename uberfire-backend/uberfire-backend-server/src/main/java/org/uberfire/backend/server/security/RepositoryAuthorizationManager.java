@@ -16,24 +16,24 @@
 
 package org.uberfire.backend.server.security;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.security.authz.AuthorizationResult.*;
+
 import javax.enterprise.inject.Alternative;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.RepositoryServiceImpl;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.security.FileSystemResourceAdaptor;
 import org.uberfire.security.Resource;
-import org.uberfire.security.authz.AuthorizationException;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.impl.authz.DefaultRoleDecisionManager;
 import org.uberfire.security.impl.authz.RuntimeResourceDecisionManager;
 import org.uberfire.security.impl.authz.RuntimeResourceManager;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.security.authz.AuthorizationResult.*;
 
 @Alternative
 public class RepositoryAuthorizationManager implements AuthorizationManager {
@@ -54,7 +54,7 @@ public class RepositoryAuthorizationManager implements AuthorizationManager {
 
     @Override
     public boolean authorize( final Resource resource,
-                              final User user ) throws AuthorizationException {
+                              final User user ) throws UnauthorizedException {
         checkNotNull( "subject", user );
 
         final Repository repo;

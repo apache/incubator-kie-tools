@@ -29,12 +29,12 @@ import javax.enterprise.inject.Alternative;
 import javax.servlet.ServletException;
 
 import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.auth.AuthenticatedStorageProvider;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationResult;
@@ -77,7 +77,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
     }
 
     @Override
-    public User authenticate( final SecurityContext context ) throws AuthenticationException {
+    public User authenticate( final SecurityContext context ) throws UnauthenticatedException {
         final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
 
         if ( !resourceManager.requiresAuthentication( httpContext.getResource() ) ) {
@@ -104,7 +104,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
                     final AuthenticationResult result = authProvider.authenticate( credential, context );
                     if ( result.getStatus().equals( FAILED ) ) {
                         authScheme.challengeClient( httpContext );
-                        throw new AuthenticationException( "Invalid credentials." );
+                        throw new UnauthenticatedException( "Invalid credentials." );
                     } else if ( result.getStatus().equals( SUCCESS ) ) {
                         principal = result.getPrincipal();
                         break all_auth;
@@ -125,7 +125,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
         }
 
         if ( principal == null ) {
-            throw new AuthenticationException( "Invalid credentials." );
+            throw new UnauthenticatedException( "Invalid credentials." );
         }
 
         final List<Role> roles = new ArrayList<Role>();
@@ -211,7 +211,7 @@ public class HttpAuthenticationManager implements AuthenticationManager {
     }
 
     @Override
-    public void logout( final SecurityContext context ) throws AuthenticationException {
+    public void logout( final SecurityContext context ) throws UnauthenticatedException {
         for ( final AuthenticatedStorageProvider storeProvider : authStorageProviders ) {
             storeProvider.cleanup( context );
         }

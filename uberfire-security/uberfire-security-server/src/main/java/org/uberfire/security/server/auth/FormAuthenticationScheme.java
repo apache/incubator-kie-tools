@@ -16,21 +16,22 @@
 
 package org.uberfire.security.server.auth;
 
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.security.server.SecurityConstants.*;
+
 import javax.servlet.RequestDispatcher;
 
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationScheme;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
 import org.uberfire.security.server.HttpSecurityContext;
 import org.uberfire.security.server.SecurityConstants;
 
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.security.server.SecurityConstants.*;
-
 public class FormAuthenticationScheme implements AuthenticationScheme {
 
+    @Override
     public boolean isAuthenticationRequest(final SecurityContext context) {
         final HttpSecurityContext httpSecurityContext = checkInstanceOf("context", context, HttpSecurityContext.class);
 
@@ -48,13 +49,14 @@ public class FormAuthenticationScheme implements AuthenticationScheme {
         }
 
         try {
-        	httpSecurityContext.getResponse().setStatus(401);
+            httpSecurityContext.getResponse().setStatus(401);
             rd.forward(httpSecurityContext.getRequest(), httpSecurityContext.getResponse());
         } catch (Exception e) {
-            throw new AuthenticationException(e);
+            throw new UnauthenticatedException("Failed to send HTTP challenge to client", e);
         }
     }
 
+    @Override
     public Credential buildCredential(final SecurityContext context) {
         final HttpSecurityContext httpSecurityContext = checkInstanceOf("context", context, HttpSecurityContext.class);
 

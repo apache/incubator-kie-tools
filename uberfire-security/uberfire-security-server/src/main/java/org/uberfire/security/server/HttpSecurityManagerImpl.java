@@ -31,11 +31,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.SecurityManager;
 import org.uberfire.security.auth.AuthenticatedStorageProvider;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationScheme;
@@ -206,7 +206,7 @@ public class HttpSecurityManagerImpl implements SecurityManager {
     }
 
     @Override
-    public User authenticate( final SecurityContext context ) throws AuthenticationException {
+    public User authenticate( final SecurityContext context ) throws UnauthenticatedException {
         final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
 
         try {
@@ -214,7 +214,7 @@ public class HttpSecurityManagerImpl implements SecurityManager {
             httpContext.setCurrentSubject( user );
             return user;
         } catch ( Exception ex ) {
-            throw new AuthenticationException( "Validation fails.", ex );
+            throw new UnauthenticatedException( "Validation fails.", ex );
         }
     }
 

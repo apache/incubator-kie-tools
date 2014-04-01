@@ -22,8 +22,8 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationResult;
 import org.uberfire.security.auth.AuthenticationSource;
@@ -53,7 +53,7 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public AuthenticationResult authenticate( final Credential credential, final SecurityContext securityContext )
-            throws AuthenticationException {
+            throws UnauthenticatedException {
         if ( !supportsCredential( credential ) ) {
             return new AuthenticationResult() {
                 @Override

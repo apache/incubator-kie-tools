@@ -1,7 +1,7 @@
 package org.uberfire.security.server.mock;
 
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationScheme;
 import org.uberfire.security.auth.Credential;
 
@@ -21,7 +21,7 @@ public class NullAuthScheme implements AuthenticationScheme {
     }
 
     @Override
-    public Credential buildCredential( SecurityContext context ) throws AuthenticationException {
+    public Credential buildCredential( SecurityContext context ) throws UnauthenticatedException {
         throw new UnsupportedOperationException("Should not have been called");
     }
 

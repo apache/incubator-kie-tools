@@ -12,9 +12,9 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.uberfire.security.annotations.RolesType;
 import org.uberfire.security.annotations.SecurityTrait;
-import org.uberfire.security.authz.AuthorizationException;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.server.cdi.AppResourcesAuthz;
@@ -98,7 +98,7 @@ public abstract class AbstractSecurityInterceptor {
         };
 
         if ( !authzManager.authorize( resource, user ) ) {
-            throw new AuthorizationException( "Invalid credentials." );
+            throw new UnauthorizedException( "Invalid credentials." );
         }
 
         return ctx.proceed();

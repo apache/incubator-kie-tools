@@ -1,7 +1,7 @@
 package org.uberfire.security.server.mock;
 
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationScheme;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
@@ -26,7 +26,7 @@ public class MockAuthenticationScheme implements AuthenticationScheme {
     }
 
     @Override
-    public Credential buildCredential( SecurityContext context ) throws AuthenticationException {
+    public Credential buildCredential( SecurityContext context ) throws UnauthenticatedException {
         System.out.println( "MockSuccessfulAuthenticationScheme is building a credential!" );
         return new UsernamePasswordCredential( "test-user", "test-password" );
     }

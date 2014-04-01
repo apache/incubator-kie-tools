@@ -16,6 +16,7 @@
 
 package org.uberfire.security.auth;
 
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
 
 /**
@@ -62,8 +63,8 @@ public interface AuthenticationScheme {
      *          null.
      * @return a Credential built from information supplied by the client in the
      *         request.
-     * @throws AuthenticationException
+     * @throws UnauthenticatedException
      *           if the request does not contain a recognized credential.
      */
-    Credential buildCredential(final SecurityContext context) throws AuthenticationException;
+    Credential buildCredential(final SecurityContext context) throws UnauthenticatedException;
 }

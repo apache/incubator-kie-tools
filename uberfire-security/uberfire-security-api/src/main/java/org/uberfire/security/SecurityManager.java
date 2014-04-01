@@ -17,7 +17,7 @@
 package org.uberfire.security;
 
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.security.auth.AuthenticationException;
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 
 public interface SecurityManager {
 
@@ -25,7 +25,7 @@ public interface SecurityManager {
 
     void logout(SecurityContext context);
 
-    User authenticate(final SecurityContext context) throws AuthenticationException;
+    User authenticate(final SecurityContext context) throws UnauthenticatedException;
 
     boolean authorize(final SecurityContext context);
 

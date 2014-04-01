@@ -16,17 +16,16 @@
 
 package org.uberfire.security.impl.authz;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.security.authz.AuthorizationResult.ACCESS_ABSTAIN;
-import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.security.authz.AuthorizationResult.*;
 
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
-import org.uberfire.security.authz.AuthorizationException;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.ResourceDecisionManager;
@@ -41,8 +40,8 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
     private final RoleDecisionManager roleDecisionManager;
 
     public DefaultAuthorizationManager(final Collection<ResourceDecisionManager> decisionManagers,
-            final ResourceManager resourceManager, final VotingStrategy votingStrategy,
-            final RoleDecisionManager roleDecisionManager) {
+                                       final ResourceManager resourceManager, final VotingStrategy votingStrategy,
+                                       final RoleDecisionManager roleDecisionManager) {
         this.votingStrategy = checkNotNull("votingStrategy", votingStrategy);
         this.roleDecisionManager = roleDecisionManager;
         this.decisionManagers = checkNotNull("decisionManagers", decisionManagers);
@@ -55,7 +54,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
     }
 
     @Override
-    public boolean authorize(final Resource resource, final User user) throws AuthorizationException {
+    public boolean authorize(final Resource resource, final User user) throws UnauthorizedException {
         if (decisionManagers.isEmpty()) {
             return true;
         }
@@ -101,8 +100,8 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
 
     @Override
     public String toString() {
-      return "DefaultAuthorizationManager [decisionManagers=" + decisionManagers + ", resourceManager="
-              + resourceManager + ", votingStrategy=" + votingStrategy + ", roleDecisionManager=" + roleDecisionManager
-              + "]";
+        return "DefaultAuthorizationManager [decisionManagers=" + decisionManagers + ", resourceManager="
+                + resourceManager + ", votingStrategy=" + votingStrategy + ", roleDecisionManager=" + roleDecisionManager
+                + "]";
     }
 }

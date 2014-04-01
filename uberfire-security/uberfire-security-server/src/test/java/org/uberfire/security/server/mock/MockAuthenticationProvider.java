@@ -3,8 +3,8 @@ package org.uberfire.security.server.mock;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationResult;
 import org.uberfire.security.auth.AuthenticationStatus;
@@ -27,7 +27,7 @@ public class MockAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-    public AuthenticationResult authenticate( final Credential credential, final SecurityContext securityContext ) throws AuthenticationException {
+    public AuthenticationResult authenticate( final Credential credential, final SecurityContext securityContext ) throws UnauthenticatedException {
         return new AuthenticationResult() {
 
             @Override

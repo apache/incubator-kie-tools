@@ -36,7 +36,7 @@ import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
-import org.uberfire.security.authz.AuthorizationException;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
 
 import com.google.gwt.json.client.JSONObject;
 
@@ -88,7 +88,7 @@ public class SecurityEntryPoint {
                 try {
                     final Throwable caught = message.get( Throwable.class, MessageParts.Throwable );
                     throw caught;
-                } catch ( AuthorizationException ex ) {
+                } catch ( UnauthorizedException ex ) {
                     redirect( "/login.jsp" );
                 } catch ( Throwable ex ) {
                     //Let other ErrorCallbacks handle specific errors

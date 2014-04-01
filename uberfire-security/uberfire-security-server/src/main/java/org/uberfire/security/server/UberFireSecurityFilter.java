@@ -34,12 +34,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.SecurityContext;
 import org.uberfire.security.SecurityManager;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationScheme;
@@ -241,7 +241,7 @@ public class UberFireSecurityFilter implements Filter {
             if ( !httpResponse.isCommitted() ) {
                 chain.doFilter( request, httpResponse );
             }
-        } catch ( AuthenticationException e ) {
+        } catch ( UnauthenticatedException e ) {
             if ( !httpResponse.isCommitted() ) {
                 LOG.debug("Authentication failure. Sending HTTP 401 response.", e);
                 httpResponse.sendError( 401, e.getMessage() );
@@ -288,7 +288,7 @@ public class UberFireSecurityFilter implements Filter {
 
     private void authenticate( final SecurityContext context,
             final HttpServletResponse httpResponse )
-                    throws AuthenticationException {
+                    throws UnauthenticatedException {
         if ( httpResponse.isCommitted() ) {
             return;
         }

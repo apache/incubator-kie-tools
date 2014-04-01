@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationProvider;
 import org.uberfire.security.auth.AuthenticationScheme;
@@ -25,14 +25,14 @@ import org.uberfire.security.impl.RoleImpl;
 public class MockAuthenticationManager implements AuthenticationManager {
 
     @Override
-    public User authenticate( SecurityContext context ) throws AuthenticationException {
+    public User authenticate( SecurityContext context ) throws UnauthenticatedException {
         List<Role> roles = new ArrayList<Role>();
         roles.add(new RoleImpl( "test-role" ));
         return new UserImpl("test-user", roles);
     }
 
     @Override
-    public void logout( SecurityContext context ) throws AuthenticationException {
+    public void logout( SecurityContext context ) throws UnauthenticatedException {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

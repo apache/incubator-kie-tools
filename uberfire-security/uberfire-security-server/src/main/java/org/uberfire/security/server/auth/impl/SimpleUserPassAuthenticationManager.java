@@ -1,5 +1,8 @@
 package org.uberfire.security.server.auth.impl;
 
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.security.auth.AuthenticationStatus.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +11,10 @@ import java.util.Map;
 import javax.enterprise.inject.Alternative;
 
 import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 import org.uberfire.security.SecurityContext;
-import org.uberfire.security.auth.AuthenticationException;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.auth.AuthenticationResult;
 import org.uberfire.security.auth.AuthenticationScheme;
@@ -22,9 +25,6 @@ import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.auth.SubjectPropertiesProvider;
 import org.uberfire.security.server.UserPassSecurityContext;
 import org.uberfire.security.server.auth.DefaultAuthenticationProvider;
-
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.security.auth.AuthenticationStatus.*;
 
 @Alternative
 public class SimpleUserPassAuthenticationManager implements AuthenticationManager {
@@ -54,7 +54,7 @@ public class SimpleUserPassAuthenticationManager implements AuthenticationManage
     }
 
     @Override
-    public User authenticate( final SecurityContext context ) throws AuthenticationException {
+    public User authenticate( final SecurityContext context ) throws UnauthenticatedException {
         final UserPassSecurityContext userPassContext = checkInstanceOf( "context", context, UserPassSecurityContext.class );
 
         final Principal principal;
@@ -62,7 +62,7 @@ public class SimpleUserPassAuthenticationManager implements AuthenticationManage
         final Credential credential = scheme.buildCredential( userPassContext );
 
         if ( credential == null ) {
-            throw new AuthenticationException( "Invalid credentials." );
+            throw new UnauthenticatedException( "Invalid credentials." );
         }
 
         final AuthenticationResult authResult = authProvider.authenticate( credential, context );
@@ -74,7 +74,7 @@ public class SimpleUserPassAuthenticationManager implements AuthenticationManage
         }
 
         if ( principal == null ) {
-            throw new AuthenticationException( "Invalid credentials." );
+            throw new UnauthenticatedException( "Invalid credentials." );
         }
 
         final List<Role> roles = new ArrayList<Role>();
@@ -93,6 +93,6 @@ public class SimpleUserPassAuthenticationManager implements AuthenticationManage
     }
 
     @Override
-    public void logout( final SecurityContext context ) throws AuthenticationException {
+    public void logout( final SecurityContext context ) throws UnauthenticatedException {
     }
 }
