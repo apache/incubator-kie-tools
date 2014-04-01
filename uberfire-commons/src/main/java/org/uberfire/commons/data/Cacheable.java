@@ -1,4 +1,4 @@
-package org.uberfire.workbench.type;
+package org.uberfire.commons.data;
 
 public interface Cacheable {
 

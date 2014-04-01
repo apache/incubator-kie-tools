@@ -27,7 +27,7 @@ import org.uberfire.security.ResourceManager;
 import org.uberfire.security.Role;
 import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.impl.RoleImpl;
-import org.uberfire.workbench.type.Cacheable;
+import org.uberfire.commons.data.Cacheable;
 
 import static java.util.Collections.*;
 

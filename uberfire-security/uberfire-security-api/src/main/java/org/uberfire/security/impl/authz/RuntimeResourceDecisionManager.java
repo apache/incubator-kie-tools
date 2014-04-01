@@ -32,7 +32,7 @@ import org.uberfire.security.authz.RoleDecisionManager;
 import org.uberfire.security.authz.RolesResource;
 import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.authz.VotingStrategy;
-import org.uberfire.workbench.type.Cacheable;
+import org.uberfire.commons.data.Cacheable;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.security.authz.AuthorizationResult.*;

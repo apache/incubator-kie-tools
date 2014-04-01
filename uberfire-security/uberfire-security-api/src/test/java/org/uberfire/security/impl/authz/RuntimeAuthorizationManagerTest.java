@@ -15,7 +15,7 @@ import org.uberfire.security.Role;
 import org.uberfire.security.Subject;
 import org.uberfire.security.authz.RuntimeResource;
 import org.uberfire.security.impl.RoleImpl;
-import org.uberfire.workbench.type.Cacheable;
+import org.uberfire.commons.data.Cacheable;
 
 public class RuntimeAuthorizationManagerTest {
 
