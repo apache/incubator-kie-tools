@@ -22,6 +22,7 @@ import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
+import org.uberfire.backend.server.config.OrgUnit;
 import org.uberfire.backend.server.config.SystemRepositoryChangedEvent;
 
 @Service
@@ -244,7 +245,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     }
 
-    public void updateRegisteredOU(@Observes SystemRepositoryChangedEvent changedEvent) {
+    public void updateRegisteredOU(@Observes @OrgUnit SystemRepositoryChangedEvent changedEvent) {
         registeredOrganizationalUnits.clear();
         loadOrganizationalUnits();
     }

@@ -5,8 +5,9 @@ import java.util.Map;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.workbench.type.Cacheable;
 
-public interface Repository extends RuntimeResource {
+public interface Repository extends RuntimeResource, Cacheable {
 
     String getAlias();
 
