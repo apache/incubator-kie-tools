@@ -4,6 +4,7 @@
 <module>
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
+  <inherits name="org.uberfire.UberfireNSWEManager" />
 
   <!-- Guvnor dependencies -->
   <inherits name="org.guvnor.inbox.GuvnorInboxClient"/>
