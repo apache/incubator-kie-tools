@@ -87,6 +87,11 @@ public class DataModelImpl implements DataModel {
     }
 
     @Override
+    public DataObject addDataObject(String packageName, String name, int modifiers) {
+        return addDataObject(packageName, name, ObjectSource.INTERNAL, modifiers);
+    }
+
+    @Override
     public DataObject addDataObject(String packageName, String name, ObjectSource source) {
         return addDataObject(packageName, name, source, Modifier.PUBLIC);
     }

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
-import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleDriver;
+import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 
 public class FileHashingTest {
@@ -30,7 +30,7 @@ public class FileHashingTest {
     @Test
     public void testFilesHashing() {
 
-        DataModelOracleDriver dataModelOracleDriver = DataModelOracleDriver.getInstance( );
+        DataModelOracleModelDriver dataModelOracleDriver = DataModelOracleModelDriver.getInstance();
         DataModel dataModel = dataModelOracleDriver.createModel();
 
         DataObject dataObject;

@@ -36,13 +36,11 @@ public class ModifiersContainerDescr extends ElementDescriptor implements HasMod
 
     @Override
     public ModifierListDescr getModifiers( ) {
-        //TODO review
         return ( ModifierListDescr ) getElements( ).getFirst( ElementType.MODIFIER_LIST );
     }
 
     @Override
     public void setModifiers( ModifierListDescr modifiers ) {
-        //TODO ensure modifiers list is inserted in order
         getElements( ).add( modifiers );
     }
 
@@ -51,6 +49,13 @@ public class ModifiersContainerDescr extends ElementDescriptor implements HasMod
         ModifierListDescr modifierListDescr = getModifiers( );
         if ( modifierListDescr != null ) {
             modifierListDescr.add( modifier );
+        }
+    }
+
+    @Override public void addAnnotation( AnnotationDescr annotation ) {
+        ModifierListDescr modifierListDescr = getModifiers( );
+        if ( modifierListDescr != null ) {
+            modifierListDescr.add( annotation );
         }
     }
 }

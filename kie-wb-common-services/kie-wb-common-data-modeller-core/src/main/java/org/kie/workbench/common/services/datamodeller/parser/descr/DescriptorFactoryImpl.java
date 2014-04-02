@@ -86,6 +86,26 @@ public class DescriptorFactoryImpl implements DescriptorFactory {
     }
 
     @Override
+    public AnnotationDescr createAnnotationDescr( String source ) throws Exception {
+        return createAnnotationDescr( source, false );
+    }
+
+    @Override
+    public AnnotationDescr createAnnotationDescr( String source, boolean includeIndent ) throws Exception {
+        JavaParser parser = JavaParserFactory.newParser( source );
+        //TODO add parse error controls.
+        AnnotationDescr annotationDescr = parser.annotation().annotationDescr;
+        ParserUtil.setSourceBufferTMP( annotationDescr, parser.getSourceBuffer() );
+        if (includeIndent) {
+            ParserUtil.populateUnManagedElements( 0, parser.getSourceBuffer().length()-1, annotationDescr );
+        } else {
+            ParserUtil.populateUnManagedElements( annotationDescr );
+        }
+        ParserUtil.setSourceBufferTMP( annotationDescr, parser.getSourceBuffer( ) );
+        return annotationDescr;
+    }
+
+    @Override
     public PackageDescr createPackageDescr( String source ) throws Exception {
         JavaParser parser = JavaParserFactory.newParser( source, ParserMode.PARSE_PACKAGE );
         //TODO add parse error controls

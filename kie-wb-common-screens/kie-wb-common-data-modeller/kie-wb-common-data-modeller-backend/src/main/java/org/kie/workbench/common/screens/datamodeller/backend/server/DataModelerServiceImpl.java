@@ -47,6 +47,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationTools;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
@@ -54,10 +55,11 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
-import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleDriver;
+import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaModelDriver;
 import org.kie.workbench.common.services.datamodeller.parser.JavaFileHandler;
 import org.kie.workbench.common.services.datamodeller.parser.JavaFileHandlerFactory;
+import org.kie.workbench.common.services.datamodeller.parser.descr.AnnotationDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ClassDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactory;
 import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactoryImpl;
@@ -68,6 +70,7 @@ import org.kie.workbench.common.services.datamodeller.parser.descr.IdentifierDes
 import org.kie.workbench.common.services.datamodeller.parser.descr.JavaTokenDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.MethodDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ModifierDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ModifierListDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.PackageDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.QualifiedNameDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TextTokenElementDescr;
@@ -156,7 +159,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel( projectPath );
 
-            DataModelOracleDriver driver = DataModelOracleDriver.getInstance( projectDataModelOracle, getProjectClassLoader(project) );
+            DataModelOracleModelDriver driver = DataModelOracleModelDriver.getInstance( projectDataModelOracle, getProjectClassLoader( project ) );
             //dataModel = driver.loadModel();
             ModelDriver modelDriver = new JavaModelDriver( ioService, Paths.convert( defaultPackage.getPackageMainSrcPath() ) , true, getProjectClassLoader(project) );
             dataModel = modelDriver.loadModel();
@@ -374,12 +377,14 @@ public class DataModelerServiceImpl implements DataModelerService {
         Map<String, String> preservedFields = new HashMap<String, String>( );
         DataModelerServiceHelper helper = DataModelerServiceHelper.getInstance();
         ObjectProperty property;
+        DataObject dataObject = helper.to2Domain( dataObjectTO );
 
 
         //TODO update type annotations
 
         //update package, class name, and super class name if needed.
         updatePackage( fileDescr, dataObjectTO.getPackageName() );
+        updateClassAnnotations( classDescr, dataObject.getAnnotations() );
         updateClassName( classDescr, dataObjectTO.getName() );
         updateSuperClassName( classDescr, dataObjectTO.getSuperClassName() );
 
@@ -427,7 +432,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
 
         //update constructors, equals and hashCode methods.
-        updateConstructors( classDescr, helper.to2Domain( dataObjectTO ) );
+        updateConstructors( classDescr, dataObject );
 
         //delete fields from .java file that not exists in the DataObject.
         List<String> removableFields = new ArrayList<String>(  );
@@ -440,6 +445,46 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
         for (String fieldName : removableFields) {
             removeField( classDescr, fieldName );
+        }
+    }
+
+    private void updateClassAnnotations( ClassDescr classDescr, List<Annotation> annotations ) throws Exception {
+
+        ModifierListDescr modifierList;
+        List<AnnotationDescr> oldAnnotations;
+        JavaModelDriver driver = new JavaModelDriver( );
+        DescriptorFactory descriptorFactory = DescriptorFactoryImpl.getInstance();
+        GenerationContext generationContext = new GenerationContext( null );
+        String source;
+        GenerationEngine engine = GenerationEngine.getInstance();
+
+        modifierList = classDescr.getModifiers();
+        oldAnnotations = modifierList != null ? modifierList.getAnnotations() : null;
+
+        if (oldAnnotations != null) {
+            for (AnnotationDescr oldAnnotationDescr : oldAnnotations) {
+                //Annotations that the JavaModelDriver can manage will be removed and created again.
+                if (driver.getConfiguredAnnotation( oldAnnotationDescr.getQualifiedName().getName() ) != null) {
+                    modifierList.getElements().remove( oldAnnotationDescr );
+                }
+            }
+        }
+
+        if (annotations != null && annotations.size() > 0) {
+            if (modifierList == null) {
+                modifierList = new ModifierListDescr(  );
+                classDescr.getElements().addMemberBefore( classDescr.getIdentifier(), modifierList );
+            }
+            //TODO, check if we want to sort the annotations list
+            int position = 0;
+            AnnotationDescr newAnnotationDescr;
+            for (Annotation annotation : annotations) {
+                source = engine.generateAnnotationString( generationContext, annotation );
+                source = indent( source );
+                newAnnotationDescr = descriptorFactory.createAnnotationDescr( source, true );
+                modifierList.getElements().add( position, newAnnotationDescr );
+                position++;
+            }
         }
     }
 
@@ -879,7 +924,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     @Override
     public Map<String, AnnotationDefinitionTO> getAnnotationDefinitions() {
         Map<String, AnnotationDefinitionTO> annotations = new HashMap<String, AnnotationDefinitionTO>();
-        List<AnnotationDefinition> annotationDefinitions = DataModelOracleDriver.getInstance().getConfiguredAnnotations();
+        List<AnnotationDefinition> annotationDefinitions = DataModelOracleModelDriver.getInstance().getConfiguredAnnotations();
         AnnotationDefinitionTO annotationDefinitionTO;
         DataModelerServiceHelper serviceHelper = DataModelerServiceHelper.getInstance();
 

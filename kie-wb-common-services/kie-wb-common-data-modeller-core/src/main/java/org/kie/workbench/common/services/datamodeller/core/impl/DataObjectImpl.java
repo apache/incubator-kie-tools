@@ -37,7 +37,7 @@ public class DataObjectImpl extends AbstractHasAnnotations implements DataObject
 
     private Map<String, ObjectProperty> properties = new HashMap<String, ObjectProperty>();
 
-    int modifiers = Modifier.PUBLIC;
+    int modifiers = 0x0;
 
     public DataObjectImpl(String packageName, String name, int modifiers) {
         this.setName(name);
@@ -100,6 +100,11 @@ public class DataObjectImpl extends AbstractHasAnnotations implements DataObject
     }
 
     @Override
+    public ObjectProperty addProperty(String name, String className, int modifiers) {
+        return addProperty(name, className, false, modifiers);
+    }
+
+    @Override
     public ObjectProperty addProperty(String name, String className, boolean multiple) {
         ObjectProperty property = new ObjectPropertyImpl(name, className, multiple);
         properties.put(name, property);
@@ -107,8 +112,23 @@ public class DataObjectImpl extends AbstractHasAnnotations implements DataObject
     }
 
     @Override
+    public ObjectProperty addProperty(String name, String className, boolean multiple, int modifiers) {
+        ObjectProperty property = new ObjectPropertyImpl(name, className, multiple, modifiers);
+        properties.put(name, property);
+        return property;
+    }
+
+
+    @Override
     public ObjectProperty addProperty(String name, String className, boolean multiple, String bag) {
         ObjectProperty property = new ObjectPropertyImpl(name, className, multiple, bag);
+        properties.put(name, property);
+        return property;
+    }
+
+    @Override
+    public ObjectProperty addProperty(String name, String className, boolean multiple, String bag, int modifiers) {
+        ObjectProperty property = new ObjectPropertyImpl(name, className, multiple, bag, modifiers);
         properties.put(name, property);
         return property;
     }

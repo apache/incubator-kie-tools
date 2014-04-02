@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
-import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleDriver;
+import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import java.util.Properties;
 public class GenerationEngineTest {
 
     private GenerationEngine engine;
-    private DataModelOracleDriver dataModelOracleDriver;
+    private DataModelOracleModelDriver dataModelOracleDriver;
     private Map<String, AnnotationDefinition> annotationDefinitions;
 
     Properties results = new Properties();
@@ -30,7 +30,7 @@ public class GenerationEngineTest {
             in.close();
 
             engine = GenerationEngine.getInstance();
-            dataModelOracleDriver = DataModelOracleDriver.getInstance();
+            dataModelOracleDriver = DataModelOracleModelDriver.getInstance();
 
             annotationDefinitions = new HashMap<String, AnnotationDefinition>(5);
             List<AnnotationDefinition> configuredAnnotations = dataModelOracleDriver.getConfiguredAnnotations();

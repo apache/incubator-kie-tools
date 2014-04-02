@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.datamodeller.parser.descr;
+package org.kie.workbench.common.services.datamodeller.parser.test;
 
-public interface HasModifiers {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    ModifierListDescr getModifiers( );
 
-    void setModifiers( ModifierListDescr modifiers );
+/**
+ * Just for testing purposes.
+ */
+@Target({ ElementType.FIELD, ElementType.TYPE })
+@Retention( RetentionPolicy.RUNTIME)
+public @interface TestAnnotation3 {
 
-    void addModifier( ModifierDescr modifier );
+    String value();
 
-    void addAnnotation( AnnotationDescr annotation );
+    String method1( );
+
+    String method2( );
 }

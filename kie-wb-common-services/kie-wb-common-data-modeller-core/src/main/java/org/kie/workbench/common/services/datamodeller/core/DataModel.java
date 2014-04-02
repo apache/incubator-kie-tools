@@ -34,6 +34,8 @@ public interface DataModel {
      * @return
      */
     DataObject addDataObject(String packageName, String name);
+
+    DataObject addDataObject(String packageName, String name, int modifiers);
     
     DataObject addDataObject(String className);
 

@@ -26,6 +26,10 @@ public interface DescriptorFactory {
 
     FieldDescr createFieldDescr( String source, boolean includeIndent) throws Exception;
 
+    AnnotationDescr createAnnotationDescr( String source) throws Exception;
+
+    AnnotationDescr createAnnotationDescr( String source, boolean includeIndent ) throws Exception;
+
     IdentifierDescr createIdentifierDescr( String source ) throws Exception;
 
     TypeDescr createTypeDescr( String source ) throws Exception;

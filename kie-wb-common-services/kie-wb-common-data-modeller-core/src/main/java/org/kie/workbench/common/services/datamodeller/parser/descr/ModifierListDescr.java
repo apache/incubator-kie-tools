@@ -41,8 +41,12 @@ public class ModifierListDescr extends ElementDescriptor {
         getElements( ).add( modifierDescr );
     }
 
+    public void add( AnnotationDescr annotationDescr ) {
+        getElements( ).add( annotationDescr );
+    }
+
     public int size() {
-        List<ModifierDescr> modifiers = getModifiers();
+        List<ElementDescriptor> modifiers = getAllModifiers();
         return modifiers != null ? modifiers.size() : 0;
 
     }
@@ -51,6 +55,26 @@ public class ModifierListDescr extends ElementDescriptor {
         List<ModifierDescr> modifiers = new ArrayList<ModifierDescr>( );
         for ( ElementDescriptor modifier : getElements( ).getElementsByType( ElementType.MODIFIER ) ) {
             modifiers.add( ( ModifierDescr ) modifier );
+        }
+        return modifiers;
+    }
+
+
+    public List<AnnotationDescr> getAnnotations( ) {
+        List<AnnotationDescr> modifiers = new ArrayList<AnnotationDescr>( );
+        for ( ElementDescriptor modifier : getElements( ).getElementsByType( ElementType.ANNOTATION ) ) {
+            modifiers.add( ( AnnotationDescr ) modifier );
+        }
+        return modifiers;
+    }
+
+
+    public List<ElementDescriptor> getAllModifiers( ) {
+        List<ElementDescriptor> modifiers = new ArrayList<ElementDescriptor>( );
+        for ( ElementDescriptor modifier : getElements( ) ) {
+            if ( ElementType.MODIFIER == modifier.getElementType() || ElementType.ANNOTATION == modifier.getElementType()) {
+                modifiers.add( modifier );
+            }
         }
         return modifiers;
     }

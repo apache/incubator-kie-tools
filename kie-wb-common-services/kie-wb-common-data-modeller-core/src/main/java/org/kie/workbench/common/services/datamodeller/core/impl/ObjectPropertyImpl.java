@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
+import java.lang.reflect.Modifier;
+
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 
@@ -28,21 +30,33 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
     private String bag;
     
     private boolean multiple;
+
+    private int modifiers = 0x0;
     
     private static final String DEFAULT_PROPERTY_BAG = "java.util.List";
 
     public ObjectPropertyImpl(String name, String className, boolean multiple) {
+        this(name, className, multiple, 0x0);
+    }
+
+    public ObjectPropertyImpl(String name, String className, boolean multiple, int modifiers) {
         this.name = name;
         this.className = className;
         this.bag = DEFAULT_PROPERTY_BAG;
         this.multiple = multiple;
+        this.modifiers = modifiers;
     }
 
-    public ObjectPropertyImpl(String name, String className, boolean multiple, String bag) {
+    public ObjectPropertyImpl(String name, String className, boolean multiple, String bag, int modifiers) {
         this.name = name;
         this.className = className;
         this.multiple = multiple;
         this.bag = bag;
+        this.modifiers = modifiers;
+    }
+
+    public ObjectPropertyImpl(String name, String className, boolean multiple, String bag) {
+        this(name, className, multiple, bag, 0x0);
     }
 
     @Override
@@ -103,4 +117,11 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
         this.name = name;
     }
 
+    @Override public boolean isStatic() {
+        return Modifier.isStatic( modifiers );
+    }
+
+    @Override public boolean isFinal() {
+        return Modifier.isFinal( modifiers );
+    }
 }

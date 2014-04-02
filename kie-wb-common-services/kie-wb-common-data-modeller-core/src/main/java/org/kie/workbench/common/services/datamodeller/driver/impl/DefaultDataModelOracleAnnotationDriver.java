@@ -24,7 +24,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 
-public class DefaultOracleAnnotationDriver implements AnnotationDriver {
+public class DefaultDataModelOracleAnnotationDriver implements AnnotationDriver {
 
     @Override
     public Annotation buildAnnotation(AnnotationDefinition annotationDefinition, Object annotationToken) throws ModelDriverException {

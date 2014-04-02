@@ -47,9 +47,9 @@ import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DataModelOracleDriver implements ModelDriver {
+public class DataModelOracleModelDriver implements ModelDriver {
 
-    private static final Logger logger = LoggerFactory.getLogger( DataModelOracleDriver.class );
+    private static final Logger logger = LoggerFactory.getLogger( DataModelOracleModelDriver.class );
 
     private List<AnnotationDefinition> configuredAnnotations = new ArrayList<AnnotationDefinition>();
 
@@ -59,50 +59,25 @@ public class DataModelOracleDriver implements ModelDriver {
 
     private ClassLoader projectClassLoader;
 
-
-    public static DataModelOracleDriver getInstance() {
-        return new DataModelOracleDriver();
+    public static DataModelOracleModelDriver getInstance() {
+        return new DataModelOracleModelDriver();
     }
 
-    public static DataModelOracleDriver getInstance(ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader) {
-        return new DataModelOracleDriver(oracleDataModel, projectClassLoader);
+    public static DataModelOracleModelDriver getInstance(ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader) {
+        return new DataModelOracleModelDriver(oracleDataModel, projectClassLoader);
     }
 
-    protected DataModelOracleDriver( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) {
+    protected DataModelOracleModelDriver( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) {
         this();
         this.oracleDataModel = oracleDataModel;
         this.projectClassLoader = projectClassLoader;
     }
 
-    protected DataModelOracleDriver() {
-        AnnotationDefinition annotationDefinition = DescriptionAnnotationDefinition.getInstance();
-        configuredAnnotations.add( annotationDefinition );
-        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
-
-        annotationDefinition = KeyAnnotationDefinition.getInstance();
-        configuredAnnotations.add( annotationDefinition );
-        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
-
-        annotationDefinition = LabelAnnotationDefinition.getInstance();
-        configuredAnnotations.add( annotationDefinition );
-        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
-
-        annotationDefinition = RoleAnnotationDefinition.getInstance();
-        configuredAnnotations.add( annotationDefinition );
-        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
-
-        annotationDefinition = PositionAnnotationDefinition.getInstance();
-        configuredAnnotations.add( annotationDefinition );
-        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
-
-        annotationDefinition = PropertyReactiveAnnotationDefinition.getInstance();
-        configuredAnnotations.add( annotationDefinition );
-        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
-
-        annotationDefinition = ClassReactiveAnnotationDefinition.getInstance();
-        configuredAnnotations.add( annotationDefinition );
-        annotationDrivers.put( annotationDefinition.getClassName(), new DefaultOracleAnnotationDriver() );
-
+    protected DataModelOracleModelDriver() {
+        configuredAnnotations.addAll( CommonAnnotations.getCommonAnnotations() );
+        for (AnnotationDefinition annotationDefinition : configuredAnnotations) {
+            annotationDrivers.put( annotationDefinition.getClassName(), new DefaultDataModelOracleAnnotationDriver() );
+        }
     }
 
     @Override

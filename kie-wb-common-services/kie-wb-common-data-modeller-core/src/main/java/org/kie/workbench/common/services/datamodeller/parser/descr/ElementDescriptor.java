@@ -20,6 +20,7 @@ public class ElementDescriptor {
 
     public static enum ElementType {
         MODIFIER,
+        ANNOTATION,
         FIELD,
         VARIABLE,
         VARIABLE_INITIALIZER,
@@ -44,6 +45,9 @@ public class ElementDescriptor {
         IMPORT,
         IDENTIFIER,
         DIMENSION,
+        ELEMENT_VALUE,
+        ELEMENT_VALUE_PAIR,
+        ELEMENT_VALUE_PAIR_LIST,
         JAVA_SEMI_COLON,
         JAVA_COMMA,
         JAVA_EQUALS,
@@ -62,6 +66,7 @@ public class ElementDescriptor {
         JAVA_IMPORT,
         JAVA_STATIC,
         JAVA_STAR,
+        JAVA_AT,
         JAVA_CLASS,
         JAVA_EXTENDS,
         JAVA_IMPLEMENTS

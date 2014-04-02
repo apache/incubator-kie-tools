@@ -33,4 +33,8 @@ public interface ObjectProperty extends HasName, HasClassName, HasAnnotations {
     
     void setBag(String bag);
 
+    boolean isStatic();
+
+    boolean isFinal();
+
 }

@@ -476,7 +476,7 @@ modifiers
         }
     }
     :
-    (    annotation
+    (   a=annotation        { modifiers.add( $a.annotationDescr ); }
     |   s='public'          { modifiers.add( new ModifierDescr($s.text, start((CommonToken)$s), stop((CommonToken)$s), $s.line, $s.pos, $s.text) );  }
     |   s='protected'       { modifiers.add( new ModifierDescr($s.text, start((CommonToken)$s), stop((CommonToken)$s), $s.line, $s.pos, $s.text) );  }
     |   s='private'         { modifiers.add( new ModifierDescr($s.text, start((CommonToken)$s), stop((CommonToken)$s), $s.line, $s.pos, $s.text) );  }
@@ -1133,27 +1133,93 @@ annotations
  *  Using an annotation. 
  * '@' is flaged in modifier
  */
-annotation 
-    :   '@' qualifiedName
-        (   '('
-                  (   elementValuePairs
-                  |   elementValue
+annotation returns [ AnnotationDescr annotationDescr ]
+    @init {
+        $annotationDescr = null;
+        if (!isBacktracking()) {
+            log("Start annotation declaration");
+            $annotationDescr = new AnnotationDescr($text, start((CommonToken)$start), -1, line($start), position($start));
+        }
+    }
+    @after {
+         if ($annotationDescr != null) {
+             updateOnAfter($annotationDescr, $text, (CommonToken)$stop);
+         } else {
+             //TODO warning, by construction current an annotation is expected
+         }
+    }
+    :   at='@' q=qualifiedName {
+                    $annotationDescr.setStartAt( new JavaTokenDescr(ElementType.JAVA_AT, $at.text, start((CommonToken)$at), stop((CommonToken)$at), line($at), position($at)) );
+                    $annotationDescr.setQualifiedName( $q.qnameDec );
+                }
+        (   lp='(' { $annotationDescr.setParamsStartParen( new JavaTokenDescr(ElementType.JAVA_LPAREN, $lp.text, start((CommonToken)$lp), stop((CommonToken)$lp), line($lp), position($lp)) ); }
+                  (   vp=elementValuePairs { if ($vp.values != null && $vp.values.size() > 0) $annotationDescr.setElementValuePairs($vp.values); }
+                  |   ev=elementValue { if ($ev.value != null) $annotationDescr.setElementValue($ev.value); }
                   )? 
-            ')' 
+            rp=')' { $annotationDescr.setParamsStopParen( new JavaTokenDescr(ElementType.JAVA_RPAREN, $rp.text, start((CommonToken)$rp), stop((CommonToken)$rp), line($rp), position($rp)) ); }
         )?
     ;
 
-elementValuePairs 
-    :   elementValuePair
-        (',' elementValuePair
+elementValuePairs returns [ ElementValuePairListDescr values ]
+    @init {
+        $values = null;
+        if (!isBacktracking()) {
+            log("Start elementValuePairs declaration");
+            $values = new ElementValuePairListDescr($text, start((CommonToken)$start), -1, line($start), position($start));
+        }
+    }
+    @after {
+        if ($values != null) {
+            updateOnAfter($values, $text, (CommonToken)$stop);
+        } else {
+            //TODO warning, by construction current elementValuePairs is expected
+        }
+    }
+    :   e1=elementValuePair { $values.addValuePair( $e1.valuePair ); }
+        (c=',' e2=elementValuePair {
+                                JavaTokenDescr comma = new JavaTokenDescr(ElementType.JAVA_COMMA, $c.text, start((CommonToken)$c), stop((CommonToken)$c), line($c), position($c));
+                                $e2.valuePair.setStartComma(comma);
+                                $e2.valuePair.setStart(comma.getStart());
+                                $values.addValuePair($e2.valuePair);
+                        }
         )*
     ;
 
-elementValuePair 
-    :   IDENTIFIER '=' elementValue
+elementValuePair returns [ ElementValuePairDescr valuePair ]
+    @init {
+        $valuePair = null;
+        if (!isBacktracking()) {
+            log("Start elementValuePair declaration");
+            $valuePair = new ElementValuePairDescr($text, start((CommonToken)$start), -1, line($start), position($start));
+        }
+    }
+    @after {
+        if ($valuePair != null) {
+            updateOnAfter($valuePair, $text, (CommonToken)$stop);
+        } else {
+            //TODO warning, by construction current elementValuePair is expected
+       }
+    }
+    :   id=IDENTIFIER   { $valuePair.setIdentifier( new IdentifierDescr($id.text, start((CommonToken)$id), stop((CommonToken)$id),line($id), position($id)) ); }
+        e='='           { $valuePair.setEqualsSign( new JavaTokenDescr(ElementType.JAVA_EQUALS, $e.text, start((CommonToken)$e), stop((CommonToken)$e), line($e), position($e)) ); }
+        v=elementValue  { $valuePair.setValue( $v.value ); }
     ;
 
-elementValue 
+elementValue returns [ ElementValueDescr value ]
+    @init {
+        $value = null;
+        if (!isBacktracking()) {
+            log("Start elementValue declaration");
+            $value = new ElementValueDescr($text, start((CommonToken)$start), -1, line($start), position($start));
+        }
+    }
+    @after {
+        if ($value != null) {
+            updateOnAfter($value, $text, (CommonToken)$stop);
+        } else {
+            //TODO warning, by construction current elementValue is expected
+       }
+    }
     :   conditionalExpression
     |   annotation
     |   elementValueArrayInitializer

@@ -14,22 +14,37 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.datamodeller.parser.test;
+package org.kie.workbench.common.services.datamodeller.parser;
 
-public class AnnotationsUseVariants {
+import org.kie.workbench.common.services.datamodeller.parser.test.TestAnnotation;
+import org.kie.workbench.common.services.datamodeller.parser.test.TestAnnotation1;
+import org.kie.workbench.common.services.datamodeller.parser.test.TestAnnotation2;
+import org.kie.workbench.common.services.datamodeller.parser.test.TestAnnotation3;
+
+/**
+ *  Changes on this file can break AnnotationParsing1Test.
+ */
+
+@TestAnnotation
+@TestAnnotation1("value")
+@TestAnnotation2( method1 = "param1", method2 = "param2")
+@TestAnnotation3( value = "value", method1 = "param1", method2 = "param2" )
+public class AnnotationParsing1 {
 
     @TestAnnotation()
-    int field1;
+    public int field1;
 
     @TestAnnotation
-    int field2;
+    private int field2;
 
+    public
     @TestAnnotation1
-    int field3;
+    static int field3;
 
     @TestAnnotation1("value")
     int field4;
 
+    protected
     @TestAnnotation1( value = "value")
     int field5;
 
@@ -47,4 +62,5 @@ public class AnnotationsUseVariants {
     @TestAnnotation2( method1 = "param1", method2 = "param2")
     @TestAnnotation3( value = "value", method1 = "param1", method2 = "param2" )
     int field9;
+
 }

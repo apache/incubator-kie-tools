@@ -16,13 +16,26 @@
 
 package org.kie.workbench.common.services.datamodeller.parser.descr;
 
-public interface HasModifiers {
+public class ElementValueDescr extends ElementDescriptor {
 
-    ModifierListDescr getModifiers( );
+    public ElementValueDescr( ) {
+        super( ElementType.ELEMENT_VALUE );
+    }
 
-    void setModifiers( ModifierListDescr modifiers );
+    public ElementValueDescr( String text, int start, int line, int position ) {
+        this( text, start, -1, line, position );
+    }
 
-    void addModifier( ModifierDescr modifier );
+    public ElementValueDescr( String text, int start, int stop ) {
+        this( text, start, stop, -1, -1 );
+    }
 
-    void addAnnotation( AnnotationDescr annotation );
+    public ElementValueDescr( String text, int start, int stop, int line, int position ) {
+        super( ElementType.ELEMENT_VALUE, text, start, stop, line, position );
+    }
+
+    public String getValue() {
+        return getText();
+    }
+
 }
