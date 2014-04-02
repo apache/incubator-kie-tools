@@ -243,6 +243,11 @@
         <version>${version.javax.enterprise.cdi}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-javaee-all</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
       <!-- Errai AS -->
       <dependency>
         <groupId>org.jboss.errai</groupId>

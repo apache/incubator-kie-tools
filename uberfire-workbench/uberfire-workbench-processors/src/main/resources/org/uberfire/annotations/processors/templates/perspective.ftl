@@ -25,7 +25,14 @@ import javax.inject.Inject;
 
 import javax.inject.Named;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+<#if isTemplate>
+import java.util.HashMap;
+import java.util.Map;
+import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.mvp.AbstractTemplateWorkbenchPerspectiveActivity;
+<#else>
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
+</#if>
 import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.mvp.PlaceRequest;
@@ -38,25 +45,35 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
 </#if>
+<#if isTemplate>
+import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.TemplatePanelDefinitionImpl;
+import org.uberfire.client.workbench.TemplatePerspectiveDefinitionImpl;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
 @Named("${identifier}")
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class ${className} extends AbstractWorkbenchPerspectiveActivity {
+public class ${className} extends <#if isTemplate> AbstractTemplateWorkbenchPerspectiveActivity <#else>AbstractWorkbenchPerspectiveActivity</#if> {
 
-    <#if rolesList??>
-    private static final Collection<String> ROLES = Arrays.asList(${rolesList});
-    <#else>
+<#if rolesList??>
+private static final Collection<String> ROLES = Arrays.asList(${rolesList});
+<#else>
     private static final Collection<String> ROLES = Collections.emptyList();
-    </#if>
+</#if>
 
-    <#if securityTraitList??>
+<#if securityTraitList??>
     private static final Collection<String> TRAITS = Arrays.asList(${securityTraitList});
-    <#else>
+<#else>
     private static final Collection<String> TRAITS = Collections.emptyList();
-    </#if>
+</#if>
 
     @Inject
     private ${realClassName} realPresenter;
@@ -72,73 +89,73 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity {
         return "${identifier}";
     }
 
-    <#if isDefault>
+<#if isDefault>
     @Override
     public boolean isDefault() {
         return true;
     }
 
-    </#if>
-    <#if onStartup1ParameterMethodName??>
+</#if>
+<#if onStartup1ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup( place );
         realPresenter.${onStartup1ParameterMethodName}( place );
     }
 
-    <#elseif onStartup0ParameterMethodName??>
+<#elseif onStartup0ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
         super.onStartup();
         realPresenter.${onStartup0ParameterMethodName}();
     }
 
-    </#if>
-    <#if onCloseMethodName??>
+</#if>
+<#if onCloseMethodName??>
     @Override
     public void onClose() {
         super.onClose();
         realPresenter.${onCloseMethodName}();
     }
 
-    </#if>
-    <#if onShutdownMethodName??>
+</#if>
+<#if onShutdownMethodName??>
     @Override
     public void onShutdown() {
         super.onShutdown();
         realPresenter.${onShutdownMethodName}();
     }
 
-    </#if>
-    <#if onOpenMethodName??>
+</#if>
+<#if onOpenMethodName??>
     @Override
     public void onOpen() {
         super.onOpen();
         realPresenter.${onOpenMethodName}();
     }
 
-    </#if>
-    <#if getPerspectiveMethodName??>
+</#if>
+<#if getPerspectiveMethodName??>
     @Override
     public PerspectiveDefinition getPerspective() {
         return realPresenter.${getPerspectiveMethodName}();
     }
 
-    </#if>
-    <#if getMenuBarMethodName??>
+</#if>
+<#if getMenuBarMethodName??>
     @Override
     public Menus getMenus() {
         return realPresenter.${getMenuBarMethodName}();
     }
 
-    </#if>
-    <#if getToolBarMethodName??>
+</#if>
+<#if getToolBarMethodName??>
     @Override
     public ToolBar getToolBar() {
         return realPresenter.${getToolBarMethodName}();
     }
 
-    </#if>
+</#if>
     @Override
     public Collection<String> getRoles() {
         return ROLES;
@@ -153,4 +170,73 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity {
     public String getSignatureId() {
         return "${packageName}.${className}";
     }
+    <#if isTemplate>
+    @Override
+    public Widget getRealPresenterWidget( ) {
+      return realPresenter.asWidget();
+    }
+
+    @Override
+    public void setWidget( String fieldName,
+        Widget widget ) {
+
+        <#if defaultPanel??>
+        if ( fieldName.equalsIgnoreCase( "${defaultPanel.fieldName}" ) ) {
+            realPresenter.${defaultPanel.fieldName}.clear();
+            realPresenter.${defaultPanel.fieldName}.add( widget.asWidget() );
+        }
+        </#if>
+        <#list wbPanels as wbPanel>
+        if ( fieldName.equalsIgnoreCase( "${wbPanel.fieldName}" ) ) {
+            realPresenter.${wbPanel.fieldName}.clear();
+            realPresenter.${wbPanel.fieldName}.add( widget.asWidget() );
+        }
+        </#list>
+    }
+
+    @Perspective
+    public PerspectiveDefinition getPerspective() {
+        <#if defaultPanel??>
+        final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,"${defaultPanel.fieldName}", getClass().getName() );
+        PanelDefinition panelDefinition = new TemplatePanelDefinitionImpl( this, PanelType.${defaultPanel.panelType} , "${defaultPanel.fieldName}"  );
+            <#list defaultPanel.wbParts as wbPart>
+                <#if wbPart.parameters??>
+            Map properties = new HashMap<String,String>();
+                    <#list wbPart.parameters?keys as key>
+            properties.put("${key}","${ wbPart.parameters[key]}");
+                    </#list>
+            panelDefinition.addPart(
+            new PartDefinitionImpl(new DefaultPlaceRequest( "${wbPart.partName}", properties  ) ) );
+                <#else>
+            panelDefinition.addPart(
+            new PartDefinitionImpl(new DefaultPlaceRequest( "${wbPart.partName}" ) ) );
+                </#if>
+            </#list>
+        p.getRoot().appendChild( panelDefinition );
+        <#else>
+        final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,null, getClass().getName() );
+
+        </#if>
+
+        <#list wbPanels as wbPanel>
+        PanelDefinition panelDefinition${wbPanel_index} = new TemplatePanelDefinitionImpl( this, PanelType.${wbPanel.panelType} , "${wbPanel.fieldName}"  );
+            <#list wbPanel.wbParts as wbPart>
+                <#if wbPart.parameters??>
+        Map properties${wbPanel_index} = new HashMap<String,String>();
+                    <#list wbPart.parameters?keys as key>
+            properties${wbPanel_index}.put("${key}","${ wbPart.parameters[key]}");
+                    </#list>
+        panelDefinition${wbPanel_index}.addPart(
+                new PartDefinitionImpl(new DefaultPlaceRequest( "${wbPart.partName}", properties${wbPanel_index} ) ) );
+                <#else>
+        panelDefinition${wbPanel_index}.addPart(
+                new PartDefinitionImpl(new DefaultPlaceRequest( "${wbPart.partName}" ) ) );
+                </#if>
+            </#list>
+        p.getRoot().appendChild( panelDefinition${wbPanel_index} );
+        </#list>
+        return p;
+    }
+
+    </#if>
 }

@@ -40,29 +40,30 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger( PerspectiveActivityGenerator.class );
 
-    public StringBuffer generate(final String packageName,
-                                 final PackageElement packageElement,
-                                 final String className,
-                                 final Element element,
-                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
+    public StringBuffer generate( final String packageName,
+                                  final PackageElement packageElement,
+                                  final String className,
+                                  final Element element,
+                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
 
         logger.debug( "Starting code generation for [" + className + "]" );
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
         String identifier = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( classElement );
-        boolean isDefault=  ClientAPIModule.getWbPerspectiveScreenIsDefaultValueOnClass( classElement );
+        boolean isDefault = ClientAPIModule.getWbPerspectiveScreenIsDefaultValueOnClass( classElement );
+        boolean isTemplate = ClientAPIModule.getWbPerspectiveScreenIsATemplate( classElement );
 
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
-                                                                                                             processingEnvironment );
+                                                                                                               processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
                                                                               processingEnvironment );
         final String onShutdownMethodName = GeneratorUtils.getOnShutdownMethodName( classElement,
                                                                                     processingEnvironment );
         final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName( classElement,
-                                                                              processingEnvironment );
+                                                                            processingEnvironment );
         final String getPerspectiveMethodName = GeneratorUtils.getPerspectiveMethodName( classElement,
                                                                                          processingEnvironment );
         final String getMenuBarMethodName = GeneratorUtils.getMenuBarMethodName( classElement,
@@ -76,6 +77,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
         logger.debug( "isDefault: " + isDefault );
+        logger.debug( "isTemplate: " + isTemplate );
         logger.debug( "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
         logger.debug( "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
         logger.debug( "onCloseMethodName: " + onCloseMethodName );
@@ -96,7 +98,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         }
 
         //Validate getPerspectiveMethodName
-        if ( getPerspectiveMethodName == null ) {
+        if ( getPerspectiveMethodName == null && !isTemplate ) {
             throw new GenerationException( "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition.", packageName + "." + className );
         }
 
@@ -108,6 +110,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
+        root.put( "isTemplate", isTemplate );
         root.put( "isDefault",
                   isDefault );
         root.put( "realClassName",
@@ -133,6 +136,10 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         root.put( "rolesList",
                   rolesList );
 
+        if ( isTemplate ) {
+            setupTemplateElements( root, classElement );
+        }
+
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter( sw );
@@ -155,6 +162,18 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         logger.debug( "Successfully generated code for [" + className + "]" );
 
         return sw.getBuffer();
+    }
+
+    private static void setupTemplateElements( Map<String, Object> root,
+                                               TypeElement classElement ) throws GenerationException {
+
+        TemplateInformation helper = TemplateInformationHelper.extractWbTemplatePerspectiveInformation( classElement );
+
+        if ( helper.getDefaultPanel() != null ) {
+            root.put( "defaultPanel", helper.getDefaultPanel() );
+        }
+        root.put( "wbPanels", helper.getTemplateFields() );
+
     }
 
 }

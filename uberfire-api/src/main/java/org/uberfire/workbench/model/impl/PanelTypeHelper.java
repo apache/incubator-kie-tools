@@ -27,6 +27,8 @@ public final class PanelTypeHelper {
                 return STATIC;
             case STATIC:
                 return null;
+            case TEMPLATE:
+                return TEMPLATE;
             default:
                 throw new IllegalArgumentException( "Unhandled PanelType. Expect subsequent errors." );
         }

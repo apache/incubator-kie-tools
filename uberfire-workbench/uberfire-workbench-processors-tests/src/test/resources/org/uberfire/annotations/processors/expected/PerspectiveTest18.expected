@@ -1,0 +1,125 @@
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.uberfire.annotations.processors;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import javax.annotation.Generated;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import javax.inject.Named;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import java.util.HashMap;
+import java.util.Map;
+import org.uberfire.client.annotations.Perspective;
+import org.uberfire.client.mvp.AbstractTemplateWorkbenchPerspectiveActivity;
+import org.uberfire.client.mvp.PlaceManager;
+
+import org.uberfire.mvp.PlaceRequest;
+
+import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.TemplatePanelDefinitionImpl;
+import org.uberfire.client.workbench.TemplatePerspectiveDefinitionImpl;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
+import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+@Dependent
+@Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
+@Named("HomePerspective")
+/*
+ * WARNING! This class is generated. Do not modify.
+ */
+public class PerspectiveTest18Activity extends  AbstractTemplateWorkbenchPerspectiveActivity  {
+
+    private static final Collection<String> ROLES = Collections.emptyList();
+
+    private static final Collection<String> TRAITS = Collections.emptyList();
+
+    @Inject
+    private PerspectiveTest18 realPresenter;
+
+    @Inject
+    //Constructor injection for testing
+    public PerspectiveTest18Activity(final PlaceManager placeManager) {
+        super( placeManager );
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "HomePerspective";
+    }
+
+    @Override
+    public boolean isDefault() {
+        return true;
+    }
+
+    @Override
+    public Collection<String> getRoles() {
+        return ROLES;
+    }
+
+    @Override
+    public Collection<String> getTraits() {
+        return TRAITS;
+    }
+
+    @Override
+    public String getSignatureId() {
+        return "org.uberfire.annotations.processors.PerspectiveTest18Activity";
+    }
+    @Override
+    public Widget getRealPresenterWidget( ) {
+      return realPresenter.asWidget();
+    }
+
+    @Override
+    public void setWidget( String fieldName,
+        Widget widget ) {
+
+        if ( fieldName.equalsIgnoreCase( "teste1" ) ) {
+            realPresenter.teste1.clear();
+            realPresenter.teste1.add( widget.asWidget() );
+        }
+        if ( fieldName.equalsIgnoreCase( "teste2" ) ) {
+            realPresenter.teste2.clear();
+            realPresenter.teste2.add( widget.asWidget() );
+        }
+    }
+
+    @Perspective
+    public PerspectiveDefinition getPerspective() {
+        final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,"teste1", getClass().getName() );
+        PanelDefinition panelDefinition = new TemplatePanelDefinitionImpl( this, PanelType.TEMPLATE , "teste1"  );
+            panelDefinition.addPart(
+            new PartDefinitionImpl(new DefaultPlaceRequest( "TesteScreen" ) ) );
+        p.getRoot().appendChild( panelDefinition );
+
+        PanelDefinition panelDefinition0 = new TemplatePanelDefinitionImpl( this, PanelType.TEMPLATE , "teste2"  );
+        panelDefinition0.addPart(
+                new PartDefinitionImpl(new DefaultPlaceRequest( "HelloWorldScreen1" ) ) );
+        panelDefinition0.addPart(
+                new PartDefinitionImpl(new DefaultPlaceRequest( "HelloWorldScreen2" ) ) );
+        p.getRoot().appendChild( panelDefinition0 );
+        return p;
+    }
+
+}
