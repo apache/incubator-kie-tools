@@ -31,16 +31,28 @@ public abstract class AbstractGenerator {
 
     static boolean FAIL_FOR_TESTING = false;
 
-    protected static Configuration config;
+    private static ExceptionInInitializerError INITIALIZER_EXCEPTION = null;
+
+    protected Configuration config;
 
     {
         if (FAIL_FOR_TESTING) {
             throw new NoClassDefFoundError( "Failing for testing purposes" );
         }
-        config = new Configuration();
-        config.setClassForTemplateLoading( getClass(),
-                                           "templates" );
-        config.setObjectWrapper( new DefaultObjectWrapper() );
+        try {
+            config = new Configuration();
+            config.setClassForTemplateLoading( getClass(),
+                    "templates" );
+            config.setObjectWrapper( new DefaultObjectWrapper() );
+        } catch (NoClassDefFoundError ex) {
+            if (ex.getCause() == null) {
+                ex.initCause( INITIALIZER_EXCEPTION );
+            }
+            throw ex;
+        } catch (ExceptionInInitializerError ex) {
+            INITIALIZER_EXCEPTION = ex;
+            throw ex;
+        }
     }
 
     public abstract StringBuffer generate(final String packageName,

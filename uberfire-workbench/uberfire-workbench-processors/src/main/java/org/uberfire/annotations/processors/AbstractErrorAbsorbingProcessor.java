@@ -1,5 +1,7 @@
 package org.uberfire.annotations.processors;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -24,12 +26,9 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
 			// eclipse JDT goes into an infinite loop when the annotation processor throws any exception
 			// so we have to catch EVERYTHING, even Errors.
 
-		    StringBuilder causeChain = new StringBuilder();
-		    while (e != null) {
-		        causeChain.append( " Caused by: " ).append( e.toString() );
-		        e = e.getCause();
-		    }
-		    final String errorMessage = "Internal error in " + getClass().getName() + causeChain.toString();
+		    StringWriter stringWriter = new StringWriter();
+            e.printStackTrace( new PrintWriter( stringWriter ) );
+		    final String errorMessage = "Internal error in " + getClass().getName() + stringWriter.toString();
 
 		    boolean emittedSpecificError = false;
 		    for (TypeElement annotation : annotations) {
