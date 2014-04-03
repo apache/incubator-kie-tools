@@ -64,9 +64,7 @@ public class SecurityEntryPoint {
         final Map<String, String> properties = new HashMap<String, String>();
 
         if ( clientSubject == null ) {
-            name = User.ANONYMOUS;
-            roles.add( new RoleImpl(User.ANONYMOUS) );
-
+            this.currentSubject = User.ANONYMOUS;
         } else {
             name = clientSubject.getName();
             for ( int i = 0; i < clientSubject.getRoles().length(); i++ ) {
@@ -78,9 +76,10 @@ public class SecurityEntryPoint {
             for ( final String key : json.keySet() ) {
                 properties.put( key, json.get( key ).isString().stringValue() );
             }
+
+            this.currentSubject = new UserImpl(name, roles, properties);
         }
 
-        this.currentSubject = new UserImpl(name, roles, properties);
 
         bus.subscribe( CLIENT_ERROR_SUBJECT, new MessageCallback() {
             @Override

@@ -16,25 +16,16 @@
 
 package org.uberfire.security.server.cdi;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 
-import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.impl.RoleImpl;
 
 public class SecurityFactory {
 
-    private static final List<Role> ANONYMOUS_ROLE = new ArrayList<Role>() {{
-        add( new RoleImpl( User.ANONYMOUS ) );
-    }};
     private static final ThreadLocal<User> users = new ThreadLocal<User>();
 
     static private AuthorizationManager authzManager = null;
@@ -51,7 +42,7 @@ public class SecurityFactory {
     @RequestScoped
     public static User getIdentity() {
         if ( users.get() == null ) {
-            return new UserImpl( User.ANONYMOUS, ANONYMOUS_ROLE, Collections.<String, String>emptyMap() );
+            return User.ANONYMOUS;
         }
         return new UserImpl( users.get().getIdentifier(), users.get().getRoles(), users.get().getProperties() );
     }
