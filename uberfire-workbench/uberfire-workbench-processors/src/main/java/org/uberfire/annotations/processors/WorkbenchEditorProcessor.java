@@ -15,11 +15,10 @@
  */
 package org.uberfire.annotations.processors;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Set;
 
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -30,10 +29,7 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
-import javax.tools.JavaFileObject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
@@ -43,8 +39,6 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchEditor")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class WorkbenchEditorProcessor extends AbstractErrorAbsorbingProcessor {
-
-    private static final Logger logger = LoggerFactory.getLogger( WorkbenchEditorProcessor.class );
 
     private final EditorActivityGenerator activityGenerator;
     private GenerationCompleteCallback callback = null;
@@ -63,12 +57,12 @@ public class WorkbenchEditorProcessor extends AbstractErrorAbsorbingProcessor {
     WorkbenchEditorProcessor(final GenerationCompleteCallback callback) {
         this();
         this.callback = callback;
-        logger.info( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
+        System.out.println( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
     }
 
     @Override
     public boolean processWithExceptions(Set< ? extends TypeElement> annotations,
-                           RoundEnvironment roundEnv) {
+                           RoundEnvironment roundEnv) throws IOException {
         //We don't have any post-processing
         if ( roundEnv.processingOver() ) {
             return false;
@@ -79,7 +73,8 @@ public class WorkbenchEditorProcessor extends AbstractErrorAbsorbingProcessor {
             return false;
         }
 
-        Elements elementUtils = processingEnv.getElementUtils();
+        final Messager messager = processingEnv.getMessager();
+        final Elements elementUtils = processingEnv.getElementUtils();
 
         for ( Element e : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ClientAPIModule.getWorkbenchEditorClass() ) ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
@@ -87,14 +82,14 @@ public class WorkbenchEditorProcessor extends AbstractErrorAbsorbingProcessor {
                 TypeElement classElement = (TypeElement) e;
                 PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
 
-                logger.info( "Discovered class [" + classElement.getSimpleName() + "]" );
+                messager.printMessage( Kind.NOTE, "Discovered class [" + classElement.getSimpleName() + "]" );
 
                 final String packageName = packageElement.getQualifiedName().toString();
                 final String classNameActivity = classElement.getSimpleName() + "Activity";
 
                 try {
                     //Try generating code for each required class
-                    logger.info( "Generating code for [" + classNameActivity + "]" );
+                    messager.printMessage( Kind.NOTE, "Generating code for [" + classNameActivity + "]" );
                     final StringBuffer activityCode = activityGenerator.generate( packageName,
                                                                                   packageElement,
                                                                                   classNameActivity,
@@ -113,30 +108,10 @@ public class WorkbenchEditorProcessor extends AbstractErrorAbsorbingProcessor {
                     }
                 } catch ( GenerationException ge ) {
                     final String msg = ge.getMessage();
-                    processingEnv.getMessager().printMessage( Kind.ERROR,
-                                                              msg );
-                    logger.error( msg );
+                    processingEnv.getMessager().printMessage( Kind.ERROR, msg, classElement );
                 }
             }
         }
         return true;
     }
-
-    //Write generated code to javac's Filer
-    private void writeCode(final String packageName,
-                           final String className,
-                           final StringBuffer code) {
-        try {
-            JavaFileObject jfo = processingEnv.getFiler().createSourceFile( packageName + "." + className );
-            Writer w = jfo.openWriter();
-            BufferedWriter bw = new BufferedWriter( w );
-            bw.append( code );
-            bw.close();
-            w.close();
-        } catch ( IOException ioe ) {
-            logger.error( ioe.getMessage(),
-                          ioe );
-        }
-    }
-
 }

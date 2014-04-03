@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.enterprise.context.ApplicationScoped;
 import javax.lang.model.element.AnnotationMirror;
@@ -33,8 +34,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
@@ -46,8 +45,6 @@ import freemarker.template.TemplateException;
  */
 public class EditorActivityGenerator extends AbstractGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger( EditorActivityGenerator.class );
-
     @Override
     public StringBuffer generate( final String packageName,
                                   final PackageElement packageElement,
@@ -55,7 +52,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                                   final Element element,
                                   final ProcessingEnvironment processingEnvironment ) throws GenerationException {
 
-        logger.debug( "Starting code generation for [" + className + "]" );
+        final Messager messager = processingEnvironment.getMessager();
+        messager.printMessage( Kind.NOTE, "Starting code generation for [" + className + "]" );
 
         final Elements elementUtils = processingEnvironment.getElementUtils();
 
@@ -137,32 +135,34 @@ public class EditorActivityGenerator extends AbstractGenerator {
         final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
         final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
 
-        logger.debug( "Package name: " + packageName );
-        logger.debug( "Class name: " + className );
-        logger.debug( "Identifier: " + identifier );
-        logger.debug( "getContextIdMethodName: " + getContextIdMethodName );
-        logger.debug( "Priority: " + priority );
-        logger.debug( "Resource types: " + associatedResources );
-        logger.debug( "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
-        logger.debug( "onStartup2ParametersMethodName: " + onStartup2ParametersMethodName );
-        logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
-        logger.debug( "onCloseMethodName: " + onCloseMethodName );
-        logger.debug( "onShutdownMethodName: " + onShutdownMethodName );
-        logger.debug( "onOpenMethodName: " + onOpenMethodName );
-        logger.debug( "onLostFocusMethodName: " + onLostFocusMethodName );
-        logger.debug( "onFocusMethodName: " + onFocusMethodName );
-        logger.debug( "getDefaultPositionMethodName: " + getDefaultPositionMethodName );
-        logger.debug( "getTitleMethodName: " + getTitleMethodName );
-        logger.debug( "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
-        logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
-        logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
-        logger.debug( "hasUberView: " + Boolean.toString( hasUberView ) );
-        logger.debug( "isDirtyMethodName: " + isDirtyMethodName );
-        logger.debug( "onSaveMethodName: " + onSaveMethodName );
-        logger.debug( "getMenuBarMethodName: " + getMenuBarMethodName );
-        logger.debug( "getToolBarMethodName: " + getToolBarMethodName );
-        logger.debug( "securityTraitList: " + securityTraitList );
-        logger.debug( "rolesList: " + rolesList );
+        if ( GeneratorUtils.debugLoggingEnabled() ) {
+            messager.printMessage( Kind.NOTE, "Package name: " + packageName );
+            messager.printMessage( Kind.NOTE, "Class name: " + className );
+            messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "getContextIdMethodName: " + getContextIdMethodName );
+            messager.printMessage( Kind.NOTE, "Priority: " + priority );
+            messager.printMessage( Kind.NOTE, "Resource types: " + associatedResources );
+            messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
+            messager.printMessage( Kind.NOTE, "onStartup2ParametersMethodName: " + onStartup2ParametersMethodName );
+            messager.printMessage( Kind.NOTE, "onMayCloseMethodName: " + onMayCloseMethodName );
+            messager.printMessage( Kind.NOTE, "onCloseMethodName: " + onCloseMethodName );
+            messager.printMessage( Kind.NOTE, "onShutdownMethodName: " + onShutdownMethodName );
+            messager.printMessage( Kind.NOTE, "onOpenMethodName: " + onOpenMethodName );
+            messager.printMessage( Kind.NOTE, "onLostFocusMethodName: " + onLostFocusMethodName );
+            messager.printMessage( Kind.NOTE, "onFocusMethodName: " + onFocusMethodName );
+            messager.printMessage( Kind.NOTE, "getDefaultPositionMethodName: " + getDefaultPositionMethodName );
+            messager.printMessage( Kind.NOTE, "getTitleMethodName: " + getTitleMethodName );
+            messager.printMessage( Kind.NOTE, "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
+            messager.printMessage( Kind.NOTE, "getWidgetMethodName: " + getWidgetMethodName );
+            messager.printMessage( Kind.NOTE, "isWidget: " + Boolean.toString( isWidget ) );
+            messager.printMessage( Kind.NOTE, "hasUberView: " + Boolean.toString( hasUberView ) );
+            messager.printMessage( Kind.NOTE, "isDirtyMethodName: " + isDirtyMethodName );
+            messager.printMessage( Kind.NOTE, "onSaveMethodName: " + onSaveMethodName );
+            messager.printMessage( Kind.NOTE, "getMenuBarMethodName: " + getMenuBarMethodName );
+            messager.printMessage( Kind.NOTE, "getToolBarMethodName: " + getToolBarMethodName );
+            messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
+            messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
+        }
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
@@ -170,17 +170,13 @@ public class EditorActivityGenerator extends AbstractGenerator {
         }
         if ( isWidget && getWidgetMethodName != null ) {
             final String msg = "The WorkbenchEditor both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
-            processingEnvironment.getMessager().printMessage( Kind.WARNING,
-                                                              msg );
-            logger.warn( msg );
+            messager.printMessage( Kind.WARNING, msg, classElement );
         }
 
         //Validate onStartup1ParameterMethodName and onStartup2ParametersMethodName
         if ( onStartup1ParameterMethodName != null && onStartup2ParametersMethodName != null ) {
             final String msg = "The WorkbenchEditor has methods for both @OnStartup(Path) and @OnStartup(Path, Place). Method @OnStartup(Path, Place) will take precedence.";
-            processingEnvironment.getMessager().printMessage( Kind.WARNING,
-                                                              msg );
-            logger.warn( msg );
+            messager.printMessage( Kind.WARNING, msg, classElement );
         }
 
         //Validate getTitleMethodName
@@ -264,7 +260,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
                 throw new GenerationException( ioe );
             }
         }
-        logger.debug( "Successfully generated code for [" + className + "]" );
+        messager.printMessage( Kind.NOTE, "Successfully generated code for [" + className + "]" );
 
         return sw.getBuffer();
     }

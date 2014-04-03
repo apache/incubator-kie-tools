@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -29,8 +30,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
@@ -42,8 +41,6 @@ import freemarker.template.TemplateException;
  */
 public class ContextActivityGenerator extends AbstractGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger( ContextActivityGenerator.class );
-
     @Override
     public StringBuffer generate( final String packageName,
                                   final PackageElement packageElement,
@@ -51,7 +48,9 @@ public class ContextActivityGenerator extends AbstractGenerator {
                                   final Element element,
                                   final ProcessingEnvironment processingEnvironment ) throws GenerationException {
 
-        logger.debug( "Starting code generation for [" + className + "]" );
+        Messager messager = processingEnvironment.getMessager();
+
+        messager.printMessage( Kind.NOTE, "Starting code generation for [" + className + "]" );
 
         final Elements elementUtils = processingEnvironment.getElementUtils();
 
@@ -80,18 +79,20 @@ public class ContextActivityGenerator extends AbstractGenerator {
         final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
         final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
 
-        logger.debug( "Package name: " + packageName );
-        logger.debug( "Class name: " + className );
-        logger.debug( "Identifier: " + identifier );
-        logger.debug( "onOpenMethodName: " + onOpenMethodName );
-        logger.debug( "getOnContextAttachPanelDefinitionMethodName: " + getOnContextAttachPanelDefinitionMethodName );
-        logger.debug( "getTitleMethodName: " + getTitleMethodName );
-        logger.debug( "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
-        logger.debug( "getWidgetMethodName: " + getWidgetMethodName );
-        logger.debug( "isWidget: " + Boolean.toString( isWidget ) );
-        logger.debug( "hasUberView: " + Boolean.toString( hasUberView ) );
-        logger.debug( "securityTraitList: " + securityTraitList );
-        logger.debug( "rolesList: " + rolesList );
+        if ( GeneratorUtils.debugLoggingEnabled() ) {
+            messager.printMessage( Kind.NOTE, "Package name: " + packageName );
+            messager.printMessage( Kind.NOTE, "Class name: " + className );
+            messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "onOpenMethodName: " + onOpenMethodName );
+            messager.printMessage( Kind.NOTE, "getOnContextAttachPanelDefinitionMethodName: " + getOnContextAttachPanelDefinitionMethodName );
+            messager.printMessage( Kind.NOTE, "getTitleMethodName: " + getTitleMethodName );
+            messager.printMessage( Kind.NOTE, "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
+            messager.printMessage( Kind.NOTE, "getWidgetMethodName: " + getWidgetMethodName );
+            messager.printMessage( Kind.NOTE, "isWidget: " + Boolean.toString( isWidget ) );
+            messager.printMessage( Kind.NOTE, "hasUberView: " + Boolean.toString( hasUberView ) );
+            messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
+            messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
+        }
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
@@ -101,7 +102,6 @@ public class ContextActivityGenerator extends AbstractGenerator {
             final String msg = "The WorkbenchContext both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
             processingEnvironment.getMessager().printMessage( Kind.WARNING,
                                                               msg );
-            logger.warn( msg );
         }
 
         //Validate getTitleMethodName and getTitleWidgetMethodName
@@ -157,7 +157,7 @@ public class ContextActivityGenerator extends AbstractGenerator {
                 throw new GenerationException( ioe );
             }
         }
-        logger.debug( "Successfully generated code for [" + className + "]" );
+        messager.printMessage( Kind.NOTE, "Successfully generated code for [" + className + "]" );
 
         return sw.getBuffer();
     }

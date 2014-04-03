@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
@@ -28,8 +29,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
@@ -41,8 +40,6 @@ import freemarker.template.TemplateException;
  */
 public class PerspectiveActivityGenerator extends AbstractGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger( PerspectiveActivityGenerator.class );
-
     @Override
     public StringBuffer generate(final String packageName,
                                  final PackageElement packageElement,
@@ -50,7 +47,8 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                                  final Element element,
                                  final ProcessingEnvironment processingEnvironment) throws GenerationException {
 
-        logger.debug( "Starting code generation for [" + className + "]" );
+        final Messager messager = processingEnvironment.getMessager();
+        messager.printMessage( Kind.NOTE, "Starting code generation for [" + className + "]" );
 
         final Elements elementUtils = processingEnvironment.getElementUtils();
 
@@ -78,27 +76,27 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
         final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
 
-        logger.debug( "Package name: " + packageName );
-        logger.debug( "Class name: " + className );
-        logger.debug( "Identifier: " + identifier );
-        logger.debug( "isDefault: " + isDefault );
-        logger.debug( "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
-        logger.debug( "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
-        logger.debug( "onCloseMethodName: " + onCloseMethodName );
-        logger.debug( "onShutdownMethodName: " + onShutdownMethodName );
-        logger.debug( "onOpenMethodName: " + onOpenMethodName );
-        logger.debug( "getPerspectiveMethodName: " + getPerspectiveMethodName );
-        logger.debug( "getMenuBarMethodName: " + getMenuBarMethodName );
-        logger.debug( "getToolBarMethodName: " + getToolBarMethodName );
-        logger.debug( "securityTraitList: " + securityTraitList );
-        logger.debug( "rolesList: " + rolesList );
+        if ( GeneratorUtils.debugLoggingEnabled() ) {
+            messager.printMessage( Kind.NOTE, "Package name: " + packageName );
+            messager.printMessage( Kind.NOTE, "Class name: " + className );
+            messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "isDefault: " + isDefault );
+            messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
+            messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
+            messager.printMessage( Kind.NOTE, "onCloseMethodName: " + onCloseMethodName );
+            messager.printMessage( Kind.NOTE, "onShutdownMethodName: " + onShutdownMethodName );
+            messager.printMessage( Kind.NOTE, "onOpenMethodName: " + onOpenMethodName );
+            messager.printMessage( Kind.NOTE, "getPerspectiveMethodName: " + getPerspectiveMethodName );
+            messager.printMessage( Kind.NOTE, "getMenuBarMethodName: " + getMenuBarMethodName );
+            messager.printMessage( Kind.NOTE, "getToolBarMethodName: " + getToolBarMethodName );
+            messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
+            messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
+        }
 
         //Validate onStartup0ParameterMethodName and onStartup1ParameterMethodName
         if ( onStartup0ParameterMethodName != null && onStartup1ParameterMethodName != null ) {
             final String msg = "The WorkbenchPerspective has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence.";
-            processingEnvironment.getMessager().printMessage( Kind.WARNING,
-                                                              msg );
-            logger.warn( msg );
+            messager.printMessage( Kind.WARNING, msg, classElement );
         }
 
         //Validate getPerspectiveMethodName
@@ -158,7 +156,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                 throw new GenerationException( ioe );
             }
         }
-        logger.debug( "Successfully generated code for [" + className + "]" );
+        messager.printMessage( Kind.NOTE, "Successfully generated code for [" + className + "]" );
 
         return sw.getBuffer();
     }

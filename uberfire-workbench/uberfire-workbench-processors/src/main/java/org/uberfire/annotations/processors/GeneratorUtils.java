@@ -950,4 +950,8 @@ public class GeneratorUtils {
         }
         return fqcn;
     }
+
+    public static boolean debugLoggingEnabled() {
+        return Boolean.parseBoolean( System.getProperty( "org.uberfire.processors.debug", "false" ) );
+    }
 }

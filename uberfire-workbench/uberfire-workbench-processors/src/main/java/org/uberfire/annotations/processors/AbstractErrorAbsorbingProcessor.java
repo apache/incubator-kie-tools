@@ -1,7 +1,10 @@
 package org.uberfire.annotations.processors;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -10,6 +13,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
+import javax.tools.JavaFileObject;
 
 public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor {
 
@@ -88,4 +92,17 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
 	 */
 	protected abstract boolean processWithExceptions(
 			Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) throws Exception;
+
+    /** Writes the given code to javac's Filer. */
+	protected final void writeCode( final String packageName,
+                            final String className,
+                            final StringBuffer code ) throws IOException {
+        JavaFileObject jfo = processingEnv.getFiler().createSourceFile( packageName + "." + className );
+        Writer w = jfo.openWriter();
+        BufferedWriter bw = new BufferedWriter( w );
+        bw.append( code );
+        bw.close();
+        w.close();
+    }
+
 }
