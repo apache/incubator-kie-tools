@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for DataModelService
  */
-public class ProjectDataModelDeclaredTypesTests {
+public class ProjectDataModelDeclaredTypesTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -59,13 +59,17 @@ public class ProjectDataModelDeclaredTypesTests {
 
         assertNotNull( oracle );
 
-        assertEquals( 3,
+        assertEquals( 5,
                       oracle.getProjectModelFields().size() );
         ProjectDataModelOracleTestUtils.assertContains( "t1p1.Bean1",
                                                         oracle.getProjectModelFields().keySet() );
         ProjectDataModelOracleTestUtils.assertContains( "t1p1.DRLBean",
                                                         oracle.getProjectModelFields().keySet() );
         ProjectDataModelOracleTestUtils.assertContains( "t1p2.Bean2",
+                                                        oracle.getProjectModelFields().keySet() );
+        ProjectDataModelOracleTestUtils.assertContains( "java.lang.String",
+                                                        oracle.getProjectModelFields().keySet() );
+        ProjectDataModelOracleTestUtils.assertContains( "int",
                                                         oracle.getProjectModelFields().keySet() );
 
         assertEquals( TypeSource.JAVA_PROJECT,
@@ -74,6 +78,10 @@ public class ProjectDataModelDeclaredTypesTests {
                       oracle.getProjectTypeSources().get( "t1p1.DRLBean" ) );
         assertEquals( TypeSource.JAVA_PROJECT,
                       oracle.getProjectTypeSources().get( "t1p2.Bean2" ) );
+        assertEquals( TypeSource.JAVA_PROJECT,
+                      oracle.getProjectTypeSources().get( "java.lang.String" ) );
+        assertEquals( TypeSource.JAVA_PROJECT,
+                      oracle.getProjectTypeSources().get( "int" ) );
     }
 
 }

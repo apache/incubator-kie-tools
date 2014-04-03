@@ -3,6 +3,7 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 
 import static org.mockito.Mockito.*;

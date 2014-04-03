@@ -1,8 +1,10 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
+import java.util.List;
 import java.util.Set;
 
 import org.drools.workbench.models.datamodel.imports.HasImports;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.vfs.Path;
@@ -39,6 +41,16 @@ public class PackageDataModelOracleTestUtils {
             }
         }
         fail( "ModelField[] did not contain field: " + fieldName );
+    }
+
+    public static void assertContains( final String methodName,
+                                       final List<MethodInfo> methodInfos ) {
+        for ( int i = 0; i < methodInfos.size(); i++ ) {
+            if ( methodName.equals( methodInfos.get( i ).getName() ) ) {
+                return;
+            }
+        }
+        fail( "List<MethodInfo> did not contain field: " + methodName );
     }
 
     public static void populateDataModelOracle( final Path resourcePath,

@@ -22,13 +22,12 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.util.BlackLists;
 
 /**
  * Finds all methods that are not getters or setters from a class.
@@ -45,8 +44,8 @@ public class ClassMethodInspector {
             int modifiers = methods[ i ].getModifiers();
             String methodName = aMethod.getName();
 
-            if ( isNotGetterOrSetter( aMethod ) && isReasonableMethod( clazz,
-                                                                       methodName ) && Modifier.isPublic( modifiers ) ) {
+            if ( isNotGetterOrSetter( aMethod ) && !BlackLists.isClassMethodBlackListed( clazz,
+                                                                                         methodName ) && Modifier.isPublic( modifiers ) ) {
 
                 Class<?>[] listParam = aMethod.getParameterTypes();
 
@@ -55,56 +54,10 @@ public class ClassMethodInspector {
                                                                          listParam ),
                                                   aMethod.getReturnType(),
                                                   obtainGenericType( aMethod.getGenericReturnType() ),
-                                                  converter.translateClassToGenericType( clazz ) );
+                                                  converter.translateClassToGenericType( aMethod.getReturnType() ) );
                 this.methods.add( info );
             }
         }
-    }
-
-    /**
-     * Not all methods make sense when shown in drop downs. Like toArray, hashCode, size.
-     * Methods can only be called or used to set something. Reasonable methods examples: clean, set, add.
-     * @param clazz
-     * @param methodName
-     * @return
-     */
-    private boolean isReasonableMethod( final Class<?> clazz,
-                                        final String methodName ) {
-        if ( "hashCode".equals( methodName ) || "equals".equals( methodName ) ) {
-            return false;
-        }
-
-        if ( Collection.class.isAssignableFrom( clazz ) ) {
-            if ( checkCollectionMethods( methodName ) ) {
-                return false;
-            }
-        }
-
-        if ( Set.class.isAssignableFrom( clazz ) ) {
-            if ( checkCollectionMethods( methodName ) ) {
-                return false;
-            }
-        }
-
-        if ( List.class.isAssignableFrom( clazz ) ) {
-
-            if ( checkCollectionMethods( methodName ) || "get".equals( methodName ) || "listIterator".equals( methodName ) || "lastIndexOf".equals( methodName ) || "indexOf".equals( methodName ) || "subList".equals( methodName ) ) {
-                return false;
-            }
-        }
-
-        if ( Map.class.isAssignableFrom( clazz ) ) {
-            if ( "get".equals( methodName ) || "isEmpty".equals( methodName ) || "containsKey".equals( methodName ) || "values".equals( methodName ) || "entrySet".equals( methodName ) || "containsValue".equals( methodName )
-                    || "keySet".equals( methodName ) || "size".equals( methodName ) ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean checkCollectionMethods( final String methodName ) {
-        return ( "toArray".equals( methodName ) || "iterator".equals( methodName ) || "contains".equals( methodName ) || "isEmpty".equals( methodName ) || "containsAll".equals( methodName ) || "size".equals( methodName ) );
     }
 
     /**

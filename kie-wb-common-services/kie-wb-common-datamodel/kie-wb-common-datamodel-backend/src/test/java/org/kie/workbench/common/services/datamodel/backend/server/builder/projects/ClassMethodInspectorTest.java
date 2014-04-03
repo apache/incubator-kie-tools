@@ -37,7 +37,7 @@ public class ClassMethodInspectorTest {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedMethod( s ) );
+                         checkBlackList( s ) );
         }
         assertEquals( 3,
                       ext.getMethodInfos().size() );
@@ -70,7 +70,7 @@ public class ClassMethodInspectorTest {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedMethod( s ) );
+                         checkBlackList( s ) );
         }
 
     }
@@ -82,7 +82,7 @@ public class ClassMethodInspectorTest {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedMethod( s ) );
+                         checkBlackList( s ) );
         }
     }
 
@@ -93,7 +93,7 @@ public class ClassMethodInspectorTest {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedMethod( s ) );
+                         checkBlackList( s ) );
         }
     }
 
@@ -104,7 +104,7 @@ public class ClassMethodInspectorTest {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedMethod( s ) );
+                         checkBlackList( s ) );
         }
     }
 
@@ -115,7 +115,7 @@ public class ClassMethodInspectorTest {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedMethod( s ) );
+                         checkBlackList( s ) );
         }
     }
 
@@ -126,7 +126,7 @@ public class ClassMethodInspectorTest {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedMethod( s ) );
+                         checkBlackList( s ) );
         }
     }
 
@@ -137,30 +137,24 @@ public class ClassMethodInspectorTest {
 
         for ( String s : ext.getMethodNames() ) {
             assertFalse( "Method " + s + " is not allowed.",
-                         allowedMethod( s ) );
+                         checkBlackList( s ) );
         }
     }
 
-    private boolean allowedMethod( String methodName ) {
+    private boolean checkBlackList( String methodName ) {
         return ( "hashCode".equals( methodName )
                 || "equals".equals( methodName )
-                || "listIterator".equals( methodName )
-                || "lastIndexOf".equals( methodName )
-                || "indexOf".equals( methodName )
-                || "subList".equals( methodName )
-                || "get".equals( methodName )
-                || "isEmpty".equals( methodName )
-                || "containsKey".equals( methodName )
-                || "values".equals( methodName )
-                || "entrySet".equals( methodName )
-                || "containsValue".equals( methodName )
-                || "keySet".equals( methodName )
-                || "toArray".equals( methodName )
-                || "iterator".equals( methodName )
-                || "contains".equals( methodName )
-                || "isEmpty".equals( methodName )
+                || "addAll".equals( methodName )
                 || "containsAll".equals( methodName )
-                || "size".equals( methodName ) );
+                || "iterator".equals( methodName )
+                || "removeAll".equals( methodName )
+                || "retainAll".equals( methodName )
+                || "toArray".equals( methodName )
+                || "listIterator".equals( methodName )
+                || "subList".equals( methodName )
+                || "entrySet".equals( methodName )
+                || "keySet".equals( methodName )
+                || "putAll".equals( methodName ) );
     }
 
     public static class SimpleMethods {

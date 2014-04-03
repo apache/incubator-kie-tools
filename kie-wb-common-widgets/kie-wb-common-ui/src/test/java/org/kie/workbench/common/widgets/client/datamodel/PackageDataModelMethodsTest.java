@@ -35,6 +35,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.assertContains;
 import static org.mockito.Mockito.*;
 
 public class PackageDataModelMethodsTest {
@@ -66,44 +67,89 @@ public class PackageDataModelMethodsTest {
                                     new Callback<ModelField[]>() {
                                         @Override
                                         public void callback( final ModelField[] getters ) {
-                                            assertEquals( 17,
+                                            assertEquals( 2,
                                                           getters.length );
                                             assertEquals( "this",
                                                           getters[ 0 ].getName() );
-                                            assertEquals( "clone",
-                                                          getters[ 1 ].getName() );
-                                            assertEquals( "comparator",
-                                                          getters[ 2 ].getName() );
-                                            assertEquals( "descendingKeySet",
-                                                          getters[ 3 ].getName() );
-                                            assertEquals( "descendingMap",
-                                                          getters[ 4 ].getName() );
                                             assertEquals( "empty",
-                                                          getters[ 5 ].getName() );
-                                            assertEquals( "entrySet",
-                                                          getters[ 6 ].getName() );
-                                            assertEquals( "firstEntry",
-                                                          getters[ 7 ].getName() );
-                                            assertEquals( "firstKey",
-                                                          getters[ 8 ].getName() );
-                                            assertEquals( "keySet",
-                                                          getters[ 9 ].getName() );
-                                            assertEquals( "lastEntry",
-                                                          getters[ 10 ].getName() );
-                                            assertEquals( "lastKey",
-                                                          getters[ 11 ].getName() );
-                                            assertEquals( "navigableKeySet",
-                                                          getters[ 12 ].getName() );
-                                            assertEquals( "pollFirstEntry",
-                                                          getters[ 13 ].getName() );
-                                            assertEquals( "pollLastEntry",
-                                                          getters[ 14 ].getName() );
-                                            assertEquals( "size",
-                                                          getters[ 15 ].getName() );
-                                            assertEquals( "values",
-                                                          getters[ 16 ].getName() );
+                                                          getters[ 1 ].getName() );
                                         }
                                     } );
+
+        oracle.getMethodInfos( TreeMap.class.getSimpleName(),
+                               new Callback<List<MethodInfo>>() {
+                                   @Override
+                                   public void callback( final List<MethodInfo> mis ) {
+                                       assertEquals( 33,
+                                                     mis.size() );
+                                       assertContains( "ceilingEntry",
+                                                       mis );
+                                       assertContains( "ceilingKey",
+                                                       mis );
+                                       assertContains( "clear",
+                                                       mis );
+                                       assertContains( "clone",
+                                                       mis );
+                                       assertContains( "comparator",
+                                                       mis );
+                                       assertContains( "containsKey",
+                                                       mis );
+                                       assertContains( "containsValue",
+                                                       mis );
+                                       assertContains( "descendingKeySet",
+                                                       mis );
+                                       assertContains( "descendingMap",
+                                                       mis );
+                                       assertContains( "firstEntry",
+                                                       mis );
+                                       assertContains( "firstKey",
+                                                       mis );
+                                       assertContains( "floorEntry",
+                                                       mis );
+                                       assertContains( "floorKey",
+                                                       mis );
+                                       assertContains( "get",
+                                                       mis );
+                                       assertContains( "headMap",
+                                                       mis );
+                                       assertContains( "headMap",
+                                                       mis );
+                                       assertContains( "higherEntry",
+                                                       mis );
+                                       assertContains( "higherKey",
+                                                       mis );
+                                       assertContains( "lastEntry",
+                                                       mis );
+                                       assertContains( "lastKey",
+                                                       mis );
+                                       assertContains( "lowerEntry",
+                                                       mis );
+                                       assertContains( "lowerKey",
+                                                       mis );
+                                       assertContains( "navigableKeySet",
+                                                       mis );
+                                       assertContains( "pollFirstEntry",
+                                                       mis );
+                                       assertContains( "pollLastEntry",
+                                                       mis );
+                                       assertContains( "put",
+                                                       mis );
+                                       assertContains( "remove",
+                                                       mis );
+                                       assertContains( "size",
+                                                       mis );
+                                       assertContains( "subMap",
+                                                       mis );
+                                       assertContains( "subMap",
+                                                       mis );
+                                       assertContains( "tailMap",
+                                                       mis );
+                                       assertContains( "tailMap",
+                                                       mis );
+                                       assertContains( "values",
+                                                       mis );
+                                   }
+                               } );
 
         oracle.getFieldCompletions( TreeMap.class.getSimpleName(),
                                     FieldAccessorsAndMutators.MUTATOR,
@@ -146,33 +192,26 @@ public class PackageDataModelMethodsTest {
                                        assertFalse( methodInfos.isEmpty() );
                                        for ( final MethodInfo methodInfo : methodInfos ) {
                                            assertFalse( "Method " + methodInfo.getName() + " is not allowed.",
-                                                        allowedMethod( methodInfo.getName() ) );
+                                                        checkBlackList( methodInfo.getName() ) );
                                        }
                                    }
                                } );
     }
 
-    private boolean allowedMethod( final String methodName ) {
+    private boolean checkBlackList( String methodName ) {
         return ( "hashCode".equals( methodName )
                 || "equals".equals( methodName )
-                || "listIterator".equals( methodName )
-                || "lastIndexOf".equals( methodName )
-                || "indexOf".equals( methodName )
-                || "subList".equals( methodName )
-                || "get".equals( methodName )
-                || "isEmpty".equals( methodName )
-                || "containsKey".equals( methodName )
-                || "values".equals( methodName )
-                || "entrySet".equals( methodName )
-                || "containsValue".equals( methodName )
-                || "keySet".equals( methodName )
-                || "size".equals( methodName )
-                || "toArray".equals( methodName )
-                || "iterator".equals( methodName )
-                || "contains".equals( methodName )
-                || "isEmpty".equals( methodName )
+                || "addAll".equals( methodName )
                 || "containsAll".equals( methodName )
-                || "size".equals( methodName ) );
+                || "iterator".equals( methodName )
+                || "removeAll".equals( methodName )
+                || "retainAll".equals( methodName )
+                || "toArray".equals( methodName )
+                || "listIterator".equals( methodName )
+                || "subList".equals( methodName )
+                || "entrySet".equals( methodName )
+                || "keySet".equals( methodName )
+                || "putAll".equals( methodName ) );
     }
 
 }

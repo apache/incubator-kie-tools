@@ -25,6 +25,7 @@ import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.util.BlackLists;
 
 /**
  * Builder for Fact Types originating from a .class
@@ -40,7 +41,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
     private final Set<Annotation> annotations = new LinkedHashSet<Annotation>();
     private final Map<String, Set<Annotation>> fieldAnnotations = new HashMap<String, Set<Annotation>>();
 
-    private final Map<String,FactBuilder> fieldFactBuilders = new HashMap<String, FactBuilder>();
+    private final Map<String, FactBuilder> fieldFactBuilders = new HashMap<String, FactBuilder>();
 
     public ClassFactBuilder( final ProjectDataModelOracleBuilder builder,
                              final Class<?> clazz,
@@ -50,7 +51,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                clazz,
                isEvent,
                typeSource );
-        this.superTypes = getSuperTypes(clazz);
+        this.superTypes = getSuperTypes( clazz );
         this.annotations.addAll( getAnnotations( clazz ) );
         this.fieldAnnotations.putAll( getFieldsAnnotations( clazz ) );
         loadClassFields( clazz );
@@ -65,11 +66,12 @@ public class ClassFactBuilder extends BaseFactBuilder {
         oracle.addProjectTypeAnnotations( buildTypeAnnotations() );
         oracle.addProjectTypeFieldsAnnotations( buildTypeFieldsAnnotations() );
     }
-     private List<String> getSuperTypes(final Class<?> clazz){
+
+    private List<String> getSuperTypes( final Class<?> clazz ) {
         ArrayList<String> strings = new ArrayList<String>();
         Class<?> superType = clazz.getSuperclass();
-        while(superType != null){
-            strings.add(superType.getName());
+        while ( superType != null ) {
+            strings.add( superType.getName() );
             superType = superType.getSuperclass();
         }
 
@@ -130,9 +132,13 @@ public class ClassFactBuilder extends BaseFactBuilder {
         final String factType = getType();
 
         //Get all getters and setters for the class. This does not handle delegated properties
+        //- FIELDS need a getter ("getXXX", "isXXX") or setter ("setXXX")
+        //- METHODS are any accessor that does not have a getter or setter
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
         final Set<String> fieldNamesSet = new TreeSet<String>( inspector.getFieldNames().keySet() );
-        final List<String> fieldNames = removeIrrelevantFields( fieldNamesSet );
+        final List<String> fieldNames = removeIrrelevantFields( clazz,
+                                                                inspector,
+                                                                fieldNamesSet );
 
         //Consolidate methods into those with getters or setters
         final Method[] methods = clazz.getMethods();
@@ -183,14 +189,18 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
                 final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.BOTH;
 
-                fieldFactBuilders.put(genericReturnType, new ClassFactBuilder(builder, returnType, false, typeSource));
+                fieldFactBuilders.put( genericReturnType,
+                                       new ClassFactBuilder( builder,
+                                                             returnType,
+                                                             false,
+                                                             typeSource ) );
 
-                addField(new ModelField(fieldName,
-                        returnType.getName(),
-                        ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                        declaredClassFields.contains(field) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
-                        accessorAndMutator,
-                        genericReturnType));
+                addField( new ModelField( fieldName,
+                                          returnType.getName(),
+                                          ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                          declaredClassFields.contains( field ) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
+                                          accessorAndMutator,
+                                          genericReturnType ) );
 
                 addEnumsForField( factType,
                                   fieldName,
@@ -199,7 +209,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
         }
 
-        //Methods for use in ActionCallMethod's
+        //Methods for use in Expressions and ActionCallMethod's
         ClassMethodInspector methodInspector = new ClassMethodInspector( clazz,
                                                                          typeSystemConverter );
 
@@ -217,12 +227,16 @@ public class ClassFactBuilder extends BaseFactBuilder {
     }
 
     // Remove the unneeded "fields" that come from java.lang.Object
-    private List<String> removeIrrelevantFields( final Collection<String> fields ) {
+    private List<String> removeIrrelevantFields( final Class<?> clazz,
+                                                 final ClassFieldInspector inspector,
+                                                 final Set<String> fieldNames ) {
         final List<String> result = new ArrayList<String>();
-        for ( String field : fields ) {
-            //clone, empty, iterator, listIterator, size, toArray
-            if ( !( field.equals( "class" ) || field.equals( "hashCode" ) || field.equals( "toString" ) ) ) {
-                result.add( field );
+        for ( String fieldName : fieldNames ) {
+            if ( !inspector.isNonGetter( fieldName ) ) {
+                if ( !BlackLists.isClassMethodBlackListed( clazz,
+                                                           fieldName ) ) {
+                    result.add( fieldName );
+                }
             }
         }
         return result;
@@ -390,8 +404,8 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
     @Override
     public Map<String, FactBuilder> getInternalBuilders() {
-        for (final FactBuilder factBuilder : new ArrayList<FactBuilder>(this.fieldFactBuilders.values())) {
-            this.fieldFactBuilders.putAll(factBuilder.getInternalBuilders());
+        for ( final FactBuilder factBuilder : new ArrayList<FactBuilder>( this.fieldFactBuilders.values() ) ) {
+            this.fieldFactBuilders.putAll( factBuilder.getInternalBuilders() );
         }
         return fieldFactBuilders;
     }

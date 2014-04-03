@@ -1,6 +1,7 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.net.URL;
+import java.util.HashMap;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for DataModelService
  */
-public class PackageDataModelDeclaredTypesTests {
+public class PackageDataModelDeclaredTypesTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -68,7 +69,17 @@ public class PackageDataModelDeclaredTypesTests {
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( "t1p1" );
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setTypeSources( new HashMap<String, TypeSource>() {
+            {
+                put( "t1p1.Bean1", TypeSource.JAVA_PROJECT );
+                put( "t1p1.DRLBean", TypeSource.DECLARED );
+                put( "t1p2.Bean2", TypeSource.JAVA_PROJECT );
+                put( "java.lang.String", TypeSource.JAVA_PROJECT );
+                put( "int", TypeSource.JAVA_PROJECT );
+            }
+        } );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
                                                                  oracle,
@@ -83,9 +94,13 @@ public class PackageDataModelDeclaredTypesTests {
         PackageDataModelOracleTestUtils.assertContains( "DRLBean",
                                                         oracle.getFactTypes() );
 
-        assertEquals( 1,
+        assertEquals( 3,
                       oracle.getExternalFactTypes().length );
         PackageDataModelOracleTestUtils.assertContains( "t1p2.Bean2",
+                                                        oracle.getExternalFactTypes() );
+        PackageDataModelOracleTestUtils.assertContains( "java.lang.String",
+                                                        oracle.getExternalFactTypes() );
+        PackageDataModelOracleTestUtils.assertContains( "int",
                                                         oracle.getExternalFactTypes() );
 
         oracle.getTypeSource( "Bean1",
@@ -101,14 +116,6 @@ public class PackageDataModelDeclaredTypesTests {
                                   @Override
                                   public void callback( final TypeSource result ) {
                                       assertEquals( TypeSource.DECLARED,
-                                                    result );
-                                  }
-                              } );
-        oracle.getTypeSource( "t1p2.Bean2",
-                              new Callback<TypeSource>() {
-                                  @Override
-                                  public void callback( final TypeSource result ) {
-                                      assertEquals( TypeSource.JAVA_PROJECT,
                                                     result );
                                   }
                               } );

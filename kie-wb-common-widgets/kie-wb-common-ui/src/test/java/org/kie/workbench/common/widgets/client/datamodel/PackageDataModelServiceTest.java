@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for DataModelService
  */
-public class PackageDataModelServiceTests {
+public class PackageDataModelServiceTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -70,6 +70,7 @@ public class PackageDataModelServiceTests {
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( "t3p1" );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
@@ -77,11 +78,15 @@ public class PackageDataModelServiceTests {
                                                                  dataModel );
 
         assertNotNull( oracle );
-        assertEquals( 2,
+        assertEquals( 4,
                       oracle.getAllFactTypes().length );
         assertContains( "t3p1.Bean1",
                         oracle.getAllFactTypes() );
         assertContains( "t3p2.Bean2",
+                        oracle.getAllFactTypes() );
+        assertContains( "java.lang.String",
+                        oracle.getAllFactTypes() );
+        assertContains( "int",
                         oracle.getAllFactTypes() );
 
         assertEquals( 1,
@@ -104,9 +109,13 @@ public class PackageDataModelServiceTests {
                                         }
                                     } );
 
-        assertEquals( 1,
+        assertEquals( 3,
                       oracle.getExternalFactTypes().length );
         assertContains( "t3p2.Bean2",
+                        oracle.getExternalFactTypes() );
+        assertContains( "java.lang.String",
+                        oracle.getExternalFactTypes() );
+        assertContains( "int",
                         oracle.getExternalFactTypes() );
     }
 
@@ -138,12 +147,16 @@ public class PackageDataModelServiceTests {
 
         assertNotNull( oracle );
 
-        assertEquals( 2,
-                      oracle.getFactTypes().length );
+        assertEquals( 4,
+                      oracle.getAllFactTypes().length );
         assertContains( "t3p1.Bean1",
-                        oracle.getFactTypes() );
+                        oracle.getAllFactTypes() );
         assertContains( "t3p2.Bean2",
-                        oracle.getFactTypes() );
+                        oracle.getAllFactTypes() );
+        assertContains( "java.lang.String",
+                        oracle.getAllFactTypes() );
+        assertContains( "int",
+                        oracle.getAllFactTypes() );
 
         oracle.getFieldCompletions( "t3p1.Bean1",
                                     new Callback<ModelField[]>() {
@@ -169,55 +182,6 @@ public class PackageDataModelServiceTests {
                                             assertContains( "this",
                                                             fields );
                                             assertContains( "field1",
-                                                            fields );
-                                        }
-                                    } );
-    }
-
-    @Test
-    public void testProjectDataModelOracleJavaDefaultPackage() throws Exception {
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelService dataModelService = (DataModelService) beanManager.getReference( dataModelServiceBean,
-                                                                                               DataModelService.class,
-                                                                                               cc );
-
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendTest2/src/main/java" );
-        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
-        final Path packagePath = paths.convert( nioPackagePath );
-
-        final ProjectDataModelOracle packageLoader = dataModelService.getProjectDataModel( packagePath );
-
-        //Emulate server-to-client conversions
-        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
-        oracle.setService( service );
-
-        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields( packageLoader.getProjectModelFields() );
-        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
-                                                                 new MockHasImports(),
-                                                                 oracle,
-                                                                 dataModel );
-
-        assertNotNull( oracle );
-
-        assertEquals( 1,
-                      oracle.getFactTypes().length );
-        assertContains( "Bean1",
-                        oracle.getFactTypes() );
-
-        oracle.getFieldCompletions( "Bean1",
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] fields ) {
-                                            assertEquals( 3,
-                                                          fields.length );
-                                            assertContains( "this",
-                                                            fields );
-                                            assertContains( "field1",
-                                                            fields );
-                                            assertContains( "field2",
                                                             fields );
                                         }
                                     } );

@@ -1,6 +1,9 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -26,7 +29,7 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for DataModelService
  */
-public class PackageDataModelSuperTypesTests {
+public class PackageDataModelSuperTypesTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -69,7 +72,20 @@ public class PackageDataModelSuperTypesTests {
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( "t2p1" );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setSuperTypes( new HashMap<String, List<String>>() {{
+            put( "t2p1.Bean1", null );
+            put( "t2p1.Bean2", new ArrayList<String>() {{
+                add( "t2p1.Bean1" );
+            }} );
+            put( "t2p2.Bean3", new ArrayList<String>() {{
+                add( "t2p1.Bean1" );
+            }} );
+            put( "t2p1.Bean4", new ArrayList<String>() {{
+                add( "t2p2.Bean3" );
+            }} );
+        }} );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
                                                                  oracle,
@@ -131,7 +147,20 @@ public class PackageDataModelSuperTypesTests {
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( "t2p1" );
         dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setSuperTypes( new HashMap<String, List<String>>() {{
+            put( "t2p1.Bean1", null );
+            put( "t2p1.Bean2", new ArrayList<String>() {{
+                add( "t2p1.Bean1" );
+            }} );
+            put( "t2p2.Bean3", new ArrayList<String>() {{
+                add( "t2p1.Bean1" );
+            }} );
+            put( "t2p1.Bean4", new ArrayList<String>() {{
+                add( "t2p2.Bean3" );
+            }} );
+        }} );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
                                                                  oracle,
@@ -139,41 +168,37 @@ public class PackageDataModelSuperTypesTests {
 
         assertNotNull( oracle );
 
-        assertEquals( 4,
-                      oracle.getFactTypes().length );
+        assertEquals( 6,
+                      oracle.getAllFactTypes().length );
         assertContains( "t2p1.Bean1",
-                        oracle.getFactTypes() );
+                        oracle.getAllFactTypes() );
         assertContains( "t2p1.Bean2",
-                        oracle.getFactTypes() );
+                        oracle.getAllFactTypes() );
         assertContains( "t2p2.Bean3",
-                        oracle.getFactTypes() );
+                        oracle.getAllFactTypes() );
         assertContains( "t2p1.Bean4",
-                        oracle.getFactTypes() );
+                        oracle.getAllFactTypes() );
+        assertContains( "java.lang.String",
+                        oracle.getAllFactTypes() );
+        assertContains( "int",
+                        oracle.getAllFactTypes() );
 
-        oracle.getSuperType( "t2p1.Bean1",
+        oracle.getSuperType( "Bean1",
                              new Callback<String>() {
                                  @Override
                                  public void callback( final String result ) {
                                      assertNull( result );
                                  }
                              } );
-        oracle.getSuperType( "t2p1.Bean2",
+        oracle.getSuperType( "Bean2",
                              new Callback<String>() {
                                  @Override
                                  public void callback( final String result ) {
-                                     assertEquals( "t2p1.Bean1",
+                                     assertEquals( "Bean1",
                                                    result );
                                  }
                              } );
-        oracle.getSuperType( "t2p2.Bean3",
-                             new Callback<String>() {
-                                 @Override
-                                 public void callback( final String result ) {
-                                     assertEquals( "t2p1.Bean1",
-                                                   result );
-                                 }
-                             } );
-        oracle.getSuperType( "t2p1.Bean4",
+        oracle.getSuperType( "Bean4",
                              new Callback<String>() {
                                  @Override
                                  public void callback( final String result ) {

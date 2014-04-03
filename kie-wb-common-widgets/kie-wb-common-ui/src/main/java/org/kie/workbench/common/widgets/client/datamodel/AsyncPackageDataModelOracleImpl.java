@@ -223,17 +223,18 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         return result;
     }
 
-    public String getFQCNByFactName(String factName) {
-        if (factName.contains(".")) {
+    public String getFQCNByFactName( final String factName ) {
+        if ( factName.contains( "." ) ) {
             return factName;
+        } else if ( factNameToFQCNHandleRegistry.contains( factName ) ) {
+            return factNameToFQCNHandleRegistry.get( factName );
         } else {
-            return factNameToFQCNHandleRegistry.get(factName);
+            return factName;
         }
     }
 
     /**
      * Returns fact's name from type
-     *
      * @param type for example org.test.Person or Person
      * @return Shorter type name Person, not org.test.Person
      */
@@ -253,10 +254,9 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
             }
         }
 
-        String fgcnByFactName = getFQCNByFactName(type);
-
-        if(projectModelFields.containsKey(fgcnByFactName)){
-          return  AsyncPackageDataModelOracleUtilities.getTypeName(fgcnByFactName);
+        final String fgcnByFactName = getFQCNByFactName( type );
+        if ( projectModelFields.containsKey( fgcnByFactName ) ) {
+            return AsyncPackageDataModelOracleUtilities.getTypeName( fgcnByFactName );
         }
 
         return null;
@@ -350,24 +350,23 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void getSuperType( final String factType,
                               final Callback<String> callback ) {
 
-        getSuperTypes(factType, new Callback<List<String>>() {
+        getSuperTypes( factType, new Callback<List<String>>() {
             @Override
-            public void callback(List<String> result) {
-                if (result != null) {
-                    callback.callback(result.get(0));
+            public void callback( List<String> result ) {
+                if ( result != null ) {
+                    callback.callback( result.get( 0 ) );
 
                 } else {
-                    callback.callback(null);
+                    callback.callback( null );
                 }
             }
-        });
+        } );
     }
 
     @Override
     public void getSuperTypes( final String factType,
-                               final Callback<List<String>> callback) {
-
-        final List<String> superTypes = filteredSuperTypes.get(factType);
+                               final Callback<List<String>> callback ) {
+        final List<String> superTypes = filteredSuperTypes.get( factType );
 
         //Load incremental content
         if ( superTypes == null ) {
@@ -376,12 +375,12 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                 @Override
                 public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
                     AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
-                            dataModel );
+                                                                                  dataModel );
                     callback.callback( filteredSuperTypes.get( factType ) );
                 }
             } ).getUpdates( resourcePath,
-                    imports,
-                    factType );
+                            imports,
+                            factType );
 
         } else {
             callback.callback( superTypes );
@@ -465,22 +464,17 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public void getFieldCompletions( final String factType,
                                      final Callback<ModelField[]> callback ) {
+        final String fgcnByFactName = getFQCNByFactName( factType );
         ModelField[] fields = getModelFields( factType );
 
-        final String factTypeName;
-        if (getFQCNByFactName(factType) != null) {
-            factTypeName = getFQCNByFactName(factType);
-        } else {
-            factTypeName = factType;
-        }
-
-        if (fields == null || fields.length == 0) {
-            fields = projectModelFields.get(factTypeName);
-
-            if (fields == null || isLazyProxy(fields)) {
+        if ( fields == null || fields.length == 0 ) {
+            fields = projectModelFields.get( fgcnByFactName );
+            if ( fields == null || isLazyProxy( fields ) ) {
                 fields = null;
             } else {
-                AsyncPackageDataModelOracleUtilities.correctModelFields(packageName, fields, imports);
+                AsyncPackageDataModelOracleUtilities.correctModelFields( packageName,
+                                                                         fields,
+                                                                         imports );
             }
         }
 
@@ -489,24 +483,24 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
             service.call( new RemoteCallback<PackageDataModelOracleIncrementalPayload>() {
 
                 @Override
-                public void callback(final PackageDataModelOracleIncrementalPayload dataModel) {
-                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle(
-                            AsyncPackageDataModelOracleImpl.this,
-                            dataModel);
+                public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
+                    AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
+                                                                                  dataModel );
 
                     // This will stop an infinite loop if there are no fields to be found
-                    if (dataModel.getModelFields().get(factTypeName) == null || dataModel.getModelFields().get(factTypeName).length == 0) {
-                        callback.callback(new ModelField[0]);
+                    if ( dataModel.getModelFields().get( fgcnByFactName ) == null || dataModel.getModelFields().get( fgcnByFactName ).length == 0 ) {
+                        callback.callback( new ModelField[ 0 ] );
                     } else {
-                        getFieldCompletions(factType, callback);
+                        getFieldCompletions( factType,
+                                             callback );
                     }
                 }
-            }).getUpdates( resourcePath,
-                           imports,
-                           factTypeName);
+            } ).getUpdates( resourcePath,
+                            imports,
+                            fgcnByFactName );
 
         } else {
-            callback.callback(fields);
+            callback.callback( fields );
         }
     }
 
@@ -527,25 +521,24 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public void getFieldCompletions(
-            final String factType,
-            final FieldAccessorsAndMutators accessorOrMutator,
-            final Callback<ModelField[]> callback) {
+    public void getFieldCompletions( final String factType,
+                                     final FieldAccessorsAndMutators accessorOrMutator,
+                                     final Callback<ModelField[]> callback ) {
+        getFieldCompletions( factType,
+                             new Callback<ModelField[]>() {
 
-        getFieldCompletions(factType, new Callback<ModelField[]>() {
+                                 @Override
+                                 public void callback( ModelField[] fields ) {
+                                     ArrayList<ModelField> result = new ArrayList<ModelField>();
 
-            @Override
-            public void callback(ModelField[] fields) {
-                ArrayList<ModelField> result = new ArrayList<ModelField>();
-
-                for (ModelField field : fields) {
-                    if (FieldAccessorsAndMutators.compare(accessorOrMutator, field.getAccessorsAndMutators())) {
-                        result.add(field);
-                    }
-                }
-                callback.callback(result.toArray(new ModelField[result.size()]));
-            }
-        });
+                                     for ( ModelField field : fields ) {
+                                         if ( FieldAccessorsAndMutators.compare( accessorOrMutator, field.getAccessorsAndMutators() ) ) {
+                                             result.add( field );
+                                         }
+                                     }
+                                     callback.callback( result.toArray( new ModelField[ result.size() ] ) );
+                                 }
+                             } );
     }
 
     //Check whether the ModelField[] is a place-holder for more information
@@ -561,23 +554,53 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     @Override
     public String getFieldType( final String modelClassName,
                                 final String fieldName ) {
+        //Check fields
         final ModelField field = getField( modelClassName,
                                            fieldName );
-        return field == null ? null : field.getType();
+        if ( field != null ) {
+            return field.getType();
+        }
+
+        //Check method information
+        final List<MethodInfo> mis = projectMethodInformation.get( modelClassName );
+        if ( mis != null ) {
+            for ( MethodInfo mi : mis ) {
+                if ( mi.getName().equals( fieldName ) ) {
+                    return mi.getGenericType();
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
     public String getFieldClassName( final String modelClassName,
                                      final String fieldName ) {
-        final ModelField field = getField( modelClassName,  
+        //Check fields
+        final ModelField field = getField( modelClassName,
                                            fieldName );
-        return field == null ? null : field.getClassName();
+        if ( field != null ) {
+            return field.getClassName();
+        }
+
+        //Check method information
+        final List<MethodInfo> mis = projectMethodInformation.get( modelClassName );
+        if ( mis != null ) {
+            for ( MethodInfo mi : mis ) {
+                if ( mi.getName().equals( fieldName ) ) {
+                    return mi.getReturnClassType();
+                }
+            }
+        }
+
+        return null;
     }
 
     private ModelField getField( final String modelClassName,
                                  final String fieldName ) {
-
-        final ModelField[] fields = projectModelFields.get( getFQCNByFactName( modelClassName ) );
+        final String fgcnByFactName = getFQCNByFactName( modelClassName );
+        final ModelField[] fields = projectModelFields.get( fgcnByFactName );
 
         if ( fields == null ) {
             return null;
@@ -585,7 +608,9 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
         for ( ModelField modelField : fields ) {
             if ( modelField.getName().equals( fieldName ) ) {
-                return AsyncPackageDataModelOracleUtilities.correctModelFields( packageName, imports, modelField );
+                return AsyncPackageDataModelOracleUtilities.correctModelFields( packageName,
+                                                                                imports,
+                                                                                modelField );
             }
         }
 
@@ -761,9 +786,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void getMethodInfos( final String factType,
                                 final int parameterCount,
                                 final Callback<List<MethodInfo>> callback ) {
-
-        final String fqcnByFactName = getFQCNByFactName(factType);
-
+        final String fqcnByFactName = getFQCNByFactName( factType );
         final List<MethodInfo> methodInformation = projectMethodInformation.get( fqcnByFactName );
 
         //Load incremental content
@@ -809,9 +832,8 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void getMethodParams( final String factType,
                                  final String methodNameWithParams,
                                  final Callback<List<String>> callback ) {
-        final String fqcnFactName = getFQCNByFactName(factType);
-
-        final List<MethodInfo> methodInformation = projectMethodInformation.get( factType );
+        final String fqcnFactName = getFQCNByFactName( factType );
+        final List<MethodInfo> methodInformation = projectMethodInformation.get( fqcnFactName );
 
         //Load incremental content
         if ( methodInformation == null ) {
@@ -856,7 +878,8 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void getMethodInfo( final String factType,
                                final String methodNameWithParams,
                                final Callback<MethodInfo> callback ) {
-        final List<MethodInfo> methodInformation = projectMethodInformation.get( factType );
+        final String fqcnFactName = getFQCNByFactName( factType );
+        final List<MethodInfo> methodInformation = projectMethodInformation.get( fqcnFactName );
 
         //Load incremental content
         if ( methodInformation == null ) {
@@ -866,7 +889,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                 public void callback( final PackageDataModelOracleIncrementalPayload dataModel ) {
                     AsyncPackageDataModelOracleUtilities.populateDataModelOracle( AsyncPackageDataModelOracleImpl.this,
                                                                                   dataModel );
-                    final List<MethodInfo> methodInformation = projectMethodInformation.get( factType );
+                    final List<MethodInfo> methodInformation = projectMethodInformation.get( fqcnFactName );
                     callback.callback( getMethodInfo( methodInformation,
                                                       methodNameWithParams ) );
                 }
@@ -910,16 +933,16 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     }
 
     @Override
-    public void getFieldCompletionsForGlobalVariable(final String varName,
-            final Callback<ModelField[]> callback) {
+    public void getFieldCompletionsForGlobalVariable( final String varName,
+                                                      final Callback<ModelField[]> callback ) {
         getFieldCompletions(
-                getGlobalVariable(varName),
+                getGlobalVariable( varName ),
                 new Callback<ModelField[]>() {
                     @Override
-                    public void callback(ModelField[] result) {
-                        callback.callback(result);
+                    public void callback( ModelField[] result ) {
+                        callback.callback( result );
                     }
-                });
+                } );
     }
 
     @Override
@@ -1247,11 +1270,11 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         filteredModelFields.putAll( AsyncPackageDataModelOracleUtilities.filterModelFields( packageName,
                                                                                             imports,
                                                                                             projectModelFields,
-                                                                                            factNameToFQCNHandleRegistry) );
+                                                                                            factNameToFQCNHandleRegistry ) );
 
         // For filling the factNameToFQCNHandleRegistry
         AsyncPackageDataModelOracleUtilities.visitMethodInformation( projectMethodInformation,
-                                                                     factNameToFQCNHandleRegistry);
+                                                                     factNameToFQCNHandleRegistry );
 
         //Filter and rename Global Types based on package name and imports
         filteredGlobalTypes = new HashMap<String, String>();

@@ -1,12 +1,16 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
@@ -26,7 +30,7 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for DataModelService
  */
-public class PackageDataModelExtendJavaTypeTests {
+public class PackageDataModelExtendJavaTypeTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private BeanManager beanManager;
@@ -69,7 +73,13 @@ public class PackageDataModelExtendJavaTypeTests {
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( "t4p1" );
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setEventTypes( new HashMap<String, Boolean>() {
+            {
+                put( "t4p1.Bean1", true );
+            }
+        } );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
                                                                  oracle,
@@ -111,7 +121,13 @@ public class PackageDataModelExtendJavaTypeTests {
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( "t4p1" );
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setEventTypes( new HashMap<String, Boolean>() {
+            {
+                put( "t4p1.Bean1", true );
+            }
+        } );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
                                                                  oracle,
@@ -121,10 +137,10 @@ public class PackageDataModelExtendJavaTypeTests {
 
         assertEquals( 1,
                       oracle.getFactTypes().length );
-        assertContains( "t4p1.Bean1",
+        assertContains( "Bean1",
                         oracle.getFactTypes() );
 
-        oracle.isFactTypeAnEvent( "t4p1.Bean1",
+        oracle.isFactTypeAnEvent( "Bean1",
                                   new Callback<Boolean>() {
                                       @Override
                                       public void callback( final Boolean result ) {
@@ -153,7 +169,13 @@ public class PackageDataModelExtendJavaTypeTests {
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( "t5p1" );
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setEventTypes( new HashMap<String, Boolean>() {
+            {
+                put( "t5p1.Bean1", true );
+            }
+        } );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
                                                                  oracle,
@@ -194,7 +216,13 @@ public class PackageDataModelExtendJavaTypeTests {
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( "t5p1" );
         dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setEventTypes( new HashMap<String, Boolean>() {
+            {
+                put( "t5p1.Bean1", true );
+            }
+        } );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
                                                                  oracle,
@@ -203,10 +231,10 @@ public class PackageDataModelExtendJavaTypeTests {
 
         assertEquals( 1,
                       oracle.getFactTypes().length );
-        assertContains( "t5p1.Bean1",
+        assertContains( "Bean1",
                         oracle.getFactTypes() );
 
-        oracle.isFactTypeAnEvent( "t5p1.Bean1",
+        oracle.isFactTypeAnEvent( "Bean1",
                                   new Callback<Boolean>() {
                                       @Override
                                       public void callback( final Boolean result ) {
