@@ -184,10 +184,9 @@ These concepts are expressed in the `uberfire-backend-api` module,
 which defines mostly common services that are used by client side,
 but implemented in the server side.
 
-* Runtime Plugins
 * VFS (Virtual File System)
-
-TODO
++
+The Virtual File System API provides a set of IO related features for client-side components.
 
 UberFire Client API Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -281,30 +280,38 @@ UberFire Commons Concepts
 These concepts are expressed in the `uberfire-commons` package,
 which contains a mix of server-only definitions shared client/server definitions.
 
-* Clustering (server-only, see also UberFire I/O)
 * Data
  ** Pair, a generic 2-tuple (client + server)
  ** Triple, a generic 3-tuple (client + server)
  ** Cacheable, interface that provides explicit visibility of cached data.
 * Lock Service (server-only)
-* Messaging (server-only, distinct from Errai Bus messages)
 +
-Provide for clustered deployments;
+Common service interface to implement locks. Provides a `Thead` default implementation.
+* Clustering (server-only, see also UberFire I/O)
++
+A general clustering abstraction that provides a combination of `Lock` and `Message` services in a clustered environment (multiple computers).
+* Messaging
++
+General purpose messaging abstraction (server-only, distinct from Errai Bus messages). Currently implemented by IO clustered setup.
+
+** Message
++
+Message is basically a composition of a `MessageType` and a `Map` of arbitrary values.
 ** AsyncCallback
 +
-TODO
+Async callback mechanism used to by call and wait messaging broadcast. Currently used to sync file systems in the cluster during startup.
 ** MessageHandler
 +
-TODO
+Interface that process messages, messages are routed to MessageHandler by `MessageHandlerResolver`.
 ** MessageHandlerResolver
 +
-TODO
+Simple routing mechanism to `MessageHandler` 's.
 ** MessageService
 +
-TODO
+Common service interface to implement broadcast (sync/async) and participant specific messaging exchange.
 ** MessageType
 +
-TODO
+Simple message classification. Usually used by `MessageHandlerResolver` in order to route a message to a proper `MessageHandler`.
 
 * CDI Startup Beans (the @Startup annotation) (server-only)
 * PortablePreconditions (client + server), a collection of static methods for checking common preconditions (reference not null, list not empty, etc.)
@@ -315,33 +322,53 @@ UberFire I/O Concepts
 ~~~~~~~~~~~~~~~~~~~~~
 
 These concepts are expressed in the `uberfire-io` package,
-which contains mostly server-only code.
+which contains server-only code.
 
-* Dublin Core (TM) metadata
-* FileSystemType (client + server)
-* Clustering (see also UberFire Commons)
-* IO Services (Clustered service, Search Service, Watch Service)
+* IOService
++
+TODO
+
+** AbstractIOService
++
+TODO
+** IOServiceNio2Wrapper
++
+TODO
+** IOServiceDotFile
++
+TODO
+** Clustered Service
++
+TODO
+* Watch Service
++
+TODO
+* Search Service
++
+TODO
+* Attributes
++
+TODO
+
+** Dublin Core (TM) metadata
 +
 TODO
 
 UberFire JS Concepts
 ~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `UberFire-js` package, which
+These concepts are expressed in the `uberfire-js` package, which
 exposes a JavaScript API for some aspects of the UberFire framework.
 This gives application developers the option to write UberFire
 applications partly or entirely in JavaScript.
 
 * JavaScript native plugin, with types representing
-** Entry points
 ** Perspectives
 ** Plugins
 ** Workbench perspective activities
 ** Workbench screen activities
 ** Panel definitions
 ** Part definitions
-
-TODO
 
 UberFire Metadata Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -353,30 +380,69 @@ The UberFire Metadata module includes an API submodule which defines
 the following concepts, and one implementation of the API (a "metadata
 backend") that relies on Apache Lucene:
 
-TODO
+* Metamodel store
++
+Meta model holds the schema (build dynamically) of the metadata index. Its use is optional, currently not used.
+
+** MetaObject
++
+Stores schema related information (meta model) of a `KObject`, including all it's properties.
+** MetaProperty
++
+Defines a `KProperty` schema (meta model). As UberFire metadata scheme is just dynamic, a `KProperty` may have different types.
+** MetaType
++
+Classification of a `MetaObject` (and by consequence classifies `KObject` 's too).
+* "K" objects
++
+The "K" prefix used by the following concepts comes from "Knowledge" and it's used just to differentiate from java standard types.
+
+** KCluster
++
+Groups a set of objects, that can also be segmented (a second group level). Note: This cluster isn't related to a cluster of computers.
+** KObjectSimpleKey
++
+Interface that represents the minimum set of data needed to represent uniquely a `KObject`.
+** KObjectKey
++
+Complements the `KObjectSimpleKey` with a general purpose id and it's `MetaType`.
+** KProperty
++
+Stores an attribute in the pair of name and value, that can will be indexed and optionally used in search.
+** KPropertyBag
++
+Groups a set of `KProperty`.
+** KObject
++
+Represents the data iself to be indexed. It's an aggregation of a `KObjectKey` and `PropertyBag`.
 
 * Metadata index engine
-* Metamodel store
-* "K" objects:
-** KObject
-** KObjectKey
-** KObjectSimpleKey
-** KProperty
-** KPropertyBag
-* MetaObject
-* MetaProperty
-* MetaType
-* Cluster segment
-* Date range
-* Search index
++
+Core interface that defines mostly metadata engine features related to index manipulation (basically add and remove items to index).
+* Search
+** Search index
++
+Data retrieval interface for the index.
+** Cluster segment
++
+Interface that helps define the scope of a search.
+** Date range
++
+Simple type that represents a date range, used exclusively in search operations (e.g. files that has changed between dates).
 
 There is also a small submodule called `uberfire-metadata-commons-io`
 which introduces the following concepts:
 
 * Batch index
++
+Utility class that indexes, in batch mode, a `FileSystem`.
 * IO Service Provider
 ** Index
++
+Specialized implementation of IOService (extension of `IOServiceDotFile`) that provides transparent indexing.
 ** Search
++
+Specialized implementation of IOSearchService that provides uses the index to provide search capabilities.
 
 UberFire NIO2 Concepts
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -402,8 +468,11 @@ which contains some server-side functionality.
 * UberFire Servlet
 ** App template, header template, footer template, user data template
 * FileUpload Servlet
++
+Servlet that provides file upload capabilities for binary related `Editor` 's.
 * FileDownload Servlet
-TODO
++
+Servlet that provides file download capabilities for binary related `Editor` 's.
 
 UberFire Widgets Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -530,7 +599,7 @@ The editor is sub-divided into two region; one allows entry of text markdown and
 
 The `uberfire-widgets-properties-editor` module introduces the following concepts:
 
-* Properties Editor
+* Properties Editor Widget
 +
 TODO
 * PropertyEditorCategory
