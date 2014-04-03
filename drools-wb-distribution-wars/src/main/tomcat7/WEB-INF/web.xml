@@ -65,21 +65,6 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>UberFireImageServlet</servlet-name>
-    <servlet-class>org.uberfire.server.UberfireImageServlet</servlet-class>
-    <init-param>
-      <param-name>org.uberfire.images.paths</param-name>
-      <param-value>/org.drools.workbench.DroolsWorkbench</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>UberFireImageServlet</servlet-name>
-    <url-pattern>/org.drools.workbench.DroolsWorkbench/uberFireImages/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>DTableXLSFileServlet</servlet-name>
     <servlet-class>org.drools.workbench.screens.dtablexls.backend.server.DecisionTableXLSFileServlet</servlet-class>
   </servlet>
