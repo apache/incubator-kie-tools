@@ -326,33 +326,32 @@ which contains server-only code.
 
 * IOService
 +
-TODO
+IOService is the UberFire specific abstraction for all IO related operations. This abstraction is important to anble UberFire provide
+additional features on top of IO operations (e.g. transparent indexing of content).
 
-** AbstractIOService
-+
-TODO
 ** IOServiceNio2Wrapper
 +
-TODO
+Simplest IOService implementation that just wrappers NIO2 backported api.
 ** IOServiceDotFile
 +
-TODO
+This implementation stores every non link:http://docs.oracle.com/javase/7/docs/api/java/nio/file/attribute/BasicFileAttributes.html[basic file attribute] in dot file.
+This feature enables users associate any meta information to a `Path`.
 ** Clustered Service
 +
-TODO
+Clustered `IOService` implementation that wrappers another `IOService` and uses UberFire Clustering service to manage a global 'Lock' and `FileSystem` sync.
 * Watch Service
 +
 TODO
 * Search Service
 +
-TODO
+Provides search capabilities (full text and attribute based searching) over `FileSystem` 's.
 * Attributes
 +
-TODO
+Attributes represents `FileSystem` metadata, for more information check link:http://docs.oracle.com/javase/tutorial/essential/io/fileAttr.html[NIO2 docs].
 
 ** Dublin Core (TM) metadata
 +
-TODO
+UberFire implementation of link:http://dublincore.org[Dublin Core (TM)] metadata using `FileSystem` attributes.
 
 UberFire JS Concepts
 ~~~~~~~~~~~~~~~~~~~~
