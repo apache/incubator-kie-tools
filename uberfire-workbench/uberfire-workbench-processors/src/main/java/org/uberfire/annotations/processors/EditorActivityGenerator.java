@@ -83,9 +83,12 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         if ( associatedResources != null && associatedResources.size() > 0 ) {
             for ( final String resourceTypeName : associatedResources ) {
-                final TypeElement type = processingEnvironment.getElementUtils().getTypeElement( resourceTypeName );
-                if ( type.getAnnotation( ApplicationScoped.class ) == null ) {
-                    throw new GenerationException( "The '" + resourceTypeName + "' must be ApplicationScope`d ." );
+                final TypeElement resourceType = processingEnvironment.getElementUtils().getTypeElement( resourceTypeName );
+                if ( resourceType.getAnnotation( ApplicationScoped.class ) == null ) {
+                    messager.printMessage(
+                            Kind.ERROR,
+                            "This type is referenced as a resource from " + className + ", so it must be @ApplicationScoped.",
+                            resourceType );
                 }
             }
         }

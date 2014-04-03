@@ -94,19 +94,17 @@ public class ContextActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
         }
 
-        //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
-            throw new GenerationException( "The WorkbenchContext must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.", packageName + "." + className );
+            final String msg = "The WorkbenchContext must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.";
+            messager.printMessage( Kind.ERROR, msg, classElement );
         }
         if ( isWidget && getWidgetMethodName != null ) {
             final String msg = "The WorkbenchContext both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
-            processingEnvironment.getMessager().printMessage( Kind.WARNING,
-                                                              msg );
+            messager.printMessage( Kind.WARNING, msg, classElement );
         }
-
-        //Validate getTitleMethodName and getTitleWidgetMethodName
         if ( getTitleMethodName == null ) {
-            throw new GenerationException( "The WorkbenchContext must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.", packageName + "." + className );
+            final String msg = "The WorkbenchContext must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.";
+            messager.printMessage( Kind.ERROR, msg, classElement );
         }
 
         //Setup data for template sub-system
