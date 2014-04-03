@@ -167,6 +167,12 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.jboss.errai</groupId>
           <artifactId>jacoco-gwt-maven-plugin</artifactId>
           <version>0.5.4.201202141554</version>
