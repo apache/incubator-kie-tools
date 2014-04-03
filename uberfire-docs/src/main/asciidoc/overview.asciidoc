@@ -341,7 +341,9 @@ This feature enables users associate any meta information to a `Path`.
 Clustered `IOService` implementation that wrappers another `IOService` and uses UberFire Clustering service to manage a global 'Lock' and `FileSystem` sync.
 * Watch Service
 +
-TODO
+Provides a high level service implementation to convert link:http://docs.oracle.com/javase/tutorial/essential/io/notification.html[IO notifications] to the following CDI events:
+`ResourceAddedEvent`, `ResourceDeletedEvent`, `ResourceRenamedEvent`, `ResourceUpdatedEvent` and  `ResourceBatchChangesEvent`.
+
 * Search Service
 +
 Provides search capabilities (full text and attribute based searching) over `FileSystem` 's.
@@ -600,25 +602,28 @@ The `uberfire-widgets-properties-editor` module introduces the following concept
 
 * Properties Editor Widget
 +
-TODO
+The property editor is a widget build to edit generic data. Use `PropertyEditorEvent` to load content and `PropertyEditorChangeEvent` to listen for changes.
+
 * PropertyEditorCategory
 +
-TODO
+Groups related `PropertyEditorFieldInfo`.
 * PropertyEditorFieldInfo
 +
-TODO
+Holds all information necessary to display the active entry.
+
 * PropertyEditorEvent
 +
-TODO
+Event used to load content into `Properties Editor Widget`, this event should be fired by application.
 * PropertyEditorType
 +
-TODO
+Defines a data type of a property. Currently supported types are: TEXT, BOOLEAN, NATURAL_NUMBER, NATURAL_NUMBER, COMBO and SECRET_TEXT.
 * PropertyEditorChangeEvent
 +
-TODO
+Event fired by `Property Editor Widget` when a value of a PropertyEditorFieldInfo is changed.
 * BeanPropertyEditorBuilderService
 +
-TODO
+Service that extracts PropertyEditorCategory and their respective PropertyEditorFieldInfo of any bean in the application classpath. If necessary,
+an object instance can also be provided so that the values ​​of the bean are assigned to PropertyEditorType.
 
 UberFire Workbench Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
