@@ -50,7 +50,6 @@ in your application:
 ** Each file in the VFS supports change tracking, revision control, and update notification
 ** File types can be associated with custom viewers and editors
 ** The contents of the VFS can also be searched using a performant full-text search engine
-    (TODO: is this correct? I think this is the purpose of uberfire-metadata)
 * Application components can be written in Java or JavaScript. Components can interoperate
   regardless of which language they are implemented in.
 
@@ -77,6 +76,7 @@ Child of the Workbench. Group and layout panels in a composite container.
 * Panels
 +
 Child of a perspective and a container for Parts. Different types of panel can have different behaviours, for example (as provided by default):
+
 ** Single (active) part rendered, selection of other parts using tabs. Supports drag and drop repositioning of parts.
 ** Single (active) part rendered, selection of other parts from a drop-down listbox. Supports drag and drop repositioning of parts.
 ** Single part; fixed content. Drag and drop support disabled.
@@ -92,82 +92,64 @@ A request for the Workbench to go to a Place. PlaceRequests can represent a pers
 * Path
 +
 A Path is a location within any Virtual File System configured within UberFire. Editors can be defined to respond to different Paths.
+* ObservablePath
++
+An ObservablePath is an extension of a Path that provides a mechanism to listen to Path's changes, the list of possible changes are Rename, Delete, Update or Copy.
 * Screens
 +
 A screen is not associated to a Path pattern and can be launched by requesting the corresponding Place. Screens can be used for static content; or for resources beyond UberFire's VFS mechanisms. 
 * Editors
 +
 An editor is associated to a Path pattern. Requests for Places that correspond to a Path will launch corresponding editor. Editors can be used for resources within UberFire's VFS mechanisms.
-* Widgets
+* Splash Screens
 +
-UberFire is not a widget library and can be used with different third party libraries; however some widgets are provided for core Workbench features. 
+A splash screen is an informative screen that can be displayed when any Place is displayed (due an interception process). A splash screen may have multiple interception points.
 * Contexts
 +
-TODO
+A context can be any widget and the most common use case is to provide context navigation. An example of context navigation is an Editor that uses context to provide a
+file browser pointing to current file directory. Although context navigation is the most common usage, Context can be used to other purposes like display Part's metadata
+or even a chat widget.
 * Menus
 +
-items, groups, factories, commands, positions
+UberFire Menus aims to provide a common abstraction to define general purpose menus.
+
+** Menu Item
++
+Top level abstraction that provides common menu item metadata like a caption, state (enabled or disabled), position (left, right, center) and order.
+** Menu Group
++
+An specialized Menu Item that groups other menu items.
+** Menu Custom
++
+An specialized Menu Item that users can provide it's own custom menu item. Most flexible, but non portable, way to define a menu item user interface.
 * Tool bars
 +
-items, icons, types
+Common abstraction to define a Tool bar. Due the graphic interface nature of a Tool bar, tool bar items are not only associated with an action but also with an icon.
+* Principal
++
+A principal is just a security term for an identifying attribute, such as a username or user id or social security number or anything else that can be considered an 'identifying' attribute for a Subject.
+* Role
++
+A Roles represents a permission. An Identity may have multiple roles.
+* Subject & Identity
++
+Subject or Identity is any entity that represents the authenticated user (that can be a user account, a computer account, or a thread or process). Although the term Subject is common for
+most security related frameworks, we believe that this word is a bit vague and due this reason in UberFire the term Identity is used instead of Subject.
+* SessionInfo
++
+SessionInfo is the abstraction that aims to represent an unique pair of Identity and session id. Differently from traditional Java web applications where sessions are browser based, UberFire session id's
+are unique on browser tab level. This is the type that is used by ObservablePath to identify external changes.
 * Resources
-* File Navigators
-* Identity
-* Marshalling
-* Workbench Events (TODO: why are these defined globally rather than in the uberfire-workbench module?)
-** ApplicationReadyEvent
 +
-Signal when certain resources have been injected into the GWT Host Page and other bootstrap processes complete. Raised by UberFire. 
-** BeforeClosePlaceEvent
+Resource is a marker interface used for access restriction purposes (security).
+* Types
+** ResourceTypeDefinition
 +
-Signal when a Part is about to be closed; normally in response to the user electing to interactively close a Part. Screens and Editors can veto the closure (for example if they contain unsaved content). Raised by Uberfire. 
-** ClosePlaceEvent
+A portable model which represents a resource type (resource in this context means a type of a Path and it's not related to security resource).
+* NotificationEvent
 +
-Signal when a Part is closed. This event signals the removal of a Part from a Panel. Raised by Uberfire.
-** ContextUpdateEvent
-+
-TODO
-** DropPlaceEvent
-+
-Part of the drag and drop support. Signals a Part has been dragged to and dropped on a target Panel. Raised by Uberfire. 
-** MaximizePlaceEvent
-+
-Signals a Part has been "maximized" to consume the whole Workbench client region (Note: Work in progress). Raised by Uberfire.
-** MinimizePlaceEvent
-+
-Signals a Part has been "minimized" to a status bar within the Workbench (Note: Work in progress). Raised by Uberfire.
-** NewPerspectiveEvent
-+
-TODO
-** NewWorkbenchScreenEvent
-+
-TODO
-** NotificationEvent
-+
-Signal a informative notification (e.g. "File saved" etc) that appears within the Workbench as a popup message. Raised by whoever needs to inform users of a notication.
-** PanelFocusEvent
-+
-Signal a Panel has received the input focus. Raised by Uberfire.
-** PerspectiveChange
-+
-Signal a change in active Perspective. Raised by Uberfire.
-** PlaceGainFocusEvent
-+
-Signal a Place has gained the input focus. Raised by Uberfire.
-** PlaceLostFocusEvent
-+
-Signal a Place has lost the input focus. Raised by Uberfire.
-** SavePlaceEvent
-+
-Signal an Editor can have it's state saved. Raised by developers using Uberfire from Widgets outside of the Editor itself (e.g. a Workbench Menubar entry). 
-** SelectPlaceEvent
-+
-Signal a Place has been selected. Raised by Uberfire.
-** RestorePlaceEvent
-+
-TODO
-
-* VFS Events (TODO: why are these defined globally rather than in the uberfire-workbench module?)
+Signal a informative notification (e.g. "File saved" etc) that appears within the Workbench as a popup message. Raised by whoever needs to inform users of a notification. There are four types of notifications: DEFAULT, ERROR, SUCCESS, INFO and WARNING.
+* VFS Events
 ** ResourceAddedEvent
 +
 Signal a resource has been added to a VFS. Raised by VFS.
@@ -190,18 +172,22 @@ Signal a resource has been renamed within a VFS. Raised by VFS.
 +
 Signal a resource has been modified within a VFS. Raised by VFS.
 
+* Widgets
++
+UberFire is not a widget library and can be used with different third party libraries;
+however some widgets are provided for core Workbench features.
+
 UberFire Backend API Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-These concepts are expressed in the `uberfire-backend-api` module, which
-TODO: characterize this module; it's (mostly) not just for the server-side.
+These concepts are expressed in the `uberfire-backend-api` module,
+which defines mostly common services that are used by client side,
+but implemented in the server side.
 
-* Deployment
-* Organizational Unit
-* Repository
-* Configuration (server-side only): ConfigGroup, ConfigItem, ConfigurationFactory
-* VFS (Virtual Filesystem)
+* Runtime Plugins
+* VFS (Virtual File System)
 
+TODO
 
 UberFire Client API Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -211,32 +197,12 @@ which defines an API that's only accessible to client-side
 (in-browser) code.
 
 * Annotations
-** DefaultPosition
-+
-Marker annotation to allow either `@WorkbenchEditor` 's or `@WorkbenchScreen` 's to declare a method that returns the default location of the component in a perspective when opened by the framework. NOTE: This is specific to the NSEW perspective type. Work is in progress to provide support for additional types of perspective.
-** Intercept
-+
-TODO
 ** Perspective
-+Marker annotation to allow a `@WorkbenchPerspective` to declare a method that returns a PerspectiveDefinition object, defining the workbench perspective.
-** SplashBodySize
 +
-TODO
-** SplashFilter
-+
-TODO
-** WorkbenchContext
-+
-TODO
-** WorkbenchContextId
-+
-TODO
+Marker annotation to allow a `@WorkbenchPerspective` to declare a method that returns a PerspectiveDefinition object, defining the workbench perspective.
 ** WorkbenchEditor
 +
 A marker annotation to declare a class as being a Workbench Editor. Editors relate to specific resources within the framework, defined by their ResourceTypeDefinition.
-** WorkbenchMenu
-+
-A marker annotation to declare a method within a `@WorkbenchPerspective`, `@WorkbenchEditor` or `@WorkbenchScreen` that returns a Menus object defining a menu to be shown by the framework when the perspective, editor or screen is displayed.
 ** WorkbenchPartTitle
 +
 A marker annotation to declare a method within a `@WorkbenchEditor` or `@WorkbenchScreen` that returns a String defining the title for the component.
@@ -255,12 +221,33 @@ Marker annotation to declare a class as being a popup that can be displayed by t
 ** WorkbenchScreen
 +
 A marker annotation to declare a class as being a Workbench Screen. Screens would usually display static content, or at least content that is not dependent upon a Path within the underlying VFS. The screen could still consume external resources (e.g. query a database) however it does not integrate with the framework's use of Paths.
-** WorkbenchSplashScreen
+** DefaultPosition
 +
-TODO
+Marker annotation to allow either `@WorkbenchEditor` 's or `@WorkbenchScreen` 's to declare a method that returns the default location of the component in a perspective when opened by the framework. NOTE: This is specific to the NSEW perspective type. Work is in progress to provide support for additional types of perspective.
+** WorkbenchMenu
++
+A marker annotation to declare a method within a `@WorkbenchPerspective`, `@WorkbenchEditor` or `@WorkbenchScreen` that returns a Menus object defining a menu to be shown by the framework when the perspective, editor or screen is displayed.
 ** WorkbenchToolbar
 +
 A marker annotation to declare a method within a `@WorkbenchPerspective`, `@WorkbenchEditor` or `@WorkbenchScreen` that returns a ToolBar object defining a toolbar to be shown by the framework when the perspective, editor or screen is displayed.
+** WorkbenchContext
++
+A marker annotation to declare a class as being a Workbench context widget.
+** WorkbenchContextId
++
+A marker annotation to declare a method within a `@WorkbenchEditor` or `@WorkbenchScreen` that returns a reference to a WorkbenchContext identifier.
+** WorkbenchSplashScreen
++
+Marker annotation to declare a class as providing a Splash Screen definition. --->The definition itself is returned from a method within the `@WorkbenchPerspective` annotated with @Perspective.
+** Intercept
++
+A marker annotation to declare a method within a `@WorkbenchSplashScreen` that returns a boolean that has it's own decision to intercept or not a Place.
+** SplashBodyHeight
++
+In order to have a proper render, a splash screen needs to provide the height of it's body.
+** SplashFilter
++
+A marker annotation to declare a method within a `@WorkbenchSplashScreen` that returns a SplashScreenFilter used to check if a Place should be intercepted ot not.
 
 * Interfaces
 ** UberView
@@ -271,11 +258,22 @@ A convenience interface to support linking a View to it's Presenter as required 
 ** ChangeTitleWidgetEvent
 +
 A CDI event that provides support for `@WorkbenchEditor` 's and @Workbench screens to inform the framework that their title or decoration should be updated.
-
+** NewSplashScreenActiveEvent
++
+Signal when one or more splash screens is available in the current navigation (during an interception of a Perspective or a Part).
 * Types
 ** ClientResourceType
 +
-Extends ResourceTypeDefinition which is a server-side model for a resource type; allowing `@WorkbenchEditor` 's to specify the types of resource they are capable of handling.
+Extends ResourceTypeDefinition with client-side specific information like icon representation; allowing `@WorkbenchEditor` 's to specify the types of resource they are capable of handling.
+
+* UberFire Preferences
++
+Utility class that holds general preferences that have impact in UberFire client behavior. Those preferences should be setted by application EntryPoint, in order to be sure that
+it will take place before Workbench starts up. Here are the existing preferences that can be set:
+
+** org.uberfire.client.workbench.clone.ou.mandatory.disable: disable the mandatory OU field of new repositories.
+** org.uberfire.client.workbench.widgets.listbar.context.disable: disables `Context` behavior.
+** org.uberfire.client.workbench.path.automatic.close.onDelete: disables the automatic close of an `Editor` if the file is deleted.
 
 UberFire Commons Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -284,15 +282,34 @@ These concepts are expressed in the `uberfire-commons` package,
 which contains a mix of server-only definitions shared client/server definitions.
 
 * Clustering (server-only, see also UberFire I/O)
-* Pair, a generic 2-tuple (client + server)
+* Data
+ ** Pair, a generic 2-tuple (client + server)
+ ** Triple, a generic 3-tuple (client + server)
+ ** Cacheable, interface that provides explicit visibility of cached data.
 * Lock Service (server-only)
-* Cluster Messaging (server-only, for clustered deployments; distinct from Errai Bus messages)
-** AsyncCallback, MessageHandler, MessageHandlerResolver, MessageService, MessageType
+* Messaging (server-only, distinct from Errai Bus messages)
++
+Provide for clustered deployments;
+** AsyncCallback
++
+TODO
+** MessageHandler
++
+TODO
+** MessageHandlerResolver
++
+TODO
+** MessageService
++
+TODO
+** MessageType
++
+TODO
+
 * CDI Startup Beans (the @Startup annotation) (server-only)
 * PortablePreconditions (client + server), a collection of static methods for checking common preconditions (reference not null, list not empty, etc.)
 ** Note: Errai has a shared class called Assert which serves a similar purpose
 * Preconditions (server-only), precondition checks that are not GWT-translatable
-
 
 UberFire I/O Concepts
 ~~~~~~~~~~~~~~~~~~~~~
@@ -304,7 +321,8 @@ which contains mostly server-only code.
 * FileSystemType (client + server)
 * Clustering (see also UberFire Commons)
 * IO Services (Clustered service, Search Service, Watch Service)
-
++
+TODO
 
 UberFire JS Concepts
 ~~~~~~~~~~~~~~~~~~~~
@@ -323,16 +341,19 @@ applications partly or entirely in JavaScript.
 ** Panel definitions
 ** Part definitions
 
+TODO
 
 UberFire Metadata Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These concepts are expressed in the `uberfire-metadata` package,
-which appears to be a full-text search and indexing feature (TODO: is this correct?)
+which is a flexible metadata framework that index and search content.
 
 The UberFire Metadata module includes an API submodule which defines
 the following concepts, and one implementation of the API (a "metadata
 backend") that relies on Apache Lucene:
+
+TODO
 
 * Metadata index engine
 * Metamodel store
@@ -353,8 +374,9 @@ There is also a small submodule called `uberfire-metadata-commons-io`
 which introduces the following concepts:
 
 * Batch index
-* IO Search index
-
+* IO Service Provider
+** Index
+** Search
 
 UberFire NIO2 Concepts
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -371,79 +393,17 @@ filesystem, for git repositories (via jgit), and for the Eclipse
 virtual filesystem.
 
 
-UberFire Security Concepts
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-These concepts are expressed in the `uberfire-security-api` package,
-and they are all available to both client- and server-side code.
-
-* Security interceptor annotations (for types and methods)
-** `@All`
-** `@Authorized`
-** `@Deny`
-** `@Roles({})`
-* Authenticated Storage
-* Authentication Manager
-* Authentication Provider
-* Authentication Result
-* Authentication Scheme
-* Authentication Source
-* Authentication Status
-* Credential
-* Principal
-* Role
-* Subject Properties
-* Authorization Manager
-* Decision Managers:
-** Resource Decision Manager
-** Role Decision Manager
-* Roles Resource
-* Runtime Resource
-* Voting Strategy
-* Crypt Provider
-* Identity
-* Resource
-* Resource Manager
-* Security Context
-* Security Manager
-* Subject
-
-There is an `uberfire-security-client` module, but it's just
-"plumbing:" it doesn't expose any concepts that are used directly in
-application code.
-
-These concepts are expressed in the `uberfire-security-server`
-package, which contains a variety of server-side implementations of
-the UberFire Security API types:
-
-* Authentication Managers: HTTP (servlets)
-* Authentication Schemes: Form, HttpBasic, JACC, "Remember Me" Cookie
-* Authenticated Storage: Cookie Storage, Http Session Storage
-* Authentication Providers: Default, "Remember Me" Cookie
-* Authentication Sources: Database (JDBC), JACC, users.properties file
-* Security Interceptors: Role-based, Trait-based
-* Crypt Providers: Default
-* Security Contexts: HTTP (servlets)
-* Security Managers: HTTP (servlets)
-* Voting Strategies: Affirmative, Consensus, Unanimous
-
-Plus some new concepts:
-
-* URL Resource
-* Ant Paths
-
-
 UberFire Server Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 These concepts are expressed in the `uberfire-server` package,
 which contains some server-side functionality.
 
-* UberFire Image Servlet
-** UberFire Image Paths
 * UberFire Servlet
 ** App template, header template, footer template, user data template
-
+* FileUpload Servlet
+* FileDownload Servlet
+TODO
 
 UberFire Widgets Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -452,8 +412,8 @@ UberFire is not a widget library but does include a number of useful widgets
 for that can be re-used.
 
 UberFire Widgets are packaged into modules:
-`uberfire-widgets-commons`, `uberfire-widgets-core-client`, and
-`uberfire-widget-markdown`.
+`uberfire-widgets-commons`, `uberfire-widgets-core-client`,
+`uberfire-widgets-properties-editor` and `uberfire-widget-markdown`.
 
 The `uberfire-widgets-commons` module introduces the following concepts:
 
@@ -568,6 +528,29 @@ The `uberfire-widget-markdown` module introduces the following concepts:
 An example `@WorkbenchScreen` that demonstrates a "live" editor for the Markdown text formatting syntax (http://en.wikipedia.org/wiki/Markdown).
 The editor is sub-divided into two region; one allows entry of text markdown and the other shows a "live" (i.e. updated in real-time) preview of the rendered mark-down.
 
+The `uberfire-widgets-properties-editor` module introduces the following concepts:
+
+* Properties Editor
++
+TODO
+* PropertyEditorCategory
++
+TODO
+* PropertyEditorFieldInfo
++
+TODO
+* PropertyEditorEvent
++
+TODO
+* PropertyEditorType
++
+TODO
+* PropertyEditorChangeEvent
++
+TODO
+* BeanPropertyEditorBuilderService
++
+TODO
 
 UberFire Workbench Concepts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -697,7 +680,7 @@ Executed when an existing "open" component receives the focus from either the us
 Executed when an existing "open" component looses the focus by another `Part` receiving the focus.
 **** `@IsDirty`
 +
-TODO
+Used to check if the current editor has a dirty state (some data has changed) or not. Usually this method is used by `@OnMayClose`.
 **** `@OnSave`
 +
 Executed when a `SavePlaceEvent` is raised corresponding to the `Part`.
@@ -728,6 +711,11 @@ Executed when the component is being closed normally in response to the user cli
 +
 Executed after the component is closed, giving it an opportunity to release resources or perform any tidy-up operations.
 
+*** `@WorkbenchContext` lifecycles
+**** `@OnContextAttach`
++
+Executed when the `Context` is attached to it's `Part` in a Panel.
+
 ** Panels and Layouts
 +
 UberFire ships with a single "Window Manager" that is responsible for the layout and operation of the `Workbench`.
@@ -737,21 +725,18 @@ to new locations.
 +
 `Panel` 's can be of different types: 
 
-*** Multi-part Workbench Panels
-+
-TODO
-*** Multi List Workbench Panels
-+
-TODO
 *** Multi Tab Workbench Panels
 +
-TODO
+Panel that supports multiple `Part` 's displayed using a Tab widget. Selection of other parts using tabs. Supports drag and drop repositioning of parts.
+*** Multi List Workbench Panels
++
+Panel  that supports multiple `Part` 's displayed in custom widget that display `Part` 's context menus. Selection of other parts from a drop-down listbox. Supports drag and drop repositioning of parts.
 *** Simple Workbench Panels
 +
-TODO
+Panel that supports a single `Part` displayed in a custom widget that display `Part` 's context menus. Drag and drop disabled by default, but can be activated.
 *** Static Workbench Panels
 +
-TODO
+Simplest possible panel that supports a single `Part`. No drag and drop support.
 
 ** Headers
 +
@@ -759,6 +744,12 @@ TODO
 They are included automatically above the Workbench user-space ordered according to their definition.
 For example a `Header` could be defined to hold a top-level Menu defintion and another `Header`
 could be defined to hold a top-level Toolbar definition.
+
+** Footers
++
+`Footer` 's represent horizontal sections of the Workbench that can contain arbritrary content.
+They are included automatically under the Workbench user-space ordered according to their definition.
+For example a `Footer` could be defined to hold a copyright information.
 
 ** The Workbench Menu Bar
 +
@@ -792,3 +783,111 @@ UberFire will show the toolbar definition automatically whenever the Perspective
 Static screens and Editors can annotate a method with `@WorkbenchToolbar` to declare a method that returns a `ToolBar` definition. 
 UberFire will show the toolbar definition automatically whenever the screen receives the focus.
 
+* Workbench Events
+** ApplicationReadyEvent
++
+Signal when certain resources have been injected into the GWT Host Page and other bootstrap processes complete. Raised by UberFire.
+** BeforeClosePlaceEvent
++
+Signal when a Part is about to be closed; normally in response to the user electing to interactively close a Part. Screens and Editors can veto the closure (for example if they contain unsaved content). Raised by Uberfire.
+** ClosePlaceEvent
++
+Signal when a Part is closed. This event signals the removal of a Part from a Panel. Raised by Uberfire.
+** DropPlaceEvent
++
+Part of the drag and drop support. Signals a Part has been dragged to and dropped on a target Panel. Raised by Uberfire.
+** MaximizePlaceEvent
++
+Signals a Part has been "maximized" to consume the whole Workbench client region (Note: Work in progress). Raised by Uberfire.
+** MinimizePlaceEvent
++
+Signals a Part has been "minimized" to a status bar within the Workbench (Note: Work in progress). Raised by Uberfire.
+** NewPerspectiveEvent
++
+Signal that a new `Perspective` was registered during runtime. Raised by Uberfire (related to `uberfire-js` module).
+** NewWorkbenchScreenEvent
++
+Signal that a new `Screen` was registered during runtime. Raised by Uberfire (related to `uberfire-js` module).
+** PanelFocusEvent
++
+Signal a Panel has received the input focus. Raised by Uberfire.
+** PerspectiveChange
++
+Signal a change in active Perspective. Raised by Uberfire.
+** PlaceGainFocusEvent
++
+Signal a Place has gained the input focus. Raised by Uberfire.
+** PlaceLostFocusEvent
++
+Signal a Place has lost the input focus. Raised by Uberfire.
+** SavePlaceEvent
++
+Signal an Editor can have it's state saved. Raised by developers using Uberfire from Widgets outside of the Editor itself (e.g. a Workbench Menubar entry).
+** SelectPlaceEvent
++
+Signal a Place has been selected. Raised by Uberfire.
+** RestorePlaceEvent
++
+Signal a Place has been restored from "minimized" state (Note: Work in progress). Raised by Uberfire.
+
+
+UberFire Security Concepts
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These concepts are expressed in the `uberfire-security-api` package,
+and they are all available to both client- and server-side code.
+
+* Security interceptor annotations (for types and methods)
+** `@All`
+** `@Authorized`
+** `@Deny`
+** `@Roles({})`
+* Authenticated Storage
+* Authentication Manager
+* Authentication Provider
+* Authentication Result
+* Authentication Scheme
+* Authentication Source
+* Authentication Status
+* Credential
+* Principal
+* Role
+* Subject Properties
+* Authorization Manager
+* Decision Managers:
+** Resource Decision Manager
+** Role Decision Manager
+* Roles Resource
+* Runtime Resource
+* Voting Strategy
+* Crypt Provider
+* Identity
+* Resource
+* Resource Manager
+* Security Context
+* Security Manager
+* Subject
+
+There is an `uberfire-security-client` module, but it's just
+"plumbing:" it doesn't expose any concepts that are used directly in
+application code.
+
+These concepts are expressed in the `uberfire-security-server`
+package, which contains a variety of server-side implementations of
+the UberFire Security API types:
+
+* Authentication Managers: HTTP (servlets)
+* Authentication Schemes: Form, HttpBasic, JACC, "Remember Me" Cookie
+* Authenticated Storage: Cookie Storage, Http Session Storage
+* Authentication Providers: Default, "Remember Me" Cookie
+* Authentication Sources: Database (JDBC), JACC, users.properties file
+* Security Interceptors: Role-based, Trait-based
+* Crypt Providers: Default
+* Security Contexts: HTTP (servlets)
+* Security Managers: HTTP (servlets)
+* Voting Strategies: Affirmative, Consensus, Unanimous
+
+Plus some new concepts:
+
+* URL Resource
+* Ant Paths
