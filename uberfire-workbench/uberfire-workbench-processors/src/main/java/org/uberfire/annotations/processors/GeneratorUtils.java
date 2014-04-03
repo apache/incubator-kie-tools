@@ -436,7 +436,7 @@ public class GeneratorUtils {
         return getMethodName( classElement,
                               processingEnvironment,
                               "java.lang.Integer",
-                              ClientAPIModule.getSplashBodySizeClass() );
+                              ClientAPIModule.getSplashBodyHeightClass() );
     }
 
     public static String getInterceptMethodName( final TypeElement classElement,

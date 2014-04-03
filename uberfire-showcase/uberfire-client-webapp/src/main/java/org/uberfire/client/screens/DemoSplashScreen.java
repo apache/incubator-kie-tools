@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.github.gwtbootstrap.client.ui.base.TextNode;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.annotations.SplashBodySize;
+import org.uberfire.client.annotations.SplashBodyHeight;
 import org.uberfire.client.annotations.SplashFilter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -33,7 +33,7 @@ public class DemoSplashScreen {
         return new SplashScreenFilterImpl( "demo.splash", true, Arrays.asList( "HomePerspective" ) );
     }
 
-    @SplashBodySize
+    @SplashBodyHeight
     public Integer getBodySize() {
         return 40;
     }

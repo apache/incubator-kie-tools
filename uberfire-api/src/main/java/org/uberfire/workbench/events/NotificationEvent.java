@@ -21,7 +21,7 @@ package org.uberfire.workbench.events;
 public class NotificationEvent extends UberFireEvent {
 
     public static enum NotificationType {
-        DEFAULT, ERROR, SUCCESS, INFO, WARNING;
+        DEFAULT, ERROR, SUCCESS, INFO, WARNING
     }
 
     private final String notification;

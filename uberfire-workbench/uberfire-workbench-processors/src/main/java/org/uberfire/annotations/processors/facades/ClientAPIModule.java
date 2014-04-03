@@ -38,7 +38,7 @@ public class ClientAPIModule {
     private static Class<? extends Annotation> workbenchToolBar;
     private static Class<? extends Annotation> perspective;
     private static Class<? extends Annotation> splashFilter;
-    private static Class<? extends Annotation> splashBodySize;
+    private static Class<? extends Annotation> splashBodyHeight;
     private static Class<? extends Annotation> intercept;
 
     private ClientAPIModule() {}
@@ -62,7 +62,7 @@ public class ClientAPIModule {
             workbenchToolBar = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchToolBar" );
             perspective = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.Perspective" );
             splashFilter = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.SplashFilter" );
-            splashBodySize = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.SplashBodySize" );
+            splashBodyHeight = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.SplashBodyHeight" );
             intercept = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.Intercept" );
 
         } catch ( ClassNotFoundException e ) {
@@ -80,8 +80,8 @@ public class ClientAPIModule {
         return splashFilter;
     }
 
-    public static Class<? extends Annotation> getSplashBodySizeClass() {
-        return splashBodySize;
+    public static Class<? extends Annotation> getSplashBodyHeightClass() {
+        return splashBodyHeight;
     }
 
     public static Class<? extends Annotation> getInterceptClass() {
