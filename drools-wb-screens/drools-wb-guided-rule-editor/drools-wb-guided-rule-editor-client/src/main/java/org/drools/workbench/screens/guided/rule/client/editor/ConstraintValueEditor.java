@@ -161,9 +161,9 @@ public class ConstraintValueEditor
     }
 
     private void setUpSingleFieldConstraintEBLeftSide( SingleFieldConstraintEBLeftSide sfexp ) {
-        this.factType = sfexp.getExpressionLeftSide().getPreviousGenericType();
+        this.factType = sfexp.getExpressionLeftSide().getPreviousClassType();
         if ( this.factType == null ) {
-            this.factType = sfexp.getExpressionLeftSide().getGenericType();
+            this.factType = sfexp.getExpressionLeftSide().getClassType();
         }
         this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
         this.fieldType = sfexp.getExpressionLeftSide().getGenericType();

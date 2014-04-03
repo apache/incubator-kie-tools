@@ -86,6 +86,9 @@ public class GuidedDecisionTableModelVisitor {
 
     //Get the fully qualified class name of the fact type
     private String convertToFullyQualifiedClassName( final String factType ) {
+        if ( factType.contains( "." ) ) {
+            return factType;
+        }
         String fullyQualifiedClassName = null;
         for ( Import imp : imports.getImports() ) {
             if ( imp.getType().endsWith( factType ) ) {

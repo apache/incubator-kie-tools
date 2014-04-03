@@ -57,6 +57,10 @@ public class TestScenarioModelVisitor {
 
     //Get the fully qualified class name of the fact type
     private void convertToFullyQualifiedClassName( final String factType ) {
+        if ( factType.contains( "." ) ) {
+            fqcNames.add( factType );
+            return;
+        }
         String fullyQualifiedClassName = null;
         for ( Import imp : scenario.getImports().getImports() ) {
             if ( imp.getType().endsWith( factType ) ) {

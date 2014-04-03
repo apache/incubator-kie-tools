@@ -83,6 +83,9 @@ public class GuidedRuleModelVisitor {
 
     //Get the fully qualified class name of the fact type
     private String convertToFullyQualifiedClassName( final String factType ) {
+        if ( factType.contains( "." ) ) {
+            return factType;
+        }
         String fullyQualifiedClassName = null;
         for ( Import imp : imports.getImports() ) {
             if ( imp.getType().endsWith( factType ) ) {
@@ -186,7 +189,9 @@ public class GuidedRuleModelVisitor {
 
     private Set<String> visitSingleFieldConstraint( SingleFieldConstraint sfc ) {
         final Set<String> factTypes = new HashSet<String>();
-        factTypes.add( sfc.getFactType() );
+        if ( sfc.getFactType() != null ) {
+            factTypes.add( sfc.getFactType() );
+        }
         factTypes.addAll( visit( sfc.getExpressionValue() ) );
         if ( sfc.getConnectives() != null ) {
             for ( int i = 0; i < sfc.getConnectives().length; i++ ) {
@@ -199,20 +204,26 @@ public class GuidedRuleModelVisitor {
     private Set<String> visitExpressionFormLine( ExpressionFormLine efl ) {
         final Set<String> factTypes = new HashSet<String>();
         for ( ExpressionPart part : efl.getParts() ) {
-            factTypes.add( part.getClassType() );
+            if ( part.getClassType() != null ) {
+                factTypes.add( part.getClassType() );
+            }
         }
         return factTypes;
     }
 
     private Set<String> visitConnectiveConstraint( ConnectiveConstraint cc ) {
         final Set<String> factTypes = new HashSet<String>();
-        factTypes.add( cc.getFactType() );
+        if ( cc.getFactType() != null ) {
+            factTypes.add( cc.getFactType() );
+        }
         return factTypes;
     }
 
     private Set<String> visitSingleFieldConstraint( SingleFieldConstraintEBLeftSide sfexp ) {
         final Set<String> factTypes = new HashSet<String>();
-        factTypes.add( sfexp.getFactType() );
+        if ( sfexp.getFactType() != null ) {
+            factTypes.add( sfexp.getFactType() );
+        }
         factTypes.addAll( visit( sfexp.getExpressionValue() ) );
         factTypes.addAll( visit( sfexp.getExpressionLeftSide() ) );
         if ( sfexp.getConnectives() != null ) {

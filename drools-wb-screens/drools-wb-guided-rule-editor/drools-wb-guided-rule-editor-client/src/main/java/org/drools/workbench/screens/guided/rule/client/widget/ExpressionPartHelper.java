@@ -31,16 +31,16 @@ public class ExpressionPartHelper {
 
     public static void getExpressionPartForMethod( final AsyncPackageDataModelOracle oracle,
                                                    final String factName,
-                                                   final String methodName,
+                                                   final String methodNameWithParams,
                                                    final Callback<ExpressionPart> callback ) {
         //Ensure MethodInfo details for type have been loaded
         oracle.getMethodInfo( factName,
-                              methodName,
+                              methodNameWithParams,
                               new Callback<MethodInfo>() {
                                   @Override
                                   public void callback( final MethodInfo mi ) {
                                       if ( DataType.TYPE_COLLECTION.equals( mi.getGenericType() ) ) {
-                                          callback.callback( new ExpressionCollection( methodName,
+                                          callback.callback( new ExpressionCollection( mi.getName(),
                                                                                        mi.getReturnClassType(),
                                                                                        mi.getGenericType(),
                                                                                        mi.getParametricReturnType() ) );

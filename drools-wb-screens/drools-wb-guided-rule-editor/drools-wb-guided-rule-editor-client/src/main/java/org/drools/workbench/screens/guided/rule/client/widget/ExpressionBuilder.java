@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.guided.rule.client.widget;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,15 +37,14 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.rule.ExpressionCollectionIndex;
-import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFieldVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
-import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionText;
+import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -71,6 +69,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         HasExpressionChangeHandlers {
 
     private static final String DELETE_VALUE = "_delete_";
+    private static final String TEXT_VALUE = "_text_";
     private static final String FIElD_VALUE_PREFIX = "fl";
     private static final String VARIABLE_VALUE_PREFIX = "va";
     // private static final String GLOBAL_COLLECTION_VALUE_PREFIX = "gc";
@@ -113,15 +112,15 @@ public class ExpressionBuilder extends RuleModellerWidget
         }
 
         panel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
+        panel.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
 
         StringBuilder bindingLabel = new StringBuilder();
         String binding = getBoundText();
         if ( binding != null && !binding.equals( "" ) ) {
             bindingLabel.append( "<b>" );
-            bindingLabel.append( getBoundText() );
+            bindingLabel.append( binding );
             bindingLabel.append( "</b>" );
         }
-        bindingLabel.append( expression.getText( false ) );
 
         if ( expression == null || expression.isEmpty() ) {
             if ( this.readOnly ) {
@@ -131,10 +130,12 @@ public class ExpressionBuilder extends RuleModellerWidget
             }
         } else {
             if ( this.readOnly ) {
-                panel.add( createWidgetForExpression( bindingLabel.toString() ) );
+                panel.add( createBindingWidgetForExpression( bindingLabel.toString() ) );
+                panel.add( createWidgetForExpression() );
             } else {
                 bindingLabel.append( "." );
-                panel.add( createWidgetForExpression( bindingLabel.toString() ) );
+                panel.add( createBindingWidgetForExpression( bindingLabel.toString() ) );
+                panel.add( createWidgetForExpression() );
                 panel.add( getWidgetForCurrentType() );
             }
         }
@@ -145,7 +146,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         if ( expression.isBound() ) {
             return "[" + expression.getBinding() + "] ";
         }
-        return "";
+        return "[not bound]";
     }
 
     private Widget createStartPointWidget() {
@@ -229,7 +230,7 @@ public class ExpressionBuilder extends RuleModellerWidget
     private void onStartPointChangeUpdateWidget() {
         final Widget w = getWidgetForCurrentType();
         if ( !expression.isEmpty() ) {
-            panel.add( createWidgetForExpression( expression.getText() + "." ) );
+            panel.add( createWidgetForExpression() );
         }
         if ( w != null ) {
             panel.add( w );
@@ -254,64 +255,26 @@ public class ExpressionBuilder extends RuleModellerWidget
         };
 
         final ListBox listBox = new ListBox();
-        listBox.setVisibleItemCount(1);
-        listBox.addItem(GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
-                "");
-        listBox.addItem("<==" + GuidedRuleEditorResources.CONSTANTS.DeleteItem(),
-                DELETE_VALUE);
+        listBox.addItem( GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
+                         "" );
+        listBox.addItem( "<==" + GuidedRuleEditorResources.CONSTANTS.DeleteItem(),
+                         DELETE_VALUE );
+        listBox.addItem( "-- Text --",
+                         TEXT_VALUE );
 
         getCompletionsForCurrentType( expression.getParts().size() > 1,
                                       new Callback<Map<String, String>>() {
                                           @Override
                                           public void callback( final Map<String, String> completions ) {
                                               for ( Map.Entry<String, String> entry : completions.entrySet() ) {
-                                                  listBox.addItem(entry.getKey(),
-                                                          entry.getValue());
+                                                  listBox.addItem( entry.getKey(),
+                                                                   entry.getValue() );
                                               }
                                               listBox.addChangeHandler( changeHandler );
                                           }
                                       } );
 
         return listBox;
-    }
-
-    private void onCollectionChange( String value ) {
-        if ( "size".contains( value ) ) {
-            expression.appendPart( new ExpressionMethod( "size",
-                                                         "int",
-                                                         DataType.TYPE_NUMERIC_INTEGER ) );
-        } else if ( "isEmpty".equals( value ) ) {
-            expression.appendPart( new ExpressionMethod( "isEmpty",
-                                                         "boolean",
-                                                         DataType.TYPE_BOOLEAN ) );
-        } else {
-            ExpressionCollectionIndex collectionIndex;
-            String factName = getDataModelOracle().getFactNameFromType( getCurrentParametricType() );
-            if ( getCurrentParametricType() != null && factName != null ) {
-                collectionIndex = new ExpressionCollectionIndex( "get",
-                                                                 getCurrentParametricType(),
-                                                                 factName );
-            } else {
-                collectionIndex = new ExpressionCollectionIndex( "get",
-                                                                 "java.lang.Object",
-                                                                 DataType.TYPE_OBJECT );
-            }
-            if ( "first".equals( value ) ) {
-                collectionIndex.putParam( "index",
-                                          new ExpressionFormLine( new ExpressionText( "0" ) ) );
-                expression.appendPart( collectionIndex );
-            } else if ( "last".equals( value ) ) {
-                ExpressionFormLine index = new ExpressionFormLine( expression );
-                index.appendPart( new ExpressionMethod( "size",
-                                                        "int",
-                                                        DataType.TYPE_NUMERIC_INTEGER ) );
-                index.appendPart( new ExpressionText( "-1" ) );
-
-                collectionIndex.putParam( "index",
-                                          index );
-                expression.appendPart( collectionIndex );
-            }
-        }
     }
 
     private void onChangeSelection( String value ) {
@@ -323,20 +286,8 @@ public class ExpressionBuilder extends RuleModellerWidget
             expression.removeLast();
             onChangeSelectionUpdateExpressionWidget( oldType );
 
-        } else if ( DataType.TYPE_COLLECTION.equals( getCurrentGenericType() ) ) {
-            onCollectionChange( value );
-            onChangeSelectionUpdateExpressionWidget( oldType );
-
-        } else if ( DataType.TYPE_STRING.equals( getCurrentGenericType() ) ) {
-            if ( "length".equals( value ) ) {
-                expression.appendPart( new ExpressionField( "length",
-                                                            "Integer",
-                                                             DataType.TYPE_NUMERIC_INTEGER ) );
-            } else if ( "isEmpty".equals( value ) ) {
-                expression.appendPart( new ExpressionField( "empty",
-                                                            "Boolean",
-                                                            DataType.TYPE_BOOLEAN ) );
-            }
+        } else if ( TEXT_VALUE.equals( value ) ) {
+            expression.appendPart( new ExpressionText( "" ) );
             onChangeSelectionUpdateExpressionWidget( oldType );
 
         } else {
@@ -379,7 +330,7 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         panel.clear();
         if ( !expression.isEmpty() ) {
-            panel.add( createWidgetForExpression( expression.getText() + "." ) );
+            panel.add( createWidgetForExpression() );
         }
         if ( w != null ) {
             panel.add( w );
@@ -393,33 +344,14 @@ public class ExpressionBuilder extends RuleModellerWidget
         if ( DataType.TYPE_FINAL_OBJECT.equals( getCurrentGenericType() ) ) {
             callback.callback( Collections.EMPTY_MAP );
             return;
-        } else if ( DataType.TYPE_COLLECTION.equals( getCurrentGenericType() ) ) {
-
-            callback.callback(getCollectionMethods());
-            return;
-        } else if ( DataType.TYPE_STRING.equals( getCurrentGenericType() ) ) {
-            callback.callback( getStringMethods() );
-            return;
-        } else if ( DataType.TYPE_BOOLEAN.equals( getCurrentGenericType() )
-                || DataType.TYPE_NUMERIC_BIGDECIMAL.equals( getCurrentGenericType() )
-                || DataType.TYPE_NUMERIC_BIGINTEGER.equals( getCurrentGenericType() )
-                || DataType.TYPE_NUMERIC_BYTE.equals( getCurrentGenericType() )
-                || DataType.TYPE_NUMERIC_DOUBLE.equals( getCurrentGenericType() )
-                || DataType.TYPE_NUMERIC_FLOAT.equals( getCurrentGenericType() )
-                || DataType.TYPE_NUMERIC_INTEGER.equals( getCurrentGenericType() )
-                || DataType.TYPE_NUMERIC_LONG.equals( getCurrentGenericType() )
-                || DataType.TYPE_NUMERIC_SHORT.equals( getCurrentGenericType() )
-                || DataType.TYPE_DATE.equals( getCurrentGenericType() )
-                || DataType.TYPE_OBJECT.equals( getCurrentGenericType() ) ) {
-            callback.callback( Collections.EMPTY_MAP );
-            return;
         }
 
         final String factName = getDataModelOracle().getFactNameFromType( getCurrentClassType() );
         if ( factName != null ) {
             // we currently only support 0 param method calls
-
-            getMethods(isNested, callback, factName);
+            getMethods( isNested,
+                        callback,
+                        factName );
 
         } else {
             // else {We don't know anything about this type, so return empty map}
@@ -427,73 +359,49 @@ public class ExpressionBuilder extends RuleModellerWidget
         }
     }
 
-    private LinkedHashMap<String, String> getStringMethods() {
-        LinkedHashMap<String, String> completions = new LinkedHashMap<String, String>();
-
-        completions.put( "length()",
-                         "length" );
-        completions.put( "isEmpty()",
-                         "isEmpty" );
-
-        return completions;
-    }
-
-    private LinkedHashMap<String, String> getCollectionMethods() {
-        LinkedHashMap<String, String> completions = new LinkedHashMap<String, String>();
-
-        completions.put( "size()",
-                         "size" );
-        completions.put( "first()",
-                         "first" );
-        completions.put( "last()",
-                         "last" );
-        completions.put( "isEmpty()",
-                         "isEmpty" );
-        return completions;
-    }
-
     private void getMethods( final boolean isNested,
                              final Callback<Map<String, String>> callback,
-                             final String factName) {
+                             final String factName ) {
         getDataModelOracle().getMethodInfos( factName,
                                              0,
                                              new Callback<List<MethodInfo>>() {
                                                  @Override
                                                  public void callback( final List<MethodInfo> methodInfos ) {
-                                                     fillMethods(methodInfos, factName, isNested, callback);
+                                                     fillMethods( methodInfos,
+                                                                  factName,
+                                                                  isNested,
+                                                                  callback );
                                                  }
                                              } );
     }
 
-    private void fillMethods(final List<MethodInfo> methodInfos, String factName, final boolean isNested, final Callback<Map<String, String>> callback) {
+    private void fillMethods( final List<MethodInfo> methodInfos,
+                              final String factName,
+                              final boolean isNested,
+                              final Callback<Map<String, String>> callback ) {
         getDataModelOracle().getFieldCompletions( factName,
+                                                  FieldAccessorsAndMutators.ACCESSOR,
                                                   new Callback<ModelField[]>() {
 
                                                       @Override
                                                       public void callback( final ModelField[] fields ) {
                                                           final Map<String, String> completions = new LinkedHashMap<String, String>();
 
+                                                          //Add fields
                                                           for ( ModelField field : fields ) {
-
-                                                              //You can't use "this" in a nested accessor
                                                               final String fieldName = field.getName();
                                                               if ( !isNested || !fieldName.equals( DataType.TYPE_THIS ) ) {
-
-                                                                  boolean changed = false;
-                                                                  for ( Iterator<MethodInfo> i = methodInfos.iterator(); i.hasNext(); ) {
-                                                                      final MethodInfo methodInfo = i.next();
-                                                                      final String methodName = methodInfo.getName();
-                                                                      if ( methodName.startsWith( fieldName ) ) {
-                                                                          completions.put( methodName,
-                                                                                           METHOD_VALUE_PREFIX + "." + methodName );
-                                                                          i.remove();
-                                                                          changed = true;
-                                                                      }
-                                                                  }
-                                                                  if ( !changed ) {
-                                                                      completions.put( fieldName,
-                                                                                       FIElD_VALUE_PREFIX + "." + fieldName );
-                                                                  }
+                                                                  completions.put( fieldName,
+                                                                                   FIElD_VALUE_PREFIX + "." + fieldName );
+                                                              }
+                                                          }
+                                                          //Add methods
+                                                          for ( MethodInfo methodInfo : methodInfos ) {
+                                                              if ( !methodInfo.getGenericType().equals( DataType.TYPE_VOID ) ) {
+                                                                  final String methodName = methodInfo.getName();
+                                                                  final String methodNameWithParams = methodInfo.getNameWithParameters();
+                                                                  completions.put( methodName,
+                                                                                   METHOD_VALUE_PREFIX + "." + methodNameWithParams );
                                                               }
                                                           }
                                                           callback.callback( completions );
@@ -514,6 +422,13 @@ public class ExpressionBuilder extends RuleModellerWidget
     }
 
     private String getCurrentGenericType() {
+        //If the last ExpressionPart is ExpressionText then we can't show any Fields or Methods from which to select
+        if ( expression.getParts().isEmpty() ) {
+            return null;
+        }
+        if ( expression.getParts().get( expression.getParts().size() - 1 ) instanceof ExpressionText ) {
+            return DataType.TYPE_FINAL_OBJECT;
+        }
         return expression.getGenericType();
     }
 
@@ -591,8 +506,6 @@ public class ExpressionBuilder extends RuleModellerWidget
         popup.show();
     }
 
-
-
     private class SmallLabelClickHandler
             implements
             ClickHandler {
@@ -602,10 +515,41 @@ public class ExpressionBuilder extends RuleModellerWidget
         }
     }
 
-    private ClickableLabel createWidgetForExpression( String text ) {
+    private ClickableLabel createBindingWidgetForExpression( final String text ) {
         ClickableLabel label = new ClickableLabel( text,
                                                    slch,
                                                    !this.readOnly );
         return label;
     }
+
+    //This is a simplification of ExpressionFormLine$ToStringVisitor that uses TextBoxes for ExpressionText parts
+    //to allow their values to be edited. If we every support method calls in an expression with more than zero
+    //parameters this will need to be changed.
+    private Widget createWidgetForExpression() {
+        final HorizontalPanel container = new HorizontalPanel();
+        container.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
+        container.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
+        for ( ExpressionPart expressionPart : expression.getParts() ) {
+            if ( expressionPart instanceof ExpressionUnboundFact ) {
+                continue;
+            } else if ( !( expressionPart instanceof ExpressionText ) || this.readOnly ) {
+                container.add( new Label( expressionPart.getName() ) );
+            } else {
+                final TextBox tb = new TextBox();
+                final ExpressionText expressionTextPart = (ExpressionText) expressionPart;
+                tb.setText( expressionTextPart.getName() );
+                tb.addChangeHandler( new ChangeHandler() {
+                    @Override
+                    public void onChange( final ChangeEvent changeEvent ) {
+                        expressionTextPart.setName( tb.getText() );
+                        modeller.makeDirty();
+                    }
+                } );
+                container.add( tb );
+            }
+            container.add( new Label( "." ) );
+        }
+        return container;
+    }
+
 }
