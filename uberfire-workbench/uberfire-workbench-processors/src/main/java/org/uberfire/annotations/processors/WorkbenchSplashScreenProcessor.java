@@ -28,6 +28,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
@@ -78,8 +79,9 @@ public class WorkbenchSplashScreenProcessor extends AbstractErrorAbsorbingProces
             return false;
         }
 
-        //Scan for all classes with the WorkbenchPopup annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( ClientAPIModule.getWorkbenchSplashScreenClass() ) ) {
+        Elements elementUtils = processingEnv.getElementUtils();
+
+        for ( Element e : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ClientAPIModule.getWorkbenchSplashScreenClass() ) ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -20,19 +20,22 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
+
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * A source code generator for Activities
@@ -41,6 +44,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger( PopupActivityGenerator.class );
 
+    @Override
     public StringBuffer generate( final String packageName,
                                   final PackageElement packageElement,
                                   final String className,
@@ -48,6 +52,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
                                   final ProcessingEnvironment processingEnvironment ) throws GenerationException {
 
         logger.debug( "Starting code generation for [" + className + "]" );
+
+        final Elements elementUtils = processingEnvironment.getElementUtils();
 
         final TypeElement classElement = (TypeElement) element;
 
@@ -79,8 +85,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
         final boolean isWidget = GeneratorUtils.getIsWidget( classElement,
                                                              processingEnvironment );
-        final String securityTraitList = GeneratorUtils.getSecurityTraitList( classElement );
-        final String rolesList = GeneratorUtils.getRoleList( classElement );
+        final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
+        final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
 
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );

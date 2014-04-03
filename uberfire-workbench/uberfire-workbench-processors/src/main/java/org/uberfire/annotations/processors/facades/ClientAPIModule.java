@@ -1,139 +1,109 @@
 package org.uberfire.annotations.processors.facades;
 
-import java.lang.annotation.Annotation;
 import java.util.Map;
+
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
- * A facade for uberfire-client-api.
- * Due to a bug in Eclipse annotation processor and inner projects dependencies,
- * this class handle with the dependencies of uberfire-client-api.
+ * A collection of type names in the UberFire Client API module.
+ * Due to a bug in Eclipse annotation processor dependencies, we refer to all UberFire type names using Strings,
+ * Elements, and TypeMirrors. We cannot refer to the annotation types as types themselves.
  */
 public class ClientAPIModule {
 
     public static final String IDENTIFIER = "identifier";
     public static final String IS_DEFAULT = "isDefault";
-    private static Class<? extends Annotation> workbenchSplashScreen;
-    private static Class<? extends Annotation> workbenchPerspective;
-    private static Class<? extends Annotation> workbenchPopup;
-    private static Class<? extends Annotation> workbenchScreen;
-    private static Class<? extends Annotation> workbenchContext;
-    private static Class<? extends Annotation> workbenchEditor;
-    private static Class<? extends Annotation> defaultPosition;
-    private static Class<? extends Annotation> workbenchPartTitle;
-    private static Class<? extends Annotation> workbenchContextId;
-    private static Class<? extends Annotation> workbenchPartTitleDecoration;
-    private static Class<? extends Annotation> workbenchPartView;
-    private static Class<? extends Annotation> workbenchMenu;
-    private static Class<? extends Annotation> workbenchToolBar;
-    private static Class<? extends Annotation> perspective;
-    private static Class<? extends Annotation> splashFilter;
-    private static Class<? extends Annotation> splashBodySize;
-    private static Class<? extends Annotation> intercept;
 
     private ClientAPIModule() {}
-    
-    
-    static {
 
-        try {
-            workbenchSplashScreen = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchSplashScreen" );
-            workbenchPerspective = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchPerspective" );
-            workbenchPopup = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchPopup" );
-            workbenchScreen = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchScreen" );
-            workbenchContext = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchContext" );
-            workbenchEditor = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchEditor" );
-            defaultPosition = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.DefaultPosition" );
-            workbenchPartTitle = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchPartTitle" );
-            workbenchContextId = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchContextId" );
-            workbenchPartTitleDecoration = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchPartTitleDecoration" );
-            workbenchPartView = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchPartView" );
-            workbenchMenu = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchMenu" );
-            workbenchToolBar = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchToolBar" );
-            perspective = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.Perspective" );
-            splashFilter = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.SplashFilter" );
-            splashBodySize = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.SplashBodySize" );
-            intercept = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.Intercept" );
+    public static final String workbenchSplashScreen =  "org.uberfire.client.annotations.WorkbenchSplashScreen" ;
+    public static final String workbenchPerspective =  "org.uberfire.client.annotations.WorkbenchPerspective" ;
+    public static final String workbenchPopup =  "org.uberfire.client.annotations.WorkbenchPopup" ;
+    public static final String workbenchScreen =  "org.uberfire.client.annotations.WorkbenchScreen" ;
+    public static final String workbenchContext =  "org.uberfire.client.annotations.WorkbenchContext" ;
+    public static final String workbenchEditor =  "org.uberfire.client.annotations.WorkbenchEditor" ;
+    public static final String defaultPosition =  "org.uberfire.client.annotations.DefaultPosition" ;
+    public static final String workbenchPartTitle =  "org.uberfire.client.annotations.WorkbenchPartTitle" ;
+    public static final String workbenchContextId =  "org.uberfire.client.annotations.WorkbenchContextId" ;
+    public static final String workbenchPartTitleDecoration =  "org.uberfire.client.annotations.WorkbenchPartTitleDecoration" ;
+    public static final String workbenchPartView =  "org.uberfire.client.annotations.WorkbenchPartView" ;
+    public static final String workbenchMenu =  "org.uberfire.client.annotations.WorkbenchMenu" ;
+    public static final String workbenchToolBar =  "org.uberfire.client.annotations.WorkbenchToolBar" ;
+    public static final String perspective =  "org.uberfire.client.annotations.Perspective" ;
+    public static final String splashFilter =  "org.uberfire.client.annotations.SplashFilter" ;
+    public static final String splashBodySize =  "org.uberfire.client.annotations.SplashBodySize" ;
+    public static final String intercept =  "org.uberfire.client.annotations.Intercept" ;
 
-        } catch ( ClassNotFoundException e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
-
-
-    public static Class<? extends Annotation> getWorkbenchScreenClass() {
+    public static String getWorkbenchScreenClass() {
         return workbenchScreen;
     }
 
-    public static Class<? extends Annotation> getSplashFilterClass() {
+    public static String getSplashFilterClass() {
         return splashFilter;
     }
 
-    public static Class<? extends Annotation> getSplashBodySizeClass() {
+    public static String getSplashBodySizeClass() {
         return splashBodySize;
     }
 
-    public static Class<? extends Annotation> getInterceptClass() {
+    public static String getInterceptClass() {
         return intercept;
     }
 
-    public static Class<? extends Annotation> getPerspectiveClass() {
+    public static String getPerspectiveClass() {
         return perspective;
     }
 
-    public static Class<? extends Annotation> getWorkbenchToolBarClass() {
+    public static String getWorkbenchToolBarClass() {
         return workbenchToolBar;
     }
 
-    public static Class<? extends Annotation> getWorkbenchMenuClass() {
+    public static String getWorkbenchMenuClass() {
         return workbenchMenu;
     }
 
-    public static Class<? extends Annotation> getWorkbenchPartViewClass() {
+    public static String getWorkbenchPartViewClass() {
         return workbenchPartView;
     }
 
-    public static Class<? extends Annotation> getWorkbenchPartTitleDecorationsClass() {
+    public static String getWorkbenchPartTitleDecorationsClass() {
         return workbenchPartTitleDecoration;
     }
 
-    public static Class<? extends Annotation> getWorkbenchContextIdClass() {
+    public static String getWorkbenchContextIdClass() {
         return workbenchContextId;
     }
 
-    public static Class<? extends Annotation> getWorkbenchPartTitleClass() {
+    public static String getWorkbenchPartTitleClass() {
         return workbenchPartTitle;
     }
 
-    public static Class<? extends Annotation> getDefaultPositionClass() {
+    public static String getDefaultPositionClass() {
         return defaultPosition;
     }
 
-    public static Class<? extends Annotation> getWorkbenchContextClass() {
+    public static String getWorkbenchContextClass() {
         return workbenchContext;
     }
 
-    public static Class<? extends Annotation> getWorkbenchEditorClass() {
+    public static String getWorkbenchEditorClass() {
         return workbenchEditor;
     }
 
-    public static Class<? extends Annotation> getWorkbenchPopupClass() {
+    public static String getWorkbenchPopupClass() {
         return workbenchPopup;
     }
 
-    public static Class<? extends Annotation> getWorkbenchSplashScreenClass() {
+    public static String getWorkbenchSplashScreenClass() {
         return workbenchSplashScreen;
     }
 
-    public static Class<? extends Annotation> getWorkbenchPerspectiveClass() {
+    public static String getWorkbenchPerspectiveClass() {
         return workbenchPerspective;
     }
 
@@ -160,27 +130,27 @@ public class ClientAPIModule {
     }
 
     public static Boolean getWbPerspectiveScreenIsDefaultValueOnClass( TypeElement classElement ) throws GenerationException {
-        String bool = ( getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective.getName(), IS_DEFAULT ) );
+        String bool = ( getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective, IS_DEFAULT ) );
         return Boolean.valueOf( bool );
     }
 
     public static String getWbPerspectiveScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective.getName(), IDENTIFIER );
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective, IDENTIFIER );
     }
 
     public static String getWbPopupScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchPopup.getName(), IDENTIFIER );
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchPopup, IDENTIFIER );
     }
 
     public static String getWbSplashScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchSplashScreen.getName(), IDENTIFIER );
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchSplashScreen, IDENTIFIER );
     }
 
     public static String getWbScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchScreen.getName(), IDENTIFIER );
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchScreen, IDENTIFIER );
     }
 
     public static String getWbContextIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchContext.getName(), IDENTIFIER );
+        return getAnnotationIdentifierValueOnClass( classElement, workbenchContext, IDENTIFIER );
     }
 }

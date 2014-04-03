@@ -37,7 +37,6 @@
       <artifactId>cdi-api</artifactId>
     </dependency>
 
-
     <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>

@@ -170,12 +170,12 @@ public abstract class AbstractProcessorTest {
      * diagnostics.
      *
      * @param diagnostics the list of diagnostic messages from the compiler
-     * @param message the message to search for. If any ERROR message in the given list ends with this string, the assertion passes.
+     * @param message the message to search for. If any ERROR message in the given list contains this string, the assertion passes.
      */
     public void assertCompilationError( List<Diagnostic<? extends JavaFileObject>> diagnostics,
                                         final String message ) {
         for (String msg : getMessages( diagnostics, Kind.ERROR )) {
-            if ( msg.endsWith( message ) ) {
+            if ( msg.contains( message ) ) {
                 return;
             }
         }
@@ -188,7 +188,7 @@ public abstract class AbstractProcessorTest {
      * diagnostics.
      *
      * @param diagnostics the list of diagnostic messages from the compiler
-     * @param message the message to search for. If any WARNING diagnostic in the given list ends with this string, the assertion passes.
+     * @param message the message to search for. If any WARNING diagnostic in the given list contains this string, the assertion passes.
      */
     public void assertCompilationWarning( List<Diagnostic<? extends JavaFileObject>> diagnostics,
                                           final String message ) {

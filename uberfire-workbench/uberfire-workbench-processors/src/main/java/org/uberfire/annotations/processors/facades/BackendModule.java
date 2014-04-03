@@ -1,32 +1,17 @@
 package org.uberfire.annotations.processors.facades;
 
-import java.lang.annotation.Annotation;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-
 /**
- * A facade for backend module.
- * Due to a bug in Eclipse annotation processor and inner projects dependencies,
- * this class handle with the dependencies of uberfire-backend.
+ * A collection of type names in the UberFire Backend API module.
+ * Due to a bug in Eclipse annotation processor dependencies, we refer to all UberFire type names using Strings,
+ * Elements, and TypeMirrors. We cannot refer to the annotation types as types themselves.
  */
 public class BackendModule {
 
-    private static Class<? extends Annotation> path;
-
     private BackendModule(){};
 
-    static {
-        try {
-            path = (Class<? extends Annotation>) Class.forName( "org.uberfire.backend.vfs.Path" );
+    public static final String path = "org.uberfire.backend.vfs.Path";
 
-        } catch ( ClassNotFoundException e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    public static Class<? extends Annotation> getPathClass() {
+    public static String getPathClass() {
         return path;
     }
 }

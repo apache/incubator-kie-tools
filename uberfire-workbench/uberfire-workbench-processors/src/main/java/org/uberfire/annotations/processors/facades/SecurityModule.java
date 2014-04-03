@@ -1,40 +1,23 @@
 package org.uberfire.annotations.processors.facades;
 
-import java.lang.annotation.Annotation;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
- * A facade for security module.
- * Due to a bug in Eclipse annotation processor and inner projects dependencies,
- * this class handle with the dependencies of uberfire-security.
+ * A collection of type names in the UberFire Security module.
+ * Due to a bug in Eclipse annotation processor dependencies, we refer to all UberFire type names using Strings,
+ * Elements, and TypeMirrors. We cannot refer to the annotation types as types themselves.
  */
 public class SecurityModule {
 
-    private static Class<? extends Annotation> rolesType;
-    private static Class<? extends Annotation> securityTrait;
-    private static final Logger logger = LoggerFactory.getLogger( SecurityModule.class );
-
     private SecurityModule() {}
 
-    static {
+    public static final String rolesType =  "org.uberfire.security.annotations.RolesType" ;
+    public static final String securityTrait =  "org.uberfire.security.annotations.SecurityTrait" ;
 
-        try {
-            rolesType = (Class<? extends Annotation>) Class.forName( "org.uberfire.security.annotations.RolesType" );
-            securityTrait = (Class<? extends Annotation>) Class.forName( "org.uberfire.security.annotations.SecurityTrait" );
-
-        } catch ( ClassNotFoundException e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    public static Class<? extends Annotation> getSecurityTraitClass() {
+    public static String getSecurityTraitClass() {
         return securityTrait;
     }
 
-    public static Class<? extends Annotation> getRolesTypeClass() {
+    public static String getRolesTypeClass() {
         return rolesType;
     }
 

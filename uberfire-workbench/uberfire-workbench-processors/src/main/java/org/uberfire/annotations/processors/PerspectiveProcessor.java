@@ -28,6 +28,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
@@ -78,8 +79,10 @@ public class PerspectiveProcessor extends AbstractErrorAbsorbingProcessor {
             return false;
         }
 
+        final Elements elementUtils = processingEnv.getElementUtils();
+
         //Scan for all classes with the WorkbenchPerspective annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( ClientAPIModule.getWorkbenchPerspectiveClass() ) ) {
+        for ( Element e : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( ClientAPIModule.getWorkbenchPerspectiveClass() ) ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

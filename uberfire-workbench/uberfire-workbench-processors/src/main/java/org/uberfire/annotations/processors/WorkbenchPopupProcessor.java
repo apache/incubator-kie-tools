@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
 
-import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -29,6 +28,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
@@ -79,8 +79,9 @@ public class WorkbenchPopupProcessor extends AbstractErrorAbsorbingProcessor {
             return false;
         }
 
-        //Scan for all classes with the WorkbenchPopup annotation
-        for ( Element e : roundEnv.getElementsAnnotatedWith( ClientAPIModule.getWorkbenchPopupClass()) ) {
+        Elements elementUtils = processingEnv.getElementUtils();
+
+        for ( Element e : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement(ClientAPIModule.getWorkbenchPopupClass() ) ) ) {
             if ( e.getKind() == ElementKind.CLASS ) {
 
                 TypeElement classElement = (TypeElement) e;

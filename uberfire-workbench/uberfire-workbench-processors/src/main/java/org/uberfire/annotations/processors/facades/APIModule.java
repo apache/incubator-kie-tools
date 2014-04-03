@@ -1,112 +1,78 @@
 package org.uberfire.annotations.processors.facades;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
- * A facade for api module.
- * Due to a bug in Eclipse annotation processor and inner projects dependencies,
- * this class handle with the dependencies of uberfire-client-api.
+ * A collection of type names in the UberFire API module.
+ * Due to a bug in Eclipse annotation processor dependencies, we refer to all UberFire type names using Strings,
+ * Elements, and TypeMirrors. We cannot refer to the annotation types as types themselves.
  */
 public class APIModule {
 
-    private static final Logger logger = LoggerFactory.getLogger( APIModule.class );
-
-    private static  Class<? extends Annotation> placeRequest;
-    private static  Class<? extends Annotation> isDirty;
-    private static  Class<? extends Annotation> onClose;
-    private static  Class<? extends Annotation> onFocus;
-    private static  Class<? extends Annotation> onLostFocus;
-    private static  Class<? extends Annotation> onMayClose;
-    private static  Class<? extends Annotation> onStartup;
-    private static  Class<? extends Annotation> onOpen;
-    private static  Class<? extends Annotation> onShutdown;
-    private static  Class<? extends Annotation> onSave;
-    private static  Class<? extends Annotation> onContextAttach;
-    private static  Class<? extends Annotation> panelDefinition;
-    private static  Class<? extends Annotation> position;
-
     private APIModule() {}
 
-    static {
+    public static final String panelDefinition = "org.uberfire.workbench.model.PanelDefinition";
+    public static final String position = "org.uberfire.workbench.model.Position";
+    public static final String placeRequest = "org.uberfire.mvp.PlaceRequest";
+    public static final String isDirty = "org.uberfire.lifecycle.IsDirty";
+    public static final String onClose = "org.uberfire.lifecycle.OnClose";
+    public static final String onFocus = "org.uberfire.lifecycle.OnFocus";
+    public static final String onLostFocus = "org.uberfire.lifecycle.OnLostFocus";
+    public static final String onMayClose = "org.uberfire.lifecycle.OnMayClose";
+    public static final String onOpen = "org.uberfire.lifecycle.OnOpen";
+    public static final String onSave = "org.uberfire.lifecycle.OnSave";
+    public static final String onShutdown = "org.uberfire.lifecycle.OnShutdown";
+    public static final String onStartup = "org.uberfire.lifecycle.OnStartup";
+    public static final String onContextAttach = "org.uberfire.lifecycle.OnContextAttach";
 
-        try {
-            panelDefinition = (Class<? extends Annotation>) Class.forName( "org.uberfire.workbench.model.PanelDefinition" );
-            position = (Class<? extends Annotation>) Class.forName( "org.uberfire.workbench.model.Position" );
-            placeRequest = (Class<? extends Annotation>) Class.forName( "org.uberfire.mvp.PlaceRequest" );
-            isDirty = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.IsDirty" );
-            onClose = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnClose" );
-            onFocus = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnFocus" );
-            onLostFocus = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnLostFocus" );
-            onMayClose = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnMayClose" );
-            onOpen = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnOpen" );
-            onSave = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnSave" );
-            onShutdown = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnShutdown" );
-            onStartup = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnStartup" );
-            onContextAttach = (Class<? extends Annotation>) Class.forName( "org.uberfire.lifecycle.OnContextAttach" );
-
-        } catch ( ClassNotFoundException e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    public static Class<? extends Annotation> getPanelDefinitionClass() {
+    public static String getPanelDefinitionClass() {
         return panelDefinition;
     }
 
-    public static Class<? extends Annotation> getPositionClass() {
+    public static String getPositionClass() {
         return position;
     }
 
-    public static Class<? extends Annotation> getOnContextAttachClass() {
+    public static String getOnContextAttachClass() {
         return onContextAttach;
     }
 
-    public static  Class<? extends Annotation> getPlaceRequestClass() {
+    public static  String getPlaceRequestClass() {
         return placeRequest;
     }
 
-    public static Class<? extends Annotation> getIsDirtyClass() {
+    public static String getIsDirtyClass() {
         return isDirty;
     }
 
-    public static Class<? extends Annotation> getOnCloseClass() {
+    public static String getOnCloseClass() {
         return onClose;
     }
 
-    public static Class<? extends Annotation> getOnShutdownlass() {
+    public static String getOnShutdownlass() {
         return onShutdown;
     }
 
-    public static Class<? extends Annotation> getOnFocusClass() {
+    public static String getOnFocusClass() {
         return onFocus;
     }
 
-    public static Class<? extends Annotation> getOnLostFocusClass() {
+    public static String getOnLostFocusClass() {
         return onLostFocus;
     }
 
-    public static Class<? extends Annotation> getOnMayCloseClass() {
+    public static String getOnMayCloseClass() {
         return onMayClose;
     }
 
-    public static Class<? extends Annotation> getOnStartupClass() {
+    public static String getOnStartupClass() {
         return onStartup;
     }
 
-    public static Class<? extends Annotation> getOnOpenClass() {
+    public static String getOnOpenClass() {
         return onOpen;
     }
 
-    public static Class<? extends Annotation> getOnSaveClass() {
+    public static String getOnSaveClass() {
         return onSave;
     }
 
