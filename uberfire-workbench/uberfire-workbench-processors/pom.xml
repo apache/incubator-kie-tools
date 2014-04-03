@@ -80,6 +80,18 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.jboss.tattletale</groupId>
+        <artifactId>tattletale-maven</artifactId>
+        <version>1.2.0.Beta2</version>
+        <configuration>
+          <blacklisted>
+            <package>org.slf4j</package>
+          </blacklisted>
+          <source>${basedir}/target/</source>
+          <destination>${basedir}/target/tattletale</destination>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

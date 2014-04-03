@@ -19,6 +19,14 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
 
 	private Throwable rememberedInitError;
 
+	protected AbstractErrorAbsorbingProcessor() {
+	    try {
+            freemarker.log.Logger.selectLoggerLibrary( freemarker.log.Logger.LIBRARY_NONE );
+        } catch (ClassNotFoundException e) {
+            rememberedInitError = e;
+        }
+    }
+
 	@Override
 	public final boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		try {
