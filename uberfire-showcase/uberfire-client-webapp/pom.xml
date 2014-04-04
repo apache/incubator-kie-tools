@@ -34,7 +34,7 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-template-manager</artifactId>
+      <artifactId>uberfire-panel-manager-template</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>

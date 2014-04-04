@@ -34,7 +34,7 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nswe-manager</artifactId>
+      <artifactId>uberfire-panel-manager-nswe</artifactId>
     </dependency>
 
     <dependency>

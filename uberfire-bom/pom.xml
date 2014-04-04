@@ -425,24 +425,24 @@
       <!-- Panel Managers -->
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-nswe-manager</artifactId>
+        <artifactId>uberfire-panel-manager-nswe</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-nswe-manager</artifactId>
+        <artifactId>uberfire-panel-manager-nswe</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-template-manager</artifactId>
+        <artifactId>uberfire-panel-manager-template</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-template-manager</artifactId>
+        <artifactId>uberfire-panel-manager-template</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
