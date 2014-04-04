@@ -82,6 +82,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
                     @Override
                     public void callback( final OrganizationalUnit newOrganizationalUnit ) {
+                        allOrganizationalUnits.add( newOrganizationalUnit );
                         view.addOrganizationalUnit( newOrganizationalUnit );
                         view.hideBusyIndicator();
                     }
@@ -215,6 +216,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         organizationalUnitService.call( new RemoteCallback<Void>() {
             @Override
             public void callback( final Void v ) {
+                allOrganizationalUnits.remove( organizationalUnit );
                 view.deleteOrganizationalUnit( organizationalUnit );
                 view.hideBusyIndicator();
             }

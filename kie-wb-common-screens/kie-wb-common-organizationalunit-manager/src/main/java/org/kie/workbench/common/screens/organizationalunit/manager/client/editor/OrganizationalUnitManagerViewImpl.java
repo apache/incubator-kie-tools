@@ -246,6 +246,12 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
 
     @Override
     public void deleteOrganizationalUnit( final OrganizationalUnit organizationalUnit ) {
+        //Deselect selected Organizational Units as we've deleted it. This
+        //forces the view to correctly update to show nothing is selected!
+        for ( int i = 0; i < lstOrganizationalUnits.getItemCount(); i++ ) {
+            lstOrganizationalUnits.setItemSelected( i,
+                                                    false );
+        }
         final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<OrganizationalUnit>( sortedOrganizationalUnits );
         existingOrganizationalUnits.remove( organizationalUnit );
         setOrganizationalUnits( existingOrganizationalUnits );
