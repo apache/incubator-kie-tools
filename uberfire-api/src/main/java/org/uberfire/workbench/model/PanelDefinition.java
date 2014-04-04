@@ -63,10 +63,19 @@ public interface PanelDefinition {
                              final PanelDefinition panel );
 
     /**
+     * Append a Panel at the first empty child position. If this Panel already
+     * has a child at the specified position the descendants are followed until
+     * an empty position is found.
+     * @param panel The child Panel
+     */
+    public void appendChild(
+            final PanelDefinition panel );
+
+    /**
      * Get the Panel's immediate child Panel at the given Position
      * @param position The child Panel's Position
      * @return The child Panel or null, if a child does not exist at the given
-     *         Position
+     * Position
      */
     public PanelDefinition getChild( final Position position );
 

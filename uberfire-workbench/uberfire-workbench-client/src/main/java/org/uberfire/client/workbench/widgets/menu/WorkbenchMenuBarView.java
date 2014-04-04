@@ -95,7 +95,6 @@ public class WorkbenchMenuBarView extends Composite
             }
         }
     }
-    //TODO ederign maybe this methods should go to another class
     Widget makeItem( final MenuItem item ) {
         if ( notHavePermissionToMakeThis( item ) ) {
             return null;

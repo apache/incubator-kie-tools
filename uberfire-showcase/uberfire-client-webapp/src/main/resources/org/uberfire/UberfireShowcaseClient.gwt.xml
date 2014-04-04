@@ -18,4 +18,10 @@
   <extend-property name="locale" values="pt_BR"/>
   <extend-property name="locale" values="zh_CN"/>
 
+  <inherits name="org.jboss.errai.ui.UI" />
+  <inherits name="org.jboss.errai.common.ErraiCommon" />
+  <inherits name="org.jboss.errai.bus.ErraiBus" />
+  <inherits name="org.jboss.errai.ioc.Container" />
+  <inherits name="org.jboss.errai.enterprise.Jaxrs" />
+
 </module>

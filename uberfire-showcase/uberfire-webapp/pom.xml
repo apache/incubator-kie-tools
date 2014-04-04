@@ -34,6 +34,11 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-panel-manager-nswe</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>
     </dependency>
 

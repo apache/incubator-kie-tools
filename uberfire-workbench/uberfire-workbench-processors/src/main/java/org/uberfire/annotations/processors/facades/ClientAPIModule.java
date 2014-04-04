@@ -1,9 +1,11 @@
 package org.uberfire.annotations.processors.facades;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
@@ -18,11 +20,12 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
  */
 public class ClientAPIModule {
 
-
     private static final Logger logger = LoggerFactory.getLogger( ClientAPIModule.class );
 
     public static final String IDENTIFIER = "identifier";
     public static final String IS_DEFAULT = "isDefault";
+    public static final String IS_TEMPLATE = "isTemplate";
+    public static final String VALUE = "value";
     private static Class<? extends Annotation> workbenchSplashScreen;
     private static Class<? extends Annotation> workbenchPerspective;
     private static Class<? extends Annotation> workbenchPopup;
@@ -40,10 +43,14 @@ public class ClientAPIModule {
     private static Class<? extends Annotation> splashFilter;
     private static Class<? extends Annotation> splashBodyHeight;
     private static Class<? extends Annotation> intercept;
+    private static Class<? extends Annotation> workbenchPart;
+    private static Class<? extends Annotation> workbenchParts;
+    private static Class<? extends Annotation> workbenchPanel;
+    private static Class<? extends Annotation> parameterMapping;
 
-    private ClientAPIModule() {}
-    
-    
+    private ClientAPIModule() {
+    }
+
     static {
 
         try {
@@ -64,13 +71,15 @@ public class ClientAPIModule {
             splashFilter = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.SplashFilter" );
             splashBodyHeight = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.SplashBodyHeight" );
             intercept = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.Intercept" );
+            workbenchPart = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchPart" );
+            workbenchParts = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchParts" );
+            workbenchPanel = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.WorkbenchPanel" );
+            parameterMapping = (Class<? extends Annotation>) Class.forName( "org.uberfire.client.annotations.ParameterMapping" );
 
         } catch ( ClassNotFoundException e ) {
-            logger.error(e.getMessage());
+            logger.error( e.getMessage() );
         }
     }
-
-
 
     public static Class<? extends Annotation> getWorkbenchScreenClass() {
         return workbenchScreen;
@@ -140,9 +149,25 @@ public class ClientAPIModule {
         return workbenchPerspective;
     }
 
+    public static Class<? extends Annotation> getWorkbenchPart() {
+        return workbenchPart;
+    }
+
+    public static Class<? extends Annotation> getWorkbenchParts() {
+        return workbenchParts;
+    }
+
+    public static Class<? extends Annotation> getParameterMapping() {
+        return parameterMapping;
+    }
+
+    public static Class<? extends Annotation> getWorkbenchPanel() {
+        return workbenchPanel;
+    }
+
     private static String getAnnotationIdentifierValueOnClass( TypeElement o,
-                                                        String className,
-                                                        String annotationName ) throws GenerationException {
+                                                               String className,
+                                                               String annotationName ) throws GenerationException {
         try {
             String identifierValue = "";
             for ( final AnnotationMirror am : o.getAnnotationMirrors() ) {
@@ -185,5 +210,23 @@ public class ClientAPIModule {
 
     public static String getWbContextIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
         return getAnnotationIdentifierValueOnClass( classElement, workbenchContext.getName(), IDENTIFIER );
+    }
+
+    public static boolean getWbPerspectiveScreenIsATemplate( TypeElement classElement ) throws GenerationException {
+        List<? extends Element> enclosedElements = classElement.getEnclosedElements();
+        for ( Element element: enclosedElements ){
+            if (isATemplate(element)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isATemplate(Element element) {
+        Annotation parts = element.getAnnotation( workbenchParts );
+        Annotation part = element.getAnnotation( workbenchPart );
+        Annotation panel = element.getAnnotation( workbenchPanel );
+
+        return parts!=null||part!=null||panel!=null;
     }
 }
