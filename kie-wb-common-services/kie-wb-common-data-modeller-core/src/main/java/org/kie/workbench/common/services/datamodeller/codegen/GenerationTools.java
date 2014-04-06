@@ -229,13 +229,34 @@ public class GenerationTools {
         return type.toString();
     }
 
-    public boolean hasEquals(DataObject dataObject) {
-        if (!dataObject.getProperties().isEmpty()) {
+    public boolean hasSuperClass(DataObject dataObject) {
+        return dataObject != null && dataObject.getSuperClassName() != null && !"".equals( dataObject.getSuperClassName() );
+    }
+
+    public int keyFieldsCount(DataObject dataObject) {
+        int count = 0;
+        if (dataObject != null && dataObject.getProperties() != null && !dataObject.getProperties().isEmpty()) {
             for (ObjectProperty prop : dataObject.getProperties().values()) {
-                if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) return true;
+                if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) count++;
             }
         }
-        return false;
+        return count;
+    }
+
+    public int propertiesCount(DataObject dataObject) {
+        return (dataObject != null && dataObject.getProperties() != null) ? dataObject.getProperties().size() : 0;
+    }
+
+    public boolean hasEquals(DataObject dataObject) {
+        return keyFieldsCount( dataObject ) > 0;
+    }
+
+    public boolean hasProperties(DataObject dataObject) {
+        return propertiesCount( dataObject ) > 0;
+    }
+
+    public boolean hasClassAnnotations(DataObject dataObject) {
+        return dataObject != null && dataObject.getAnnotations() != null && dataObject.getAnnotations().size() > 0;
     }
 
     public String resolveEquals(DataObject dataObject, String indent) {
@@ -390,7 +411,12 @@ public class GenerationTools {
     public String resolveAllFieldsConstructor(DataObject dataObject) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
-            sortedProperties.addAll(dataObject.getProperties().values());
+            for (ObjectProperty property : dataObject.getProperties().values()) {
+                //TODO improve this kind of filtering
+                if (!property.isFinal() && !property.isStatic()) {
+                    sortedProperties.add(property);
+                }
+            }
             return resolveConstructor2(dataObject, sortByPosition(sortByName(sortedProperties)), "    ");
         }
         return "";

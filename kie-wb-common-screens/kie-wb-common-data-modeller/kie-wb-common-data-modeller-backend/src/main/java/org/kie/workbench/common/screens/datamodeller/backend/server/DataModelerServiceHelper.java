@@ -110,7 +110,7 @@ public class DataModelerServiceHelper {
 
         ObjectPropertyTO propertyTO;
         for (ObjectProperty property : properties) {
-            propertyTO = new ObjectPropertyTO(property.getName(), property.getClassName(), property.isMultiple(), typeFactory.isBasePropertyType(property.getClassName()), property.getBag());
+            propertyTO = new ObjectPropertyTO(property.getName(), property.getClassName(), property.isMultiple(), typeFactory.isBasePropertyType(property.getClassName()), property.getBag(), property.getModifiers());
             propertyTO.setOriginalName( property.getName() );
             if (initialStatus != null) {
                 propertyTO.setStatus( initialStatus );
@@ -150,7 +150,7 @@ public class DataModelerServiceHelper {
         if (properties != null) {
             ObjectProperty property;
             for (ObjectPropertyTO propertyTO : properties) {
-                property = dataObject.addProperty(propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag());
+                property = dataObject.addProperty(propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag(), propertyTO.getModifiers());
                 //process member level annotations.
                 for (AnnotationTO annotationTO : propertyTO.getAnnotations()) {
                     Annotation annotation = to2Domain(annotationTO);
@@ -163,7 +163,7 @@ public class DataModelerServiceHelper {
     }
 
     public ObjectProperty to2Domain(ObjectPropertyTO propertyTO) {
-        ObjectPropertyImpl property = new ObjectPropertyImpl( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag() );
+        ObjectPropertyImpl property = new ObjectPropertyImpl( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag(), propertyTO.getModifiers() );
         for (AnnotationTO annotationTO : propertyTO.getAnnotations()) {
             Annotation annotation = to2Domain(annotationTO);
             if (annotation != null) {

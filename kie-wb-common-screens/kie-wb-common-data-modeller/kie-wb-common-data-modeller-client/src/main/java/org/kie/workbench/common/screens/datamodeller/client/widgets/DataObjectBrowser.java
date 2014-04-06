@@ -128,8 +128,6 @@ public class DataObjectBrowser extends Composite {
 
     private ListDataProvider<ObjectPropertyTO> dataObjectPropertiesProvider = new ListDataProvider<ObjectPropertyTO>();
 
-    private List<ObjectPropertyTO> dataObjectProperties = new ArrayList<ObjectPropertyTO>();
-
     @Inject
     private ValidatorService validatorService;
 
@@ -149,7 +147,7 @@ public class DataObjectBrowser extends Composite {
 
         objectName.setText("");
 
-        dataObjectPropertiesProvider.setList(dataObjectProperties);
+        dataObjectPropertiesProvider.setList(new ArrayList<ObjectPropertyTO>());
 
         //Init data objects table
 
@@ -510,11 +508,12 @@ public class DataObjectBrowser extends Composite {
             }
         });
 
+        List<ObjectPropertyTO> dataObjectProperties = (dataObject != null) ? DataModelerUtils.getInstance().getEditableProperties( dataObject ) : Collections.<ObjectPropertyTO>emptyList();
+
         ArrayList<ObjectPropertyTO> sortBuffer = new ArrayList<ObjectPropertyTO>();
-        if (dataObject != null) sortBuffer.addAll(dataObject.getProperties());
+        if (dataObject != null) sortBuffer.addAll(dataObjectProperties);
         Collections.sort(sortBuffer, new ObjectPropertyComparator("name"));
 
-        dataObjectProperties = (dataObject != null) ? dataObject.getProperties() : Collections.<ObjectPropertyTO>emptyList();
         dataObjectPropertiesProvider.getList().clear();
         dataObjectPropertiesProvider.getList().addAll(sortBuffer);
         dataObjectPropertiesProvider.flush();

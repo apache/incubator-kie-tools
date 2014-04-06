@@ -1,11 +1,11 @@
-/**
- * Copyright 2012 JBoss Inc
+/*
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.datamodeller.core;
+package org.kie.workbench.common.screens.datamodeller.client.util;
+
+public class ReflectionUtil {
 
 
-public interface ObjectProperty extends HasName, HasClassName, HasAnnotations {
+    //see java.lang.reflect.Modifier.
 
-    boolean isMultiple();
+    public static final int STATIC           = 0x00000008;
 
-    boolean isArray();
+    public static final int FINAL            = 0x00000010;
 
-    void setMultiple(boolean multiple);
+    public static boolean isStatic(int mod) {
+        return (mod & STATIC) != 0;
+    }
 
-    boolean isBaseType();
-
-    boolean isPrimitiveType();
-
-    String getBag();
-    
-    void setBag(String bag);
-
-    boolean isStatic();
-
-    boolean isFinal();
-
-    int getModifiers();
+    public static boolean isFinal(int mod) {
+        return (mod & FINAL) != 0;
+    }
 
 }

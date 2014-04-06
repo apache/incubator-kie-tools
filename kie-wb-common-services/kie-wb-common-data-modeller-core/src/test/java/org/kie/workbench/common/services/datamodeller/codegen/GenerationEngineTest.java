@@ -438,6 +438,21 @@ public class GenerationEngineTest {
         DataObject object1 = dataModel.addDataObject("com.test.Object1");
         DataObject object2 = dataModel.addDataObject("com.test.sub.Object2");
 
+        Annotation label = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Label.class.getName() ) );
+        label.setValue( "value", "Object1 Label" );
+        object1.addAnnotation( label );
+
+        Annotation classReactive = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.ClassReactive.class.getName() ) );
+        object1.addAnnotation( classReactive );
+
+        Annotation propReactive = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.PropertyReactive.class.getName() ) );
+        object1.addAnnotation( propReactive );
+
+        Annotation role = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Role.class.getName() ) );
+        role.setValue( "value", org.kie.api.definition.type.Role.Type.EVENT.name() );
+        object1.addAnnotation( role );
+
+
         ObjectProperty prop1 = object1.addProperty("attribute1", "java.lang.String");
         ObjectProperty prop2 = object1.addProperty("attribute2", "java.lang.Boolean");
         ObjectProperty prop3 = object1.addProperty("attribute3", object2.getClassName());

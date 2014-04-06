@@ -71,6 +71,7 @@ import org.kie.workbench.common.services.datamodeller.parser.descr.JavaTokenDesc
 import org.kie.workbench.common.services.datamodeller.parser.descr.MethodDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ModifierDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ModifierListDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ModifiersContainerDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.PackageDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.QualifiedNameDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TextTokenElementDescr;
@@ -122,7 +123,8 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
 
-    private static final String START_INDENT = "\n";
+    private static final String START_INDENT = "\n\n";
+    private static final String ANNOTATION_START_INDENT = "\n";
     private static final String LINE_INDENT = "    ";
     private static final String END_INDENT = "\n";
 
@@ -379,12 +381,9 @@ public class DataModelerServiceImpl implements DataModelerService {
         ObjectProperty property;
         DataObject dataObject = helper.to2Domain( dataObjectTO );
 
-
-        //TODO update type annotations
-
         //update package, class name, and super class name if needed.
         updatePackage( fileDescr, dataObjectTO.getPackageName() );
-        updateClassAnnotations( classDescr, dataObject.getAnnotations() );
+        updateClassOrFieldAnnotations( fileDescr, classDescr, dataObject.getAnnotations() );
         updateClassName( classDescr, dataObjectTO.getName() );
         updateSuperClassName( classDescr, dataObjectTO.getSuperClassName() );
 
@@ -438,7 +437,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         List<String> removableFields = new ArrayList<String>(  );
         for (FieldDescr fieldDescr : classDescr.getFields()) {
             for (VariableDeclarationDescr variableDescr : fieldDescr.getVariableDeclarations()) {
-                if (!preservedFields.containsKey( variableDescr.getIdentifier().getIdentifier() )) {
+                if (!preservedFields.containsKey( variableDescr.getIdentifier().getIdentifier() ) && isManagedField( fieldDescr )) {
                     removableFields.add( variableDescr.getIdentifier().getIdentifier() );
                 }
             }
@@ -448,42 +447,110 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    private void updateClassAnnotations( ClassDescr classDescr, List<Annotation> annotations ) throws Exception {
+    private boolean isManagedField( FieldDescr fieldDescr ) {
+        //e.g. final, or static fields in the .java file are not managed
+        ModifierListDescr modifierListDescr = fieldDescr.getModifiers();
+        List<ModifierDescr> modifiers = modifierListDescr != null ? modifierListDescr.getModifiers() : null;
+        if (modifiers != null) {
+            for (ModifierDescr modifier : modifiers) {
+                if ( "static".equals( modifier.getName() ) || "final".equals( modifier.getName() )) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
+    private void updateClassOrFieldAnnotations( ElementDescriptor parent, ModifiersContainerDescr modifiersContainer, List<Annotation> annotations ) throws Exception {
+
+        //TODO can be improved, and eventually updateFieldAnnotations and updateClassAnnotations can be unified in one method
         ModifierListDescr modifierList;
+        ModifierListDescr newModifierList;
+        AnnotationDescr newAnnotationDescr;
         List<AnnotationDescr> oldAnnotations;
+        List<AnnotationDescr> unmangedAnnotations = new ArrayList<AnnotationDescr>(  );
+        List<ModifierDescr> oldModifiers;
+        int currentManagedAnnotations = 0;
+        boolean isClass = (modifiersContainer instanceof ClassDescr);
+
         JavaModelDriver driver = new JavaModelDriver( );
         DescriptorFactory descriptorFactory = DescriptorFactoryImpl.getInstance();
         GenerationContext generationContext = new GenerationContext( null );
         String source;
         GenerationEngine engine = GenerationEngine.getInstance();
 
-        modifierList = classDescr.getModifiers();
+        modifierList = modifiersContainer.getModifiers();
         oldAnnotations = modifierList != null ? modifierList.getAnnotations() : null;
+        oldModifiers = modifierList != null ? modifierList.getModifiers() : null;
 
+        //save the unmanged annotations
         if (oldAnnotations != null) {
-            for (AnnotationDescr oldAnnotationDescr : oldAnnotations) {
-                //Annotations that the JavaModelDriver can manage will be removed and created again.
-                if (driver.getConfiguredAnnotation( oldAnnotationDescr.getQualifiedName().getName() ) != null) {
-                    modifierList.getElements().remove( oldAnnotationDescr );
+            for (AnnotationDescr oldAnnotation : oldAnnotations) {
+                if (driver.getConfiguredAnnotation( oldAnnotation.getQualifiedName().getName() ) == null) {
+                    unmangedAnnotations.add( oldAnnotation );
+                } else {
+                    currentManagedAnnotations++;
                 }
             }
         }
 
-        if (annotations != null && annotations.size() > 0) {
-            if (modifierList == null) {
-                modifierList = new ModifierListDescr(  );
-                classDescr.getElements().addMemberBefore( classDescr.getIdentifier(), modifierList );
-            }
+        if ( (currentManagedAnnotations > 0) || (annotations != null && annotations.size() > 0) ) {
+
+            newModifierList = new ModifierListDescr(  );
+
             //TODO, check if we want to sort the annotations list
-            int position = 0;
-            AnnotationDescr newAnnotationDescr;
             for (Annotation annotation : annotations) {
                 source = engine.generateAnnotationString( generationContext, annotation );
-                source = indent( source );
+                source = isClass ? indentClassAnnotation( source ) : indentFieldAnnotation( source );
                 newAnnotationDescr = descriptorFactory.createAnnotationDescr( source, true );
-                modifierList.getElements().add( position, newAnnotationDescr );
-                position++;
+                newModifierList.getElements().add( newAnnotationDescr );
+            }
+
+            for (AnnotationDescr unmanagedAnnotation : unmangedAnnotations) {
+                StringBuilder indentString = isClass ? new StringBuilder( "\n" ) : new StringBuilder( "\n    " );
+                TextTokenElementDescr indent = new TextTokenElementDescr( indentString.toString(), 0, indentString.length()-1, 1, 0 );
+                indent.setSourceBuffer( indentString );
+                unmanagedAnnotation.getElements().add( 0, indent );
+                newModifierList.add( unmanagedAnnotation );
+            }
+            boolean first = true;
+            if (oldModifiers != null) {
+                for (ModifierDescr oldModifier : oldModifiers) {
+                    if (first) {
+                        StringBuilder indentString = isClass ? new StringBuilder( "\n") : new StringBuilder( "\n    " );
+                        TextTokenElementDescr indent = new TextTokenElementDescr( indentString.toString(), 0, indentString.length()-1, 1, 0 );
+                        indent.setSourceBuffer( indentString );
+                        newModifierList.getElements().add( indent );
+                    }
+                    first = false;
+                    newModifierList.add( oldModifier );
+                }
+            }
+
+            if (newModifierList.size() > 0) {
+                if (modifierList == null) {
+                    StringBuilder spaceString = new StringBuilder( " " );
+                    TextTokenElementDescr spaceTextToken = new TextTokenElementDescr( spaceString.toString(), 0, spaceString.length()-1, 1, 0 );
+                    spaceTextToken.setSourceBuffer( spaceString );
+
+                    if (isClass) {
+                        IdentifierDescr identifierDescr = ((ClassDescr)modifiersContainer).getIdentifier();
+                        modifiersContainer.getElements().addMemberBefore( identifierDescr, spaceTextToken );
+                    } else {
+                        //((FieldDescr)modifiersContainer).getIdentifier();
+                        modifiersContainer.getElements().add( 0, spaceTextToken );
+                    }
+                    modifiersContainer.getElements().addMemberBefore( spaceTextToken, newModifierList );
+                } else {
+                    modifiersContainer.getElements().addElementAfter( modifierList, newModifierList );
+                }
+            }
+
+            if (modifierList != null) {
+                if (newModifierList.size() > 0) {
+                    adjustTokenIndent( parent, modifiersContainer, modifiersIndentationOptions );
+                }
+                modifiersContainer.getElements().remove( modifierList );
             }
         }
     }
@@ -504,7 +571,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         MethodDescr hashCodeMethod = null;
         boolean needsKeyFieldsConstructor;
         int keyFieldsCount = 0;
-        boolean needsAllFieldsConstructor;
+        int assignableFieldsCount = 0;
 
         List<MethodDescr> currentConstructors;
         MethodDescr currentEquals;
@@ -513,9 +580,9 @@ public class DataModelerServiceImpl implements DataModelerService {
         ElementDescriptor equalsInsertionPoint = null;
         ElementDescriptor hashCodeInsertionPoint = null;
 
-        needsAllFieldsConstructor = dataObject.getProperties() != null && dataObject.getProperties().size() > 0;
+        assignableFieldsCount = assignableFieldsCount( dataObject );
         keyFieldsCount = keyFieldsCount( dataObject );
-        needsKeyFieldsConstructor =  keyFieldsCount > 0 &&  ( keyFieldsCount < (dataObject.getProperties() != null ? dataObject.getProperties().size() : 0) );
+        needsKeyFieldsConstructor =  keyFieldsCount > 0 &&  ( keyFieldsCount < assignableFieldsCount );
         currentConstructors = classDescr.getConstructors();
         if (currentConstructors != null && currentConstructors.size() > 0) {
             constructorsInsertionPoint = currentConstructors.get( currentConstructors.size() - 1 );
@@ -531,7 +598,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         currentHashCode = classDescr.getMethod( "hashCode" );
 
         defaultConstructor = descriptorFactory.createMethodDescr( indent( engine.generateDefaultConstructorString( generationContext, dataObject ) ), true );
-        if (needsAllFieldsConstructor) allFieldsConstructor = descriptorFactory.createMethodDescr( indent( engine.generateAllFieldsConstructorString( generationContext, dataObject ) ), true );
+        if (assignableFieldsCount > 0) allFieldsConstructor = descriptorFactory.createMethodDescr( indent( engine.generateAllFieldsConstructorString( generationContext, dataObject ) ), true );
         if (needsKeyFieldsConstructor) {
             keyFieldsConstructor = descriptorFactory.createMethodDescr( indent( engine.generateKeyFieldsConstructorString( generationContext, dataObject ) ), true );
         }
@@ -583,21 +650,35 @@ public class DataModelerServiceImpl implements DataModelerService {
         //finally remove old constructors, and old equals and hashCode implementation
         if (currentConstructors != null) {
             for (MethodDescr constructor : currentConstructors) {
+                adjustFieldOrMethodIndent( classDescr, constructor );
                 classDescr.getElements().remove( constructor );
             }
         }
         if (currentEquals != null) {
+            adjustFieldOrMethodIndent( classDescr, currentEquals );
             classDescr.getElements().remove( currentEquals );
         }
         if (currentHashCode != null) {
+            adjustFieldOrMethodIndent( classDescr, currentHashCode );
             classDescr.getElements().remove( currentHashCode );
         }
     }
+
 
     private int keyFieldsCount( DataObject dataObject ) {
         int result = 0;
         for (ObjectProperty property : dataObject.getProperties().values()) {
             if (property.getAnnotation( org.kie.api.definition.type.Key.class.getName() ) != null) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private int assignableFieldsCount( DataObject dataObject ) {
+        int result = 0;
+        for (ObjectProperty property : dataObject.getProperties().values()) {
+            if (!property.isStatic() && !property.isFinal()) {
                 result++;
             }
         }
@@ -721,7 +802,9 @@ public class DataModelerServiceImpl implements DataModelerService {
             targetFieldDescr.getElements().remove( oldType );
             updateAccessors = true;
         }
-        //TODO, add annotations processing.
+
+
+        updateClassOrFieldAnnotations( classDescr, fieldDescr, property.getAnnotations() );
 
         if (updateAccessors) {
 
@@ -731,16 +814,15 @@ public class DataModelerServiceImpl implements DataModelerService {
             String oldClassName;
             boolean removed = false;
 
-            oldClassName = oldType.isClassOrInterfaceType() ? oldType.getClassOrInterfaceType().getClassName() : oldType.getPrimitiveType().getName();
             //remove old accessors
+            oldClassName = oldType.isClassOrInterfaceType() ? oldType.getClassOrInterfaceType().getClassName() : oldType.getPrimitiveType().getName();
             accessorName = genTools.toJavaGetter( fieldName, oldClassName );
             logger.debug( "Removing getter: " + accessorName + " for field: " + fieldName );
-            removed = classDescr.removeMethod( accessorName );
-            if (removed) logger.debug( "getter: " + accessorName + " was removed.");
+            removeMethod( classDescr, accessorName );
+
             accessorName = genTools.toJavaSetter( fieldName );
             logger.debug( "Removing setter: " + accessorName + " for field: " + fieldName );
-            removed = classDescr.removeMethod( accessorName );
-            if (removed) logger.debug( "setter: " + accessorName + " was removed." );
+            removeMethod( classDescr, accessorName );
 
             //and generate the new ones
             //TODO check if I need to do something aditional when annotations starts to being included
@@ -825,16 +907,24 @@ public class DataModelerServiceImpl implements DataModelerService {
             fieldDescr = descriptorFactory.createFieldDescr( fieldSource, true );
             classDescr.addField( fieldDescr );
 
+            //create getter
             methodSource = indent( engine.generateFieldGetterString( generationContext, property ) );
             methodDescr = descriptorFactory.createMethodDescr( methodSource, true );
             methodName = genTools.toJavaGetter( property.getName(), property.getClassName() );
-            classDescr.removeMethod( methodName );
+
+            //remove old getter if exists
+            removeMethod( classDescr, methodName );
+            //add the new getter
             classDescr.addMethod( methodDescr );
 
+            //create setter
             methodSource = indent( engine.generateFieldSetterString( generationContext, property ) );
             methodDescr = descriptorFactory.createMethodDescr( methodSource, true );
             methodName = genTools.toJavaSetter( property.getName() );
-            classDescr.removeMethod( methodName );
+
+            //remove old setter if exists
+            removeMethod( classDescr, methodName );
+            //add the new setter
             classDescr.addMethod( methodDescr );
 
         } catch ( Exception e ) {
@@ -843,6 +933,17 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
+    private void removeMethod( ClassDescr classDescr, String methodName ) {
+        logger.debug( "Removing method: " + methodName + ", form class: " + classDescr.getIdentifier().getIdentifier() );
+
+        MethodDescr methodDescr = classDescr.getMethod( methodName );
+        if (methodDescr != null) {
+            adjustFieldOrMethodIndent( classDescr, methodDescr );
+            classDescr.getElements().remove( methodDescr );
+        } else {
+            logger.debug( "Method method: " + methodName + " not exists for class: " + classDescr.getIdentifier().getIdentifier());
+        }
+    }
 
     /**
      * Takes care of field and the corresponding setter/getter removal.
@@ -863,21 +964,62 @@ public class DataModelerServiceImpl implements DataModelerService {
                 fieldType = fieldDescr.getType().getPrimitiveType().getName();
             }
 
+            //TODO experimental
+            FieldDescr field = classDescr.getField( fieldName );
+            adjustFieldOrMethodIndent( classDescr, field );
             removed = classDescr.removeField( fieldName );
             if (removed) logger.debug( "field: " + fieldName + " was removed." );
 
             accessorName = genTools.toJavaGetter( fieldName, fieldType );
             logger.debug( "Removing getter: " + accessorName + " for field: " + fieldName );
-            removed = classDescr.removeMethod( accessorName );
-            if (removed) logger.debug( "getter: " + accessorName + " was removed.");
+            removeMethod( classDescr, accessorName );
+
             accessorName = genTools.toJavaSetter( fieldName );
             logger.debug( "Removing setter: " + accessorName + " for field: " + fieldName );
-            removed = classDescr.removeMethod( accessorName );
-            if (removed) logger.debug( "setter: " + accessorName + " was removed." );
+            removeMethod( classDescr, accessorName );
 
         } else {
             logger.debug( "Field field: " + fieldName + " was not found in class: " + classDescr.getIdentifier().getIdentifier() );
         }
+    }
+
+    static final String[] indentationOptions = new String[] { "\n\n    ", "\n\n   ", "\n\n  ", "\n\n ", "\n\n", "\n    ", "\n   ", "\n  ", "\n ", "\n" };
+
+    static final String[] modifiersIndentationOptions = new String[] { "\n    ", "\n   ", "\n  ", "\n ", "\n" };
+
+    private void adjustTokenIndent(ElementDescriptor parent, ElementDescriptor element, final String[] indentationOptions) {
+        int index = parent.getElements().indexOf( element );
+        if (index > 0) {
+            ElementDescriptor sibling = parent.getElements().get( index -1 );
+            if (sibling instanceof TextTokenElementDescr) {
+                //try to guess if we can remove empty indentation space
+                TextTokenElementDescr textToken = (TextTokenElementDescr)sibling;
+                String content = textToken.getSourceBuffer().substring( textToken.getStart(), textToken.getStop()+1 );
+                //TODO improve the way to guess if we need to remove some indentation stuff
+                if (content != null && content.length() > 0) {
+                    for (int i = 0; i < indentationOptions.length; i++) {
+                        if (content.endsWith( indentationOptions[i] )) {
+                            int newStop = textToken.getStop() - indentationOptions[i].length();
+                            if (newStop < textToken.getStart()) {
+                                //it was a complete indentation text token, we can just remove it.
+                                parent.getElements().remove( sibling );
+                            } else {
+                                textToken.setStop( newStop );
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void adjustModifiersIndent(ElementDescriptor parent, ModifierListDescr modifierListDescr) {
+        adjustTokenIndent( parent, modifierListDescr, modifiersIndentationOptions );
+    }
+
+    private void adjustFieldOrMethodIndent(ClassDescr classDescr, ElementDescriptor fieldOrMethod) {
+        adjustTokenIndent( classDescr, fieldOrMethod, indentationOptions );
     }
 
     public Boolean verifiesHash(Path javaFile) {
@@ -943,7 +1085,15 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     private String indent(String source) throws Exception {
-        return START_INDENT + GenerationEngine.indentLines( source, LINE_INDENT ) + END_INDENT;
+        return START_INDENT + GenerationEngine.indentLines( source, LINE_INDENT );
+    }
+
+    private String indentFieldAnnotation( String source ) throws Exception {
+        return ANNOTATION_START_INDENT + "    " + source;
+    }
+
+    private String indentClassAnnotation(String source) throws Exception {
+        return ANNOTATION_START_INDENT + source;
     }
 
     private void cleanupEmptyDirs( org.uberfire.java.nio.file.Path pojectPath ) {

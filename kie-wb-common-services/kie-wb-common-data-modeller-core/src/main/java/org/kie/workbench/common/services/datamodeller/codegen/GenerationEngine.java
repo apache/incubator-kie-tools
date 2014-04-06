@@ -245,10 +245,18 @@ public class GenerationEngine {
         return generateSubTemplateString(generationContext, "java_setter");
     }
 
+    public String generateEqualsString(GenerationContext generationContext, DataObject dataObject, String indent) throws Exception {
+        return indentLines( generateEqualsString( generationContext, dataObject ), indent );
+    }
+
     public String generateEqualsString(GenerationContext generationContext, DataObject dataObject) throws Exception {
         VelocityContext vc = buildContext(generationContext);
         vc.put("currentDataObject", dataObject);
         return generateSubTemplateString(generationContext, "java_equals2");
+    }
+
+    public String generateHashCodeString(GenerationContext generationContext, DataObject dataObject, String indent) throws Exception {
+        return indentLines( generateHashCodeString( generationContext, dataObject ), indent );
     }
 
     public String generateHashCodeString(GenerationContext generationContext, DataObject dataObject) throws Exception {
@@ -259,48 +267,85 @@ public class GenerationEngine {
 
     // Shortcuts
 
+    public String generateAllConstructorsString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        return generateAllConstructorsString( generationContext, dataObject, null );
+    }
     /**
      * Generate all constructors
      */
-    public String generateAllConstructorsString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+    public String generateAllConstructorsString(GenerationContext generationContext, DataObject dataObject, String indent) throws Exception {
+        GenerationTools generationTools = new GenerationTools();
         StringBuilder sb = new StringBuilder();
-        sb.append( generateDefaultConstructorString( generationContext, dataObject ) ).append(GenerationTools.EOL).append( GenerationTools.EOL );
-        sb.append( generateAllFieldsConstructorString( generationContext, dataObject ) ).append(GenerationTools.EOL).append(GenerationTools.EOL);
-        sb.append( generateKeyFieldsConstructorString( generationContext, dataObject ) ).append(GenerationTools.EOL);
-        return sb.toString();
+        int keyFieldsCount = generationTools.keyFieldsCount( dataObject );
+        int propertiesCount = generationTools.propertiesCount( dataObject );
+
+        sb.append( generateDefaultConstructorString( generationContext, dataObject ) );
+
+        if (propertiesCount > 0) {
+            sb.append( GenerationTools.EOL ).append( GenerationTools.EOL );
+            sb.append( generateAllFieldsConstructorString( generationContext, dataObject ) );
+        }
+
+        if (keyFieldsCount > 0 && keyFieldsCount != propertiesCount) {
+            sb.append( GenerationTools.EOL ).append( GenerationTools.EOL );
+            sb.append( generateKeyFieldsConstructorString( generationContext, dataObject ) );
+        }
+        return indentLines( sb.toString(), indent );
+    }
+
+    public String generateAllAnnotationsString(GenerationContext generationContext, HasAnnotations hasAnnotations) throws Exception {
+        return generateAllAnnotationsString( generationContext, hasAnnotations, null );
     }
 
     /**
      * Generate all annotations for a specific element (field or class)
      */
-    public String generateAllAnnotationsString(GenerationContext generationContext, HasAnnotations hasAnnotations) throws Exception {
+    public String generateAllAnnotationsString(GenerationContext generationContext, HasAnnotations hasAnnotations, String indent) throws Exception {
         VelocityContext vc = buildContext(generationContext);
         StringBuilder sb = new StringBuilder();
         List<Annotation> annotations = ( (GenerationTools) vc.get( "nameTool" ) ).sortedAnnotations( hasAnnotations );
+        boolean isFirst = true;
         for ( Annotation a : annotations) {
-            sb.append( generateAnnotationString( generationContext, a ) ).append(GenerationTools.EOL);
+            if (!isFirst) {
+                sb.append( GenerationTools.EOL );
+            }
+            isFirst = false;
+            sb.append( generateAnnotationString( generationContext, a ) );
         }
-        return sb.toString();
+        return indentLines( sb.toString(), indent );
+    }
+
+
+    public String generateCompleteFieldString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+        return generateCompleteFieldString( generationContext, attribute, null );
     }
 
     /**
      * Generate the complete code fragment for a field (annotations + field declaration)
      */
-    public String generateCompleteFieldString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+    public String generateCompleteFieldString(GenerationContext generationContext, ObjectProperty attribute, String indent) throws Exception {
         StringBuilder sb = new StringBuilder();
-        sb.append( generateAllAnnotationsString( generationContext, attribute ) );
-        sb.append( generateFieldString( generationContext, attribute ) ).append(GenerationTools.EOL).append(GenerationTools.EOL);
-        return sb.toString();
+        String annotationsString = generateAllAnnotationsString( generationContext, attribute );
+        if (annotationsString != null && !"".endsWith( annotationsString )) {
+            sb.append( annotationsString );
+            sb.append( GenerationTools.EOL );
+        }
+        sb.append( generateFieldString( generationContext, attribute ) );
+        return indentLines( sb.toString(), indent );
+    }
+
+    public String generateFieldGetterSetterString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+        return generateFieldGetterSetterString( generationContext, attribute, null );
     }
 
     /**
      * Generate getter + setter for a field
      */
-    public String generateFieldGetterSetterString(GenerationContext generationContext, ObjectProperty attribute) throws Exception {
+    public String generateFieldGetterSetterString(GenerationContext generationContext, ObjectProperty attribute, String indent) throws Exception {
         StringBuilder sb = new StringBuilder();
         sb.append( generateFieldGetterString( generationContext, attribute ) ).append(GenerationTools.EOL).append(GenerationTools.EOL);
-        sb.append( generateFieldSetterString( generationContext, attribute ) ).append(GenerationTools.EOL);
-        return sb.toString();
+        sb.append( generateFieldSetterString( generationContext, attribute ) );
+        return indentLines( sb.toString(), indent );
     }
 
     /**
@@ -331,6 +376,9 @@ public class GenerationEngine {
     }
 
     public static String indentLines(String source, String indent) throws Exception {
+
+        if (indent == null || "".equals( indent )) return source;
+
         BufferedReader reader = new BufferedReader( new StringReader( source ) );
         StringBuilder out = new StringBuilder( );
         String line;

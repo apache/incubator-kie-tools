@@ -22,6 +22,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.uberfire.backend.vfs.Path;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataModelerUtils {
@@ -243,6 +244,19 @@ public class DataModelerUtils {
                 }
             }
         }
+    }
+
+    public List<ObjectPropertyTO> getEditableProperties(DataObjectTO dataObjectTO) {
+        List<ObjectPropertyTO> editableProperties = new ArrayList<ObjectPropertyTO>( );
+
+        if ( dataObjectTO != null && dataObjectTO.getProperties() != null ) {
+            for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
+                if (!ReflectionUtil.isFinal( propertyTO.getModifiers() ) && !ReflectionUtil.isStatic( propertyTO.getModifiers() )) {
+                    editableProperties.add( propertyTO );
+                }
+            }
+        }
+        return editableProperties;
     }
 
     public static String calculateExpectedClassName(Path projectRootPath, Path javaFilePath) {

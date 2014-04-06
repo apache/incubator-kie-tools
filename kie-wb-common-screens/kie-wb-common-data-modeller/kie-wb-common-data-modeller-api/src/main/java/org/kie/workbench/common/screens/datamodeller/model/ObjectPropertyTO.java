@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +38,8 @@ public class ObjectPropertyTO {
     
     private String bag;
 
+    private int modifiers = 0;
+
     private List<AnnotationTO> annotations = new ArrayList<AnnotationTO>();
     
     private static final String DEFAULT_PROPERTY_BAG = "java.util.List";
@@ -58,12 +59,13 @@ public class ObjectPropertyTO {
         }
     }
 
-    public ObjectPropertyTO(String name, String className, boolean multiple, boolean baseType, String bag) {
+    public ObjectPropertyTO(String name, String className, boolean multiple, boolean baseType, String bag, int modifiers) {
         this.name = name;
         this.className = className;
         this.multiple = multiple;
         this.baseType = baseType;
         this.bag = bag;
+        this.modifiers = modifiers;
     }
 
     public String getClassName() {
@@ -128,6 +130,10 @@ public class ObjectPropertyTO {
 
     public boolean isPersistent() {
         return getStatus() == DataModelTO.TOStatus.PERSISTENT;
+    }
+
+    public int getModifiers() {
+        return modifiers;
     }
 
     public List<AnnotationTO> getAnnotations() {

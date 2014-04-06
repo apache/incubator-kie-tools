@@ -117,11 +117,18 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
         this.name = name;
     }
 
-    @Override public boolean isStatic() {
+    @Override
+    public boolean isStatic() {
         return Modifier.isStatic( modifiers );
     }
 
-    @Override public boolean isFinal() {
+    @Override
+    public boolean isFinal() {
         return Modifier.isFinal( modifiers );
+    }
+
+    @Override
+    public int getModifiers() {
+        return modifiers;
     }
 }
