@@ -120,9 +120,9 @@ public class FactTypeBrowserWidget
             }
         } );
 
-        tree.setVisible( false );
-        hpFactsAndHide.setVisible( false );
-        hpShow.setVisible( true );
+        tree.setVisible( true );
+        hpFactsAndHide.setVisible( true );
+        hpShow.setVisible( false );
 
         initWidget( panel );
     }

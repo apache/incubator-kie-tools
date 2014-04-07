@@ -79,9 +79,9 @@ public class DSLSentenceBrowserWidget
             }
         } );
 
-        tree.setVisible( false );
-        hpDSLSentencesAndHide.setVisible( false );
-        hpShow.setVisible( true );
+        tree.setVisible( true );
+        hpDSLSentencesAndHide.setVisible( true );
+        hpShow.setVisible( false );
 
         initWidget( container );
     }
