@@ -18,87 +18,46 @@ package org.uberfire.security.client;
 
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.bus.client.api.messaging.MessageBus;
 import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 import org.jboss.errai.common.client.protocols.MessageParts;
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.RoleImpl;
+import org.jboss.errai.security.client.local.context.SecurityContext;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.api.identity.UserImpl;
-import org.jboss.errai.security.shared.exception.UnauthorizedException;
+import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 
-import com.google.gwt.json.client.JSONObject;
-
-@EntryPoint
+@ApplicationScoped
 public class SecurityEntryPoint {
 
-    private User currentSubject = null;
+    @Inject
+    private SecurityContext securityContext;
 
     @Inject
-    private MessageBus bus;
+    private ClientMessageBus bus;
 
     @Produces
-    @ApplicationScoped
+    @Dependent
     public User currentUser() {
-        if ( currentSubject == null ) {
-            setup();
-        }
-        return currentSubject;
+        return securityContext.getActiveUserCache().getUser();
     }
 
     public void setup() {
-        final JSONSubject clientSubject = loadCurrentSubject();
-        final String name;
-        final Set<Role> roles = new HashSet<Role>();
-        final Map<String, String> properties = new HashMap<String, String>();
-
-        if ( clientSubject == null ) {
-            this.currentSubject = User.ANONYMOUS;
-        } else {
-            name = clientSubject.getName();
-            for ( int i = 0; i < clientSubject.getRoles().length(); i++ ) {
-                final String roleName = clientSubject.getRoles().get( i );
-                roles.add( new RoleImpl( roleName ) );
-            }
-
-            final JSONObject json = new JSONObject( clientSubject.getProperties() );
-            for ( final String key : json.keySet() ) {
-                properties.put( key, json.get( key ).isString().stringValue() );
-            }
-
-            this.currentSubject = new UserImpl(name, roles, properties);
-        }
-
-
         bus.subscribe( CLIENT_ERROR_SUBJECT, new MessageCallback() {
             @Override
             public void callback( Message message ) {
-                try {
-                    final Throwable caught = message.get( Throwable.class, MessageParts.Throwable );
-                    throw caught;
-                } catch ( UnauthorizedException ex ) {
+                final Throwable caught = message.get( Throwable.class, MessageParts.Throwable );
+                if ( caught instanceof UnauthenticatedException ) {
                     redirect( "/login.jsp" );
-                } catch ( Throwable ex ) {
-                    //Let other ErrorCallbacks handle specific errors
                 }
+                // Let other ErrorCallbacks handle specific errors
             }
         } );
     }
-
-    public static native JSONSubject loadCurrentSubject() /*-{
-        return $wnd.current_user;
-    }-*/;
 
     public static native void redirect( final String url )/*-{
         $wnd.location = url;

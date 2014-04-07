@@ -381,6 +381,12 @@
         <version>${version.org.jboss.errai}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-security-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
       <!-- Weld Modules -->
       <dependency>
         <groupId>org.jboss.weld</groupId>
