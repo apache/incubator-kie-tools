@@ -404,16 +404,23 @@
     </dependency>
 
     <!-- UberFire -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-all</artifactId>
-    </dependency>
+  <dependency>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire-all</artifactId>
+  </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-panel-manager-nswe</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
 
     <!-- Errai AS -->
     <dependency>
