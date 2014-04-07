@@ -70,6 +70,7 @@ public class JavaEditorPresenter {
                       final PlaceRequest place ) {
         this.path = checkNotNull( "path", path );
         this.version = place.getParameter( "version", null );
+        this.isReadOnly = place.getParameter( "readOnly", null ) != null;
 
         multiPage.addPage( new Page( sourceView,
                                      CommonConstants.INSTANCE.SourceTabTitle() ) {
