@@ -25,7 +25,7 @@ public class ViewDRLSourceWidget
     private final FlexTable table = new FlexTable();
 
     public ViewDRLSourceWidget() {
-        initWidget( table );
+        initWidget(table);
     }
 
     public void setContent( final String content ) {
@@ -34,17 +34,19 @@ public class ViewDRLSourceWidget
 
         for ( int i = 0; i < rows.length; i++ ) {
 
+
             table.setHTML( i,
                            0,
-                           "<span style='color:grey;'>"
+                           "<span style='font-family: Courier, monospace; color:grey;'>"
                                    + ( i + 1 )
                                    + ".</span>" );
             table.setHTML( i,
                            1,
-                           "<span style='color:green;' >|</span>" );
+                           "<span style='font-family: Courier, monospace; color:green;' >|</span>" );
             table.setHTML( i,
                            2,
                            addSyntaxHighlights( rows[ i ] ) );
+
         }
     }
 
@@ -55,7 +57,7 @@ public class ViewDRLSourceWidget
     private String addSyntaxHighlights( String text ) {
 
         if ( text.trim().startsWith( "#" ) ) {
-            text = "<span style='color:green'>"
+            text = "<span style='font-family: Courier, monospace; color:green'>"
                     + text
                     + "</span>";
         } else {
@@ -67,7 +69,7 @@ public class ViewDRLSourceWidget
             for ( String keyword : keywords ) {
                 final String match = "\\b" + keyword + "\\b";
                 text = text.replaceAll( match,
-                                        "<span style='color:red;'>"
+                                        "<span style='font-family: Courier, monospace; color:red;'>"
                                                 + keyword
                                                 + "</span>" );
             }
@@ -78,7 +80,7 @@ public class ViewDRLSourceWidget
         text = text.replace( "\t",
                              "&nbsp;&nbsp;&nbsp;&nbsp;" );
 
-        return text;
+        return "<span style='font-family: Courier, monospace;'>" + text + "</span>";
     }
 
     private String handleStrings( String character,
@@ -95,7 +97,7 @@ public class ViewDRLSourceWidget
             String oldString = text.substring( stringStart,
                                                stringEnd + 1 );
 
-            String newString = "<span style='color:green;'>"
+            String newString = "<span style='font-family: Courier, monospace; color:green;'>"
                     + oldString
                     + "</span>";
 
