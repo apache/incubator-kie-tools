@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
@@ -146,7 +147,7 @@ public class TemplateInformationHelper {
 
     private static Map<String, String> extractParametersFromPart(
             Element element ) throws GenerationException {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new TreeMap<String, String>();
         Class<? extends Annotation> wpPart = ClientAPIModule.getWorkbenchPart();
         Class<? extends Annotation> parameterMapping = ClientAPIModule.getParameterMapping();
         try {
