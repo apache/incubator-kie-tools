@@ -27,7 +27,7 @@ import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 import org.jboss.errai.common.client.protocols.MessageParts;
-import org.jboss.errai.security.client.local.context.SecurityContext;
+import org.jboss.errai.security.client.local.api.SecurityContext;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 
@@ -43,7 +43,7 @@ public class SecurityEntryPoint {
     @Produces
     @Dependent
     public User currentUser() {
-        return securityContext.getActiveUserCache().getUser();
+        return securityContext.getCachedUser();
     }
 
     public void setup() {
