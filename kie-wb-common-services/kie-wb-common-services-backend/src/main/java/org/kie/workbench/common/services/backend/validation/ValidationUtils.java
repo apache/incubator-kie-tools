@@ -59,7 +59,7 @@ public class ValidationUtils {
         if ( StringUtils.isBlank( value ) ) {
             return false;
         }
-        if ( !SourceVersion.isName( value ) ) {
+        if ( !SourceVersion.isIdentifier(value) || SourceVersion.isKeyword(value) ) {
             return false;
         }
         for ( int i = 0; i < value.length(); i++ ) {
