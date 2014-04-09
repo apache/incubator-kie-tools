@@ -252,7 +252,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-api</artifactId>
-      <version>1.1.Final</version>
+      <version>${version.org.jboss.weld.weld-api}</version>
       <!-- TODO declare the version in JBoss Integration Platform bom -->
     </dependency>
     <dependency>
