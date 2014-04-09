@@ -82,9 +82,9 @@ public class JSEntryPoint {
 
             final JSWorkbenchScreenActivity activity = new JSWorkbenchScreenActivity( newNativePlugin, beanManager.lookupBean( PlaceManager.class ).getInstance() );
 
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) WorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSWorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) WorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSWorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
 
             activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( newNativePlugin.getId() ).iterator().next() );
         }
@@ -102,7 +102,7 @@ public class JSEntryPoint {
 
             final JSWorkbenchPerspectiveActivity activity = new JSWorkbenchPerspectiveActivity( newNativePerspective );
 
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) PerspectiveActivity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) PerspectiveActivity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true, null );
 
             activityBeansCache.addNewPerspectiveActivity( beanManager.lookupBeans( newNativePerspective.getId() ).iterator().next() );
         }
@@ -120,9 +120,9 @@ public class JSEntryPoint {
 
             final JSSplashScreenActivity activity = new JSSplashScreenActivity( newNativePlugin );
 
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) SplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSSplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) SplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSSplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
 
             activityBeansCache.addNewSplashScreenActivity( beanManager.lookupBeans( newNativePlugin.getId() ).iterator().next() );
         }
