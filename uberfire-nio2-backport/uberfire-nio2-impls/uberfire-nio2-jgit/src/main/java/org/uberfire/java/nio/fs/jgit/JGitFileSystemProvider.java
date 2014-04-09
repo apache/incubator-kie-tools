@@ -16,6 +16,14 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
+import static org.eclipse.jgit.lib.Constants.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.*;
+import static org.uberfire.java.nio.file.StandardOpenOption.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -67,6 +75,7 @@ import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.util.FileUtils;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.message.MessageType;
@@ -120,22 +129,15 @@ import org.uberfire.java.nio.fs.jgit.util.CommitContent;
 import org.uberfire.java.nio.fs.jgit.util.CopyCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.DefaultCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
+import org.uberfire.java.nio.fs.jgit.util.JGitUtil.JGitPathInfo;
+import org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
 import org.uberfire.java.nio.security.SecurityAware;
-import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
-import static org.eclipse.jgit.lib.Constants.*;
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.*;
-import static org.uberfire.java.nio.file.StandardOpenOption.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
-
 public class JGitFileSystemProvider implements FileSystemProvider,
-                                               SecurityAware {
+SecurityAware {
 
     protected static final String DEFAULT_IO_SERVICE_NAME = "default";
 
@@ -189,7 +191,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
     private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
 
-    private AuthenticationManager authenticationManager = null;
+    private AuthenticationService authenticationService = null;
     private AuthorizationManager authorizationManager = null;
 
     private Daemon daemonService = null;
@@ -318,10 +320,10 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     }
 
     @Override
-    public void setAuthenticationManager( final AuthenticationManager authenticationManager ) {
-        this.authenticationManager = authenticationManager;
+    public void setAuthenticationManager( final AuthenticationService authenticationService ) {
+        this.authenticationService = authenticationService;
         if ( gitSSHService != null ) {
-            gitSSHService.setAuthenticationManager( authenticationManager );
+            gitSSHService.setAuthenticationManager( authenticationService );
         }
     }
 
@@ -338,9 +340,9 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         @Override
         public Repository open( final T client,
                                 final String name )
-                throws RepositoryNotFoundException,
-                ServiceNotAuthorizedException, ServiceNotEnabledException,
-                ServiceMayNotContinueException {
+                                        throws RepositoryNotFoundException,
+                                        ServiceNotAuthorizedException, ServiceNotEnabledException,
+                                        ServiceMayNotContinueException {
             final JGitFileSystem fs = fileSystems.get( name );
             if ( fs == null ) {
                 throw new RepositoryNotFoundException( name );
@@ -430,24 +432,24 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                             if ( clusterService != null ) {
                                 //TODO {porcelli} hack, that should be addressed in future
                                 clusterService.broadcast( DEFAULT_IO_SERVICE_NAME,
-                                                          new MessageType() {
+                                        new MessageType() {
 
-                                                              @Override
-                                                              public String toString() {
-                                                                  return "SYNC_FS";
-                                                              }
+                                    @Override
+                                    public String toString() {
+                                        return "SYNC_FS";
+                                    }
 
-                                                              @Override
-                                                              public int hashCode() {
-                                                                  return "SYNC_FS".hashCode();
-                                                              }
-                                                          },
-                                                          new HashMap<String, String>() {{
-                                                              put( "fs_scheme", "git" );
-                                                              put( "fs_id", fs.id() );
-                                                              put( "fs_uri", fs.toString() );
-                                                          }}
-                                                        );
+                                    @Override
+                                    public int hashCode() {
+                                        return "SYNC_FS".hashCode();
+                                    }
+                                },
+                                new HashMap<String, String>() {{
+                                    put( "fs_scheme", "git" );
+                                    put( "fs_id", fs.id() );
+                                    put( "fs_uri", fs.toString() );
+                                }}
+                                        );
 
                                 clusterService.unlock();
                             }
@@ -459,7 +461,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
         gitSSHService = new GitSSHService();
 
-        gitSSHService.setup( SSH_FILE_CERT_DIR, SSH_HOST_ADDR, SSH_PORT, authenticationManager, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
+        gitSSHService.setup( SSH_FILE_CERT_DIR, SSH_HOST_ADDR, SSH_PORT, authenticationService, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
 
         gitSSHService.start();
     }
@@ -492,14 +494,14 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     @Override
     public FileSystem newFileSystem( final Path path,
                                      final Map<String, ?> env )
-            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+                                             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public FileSystem newFileSystem( final URI uri,
                                      final Map<String, ?> env )
-            throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
+                                             throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
         checkNotNull( "uri", uri );
         checkCondition( "uri scheme not supported", uri.getScheme().equals( getScheme() ) || uri.getScheme().equals( "default" ) );
         checkURI( "uri", uri );
@@ -644,7 +646,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     @Override
     public InputStream newInputStream( final Path path,
                                        final OpenOption... options )
-            throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException, SecurityException {
+                                               throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException, SecurityException {
         checkNotNull( "path", path );
 
         final JGitPathImpl gPath = toPathImpl( path );
@@ -655,7 +657,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     @Override
     public OutputStream newOutputStream( final Path path,
                                          final OpenOption... options )
-            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+                                                 throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         checkNotNull( "path", path );
 
         final JGitPathImpl gPath = toPathImpl( path );
@@ -669,6 +671,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         try {
             final File file = File.createTempFile( "gitz", "woot" );
             return new FilterOutputStream( new FileOutputStream( file ) ) {
+                @Override
                 public void close() throws java.io.IOException {
                     super.close();
 
@@ -744,7 +747,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public FileChannel newFileChannel( final Path path,
                                        Set<? extends OpenOption> options,
                                        final FileAttribute<?>... attrs )
-            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+                                               throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
@@ -753,7 +756,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                                                                final Set<? extends OpenOption> options,
                                                                final ExecutorService executor,
                                                                FileAttribute<?>... attrs )
-            throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+                                                                       throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
@@ -761,7 +764,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public SeekableByteChannel newByteChannel( final Path path,
                                                final Set<? extends OpenOption> options,
                                                final FileAttribute<?>... attrs )
-            throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+                                                       throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         final JGitPathImpl gPath = toPathImpl( path );
 
         if ( exists( path ) ) {
@@ -822,8 +825,8 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
     @Override
     public DirectoryStream<Path> newDirectoryStream( final Path path,
-                                                     final DirectoryStream.Filter<Path> pfilter )
-            throws NotDirectoryException, IOException, SecurityException {
+            final DirectoryStream.Filter<Path> pfilter )
+                    throws NotDirectoryException, IOException, SecurityException {
         checkNotNull( "path", path );
         final DirectoryStream.Filter<Path> filter;
         if ( pfilter == null ) {
@@ -927,7 +930,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     @Override
     public void createDirectory( final Path path,
                                  final FileAttribute<?>... attrs )
-            throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+                                         throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         checkNotNull( "path", path );
 
         final JGitPathImpl gPath = toPathImpl( path );
@@ -951,21 +954,21 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public void createSymbolicLink( final Path link,
                                     final Path target,
                                     final FileAttribute<?>... attrs )
-            throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+                                            throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void createLink( final Path link,
                             final Path existing )
-            throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+                                    throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void delete( final Path path,
                         final DeleteOption... options )
-            throws DirectoryNotEmptyException, NoSuchFileException, IOException, SecurityException {
+                                throws DirectoryNotEmptyException, NoSuchFileException, IOException, SecurityException {
         checkNotNull( "path", path );
 
         if ( path instanceof JGitFSPath ) {
@@ -1054,7 +1057,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     @Override
     public boolean deleteIfExists( final Path path,
                                    final DeleteOption... options )
-            throws DirectoryNotEmptyException, IOException, SecurityException {
+                                           throws DirectoryNotEmptyException, IOException, SecurityException {
         checkNotNull( "path", path );
 
         if ( path instanceof JGitFSPath ) {
@@ -1122,7 +1125,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public void copy( final Path source,
                       final Path target,
                       final CopyOption... options )
-            throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
+                              throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
         checkNotNull( "source", source );
         checkNotNull( "target", target );
 
@@ -1329,7 +1332,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public void move( final Path source,
                       final Path target,
                       final CopyOption... options )
-            throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
+                              throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
         checkNotNull( "source", source );
         checkNotNull( "target", target );
 
@@ -1400,8 +1403,8 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     }
 
     private Map<JGitPathImpl, JGitPathImpl> mapDirectoryContent( final JGitPathImpl source,
-                                                                 final JGitPathImpl target,
-                                                                 final CopyOption... options ) {
+            final JGitPathImpl target,
+            final CopyOption... options ) {
         final Map<JGitPathImpl, JGitPathImpl> fromTo = new HashMap<JGitPathImpl, JGitPathImpl>();
         for ( final Path path : newDirectoryStream( source, null ) ) {
             final JGitPathImpl gPath = toPathImpl( path );
@@ -1442,7 +1445,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     @Override
     public boolean isSameFile( final Path pathA,
                                final Path pathB )
-            throws IOException, SecurityException {
+                                       throws IOException, SecurityException {
         checkNotNull( "pathA", pathA );
         checkNotNull( "pathB", pathB );
 
@@ -1484,7 +1487,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     @Override
     public void checkAccess( final Path path,
                              final AccessMode... modes )
-            throws UnsupportedOperationException, NoSuchFileException, AccessDeniedException, IOException, SecurityException {
+                                     throws UnsupportedOperationException, NoSuchFileException, AccessDeniedException, IOException, SecurityException {
         checkNotNull( "path", path );
 
         final JGitPathImpl gPath = toPathImpl( path );
@@ -1500,7 +1503,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public <V extends FileAttributeView> V getFileAttributeView( final Path path,
                                                                  final Class<V> type,
                                                                  final LinkOption... options )
-            throws NoSuchFileException {
+                                                                         throws NoSuchFileException {
         checkNotNull( "path", path );
         checkNotNull( "type", type );
 
@@ -1553,7 +1556,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public <A extends BasicFileAttributes> A readAttributes( final Path path,
                                                              final Class<A> type,
                                                              final LinkOption... options )
-            throws NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
+                                                                     throws NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
         checkNotNull( "path", path );
         checkNotNull( "type", type );
 
@@ -1577,9 +1580,9 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
     @Override
     public Map<String, Object> readAttributes( final Path path,
-                                               final String attributes,
-                                               final LinkOption... options )
-            throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+            final String attributes,
+            final LinkOption... options )
+                    throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
         checkNotNull( "path", path );
         checkNotEmpty( "attributes", attributes );
 
@@ -1601,7 +1604,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                               final String attribute,
                               final Object value,
                               final LinkOption... options )
-            throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+                                      throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         checkNotNull( "path", path );
         checkNotEmpty( "attributes", attribute );
 
@@ -1639,7 +1642,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
     private void checkURI( final String paramName,
                            final URI uri )
-            throws IllegalArgumentException {
+                                   throws IllegalArgumentException {
         checkNotNull( "uri", uri );
 
         if ( uri.getAuthority() == null || uri.getAuthority().isEmpty() ) {
@@ -1833,11 +1836,11 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             for ( Map.Entry<String, NotificationModel> branchNameNotificationModelEntry : jGitFileSystemMapEntry.getValue().entrySet() ) {
                 final ObjectId newHead = JGitUtil.getTreeRefObjectId( jGitFileSystemMapEntry.getKey().gitRepo().getRepository(), branchNameNotificationModelEntry.getKey() );
                 notifyDiffs( jGitFileSystemMapEntry.getKey(),
-                             branchNameNotificationModelEntry.getKey(),
-                             branchNameNotificationModelEntry.getValue().getSessionId(),
-                             branchNameNotificationModelEntry.getValue().getUserName(),
-                             branchNameNotificationModelEntry.getValue().getOriginalHead(),
-                             newHead );
+                        branchNameNotificationModelEntry.getKey(),
+                        branchNameNotificationModelEntry.getValue().getSessionId(),
+                        branchNameNotificationModelEntry.getValue().getUserName(),
+                        branchNameNotificationModelEntry.getValue().getOriginalHead(),
+                        newHead );
             }
         }
         oldHeadsOfPendingDiffs.clear();

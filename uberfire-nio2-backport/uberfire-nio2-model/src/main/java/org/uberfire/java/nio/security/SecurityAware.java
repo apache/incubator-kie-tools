@@ -1,11 +1,11 @@
 package org.uberfire.java.nio.security;
 
-import org.uberfire.security.auth.AuthenticationManager;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.security.authz.AuthorizationManager;
 
 public interface SecurityAware {
 
-    void setAuthenticationManager( final AuthenticationManager authenticationManager );
+    void setAuthenticationManager( final AuthenticationService authenticationService );
 
     void setAuthorizationManager( final AuthorizationManager authorizationManager );
 

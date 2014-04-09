@@ -12,25 +12,24 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.server.UserPassSecurityContext;
 
 public class GitSSHService {
 
     final SshServer sshd = SshServer.setUpDefaultServer();
-    private AuthenticationManager authenticationManager;
+    private AuthenticationService authenticationService;
     private AuthorizationManager authorizationManager;
 
     public void setup( final File certDir,
                        final String host,
                        final int port,
-                       final AuthenticationManager authenticationManager,
+                       final AuthenticationService authenticationService,
                        final AuthorizationManager authorizationManager,
                        final ReceivePackFactory receivePackFactory,
                        final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver ) {
-        this.authenticationManager = authenticationManager;
+        this.authenticationService = authenticationService;
         this.authorizationManager = authorizationManager;
 
         sshd.getProperties().put( SshServer.IDLE_TIMEOUT, "10000" );
@@ -41,6 +40,7 @@ public class GitSSHService {
         }
         sshd.setKeyPairProvider( new SimpleGeneratorHostKeyProvider( new File( certDir, "hostkey.ser" ).getAbsolutePath() ) );
         sshd.setCommandFactory( new CommandFactory() {
+            @Override
             public Command createCommand( String command ) {
                 if ( command.startsWith( "git-upload-pack" ) ) {
                     return new GitUploadCommand( command, repositoryResolver, getAuthorizationManager() );
@@ -57,8 +57,7 @@ public class GitSSHService {
                                          final String password,
                                          final ServerSession session ) {
                 try {
-                    final UserPassSecurityContext context = new UserPassSecurityContext( null, username, password );
-                    final User result = getAuthenticationManager().authenticate( context );
+                    final User result = getAuthenticationManager().login( username, password );
                     if ( result != null ) {
                         session.setAttribute( BaseGitCommand.SUBJECT_KEY, result );
                     }
@@ -89,12 +88,12 @@ public class GitSSHService {
         this.authorizationManager = authorizationManager;
     }
 
-    private AuthenticationManager getAuthenticationManager() {
-        return authenticationManager;
+    private AuthenticationService getAuthenticationManager() {
+        return authenticationService;
     }
 
-    public void setAuthenticationManager( final AuthenticationManager authenticationManager ) {
-        this.authenticationManager = authenticationManager;
+    public void setAuthenticationManager( final AuthenticationService authenticationService ) {
+        this.authenticationService = authenticationService;
     }
 
     public AuthorizationManager getAuthorizationManager() {

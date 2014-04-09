@@ -23,9 +23,9 @@ import javax.inject.Named;
 import javax.servlet.ServletContext;
 
 import org.jboss.errai.bus.server.api.RpcContext;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.security.server.cdi.SecurityFactory;
 
 public class UberFireGeneralFactory {
 
@@ -44,8 +44,8 @@ public class UberFireGeneralFactory {
     @Produces
     @RequestScoped
     @Default
-    public static SessionInfo getSessionInfo() {
-        return new SessionInfoImpl( RpcContext.getQueueSession().getSessionId(), SecurityFactory.getIdentity() );
+    public static SessionInfo getSessionInfo(AuthenticationService authenticationService) {
+        return new SessionInfoImpl( RpcContext.getQueueSession().getSessionId(), authenticationService.getUser() );
     }
 
 }

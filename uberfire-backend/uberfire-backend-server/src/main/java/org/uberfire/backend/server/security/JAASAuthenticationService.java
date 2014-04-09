@@ -1,0 +1,134 @@
+package org.uberfire.backend.server.security;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.security.acl.Group;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
+
+import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.RoleImpl;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
+import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.uberfire.commons.validation.PortablePreconditions;
+
+@ApplicationScoped @Alternative
+public class JAASAuthenticationService implements AuthenticationService {
+
+    public static final String DEFAULT_DOMAIN = "ApplicationRealm";
+
+    private static final String DEFAULT_ROLE_PRINCIPLE_NAME = "Roles";
+    private final String rolePrincipleName = DEFAULT_ROLE_PRINCIPLE_NAME;
+
+    private final ThreadLocal<User> userOnThisThread = new ThreadLocal<User>();
+
+    private final String domain;
+
+    public JAASAuthenticationService(String domain) {
+        this.domain = PortablePreconditions.checkNotNull( "domain", domain );
+    }
+
+    @Override
+    public User login( String username, String password ) {
+        try {
+            final LoginContext loginContext = new LoginContext( domain, new UsernamePasswordCallbackHandler( username, password ) );
+            loginContext.login();
+            UserImpl user = new UserImpl( username, loadRoles( loginContext.getSubject() ) );
+            userOnThisThread.set( user );
+
+            return user;
+        } catch ( final LoginException ex ) {
+            throw new FailedAuthenticationException();
+        }
+    }
+
+    @Override
+    public void logout() {
+        userOnThisThread.remove();
+    }
+
+    @Override
+    public User getUser() {
+        User user = userOnThisThread.get();
+        if (user == null) {
+            return User.ANONYMOUS;
+        }
+        return user;
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return userOnThisThread.get() != null;
+    }
+
+    private List<Role> loadRoles(Subject subject ) {
+        List<Role> roles = new ArrayList<Role>();
+        try {
+            Set<java.security.Principal> principals = subject.getPrincipals();
+
+            if ( principals != null ) {
+                for ( java.security.Principal p : principals ) {
+                    if ( p instanceof Group && rolePrincipleName.equalsIgnoreCase( p.getName() ) ) {
+                        Enumeration<? extends java.security.Principal> groups = ( (Group) p ).members();
+
+                        while ( groups.hasMoreElements() ) {
+                            final java.security.Principal groupPrincipal = groups.nextElement();
+                            roles.add( new RoleImpl( groupPrincipal.getName() ) );
+                        }
+                        break;
+
+                    }
+
+                }
+            }
+        } catch ( Exception e ) {
+            throw new RuntimeException( e );
+        }
+        return roles;
+    }
+
+    class UsernamePasswordCallbackHandler implements CallbackHandler {
+
+        private final String username;
+        private final String password;
+
+        public UsernamePasswordCallbackHandler( final String username, final String password ) {
+            this.username = username;
+            this.password = password;
+        }
+
+        @Override
+        public void handle( final Callback[] callbacks ) throws IOException, UnsupportedCallbackException {
+            for ( final Callback callback : callbacks ) {
+                if ( callback instanceof NameCallback ) {
+                    NameCallback nameCB = (NameCallback) callback;
+                    nameCB.setName( username );
+                } else if ( callback instanceof PasswordCallback ) {
+                    PasswordCallback passwordCB = (PasswordCallback) callback;
+                    passwordCB.setPassword( password.toCharArray() );
+                } else {
+                    try {
+                        final Method method = callback.getClass().getMethod( "setObject", Object.class );
+                        method.invoke( callback, password );
+                    } catch ( Exception e ) {
+                    }
+                }
+            }
+        }
+    }
+
+}

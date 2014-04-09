@@ -23,14 +23,15 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.backend.server.io.IOSecurityAuth;
-import org.uberfire.backend.server.io.IOSecurityAuthz;
+import org.uberfire.backend.server.repositories.RepositoryServiceImpl;
+import org.uberfire.backend.server.security.RepositoryAuthorizationManager;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
-import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
@@ -40,11 +41,13 @@ public class ApplicationScopedProducer {
     private IOWatchServiceNonDotImpl watchService;
 
     @Inject
-    @IOSecurityAuth
-    private AuthenticationManager authenticationManager;
+    private RepositoryServiceImpl repositoryService;
 
     @Inject
-    @IOSecurityAuthz
+    @IOSecurityAuth
+    private AuthenticationService authenticationService;
+
+    @Inject
     private AuthorizationManager authorizationManager;
 
     @Inject
@@ -64,8 +67,8 @@ public class ApplicationScopedProducer {
         } else {
             ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
         }
-        ioService.setAuthenticationManager( authenticationManager );
-        ioService.setAuthorizationManager( authorizationManager );
+        ioService.setAuthenticationManager( authenticationService );
+        ioService.setAuthorizationManager( new RepositoryAuthorizationManager( repositoryService ) );
     }
 
     @PreDestroy

@@ -52,13 +52,14 @@
 
     <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
 
+    <version.org.picketlink>2.5.3.Final</version.org.picketlink>
+
     <version.commons-httpclient>3.1</version.commons-httpclient>
     <version.commons-io>2.1</version.commons-io>
     <version.commons-fileupload>1.2.2</version.commons-fileupload>
     <version.commons-codec>1.4</version.commons-codec>
 
     <version.com.thoughtworks.xstream>1.4.3</version.com.thoughtworks.xstream>
-    <version.org.yaml.snakeyaml>1.8</version.org.yaml.snakeyaml>
     <version.org.freemarker>2.3.19</version.org.freemarker>
 
     <version.org.mvel>2.1.8.Final</version.org.mvel>
@@ -69,7 +70,6 @@
     <version.com.google.guava>13.0.1</version.com.google.guava>
 
     <version.org.jasypt>1.9.0</version.org.jasypt>
-    <version.javax.security.jacc>1.4</version.javax.security.jacc>
     <version.org.javassist>3.15.0-GA</version.org.javassist>
 
     <version.junit>4.11</version.junit>
@@ -387,6 +387,12 @@
         <version>${version.org.jboss.errai}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-security-picketlink</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+
       <!-- Weld Modules -->
       <dependency>
         <groupId>org.jboss.weld</groupId>
@@ -538,9 +544,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>${version.org.yaml.snakeyaml}</version>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-api</artifactId>
+        <version>${version.org.picketlink}</version>
       </dependency>
 
       <dependency>
@@ -549,12 +555,6 @@
         <version>${version.org.jasypt}</version>
       </dependency>
 
-      <dependency>
-        <groupId>javax.security.jacc</groupId>
-        <artifactId>javax.security.jacc-api</artifactId>
-        <version>${version.javax.security.jacc}</version>
-        <scope>provided</scope>
-      </dependency>
       <dependency>
         <groupId>com.google.gwt.gwtmockito</groupId>
         <artifactId>gwtmockito</artifactId>

@@ -16,6 +16,8 @@
 
 package org.uberfire.security.impl.authz;
 
+import static java.util.Collections.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,12 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.security.shared.api.Role;
+import org.jboss.errai.security.shared.api.RoleImpl;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
 import org.uberfire.security.authz.RuntimeResource;
-import org.uberfire.security.impl.RoleImpl;
-
-import static java.util.Collections.*;
 
 public class RuntimeResourceManager implements ResourceManager {
 
