@@ -1,0 +1,11 @@
+package pkg2
+
+rule "Rule 1"
+  when
+  then
+end
+
+rule Rule2
+  when
+  then
+end

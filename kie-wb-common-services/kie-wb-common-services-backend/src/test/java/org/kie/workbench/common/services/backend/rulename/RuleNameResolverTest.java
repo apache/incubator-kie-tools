@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.services.backend.rulename;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -26,58 +26,58 @@ public class RuleNameResolverTest {
 
     @Test
     public void testSimple() throws Exception {
-        List<String> ruleNames = new RuleNameResolver(
+        Set<String> ruleNames = new RuleNameResolver(
                 "rule test\n" +
                         "when\n" +
                         "then\n" +
                         "end").getRuleNames();
 
         assertEquals(1, ruleNames.size());
-        assertEquals("test", ruleNames.get(0));
+        assertTrue(ruleNames.contains("test"));
     }
 
     @Test
     public void testSimpleWithQuotes() throws Exception {
-        List<String> ruleNames = new RuleNameResolver(
+        Set<String> ruleNames = new RuleNameResolver(
                 "rule \"test rule\"\n" +
                         "when\n" +
                         "then\n" +
                         "end").getRuleNames();
 
         assertEquals(1, ruleNames.size());
-        assertEquals("test rule", ruleNames.get(0));
+        assertTrue(ruleNames.contains("test rule"));
     }
 
     @Test
     public void testExtends() throws Exception {
-        List<String> ruleNames = new RuleNameResolver(
+        Set<String> ruleNames = new RuleNameResolver(
                 "rule test extends parentRule\n" +
                         "when\n" +
                         "then\n" +
                         "end").getRuleNames();
 
         assertEquals(1, ruleNames.size());
-        assertEquals("test", ruleNames.get(0));
+        assertTrue(ruleNames.contains("test"));
     }
 
     @Test
     public void testDTableSource() throws Exception {
-        List<String> ruleList = new RuleNameResolver(
+        Set<String> ruleList = new RuleNameResolver(
                 getRuleDRL(1)
                         + getRuleDRL(2)
                         + getRuleDRL(3)
                         + getRuleDRL(4)).getRuleNames();
 
         assertEquals(4, ruleList.size());
-        assertEquals("test row 1", ruleList.get(0));
-        assertEquals("test row 2", ruleList.get(1));
-        assertEquals("test row 3", ruleList.get(2));
-        assertEquals("test row 4", ruleList.get(3));
+        assertTrue(ruleList.contains("test row 1"));
+        assertTrue(ruleList.contains("test row 2"));
+        assertTrue(ruleList.contains("test row 3"));
+        assertTrue(ruleList.contains("test row 4"));
     }
 
     @Test
     public void testIgnoreMultiLineCommentedRules() throws Exception {
-        List<String> ruleList = new RuleNameResolver(
+        Set<String> ruleList = new RuleNameResolver(
                 getRuleDRL(1)
                         + "/*\n"
                         + getRuleDRL(2)
@@ -91,9 +91,9 @@ public class RuleNameResolverTest {
                         + getRuleDRL(5)).getRuleNames();
 
         assertEquals(3, ruleList.size());
-        assertEquals("test row 1", ruleList.get(0));
-        assertEquals("test row 3", ruleList.get(1));
-        assertEquals("test row 5", ruleList.get(2));
+        assertTrue(ruleList.contains("test row 1"));
+        assertTrue(ruleList.contains("test row 3"));
+        assertTrue(ruleList.contains("test row 5"));
     }
 
     @Test
@@ -110,14 +110,14 @@ public class RuleNameResolverTest {
                         + getRuleDRL(4)
                         + getRuleDRL(5)
                         + "// end of file");
-        List<String> ruleList = resolver.getRuleNames();
+        Set<String> ruleList = resolver.getRuleNames();
 
         assertEquals("org.test", resolver.getPackageName());
         assertEquals(4, ruleList.size());
-        assertEquals("test row 1", ruleList.get(0));
-        assertEquals("test row 3", ruleList.get(1));
-        assertEquals("test row 4", ruleList.get(2));
-        assertEquals("test row 5", ruleList.get(3));
+        assertTrue(ruleList.contains("test row 1"));
+        assertTrue(ruleList.contains("test row 3"));
+        assertTrue(ruleList.contains("test row 4"));
+        assertTrue(ruleList.contains("test row 5"));
     }
 
     @Test
@@ -128,11 +128,11 @@ public class RuleNameResolverTest {
                         "when\n" +
                         "then\n" +
                         "end");
-        List<String> ruleNames = resolver.getRuleNames();
+        Set<String> ruleNames = resolver.getRuleNames();
 
         assertEquals("org.test2", resolver.getPackageName());
         assertEquals(1, ruleNames.size());
-        assertEquals("test", ruleNames.get(0));
+        assertTrue(ruleNames.contains("test"));
     }
 
     private String getRuleDRL(int line) {

@@ -1,0 +1,6 @@
+package org.rename
+
+rule "new rename"
+  when
+  then
+end

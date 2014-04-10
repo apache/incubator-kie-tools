@@ -1,0 +1,6 @@
+package org.test
+
+rule myRule
+  when
+  then
+end

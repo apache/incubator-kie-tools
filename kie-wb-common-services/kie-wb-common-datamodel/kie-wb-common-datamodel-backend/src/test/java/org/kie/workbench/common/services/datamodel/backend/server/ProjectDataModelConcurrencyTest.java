@@ -16,7 +16,6 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -81,9 +80,6 @@ public class ProjectDataModelConcurrencyTest {
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    private RuleNamesService ruleNamesService;
 
     @Inject
     private DataModelService dataModelService;

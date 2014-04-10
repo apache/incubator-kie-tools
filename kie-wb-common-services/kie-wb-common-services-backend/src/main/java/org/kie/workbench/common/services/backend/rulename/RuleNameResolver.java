@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.services.backend.rulename;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RuleNameResolver {
 
-    private ArrayList<String> ruleNames = new ArrayList<String>();
+    private HashSet<String> ruleNames = new HashSet<String>();
 
     private String drl;
 
@@ -34,7 +34,7 @@ public class RuleNameResolver {
         resolve();
     }
 
-    private List<String> resolve() {
+    private Set<String> resolve() {
 
         // Strip comments
         while (drl.contains("//")) {
@@ -150,7 +150,7 @@ public class RuleNameResolver {
         return getRuleIndex() >= 0;
     }
 
-    private void stripNameFromLine(ArrayList<String> ruleNames, String ruleLine) {
+    private void stripNameFromLine(HashSet<String> ruleNames, String ruleLine) {
         ruleLine = removeTheWorldRuleAndWhiteSpacesFromTheBeginning(ruleLine);
 
         int endIndex = getRuleNameEndIndex(ruleLine);
@@ -181,8 +181,8 @@ public class RuleNameResolver {
         }
     }
 
-    public ArrayList<String> getRuleNames() {
-        return new ArrayList<String>(ruleNames);
+    public Set<String> getRuleNames() {
+        return new HashSet<String>(ruleNames);
     }
 
     public String getPackageName() {
