@@ -50,6 +50,7 @@
           <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
+          <exclude>WEB-INF/lib/uberfire-panel-manager*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-widgets-properties-editor-client-*.jar</exclude>
 
