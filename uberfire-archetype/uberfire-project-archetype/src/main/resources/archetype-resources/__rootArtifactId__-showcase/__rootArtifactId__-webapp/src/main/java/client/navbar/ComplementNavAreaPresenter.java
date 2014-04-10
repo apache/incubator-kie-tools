@@ -16,7 +16,7 @@ public class ComplementNavAreaPresenter implements Header {
     }
 
     @Inject
-    public View view;
+    private View view;
 
     @Override
     public int getOrder() {
