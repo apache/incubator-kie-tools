@@ -60,7 +60,7 @@ public class AsyncPackageDataModelOracleUtilities {
             final String packageName,
             final Imports imports,
             final Map<String, ModelField[]> projectModelFields,
-            final FactNameToFQCNHandleRegistry registry) {
+            final FactNameToFQCNHandleRegistry registry ) {
 
         final Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
 
@@ -68,23 +68,24 @@ public class AsyncPackageDataModelOracleUtilities {
             final String mfQualifiedType = entry.getKey();
             final String mfPackageName = getPackageName( mfQualifiedType );
             final String mfTypeName = getTypeName( mfQualifiedType );
-
-            if (registry.contains(mfTypeName)) {
-                Set<String> importStrings = imports.getImportStrings();
-                if (mfPackageName.equals(packageName) || importStrings.contains(mfQualifiedType)) {
-                    // Override existing
-                    registry.add(mfTypeName, mfQualifiedType);
+            if ( registry.contains( mfTypeName ) ) {
+                // Override existing
+                final Set<String> importStrings = imports.getImportStrings();
+                if ( mfPackageName.equals( packageName ) || importStrings.contains( mfQualifiedType ) ) {
+                    registry.add( mfTypeName,
+                                  mfQualifiedType );
                 }
             } else {
-                registry.add(mfTypeName, mfQualifiedType);
+                registry.add( mfTypeName,
+                              mfQualifiedType );
             }
 
             if ( mfPackageName.equals( packageName ) || isImported( mfQualifiedType,
                                                                     imports ) ) {
                 scopedModelFields.put( mfTypeName,
-                                       correctModelFields(packageName,
-                                               entry.getValue(),
-                                               imports) );
+                                       correctModelFields( packageName,
+                                                           entry.getValue(),
+                                                           imports ) );
             }
         }
 
@@ -169,8 +170,8 @@ public class AsyncPackageDataModelOracleUtilities {
 
     //Filter and rename Super Types based on package name and imports
     public static Map<String, List<String>> filterSuperTypes( final String packageName,
-                                                        final Imports imports,
-                                                        final Map<String, List<String>> projectSuperTypes ) {
+                                                              final Imports imports,
+                                                              final Map<String, List<String>> projectSuperTypes ) {
         final Map<String, List<String>> scopedSuperTypes = new HashMap<String, List<String>>();
         for ( Map.Entry<String, List<String>> e : projectSuperTypes.entrySet() ) {
             final String typeQualifiedType = e.getKey();
@@ -192,20 +193,20 @@ public class AsyncPackageDataModelOracleUtilities {
                                                                           imports ) ) {
                     ArrayList<String> result = new ArrayList<String>();
 
-                    for (String superTypeQualifiedType : superTypeQualifiedTypes) {
-                        final String superTypePackageName = getPackageName(superTypeQualifiedType);
-                        final String superTypeTypeName = getTypeName(superTypeQualifiedType);
+                    for ( String superTypeQualifiedType : superTypeQualifiedTypes ) {
+                        final String superTypePackageName = getPackageName( superTypeQualifiedType );
+                        final String superTypeTypeName = getTypeName( superTypeQualifiedType );
 
-                        if (superTypePackageName.equals(packageName) || isImported(superTypeQualifiedType,
-                                imports)) {
-                            result.add(superTypeTypeName);
+                        if ( superTypePackageName.equals( packageName ) || isImported( superTypeQualifiedType,
+                                                                                       imports ) ) {
+                            result.add( superTypeTypeName );
                         } else {
-                            result.add(superTypeQualifiedType);
+                            result.add( superTypeQualifiedType );
                         }
                     }
 
                     scopedSuperTypes.put( typeTypeName,
-                                          result);
+                                          result );
                 }
             }
         }
@@ -270,14 +271,14 @@ public class AsyncPackageDataModelOracleUtilities {
         return scopedEnumLists;
     }
 
-    // For filling the FQCN-fact name -registry
+    // For filling the FQCN-fact name registry
     public static void visitMethodInformation( final Map<String, List<MethodInfo>> projectMethodInformation,
-                                                final FactNameToFQCNHandleRegistry registry) {
+                                               final FactNameToFQCNHandleRegistry registry ) {
         for ( Map.Entry<String, List<MethodInfo>> e : projectMethodInformation.entrySet() ) {
             final String miQualifiedType = e.getKey();
             final String miTypeName = getTypeName( miQualifiedType );
-
-            registry.add(miTypeName,miQualifiedType);
+            registry.add( miTypeName,
+                          miQualifiedType );
         }
     }
 
@@ -354,23 +355,23 @@ public class AsyncPackageDataModelOracleUtilities {
         return "";
     }
 
-    public static ModelField[] correctModelFields(final String packageName,
-            final ModelField[] originalModelFields,
-            final Imports imports) {
+    public static ModelField[] correctModelFields( final String packageName,
+                                                   final ModelField[] originalModelFields,
+                                                   final Imports imports ) {
         if ( originalModelFields == null ) {
             return null;
         }
         final List<ModelField> correctedModelFields = new ArrayList<ModelField>();
         for ( final ModelField mf : originalModelFields ) {
-            correctedModelFields.add(correctModelFields(packageName, imports, mf));
+            correctedModelFields.add( correctModelFields( packageName, imports, mf ) );
         }
         final ModelField[] result = new ModelField[ correctedModelFields.size() ];
         return correctedModelFields.toArray( result );
     }
 
-    public static ModelField correctModelFields(final String packageName,
-            final Imports imports,
-            final ModelField mf) {
+    public static ModelField correctModelFields( final String packageName,
+                                                 final Imports imports,
+                                                 final ModelField mf ) {
         String mfType = mf.getType();
         String mfClassName = mf.getClassName();
 
@@ -389,9 +390,9 @@ public class AsyncPackageDataModelOracleUtilities {
                                                                      imports ) ) {
             mfType = mfType_TypeName;
         }
-        return cloneModelField(mf,
-                mfClassName,
-                mfType);
+        return cloneModelField( mf,
+                                mfClassName,
+                                mfType );
     }
 
     //Ensure we retain the LazyModelField information when filtering, as it's place-holder
@@ -415,9 +416,23 @@ public class AsyncPackageDataModelOracleUtilities {
                                mfType );
     }
 
-    private static List<MethodInfo> correctMethodInformation( final String packageName,
-                                                              final List<MethodInfo> originalMethodInformation,
-                                                              final Imports imports ) {
+    public static MethodInfo correctMethodInformation( final String packageName,
+                                                       final MethodInfo originalMethodInformation,
+                                                       final Imports imports ) {
+        final List<MethodInfo> correctedMethodInformation = correctMethodInformation( packageName,
+                                                                                      new ArrayList<MethodInfo>() {{
+                                                                                          add( originalMethodInformation );
+                                                                                      }},
+                                                                                      imports );
+        if ( correctedMethodInformation == null || correctedMethodInformation.isEmpty() ) {
+            return null;
+        }
+        return correctedMethodInformation.get( 0 );
+    }
+
+    public static List<MethodInfo> correctMethodInformation( final String packageName,
+                                                             final List<MethodInfo> originalMethodInformation,
+                                                             final Imports imports ) {
         final List<MethodInfo> correctedMethodInformation = new ArrayList<MethodInfo>();
         for ( final MethodInfo mi : originalMethodInformation ) {
             String miReturnType = mi.getReturnClassType();

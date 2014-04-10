@@ -33,6 +33,18 @@ public class TestSuperClass {
             this.nestedField1 = nestedField1;
         }
 
+        public String methodDoingSomethingWithNestedField1() {
+            return this.nestedField1;
+        }
+
+        public NestedClass methodDoingSomethingThatReturnsAnInnerClass() {
+            return null;
+        }
+
+        public Product methodDoingSomethingThatReturnsAnOuterClass() {
+            return null;
+        }
+
     }
 
 }

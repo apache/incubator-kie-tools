@@ -16,7 +16,6 @@
 package org.kie.workbench.common.services.datamodel.backend.server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,27 +44,27 @@ public class DataModelOracleUtilities {
      * @param oracle The DMO representing a project
      * @return
      */
-    public static String[] getFactTypes(final ProjectDataModelOracle oracle) {
+    public static String[] getFactTypes( final ProjectDataModelOracle oracle ) {
 
         List<String> packageNames = oracle.getProjectPackageNames();
 
         final Map<String, ModelField[]> modelFields = oracle.getProjectModelFields();
         final List<String> types = new ArrayList<String>();
-        for (String type : modelFields.keySet()) {
-            int beginIndex = type.lastIndexOf('.');
+        for ( String type : modelFields.keySet() ) {
+            int beginIndex = type.lastIndexOf( '.' );
 
-            if (beginIndex < 0) {
-                types.add(type);
+            if ( beginIndex < 0 ) {
+                types.add( type );
             } else {
-                String substring = type.substring(0, beginIndex);
-                if (packageNames.contains(substring)) {
-                    types.add(type);
+                String substring = type.substring( 0, beginIndex );
+                if ( packageNames.contains( substring ) ) {
+                    types.add( type );
                 }
             }
         }
-        Collections.sort(types);
+        Collections.sort( types );
 
-        return types.toArray(new String[types.size()]);
+        return types.toArray( new String[ types.size() ] );
     }
 
     /**
@@ -96,9 +95,9 @@ public class DataModelOracleUtilities {
      */
     public static String getSuperType( final ProjectDataModelOracle oracle,
                                        final String fullyQualifiedClassName ) {
-        List<String> superTypes = oracle.getProjectSuperTypes().get(fullyQualifiedClassName);
-        if (superTypes != null && superTypes.size() > 0) {
-            return superTypes.get(0);
+        List<String> superTypes = oracle.getProjectSuperTypes().get( fullyQualifiedClassName );
+        if ( superTypes != null && superTypes.size() > 0 ) {
+            return superTypes.get( 0 );
         } else {
             return null;
         }
@@ -460,8 +459,7 @@ public class DataModelOracleUtilities {
 
     private static boolean isTypeUsed( final String fullyQualifiedClassName,
                                        final Set<String> usedFullyQualifiedClassNames ) {
-        return usedFullyQualifiedClassNames.contains( fullyQualifiedClassName.replaceAll( "\\$",
-                                                                                          "." ) );
+        return usedFullyQualifiedClassNames.contains( fullyQualifiedClassName );
     }
 
 }

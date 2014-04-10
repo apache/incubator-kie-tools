@@ -819,7 +819,9 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                 methodInfos.add( mi );
             }
         }
-        return methodInfos;
+        return AsyncPackageDataModelOracleUtilities.correctMethodInformation( packageName,
+                                                                              methodInfos,
+                                                                              imports );
     }
 
     /**
@@ -907,7 +909,9 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                                       final String methodNameWithParams ) {
         for ( MethodInfo methodInfo : methodInfos ) {
             if ( methodInfo.getNameWithParameters().equals( methodNameWithParams ) ) {
-                return methodInfo;
+                return AsyncPackageDataModelOracleUtilities.correctMethodInformation( packageName,
+                                                                                      methodInfo,
+                                                                                      imports );
             }
         }
         return null;

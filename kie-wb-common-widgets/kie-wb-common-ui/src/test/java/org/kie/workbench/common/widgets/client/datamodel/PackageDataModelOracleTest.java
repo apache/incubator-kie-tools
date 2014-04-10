@@ -1,12 +1,14 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
@@ -16,6 +18,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.packag
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.widgets.client.datamodel.testclasses.Product;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestDataTypes;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestDelegatedClass;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSubClass;
@@ -445,6 +448,269 @@ public class PackageDataModelOracleTest {
         assertEquals( String.class.getName(),
                       oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
                                                 "nestedField1" ) );
+    }
+
+    @Test
+    public void testImportedNestedClassMethodInformation() throws IOException {
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+                .addClass( TestSuperClass.NestedClass.class )
+                .build();
+
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
+
+        //Emulate server-to-client conversions
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( packageLoader.getPackageName() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setMethodInformation( packageLoader.getProjectMethodInformation() );
+        dataModel.setFieldParametersType( packageLoader.getProjectFieldParametersType() );
+
+        final HasImports hasImports = new HasImports() {
+
+            final Imports imports = new Imports();
+
+            {
+                imports.addImport( new Import( "org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSuperClass.NestedClass" ) );
+            }
+
+            @Override
+            public Imports getImports() {
+                return imports;
+            }
+
+            @Override
+            public void setImports( Imports imports ) {
+            }
+        };
+
+        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
+                                                                 hasImports,
+                                                                 oracle,
+                                                                 dataModel );
+        assertEquals( 1,
+                      oracle.getFactTypes().length );
+        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFactTypes()[ 0 ] );
+
+        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+                                    new Callback<ModelField[]>() {
+                                        @Override
+                                        public void callback( final ModelField[] fields ) {
+                                            assertEquals( 2,
+                                                          fields.length );
+                                        }
+                                    } );
+        oracle.getMethodInfos( TestSuperClass.NestedClass.class.getSimpleName(),
+                               new Callback<List<MethodInfo>>() {
+                                   @Override
+                                   public void callback( final List<MethodInfo> methodInfos ) {
+                                       assertNotNull( methodInfos );
+                                       assertEquals( 3,
+                                                     methodInfos.size() );
+                                       //Use SimpleName as the return type has been imported
+                                       final MethodInfo mf0 = new MethodInfo( "methodDoingSomethingThatReturnsAnInnerClass",
+                                                                              new ArrayList<String>(),
+                                                                              TestSuperClass.NestedClass.class.getSimpleName(),
+                                                                              null,
+                                                                              TestSuperClass.NestedClass.class.getSimpleName() );
+
+                                       //Use FQCN as the return type has not been imported
+                                       final MethodInfo mf1 = new MethodInfo( "methodDoingSomethingWithNestedField1",
+                                                                              new ArrayList<String>(),
+                                                                              String.class,
+                                                                              null,
+                                                                              DataType.TYPE_STRING );
+
+                                       //Use FQCN as the return type has not been imported
+                                       final MethodInfo mf2 = new MethodInfo( "methodDoingSomethingThatReturnsAnOuterClass",
+                                                                              new ArrayList<String>(),
+                                                                              Product.class.getName(),
+                                                                              null,
+                                                                              Product.class.getName() );
+                                       assertTrue( methodInfos.contains( mf0 ) );
+                                       assertTrue( methodInfos.contains( mf1 ) );
+                                       assertTrue( methodInfos.contains( mf2 ) );
+                                   }
+                               } );
+    }
+
+    @Test
+    public void testImportedNestedClassMethodInformationImportBothTypes() throws IOException {
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+                .addClass( TestSuperClass.NestedClass.class )
+                .build();
+
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
+
+        //Emulate server-to-client conversions
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( packageLoader.getPackageName() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setMethodInformation( packageLoader.getProjectMethodInformation() );
+        dataModel.setFieldParametersType( packageLoader.getProjectFieldParametersType() );
+
+        final HasImports hasImports = new HasImports() {
+
+            final Imports imports = new Imports();
+
+            {
+                imports.addImport( new Import( "org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSuperClass.NestedClass" ) );
+                imports.addImport( new Import( "org.kie.workbench.common.widgets.client.datamodel.testclasses.Product" ) );
+            }
+
+            @Override
+            public Imports getImports() {
+                return imports;
+            }
+
+            @Override
+            public void setImports( Imports imports ) {
+            }
+        };
+
+        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
+                                                                 hasImports,
+                                                                 oracle,
+                                                                 dataModel );
+        assertEquals( 1,
+                      oracle.getFactTypes().length );
+        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFactTypes()[ 0 ] );
+
+        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+                                    new Callback<ModelField[]>() {
+                                        @Override
+                                        public void callback( final ModelField[] fields ) {
+                                            assertEquals( 2,
+                                                          fields.length );
+                                        }
+                                    } );
+        oracle.getMethodInfos( TestSuperClass.NestedClass.class.getSimpleName(),
+                               new Callback<List<MethodInfo>>() {
+                                   @Override
+                                   public void callback( final List<MethodInfo> methodInfos ) {
+                                       assertNotNull( methodInfos );
+                                       assertEquals( 3,
+                                                     methodInfos.size() );
+                                       //Use SimpleName as the return type has been imported
+                                       final MethodInfo mf0 = new MethodInfo( "methodDoingSomethingThatReturnsAnInnerClass",
+                                                                              new ArrayList<String>(),
+                                                                              TestSuperClass.NestedClass.class.getSimpleName(),
+                                                                              null,
+                                                                              TestSuperClass.NestedClass.class.getSimpleName() );
+
+                                       //Use SimpleName as the return type has been imported
+                                       final MethodInfo mf1 = new MethodInfo( "methodDoingSomethingThatReturnsAnOuterClass",
+                                                                              new ArrayList<String>(),
+                                                                              Product.class.getSimpleName(),
+                                                                              null,
+                                                                              Product.class.getSimpleName() );
+
+                                       //Use FQCN as the return type has not been imported
+                                       final MethodInfo mf2 = new MethodInfo( "methodDoingSomethingWithNestedField1",
+                                                                              new ArrayList<String>(),
+                                                                              String.class,
+                                                                              null,
+                                                                              DataType.TYPE_STRING );
+
+                                       assertTrue( methodInfos.contains( mf0 ) );
+                                       assertTrue( methodInfos.contains( mf1 ) );
+                                       assertTrue( methodInfos.contains( mf2 ) );
+                                   }
+                               } );
+    }
+
+    @Test
+    public void testImportedNestedClassMethodInformationInPackageScope() throws IOException {
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+                .addClass( TestSuperClass.NestedClass.class )
+                .build();
+
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
+
+        //Emulate server-to-client conversions
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        oracle.setService( service );
+
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( packageLoader.getPackageName() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setMethodInformation( packageLoader.getProjectMethodInformation() );
+        dataModel.setFieldParametersType( packageLoader.getProjectFieldParametersType() );
+
+        final HasImports hasImports = new HasImports() {
+
+            final Imports imports = new Imports();
+
+            @Override
+            public Imports getImports() {
+                return imports;
+            }
+
+            @Override
+            public void setImports( Imports imports ) {
+            }
+        };
+
+        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
+                                                                 hasImports,
+                                                                 oracle,
+                                                                 dataModel );
+        assertEquals( 1,
+                      oracle.getFactTypes().length );
+        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFactTypes()[ 0 ] );
+
+        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+                                    new Callback<ModelField[]>() {
+                                        @Override
+                                        public void callback( final ModelField[] fields ) {
+                                            assertEquals( 2,
+                                                          fields.length );
+                                        }
+                                    } );
+        oracle.getMethodInfos( TestSuperClass.NestedClass.class.getSimpleName(),
+                               new Callback<List<MethodInfo>>() {
+                                   @Override
+                                   public void callback( final List<MethodInfo> methodInfos ) {
+                                       assertNotNull( methodInfos );
+                                       assertEquals( 3,
+                                                     methodInfos.size() );
+                                       //Use SimpleName as the return type is in the same package represented by the Oracle
+                                       final MethodInfo mf0 = new MethodInfo( "methodDoingSomethingThatReturnsAnInnerClass",
+                                                                              new ArrayList<String>(),
+                                                                              TestSuperClass.NestedClass.class.getSimpleName(),
+                                                                              null,
+                                                                              TestSuperClass.NestedClass.class.getSimpleName() );
+
+                                       //Use SimpleName as the return type is in the same package represented by the Oracle
+                                       final MethodInfo mf1 = new MethodInfo( "methodDoingSomethingThatReturnsAnOuterClass",
+                                                                              new ArrayList<String>(),
+                                                                              Product.class.getSimpleName(),
+                                                                              null,
+                                                                              Product.class.getSimpleName() );
+
+                                       //Use FQCN as the return type has not been imported
+                                       final MethodInfo mf2 = new MethodInfo( "methodDoingSomethingWithNestedField1",
+                                                                              new ArrayList<String>(),
+                                                                              String.class,
+                                                                              null,
+                                                                              DataType.TYPE_STRING );
+
+                                       assertTrue( methodInfos.contains( mf0 ) );
+                                       assertTrue( methodInfos.contains( mf1 ) );
+                                       assertTrue( methodInfos.contains( mf2 ) );
+                                   }
+                               } );
     }
 
 }
