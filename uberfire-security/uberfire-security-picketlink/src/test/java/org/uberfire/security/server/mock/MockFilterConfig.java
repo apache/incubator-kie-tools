@@ -11,13 +11,13 @@ import javax.servlet.ServletContext;
 
 public class MockFilterConfig implements FilterConfig {
 
-    private ServletContext owningContext;
+    private final MockServletContext owningContext;
     public Map<String, String> initParams = new HashMap<String, String>();
-    
-    public MockFilterConfig( ServletContext owningContext ) {
+
+    public MockFilterConfig( MockServletContext owningContext ) {
         this.owningContext = owningContext;
     }
-    
+
     @Override
     public String getFilterName() {
         throw new UnsupportedOperationException("Not implemented.");
@@ -36,6 +36,10 @@ public class MockFilterConfig implements FilterConfig {
     @Override
     public Enumeration<String> getInitParameterNames() {
         return Collections.enumeration( initParams.keySet() );
+    }
+
+    public void setContextPath( String contextPath ) {
+        owningContext.setContextPath( contextPath );
     }
 
 }

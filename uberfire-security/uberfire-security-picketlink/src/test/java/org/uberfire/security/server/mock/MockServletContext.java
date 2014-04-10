@@ -26,10 +26,15 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 public class MockServletContext implements ServletContext {
 
     public Map<String, String> initParams = new HashMap<String, String>();
-    
+    private String contextPath;
+
     @Override
     public String getContextPath() {
-        throw new UnsupportedOperationException("Not implemented.");
+        return contextPath;
+    }
+
+    public void setContextPath( String contextPath ) {
+        this.contextPath = contextPath;
     }
 
     @Override
