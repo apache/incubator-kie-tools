@@ -42,7 +42,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModelEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerWidgetFactory;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -140,7 +140,7 @@ public abstract class AbstractLimitedEntryBRLColumnViewImpl<T, C extends BaseCol
             public void callback( Collection<String> ruleNames ) {
                 ruleModeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNamesForPackage( path, model.getPackageName() );
+        } ).getRuleNames(path, model.getPackageName());
 
         this.brlEditorContainer.setHeight( "100%" );
         this.brlEditorContainer.setWidth( "100%" );

@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -65,7 +65,7 @@ public class GuidedRuleTemplateEditorViewImpl extends Composite implements Guide
             public void callback( Collection<String> ruleNames ) {
                 modeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNamesForPackage( path, model.getPackageName() );
+        } ).getRuleNames(path, model.getPackageName());
     }
 
     @Override

@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.jboss.errai.common.client.api.Caller;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.vfs.Path;

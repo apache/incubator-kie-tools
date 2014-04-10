@@ -54,10 +54,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.*;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -203,7 +202,7 @@ public class GuidedDecisionTableWidget extends Composite
             public void callback( List<String> ruleNames ) {
                 ruleSelector.setRuleNames( ruleNames );
             }
-        } ).getRuleNames( path );
+        } ).getRuleNames(path, model.getPackageName());
 
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );

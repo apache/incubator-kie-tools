@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 
 import java.util.Collection;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
@@ -26,12 +25,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.common.BusyPopup;
 
@@ -69,7 +67,7 @@ public class GuidedRuleEditorViewImpl
             public void callback( Collection<String> ruleNames ) {
                 modeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNamesForPackage( path, model.getPackageName() );
+        } ).getRuleNames(path, model.getPackageName());
     }
 
     @Override

@@ -36,7 +36,7 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.guvnor.common.services.shared.rulenames.RuleNamesService;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -72,7 +72,7 @@ public class ScenarioWidgetComponentCreator {
             public void callback( final List<String> ruleNames ) {
                 hasRules = !( ruleNames == null || ruleNames.isEmpty() );
             }
-        } ).getRuleNames( path );
+        } ).getRuleNames(path, scenario.getPackageName());
     }
 
     protected GlobalPanel createGlobalPanel( final ScenarioHelper scenarioHelper,
@@ -236,7 +236,7 @@ public class ScenarioWidgetComponentCreator {
                     availableRulesBox.addItem( ruleName );
                 }
             }
-        } ).getRuleNames( path );
+        } ).getRuleNames(path, scenario.getPackageName());
 
         return availableRulesBox;
     }
