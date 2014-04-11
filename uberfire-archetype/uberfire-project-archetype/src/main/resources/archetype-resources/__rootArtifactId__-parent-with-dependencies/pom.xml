@@ -16,7 +16,7 @@
     All modules extend this parent, except for the boms (which are used here).</description>
 
   <properties>
-    <version.compiler.plugin>3.0</version.compiler.plugin>
+    <version.compiler.plugin>2.5.1</version.compiler.plugin>
     <!-- ************** -->
     <!-- Build settings -->
     <!-- ************** -->
