@@ -126,10 +126,6 @@ public class EnumServiceImpl implements EnumService {
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             return content;
 
         } catch ( Exception e ) {
@@ -140,6 +136,11 @@ public class EnumServiceImpl implements EnumService {
     @Override
     public EnumModelContent loadContent( final Path path ) {
         try {
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
+
             return new EnumModelContent( new EnumModel( load( path ) ) );
 
         } catch ( Exception e ) {

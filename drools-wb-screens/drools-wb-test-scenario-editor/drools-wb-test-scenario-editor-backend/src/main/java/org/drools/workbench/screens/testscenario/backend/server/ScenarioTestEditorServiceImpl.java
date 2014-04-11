@@ -137,10 +137,6 @@ public class ScenarioTestEditorServiceImpl
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal( content );
             scenario.setName( path.getFileName() );
             return scenario;
@@ -231,6 +227,10 @@ public class ScenarioTestEditorServiceImpl
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
                                                         visitor.visit() );
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
 
             return new TestScenarioModelContent( scenario,
                                                  packageName,

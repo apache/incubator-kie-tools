@@ -187,10 +187,6 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             return content;
 
         } catch ( Exception e ) {
@@ -203,6 +199,11 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
         try {
             final String definition = load( path );
             final List<String> workItemImages = loadWorkItemImages( path );
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
+
             return new WorkItemsModelContent( definition,
                                               workItemImages );
 

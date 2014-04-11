@@ -126,10 +126,6 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             return GuidedScoreCardXMLPersistence.getInstance().unmarshall( content );
 
         } catch ( Exception e ) {
@@ -147,6 +143,10 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
                                                         visitor.getConsumedModelClasses() );
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
 
             return new ScoreCardModelContent( model,
                                               dataModel );

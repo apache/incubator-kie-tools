@@ -135,10 +135,6 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             return GlobalsPersistence.getInstance().unmarshal( content );
 
         } catch ( Exception e ) {
@@ -153,6 +149,10 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
             final GlobalsModel model = load( path );
             final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
             final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes( oracle );
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
 
             return new GlobalsEditorContent( model,
                                              Arrays.asList( fullyQualifiedClassNames ) );

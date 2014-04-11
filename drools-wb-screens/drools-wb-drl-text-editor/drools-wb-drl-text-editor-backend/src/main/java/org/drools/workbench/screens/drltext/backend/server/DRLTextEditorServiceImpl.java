@@ -149,10 +149,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             return content;
 
         } catch ( Exception e ) {
@@ -168,6 +164,10 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
             final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes( oracle );
             final List<DSLSentence> dslConditions = oracle.getPackageDslConditionSentences();
             final List<DSLSentence> dslActions = oracle.getPackageDslActionSentences();
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
 
             return new DrlModelContent( drl,
                                         Arrays.asList( fullyQualifiedClassNames ),

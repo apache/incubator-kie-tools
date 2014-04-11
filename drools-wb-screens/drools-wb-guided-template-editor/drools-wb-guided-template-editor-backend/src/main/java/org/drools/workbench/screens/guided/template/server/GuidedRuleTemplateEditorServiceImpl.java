@@ -147,10 +147,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             return (TemplateModel) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
 
         } catch ( Exception e ) {
@@ -168,6 +164,10 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
                                                         visitor.getConsumedModelClasses() );
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
 
             return new GuidedTemplateEditorContent( model,
                                                     dataModel );

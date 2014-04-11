@@ -169,10 +169,6 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
                                                                           oracle );
             }
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             return ruleModel;
 
         } catch ( Exception e ) {
@@ -191,6 +187,10 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
                                                         visitor.getConsumedModelClasses() );
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
 
             return new GuidedEditorContent( model,
                                             dataModel );

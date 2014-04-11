@@ -151,10 +151,6 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
-
             return GuidedDTXMLPersistence.getInstance().unmarshal( content );
 
         } catch ( Exception e ) {
@@ -173,6 +169,11 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
                                                         dataModel,
                                                         visitor.getConsumedModelClasses() );
             final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
+
+
+            //Signal opening to interested parties
+            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
+                    sessionInfo ) );
 
             return new GuidedDecisionTableEditorContent( model,
                                                          workItemDefinitions,
