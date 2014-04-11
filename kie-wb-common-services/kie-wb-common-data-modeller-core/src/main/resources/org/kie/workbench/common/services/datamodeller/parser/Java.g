@@ -889,6 +889,7 @@ classOrInterfaceType
                                                             if (isIdentifierWithTypeArgumentsOnTop()) {
                                                                 identWithArgs = popIdentifierWithTypeArguments();
                                                                 identWithArgs.setStop(stop((CommonToken)$t.stop));
+                                                                identWithArgs.setArguments( $t.argumentsDec );
                                                             }
                                                        }
         )?
@@ -904,6 +905,7 @@ classOrInterfaceType
                                                                 if (isIdentifierWithTypeArgumentsOnTop()) {
                                                                     identWithArgs = popIdentifierWithTypeArguments();
                                                                     identWithArgs.setStop(stop((CommonToken)$t.stop));
+                                                                    identWithArgs.setArguments( $t.argumentsDec );
                                                                 }
                                                              }
             )?
@@ -927,37 +929,37 @@ primitiveType
     |   'double'
     ;
 
-typeArguments
+typeArguments returns [ TypeArgumentListDescr argumentsDec ]
     @init {
-        TypeArgumentListDescr typeArgumentList = null;
+        $argumentsDec = null;
         if (!isBacktracking()) {
             log("Start TypeArgumentListDescr declaration");
-            typeArgumentList = new TypeArgumentListDescr($text, start((CommonToken)$start), -1, line((CommonToken)$start), position((CommonToken)$start));
-            context.push(typeArgumentList);
+            $argumentsDec = new TypeArgumentListDescr($text, start((CommonToken)$start), -1, line((CommonToken)$start), position((CommonToken)$start));
+            context.push($argumentsDec);
         }
     }
     @after {
-        typeArgumentList = popTypeArgumentList();
-        if (typeArgumentList != null) {
-            updateOnAfter(typeArgumentList, $text, (CommonToken)$stop);
-            processTypeArgumentList(typeArgumentList);
+        $argumentsDec = popTypeArgumentList();
+        if ($argumentsDec != null) {
+            updateOnAfter($argumentsDec, $text, (CommonToken)$stop);
+            //processTypeArgumentList($argumentsDec);
         } else {
             //TODO warning, by construction current typeArgumentList is expected
         }
     }
 
-    :   lt='<' { typeArgumentList.setLTStart(new JavaTokenDescr(ElementType.JAVA_LT, $lt.text, start((CommonToken)$lt), stop((CommonToken)$lt), line($lt), position($lt))); }
+    :   lt='<' { $argumentsDec.setLTStart(new JavaTokenDescr(ElementType.JAVA_LT, $lt.text, start((CommonToken)$lt), stop((CommonToken)$lt), line($lt), position($lt))); }
         a1=typeArgument
-               { typeArgumentList.addArgument($a1.argumentDec); }
+               { $argumentsDec.addArgument($a1.argumentDec); }
         (c=',' a2=typeArgument
                {
                     JavaTokenDescr comma = new JavaTokenDescr(ElementType.JAVA_COMMA, $c.text, start((CommonToken)$c), stop((CommonToken)$c), line($c), position($c));
                     $a2.argumentDec.setStartComma(comma);
                     $a2.argumentDec.setStart(comma.getStart());
-                    typeArgumentList.addArgument($a2.argumentDec);
+                    $argumentsDec.addArgument($a2.argumentDec);
                }
         )* 
-        gt='>' { typeArgumentList.setGTStop(new JavaTokenDescr(ElementType.JAVA_GT, $gt.text, start((CommonToken)$gt), stop((CommonToken)$gt), line($gt), position($gt))); }
+        gt='>' { $argumentsDec.setGTStop(new JavaTokenDescr(ElementType.JAVA_GT, $gt.text, start((CommonToken)$gt), stop((CommonToken)$gt), line($gt), position($gt))); }
     ;
 
 typeArgument returns [ TypeArgumentDescr argumentDec ]

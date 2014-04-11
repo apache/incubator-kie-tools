@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.services.datamodeller.parser.descr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TypeArgumentListDescr extends ElementDescriptor {
 
     public TypeArgumentListDescr( ) {
@@ -56,6 +59,14 @@ public class TypeArgumentListDescr extends ElementDescriptor {
 
     public void addArgument( TypeArgumentDescr argument ) {
         getElements( ).add( argument );
+    }
+
+    public List<TypeArgumentDescr> getArguments() {
+        List<TypeArgumentDescr> arguments = new ArrayList<TypeArgumentDescr>(  );
+        for (ElementDescriptor element : getElements().getElementsByType( ElementType.TYPE_ARGUMENT )) {
+            arguments.add( (TypeArgumentDescr) element );
+        }
+        return arguments;
     }
 
 }

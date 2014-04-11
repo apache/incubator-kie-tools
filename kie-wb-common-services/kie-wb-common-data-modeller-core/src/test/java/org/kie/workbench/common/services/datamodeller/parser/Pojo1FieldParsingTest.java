@@ -18,17 +18,60 @@ package org.kie.workbench.common.services.datamodeller.parser;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
+import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactory;
+import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
-import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
+import org.kie.workbench.common.services.datamodeller.parser.descr.TypeDescr;
+import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class Pojo1FieldParsingTest extends JavaParserBaseTest {
 
     public Pojo1FieldParsingTest( ) {
         super( "Pojo1.java" );
+        init();
+    }
+
+    List<String> fieldSentences = new ArrayList<String>(  );
+    List<TypeTestResult> typeTestResults = new ArrayList<TypeTestResult>(  );
+
+
+    private void init() {
+
+        fieldSentences.add( "int field1;" );
+        typeTestResults.add( new TypeTestResult(true, false, false, false) );
+
+        fieldSentences.add( "java.lang.Integer field2;" );
+        typeTestResults.add( new TypeTestResult(false, true, false, false) );
+
+        fieldSentences.add( "Integer field3;" );
+        typeTestResults.add( new TypeTestResult(false, true, false, false) );
+
+        fieldSentences.add( "List<Integer> field4;" );
+        typeTestResults.add( new TypeTestResult(false, false, false, true) );
+
+        fieldSentences.add( "java.util.List<Integer> field5;" );
+        typeTestResults.add( new TypeTestResult(false, false, false, true) );
+
+        fieldSentences.add( "List<java.lang.Integer> field6;" );
+        typeTestResults.add( new TypeTestResult(false, false, false, true) );
+
+        fieldSentences.add( "java.util.List<java.lang.Integer> field7;" );
+        typeTestResults.add( new TypeTestResult(false, false, false, true) );
+
+        fieldSentences.add( "private /*comment2*/ java.lang.String name  ;" );
+        typeTestResults.add( new TypeTestResult(false, true, false, false) );
+
+        fieldSentences.add( "public  static  int a  = 3 ,   b =   4         ;" );
+        typeTestResults.add( new TypeTestResult(true, false, false, false) );
+
+        fieldSentences.add( "java.util.List<List<String>> list;" );
+        typeTestResults.add( new TypeTestResult(false, false, false, false) );
+
     }
 
     @Test
@@ -37,21 +80,40 @@ public class Pojo1FieldParsingTest extends JavaParserBaseTest {
 
             assertClass( );
             List<FieldDescr> fields = parser.getFileDescr( ).getClassDescr( ).getFields( );
+            assertEquals( fieldSentences.size(), fields.size() );
 
-            assertEquals( 3, fields.size( ) );
-            String[] fieldSentences = new String[ 3 ];
+            for ( int i = 0; i < fieldSentences.size(); i++ ) {
+                assertEquals( typeTestResults.get( i ).primitive, DriverUtils.getInstance().isPrimitiveType( fields.get( i ).getType() ));
+                assertEquals( typeTestResults.get( i ).simpleClass, DriverUtils.getInstance().isSimpleClass(  fields.get( i ).getType() ));
+                assertEquals( typeTestResults.get( i ).array, DriverUtils.getInstance().isArray( fields.get( i ).getType() ));
 
-            fieldSentences[ 0 ] = "private /*comment2*/ java.lang.String name  ;";
-            fieldSentences[ 1 ] = "public  static  int a  = 3 ,   b =   4         ;";
-            fieldSentences[ 2 ] = "java.util.List<List<String>> list;";
+                Object[] genericsCheck = DriverUtils.getInstance().isSimpleGeneric( fields.get( i ).getType() );
 
-            for ( int i = 0; i < fields.size( ) && i < fieldSentences.length; i++ ) {
-                assertEquals( fieldSentences[ i ], ParserUtil.readElement( buffer, fields.get( i ) ) );
+                assertEquals( typeTestResults.get( i ).simpleGeneric, genericsCheck[0] );
+
+
             }
 
         } catch ( Exception e ) {
             e.printStackTrace( );
+            fail( "Test failed: " + e.getMessage());
         }
+    }
+
+    public class TypeTestResult {
+
+        public TypeTestResult( boolean primitive, boolean simpleClass, boolean array, boolean simpleGeneric) {
+            this.primitive = primitive;
+            this.simpleClass = simpleClass;
+            this.array = array;
+            this.simpleGeneric = simpleGeneric;
+        }
+
+        public boolean primitive;
+        public boolean simpleClass;
+        public boolean array;
+        public boolean simpleGeneric;
+
     }
 
 }

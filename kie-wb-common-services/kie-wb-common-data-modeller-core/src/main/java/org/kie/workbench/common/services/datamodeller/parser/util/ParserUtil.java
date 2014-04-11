@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.kie.workbench.common.services.datamodeller.parser.descr.ElementDescriptor;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TextTokenElementDescr;
+import org.kie.workbench.common.services.datamodeller.util.StringEscapeUtils;
 
 public class ParserUtil {
 
@@ -36,10 +37,14 @@ public class ParserUtil {
     }
 
     public static String readString( InputStream in ) throws IOException {
-        return readStringBuilder( in ).toString( );
+        return readStringBuilder( in, false ).toString( );
     }
 
-    public static StringBuilder readStringBuilder( InputStream in ) throws IOException {
+    public static String readString( InputStream in, boolean unescapeJavaUTF ) throws IOException {
+        return readStringBuilder( in, unescapeJavaUTF ).toString( );
+    }
+
+    public static StringBuilder readStringBuilder( InputStream in, boolean unescapeJavaUTF ) throws IOException {
         BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
         StringBuilder out = new StringBuilder( );
         String line;
@@ -52,7 +57,11 @@ public class ParserUtil {
                 out.append( line );
             }
         }
-        return out;
+        return unescapeJavaUTF ? new StringBuilder( StringEscapeUtils.unescapeJavaUTF( out.toString() ) ) : out;
+    }
+
+    public static StringBuilder readStringBuilder( InputStream in ) throws IOException {
+        return readStringBuilder( in, false );
     }
 
     public static void populateUnManagedElements( ElementDescriptor element ) {
@@ -132,5 +141,4 @@ public class ParserUtil {
             setSourceBufferTMP( child, source );
         }
     }
-
 }

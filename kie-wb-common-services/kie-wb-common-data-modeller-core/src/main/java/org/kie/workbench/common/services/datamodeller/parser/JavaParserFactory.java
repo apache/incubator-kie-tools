@@ -32,8 +32,10 @@ public class JavaParserFactory {
     }
 
     public static JavaParser newParser( final String source, final JavaParserBase.ParserMode mode ) {
-        final CharStream charStream = new ANTLRStringStream( source );
-        return newParser( charStream, new StringBuilder( source ), mode );
+        //TODO check what we gonna do in order to support java code with UTF chars
+        String unescapedSource = source; //StringEscapeUtils.unescapeJavaUTF( source );
+        final CharStream charStream = new ANTLRStringStream( unescapedSource );
+        return newParser( charStream, new StringBuilder( unescapedSource ), mode );
     }
 
     public static JavaParser newParser( final String source ) {

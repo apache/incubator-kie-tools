@@ -412,7 +412,7 @@ public class JavaParserBase extends Parser {
 
     protected void processType( TypeDescr type ) {
         //if we are processing a method declaration return type, or a method parameter, or a field type
-        if ( isDeclaringMainClass( ) || mode == ParserMode.PARSE_FIELD || mode == ParserMode.PARSE_METHOD ) {
+        if ( isDeclaringMainClass( ) || mode == ParserMode.PARSE_FIELD || mode == ParserMode.PARSE_METHOD || mode == ParserMode.PARSE_TYPE ) {
             if ( isTypeArgumentOnTop( ) ) {
                 peekTypeArgument( ).setType( type );
             } else if ( isFieldOnTop( ) ) {
@@ -499,6 +499,7 @@ public class JavaParserBase extends Parser {
         fileDescr.addImport( importDescr );
     }
 
+    /*
     protected void processTypeArgumentList( TypeArgumentListDescr arguments ) {
         if ( isDeclaringMainClass( ) ) {
             if ( isIdentifierWithTypeArgumentsOnTop( ) ) {
@@ -506,6 +507,7 @@ public class JavaParserBase extends Parser {
             }
         }
     }
+    */
 
     protected void processClassBodyStart( JavaTokenDescr bodyStart ) {
         if (isDeclaringMainClass()) {

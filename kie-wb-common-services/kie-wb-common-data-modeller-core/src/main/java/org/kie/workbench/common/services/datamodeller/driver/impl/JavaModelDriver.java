@@ -16,18 +16,17 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+import org.drools.core.base.ClassTypeResolver;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
@@ -41,10 +40,10 @@ import org.kie.workbench.common.services.datamodeller.parser.descr.AnnotationDes
 import org.kie.workbench.common.services.datamodeller.parser.descr.ClassDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FileDescr;
-import org.kie.workbench.common.services.datamodeller.parser.descr.ModifierDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.PackageDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TypeDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.VariableDeclarationDescr;
+import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,7 +154,7 @@ public class JavaModelDriver implements ModelDriver {
     /**
      *  Knows how to create a DataObject from the descriptors returned by the parser.
      */
-    public DataObject addDataObject( DataModel dataModel, FileDescr fileDescr ) throws ModelDriverException {
+    private DataObject addDataObject( DataModel dataModel, FileDescr fileDescr ) throws ModelDriverException {
 
         ClassDescr classDescr = fileDescr.getClassDescr();
         PackageDescr packageDescr = fileDescr.getPackageDescr();
@@ -164,15 +163,20 @@ public class JavaModelDriver implements ModelDriver {
         String superClass;
         String packageName = packageDescr != null ? packageDescr.getPackageName() : "";
         int modifiers = 0;
+        DriverUtils driverUtils = DriverUtils.getInstance();
+        ClassTypeResolver classTypeResolver;
 
         if ( logger.isDebugEnabled() ) logger.debug( "Building DataObject for, packageName: " + packageName + ", className: " + className );
 
-        modifiers = classDescr.getModifiers() != null ? buildModifierRepresentation( classDescr.getModifiers().getModifiers() ) : 0;
+        classTypeResolver = DriverUtils.getInstance().createClassTypeResolver( fileDescr, classLoader );
+
+        modifiers = classDescr.getModifiers() != null ? driverUtils.buildModifierRepresentation( classDescr.getModifiers().getModifiers() ) : 0;
 
         DataObject dataObject = dataModel.addDataObject(packageName, className, modifiers);
         if ( (typeDescr = classDescr.getSuperClass()) != null) {
             if (typeDescr.isClassOrInterfaceType()) {
                 superClass = typeDescr.getClassOrInterfaceType().getClassName();
+                superClass = resolveTypeName( classTypeResolver, superClass );
                 dataObject.setSuperClassName( superClass );
             }
         }
@@ -180,42 +184,75 @@ public class JavaModelDriver implements ModelDriver {
         List<AnnotationDescr> classAnnotations = classDescr.getModifiers() != null ? classDescr.getModifiers().getAnnotations() : null;
         if (classAnnotations != null) {
             for (AnnotationDescr classAnnotation : classAnnotations) {
-                addDataObjectAnnotation(dataObject, classAnnotation);
+                addDataObjectAnnotation(dataObject, classAnnotation, classTypeResolver);
             }
         }
 
         List<FieldDescr> fields = classDescr.getFields( );
         if (fields != null) {
             for (FieldDescr field : fields) {
-                addProperty( dataObject, field );
+                if (isManagedType( field.getType(), classTypeResolver ) ) {
+                    addProperty( dataObject, field, classTypeResolver );
+                } else {
+                    logger.debug( "field: " + field + " won't be loadoded by the diver because type: " + field.getType().getName() + " isn't a managed type.");
+                }
             }
         }
-
         return dataObject;
     }
 
-    private void addDataObjectAnnotation( DataObject dataObject, AnnotationDescr annotationDescr ) throws ModelDriverException {
-        Annotation annotation = createAnnotation( annotationDescr );
+    private boolean isManagedType(TypeDescr typeDescr, ClassTypeResolver classTypeResolver) throws ModelDriverException {
+        return DriverUtils.getInstance().isManagedType( typeDescr, classTypeResolver );
+    }
+
+    private String resolveTypeName(ClassTypeResolver classTypeResolver, String name) throws ModelDriverException {
+        try {
+            Class typeClass = classTypeResolver.resolveType( name );
+            return typeClass.getName();
+        } catch (ClassNotFoundException e) {
+            logger.error( "Class could not be resolved for name: " + name, e );
+            throw new ModelDriverException( "Class could not be resolved for name: " + name + ". " + e.getMessage(), e );
+        }
+    }
+
+    private void addDataObjectAnnotation( DataObject dataObject, AnnotationDescr annotationDescr, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
+        Annotation annotation = createAnnotation( annotationDescr, classTypeResolver );
         if ( annotation != null ) {
             dataObject.addAnnotation( annotation );
         }
     }
 
-    private void addProperty( DataObject dataObject, FieldDescr field ) throws ModelDriverException {
+    private void addProperty( DataObject dataObject, FieldDescr field, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
 
         TypeDescr typeDescr;
         List<VariableDeclarationDescr> variableDeclarations;
         List<AnnotationDescr> fieldAnnotations;
+        boolean multiple = false;
         String className;
+        String bag = null;
         ObjectProperty property;
         int modifiers = 0;
+        DriverUtils driverUtils = DriverUtils.getInstance();
 
         typeDescr = field.getType();
-        className = typeDescr.isPrimitiveType() ? typeDescr.getPrimitiveType().getName() : typeDescr.getClassOrInterfaceType().getClassName();
+        if ( typeDescr.isPrimitiveType() ) {
+            className = typeDescr.getPrimitiveType().getName();
+        } else {
+            if ( driverUtils.isSimpleClass( typeDescr )) {
+                className = typeDescr.getClassOrInterfaceType().getClassName();
+                className = resolveTypeName( classTypeResolver, className );
+            } else {
+                //if this point was reached, we know it's a Collection
+                multiple = true;
+                Object[] split = driverUtils.isSimpleGeneric( typeDescr );
+                bag = resolveTypeName( classTypeResolver, split[1].toString() );
+                className = ((TypeDescr)split[2]).getName();
+                className = resolveTypeName( classTypeResolver, className );
+            }
+        }
         variableDeclarations = field.getVariableDeclarations();
 
-        modifiers = field.getModifiers() != null ? buildModifierRepresentation( field.getModifiers().getModifiers() ) : 0;
-
+        modifiers = field.getModifiers() != null ? driverUtils.buildModifierRepresentation( field.getModifiers().getModifiers() ) : 0;
 
         if (variableDeclarations != null) {
             for (VariableDeclarationDescr variable : variableDeclarations) {
@@ -223,28 +260,34 @@ public class JavaModelDriver implements ModelDriver {
                 //TODO, when more than two properties are defined in the same field e.g.  int a, b, c; we must
                 //create three properties in the DataModel and clone the annotations and values.
                 //since the UI cant manage properties that are defined in the same line.
-                property = dataObject.addProperty( variable.getIdentifier().getIdentifier(), className, modifiers );
+                if (multiple) {
+                    property = dataObject.addProperty( variable.getIdentifier().getIdentifier(), className, true, bag, modifiers );
+                } else {
+                    property = dataObject.addProperty( variable.getIdentifier().getIdentifier(), className, modifiers );
+                }
 
                 fieldAnnotations = field.getModifiers() != null ? field.getModifiers().getAnnotations() : null;
                 if (fieldAnnotations != null) {
                     for (AnnotationDescr fieldAnnotation : fieldAnnotations) {
-                        addPropertyAnnotation(property, fieldAnnotation);
+                        addPropertyAnnotation(property, fieldAnnotation, classTypeResolver);
                     }
                 }
             }
         }
     }
 
-    private void addPropertyAnnotation( ObjectProperty property, AnnotationDescr annotationDescr ) throws ModelDriverException {
-        Annotation annotation = createAnnotation( annotationDescr );
+    private void addPropertyAnnotation( ObjectProperty property, AnnotationDescr annotationDescr, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
+        Annotation annotation = createAnnotation( annotationDescr, classTypeResolver );
         if ( annotation != null ) {
             property.addAnnotation( annotation );
         }
     }
 
-    private Annotation createAnnotation( AnnotationDescr annotationToken ) throws ModelDriverException {
+    private Annotation createAnnotation( AnnotationDescr annotationToken, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
 
-        AnnotationDefinition annotationDefinition = getConfiguredAnnotation(annotationToken.getQualifiedName().getName());
+        String annotationClassName = resolveTypeName( classTypeResolver, annotationToken.getQualifiedName().getName() );
+
+        AnnotationDefinition annotationDefinition = getConfiguredAnnotation(annotationClassName);
         Annotation annotation = null;
 
         if ( annotationDefinition != null ) {
@@ -259,26 +302,4 @@ public class JavaModelDriver implements ModelDriver {
         }
         return annotation;
     }
-
-    private int buildModifierRepresentation( List<ModifierDescr> modifiers ) {
-        int result = 0x0;
-        if (modifiers != null) {
-            for (ModifierDescr modifier : modifiers) {
-                if ("public".equals( modifier.getName() )) result = result | Modifier.PUBLIC;
-                if ("protected".equals( modifier.getName() )) result = result | Modifier.PROTECTED;
-                if ("private".equals( modifier.getName() )) result = result | Modifier.PRIVATE;
-                if ("abstract".equals( modifier.getName() )) result = result | Modifier.ABSTRACT;
-                if ("static".equals( modifier.getName() )) result = result | Modifier.STATIC;
-                if ("final".equals( modifier.getName() )) result = result | Modifier.FINAL;
-                if ("transient".equals( modifier.getName() )) result = result | Modifier.TRANSIENT;
-                if ("volatile".equals( modifier.getName() )) result = result | Modifier.VOLATILE;
-                if ("synchronized".equals( modifier.getName() )) result = result | Modifier.SYNCHRONIZED;
-                if ("native".equals( modifier.getName() )) result = result | Modifier.NATIVE;
-                if ("strictfp".equals( modifier.getName() )) result = result | Modifier.STRICT;
-                if ("interface".equals( modifier.getName() )) result = result | Modifier.INTERFACE;
-            }
-        }
-        return result;
-    }
-
 }

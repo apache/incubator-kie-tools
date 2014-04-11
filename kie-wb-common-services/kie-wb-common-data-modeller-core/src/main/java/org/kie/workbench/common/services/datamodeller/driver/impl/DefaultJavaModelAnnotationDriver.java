@@ -33,6 +33,7 @@ import org.kie.workbench.common.services.datamodeller.parser.descr.AnnotationDes
 import org.kie.workbench.common.services.datamodeller.parser.descr.ElementValueDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ElementValuePairDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ElementValuePairListDescr;
+import org.kie.workbench.common.services.datamodeller.util.StringEscapeUtils;
 
 public class DefaultJavaModelAnnotationDriver implements AnnotationDriver {
 
@@ -85,6 +86,9 @@ public class DefaultJavaModelAnnotationDriver implements AnnotationDriver {
             if (result.endsWith( "\"" )) {
                 result = result.length() > 1 ? result.substring( 0, result.length()-1 ) : "";
             }
+
+            result = StringEscapeUtils.unescapeJava( result  );
+
         } else if ( Position.class.getName().equals( annotationDefinition.getClassName() ) ) {
             result = value;
         } else if ( Role.class.getName().equals( annotationDefinition.getClassName() )) {

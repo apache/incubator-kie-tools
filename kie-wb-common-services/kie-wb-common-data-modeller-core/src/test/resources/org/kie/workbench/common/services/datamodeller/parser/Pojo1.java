@@ -18,10 +18,27 @@ package org.kie.workbench.common.services.datamodeller.parser;
 
 import java.util.List;
 
+import org.kie.api.definition.type.Description;
+
 /**
  * Changes on this class can break Pojo1FiledParsingTest the test.
  */
 class Pojo1 {
+
+    int field1;
+
+    java.lang.Integer field2;
+
+    Integer field3;
+
+    List<Integer> field4;
+
+    java.util.List<Integer> field5;
+
+    List<java.lang.Integer> field6;
+
+    java.util.List<java.lang.Integer> field7;
+
 
  /*comment1*/
     private /*comment2*/ java.lang.String name  ; public  static  int a  = 3 ,   b =   4         ;
