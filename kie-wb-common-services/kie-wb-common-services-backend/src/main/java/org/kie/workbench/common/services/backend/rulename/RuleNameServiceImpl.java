@@ -17,18 +17,25 @@
 package org.kie.workbench.common.services.backend.rulename;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceChange;
@@ -39,7 +46,10 @@ import org.uberfire.workbench.events.ResourceRenamed;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-public class RuleNameObserver {
+@Service
+@ApplicationScoped
+public class RuleNameServiceImpl
+        implements RuleNamesService {
 
     private SourceServices sourceServices;
     private ProjectService projectService;
@@ -47,10 +57,41 @@ public class RuleNameObserver {
     private final Map<Project, RuleNamesByPackageMap> ruleNames = new HashMap<Project, RuleNamesByPackageMap>();
     private final Map<Path, PathHandle> pathHandles = new HashMap<Path, PathHandle>();
 
+    public RuleNameServiceImpl() {
+    }
+
     @Inject
-    public RuleNameObserver(SourceServices sourceServices, ProjectService projectService) {
+    public RuleNameServiceImpl(SourceServices sourceServices, ProjectService projectService) {
         this.sourceServices = sourceServices;
         this.projectService = projectService;
+    }
+
+    @Override
+    public Collection<String> getRuleNames(
+            final Path path,
+            final String packageName) {
+
+        final Project project = projectService.resolveProject(path);
+
+        if (project == null) {
+            return Collections.emptyList();
+        } else {
+            return getRuleNames(project, packageName);
+        }
+    }
+
+    public void onProjectContextChange(@Observes final ProjectContextChangeEvent event) {
+        visitPaths(Files.newDirectoryStream(Paths.convert(event.getProject().getRootPath())));
+    }
+
+    private void visitPaths(final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream) {
+        for (final org.uberfire.java.nio.file.Path path : directoryStream) {
+            if (Files.isDirectory(path)) {
+                visitPaths(Files.newDirectoryStream(path));
+            } else {
+                processResourceAdd(Paths.convert(path));
+            }
+        }
     }
 
     public void processResourceAdd(@Observes final ResourceAddedEvent resourceAddedEvent) {
@@ -132,20 +173,22 @@ public class RuleNameObserver {
     private void addRuleNames(Path path) {
         org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
 
-        String drl = sourceServices.getServiceFor(
-                convertedPath).getSource(convertedPath);
+        if (sourceServices.hasServiceFor(convertedPath)) {
+            String drl = sourceServices.getServiceFor(
+                    convertedPath).getSource(convertedPath);
 
-        Project project = projectService.resolveProject(path);
+            Project project = projectService.resolveProject(path);
 
-        RuleNameResolver ruleNameResolver = new RuleNameResolver(drl);
-        if (ruleNames.containsKey(project)) {
-            ruleNames.get(project).add(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames());
-        } else {
-            RuleNamesByPackageMap map = new RuleNamesByPackageMap();
-            map.add(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames());
-            ruleNames.put(project, map);
+            RuleNameResolver ruleNameResolver = new RuleNameResolver(drl);
+            if (ruleNames.containsKey(project)) {
+                ruleNames.get(project).add(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames());
+            } else {
+                RuleNamesByPackageMap map = new RuleNamesByPackageMap();
+                map.add(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames());
+                ruleNames.put(project, map);
+            }
+            pathHandles.put(path, new PathHandle(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames()));
         }
-        pathHandles.put(path, new PathHandle(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames()));
     }
 
     private void deleteRuleNames(Path path) {

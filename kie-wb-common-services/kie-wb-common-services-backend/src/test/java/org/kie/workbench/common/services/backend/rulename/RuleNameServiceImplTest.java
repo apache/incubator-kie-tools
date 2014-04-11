@@ -20,11 +20,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import javax.enterprise.inject.Instance;
 
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.junit.After;
@@ -34,6 +36,8 @@ import org.kie.workbench.common.services.backend.source.BaseSourceService;
 import org.kie.workbench.common.services.backend.source.SourceService;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.backend.source.SourceServicesImpl;
+import org.uberfire.backend.organizationalunit.OrganizationalUnit;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -54,9 +58,9 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class RuleNameObserverTest {
+public class RuleNameServiceImplTest {
 
-    private RuleNameObserver observer;
+    private RuleNameServiceImpl service;
     private SimpleFileSystemProvider simpleFileSystemProvider;
     private ArrayList<SourceService> sourceServicesList = new ArrayList<SourceService>();
     private DTableSourceServiceMock gdstSourceService;
@@ -80,7 +84,7 @@ public class RuleNameObserverTest {
 
         SourceServices sourceServices = new SourceServicesImpl(instance);
         projectService = mock(ProjectService.class);
-        observer = new RuleNameObserver(sourceServices, projectService);
+        service = new RuleNameServiceImpl(sourceServices, projectService);
     }
 
     @After
@@ -89,10 +93,29 @@ public class RuleNameObserverTest {
     }
 
     @Test
+    public void testLoadAll() throws Exception {
+
+        String uriToResource = this.getClass().getResource("hello.rdrl").toURI().toString();
+        URI uriToRootPath = URI.create(uriToResource.substring(0, uriToResource.length() - "hello.rdrl".length()));
+        final org.uberfire.backend.vfs.Path rootPath = Paths.convert(simpleFileSystemProvider.getPath(uriToRootPath));
+
+        OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        Repository repository = mock(Repository.class);
+
+        when(project.getRootPath()).thenReturn(rootPath);
+
+        service.onProjectContextChange(new ProjectContextChangeEvent(organizationalUnit, repository, project));
+
+    }
+
+    // THREAD LOCK
+    // FULL LOAD ONLY ON THE FIRST TIME
+
+    @Test
     public void testEmpty() throws Exception {
         when(projectService.resolveProject(any(Path.class))).thenReturn(project);
 
-        assertEquals(0, observer.getRuleNames(project, "some.pgk").size());
+        assertEquals(0, service.getRuleNames(project, "some.pgk").size());
     }
 
     @Test
@@ -103,8 +126,8 @@ public class RuleNameObserverTest {
 
         fireResourceAddedEvent(testPath);
 
-        assertEquals(1, observer.getRuleNames(project, "some.pkg").size());
-        assertTrue(observer.getRuleNames(project, "some.pkg").contains("test"));
+        assertEquals(1, service.getRuleNames(project, "some.pkg").size());
+        assertTrue(service.getRuleNames(project, "some.pkg").contains("test"));
     }
 
     @Test
@@ -120,14 +143,14 @@ public class RuleNameObserverTest {
         when(projectService.resolveProject(rdrl1)).thenReturn(project1);
         when(projectService.resolveProject(rdrl2)).thenReturn(project2);
 
-        observer.processResourceAdd(new ResourceAddedEvent(rdrl1, sessionInfo));
-        observer.processResourceAdd(new ResourceAddedEvent(rdrl2, sessionInfo));
+        service.processResourceAdd(new ResourceAddedEvent(rdrl1, sessionInfo));
+        service.processResourceAdd(new ResourceAddedEvent(rdrl2, sessionInfo));
 
-        assertEquals(1, observer.getRuleNames(project1, "org.test").size());
-        assertTrue(observer.getRuleNames(project1, "org.test").contains("hello"));
+        assertEquals(1, service.getRuleNames(project1, "org.test").size());
+        assertTrue(service.getRuleNames(project1, "org.test").contains("hello"));
 
-        assertEquals(1, observer.getRuleNames(project2, "org.test").size());
-        assertTrue(observer.getRuleNames(project2, "org.test").contains("myRule"));
+        assertEquals(1, service.getRuleNames(project2, "org.test").size());
+        assertTrue(service.getRuleNames(project2, "org.test").contains("myRule"));
     }
 
     @Test
@@ -140,10 +163,10 @@ public class RuleNameObserverTest {
         fireResourceAddedEvent(drlPath);
         fireResourceAddedEvent(rdrlPath);
 
-        assertEquals(1, observer.getRuleNames(project, "some.pkg").size());
-        assertTrue(observer.getRuleNames(project, "some.pkg").contains("test"));
-        assertEquals(1, observer.getRuleNames(project, "org.test").size());
-        assertTrue(observer.getRuleNames(project, "org.test").contains("hello"));
+        assertEquals(1, service.getRuleNames(project, "some.pkg").size());
+        assertTrue(service.getRuleNames(project, "some.pkg").contains("test"));
+        assertEquals(1, service.getRuleNames(project, "org.test").size());
+        assertTrue(service.getRuleNames(project, "org.test").contains("hello"));
     }
 
     @Test
@@ -154,7 +177,7 @@ public class RuleNameObserverTest {
 
         fireResourceAddedEvent(testPath);
 
-        assertEquals(0, observer.getRuleNames(project, "some.package").size());
+        assertEquals(0, service.getRuleNames(project, "some.package").size());
     }
 
     @Test
@@ -167,13 +190,13 @@ public class RuleNameObserverTest {
         fireResourceAddedEvent(testPath);
         fireResourceAddedEvent(testPath2);
 
-        assertEquals(5, observer.getRuleNames(project, "org.test").size());
-        assertTrue(observer.getRuleNames(project, "org.test").contains("hello"));
+        assertEquals(5, service.getRuleNames(project, "org.test").size());
+        assertTrue(service.getRuleNames(project, "org.test").contains("hello"));
 
         fireResourceDeletedEvent(testPath);
 
-        assertEquals(4, observer.getRuleNames(project, "org.test").size());
-        assertFalse(observer.getRuleNames(project, "org.test").contains("hello"));
+        assertEquals(4, service.getRuleNames(project, "org.test").size());
+        assertFalse(service.getRuleNames(project, "org.test").contains("hello"));
     }
 
     @Test
@@ -184,7 +207,7 @@ public class RuleNameObserverTest {
 
         fireResourceDeletedEvent(testPath);
 
-        assertEquals(0, observer.getRuleNames(project, "some.package").size());
+        assertEquals(0, service.getRuleNames(project, "some.package").size());
     }
 
     @Test
@@ -202,8 +225,8 @@ public class RuleNameObserverTest {
 
         fireResourceAddedEvent(testPath);
 
-        assertEquals(1, observer.getRuleNames(project, "org.test").size());
-        assertTrue(observer.getRuleNames(project, "org.test").contains("test"));
+        assertEquals(1, service.getRuleNames(project, "org.test").size());
+        assertTrue(service.getRuleNames(project, "org.test").contains("test"));
 
         gdstSourceService.source =
                 "package org.test\n"
@@ -214,8 +237,8 @@ public class RuleNameObserverTest {
 
         fireResourceUpdatedEvent(testPath);
 
-        assertEquals(1, observer.getRuleNames(project, "org.test").size());
-        assertTrue(observer.getRuleNames(project, "org.test").contains("newName"));
+        assertEquals(1, service.getRuleNames(project, "org.test").size());
+        assertTrue(service.getRuleNames(project, "org.test").contains("newName"));
     }
 
     @Test
@@ -227,16 +250,16 @@ public class RuleNameObserverTest {
 
         fireResourceAddedEvent(originalTestPath);
 
-        assertEquals(2, observer.getRuleNames(project, "pkg1").size());
-        assertTrue(observer.getRuleNames(project, "pkg1").contains("Rule 1"));
-        assertTrue(observer.getRuleNames(project, "pkg1").contains("Rule2"));
+        assertEquals(2, service.getRuleNames(project, "pkg1").size());
+        assertTrue(service.getRuleNames(project, "pkg1").contains("Rule 1"));
+        assertTrue(service.getRuleNames(project, "pkg1").contains("Rule2"));
 
         fireResourceRenameEvent(newTestPath, originalTestPath);
 
-        assertEquals(2, observer.getRuleNames(project, "pkg2").size());
-        assertTrue(observer.getRuleNames(project, "pkg1").isEmpty());
-        assertTrue(observer.getRuleNames(project, "pkg2").contains("Rule 1"));
-        assertTrue(observer.getRuleNames(project, "pkg2").contains("Rule2"));
+        assertEquals(2, service.getRuleNames(project, "pkg2").size());
+        assertTrue(service.getRuleNames(project, "pkg1").isEmpty());
+        assertTrue(service.getRuleNames(project, "pkg2").contains("Rule 1"));
+        assertTrue(service.getRuleNames(project, "pkg2").contains("Rule2"));
     }
 
     @Test
@@ -248,19 +271,19 @@ public class RuleNameObserverTest {
 
         fireResourceAddedEvent(originalTestPath);
 
-        assertEquals(2, observer.getRuleNames(project, "pkg1").size());
-        assertTrue(observer.getRuleNames(project, "pkg1").contains("Rule 1"));
-        assertTrue(observer.getRuleNames(project, "pkg1").contains("Rule2"));
+        assertEquals(2, service.getRuleNames(project, "pkg1").size());
+        assertTrue(service.getRuleNames(project, "pkg1").contains("Rule 1"));
+        assertTrue(service.getRuleNames(project, "pkg1").contains("Rule2"));
 
         fireResourceCopyEvent(newTestPath, originalTestPath);
 
-        assertEquals(2, observer.getRuleNames(project, "pkg1").size());
-        assertTrue(observer.getRuleNames(project, "pkg1").contains("Rule 1"));
-        assertTrue(observer.getRuleNames(project, "pkg1").contains("Rule2"));
+        assertEquals(2, service.getRuleNames(project, "pkg1").size());
+        assertTrue(service.getRuleNames(project, "pkg1").contains("Rule 1"));
+        assertTrue(service.getRuleNames(project, "pkg1").contains("Rule2"));
 
-        assertEquals(2, observer.getRuleNames(project, "pkg2").size());
-        assertTrue(observer.getRuleNames(project, "pkg2").contains("Rule 1"));
-        assertTrue(observer.getRuleNames(project, "pkg2").contains("Rule2"));
+        assertEquals(2, service.getRuleNames(project, "pkg2").size());
+        assertTrue(service.getRuleNames(project, "pkg2").contains("Rule 1"));
+        assertTrue(service.getRuleNames(project, "pkg2").contains("Rule2"));
     }
 
     @Test
@@ -290,17 +313,17 @@ public class RuleNameObserverTest {
         fireResourceAddedEvent(deleteTestPath);
         fireResourceAddedEvent(oldRenameTestPath);
 
-        assertEquals(1, observer.getRuleNames(project, "org.update").size());
-        assertTrue(observer.getRuleNames(project, "org.update").contains("oldName"));
+        assertEquals(1, service.getRuleNames(project, "org.update").size());
+        assertTrue(service.getRuleNames(project, "org.update").contains("oldName"));
 
-        assertTrue(observer.getRuleNames(project, "some.pgk").isEmpty());
+        assertTrue(service.getRuleNames(project, "some.pgk").isEmpty());
 
-        assertEquals(4, observer.getRuleNames(project, "org.test").size());
+        assertEquals(4, service.getRuleNames(project, "org.test").size());
 
-        assertEquals(2, observer.getRuleNames(project, "pkg1").size());
+        assertEquals(2, service.getRuleNames(project, "pkg1").size());
 
-        assertEquals(1, observer.getRuleNames(project, "org.rename").size());
-        assertTrue(observer.getRuleNames(project, "org.rename").contains("old rename"));
+        assertEquals(1, service.getRuleNames(project, "org.rename").size());
+        assertTrue(service.getRuleNames(project, "org.rename").contains("old rename"));
 
         // Modify in every possible way
 
@@ -323,19 +346,19 @@ public class RuleNameObserverTest {
 
         fireBatchEvent(batch);
 
-        assertEquals(1, observer.getRuleNames(project, "org.update").size());
-        assertFalse(observer.getRuleNames(project, "org.update").contains("oldName"));
-        assertTrue(observer.getRuleNames(project, "org.update").contains("newName"));
+        assertEquals(1, service.getRuleNames(project, "org.update").size());
+        assertFalse(service.getRuleNames(project, "org.update").contains("oldName"));
+        assertTrue(service.getRuleNames(project, "org.update").contains("newName"));
 
-        assertEquals(1, observer.getRuleNames(project, "some.pkg").size());
-        assertTrue(observer.getRuleNames(project, "some.pkg").contains("test"));
+        assertEquals(1, service.getRuleNames(project, "some.pkg").size());
+        assertTrue(service.getRuleNames(project, "some.pkg").contains("test"));
 
-        assertTrue(observer.getRuleNames(project, "org.test").isEmpty());
+        assertTrue(service.getRuleNames(project, "org.test").isEmpty());
 
-        assertEquals(2, observer.getRuleNames(project, "pkg2").size());
+        assertEquals(2, service.getRuleNames(project, "pkg2").size());
 
-        assertEquals(1, observer.getRuleNames(project, "org.rename").size());
-        assertTrue(observer.getRuleNames(project, "org.rename").contains("new rename"));
+        assertEquals(1, service.getRuleNames(project, "org.rename").size());
+        assertTrue(service.getRuleNames(project, "org.rename").contains("new rename"));
     }
 
     private void applyRenameResource(Path renameOriginalTestPath, Path renameNewTestPath, HashMap<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> batch) {
@@ -373,11 +396,11 @@ public class RuleNameObserverTest {
     private void fireBatchEvent(HashMap<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> batch) {
         SessionInfo sessionInfo = mock(SessionInfo.class);
         ResourceBatchChangesEvent resourceBatchChangesEvent = new ResourceBatchChangesEvent(batch, sessionInfo);
-        observer.processBatchChanges(resourceBatchChangesEvent);
+        service.processBatchChanges(resourceBatchChangesEvent);
     }
 
     private void fireResourceCopyEvent(Path newPath, Path oldPath) {
-        observer.processResourceCopied(getResourceCopyEvent(newPath, oldPath));
+        service.processResourceCopied(getResourceCopyEvent(newPath, oldPath));
     }
 
     private ResourceCopiedEvent getResourceCopyEvent(Path newPath, Path oldPath) {
@@ -386,7 +409,7 @@ public class RuleNameObserverTest {
     }
 
     private void fireResourceRenameEvent(Path newPath, Path oldPath) {
-        observer.processResourceRenamed(getResourceRenameEvent(newPath, oldPath));
+        service.processResourceRenamed(getResourceRenameEvent(newPath, oldPath));
     }
 
     private ResourceRenamedEvent getResourceRenameEvent(Path newPath, Path oldPath) {
@@ -395,7 +418,7 @@ public class RuleNameObserverTest {
     }
 
     private void fireResourceUpdatedEvent(Path path) {
-        observer.processResourceUpdate(getResourceUpdateEvent(path));
+        service.processResourceUpdate(getResourceUpdateEvent(path));
     }
 
     private ResourceUpdatedEvent getResourceUpdateEvent(Path path) {
@@ -404,11 +427,11 @@ public class RuleNameObserverTest {
     }
 
     private void fireResourceDeletedEvent(Path path) {
-        observer.processResourceDelete(getResourceDeletedEvent(path));
+        service.processResourceDelete(getResourceDeletedEvent(path));
     }
 
     private void fireResourceAddedEvent(Path path) {
-        observer.processResourceAdd(getResourceAddedEvent(path));
+        service.processResourceAdd(getResourceAddedEvent(path));
     }
 
     private ResourceDeletedEvent getResourceDeletedEvent(Path path) {
