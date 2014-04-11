@@ -13,32 +13,10 @@
 
   <name>Parent with dependencies</name>
   <description>The parent with dependencies declares all dependency versions in dependencyManagement.
-    All modules extend this parent, except for the boms (which are used here).</description>
+    All modules extend this parent, except for the boms (which are used here).
+  </description>
 
   <properties>
-    <version.compiler.plugin>2.5.1</version.compiler.plugin>
-    <!-- ************** -->
-    <!-- Build settings -->
-    <!-- ************** -->
-
-    <!-- Cross plugins settings -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <!-- maven-compiler-plugin -->
-    <maven.compiler.target>1.6</maven.compiler.target>
-    <maven.compiler.source>1.6</maven.compiler.source>
-
-    <!--
-        Options to override the compiler arguments directly on the compiler arument line to separate between what
-        the IDE understands as the source level and what the Maven compiler actually use.
-    -->
-    <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
-    <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
-
-    <!-- ************** -->
-    <!--  Dependencies  -->
-    <!-- ************** -->
-
     <version.org.uberfire>0.4.0-SNAPSHOT</version.org.uberfire>
 
     <version.ch.qos.logback>1.0.9</version.ch.qos.logback>
@@ -103,19 +81,6 @@
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${version.compiler.plugin}</version>
-          <configuration>
-            <showDeprecation>true</showDeprecation>
-            <showWarnings>true</showWarnings>
-            <compilerArguments>
-              <source>${maven.compiler.argument.source}</source>
-              <target>${maven.compiler.argument.target}</target>
-            </compilerArguments>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
