@@ -52,7 +52,8 @@
 
     <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
 
-    <version.org.picketlink>2.5.3.Final</version.org.picketlink>
+    <version.org.picketlink>2.6.0-SNAPSHOT</version.org.picketlink>
+    <version.org.jboss.logging>3.1.1.GA</version.org.jboss.logging>
 
     <version.commons-httpclient>3.1</version.commons-httpclient>
     <version.commons-io>2.1</version.commons-io>
@@ -391,6 +392,12 @@
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-security-picketlink</artifactId>
         <version>${version.org.jboss.errai}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${version.org.jboss.logging}</version>
       </dependency>
 
       <!-- Weld Modules -->

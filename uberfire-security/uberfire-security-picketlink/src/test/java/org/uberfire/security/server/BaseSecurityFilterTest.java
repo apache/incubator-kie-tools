@@ -2,8 +2,8 @@ package org.uberfire.security.server;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
+import static org.picketlink.authentication.web.AuthenticationFilter.*;
 import static org.uberfire.security.server.FormAuthenticationScheme.*;
-import static org.uberfire.security.server.PicketLinkAuthenticationFilter.*;
 
 import javax.enterprise.inject.Instance;
 import javax.servlet.FilterChain;
@@ -17,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.picketlink.Identity;
+import org.picketlink.authentication.web.AuthenticationFilter;
+import org.picketlink.authentication.web.HTTPAuthenticationScheme;
 import org.picketlink.credential.DefaultLoginCredentials;
 import org.uberfire.security.server.mock.MockFilterConfig;
 import org.uberfire.security.server.mock.MockHttpSession;
@@ -57,15 +59,17 @@ public abstract class BaseSecurityFilterTest {
     @Spy
     protected MockIdentity identity;
 
+    @Mock( name = "applicationPreferredAuthSchemeInstance" )
+    protected Instance<HTTPAuthenticationScheme> preferredAuthFilterInstance;
+
     @InjectMocks
-    protected PicketLinkAuthenticationFilter uberFireFilter;
+    protected AuthenticationFilter authFilter;
 
     @Before
     public void setup() {
         filterConfig = new MockFilterConfig( new MockServletContext() );
 
         // useful minimum configuration. tests may overwrite these values before calling filter.init().
-        filterConfig.initParams.put( AUTH_TYPE_INIT_PARAM, FormAuthenticationScheme.class.getName() );
         filterConfig.initParams.put( HOST_PAGE_INIT_PARAM, "/dont/care" );
         filterConfig.initParams.put( FORCE_REAUTHENTICATION_INIT_PARAM, "true" );
 
@@ -80,6 +84,8 @@ public abstract class BaseSecurityFilterTest {
         when( identityInstance.get() ).thenReturn( identity );
 
         when( credentialsInstance.get() ).thenReturn( credentials );
+
+        when( preferredAuthFilterInstance.get() ).thenReturn( new FormAuthenticationScheme() );
     }
 
 }

@@ -21,9 +21,10 @@ public class FormAuthenticationScheme implements HTTPAuthenticationScheme {
      * URI of the GWT host page, relative to the servlet container root (so it starts with '/' and includes the context
      * path).
      */
-    private final String hostPageUri;
+    private String hostPageUri;
 
-    public FormAuthenticationScheme(FilterConfig filterConfig) {
+    @Override
+    public void initialize(FilterConfig filterConfig) {
         String contextRelativeHostPageUri = filterConfig.getInitParameter( HOST_PAGE_INIT_PARAM );
         if (contextRelativeHostPageUri == null) {
             throw new IllegalStateException(

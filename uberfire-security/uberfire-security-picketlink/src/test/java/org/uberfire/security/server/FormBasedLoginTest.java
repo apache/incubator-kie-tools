@@ -24,8 +24,8 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         when( request.getServletPath() ).thenReturn( "/in.erraiBus" );
         when( request.getRequestURI() ).thenReturn( "/test-context/in.erraiBus" );
 
-        uberFireFilter.init( filterConfig );
-        uberFireFilter.doFilter( request, response, filterChain );
+        authFilter.init( filterConfig );
+        authFilter.doFilter( request, response, filterChain );
 
         verify( filterChain, never() ).doFilter( any(HttpServletRequest.class), any(HttpServletResponse.class) );
         verify( response ).sendError( eq( 403 ) );
@@ -40,8 +40,8 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         when( request.getServletPath() ).thenReturn( "/in.erraiBus" );
         when( request.getRequestURI() ).thenReturn( "/test-context/in.erraiBus" );
 
-        uberFireFilter.init( filterConfig );
-        uberFireFilter.doFilter( request, response, filterChain );
+        authFilter.init( filterConfig );
+        authFilter.doFilter( request, response, filterChain );
 
         // make sure the filter didn't commit the response, with specific checks for the most likely reasons it might have
         verify( response, never() ).sendError( anyInt(), anyString() );
@@ -69,8 +69,8 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         when( request.getParameter( HTTP_FORM_USERNAME_PARAM )).thenReturn( "username" );
         when( request.getParameter( HTTP_FORM_PASSWORD_PARAM )).thenReturn( "password" );
 
-        uberFireFilter.init( filterConfig );
-        uberFireFilter.doFilter( request, response, filterChain );
+        authFilter.init( filterConfig );
+        authFilter.doFilter( request, response, filterChain );
 
         verify( response, never() ).sendError( anyInt() );
         verify( response, never() ).sendError( anyInt(), anyString() );
@@ -95,8 +95,8 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         when( request.getParameter( HTTP_FORM_USERNAME_PARAM )).thenReturn( "logged_in_via_form" );
         when( request.getParameter( HTTP_FORM_PASSWORD_PARAM )).thenReturn( "logged_in_via_form" );
 
-        uberFireFilter.init( filterConfig );
-        uberFireFilter.doFilter( request, response, filterChain );
+        authFilter.init( filterConfig );
+        authFilter.doFilter( request, response, filterChain );
 
         // the new form-based login attempt must take precedence over the existing session info
         assertEquals( "logged_in_via_form", ((User) identity.getAccount()).getLoginName() );
@@ -126,8 +126,8 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         when( request.getServletPath() ).thenReturn( "" );
         when( request.getRequestURI() ).thenReturn( contextPath + hostPageUri );
 
-        uberFireFilter.init( filterConfig );
-        uberFireFilter.doFilter( request, response, filterChain );
+        authFilter.init( filterConfig );
+        authFilter.doFilter( request, response, filterChain );
 
         // the host page redirect must not have happened (it would be a loop)
         verify( response, never() ).sendError( anyInt() );
@@ -155,8 +155,8 @@ public class FormBasedLoginTest extends BaseSecurityFilterTest {
         when( request.getServletPath() ).thenReturn( "" );
         when( request.getRequestURI() ).thenReturn( contextPath + "/foo.css" );
 
-        uberFireFilter.init( filterConfig );
-        uberFireFilter.doFilter( request, response, filterChain );
+        authFilter.init( filterConfig );
+        authFilter.doFilter( request, response, filterChain );
 
         // the host page redirect must not have happened (it would be a loop)
         verify( response, never() ).sendError( anyInt() );
