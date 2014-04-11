@@ -28,10 +28,16 @@ import org.uberfire.backend.server.io.IOSecurityAuth;
 import org.uberfire.backend.server.io.IOSecurityAuthz;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.security.auth.AuthenticationManager;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
+import org.uberfire.security.server.cdi.SecurityFactory;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
@@ -56,20 +62,37 @@ public class ApplicationScopedProducer {
     private ClusterServiceFactory clusterServiceFactory;
 
     private IOService ioService;
+    private LuceneConfig config;
 
     @PostConstruct
     public void setup() {
+        SecurityFactory.setAuthzManager( new RuntimeAuthorizationManager() );
+
+        this.config = new LuceneConfigBuilder().withInMemoryMetaModelStore()
+                .useDirectoryBasedIndex()
+                .useNIODirectory()
+                .build();
+
+        final IOService service = new IOServiceIndexedImpl( watchService,
+                                                            config.getIndexEngine(),
+                                                            DublinCoreView.class,
+                                                            VersionAttributeView.class );
+
         if ( clusterServiceFactory == null ) {
-            ioService = new IOServiceDotFileImpl( watchService );
+            ioService = service;
         } else {
-            ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
+            ioService = new IOServiceClusterImpl( service,
+                                                  clusterServiceFactory,
+                                                  false );
         }
+
         ioService.setAuthenticationManager( authenticationManager );
         ioService.setAuthorizationManager( authorizationManager );
     }
 
     @PreDestroy
     public void onShutdown() {
+        config.dispose();
         ioService.dispose();
     }
 

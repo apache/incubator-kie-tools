@@ -44,4 +44,6 @@ public interface MetaIndexEngine {
     void commit( final KCluster cluster );
 
     void dispose();
+
+    void beforeDispose( final Runnable callback );
 }
