@@ -23,6 +23,9 @@ import org.kie.api.definition.type.Description;
 import org.kie.api.definition.type.Label;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Duration;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
@@ -76,9 +79,14 @@ public class DefaultJavaModelAnnotationDriver implements AnnotationDriver {
     private String parseParamValue(AnnotationDefinition annotationDefinition, String param, String value)  {
 
         String result = value;
+
         if ( result != null &&
-             ( Description.class.getName().equals( annotationDefinition.getClassName()) ||
-               Label.class.getName().equals( annotationDefinition.getClassName()) ) ) {
+             ( Description.class.getName().equals( annotationDefinition.getClassName() ) ||
+               Label.class.getName().equals( annotationDefinition.getClassName() ) ||
+               Timestamp.class.getName().equals( annotationDefinition.getClassName() ) ||
+               Duration.class.getName().equals( annotationDefinition.getClassName() ) ||
+               Expires.class.getName().equals( annotationDefinition.getClassName() )
+             ) ) {
 
             if (result.startsWith( "\"" )) {
                 result = result.length() > 1 ? result.substring( 1, result.length() ) : "";

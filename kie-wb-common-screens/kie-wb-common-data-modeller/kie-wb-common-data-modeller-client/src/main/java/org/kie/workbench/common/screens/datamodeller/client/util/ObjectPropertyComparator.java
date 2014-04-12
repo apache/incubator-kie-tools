@@ -49,8 +49,8 @@ public class ObjectPropertyComparator implements Comparator<ObjectPropertyTO> {
             key1 = AnnotationValueHandler.getInstance().getStringValue(o1, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
             key2 = AnnotationValueHandler.getInstance().getStringValue(o2, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
         } else if ("position".equals(field)) {
-            key1 = AnnotationValueHandler.getInstance().getStringValue(o1, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM);
-            key2 = AnnotationValueHandler.getInstance().getStringValue(o2, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM);
+            key1 = AnnotationValueHandler.getInstance().getStringValue(o1, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            key2 = AnnotationValueHandler.getInstance().getStringValue(o2, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
             if (key1 != null) {
                 try {
                     key1 = new Integer(key1.toString());

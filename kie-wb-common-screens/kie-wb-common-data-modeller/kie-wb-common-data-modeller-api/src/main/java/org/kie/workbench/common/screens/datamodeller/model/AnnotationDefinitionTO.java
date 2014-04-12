@@ -41,7 +41,7 @@ public class AnnotationDefinitionTO {
     
     public static final String ROLE_ANNOTATION = "org.kie.api.definition.type.Role";
     
-    public static final String POSITION_ANNOTATON = "org.kie.api.definition.type.Position";
+    public static final String POSITION_ANNOTATION = "org.kie.api.definition.type.Position";
 
     public static final String LABEL_ANNOTATION = "org.kie.api.definition.type.Label";
 
@@ -52,6 +52,14 @@ public class AnnotationDefinitionTO {
     public static final String PROPERTY_REACTIVE_ANNOTATION = "org.kie.api.definition.type.PropertyReactive";
 
     public static final String CLASS_REACTIVE_ANNOTATION = "org.kie.api.definition.type.ClassReactive";
+
+    public static final String TIMESTAMP_ANNOTATION = "org.kie.api.definition.type.Timestamp";
+
+    public static final String DURATION_ANNOTATION = "org.kie.api.definition.type.Duration";
+
+    public static final String EXPIRES_ANNOTATION = "org.kie.api.definition.type.Expires";
+
+    public static final String TYPE_SAFE_ANNOTATION = "org.kie.api.definition.type.TypeSafe";
 
     public static final String VALUE_PARAM = "value";
 

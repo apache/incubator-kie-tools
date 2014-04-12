@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -39,15 +44,20 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 
@@ -109,6 +119,42 @@ public class DataObjectEditor extends Composite {
     @UiField
     Icon propertyReactiveHelpIcon;
 
+    @UiField
+    Label typeSafeLabel;
+
+    @UiField
+    Icon typeSafeHelpIcon;
+
+    @UiField
+    ListBox typeSafeSelector;
+
+    @UiField
+    Label timestampLabel;
+
+    @UiField
+    Icon timestampHelpIcon;
+
+    @UiField
+    ListBox timestampFieldSelector;
+
+    @UiField
+    Label durationLabel;
+
+    @UiField
+    ListBox durationFieldSelector;
+
+    @UiField
+    Icon durationHelpIcon;
+
+    @UiField
+    Label expiresLabel;
+
+    @UiField
+    Icon expiresHelpIcon;
+
+    @UiField
+    TextBox expires;
+
     @Inject
     Event<DataModelerEvent> dataModelerEvent;
 
@@ -132,6 +178,10 @@ public class DataObjectEditor extends Composite {
         classReactiveHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
         //propertyReactiveHelpIcon.getElement().getStyle().setPaddingLeft( 4, Style.Unit.PX );
         propertyReactiveHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        typeSafeHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        timestampHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        durationHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        expires.getElement().getStyle().setCursor( Style.Cursor.POINTER );
     }
 
     @PostConstruct
@@ -150,10 +200,33 @@ public class DataObjectEditor extends Composite {
                 roleChanged( event );
             }
         } );
+        typeSafeSelector.addChangeHandler( new ChangeHandler() {
+            @Override public void onChange( ChangeEvent event ) {
+                typeSafeChanged( event );
+            }
+        } );
+        timestampFieldSelector.addChangeHandler( new ChangeHandler() {
+            @Override public void onChange( ChangeEvent event ) {
+                timestampChanged( event );
+            }
+        } );
+        durationFieldSelector.addChangeHandler( new ChangeHandler() {
+            @Override public void onChange( ChangeEvent event ) {
+                durationChanged( event );
+            }
+        } );
+
         // TODO Change this when necessary (for now hardcoded here)
         roleSelector.addItem( "", NOT_SELECTED );
         roleSelector.addItem( "EVENT", "EVENT" );
         roleSelector.setSelectedValue( NOT_SELECTED );
+
+        typeSafeSelector.addItem( "", NOT_SELECTED );
+        typeSafeSelector.addItem( "false", "false" );
+        typeSafeSelector.addItem( "true", "true" );
+
+        timestampFieldSelector.addItem( "", NOT_SELECTED );
+        durationFieldSelector.addItem( "", NOT_SELECTED );
 
         packageSelectorPanel.add( packageSelector );
         packageSelector.getPackageList().addChangeHandler( new ChangeHandler() {
@@ -199,6 +272,10 @@ public class DataObjectEditor extends Composite {
         roleSelector.setEnabled( value );
         propertyReactiveSelector.setEnabled( value );
         classReactiveSelector.setEnabled( value );
+        typeSafeSelector.setEnabled( value );
+        expires.setEnabled( value );
+        durationFieldSelector.setEnabled( value );
+        timestampFieldSelector.setEnabled( value );
     }
 
     private boolean isReadonly() {
@@ -243,7 +320,42 @@ public class DataObjectEditor extends Composite {
                 classReactiveSelector.setValue( Boolean.TRUE );
             }
 
+            annotation = dataObject.getAnnotation( AnnotationDefinitionTO.TYPE_SAFE_ANNOTATION );
+            if ( annotation != null ) {
+                String value = annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) != null ? annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() : NOT_SELECTED;
+                typeSafeSelector.setSelectedValue( value );
+            }
+
+            annotation = dataObject.getAnnotation( AnnotationDefinitionTO.EXPIRES_ANNOTATION );
+            if ( annotation != null ) {
+                expires.setText( annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() );
+            }
+
+            loadDuration( dataObject );
+
+            loadTimestamp( dataObject );
+
             setReadonly( false );
+        }
+    }
+
+    private void loadDuration( DataObjectTO dataObject ) {
+        AnnotationTO annotation;
+        loadDurationSelector( dataObject );
+        annotation = dataObject.getAnnotation( AnnotationDefinitionTO.DURATION_ANNOTATION );
+        if ( annotation != null ) {
+            String value = annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) != null ? annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() : NOT_SELECTED;
+            durationFieldSelector.setSelectedValue( value );
+        }
+    }
+
+    private void loadTimestamp( DataObjectTO dataObject ) {
+        AnnotationTO annotation;
+        loadTimestampSelector( dataObject );
+        annotation = dataObject.getAnnotation( AnnotationDefinitionTO.TIMESTAMP_ANNOTATION );
+        if ( annotation != null ) {
+            String value = annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) != null ? annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() : NOT_SELECTED;
+            timestampFieldSelector.setSelectedValue( value );
         }
     }
 
@@ -264,6 +376,25 @@ public class DataObjectEditor extends Composite {
                 setReadonly( true );
             }
             superclassSelector.initList();
+        }
+    }
+
+    private void onDataObjectFieldCreated(@Observes DataObjectFieldCreatedEvent event) {
+        updateFieldDependentSelectors( event, event.getCurrentDataObject(), event.getCurrentField() );
+    }
+
+    private void onDataObjectFieldChange(@Observes DataObjectFieldChangeEvent event) {
+        updateFieldDependentSelectors( event, event.getCurrentDataObject(), event.getCurrentField() );
+    }
+
+    private void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
+        updateFieldDependentSelectors(event, event.getCurrentDataObject(), event.getCurrentField());
+    }
+
+    private void updateFieldDependentSelectors( DataModelerEvent event, DataObjectTO currentDataObject, ObjectPropertyTO currentField ) {
+        if ( event.isFrom( getDataModel() ) && getDataObject() == currentDataObject) {
+            loadDuration( getDataObject() );
+            loadTimestamp( getDataObject() );
         }
     }
 
@@ -508,6 +639,78 @@ public class DataObjectEditor extends Composite {
         notifyObjectChange( AnnotationDefinitionTO.ROLE_ANNOTATION, oldValue, _role );
     }
 
+    void typeSafeChanged( final ChangeEvent event ) {
+        if ( getDataObject() == null ) {
+            return;
+        }
+
+        final String _typeSaveValue = typeSafeSelector.getValue();
+        AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.TYPE_SAFE_ANNOTATION );
+
+        String oldValue = null;
+        if ( annotation != null ) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
+            if ( _typeSaveValue != null && !NOT_SELECTED.equals( _typeSaveValue ) ) {
+                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _typeSaveValue );
+            } else {
+                getDataObject().removeAnnotation( annotation );
+            }
+        } else {
+            if ( _typeSaveValue != null && !NOT_SELECTED.equals( _typeSaveValue ) ) {
+                getDataObject().addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.TYPE_SAFE_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, _typeSaveValue );
+            }
+        }
+        notifyObjectChange( AnnotationDefinitionTO.TYPE_SAFE_ANNOTATION, oldValue, _typeSaveValue );
+    }
+
+    void timestampChanged( final ChangeEvent event ) {
+        if ( getDataObject() == null ) {
+            return;
+        }
+
+        final String _timestampValue = timestampFieldSelector.getValue();
+        AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.TIMESTAMP_ANNOTATION );
+
+        String oldValue = null;
+        if ( annotation != null ) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
+            if ( _timestampValue != null && !NOT_SELECTED.equals( _timestampValue ) ) {
+                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _timestampValue );
+            } else {
+                getDataObject().removeAnnotation( annotation );
+            }
+        } else {
+            if ( _timestampValue != null && !NOT_SELECTED.equals( _timestampValue ) ) {
+                getDataObject().addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.TIMESTAMP_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, _timestampValue );
+            }
+        }
+        notifyObjectChange( AnnotationDefinitionTO.TIMESTAMP_ANNOTATION, oldValue, _timestampValue );
+    }
+
+    void durationChanged( final ChangeEvent event ) {
+        if ( getDataObject() == null ) {
+            return;
+        }
+
+        final String _durationValue = durationFieldSelector.getValue();
+        AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.DURATION_ANNOTATION );
+
+        String oldValue = null;
+        if ( annotation != null ) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
+            if ( _durationValue != null && !NOT_SELECTED.equals( _durationValue ) ) {
+                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _durationValue );
+            } else {
+                getDataObject().removeAnnotation( annotation );
+            }
+        } else {
+            if ( _durationValue != null && !NOT_SELECTED.equals( _durationValue ) ) {
+                getDataObject().addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.DURATION_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, _durationValue );
+            }
+        }
+        notifyObjectChange( AnnotationDefinitionTO.DURATION_ANNOTATION, oldValue, _durationValue );
+    }
+
     @UiHandler("propertyReactiveSelector")
     void propertyReactiveChanged(final ClickEvent event) {
         if ( getDataObject() == null ) return;
@@ -556,6 +759,112 @@ public class DataObjectEditor extends Composite {
         notifyObjectChange( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION, oldValue, isChecked );
     }
 
+    @UiHandler("expires")
+    void expiresChanged( final ValueChangeEvent<String> event ) {
+        if ( getDataObject() == null ) {
+            return;
+        }
+
+        // Set widgets to error popup for styling purposes etc.
+        expiresLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        final Command afterCloseCommand = new Command() {
+            @Override
+            public void execute() {
+                expiresLabel.setStyleName(TEXT_ERROR_CLASS);
+                expires.selectAll();
+            }
+        };
+
+        final AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.EXPIRES_ANNOTATION );
+        final String oldValue = annotation != null ? AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM ) : null;
+        final String newValue = expires.getText();
+
+        // In case an invalid expression (entered before), was corrected to the original value, don't do anything but reset the label style
+        if ( oldValue != null && oldValue.equals( newValue ) ) {
+            nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+            return;
+        }
+
+        // Otherwise validate
+        validatorService.isValidTimerInterval( newValue, new ValidatorCallback() {
+            @Override
+            public void onFailure() {
+                ErrorPopup.showMessage( Constants.INSTANCE.validation_error_invalid_timer_expression( newValue ), null, afterCloseCommand );
+            }
+
+            @Override
+            public void onSuccess() {
+                if ( annotation != null ) {
+                    getDataObject().removeAnnotation( annotation );
+                }
+                if ( newValue != null && !"".equals( newValue ) ) {
+                    getDataObject().addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.EXPIRES_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, newValue );
+                }
+
+                notifyObjectChange( AnnotationDefinitionTO.EXPIRES_ANNOTATION, oldValue, newValue );
+            }
+        } );
+    }
+
+    private void loadDurationSelector(DataObjectTO dataObject) {
+        if (dataObject == null) return;
+
+        List<String> types = new ArrayList<String>( );
+        types.add( "short" );
+        types.add( "int" );
+        types.add( "long" );
+        types.add( "java.lang.Short" );
+        types.add( "java.lang.Integer" );
+        types.add( "java.lang.Long" );
+
+        String defaultValue = null;
+        AnnotationTO annotation = dataObject.getAnnotation( AnnotationDefinitionTO.DURATION_ANNOTATION );
+        if (annotation != null) {
+            defaultValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
+        }
+
+        loadPropertySelector( durationFieldSelector, dataObject, types, defaultValue  );
+    }
+
+    private void loadTimestampSelector(DataObjectTO dataObject) {
+        if (dataObject == null) return;
+
+        List<String> types = new ArrayList<String>( );
+        types.add( "long" );
+        types.add( "java.lang.Long" );
+        types.add( "java.util.Date" );
+        types.add( "java.sql.Timestamp" );
+
+        String defaultValue = null;
+        AnnotationTO annotation = dataObject.getAnnotation( AnnotationDefinitionTO.TIMESTAMP_ANNOTATION );
+        if (annotation != null) {
+            defaultValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
+        }
+
+        loadPropertySelector( timestampFieldSelector, dataObject, types, defaultValue  );
+    }
+
+    private void loadPropertySelector(ListBox selector, DataObjectTO dataObject, List<String> types, String defaultValue) {
+        if (dataObject == null) return;
+
+        List<ObjectPropertyTO> properties = DataModelerUtils.filterPropertiesByType(dataObject.getProperties(), types);
+        SortedMap<String, String> propertyNames = new TreeMap<String, String>();
+        for (ObjectPropertyTO property : properties) {
+            propertyNames.put( property.getName(), property.getName() );
+        }
+
+        if (defaultValue != null && !"".equals( defaultValue ) ) {
+            propertyNames.put( defaultValue, defaultValue );
+        }
+
+        selector.clear();
+        selector.addItem( "", NOT_SELECTED );
+        for (Map.Entry<String, String> propertyName : propertyNames.entrySet()) {
+            selector.addItem(propertyName.getKey(), propertyName.getValue());
+        }
+        selector.setSelectedValue( NOT_SELECTED );
+    }
+
     private void clean() {
         nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
         name.setText( null );
@@ -568,5 +877,9 @@ public class DataObjectEditor extends Composite {
         roleSelector.setSelectedValue( NOT_SELECTED );
         classReactiveSelector.setValue( false );
         propertyReactiveSelector.setValue( false );
+        typeSafeSelector.setSelectedValue( NOT_SELECTED );
+        expires.setText( null );
+        durationFieldSelector.setSelectedValue( NOT_SELECTED );
+        timestampFieldSelector.setSelectedValue( NOT_SELECTED );
     }
 }

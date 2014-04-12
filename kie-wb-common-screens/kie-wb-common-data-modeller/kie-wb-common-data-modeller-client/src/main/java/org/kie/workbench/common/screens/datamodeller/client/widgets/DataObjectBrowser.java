@@ -159,7 +159,7 @@ public class DataObjectBrowser extends Composite {
 
             @Override
             public String getValue( final ObjectPropertyTO objectProperty) {
-                return AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM, "");
+                return AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "");
             }
         };
 
@@ -471,7 +471,7 @@ public class DataObjectBrowser extends Composite {
                                 }
 
                                 Integer position = DataModelerUtils.getInstance().getMaxPosition(getDataObject()) + 1;
-                                property.addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.POSITION_ANNOTATON), AnnotationDefinitionTO.VALUE_PARAM, position.toString());
+                                property.addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.POSITION_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, position.toString());
 
                                 addDataObjectProperty(property);
                                 resetInput();
@@ -576,7 +576,7 @@ public class DataObjectBrowser extends Composite {
             dataObjectPropertiesProvider.flush();
             dataObjectPropertiesProvider.refresh();
 
-            String sPosRemoved = AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM, "-1");
+            String sPosRemoved = AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1");
             if (sPosRemoved != null && sPosRemoved.length() > 0) {
                 Integer posRemoved = Integer.parseInt(sPosRemoved);
                 DataModelerUtils.getInstance().recalculatePositions(dataObject, posRemoved);
@@ -737,7 +737,7 @@ public class DataObjectBrowser extends Composite {
                         break;
                     }
                 }
-            } else if ( AnnotationDefinitionTO.POSITION_ANNOTATON.equals(event.getPropertyName()) ) {
+            } else if ( AnnotationDefinitionTO.POSITION_ANNOTATION.equals(event.getPropertyName()) ) {
                 // TODO redraw only affected rows
                 dataObjectPropertiesTable.redraw();
             }

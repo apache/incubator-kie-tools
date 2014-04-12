@@ -135,6 +135,22 @@ public interface Constants extends Messages {
 
     public String objectEditor_roleHelp();
 
+    public String objectEditor_typeSafeLabel();
+
+    public String objectEditor_typeSafeHelp();
+
+    public String objectEditor_timestampLabel();
+
+    public String objectEditor_timestampHelp();
+
+    public String objectEditor_durationLabel();
+
+    public String objectEditor_durationHelp();
+
+    public String objectEditor_expiresLabel();
+
+    public String objectEditor_expiresHelp();
+
     public String objectEditor_classReactiveLabel();
 
     public String objectEditor_classReactiveLabelHelp();
@@ -208,6 +224,8 @@ public interface Constants extends Messages {
     public String validation_error_cannot_change_object_package();
 
     public String validation_error_cyclic_extension(String sibling, String parent);
+
+    public String validation_error_invalid_timer_expression(String expression);
 
     public String objectEditor_dataObjectTitle();
 

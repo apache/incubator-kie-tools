@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.uberfire.backend.vfs.Path;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataModelerUtils {
 
@@ -172,7 +174,7 @@ public class DataModelerUtils {
         if (properties != null && properties.size() > 0) {
             for (ObjectPropertyTO property : properties) {
                 try {
-                    currentPosition = new Integer( AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATON, "value", "-1") );
+                    currentPosition = new Integer( AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "-1") );
                 } catch (Exception e) {
                     currentPosition = -1;
                 }
@@ -188,9 +190,9 @@ public class DataModelerUtils {
 
         if (properties != null && properties.size() > 0) {
             for (ObjectPropertyTO property : properties) {
-                Integer pos = Integer.parseInt(AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM, "-1"), 10);
+                Integer pos = Integer.parseInt(AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1"), 10);
                 if (pos > positionRemoved) {
-                    property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON).setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf(pos-1).toString());
+                    property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION ).setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf(pos-1).toString());
                 }
             }
         }
@@ -221,24 +223,24 @@ public class DataModelerUtils {
 
         if (properties != null && properties.size() > 0) {
             for (ObjectPropertyTO property : properties) {
-                String sfieldPos = AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATON, AnnotationDefinitionTO.VALUE_PARAM, "-1");
+                String sfieldPos = AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1");
                 if (sfieldPos != null && sfieldPos.length() > 0) {
                     Integer fieldPos = Integer.parseInt(sfieldPos, 10);
 
                     if (newPosition < oldPosition) {
                         if (fieldPos >= newPosition && fieldPos < oldPosition) {
-                            property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON)
+                            property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
                                     .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos + 1 ).toString());
                         }
                     } else {
                         if (fieldPos <= newPosition && fieldPos > oldPosition) {
-                            property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON)
+                            property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
                                     .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos - 1 ).toString());
                         }
                     }
 
                     if (fieldPos == oldPosition)
-                        property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON)
+                        property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
                                 .setValue(AnnotationDefinitionTO.VALUE_PARAM, newPosition.toString());
 
                 }
@@ -275,5 +277,28 @@ public class DataModelerUtils {
 
         javaFilePathUri = javaFilePathUri.substring(0, extensionIndex);
         return javaFilePathUri.replaceAll("/", ".");
+    }
+
+    public static List<ObjectPropertyTO> filterPropertiesByType(Collection<ObjectPropertyTO> properties, List<String> expectedTypes) {
+
+        final ArrayList<ObjectPropertyTO> result = new ArrayList<ObjectPropertyTO>( );
+        if (properties == null || properties.size() == 0) return result;
+
+        final Map<String, String> types = new HashMap<String, String>( );
+        if (expectedTypes != null && expectedTypes.size() > 0) {
+            for (String type : expectedTypes) {
+                types.put( type, type );
+            }
+        } else {
+            return result;
+        }
+
+        for ( ObjectPropertyTO propertyTO : properties ) {
+            if (propertyTO.getClassName() != null && types.containsKey( propertyTO.getClassName() )) {
+                result.add( propertyTO );
+            }
+        }
+
+        return result;
     }
 }

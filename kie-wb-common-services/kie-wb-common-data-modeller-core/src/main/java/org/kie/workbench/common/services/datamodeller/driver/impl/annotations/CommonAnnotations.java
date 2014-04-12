@@ -32,6 +32,10 @@ public class CommonAnnotations {
         commonAnnotations.add( PositionAnnotationDefinition.getInstance() );
         commonAnnotations.add( PropertyReactiveAnnotationDefinition.getInstance() );
         commonAnnotations.add( ClassReactiveAnnotationDefinition.getInstance() );
+        commonAnnotations.add( DurationAnnotationDefinition.getInstance() );
+        commonAnnotations.add( ExpiresAnnotationDefinition.getInstance() );
+        commonAnnotations.add( TimestampAnnotationDefinition.getInstance() );
+        commonAnnotations.add( TypeSafeAnnotationDefinition.getInstance() );
     }
 
     public static List<AnnotationDefinition> getCommonAnnotations () {

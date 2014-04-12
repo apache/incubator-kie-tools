@@ -86,6 +86,16 @@ public class ValidatorService {
                 .evaluateIdentifiers( packageTerms );
     }
 
+    public void isValidTimerInterval( String expression, final ValidatorCallback callback ) {
+
+        //TODO, complete this validation.
+        if ("kaka".equals( expression ) ) {
+            callback.onFailure();
+        } else {
+            callback.onSuccess();
+        }
+    }
+
     public void isUniqueEntityName( String packageName,
                                     String name,
                                     DataModelTO model,

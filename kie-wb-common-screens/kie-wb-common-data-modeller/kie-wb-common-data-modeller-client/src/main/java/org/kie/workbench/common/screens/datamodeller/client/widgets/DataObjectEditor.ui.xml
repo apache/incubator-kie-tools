@@ -114,22 +114,32 @@
                 <td style="padding-left: 4px;">
                 </td>
             </tr>
+
             <tr>
-                <td colspan="3" style="padding: 3px;"></td>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+
+            <tr>
+              <td colspan="3" style="font-weight:bold;">Drools engine parameters:</td>
+            </tr>
+
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
             </tr>
             <tr>
-                <td style="white-space: nowrap; vertical-align: top;">
-                    <gwt:Label ui:field="roleLabel" text="{i18n.objectEditor_roleLabel}"/>
-                </td>
-                <td style="padding-left: 4px;">
-                    <b:ListBox ui:field="roleSelector" styleName="span10"></b:ListBox>
-                </td>
-                <td style="padding-left: 4px;">
-                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_roleLabel}" text="{i18n.objectEditor_roleHelp}" >
-                        <b:Icon ui:field="roleHelpIcon" type="QUESTION_SIGN"></b:Icon>
-                    </b:Popover>
-                </td>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="typeSafeLabel" text="{i18n.objectEditor_typeSafeLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:ListBox ui:field="typeSafeSelector" styleName="span10"></b:ListBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_typeSafeLabel}" text="{i18n.objectEditor_typeSafeHelp}" >
+                  <b:Icon ui:field="typeSafeHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
             </tr>
+
             <tr>
                 <td colspan="3" style="padding: 3px;"></td>
             </tr>
@@ -162,6 +172,77 @@
                     </b:Popover>
                 </td>
             </tr>
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="roleLabel" text="{i18n.objectEditor_roleLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:ListBox ui:field="roleSelector" styleName="span10"></b:ListBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_roleLabel}" text="{i18n.objectEditor_roleHelp}" >
+                  <b:Icon ui:field="roleHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="timestampLabel" text="{i18n.objectEditor_timestampLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:ListBox ui:field="timestampFieldSelector" styleName="span10"></b:ListBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_timestampLabel}" text="{i18n.objectEditor_timestampHelp}" >
+                  <b:Icon ui:field="timestampHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="durationLabel" text="{i18n.objectEditor_durationLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:ListBox ui:field="durationFieldSelector" styleName="span10"></b:ListBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_durationLabel}" text="{i18n.objectEditor_durationHelp}" >
+                  <b:Icon ui:field="durationHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="expiresLabel" text="{i18n.objectEditor_expiresLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:TextBox ui:field="expires" styleName="span10"></b:TextBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_expiresLabel}" text="{i18n.objectEditor_expiresHelp}" >
+                  <b:Icon ui:field="expiresHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
 
         </table>
 

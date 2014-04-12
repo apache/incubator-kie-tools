@@ -281,7 +281,7 @@ public class DataObjectFieldEditor extends Composite {
                 equalsSelector.setValue(Boolean.TRUE);
             }
 
-            annotation = objectField.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON);
+            annotation = objectField.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION );
             if (annotation != null) {
                 String position = (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM);
                 positionSelector.setSelectedValue(position);
@@ -427,13 +427,13 @@ public class DataObjectFieldEditor extends Composite {
     void positionChanged(ChangeEvent event) {
         if (getObjectField() == null) return;
 
-        AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATON);
+        AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION );
         final String oldPosition = (annotation != null) ? annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString() : "-1";
         final String newPosition = positionSelector.getValue();
 
         DataModelerUtils.getInstance().recalculatePositions(getDataObject(), Integer.parseInt(oldPosition, 10), Integer.parseInt(newPosition, 10));
 
-        notifyFieldChange(AnnotationDefinitionTO.POSITION_ANNOTATON, oldPosition, newPosition);
+        notifyFieldChange(AnnotationDefinitionTO.POSITION_ANNOTATION, oldPosition, newPosition);
     }
 
     private void initTypeList() {
@@ -497,7 +497,7 @@ public class DataObjectFieldEditor extends Composite {
             String positionValue;
             Integer positionIntValue;
             for (ObjectPropertyTO propertyTO : properties) {
-                positionValue = AnnotationValueHandler.getInstance().getStringValue(propertyTO, AnnotationDefinitionTO.POSITION_ANNOTATON, "value");
+                positionValue = AnnotationValueHandler.getInstance().getStringValue(propertyTO, AnnotationDefinitionTO.POSITION_ANNOTATION, "value");
                 if (positionValue != null) {
                     try {
                         positionIntValue = new Integer(positionValue);
