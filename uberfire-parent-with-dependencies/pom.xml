@@ -557,6 +557,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-impl</artifactId>
+        <version>${version.org.picketlink}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.jasypt</groupId>
         <artifactId>jasypt</artifactId>
         <version>${version.org.jasypt}</version>

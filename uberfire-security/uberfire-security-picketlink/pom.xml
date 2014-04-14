@@ -85,6 +85,12 @@
       <artifactId>jboss-logging</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+      <version>${version.com.google.gwt}</version>
+    </dependency>
 
   </dependencies>
 

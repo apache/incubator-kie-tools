@@ -1,15 +1,14 @@
 package org.uberfire.security.server;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.picketlink.authentication.web.AuthenticationFilter.*;
 import static org.uberfire.security.server.FormAuthenticationScheme.*;
 
 import javax.enterprise.inject.Instance;
 import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,6 +20,7 @@ import org.picketlink.authentication.web.AuthenticationFilter;
 import org.picketlink.authentication.web.HTTPAuthenticationScheme;
 import org.picketlink.credential.DefaultLoginCredentials;
 import org.uberfire.security.server.mock.MockFilterConfig;
+import org.uberfire.security.server.mock.MockHttpServletRequest;
 import org.uberfire.security.server.mock.MockHttpSession;
 import org.uberfire.security.server.mock.MockIdentity;
 import org.uberfire.security.server.mock.MockServletContext;
@@ -33,13 +33,14 @@ public abstract class BaseSecurityFilterTest {
      */
     protected MockFilterConfig filterConfig;
 
+    protected final String contextPath = "/test-context";
+
     /**
      * A mock HttpSession that mock requests can use. This value is returned as the session from the mock request.
      */
     protected MockHttpSession mockHttpSession;
 
-    @Mock
-    protected HttpServletRequest request;
+    protected MockHttpServletRequest request;
 
     @Mock
     protected HttpServletResponse response;
@@ -65,19 +66,25 @@ public abstract class BaseSecurityFilterTest {
     @InjectMocks
     protected AuthenticationFilter authFilter;
 
+    @Mock
+    protected AuthenticationService authService;
+
+    @InjectMocks
+    protected FormAuthenticationScheme formAuthenticationScheme;
+
     @Before
     public void setup() {
         filterConfig = new MockFilterConfig( new MockServletContext() );
+        filterConfig.setContextPath( contextPath );
 
         // useful minimum configuration. tests may overwrite these values before calling filter.init().
-        filterConfig.initParams.put( HOST_PAGE_INIT_PARAM, "/dont/care" );
+        filterConfig.initParams.put( HOST_PAGE_INIT_PARAM, "/dont/care/host" );
+        filterConfig.initParams.put( LOGIN_PAGE_INIT_PARAM, "/dont/care/login" );
         filterConfig.initParams.put( FORCE_REAUTHENTICATION_INIT_PARAM, "true" );
 
         mockHttpSession = new MockHttpSession();
 
-        when( request.getMethod() ).thenReturn( "POST" );
-        when( request.getSession() ).thenReturn( mockHttpSession );
-        when( request.getSession( anyBoolean() ) ).thenReturn( mockHttpSession );
+        request = new MockHttpServletRequest( mockHttpSession, "POST", "/some/servlet/path", "/dont/care/login" );
 
         identity.setCredentials( credentials );
 
@@ -85,7 +92,7 @@ public abstract class BaseSecurityFilterTest {
 
         when( credentialsInstance.get() ).thenReturn( credentials );
 
-        when( preferredAuthFilterInstance.get() ).thenReturn( new FormAuthenticationScheme() );
+        when( preferredAuthFilterInstance.get() ).thenReturn( formAuthenticationScheme );
     }
 
 }
