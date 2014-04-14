@@ -10,6 +10,7 @@
   </appender>
 
   <logger name="org.drools" level="info"/>
+  <logger name="org.uberfire" level="info"/>
 
   <root level="info">
     <appender-ref ref="consoleAppender" />
