@@ -40,6 +40,8 @@ import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceAdded;
@@ -66,6 +68,7 @@ public class RuleNameServiceImplTest {
     private DTableSourceServiceMock gdstSourceService;
     private Project project;
     private ProjectService projectService;
+    private IOService ioService;
 
     @Before
     public void setUp() throws Exception {
@@ -73,9 +76,9 @@ public class RuleNameServiceImplTest {
         simpleFileSystemProvider.forceAsDefault();
 
         project = mock(Project.class);
+        ioService = new MockIOService();
 
         sourceServicesList.add(new MockSourceService("rdrl"));
-        sourceServicesList.add(new MockSourceService("drl"));
         gdstSourceService = new DTableSourceServiceMock("gdst");
         sourceServicesList.add(gdstSourceService);
 
@@ -84,7 +87,7 @@ public class RuleNameServiceImplTest {
 
         SourceServices sourceServices = new SourceServicesImpl(instance);
         projectService = mock(ProjectService.class);
-        service = new RuleNameServiceImpl(sourceServices, projectService);
+        service = new RuleNameServiceImpl(sourceServices, projectService, ioService);
     }
 
     @After
@@ -94,6 +97,14 @@ public class RuleNameServiceImplTest {
 
     @Test
     public void testLoadAll() throws Exception {
+        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
+
+        gdstSourceService.source =
+                "package org.test\n"
+                        + "rule test\n"
+                        + "when\n"
+                        + "then\n"
+                        + "end\n";
 
         String uriToResource = this.getClass().getResource("hello.rdrl").toURI().toString();
         URI uriToRootPath = URI.create(uriToResource.substring(0, uriToResource.length() - "hello.rdrl".length()));
@@ -106,10 +117,21 @@ public class RuleNameServiceImplTest {
 
         service.onProjectContextChange(new ProjectContextChangeEvent(organizationalUnit, repository, project));
 
-    }
+        assertEquals(1, service.getRuleNames(project, "some.pkg").size());
+        assertEquals(7, service.getRuleNames(project, "org.test").size());
+        assertEquals(2, service.getRuleNames(project, "org.rename").size());
+        assertEquals(2, service.getRuleNames(project, "pkg1").size());
+        assertEquals(2, service.getRuleNames(project, "pkg2").size());
 
-    // THREAD LOCK
-    // FULL LOAD ONLY ON THE FIRST TIME
+        // Context changes back for the second time
+        service.onProjectContextChange(new ProjectContextChangeEvent(organizationalUnit, repository, project));
+
+        assertEquals(1, service.getRuleNames(project, "some.pkg").size());
+        assertEquals(7, service.getRuleNames(project, "org.test").size());
+        assertEquals(2, service.getRuleNames(project, "org.rename").size());
+        assertEquals(2, service.getRuleNames(project, "pkg1").size());
+        assertEquals(2, service.getRuleNames(project, "pkg2").size());
+    }
 
     @Test
     public void testEmpty() throws Exception {
@@ -459,6 +481,15 @@ public class RuleNameServiceImplTest {
 
     }
 
+    class MockIOService extends IOServiceMock {
+
+        @Override
+        public String readAllString(org.uberfire.java.nio.file.Path path)
+                throws IllegalArgumentException, NoSuchFileException, org.uberfire.java.nio.IOException {
+            return readFile(path);
+        }
+    }
+
     class MockSourceService extends BaseSourceService {
 
         private String pattern;
@@ -474,27 +505,31 @@ public class RuleNameServiceImplTest {
 
         @Override
         public String getSource(org.uberfire.java.nio.file.Path path) {
-            String substring = path.toString().substring(path.toString().indexOf("test-classes") + "test-classes".length());
-            InputStream resourceAsStream = getClass().getResourceAsStream(substring);
-
-            StringBuilder drl = new StringBuilder();
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    drl.append(line).append("\n");
-                }
-                resourceAsStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return drl.toString();
+            return readFile(path);
         }
 
         @Override
         public String getPattern() {
             return pattern;
         }
+    }
+
+    private String readFile(org.uberfire.java.nio.file.Path path) {
+        String substring = path.toString().substring(path.toString().indexOf("test-classes") + "test-classes".length());
+        InputStream resourceAsStream = getClass().getResourceAsStream(substring);
+
+        StringBuilder drl = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                drl.append(line).append("\n");
+            }
+            resourceAsStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return drl.toString();
     }
 }

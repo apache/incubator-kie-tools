@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
@@ -34,6 +35,7 @@ import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -53,6 +55,7 @@ public class RuleNameServiceImpl
 
     private SourceServices sourceServices;
     private ProjectService projectService;
+    private IOService ioService;
 
     private final Map<Project, RuleNamesByPackageMap> ruleNames = new HashMap<Project, RuleNamesByPackageMap>();
     private final Map<Path, PathHandle> pathHandles = new HashMap<Path, PathHandle>();
@@ -61,9 +64,13 @@ public class RuleNameServiceImpl
     }
 
     @Inject
-    public RuleNameServiceImpl(SourceServices sourceServices, ProjectService projectService) {
+    public RuleNameServiceImpl(
+            SourceServices sourceServices,
+            ProjectService projectService,
+            @Named("ioStrategy") IOService ioService) {
         this.sourceServices = sourceServices;
         this.projectService = projectService;
+        this.ioService = ioService;
     }
 
     @Override
@@ -89,7 +96,17 @@ public class RuleNameServiceImpl
             if (Files.isDirectory(path)) {
                 visitPaths(Files.newDirectoryStream(path));
             } else {
-                processResourceAdd(Paths.convert(path));
+                /*
+                This bit is hard to test,
+                but if we are coming and going from one project to another
+                it does not make sense to add all the rule names each time
+                ProjectContextEvent fires for the project.
+
+                So if the path has been added, skip it.
+                 */
+                if (!pathHandles.containsKey(path)) {
+                    processResourceAdd(Paths.convert(path));
+                }
             }
         }
     }
@@ -177,6 +194,14 @@ public class RuleNameServiceImpl
             String drl = sourceServices.getServiceFor(
                     convertedPath).getSource(convertedPath);
 
+            addRuleNames(path, drl);
+        } else if (path.getFileName().endsWith(".drl")) {
+            addRuleNames(path, ioService.readAllString(Paths.convert(path)));
+        }
+    }
+
+    private void addRuleNames(Path path, String drl) {
+        synchronized (ruleNames) {
             Project project = projectService.resolveProject(path);
 
             RuleNameResolver ruleNameResolver = new RuleNameResolver(drl);
@@ -192,14 +217,16 @@ public class RuleNameServiceImpl
     }
 
     private void deleteRuleNames(Path path) {
-        if (pathHandles.containsKey(path)) {
-            PathHandle pathHandle = pathHandles.get(path);
+        synchronized (ruleNames) {
+            if (pathHandles.containsKey(path)) {
+                PathHandle pathHandle = pathHandles.get(path);
 
-            Project project = projectService.resolveProject(path);
+                Project project = projectService.resolveProject(path);
 
-            for (String deleteRuleName : pathHandle.ruleNames) {
-                Set<String> strings = this.ruleNames.get(project).get(pathHandle.packageName);
-                strings.remove(deleteRuleName);
+                for (String deleteRuleName : pathHandle.ruleNames) {
+                    Set<String> strings = this.ruleNames.get(project).get(pathHandle.packageName);
+                    strings.remove(deleteRuleName);
+                }
             }
         }
     }
