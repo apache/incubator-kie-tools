@@ -25,7 +25,8 @@ public class RuleNameResolver {
 
     private String drl;
 
-    private boolean currentRuleNameHasQuotes = false;
+    private boolean currentRuleNameHasDoubleQuotes = false;
+    private boolean currentRuleNameHasSingleQuotes = false;
     private String packageName;
 
     public RuleNameResolver(String drl) {
@@ -135,14 +136,27 @@ public class RuleNameResolver {
     private int getRuleIndex() {
         int ruleIndex = drl.indexOf("rule");
 
-        int beginIndexWithQuotes = drl.indexOf("rule \"");
+        int beginIndexWithQuotes = getBeginIndexWithQuotes();
 
         if (ruleIndex >= beginIndexWithQuotes && beginIndexWithQuotes >= 0) {
-            currentRuleNameHasQuotes = true;
             return beginIndexWithQuotes;
         } else {
-            currentRuleNameHasQuotes = false;
+            currentRuleNameHasDoubleQuotes = false;
+            currentRuleNameHasSingleQuotes = false;
             return ruleIndex;
+        }
+    }
+
+    private int getBeginIndexWithQuotes() {
+        int doubleQuotes = drl.indexOf("rule \"");
+        int singleQuotes = drl.indexOf("rule '");
+
+        if (singleQuotes == -1 || (doubleQuotes <= singleQuotes && doubleQuotes >= 0)) {
+            currentRuleNameHasDoubleQuotes = true;
+            return doubleQuotes;
+        } else {
+            currentRuleNameHasSingleQuotes = true;
+            return singleQuotes;
         }
     }
 
@@ -166,19 +180,25 @@ public class RuleNameResolver {
     }
 
     private int getRuleNameEndIndex(String ruleLine) {
-        if (currentRuleNameHasQuotes) {
+        if (currentRuleNameHasDoubleQuotes) {
             return ruleLine.indexOf("\"");
+        } else if (currentRuleNameHasSingleQuotes) {
+            return ruleLine.indexOf("'");
         } else {
             return ruleLine.indexOf(" ");
         }
     }
 
     private int getRuleFrontBitLength() {
-        if (currentRuleNameHasQuotes) {
+        if (currentRuleNameHasQuotes()) {
             return "rule \"".length();
         } else {
             return "rule".length();
         }
+    }
+
+    private boolean currentRuleNameHasQuotes() {
+        return currentRuleNameHasDoubleQuotes || currentRuleNameHasSingleQuotes;
     }
 
     public Set<String> getRuleNames() {

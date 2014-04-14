@@ -49,6 +49,18 @@ public class RuleNameResolverTest {
     }
 
     @Test
+    public void testSimpleWithSingleQuotes() throws Exception {
+        Set<String> ruleNames = new RuleNameResolver(
+                "rule 'test rule'\n" +
+                        "when\n" +
+                        "then\n" +
+                        "end").getRuleNames();
+
+        assertEquals(1, ruleNames.size());
+        assertTrue(ruleNames.contains("test rule"));
+    }
+
+    @Test
     public void testExtends() throws Exception {
         Set<String> ruleNames = new RuleNameResolver(
                 "rule test extends parentRule\n" +
