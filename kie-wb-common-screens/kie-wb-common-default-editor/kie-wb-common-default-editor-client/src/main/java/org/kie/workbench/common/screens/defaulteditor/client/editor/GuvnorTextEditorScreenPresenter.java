@@ -18,7 +18,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = { TextResourceType.class }, priority = 1)
+@WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = { TextResourceType.class, XmlResourceType.class }, priority = 1)
 public class GuvnorTextEditorScreenPresenter
         extends GuvnorTextEditorPresenter {
 
