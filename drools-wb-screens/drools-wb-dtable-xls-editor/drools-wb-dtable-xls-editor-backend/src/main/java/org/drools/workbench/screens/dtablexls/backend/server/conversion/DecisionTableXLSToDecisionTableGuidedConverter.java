@@ -326,7 +326,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                                           key,
                                           value );
             } else if ( "Position".equals( name ) ) {
-                dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.POSITION_ANNOTATON ),
+                dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.POSITION_ANNOTATION ),
                                           key,
                                           value );
             } else if ( "Equals".equals( name ) ) {

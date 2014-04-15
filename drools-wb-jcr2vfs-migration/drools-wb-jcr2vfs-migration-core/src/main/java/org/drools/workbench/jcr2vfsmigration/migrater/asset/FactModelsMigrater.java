@@ -184,7 +184,7 @@ public class FactModelsMigrater extends BaseAssetMigrater {
     		if("Role".equals(name)) {
                 dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.ROLE_ANNOTATION), key, value);		
     		} else if("Position".equals(name)) {
-                dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.POSITION_ANNOTATON), key, value);
+                dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.POSITION_ANNOTATION), key, value);
 	   		} else if("Equals".equals(name)) {
                 dataObject.addAnnotation(annotationDefinitions.get(AnnotationDefinitionTO.KEY_ANNOTATION), key, value);
     		}
