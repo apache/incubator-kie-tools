@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -197,9 +198,9 @@ public class GuidedDecisionTableWidget extends Composite
 
         layout.add( getRuleInheritancePanel( model ) );
 
-        ruleNameService.call( new RemoteCallback<List<String>>() {
+        ruleNameService.call( new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback( List<String> ruleNames ) {
+            public void callback( Collection<String> ruleNames ) {
                 ruleSelector.setRuleNames( ruleNames );
             }
         } ).getRuleNames(path, model.getPackageName());

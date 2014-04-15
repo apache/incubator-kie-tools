@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -67,9 +68,9 @@ public class ScenarioWidgetComponentCreator {
         this.ruleNamesService = ruleNamesService;
         this.path = path;
 
-        this.ruleNamesService.call( new RemoteCallback<List<String>>() {
+        this.ruleNamesService.call( new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback( final List<String> ruleNames ) {
+            public void callback( final Collection<String> ruleNames ) {
                 hasRules = !( ruleNames == null || ruleNames.isEmpty() );
             }
         } ).getRuleNames(path, scenario.getPackageName());
@@ -226,9 +227,9 @@ public class ScenarioWidgetComponentCreator {
         final ListBox availableRulesBox = new ListBox();
         availableRulesBox.addItem( TestScenarioConstants.INSTANCE.pleaseChoose1() );
 
-        ruleNamesService.call( new RemoteCallback<List<String>>() {
+        ruleNamesService.call( new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback( List<String> ruleNames ) {
+            public void callback( Collection<String> ruleNames ) {
                 if ( ruleNames == null || ruleNames.isEmpty() ) {
                     return;
                 }
