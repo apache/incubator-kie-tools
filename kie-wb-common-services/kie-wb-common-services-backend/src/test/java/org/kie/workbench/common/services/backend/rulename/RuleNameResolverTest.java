@@ -37,6 +37,14 @@ public class RuleNameResolverTest {
     }
 
     @Test
+    public void testEmpty() throws Exception {
+        Set<String> ruleNames = new RuleNameResolver(
+                "").getRuleNames();
+
+        assertEquals(0, ruleNames.size());
+    }
+
+    @Test
     public void testSimpleWithQuotes() throws Exception {
         Set<String> ruleNames = new RuleNameResolver(
                 "rule \"test rule\"\n" +

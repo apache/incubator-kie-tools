@@ -141,6 +141,18 @@ public class RuleNameServiceImplTest {
     }
 
     @Test
+    public void testEmptyDRLAdded() throws Exception {
+
+        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
+
+        final Path testPath = Paths.convert(simpleFileSystemProvider.getPath(this.getClass().getResource("empty.drl").toURI()));
+
+        fireResourceAddedEvent(testPath);
+
+        assertEquals(0, service.getRuleNames(project, "some.pkg").size());
+    }
+
+    @Test 
     public void testDRLAdded() throws Exception {
         when(projectService.resolveProject(any(Path.class))).thenReturn(project);
 
