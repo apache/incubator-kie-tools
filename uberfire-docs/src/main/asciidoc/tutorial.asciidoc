@@ -1569,28 +1569,6 @@ public class UberFireServerBootstrapper {
 ------
 
 
-== Enable the UberFire CDI Extensions
-
-UberFire relies on two CDI Extensions to get its job done. CDI
-Extensions are enabled by Java's Service Loader, which should be
-pretty familiar by now.
-
-Create the file
-`src/main/resources/META-INF/services/javax.enterprise.inject.spi.Extension`
-and paste the following contents into it:
-
----------
-org.uberfire.commons.services.cdi.StartupBeanExtension
-org.uberfire.security.server.cdi.SecurityExtension
----------
-
-The StartupBeanExtension enables UberFire's `@Startup` annotation, and
-the SecurityExtension is a workaround that explicitly marks a type
-within the UberFire framework as "not a CDI bean."
-
-TODO: why doesn't UF enable these extensions in its own
-META-INF/services files?
-
 == Create the GWT host page template
 
 As mentioned earlier, GWT apps need a _host page_ that points the
