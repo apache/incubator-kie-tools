@@ -15,6 +15,7 @@
   --%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@page import="org.uberfire.security.server.FormAuthenticationScheme"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>UberFire Showcase</title>
@@ -28,7 +29,7 @@
       margin: 0;
       padding: 0;
       color: #fff;
-      background: url('<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/bg-login.png') repeat #1b1b1b;
+      background: url('org.uberfire.UberfireShowcase/images/bg-login.png') repeat #1b1b1b;
       font-size: 14px;
       text-shadow: #050505 0 -1px 0;
       font-weight: bold;
@@ -45,7 +46,7 @@
       border-bottom: solid 3px #777973;
       height: 250px;
       width: 100%;
-      background: url('<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/bg-login-top.png') repeat #fff;
+      background: url('org.uberfire.UberfireShowcase/images/bg-login-top.png') repeat #fff;
       z-index: 1;
     }
 
@@ -128,7 +129,7 @@
 
     div.error {
       padding: 8px;
-      background: rgba(52, 4, 0, 0.4);
+      background: rgb(52, 4, 0);
       -moz-border-radius: 8px;
       -webkit-border-radius: 8px;
       border-radius: 8px;
@@ -142,7 +143,7 @@
 
 <div id="login-wrapper" class="png_bg">
   <div id="login-top">
-    <img src="<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/uf_logo.png" alt="UberFire Logo" title="Powered By Uberfire"/>
+    <img src="org.uberfire.UberfireShowcase/images/uf_logo.png" alt="UberFire Logo" title="Powered By Uberfire"/>
   </div>
 
   <div id="login-content">
@@ -150,16 +151,22 @@
       <p>
         <label>Username</label>
         <input value="" name="uf_username" class="text-input" type="text"/>
+        <br style="clear: both"/>
       </p>
-      <br style="clear: both;"/>
 
       <p>
         <label>Password</label>
         <input name="uf_password" class="text-input" type="password"/>
+        <br style="clear: both"/>
       </p>
-      <br style="clear: both;"/>
 
       <p>
+        <% if (request.getParameter("gwt.codesvr") != null) { %>
+          <input type="hidden" name="gwt.codesvr" value="<%= request.getParameter("gwt.codesvr") %>"/>
+        <% } %>
+        <% if (request.getParameter( FormAuthenticationScheme.LOGIN_ERROR_QUERY_PARAM ) != null) { %>
+          <span class="error">Login failed. Please try again.</span>
+        <% } %>
         <input class="button" type="submit" value="Sign In"/>
       </p>
     </form>

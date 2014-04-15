@@ -35,6 +35,26 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-picketlink</artifactId>
+    </dependency>
+
+    <!-- PicketLink has a hard dependency on JBoss Logging.
+         Since this app deploys to Jetty, we include this as a runtime-scoped dependency.
+         If deploying to JBoss AS or WildFly, you would set this to provided scope. -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -61,6 +81,11 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
     </dependency>
 
     <dependency>
@@ -150,7 +175,7 @@
           <module>org.uberfire.FastCompiledUberfireShowcase</module>
           <logLevel>INFO</logLevel>
           <strict>true</strict>
-          <runTarget>org.uberfire.UberfireShowcase/Uberfire.html</runTarget>
+          <runTarget>showcase.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>

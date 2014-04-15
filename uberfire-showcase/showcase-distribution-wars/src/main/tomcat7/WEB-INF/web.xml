@@ -8,32 +8,37 @@
   <distributable/>
 
   <filter>
-    <filter-name>UberFire Security Filter</filter-name>
-    <filter-class>
-      org.uberfire.security.server.UberFireSecurityFilter
-    </filter-class>
+    <filter-name>Security Filter</filter-name>
+    <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
     <init-param>
-      <param-name>org.uberfire.cookie.id</param-name>
-      <param-value>uf.showcase</param-value>
+      <param-name>authType</param-name>
+      <param-value>org.uberfire.security.server.FormAuthenticationScheme</param-value>
+    </init-param>
+    <init-param>
+      <param-name>form-login-page</param-name>
+      <param-value>/login.jsp</param-value>
+    </init-param>
+    <init-param>
+      <param-name>host-page</param-name>
+      <param-value>/showcase.html</param-value>
     </init-param>
   </filter>
 
   <filter-mapping>
-    <filter-name>UberFire Security Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <filter-name>Security Filter</filter-name>
+    <url-pattern>/showcase.html</url-pattern>
   </filter-mapping>
 
-  <servlet>
-    <servlet-name>UberFireServlet</servlet-name>
-    <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
+  <filter-mapping>
+    <filter-name>Security Filter</filter-name>
+    <url-pattern>/uf_security_check</url-pattern>
+  </filter-mapping>
 
-  <servlet-mapping>
-    <servlet-name>UberFireServlet</servlet-name>
-    <url-pattern>/org.uberfire.UberfireShowcase/Uberfire.html</url-pattern>
-  </servlet-mapping>
-  
+  <filter-mapping>
+    <filter-name>Security Filter</filter-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>GoogleGadget</servlet-name>
     <servlet-class>org.uberfire.backend.server.impl.GoogleGadgetServlet</servlet-class>
@@ -61,10 +66,6 @@
   </servlet-mapping>
 
   <servlet>
-    <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
-with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
-(perhaps under src/integration-test-settings/web.xml and alter the integration-test
-profile in pom.xml to use that. -->
     <servlet-name>ErraiServlet</servlet-name>
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
@@ -76,15 +77,7 @@ profile in pom.xml to use that. -->
   </servlet-mapping>
 
   <listener>
-    <!--
-
-    NOTE: The orig servlet listener has been patched,
-    until a solution to the bean validation problems in hosted mode is found.
-
     <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-    -->
-
-    <listener-class>org.jboss.errai.container.CDIServletStateListener</listener-class>
   </listener>
 
   <resource-env-ref>
@@ -99,22 +92,7 @@ profile in pom.xml to use that. -->
     <resource-env-ref-type>org.jboss.errai.bus.server.service.ErraiService</resource-env-ref-type>
   </resource-env-ref>
 
-  <context-param>
-    <param-name>errai.properties</param-name>
-    <param-value>/WEB-INF/errai.properties</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>login.config</param-name>
-    <param-value>/WEB-INF/login.config</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>users.properties</param-name>
-    <param-value>/WEB-INF/users.properties</param-value>
-  </context-param>
-
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
 </web-app>

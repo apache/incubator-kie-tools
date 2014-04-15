@@ -63,7 +63,11 @@
           <exclude>WEB-INF/lib/*-sources.jar</exclude>
           <exclude>WEB-INF/lib/el-api-*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
-
+          <exclude>WEB-INF/lib/logback-core-*.jar</exclude>
+          <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
+          <exclude>WEB-INF/lib/slf4j-*.jar</exclude>
+          <exclude>WEB-INF/lib/jaxb-impl-*.jar</exclude>
+          
           <!-- Errai -->
           <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
           <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>

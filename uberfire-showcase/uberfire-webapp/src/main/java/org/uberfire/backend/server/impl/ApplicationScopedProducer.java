@@ -23,16 +23,13 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
-import org.uberfire.backend.server.io.IOSecurityAuth;
 import org.uberfire.backend.server.repositories.RepositoryServiceImpl;
 import org.uberfire.backend.server.security.RepositoryAuthorizationManager;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
-import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
@@ -42,13 +39,6 @@ public class ApplicationScopedProducer {
 
     @Inject
     private RepositoryServiceImpl repositoryService;
-
-    @Inject
-    @IOSecurityAuth
-    private AuthenticationService authenticationService;
-
-    @Inject
-    private AuthorizationManager authorizationManager;
 
     @Inject
     @Named("debug")
@@ -67,7 +57,6 @@ public class ApplicationScopedProducer {
         } else {
             ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
         }
-        ioService.setAuthenticationManager( authenticationService );
         ioService.setAuthorizationManager( new RepositoryAuthorizationManager( repositoryService ) );
     }
 
