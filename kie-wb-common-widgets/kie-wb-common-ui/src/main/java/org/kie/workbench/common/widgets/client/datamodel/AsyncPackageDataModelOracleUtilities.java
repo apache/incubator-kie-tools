@@ -56,11 +56,10 @@ public class AsyncPackageDataModelOracleUtilities {
     }
 
     //Filter and rename Model Fields based on package name and imports
-    public static Map<String, ModelField[]> filterModelFields(
-            final String packageName,
-            final Imports imports,
-            final Map<String, ModelField[]> projectModelFields,
-            final FactNameToFQCNHandleRegistry registry ) {
+    public static Map<String, ModelField[]> filterModelFields( final String packageName,
+                                                               final Imports imports,
+                                                               final Map<String, ModelField[]> projectModelFields,
+                                                               final FactNameToFQCNHandleRegistry registry ) {
 
         final Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
 

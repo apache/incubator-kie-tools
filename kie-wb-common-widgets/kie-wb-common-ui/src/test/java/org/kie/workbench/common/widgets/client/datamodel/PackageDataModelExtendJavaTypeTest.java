@@ -69,7 +69,7 @@ public class PackageDataModelExtendJavaTypeTest {
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( projectLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -109,15 +109,16 @@ public class PackageDataModelExtendJavaTypeTest {
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendExtendJavaTypeTest1" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendExtendJavaTypeTest1/src/main/java/t4p1" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
+        final PackageDataModelOracle packageLoader = dataModelService.getDataModel( packagePath );
         final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel( packagePath );
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -165,7 +166,7 @@ public class PackageDataModelExtendJavaTypeTest {
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( projectLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -204,15 +205,16 @@ public class PackageDataModelExtendJavaTypeTest {
                                                                                                DataModelService.class,
                                                                                                cc );
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelBackendExtendJavaTypeTest2" );
+        final URL packageUrl = this.getClass().getResource( "/DataModelBackendExtendJavaTypeTest2/src/main/java/t5p1" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
+        final PackageDataModelOracle packageLoader = dataModelService.getDataModel( packagePath );
         final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel( packagePath );
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();

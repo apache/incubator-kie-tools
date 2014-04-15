@@ -40,12 +40,21 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @ApplicationScoped
 public class IncrementalDataModelServiceImpl implements IncrementalDataModelService {
 
-    @Inject
-    @Named("PackageDataModelOracleCache")
     private LRUDataModelOracleCache cachePackages;
 
-    @Inject
     private ProjectService projectService;
+
+    @Inject
+    public IncrementalDataModelServiceImpl( @Named("PackageDataModelOracleCache") final LRUDataModelOracleCache cachePackages,
+                                            final ProjectService projectService ) {
+        this.cachePackages = PortablePreconditions.checkNotNull( "cachePackages",
+                                                                 cachePackages );
+        this.projectService = PortablePreconditions.checkNotNull( "projectService",
+                                                                  projectService );
+    }
+
+    public IncrementalDataModelServiceImpl() {
+    }
 
     @Override
     public PackageDataModelOracleIncrementalPayload getUpdates( final Path resourcePath,
@@ -73,28 +82,32 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
             }
 
             //Get the fully qualified class name of the fact type
-            String fullyQualifiedClassName = null;
+            String fullyQualifiedClassName = factType;
 
-            // Check if the factType is already the FQCN
-            if (factType.contains(".")) {
-                fullyQualifiedClassName = factType;
-            }
+            //Retrieve (or build) oracle and populate incremental content
+            final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle( project,
+                                                                                              pkg );
 
-            if (fullyQualifiedClassName == null) {
-                for (Import imp : imports.getImports()) {
-                    if (imp.getType().endsWith(factType)) {
+            // Check if the FactType is already known to the DataModelOracle, otherwise we need to find the FQCN
+            if ( oracle.getProjectModelFields().get( fullyQualifiedClassName ) == null ) {
+                for ( Import imp : imports.getImports() ) {
+                    if ( imp.getType().endsWith( factType ) ) {
                         fullyQualifiedClassName = imp.getType();
                         break;
                     }
                 }
             }
-            if ( fullyQualifiedClassName == null ) {
+
+            //If the FactType isn't recognised try using the Package Name
+            if ( oracle.getProjectModelFields().get( fullyQualifiedClassName ) == null ) {
                 fullyQualifiedClassName = pkg.getPackageName() + "." + factType;
             }
 
-            //Retrieve (or build) oracle and populate incremental content
-            final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle( project,
-                                                                                              pkg );
+            //If the FactType still isn't recognised return an empty payload
+            if ( oracle.getProjectModelFields().get( fullyQualifiedClassName ) == null ) {
+                return dataModel;
+            }
+
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
                                                         fullyQualifiedClassName );

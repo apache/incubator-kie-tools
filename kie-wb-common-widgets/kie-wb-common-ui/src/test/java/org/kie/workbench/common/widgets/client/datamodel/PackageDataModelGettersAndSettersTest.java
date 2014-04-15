@@ -58,7 +58,7 @@ public class PackageDataModelGettersAndSettersTest {
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -110,7 +110,7 @@ public class PackageDataModelGettersAndSettersTest {
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();

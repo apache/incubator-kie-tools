@@ -68,7 +68,7 @@ public class PackageDataModelSuperTypesTest {
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -106,7 +106,8 @@ public class PackageDataModelSuperTypesTest {
                              new Callback<String>() {
                                  @Override
                                  public void callback( final String result ) {
-                                     assertNull( result );
+                                     assertEquals( "java.lang.Object",
+                                                   result );
                                  }
                              } );
         oracle.getSuperType( "Bean2",
@@ -139,16 +140,17 @@ public class PackageDataModelSuperTypesTest {
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
-        final ProjectDataModelOracle packageLoader = dataModelService.getProjectDataModel( packagePath );
+        final PackageDataModelOracle packageLoader = dataModelService.getDataModel( packagePath );
+        final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel( packagePath );
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( "t2p1" );
-        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
         dataModel.setSuperTypes( new HashMap<String, List<String>>() {{
             put( "t2p1.Bean1", null );
             put( "t2p1.Bean2", new ArrayList<String>() {{
@@ -187,7 +189,8 @@ public class PackageDataModelSuperTypesTest {
                              new Callback<String>() {
                                  @Override
                                  public void callback( final String result ) {
-                                     assertNull( result );
+                                     assertEquals( "java.lang.Object",
+                                                   result );
                                  }
                              } );
         oracle.getSuperType( "Bean2",

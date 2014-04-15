@@ -66,7 +66,7 @@ public class PackageDataModelServiceTest {
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -131,15 +131,16 @@ public class PackageDataModelServiceTest {
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
-        final ProjectDataModelOracle packageLoader = dataModelService.getProjectDataModel( packagePath );
+        final PackageDataModelOracle packageLoader = dataModelService.getDataModel( packagePath );
+        final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel( packagePath );
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setModelFields( projectLoader.getProjectModelFields() );
         PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
                                                                  new MockHasImports(),
                                                                  oracle,

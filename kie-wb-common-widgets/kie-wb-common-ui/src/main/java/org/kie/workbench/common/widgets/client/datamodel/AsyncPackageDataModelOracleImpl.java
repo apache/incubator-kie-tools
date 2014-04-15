@@ -350,7 +350,8 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     public void getSuperType( final String factType,
                               final Callback<String> callback ) {
 
-        getSuperTypes( factType, new Callback<List<String>>() {
+        getSuperTypes( factType,
+                       new Callback<List<String>>() {
             @Override
             public void callback( List<String> result ) {
                 if ( result != null ) {
@@ -814,6 +815,9 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     private List<MethodInfo> getMethodInfos( final int paramCount,
                                              final List<MethodInfo> allMethodInfos ) {
         final List<MethodInfo> methodInfos = new ArrayList<MethodInfo>();
+        if ( allMethodInfos == null ) {
+            return methodInfos;
+        }
         for ( MethodInfo mi : allMethodInfos ) {
             if ( paramCount == -1 || mi.getParams().size() <= paramCount ) {
                 methodInfos.add( mi );

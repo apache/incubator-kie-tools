@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.drools.workbench.models.datamodel.imports.HasImports;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
@@ -50,7 +53,7 @@ public class PackageDataModelMethodsTest {
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -172,7 +175,7 @@ public class PackageDataModelMethodsTest {
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
@@ -194,6 +197,66 @@ public class PackageDataModelMethodsTest {
                                            assertFalse( "Method " + methodInfo.getName() + " is not allowed.",
                                                         checkBlackList( methodInfo.getName() ) );
                                        }
+                                   }
+                               } );
+    }
+
+    @Test
+    public void testMethodsOnJavaClass_Number() throws Exception {
+        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+                .addClass( Number.class )
+                .addFact( "int" ).end()
+                .build();
+
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "p0" ).setProjectOracle( projectLoader ).build();
+
+        //Emulate server-to-client conversions
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
+        oracle.setService( service );
+
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( packageLoader.getPackageName() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setMethodInformation( packageLoader.getProjectMethodInformation() );
+        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
+                                                                 new HasImports() {
+
+                                                                     private Imports imports = new Imports() {{
+                                                                         addImport( new Import( "java.lang.Number" ) );
+                                                                     }};
+
+                                                                     @Override
+                                                                     public Imports getImports() {
+                                                                         return imports;
+                                                                     }
+
+                                                                     @Override
+                                                                     public void setImports( final Imports imports ) {
+                                                                         //Do nothing
+                                                                     }
+                                                                 },
+                                                                 oracle,
+                                                                 dataModel );
+
+        oracle.getMethodInfos( Number.class.getSimpleName(),
+                               new Callback<List<MethodInfo>>() {
+                                   @Override
+                                   public void callback( final List<MethodInfo> methodInfos ) {
+                                       assertNotNull( methodInfos );
+                                       assertFalse( methodInfos.isEmpty() );
+                                       for ( final MethodInfo methodInfo : methodInfos ) {
+                                           assertFalse( "Method " + methodInfo.getName() + " is not allowed.",
+                                                        checkBlackList( methodInfo.getName() ) );
+                                       }
+                                   }
+                               } );
+        oracle.getMethodInfos( "int",
+                               new Callback<List<MethodInfo>>() {
+                                   @Override
+                                   public void callback( final List<MethodInfo> methodInfos ) {
+                                       assertNotNull( methodInfos );
+                                       assertTrue( methodInfos.isEmpty() );
                                    }
                                } );
     }

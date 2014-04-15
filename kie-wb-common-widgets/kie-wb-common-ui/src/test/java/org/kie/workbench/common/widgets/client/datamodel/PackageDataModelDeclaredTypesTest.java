@@ -61,16 +61,16 @@ public class PackageDataModelDeclaredTypesTest {
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
-        final PackageDataModelOracle projectLoader = dataModelService.getDataModel( packagePath );
+        final PackageDataModelOracle packageLoader = dataModelService.getDataModel( packagePath );
 
         //Emulate server-to-client conversions
         final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
-        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
         oracle.setService( service );
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName( "t1p1" );
-        dataModel.setModelFields( projectLoader.getProjectModelFields() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
         dataModel.setTypeSources( new HashMap<String, TypeSource>() {
             {
                 put( "t1p1.Bean1", TypeSource.JAVA_PROJECT );
