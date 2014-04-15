@@ -200,6 +200,8 @@ public class DRLEditorPresenter {
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         loadContent();
+
+        placeManager.goTo("socialScreen");
     }
 
     private void reload() {
