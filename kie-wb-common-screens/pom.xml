@@ -17,6 +17,7 @@
   <description>Kie Workbench - Common - Screens</description>
 
   <modules>
+    <module>kie-wb-common-social-screen</module>
     <module>kie-wb-common-default-editor</module>
     <module>kie-wb-common-project-imports-editor</module>
     <module>kie-wb-common-project-editor</module>
