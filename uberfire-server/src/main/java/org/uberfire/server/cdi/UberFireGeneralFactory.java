@@ -19,8 +19,6 @@ package org.uberfire.server.cdi;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
-import javax.servlet.ServletContext;
 
 import org.jboss.errai.bus.server.api.RpcContext;
 import org.jboss.errai.security.shared.service.AuthenticationService;
@@ -28,18 +26,6 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 
 public class UberFireGeneralFactory {
-
-    static private ServletContext servletContext;
-
-    public static void setServletContext( final ServletContext sContext ) {
-        servletContext = sContext;
-    }
-
-    @Produces
-    @Named("uf")
-    public static ServletContext getServletContent() {
-        return servletContext;
-    }
 
     @Produces
     @RequestScoped
