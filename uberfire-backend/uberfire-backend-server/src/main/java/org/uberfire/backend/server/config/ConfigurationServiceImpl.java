@@ -1,5 +1,7 @@
 package org.uberfire.backend.server.config;
 
+import static org.uberfire.backend.server.util.Paths.*;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +20,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOService;
@@ -34,8 +36,6 @@ import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
-
-import static org.uberfire.backend.server.util.Paths.*;
 
 @ApplicationScoped
 public class ConfigurationServiceImpl implements ConfigurationService {
@@ -54,7 +54,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private ConfigGroupMarshaller marshaller;
 
     @Inject
-    private User identity;
+    private AuthenticationService authService;
 
     //Cache of ConfigGroups to avoid reloading them from file
     private final Map<ConfigType, List<ConfigGroup>> configuration = new ConcurrentHashMap<ConfigType, List<ConfigGroup>>();
@@ -76,8 +76,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     public void setup() {
         try {
             fs = ioService.newFileSystem( URI.create( systemRepository.getUri() ),
-                                          systemRepository.getEnvironment(),
-                                          FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE );
+                    systemRepository.getEnvironment(),
+                    FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE );
             updateLastModified();
         } catch ( FileSystemAlreadyExistsException e ) {
             fs = ioService.getFileSystem( URI.create( systemRepository.getUri() ) );
@@ -118,17 +118,17 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         final List<ConfigGroup> configGroups = new ArrayList<ConfigGroup>();
         final DirectoryStream<Path> foundConfigs = ioService.newDirectoryStream( ioService.get( systemRepository.getUri() ),
-                                                                                 new DirectoryStream.Filter<Path>() {
-                                                                                     @Override
-                                                                                     public boolean accept( final Path entry ) throws IOException {
-                                                                                         if ( !Files.isDirectory( entry ) &&
-                                                                                                 !entry.getFileName().toString().startsWith( "." ) &&
-                                                                                                 entry.getFileName().toString().endsWith( type.getExt() ) ) {
-                                                                                             return true;
-                                                                                         }
-                                                                                         return false;
-                                                                                     }
-                                                                                 } );
+                new DirectoryStream.Filter<Path>() {
+            @Override
+            public boolean accept( final Path entry ) throws IOException {
+                if ( !Files.isDirectory( entry ) &&
+                        !entry.getFileName().toString().startsWith( "." ) &&
+                        entry.getFileName().toString().endsWith( type.getExt() ) ) {
+                    return true;
+                }
+                return false;
+            }
+        } );
         //Only load and cache if a file was found!
         final Iterator<Path> it = foundConfigs.iterator();
         if ( it.hasNext() ) {
@@ -153,7 +153,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
 
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
-                                                                     "Created config " + filePath.getFileName() );
+                "Created config " + filePath.getFileName() );
         try {
             ioService.startBatch();
             ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
@@ -175,7 +175,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         final Path filePath = ioService.get( systemRepository.getUri() ).resolve( filename + configGroup.getType().getExt() );
 
         final CommentedOption commentedOption = new CommentedOption( getIdentityName(),
-                                                                     "Updated config " + filePath.getFileName() );
+                "Updated config " + filePath.getFileName() );
         try {
             ioService.startBatch();
             ioService.write( filePath, marshaller.marshall( configGroup ), commentedOption );
@@ -218,7 +218,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     protected String getIdentityName() {
         try {
-            return identity.getIdentifier();
+            return authService.getUser().getIdentifier();
         } catch ( ContextNotActiveException e ) {
             return "unknown";
         }
