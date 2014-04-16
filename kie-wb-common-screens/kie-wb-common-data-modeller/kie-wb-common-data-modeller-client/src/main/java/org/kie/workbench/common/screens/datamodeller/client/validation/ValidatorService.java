@@ -89,7 +89,7 @@ public class ValidatorService {
     public void isValidTimerInterval( String expression, final ValidatorCallback callback ) {
 
         //TODO, complete this validation.
-        if ("kaka".equals( expression ) ) {
+        if ("error".equals( expression ) ) {
             callback.onFailure();
         } else {
             callback.onSuccess();

@@ -120,7 +120,7 @@
             </tr>
 
             <tr>
-              <td colspan="3" style="font-weight:bold;">Drools engine parameters:</td>
+              <td colspan="3" style="font-weight:bold;"><gwt:Label ui:field="droolsParametersLabel" text="{i18n.objectEditor_droolsParametersLabel}" /></td>
             </tr>
 
             <tr>

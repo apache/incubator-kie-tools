@@ -48,8 +48,12 @@ import org.kie.workbench.common.services.datamodeller.parser.descr.QualifiedName
 import org.kie.workbench.common.services.datamodeller.parser.descr.TypeArgumentDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TypeArgumentListDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TypeDescr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavaParserBase extends Parser {
+
+    private static final Logger logger = LoggerFactory.getLogger( JavaParserBase.class );
 
     public static enum ParserMode {
         PARSE_CLASS,
@@ -121,8 +125,7 @@ public class JavaParserBase extends Parser {
     }
 
     protected void log( String message ) {
-        //TODO setup log stuff
-        System.out.println( message + " : " + new java.util.Date( ) );
+        if (logger.isDebugEnabled()) logger.debug( message );
     }
 
     protected boolean isFieldOnTop( ) {

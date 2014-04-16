@@ -155,6 +155,9 @@ public class DataObjectEditor extends Composite {
     @UiField
     TextBox expires;
 
+    @UiField
+    Label droolsParametersLabel;
+
     @Inject
     Event<DataModelerEvent> dataModelerEvent;
 

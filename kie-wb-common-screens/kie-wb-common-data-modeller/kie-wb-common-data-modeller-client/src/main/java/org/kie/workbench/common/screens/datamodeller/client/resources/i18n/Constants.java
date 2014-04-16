@@ -175,6 +175,8 @@ public interface Constants extends Messages {
 
     public String objectFieldEditor_positionHelp();
 
+    public String objectEditor_droolsParametersLabel();
+
     public String new_dataobject_popup_title();
     
     public String new_dataobject_popup_identifier();
