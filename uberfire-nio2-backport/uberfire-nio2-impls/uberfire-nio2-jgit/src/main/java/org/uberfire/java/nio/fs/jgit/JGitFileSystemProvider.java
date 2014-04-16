@@ -148,7 +148,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public static final String SSH_FILE_CERT_ROOT_DIR = ".security";
     public static final String DEFAULT_HOST_NAME = "localhost";
     public static final String DEFAULT_HOST_ADDR = "127.0.0.1";
-    public static final boolean DAEMON_DEFAULT_ENABLED = true;
+    public static final boolean DAEMON_DEFAULT_ENABLED = false;
     public static final int DAEMON_DEFAULT_PORT = 9418;
     public static final boolean SSH_DEFAULT_ENABLED = true;
     public static final int SSH_DEFAULT_PORT = 8001;
@@ -224,26 +224,24 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             }
         }
 
-        if ( DAEMON_ENABLED ) {
-            if ( port == null || port.trim().isEmpty() ) {
-                DAEMON_PORT = DAEMON_DEFAULT_PORT;
+        if ( port == null || port.trim().isEmpty() ) {
+            DAEMON_PORT = DAEMON_DEFAULT_PORT;
+        } else {
+            DAEMON_PORT = Integer.valueOf( port );
+        }
+        if ( host == null || host.trim().isEmpty() ) {
+            DAEMON_HOST_ADDR = DEFAULT_HOST_ADDR;
+        } else {
+            DAEMON_HOST_ADDR = host;
+        }
+        if ( hostName == null || hostName.trim().isEmpty() ) {
+            if ( host != null && !host.trim().isEmpty() ) {
+                DAEMON_HOST_NAME = host;
             } else {
-                DAEMON_PORT = Integer.valueOf( port );
+                DAEMON_HOST_NAME = DEFAULT_HOST_NAME;
             }
-            if ( host == null || host.trim().isEmpty() ) {
-                DAEMON_HOST_ADDR = DEFAULT_HOST_ADDR;
-            } else {
-                DAEMON_HOST_ADDR = host;
-            }
-            if ( hostName == null || hostName.trim().isEmpty() ) {
-                if ( host != null && !host.trim().isEmpty() ) {
-                    DAEMON_HOST_NAME = host;
-                } else {
-                    DAEMON_HOST_NAME = DEFAULT_HOST_NAME;
-                }
-            } else {
-                DAEMON_HOST_NAME = hostName;
-            }
+        } else {
+            DAEMON_HOST_NAME = hostName;
         }
 
         if ( sshEnabled == null || sshEnabled.trim().isEmpty() ) {
@@ -256,32 +254,30 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             }
         }
 
-        if ( SSH_ENABLED ) {
-            if ( sshPort == null || sshPort.trim().isEmpty() ) {
-                SSH_PORT = SSH_DEFAULT_PORT;
+        if ( sshPort == null || sshPort.trim().isEmpty() ) {
+            SSH_PORT = SSH_DEFAULT_PORT;
+        } else {
+            SSH_PORT = Integer.valueOf( sshPort );
+        }
+        if ( sshHost == null || sshHost.trim().isEmpty() ) {
+            SSH_HOST_ADDR = DEFAULT_HOST_ADDR;
+        } else {
+            SSH_HOST_ADDR = sshHost;
+        }
+        if ( sshHostName == null || sshHostName.trim().isEmpty() ) {
+            if ( sshHost != null && !sshHost.trim().isEmpty() ) {
+                SSH_HOST_NAME = sshHost;
             } else {
-                SSH_PORT = Integer.valueOf( sshPort );
+                SSH_HOST_NAME = DEFAULT_HOST_NAME;
             }
-            if ( sshHost == null || sshHost.trim().isEmpty() ) {
-                SSH_HOST_ADDR = DEFAULT_HOST_ADDR;
-            } else {
-                SSH_HOST_ADDR = sshHost;
-            }
-            if ( sshHostName == null || sshHostName.trim().isEmpty() ) {
-                if ( sshHost != null && !sshHost.trim().isEmpty() ) {
-                    SSH_HOST_NAME = sshHost;
-                } else {
-                    SSH_HOST_NAME = DEFAULT_HOST_NAME;
-                }
-            } else {
-                SSH_HOST_NAME = sshHostName;
-            }
+        } else {
+            SSH_HOST_NAME = sshHostName;
+        }
 
-            if ( sshCertDir == null || sshCertDir.trim().isEmpty() ) {
-                SSH_FILE_CERT_DIR = new File( SSH_FILE_CERT_ROOT_DIR );
-            } else {
-                SSH_FILE_CERT_DIR = new File( sshCertDir.trim(), SSH_FILE_CERT_ROOT_DIR );
-            }
+        if ( sshCertDir == null || sshCertDir.trim().isEmpty() ) {
+            SSH_FILE_CERT_DIR = new File( SSH_FILE_CERT_ROOT_DIR );
+        } else {
+            SSH_FILE_CERT_DIR = new File( sshCertDir.trim(), SSH_FILE_CERT_ROOT_DIR );
         }
 
     }
@@ -464,13 +460,21 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         gitSSHService.start();
     }
 
-    private void buildAndStartDaemon() {
-        daemonService = new Daemon( new InetSocketAddress( DAEMON_HOST_ADDR, DAEMON_PORT ) );
-        daemonService.setRepositoryResolver( new RepositoryResolverImpl<DaemonClient>() );
-        try {
-            daemonService.start();
-        } catch ( java.io.IOException e ) {
-            throw new IOException( e );
+    void buildAndStartDaemon() {
+        if ( daemonService == null || !daemonService.isRunning() ) {
+            daemonService = new Daemon( new InetSocketAddress( DAEMON_HOST_ADDR, DAEMON_PORT ) );
+            daemonService.setRepositoryResolver( new RepositoryResolverImpl<DaemonClient>() );
+            try {
+                daemonService.start();
+            } catch ( java.io.IOException e ) {
+                throw new IOException( e );
+            }
+        }
+    }
+
+    void forceStopDaemon() {
+        if ( daemonService != null || daemonService.isRunning() ) {
+            daemonService.stop();
         }
     }
 

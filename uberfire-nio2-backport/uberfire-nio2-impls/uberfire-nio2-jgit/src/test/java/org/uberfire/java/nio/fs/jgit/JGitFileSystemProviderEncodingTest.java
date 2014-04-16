@@ -22,6 +22,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 
@@ -31,6 +33,16 @@ import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
 
     private static final JGitFileSystemProvider PROVIDER = JGitFileSystemProvider.getInstance();
+
+    @BeforeClass
+    public static void setup() throws IOException {
+        PROVIDER.buildAndStartDaemon();
+    }
+
+    @AfterClass
+    public static void tearDown() throws IOException {
+        PROVIDER.forceStopDaemon();
+    }
 
     @Test
     public void test() throws IOException {
