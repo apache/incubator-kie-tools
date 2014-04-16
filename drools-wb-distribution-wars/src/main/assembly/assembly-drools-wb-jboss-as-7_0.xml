@@ -111,7 +111,9 @@
 
           <!-- Exclude RESTeasy as it's bundled with jboss as7 -->
           <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
-          <exclude>WEB-INF/lib/jackson-*.jar</exclude>
+          <!-- we need jackson-mapper-asl and jackson-xc -->
+          <exclude>WEB-INF/lib/jackson-jaxrs*.jar</exclude>
+          <exclude>WEB-INF/lib/jackson-core*.jar</exclude>
 
           <!-- Errai -->
           <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
