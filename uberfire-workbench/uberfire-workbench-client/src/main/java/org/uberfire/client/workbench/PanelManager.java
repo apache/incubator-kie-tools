@@ -1,5 +1,6 @@
 package org.uberfire.client.workbench;
 
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
@@ -36,6 +37,8 @@ public interface PanelManager {
                            final Menus menus,
                            final UIPart uiPart,
                            final String contextId );
+
+    PerspectiveActivity getDefaultPerspectiveActivity();
 
     PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
                                        final Position position );

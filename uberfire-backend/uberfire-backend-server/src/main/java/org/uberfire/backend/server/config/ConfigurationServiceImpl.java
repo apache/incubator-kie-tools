@@ -66,6 +66,12 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     // monitor capabilities
     @Inject
+    @org.uberfire.backend.server.config.Repository
+    private Event<SystemRepositoryChangedEvent> repoChangedEvent;
+    @Inject
+    @OrgUnit
+    private Event<SystemRepositoryChangedEvent> orgUnitChangedEvent;
+    @Inject
     private Event<SystemRepositoryChangedEvent> changedEvent;
     private ExecutorService executorService;
     private CheckConfigurationUpdates configUpdates;
@@ -294,6 +300,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                             localLastModifiedValue = currentValue;
                             // invalidate cached values as system repo has changed
                             configuration.clear();
+                            // notify first repository
+                            repoChangedEvent.fire( new SystemRepositoryChangedEvent() );
+                            // then org unit
+                            orgUnitChangedEvent.fire( new SystemRepositoryChangedEvent() );
+                            // lastly all others
                             changedEvent.fire( new SystemRepositoryChangedEvent() );
                         }
                     }

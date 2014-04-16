@@ -270,7 +270,7 @@ public class ListBarWidget
         spanElement.getStyle().setOverflow( Style.Overflow.HIDDEN );
         spanElement.getStyle().setTextOverflow( Style.TextOverflow.ELLIPSIS );
         spanElement.getStyle().setDisplay( BLOCK );
-        spanElement.setInnerText( title );
+        spanElement.setInnerText( title.replaceAll( " ", "\u00a0" ) );
 
         return new DragArea() {{
             add( spanElement );

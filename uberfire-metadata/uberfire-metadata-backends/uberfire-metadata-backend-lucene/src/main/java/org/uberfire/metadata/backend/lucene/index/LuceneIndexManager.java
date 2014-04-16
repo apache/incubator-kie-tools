@@ -67,6 +67,7 @@ public class LuceneIndexManager {
 
     public void delete( KCluster cluster ) {
         final LuceneIndex setup = indexes.remove( cluster );
+        factory.remove( cluster );
         if ( setup != null ) {
             setup.delete();
         }

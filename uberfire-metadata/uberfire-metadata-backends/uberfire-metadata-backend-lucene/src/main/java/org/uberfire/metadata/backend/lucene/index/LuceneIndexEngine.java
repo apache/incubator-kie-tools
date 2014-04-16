@@ -51,6 +51,7 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     private final MetaModelStore metaModelStore;
     private final LuceneIndexManager indexManager;
     private final Map<KCluster, AtomicInteger> batchMode = new ConcurrentHashMap<KCluster, AtomicInteger>();
+    private final Collection<Runnable> beforeDispose = new ArrayList<Runnable>();
 
     public LuceneIndexEngine( final FieldFactory fieldFactory,
                               final MetaModelStore metaModelStore,
@@ -198,7 +199,16 @@ public class LuceneIndexEngine implements MetaIndexEngine {
 
     @Override
     public void dispose() {
-        indexManager.dispose();
+        if ( !beforeDispose.isEmpty() ) {
+            for ( final Runnable activeDispose : beforeDispose ) {
+                activeDispose.run();
+            }
+        }
+    }
+
+    @Override
+    public void beforeDispose( final Runnable callback ) {
+        this.beforeDispose.add( checkNotNull( "callback", callback ) );
     }
 
     private void updateMetaModel( final KObject object ) {

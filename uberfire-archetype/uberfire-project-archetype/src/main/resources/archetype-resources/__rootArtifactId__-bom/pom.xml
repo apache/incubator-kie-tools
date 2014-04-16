@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>${groupId}</groupId>
+    <artifactId>${rootArtifactId}</artifactId>
+    <version>${version}</version>
+  </parent>
+
+  <artifactId>${artifactId}</artifactId>
+  <packaging>pom</packaging>
+
+  <name>BOM (Bill Of Materials)</name>
+  <description>Import this BOM in your dependencyManagement if you want to depend on multiple artifacts.</description>
+
+  <!-- IMPORTANT: Do not declare any build things here! Declare them in ${artifactId}-parent-metadata pom. -->
+  <build />
+
+  <dependencyManagement>
+    <dependencies>
+      <!--
+        IMPORTANT: Only declare modules of groupId ${groupId}.
+        Do not declare external dependencies.
+        Do not duplicate modules from another bom.
+      -->
+      <!--
+        Declare all dependency versions. Do not declare <scope> or <optional>.
+        Each module should declare it's direct dependencies and possibly overwrite scope/optional.
+        Always declare the sources jar too and optionally the test-jar.
+      -->
+      <!-- Showcase WebApp -->
+      <dependency>
+        <groupId>${groupId}</groupId>
+        <artifactId>${rootArtifactId}-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+
+      <!-- Component -->
+      <dependency>
+        <groupId>${groupId}</groupId>
+        <artifactId>${rootArtifactId}-component-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${groupId}</groupId>
+        <artifactId>${rootArtifactId}-component-backend</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${groupId}</groupId>
+        <artifactId>${rootArtifactId}-component-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+</project>

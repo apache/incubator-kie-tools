@@ -18,13 +18,10 @@ package org.uberfire.client.workbench;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.HorizontalSplitterPanel;
-import org.uberfire.client.workbench.panels.impl.VerticalSplitterPanel;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
@@ -38,18 +35,6 @@ public interface BeanFactory {
                                                     final PartDefinition definition );
 
     public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition );
-
-    public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelView eastPanel,
-                                                               final WorkbenchPanelView westPanel,
-                                                               final Position position,
-                                                               final Integer preferredSize,
-                                                               final Integer preferredMinSize );
-
-    public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelView northPanel,
-                                                           final WorkbenchPanelView southPanel,
-                                                           final Position position,
-                                                           final Integer preferredSize,
-                                                           final Integer preferredMinSize );
 
     public CompassDropController newDropController( final WorkbenchPanelView view );
 

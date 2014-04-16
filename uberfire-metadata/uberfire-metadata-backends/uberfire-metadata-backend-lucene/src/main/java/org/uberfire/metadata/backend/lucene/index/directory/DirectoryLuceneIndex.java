@@ -138,6 +138,6 @@ public class DirectoryLuceneIndex extends BaseLuceneIndex {
     public void delete() {
         closeWriter();
         directory.delete();
+        isDisposed.set( true );
     }
-
 }

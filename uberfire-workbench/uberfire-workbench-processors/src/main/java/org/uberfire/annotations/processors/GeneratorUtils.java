@@ -30,6 +30,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -439,7 +440,7 @@ public class GeneratorUtils {
         return getMethodName( classElement,
                 processingEnvironment,
                 "java.lang.Integer",
-                ClientAPIModule.getSplashBodySizeClass() );
+                ClientAPIModule.getSplashBodyHeightClass() );
     }
 
     public static String getInterceptMethodName( final TypeElement classElement,
@@ -743,13 +744,17 @@ public class GeneratorUtils {
         return match.getSimpleName().toString();
     }
 
-    private static AnnotationMirror getAnnotation( Elements elementUtils, Element annotationTarget, String annotationName ) {
+    public static AnnotationMirror getAnnotation( Elements elementUtils, Element annotationTarget, String annotationName ) {
         for ( AnnotationMirror annotation : elementUtils.getAllAnnotationMirrors( annotationTarget ) ) {
-            if ( annotationName.contentEquals( ( (TypeElement) annotation.getAnnotationType().asElement() ).getQualifiedName() ) ) {
+            if ( annotationName.contentEquals( getQualifiedName( annotation ) ) ) {
                 return annotation;
             }
         }
         return null;
+    }
+
+    public static Name getQualifiedName( AnnotationMirror annotation ) {
+        return ( (TypeElement) annotation.getAnnotationType().asElement() ).getQualifiedName();
     }
 
     // Lookup a public method name with the given annotation. The method must be

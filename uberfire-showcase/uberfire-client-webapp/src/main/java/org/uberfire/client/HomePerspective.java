@@ -1,32 +1,40 @@
 package org.uberfire.client;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.uberfire.client.annotations.Perspective;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.annotations.ParameterMapping;
+import org.uberfire.client.annotations.WorkbenchPanel;
+import org.uberfire.client.annotations.WorkbenchPart;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PanelType;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
 @WorkbenchPerspective(
         identifier = "HomePerspective",
         isDefault = true)
-public class HomePerspective {
+@Templated
+public class HomePerspective extends Composite {
 
-    @Perspective
-    public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
-        p.setTransient( true );
-        p.setName( getClass().getName() );
+    @DataField
+    @WorkbenchPart(part = "MoodScreen" ,parameters = {@ParameterMapping(name="uber", val="fire"),@ParameterMapping(name="uber1", val="fire1")})
+    FlowPanel moodScreen = new FlowPanel();
 
-        p.getRoot().addPart(
-                new PartDefinitionImpl(
-                        new DefaultPlaceRequest( "HelloWorldScreen" ) ) );
+    @DataField
+    @WorkbenchPanel
+    @WorkbenchPart(part = "HomeScreen", parameters = @ParameterMapping(name="uber", val="fire"))
+    FlowPanel homeScreen = new FlowPanel();
 
-        return p;
+    @DataField
+    @WorkbenchPart(part = "AnotherScreen")
+    FlowPanel anotherScreen = new FlowPanel();
+
+
+    @PostConstruct
+    public void setup() {
     }
 
 }

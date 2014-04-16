@@ -85,6 +85,11 @@ public class DirectoryFactory implements LuceneIndexFactory {
     }
 
     @Override
+    public void remove( KCluster cluster ) {
+        clusters.remove( cluster );
+    }
+
+    @Override
     public Map<? extends KCluster, ? extends LuceneIndex> getIndexes() {
         return Collections.unmodifiableMap( clusters );
     }

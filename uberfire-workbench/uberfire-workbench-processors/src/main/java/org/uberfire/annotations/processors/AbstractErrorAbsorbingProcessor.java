@@ -11,6 +11,7 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
@@ -68,9 +69,9 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
 	}
 
     private static AnnotationMirror findAnnotationMirror( Element target, TypeElement annotationType ) {
-        final String annotationTypeName = annotationType.getQualifiedName().toString();
+        final Name annotationTypeName = annotationType.getQualifiedName();
         for (AnnotationMirror am : target.getAnnotationMirrors()) {
-            if (((TypeElement) am.getAnnotationType().asElement()).getQualifiedName().toString().equals( annotationTypeName )) {
+            if (GeneratorUtils.getQualifiedName( am ).contentEquals( annotationTypeName )) {
                 return am;
             }
         }

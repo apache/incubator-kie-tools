@@ -15,9 +15,6 @@
  */
 package org.uberfire.workbench.model.impl;
 
-import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
-import static org.uberfire.workbench.model.impl.PanelTypeHelper.getDefaultChildType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +29,9 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
+
+import static org.uberfire.workbench.model.ContextDisplayMode.*;
+import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
 
 /**
  * Default implementation of PanelDefinition
@@ -123,6 +123,7 @@ public class PanelDefinitionImpl
     @Override
     public void appendChild( final Position position,
                              final PanelDefinition panel ) {
+
         if ( panel == null ) {
             return;
         }
@@ -138,6 +139,19 @@ public class PanelDefinitionImpl
             existingChild.appendChild( position,
                                        panel );
         }
+    }
+
+    @Override
+    public void appendChild(
+            final PanelDefinition panel ) {
+
+        if ( panel == null ) {
+            return;
+        }
+        if ( children.contains( panel ) ) {
+            return;
+        }
+        children.add( panel );
     }
 
     @Override
@@ -272,8 +286,8 @@ public class PanelDefinitionImpl
 
     @Override
     public String toString() {
-      return "PanelDefinitionImpl [parts=" + parts + ", children=" + children + ", panelType=" + panelType
-              + ", contextDefinition=" + contextDefinition + ", contextDisplayMode=" + contextDisplayMode + "]";
+        return "PanelDefinitionImpl [parts=" + parts + ", children=" + children + ", panelType=" + panelType
+                + ", contextDefinition=" + contextDefinition + ", contextDisplayMode=" + contextDisplayMode + "]";
     }
 
 }

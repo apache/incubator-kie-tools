@@ -33,5 +33,6 @@
     <module>uberfire-widgets-commons</module>
     <module>uberfire-widgets-core</module>
     <module>uberfire-widgets-sandbox</module>
+    <module>uberfire-widgets-properties-editor</module>
   </modules>
 </project>

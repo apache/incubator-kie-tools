@@ -51,21 +51,6 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>UberFireImageServlet</servlet-name>
-    <servlet-class>org.uberfire.server.UberfireImageServlet</servlet-class>
-    <init-param>
-      <param-name>org.uberfire.images.paths</param-name>
-      <param-value>/org.uberfire.UberfireShowcase</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>UberFireImageServlet</servlet-name>
-    <url-pattern>/org.uberfire.UberfireShowcase/uberFireImages/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>ErraiServlet</servlet-name>
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
     <load-on-startup>1</load-on-startup>

@@ -1,0 +1,83 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <distributable/>
+  <filter>
+    <filter-name>UberFire Security Filter</filter-name>
+    <filter-class>org.uberfire.security.server.UberFireSecurityFilter</filter-class>
+    <init-param>
+      <param-name>org.uberfire.cookie.id</param-name>
+      <param-value>${rootArtifactId}.showcase</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>UberFire Security Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <servlet>
+    <servlet-name>UberFireServlet</servlet-name>
+    <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UberFireServlet</servlet-name>
+    <url-pattern>/${package}.${capitalizedRootArtifactId}Showcase/${capitalizedRootArtifactId}.html</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
+with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
+(perhaps under src/integration-test-settings/web.xml and alter the integration-test
+profile in pom.xml to use that. -->
+    <servlet-name>ErraiServlet</servlet-name>
+    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+
+    <init-param>
+      <param-name>service-locator</param-name>
+      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ErraiServlet</servlet-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+
+  <listener>
+    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+  </listener>
+
+  <resource-env-ref>
+    <description>Object factory for the CDI Bean Manager</description>
+    <resource-env-ref-name>BeanManager</resource-env-ref-name>
+    <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
+  </resource-env-ref>
+
+  <resource-env-ref>
+    <description>Object factory for the Errai Service</description>
+    <resource-env-ref-name>ErraiService</resource-env-ref-name>
+    <resource-env-ref-type>org.jboss.errai.bus.server.service.ErraiService</resource-env-ref-type>
+  </resource-env-ref>
+
+  <context-param>
+    <param-name>errai.properties</param-name>
+    <param-value>/WEB-INF/errai.properties</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>login.config</param-name>
+    <param-value>/WEB-INF/login.config</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>users.properties</param-name>
+    <param-value>/WEB-INF/users.properties</param-value>
+  </context-param>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

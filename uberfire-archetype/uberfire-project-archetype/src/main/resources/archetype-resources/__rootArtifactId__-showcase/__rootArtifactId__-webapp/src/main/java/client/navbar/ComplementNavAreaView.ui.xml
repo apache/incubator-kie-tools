@@ -1,0 +1,46 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+
+  <ui:with field="res" type="org.uberfire.client.resources.WorkbenchResources"/>
+
+  <ui:style>
+    .contextArea {
+      height: 47px !important;
+    }
+
+    .logo {
+      float: left;
+      margin-left: 20px;
+    }
+
+    .search {
+      float: right;
+      margin-right: 20px;
+      margin-top: 7px;
+    }
+
+    .contextMenu {
+      display: inline-block;
+      margin-left: 20px;
+      margin-top: 7px;
+    }
+
+    .searchForm {
+      margin-bottom: 0px !important;
+    }
+  </ui:style>
+
+  <g:FlowPanel styleName="{style.contextArea} {res.CSS.listbar}">
+    <g:Image ui:field="logo" styleName="{style.logo}"/>
+    <g:FlowPanel ui:field="contextMenuArea" styleName="{style.contextMenu}"/>
+    <g:FlowPanel addStyleNames="{style.search}">
+      <b:Form type="SEARCH" addStyleNames="{style.searchForm}">
+        <b:TextBox searchQuery="true" placeholder="search..."/>
+      </b:Form>
+    </g:FlowPanel>
+  </g:FlowPanel>
+
+
+</ui:UiBinder>

@@ -34,6 +34,11 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-panel-manager-nswe</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>
       <exclusions>
         <exclusion>
@@ -64,8 +69,23 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-properties-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-properties-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-commons-io</artifactId>
     </dependency>
 
     <dependency>

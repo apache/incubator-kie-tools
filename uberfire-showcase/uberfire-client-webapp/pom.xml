@@ -34,6 +34,15 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-panel-manager-template</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-javaee-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client</artifactId>
     </dependency>
 
@@ -112,7 +121,7 @@
           <module>org.uberfire.FastCompiledUberfireShowcaseClient</module>
           <logLevel>INFO</logLevel>
           <strict>true</strict>
-          <runTarget>org.uberfire.UberfireShowcase/index.html</runTarget>
+          <runTarget>index.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <soyc>false</soyc>
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>

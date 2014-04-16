@@ -28,8 +28,12 @@ import org.uberfire.backend.server.repositories.RepositoryServiceImpl;
 import org.uberfire.backend.server.security.RepositoryAuthorizationManager;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
+import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.metadata.io.IOServiceIndexedImpl;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
@@ -49,19 +53,32 @@ public class ApplicationScopedProducer {
     private ClusterServiceFactory clusterServiceFactory;
 
     private IOService ioService;
+    private LuceneConfig luceneConfig;
 
     @PostConstruct
     public void setup() {
+        this.luceneConfig = new LuceneConfigBuilder().withInMemoryMetaModelStore()
+                .useDirectoryBasedIndex()
+                .useNIODirectory()
+                .build();
+
+        final IOService service = new IOServiceIndexedImpl( watchService,
+                luceneConfig.getIndexEngine(),
+                DublinCoreView.class,
+                VersionAttributeView.class );
+
         if ( clusterServiceFactory == null ) {
-            ioService = new IOServiceDotFileImpl( watchService );
+            ioService = service;
         } else {
-            ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
+            ioService = new IOServiceClusterImpl( service, clusterServiceFactory, false );
         }
+
         ioService.setAuthorizationManager( new RepositoryAuthorizationManager( repositoryService ) );
     }
 
     @PreDestroy
     public void onShutdown() {
+        luceneConfig.dispose();
         ioService.dispose();
     }
 

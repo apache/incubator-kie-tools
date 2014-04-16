@@ -649,6 +649,7 @@
     <!--<module>uberfire-build-config</module>-->
     <module>uberfire-bom</module>
     <module>uberfire-parent-with-dependencies</module>
+    <module>uberfire-archetype</module>
     <module>uberfire-commons</module>
     <module>uberfire-api</module>
     <module>uberfire-client-api</module>

@@ -63,6 +63,9 @@ public abstract class BaseSecurityFilterTest {
     @Mock( name = "applicationPreferredAuthSchemeInstance" )
     protected Instance<HTTPAuthenticationScheme> preferredAuthFilterInstance;
 
+    @Mock(name = "allAvailableAuthSchemesInstance")
+    protected Instance<HTTPAuthenticationScheme> allAvailableAuthSchemesInstance;
+
     @InjectMocks
     protected AuthenticationFilter authFilter;
 

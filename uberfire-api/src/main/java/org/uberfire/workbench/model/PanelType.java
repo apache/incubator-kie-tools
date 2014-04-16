@@ -12,5 +12,6 @@ public enum PanelType {
     SIMPLE_DND,
     MULTI_TAB,
     MULTI_LIST,
-    STATIC
+    STATIC,
+    TEMPLATE
 }

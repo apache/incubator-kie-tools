@@ -1,0 +1,24 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     This context.xml causes Tomcat to insert Weld's CDI BeanManager into
+     the JNDI context at java:/comp/env/BeanManager. This is required in
+     Tomcat because Weld's normal boostrap doesn't work: the JNDI context
+     is read-only to the webapp.
+
+     To ensure this file is placed in your generated WAR, activate the
+     "tomcat" profile during your build:
+
+     % mvn clean package -Ptomcat
+
+     For details on deploying Weld into Tomcat, see
+     http://docs.jboss.org/weld/reference/1.0.0/en-US/html/environments.html
+-->
+<Context>
+   <Resource name="BeanManager" 
+      auth="Container"
+      type="javax.enterprise.inject.spi.BeanManager"
+      factory="org.jboss.weld.resources.ManagerObjectFactory"/>
+</Context>

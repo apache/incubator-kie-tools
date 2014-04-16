@@ -44,6 +44,11 @@ public interface AuthorizationResult {
         public int hashCode() {
             return 1;
         }
+
+        @Override
+        public String toString() {
+            return "ACCESS_GRANTED";
+        }
     };
 
     final AuthorizationResult ACCESS_ABSTAIN = new AuthorizationResult() {
@@ -72,6 +77,11 @@ public interface AuthorizationResult {
         public int hashCode() {
             return 0;
         }
+
+        @Override
+        public String toString() {
+            return "ACCESS_ABSTAIN";
+        }
     };
 
     final AuthorizationResult ACCESS_DENIED = new AuthorizationResult() {
@@ -99,6 +109,11 @@ public interface AuthorizationResult {
         @Override
         public int hashCode() {
             return -1;
+        }
+
+        @Override
+        public String toString() {
+            return "ACCESS_DENIED";
         }
     };
 

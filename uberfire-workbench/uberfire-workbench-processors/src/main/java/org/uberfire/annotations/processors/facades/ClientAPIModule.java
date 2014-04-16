@@ -1,12 +1,16 @@
 package org.uberfire.annotations.processors.facades;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 
+import org.uberfire.annotations.processors.GeneratorUtils;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
@@ -18,6 +22,8 @@ public class ClientAPIModule {
 
     public static final String IDENTIFIER = "identifier";
     public static final String IS_DEFAULT = "isDefault";
+    public static final String IS_TEMPLATE = "isTemplate";
+    public static final String VALUE = "value";
 
     private ClientAPIModule() {}
 
@@ -36,8 +42,12 @@ public class ClientAPIModule {
     public static final String workbenchToolBar =  "org.uberfire.client.annotations.WorkbenchToolBar" ;
     public static final String perspective =  "org.uberfire.client.annotations.Perspective" ;
     public static final String splashFilter =  "org.uberfire.client.annotations.SplashFilter" ;
-    public static final String splashBodySize =  "org.uberfire.client.annotations.SplashBodySize" ;
+    public static final String splashBodyHeight =  "org.uberfire.client.annotations.SplashBodyHeight" ;
     public static final String intercept =  "org.uberfire.client.annotations.Intercept" ;
+    public static final String workbenchPart = "org.uberfire.client.annotations.WorkbenchPart";
+    public static final String workbenchParts = "org.uberfire.client.annotations.WorkbenchParts";
+    public static final String workbenchPanel = "org.uberfire.client.annotations.WorkbenchPanel";
+    public static final String parameterMapping = "org.uberfire.client.annotations.ParameterMapping";
 
     public static String getWorkbenchScreenClass() {
         return workbenchScreen;
@@ -47,8 +57,8 @@ public class ClientAPIModule {
         return splashFilter;
     }
 
-    public static String getSplashBodySizeClass() {
-        return splashBodySize;
+    public static String getSplashBodyHeightClass() {
+        return splashBodyHeight;
     }
 
     public static String getInterceptClass() {
@@ -107,9 +117,25 @@ public class ClientAPIModule {
         return workbenchPerspective;
     }
 
+    public static String getWorkbenchPart() {
+        return workbenchPart;
+    }
+
+    public static String getWorkbenchParts() {
+        return workbenchParts;
+    }
+
+    public static String getParameterMapping() {
+        return parameterMapping;
+    }
+
+    public static String getWorkbenchPanel() {
+        return workbenchPanel;
+    }
+
     private static String getAnnotationIdentifierValueOnClass( TypeElement o,
-                                                        String className,
-                                                        String annotationName ) throws GenerationException {
+                                                               String className,
+                                                               String annotationName ) throws GenerationException {
         try {
             String identifierValue = "";
             for ( final AnnotationMirror am : o.getAnnotationMirrors() ) {
@@ -152,5 +178,23 @@ public class ClientAPIModule {
 
     public static String getWbContextIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
         return getAnnotationIdentifierValueOnClass( classElement, workbenchContext, IDENTIFIER );
+    }
+
+    public static boolean getWbPerspectiveScreenIsATemplate( Elements elementUtils, TypeElement classElement ) throws GenerationException {
+        List<? extends Element> enclosedElements = classElement.getEnclosedElements();
+        for ( Element element: enclosedElements ) {
+            if (isATemplate( elementUtils, element )) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static boolean isATemplate( Elements elementUtils, Element element ) {
+        if ( GeneratorUtils.getAnnotation( elementUtils, element, workbenchParts ) != null) return true;
+        if ( GeneratorUtils.getAnnotation( elementUtils, element, workbenchPart ) != null) return true;
+        if ( GeneratorUtils.getAnnotation( elementUtils, element, workbenchPanel ) != null) return true;
+        return false;
     }
 }

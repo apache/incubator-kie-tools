@@ -25,7 +25,10 @@ public interface LuceneIndexFactory {
 
     LuceneIndex newCluster( KCluster kcluster );
 
+    void remove( KCluster cluster );
+
     Map<? extends KCluster, ? extends LuceneIndex> getIndexes();
 
     void dispose();
+
 }

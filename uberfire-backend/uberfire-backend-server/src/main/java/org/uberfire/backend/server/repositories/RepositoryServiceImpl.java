@@ -322,7 +322,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         return result;
     }
 
-    public void updateRegisteredRepositories(@Observes SystemRepositoryChangedEvent changedEvent) {
+    public void updateRegisteredRepositories(@Observes @org.uberfire.backend.server.config.Repository SystemRepositoryChangedEvent changedEvent) {
         configuredRepositories.clear();
         loadRepositories();
     }
