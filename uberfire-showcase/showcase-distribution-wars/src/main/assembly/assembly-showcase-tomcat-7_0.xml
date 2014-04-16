@@ -45,6 +45,7 @@
 
           <exclude>WEB-INF/lib/*-sources.jar</exclude>
           <exclude>WEB-INF/lib/el-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/jboss-el-api*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
 
           <!-- Errai -->

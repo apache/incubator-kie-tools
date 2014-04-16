@@ -62,6 +62,7 @@
           <!-- General -->
           <exclude>WEB-INF/lib/*-sources.jar</exclude>
           <exclude>WEB-INF/lib/el-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/jboss-*-api*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
           <exclude>WEB-INF/lib/logback-core-*.jar</exclude>
           <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
