@@ -1,5 +1,7 @@
 package org.uberfire.client.mvp;
 
+import static java.util.Collections.*;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,20 +10,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.commons.data.Pair;
-
-import static java.util.Collections.*;
 
 /**
  *
@@ -38,45 +41,58 @@ public class ActivityBeansCache {
     @Inject
     private Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent;
 
+    /**
+     * All active activity beans mapped by their CDI bean name (names are mandatory for activity beans).
+     */
     private final Map<String, IOCBeanDef<Activity>> activitiesById = new HashMap<String, IOCBeanDef<Activity>>();
-    private final List<ActivityAndMetaInfo> activities = new ArrayList<ActivityAndMetaInfo>();
-    private final List<SplashScreenActivity> splashScreens = new ArrayList<SplashScreenActivity>();
+
+    /**
+     * All active Activities that have an {@link AssociatedResources} annotation and are not splash screens.
+     */
+    private final List<ActivityAndMetaInfo> resourceActivities = new ArrayList<ActivityAndMetaInfo>();
+
+    /**
+     * All active activities that are splash screens.
+     */
+    private final List<SplashScreenActivity> splashActivities = new ArrayList<SplashScreenActivity>();
 
     @PostConstruct
-    public void init() {
+    void init() {
         final Collection<IOCBeanDef<Activity>> availableActivities = getAvailableActivities();
 
         for ( final IOCBeanDef<Activity> baseBean : availableActivities ) {
-            //{porcelli} TODO workaround an Errai bug - it doesn't attach bean names when you lookup by a type that's not the concrete bean type
             final IOCBeanDef<Activity> activityBean = reLookupBean( baseBean );
 
             final String id = activityBean.getName();
 
             if ( activitiesById.keySet().contains( id ) ) {
-                throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
+                throw new RuntimeException( "Conflict detected. Activity '" + id + "' already exists. " + activityBean.getBeanClass().toString() );
             }
 
             activitiesById.put( id, activityBean );
 
             if ( isSplashScreen( activityBean.getQualifiers() ) ) {
-                splashScreens.add( (SplashScreenActivity) activityBean.getInstance() );
+                splashActivities.add( (SplashScreenActivity) activityBean.getInstance() );
             } else {
                 final Pair<Integer, List<Class<? extends ClientResourceType>>> metaInfo = generateActivityMetaInfo( activityBean );
                 if ( metaInfo != null ) {
-                    getActivities().add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
+                    getResourceActivities().add( new ActivityAndMetaInfo( activityBean, metaInfo.getK1(), metaInfo.getK2() ) );
                 }
             }
         }
 
-        sortActivitiesByPriority();
+        sortResourceActivitiesByPriority();
     }
 
-    List<ActivityAndMetaInfo> getActivities() {
-        return activities;
+    /**
+     * Returns all activities in this cache that have an associated resource type.
+     */
+    List<ActivityAndMetaInfo> getResourceActivities() {
+        return resourceActivities;
     }
 
-    void sortActivitiesByPriority() {
-        sort( getActivities(), new Comparator<ActivityAndMetaInfo>() {
+    void sortResourceActivitiesByPriority() {
+        sort( getResourceActivities(), new Comparator<ActivityAndMetaInfo>() {
             @Override
             public int compare( final ActivityAndMetaInfo o1,
                                 final ActivityAndMetaInfo o2 ) {
@@ -92,12 +108,21 @@ public class ActivityBeansCache {
         } );
     }
 
+    /**
+     * {porcelli} TODO workaround an Errai bug - it doesn't attach bean names when you lookup by a type that's not the concrete bean type.
+     */
     IOCBeanDef<Activity> reLookupBean( IOCBeanDef<Activity> baseBean ) {
         return (IOCBeanDef<Activity>) iocManager.lookupBean( baseBean.getBeanClass() );
     }
 
     Collection<IOCBeanDef<Activity>> getAvailableActivities() {
-        return iocManager.lookupBeans( Activity.class );
+        Collection<IOCBeanDef<Activity>> activeBeans = new ArrayList<IOCBeanDef<Activity>>();
+        for ( IOCBeanDef<Activity> bean : iocManager.lookupBeans( Activity.class ) ) {
+            if ( bean.isActivated() ) {
+                activeBeans.add( bean );
+            }
+        }
+        return activeBeans;
     }
 
     private boolean isSplashScreen( final Set<Annotation> qualifiers ) {
@@ -109,7 +134,7 @@ public class ActivityBeansCache {
         return false;
     }
 
-    //Used for runtime plugins
+    /** Used for runtime plugins. */
     public void addNewScreenActivity( final IOCBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
@@ -121,7 +146,7 @@ public class ActivityBeansCache {
         newWorkbenchScreenEventEvent.fire( new NewWorkbenchScreenEvent( id ) );
     }
 
-    //Used for runtime plugins
+    /** Used for runtime plugins. */
     public void addNewPerspectiveActivity( final IOCBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
@@ -133,6 +158,7 @@ public class ActivityBeansCache {
         newPerspectiveEventEvent.fire( new NewPerspectiveEvent( id ) );
     }
 
+    /** Used for runtime plugins. */
     public void addNewSplashScreenActivity( final IOCBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
@@ -141,23 +167,30 @@ public class ActivityBeansCache {
         }
 
         activitiesById.put( id, activityBean );
-        splashScreens.add( (SplashScreenActivity) activityBean.getInstance() );
-//        newSplashScreenEvent.fire( new NewSplashScreenEvent( id ) );
+        splashActivities.add( (SplashScreenActivity) activityBean.getInstance() );
+        //        newSplashScreenEvent.fire( new NewSplashScreenEvent( id ) );
     }
 
+    /**
+     * Returns all active splash screen activities in this cache.
+     */
     public List<SplashScreenActivity> getSplashScreens() {
-        return splashScreens;
+        return splashActivities;
     }
 
-
-
+    /**
+     * Returns the activity with the given CDI bean name from this cache, or null if there is no such activity or the
+     * activity with the given name is not an activated bean.
+     * 
+     * @param id the CDI name of the bean (see {@link Named}).
+     */
     public IOCBeanDef<Activity> getActivity( final String id ) {
         return activitiesById.get( id );
     }
 
     public IOCBeanDef<Activity> getActivity( final Path path ) {
 
-        for ( final ActivityAndMetaInfo currentActivity : getActivities() ) {
+        for ( final ActivityAndMetaInfo currentActivity : getResourceActivities() ) {
             for ( final ClientResourceType resourceType : currentActivity.getResourceTypes() ) {
                 if ( resourceType.accept( path ) ) {
                     return currentActivity.getActivityBean();
@@ -179,8 +212,8 @@ public class ActivityBeansCache {
         private final ClientResourceType[] resourceTypes;
 
         ActivityAndMetaInfo( final IOCBeanDef<Activity> activityBean,
-                                     final int priority,
-                                     final List<Class<? extends ClientResourceType>> resourceTypes ) {
+                final int priority,
+                final List<Class<? extends ClientResourceType>> resourceTypes ) {
             this.activityBean = activityBean;
             this.priority = priority;
             this.resourceTypes = new ClientResourceType[ resourceTypes.size() ];

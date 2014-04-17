@@ -451,6 +451,15 @@ public class GeneratorUtils {
                 ClientAPIModule.getInterceptClass() );
     }
 
+    public static String getBeanActivatorClassName( final TypeElement classElement,
+                                                    final ProcessingEnvironment processingEnvironment ) {
+        AnnotationMirror activatedByAnnotation = getAnnotation( processingEnvironment.getElementUtils(), classElement, APIModule.activatedBy );
+        if ( activatedByAnnotation != null ) {
+            return extractAnnotationStringValue( processingEnvironment.getElementUtils(), activatedByAnnotation, "value" );
+        }
+        return null;
+    }
+
     // Lookup a public method name with the given annotation. The method must be
     // public, non-static, have a return-type of void and take zero parameters.
     private static String getVoidMethodName( final TypeElement classElement,
@@ -958,5 +967,28 @@ public class GeneratorUtils {
 
     public static boolean debugLoggingEnabled() {
         return Boolean.parseBoolean( System.getProperty( "org.uberfire.processors.debug", "false" ) );
+    }
+
+    public static String extractAnnotationStringValue( Elements elementUtils, AnnotationMirror annotation, CharSequence paramName ) {
+        final AnnotationValue av = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, annotation, paramName );
+        if ( av != null && av.getValue() != null ) {
+            return av.getValue().toString();
+        }
+        return null;
+    }
+
+    static AnnotationValue extractAnnotationPropertyValue( Elements elementUtils,
+                                                          AnnotationMirror annotation,
+                                                          CharSequence annotationProperty ) {
+
+        Map<? extends ExecutableElement, ? extends AnnotationValue> annotationParams =
+                elementUtils.getElementValuesWithDefaults( annotation );
+
+        for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> param : annotationParams.entrySet() ) {
+            if (param.getKey().getSimpleName().contentEquals( annotationProperty )) {
+                return param.getValue();
+            }
+        }
+        return null;
     }
 }

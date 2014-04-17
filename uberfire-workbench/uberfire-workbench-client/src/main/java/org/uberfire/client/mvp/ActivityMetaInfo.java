@@ -13,7 +13,7 @@ import org.uberfire.commons.data.Pair;
 
 public class ActivityMetaInfo {
 
-     static Pair<Integer, List<Class<? extends ClientResourceType>>> generate(final IOCBeanDef<?> beanDefinition){
+    static Pair<Integer, List<Class<? extends ClientResourceType>>> generate(final IOCBeanDef<?> beanDefinition){
 
         AssociatedResources associatedResources = null;
         Priority priority = null;

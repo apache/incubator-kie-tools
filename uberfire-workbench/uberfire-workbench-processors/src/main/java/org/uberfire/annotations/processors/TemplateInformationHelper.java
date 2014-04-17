@@ -11,7 +11,6 @@ import java.util.TreeMap;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor6;
@@ -95,12 +94,12 @@ public class TemplateInformationHelper {
 
     private static String extractPanelType( Elements elementUtils, Element element ) throws GenerationException {
         AnnotationMirror am = getAnnotation( elementUtils, element, ClientAPIModule.getWorkbenchPanel() );
-        return extractAnnotationStringValue( elementUtils, am, PANEL_TYPE );
+        return GeneratorUtils.extractAnnotationStringValue( elementUtils, am, PANEL_TYPE );
     }
 
     private static boolean workbenchPanelIsDefault( Elements elementUtils, Element element ) throws GenerationException {
         AnnotationMirror am = getAnnotation( elementUtils, element, ClientAPIModule.getWorkbenchPanel() );
-        return Boolean.valueOf( extractAnnotationStringValue( elementUtils, am, IS_DEFAULT ) );
+        return Boolean.valueOf( GeneratorUtils.extractAnnotationStringValue( elementUtils, am, IS_DEFAULT ) );
     }
 
     private static List<PartInformation> getWorkbenchPartsFrom( Elements elementUtils, Element wbPanel ) throws GenerationException {
@@ -109,7 +108,7 @@ public class TemplateInformationHelper {
             extractWbPartFromWbParts( elementUtils, wbPanel, parts );
         } else {
             AnnotationMirror wbPartAnnotation = getAnnotation( elementUtils, wbPanel, ClientAPIModule.getWorkbenchPart() );
-            String partName = extractAnnotationStringValue( elementUtils, wbPartAnnotation, PART );
+            String partName = GeneratorUtils.extractAnnotationStringValue( elementUtils, wbPartAnnotation, PART );
             Map<String, String> parameters = extractParametersFromPart( elementUtils, wbPartAnnotation );
             parts.add( new PartInformation( partName, parameters ) );
         }
@@ -123,27 +122,12 @@ public class TemplateInformationHelper {
         return false;
     }
 
-    private static AnnotationValue extractAnnotationPropertyValue( Elements elementUtils,
-                                                          AnnotationMirror annotation,
-                                                          CharSequence annotationProperty ) {
-
-        Map<? extends ExecutableElement, ? extends AnnotationValue> annotationParams =
-                elementUtils.getElementValuesWithDefaults( annotation );
-
-        for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> param : annotationParams.entrySet() ) {
-            if (param.getKey().getSimpleName().contentEquals( annotationProperty )) {
-                return param.getValue();
-            }
-        }
-        return null;
-    }
-
     private static void extractWbPartFromWbParts( Elements elementUtils,
                                                   Element ufPanel,
                                                   List<PartInformation> parts ) {
         List<AnnotationMirror> annotations = extractAnnotationsFromAnnotation( elementUtils, ufPanel, ClientAPIModule.getWorkbenchParts(), VALUE );
         for ( AnnotationMirror annotation : annotations ) {
-            final AnnotationValue av = extractAnnotationPropertyValue( elementUtils, annotation, PART );
+            final AnnotationValue av = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, annotation, PART );
             String partName = av.getValue().toString();
             parts.add( new PartInformation( partName ) );
         }
@@ -152,7 +136,7 @@ public class TemplateInformationHelper {
     private static Map<String, String> extractParametersFromPart( final Elements elementUtils,
                                                                   final AnnotationMirror wbPartAnnotation ) {
         final Map<String, String> map = new TreeMap<String, String>();
-        AnnotationValue mappingAnnotations = extractAnnotationPropertyValue( elementUtils, wbPartAnnotation, PARAMETERS );
+        AnnotationValue mappingAnnotations = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, wbPartAnnotation, PARAMETERS );
         mappingAnnotations.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
             @Override
             public Void visitArray( List<? extends AnnotationValue> vals, Void p ) {
@@ -160,8 +144,8 @@ public class TemplateInformationHelper {
                     val.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
                         @Override
                         public Void visitAnnotation( AnnotationMirror a, Void p ) {
-                            map.put( extractAnnotationStringValue( elementUtils, a, PARAMETERS_NAME_PARAM ),
-                                     extractAnnotationStringValue( elementUtils, a, PARAMETERS_VAL_PARAM ) );
+                            map.put( GeneratorUtils.extractAnnotationStringValue( elementUtils, a, PARAMETERS_NAME_PARAM ),
+                                     GeneratorUtils.extractAnnotationStringValue( elementUtils, a, PARAMETERS_VAL_PARAM ) );
                             return null;
                         }
                     }, null );
@@ -172,20 +156,12 @@ public class TemplateInformationHelper {
         return map;
     }
 
-    private static String extractAnnotationStringValue( Elements elementUtils, AnnotationMirror annotation, CharSequence paramName ) {
-        final AnnotationValue av = extractAnnotationPropertyValue( elementUtils, annotation, paramName );
-        if ( av != null && av.getValue() != null ) {
-            return av.getValue().toString();
-        }
-        return null;
-    }
-
     private static List<AnnotationMirror> extractAnnotationsFromAnnotation( Elements elementUtils,
                                                                         Element element,
                                                                         String annotationName,
                                                                         String methodName ) {
         final AnnotationMirror am = getAnnotation( elementUtils, element, annotationName );
-        AnnotationValue nestedAnnotations = extractAnnotationPropertyValue( elementUtils, am, methodName );
+        AnnotationValue nestedAnnotations = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, am, methodName );
         if ( nestedAnnotations == null ) {
             return Collections.emptyList();
         }

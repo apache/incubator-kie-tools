@@ -19,7 +19,6 @@ package org.uberfire.client.mvp;
 import static java.util.Collections.*;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -83,7 +82,7 @@ public class ActivityManagerImpl implements ActivityManager {
 
     @Override
     public <T extends Activity> T getActivity( final Class<T> clazz,
-            final PlaceRequest placeRequest ) {
+                                               final PlaceRequest placeRequest ) {
         final Set<Activity> activities = getActivities( placeRequest );
         if ( activities.size() == 0 ) {
             return null;
@@ -99,10 +98,11 @@ public class ActivityManagerImpl implements ActivityManager {
         iocManager.destroyBean( activity );
     }
 
-    public <T extends Activity> Set<T> secure( final Collection<IOCBeanDef<T>> activityBeans ) {
+    private <T extends Activity> Set<T> secure( final Collection<IOCBeanDef<T>> activityBeans ) {
         final Set<T> activities = new HashSet<T>( activityBeans.size() );
 
         for ( final IOCBeanDef<T> activityBean : activityBeans ) {
+            if ( !activityBean.isActivated() ) continue;
             final T instance = activityBean.getInstance();
             if ( authzManager.authorize( instance, identity ) ) {
                 activities.add( instance );
@@ -117,7 +117,7 @@ public class ActivityManagerImpl implements ActivityManager {
         return activities;
     }
 
-    public SplashScreenActivity secure( final SplashScreenActivity bean ) {
+    private SplashScreenActivity secure( final SplashScreenActivity bean ) {
         if ( bean == null ) {
             return null;
         }
@@ -143,21 +143,19 @@ public class ActivityManagerImpl implements ActivityManager {
         if (beanDefActivity == null) {
             //throw new RuntimeException("No such activity: " + identifier);
             System.out.println("No such activity: " + identifier + " .. returning an empty list");
-            return Collections.emptyList();
+            return emptyList();
         }
-        return Collections.singletonList(beanDefActivity);
+        return singletonList(beanDefActivity);
     }
 
     private Set<IOCBeanDef<Activity>> resolveByPath( final PathPlaceRequest place ) {
         if ( place == null ) {
-            return Collections.emptySet();
+            return emptySet();
         }
         final IOCBeanDef<Activity> result = activityBeansCache.getActivity( place.getIdentifier() );
 
         if ( result != null ) {
-            return new HashSet<IOCBeanDef<Activity>>( 1 ) {{
-                add( result );
-            }};
+            return singleton( result );
         }
 
         return asSet( activityBeansCache.getActivity( place.getPath() ) );
@@ -168,9 +166,7 @@ public class ActivityManagerImpl implements ActivityManager {
             return emptySet();
         }
 
-        return unmodifiableSet( new HashSet<IOCBeanDef<Activity>>( 1 ) {{
-            add( activity );
-        }} );
+        return singleton( activity );
     }
 
 }

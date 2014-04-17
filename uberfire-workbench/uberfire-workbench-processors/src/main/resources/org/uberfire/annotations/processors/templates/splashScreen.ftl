@@ -24,6 +24,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import com.google.gwt.user.client.ui.InlineLabel;
 
+<#if beanActivatorClass??>
+import org.jboss.errai.ioc.client.api.ActivatedBy;
+
+</#if>
 <#if hasUberView>
 import javax.annotation.PostConstruct;
 import org.uberfire.client.mvp.UberView;
@@ -42,6 +46,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 @Generated("org.uberfire.annotations.processors.WorkbenchSplashScreenProcessor")
 @Named("${identifier}")
 @IsSplashScreen
+<#if beanActivatorClass??>
+@ActivatedBy(${beanActivatorClass}.class)
+</#if>
 /*
  * WARNING! This class is generated. Do not modify.
  */

@@ -17,11 +17,11 @@ package org.uberfire.backend.server;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
@@ -30,14 +30,13 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.services.WorkbenchServices;
 
-/**
- * Workbench services
- */
+import com.thoughtworks.xstream.XStream;
+
 @Service
 @ApplicationScoped
 public class WorkbenchServicesImpl
-        implements
-        WorkbenchServices {
+implements
+WorkbenchServices {
 
     @Inject
     @Named("configIO")
@@ -46,14 +45,14 @@ public class WorkbenchServicesImpl
     @Inject
     private UserServicesImpl userServices;
 
-    private XStream xs = new XStream();
+    private final XStream xs = new XStream();
 
     @Override
     public void save( final PerspectiveDefinition perspective ) {
         if ( !perspective.isTransient() ) {
             final String xml = xs.toXML( perspective );
             final Path perspectivePath = userServices.buildPath( "perspectives",
-                                                                 perspective.getName() + ".perspective" );
+                    perspective.getName() + ".perspective" );
             ioService.write( perspectivePath, xml );
         }
     }
@@ -62,7 +61,7 @@ public class WorkbenchServicesImpl
     public void save( SplashScreenFilter splashFilter ) {
         final String xml = xs.toXML( splashFilter );
         final Path splashFilterPath = userServices.buildPath( "splash",
-                                                              splashFilter.getName() + ".filter" );
+                splashFilter.getName() + ".filter" );
         ioService.write( splashFilterPath, xml );
 
     }
@@ -70,7 +69,7 @@ public class WorkbenchServicesImpl
     @Override
     public PerspectiveDefinition loadPerspective( final String perspectiveName ) {
         final Path perspectivePath = userServices.buildPath( "perspectives",
-                                                             perspectiveName + ".perspective" );
+                perspectiveName + ".perspective" );
         if ( ioService.exists( perspectivePath ) ) {
             final String xml = ioService.readAllString( perspectivePath );
             return (PerspectiveDefinition) xs.fromXML( xml );
@@ -82,7 +81,7 @@ public class WorkbenchServicesImpl
     @Override
     public SplashScreenFilter loadSplashScreenFilter( String filterName ) {
         final Path splashFilterPath = userServices.buildPath( "splash",
-                                                              filterName + ".filter" );
+                filterName + ".filter" );
 
         if ( ioService.exists( splashFilterPath ) ) {
             final String xml = ioService.readAllString( splashFilterPath );
@@ -121,11 +120,11 @@ public class WorkbenchServicesImpl
             text.append( String.format( "%s=%s", key, properties.get( key ) ) );
         }
         ioService.write( getPathToDefaultEditors(),
-                         text.toString() );
+                text.toString() );
     }
 
     private Path getPathToDefaultEditors() {
         return userServices.buildPath( "defaultEditors",
-                                       null );
+                null );
     }
 }

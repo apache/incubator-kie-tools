@@ -161,6 +161,12 @@
       </p>
 
       <p>
+        <input name="nosplash" type="checkbox"/>
+        <label for="nosplash">Deactivate Splash Screen</label>
+        <br style="clear: both"/>
+      </p>
+
+      <p>
         <% if (request.getParameter("gwt.codesvr") != null) { %>
           <input type="hidden" name="gwt.codesvr" value="<%= request.getParameter("gwt.codesvr") %>"/>
         <% } %>

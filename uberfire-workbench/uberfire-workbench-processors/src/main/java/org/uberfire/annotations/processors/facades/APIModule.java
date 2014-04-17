@@ -23,6 +23,7 @@ public class APIModule {
     public static final String onShutdown = "org.uberfire.lifecycle.OnShutdown";
     public static final String onStartup = "org.uberfire.lifecycle.OnStartup";
     public static final String onContextAttach = "org.uberfire.lifecycle.OnContextAttach";
+    public static final String activatedBy = "org.jboss.errai.ioc.client.api.ActivatedBy";
 
     public static String getPanelDefinitionClass() {
         return panelDefinition;

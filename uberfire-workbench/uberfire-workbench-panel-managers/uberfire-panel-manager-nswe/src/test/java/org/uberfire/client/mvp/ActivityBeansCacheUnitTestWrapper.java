@@ -78,10 +78,10 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
     }
 
     @Override
-    List<ActivityAndMetaInfo> getActivities() {
+    List<ActivityAndMetaInfo> getResourceActivities() {
         if(mockSplashcreen)  return activitiesAndMetaInfo;
 
-        return super.getActivities();
+        return super.getResourceActivities();
     }
 
     Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( IOCBeanDef<Activity> activityBean ) {

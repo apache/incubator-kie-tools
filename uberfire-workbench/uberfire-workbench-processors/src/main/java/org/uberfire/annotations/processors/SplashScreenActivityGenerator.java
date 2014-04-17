@@ -58,6 +58,8 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
 
         String identifier = ClientAPIModule.getWbSplashScreenIdentifierValueOnClass( classElement );
 
+        final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
+
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
@@ -93,26 +95,28 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
         final String securityTraitList = GeneratorUtils.getSecurityTraitList( elementUtils, classElement );
         final String rolesList = GeneratorUtils.getRoleList( elementUtils, classElement );
 
-        messager.printMessage( Kind.NOTE, "Package name: " + packageName );
-        messager.printMessage( Kind.NOTE, "Class name: " + className );
-        messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
-        messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
-        messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
-        messager.printMessage( Kind.NOTE, "onCloseMethodName: " + onCloseMethodName );
-        messager.printMessage( Kind.NOTE, "onShutdownMethodName: " + onShutdownMethodName );
-        messager.printMessage( Kind.NOTE, "onOpenMethodName: " + onOpenMethodName );
-        messager.printMessage( Kind.NOTE, "getTitleMethodName: " + getTitleMethodName );
-        messager.printMessage( Kind.NOTE, "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
-        messager.printMessage( Kind.NOTE, "getWidgetMethodName: " + getWidgetMethodName );
-        messager.printMessage( Kind.NOTE, "isWidget: " + Boolean.toString( isWidget ) );
-        messager.printMessage( Kind.NOTE, "hasUberView: " + Boolean.toString( hasUberView ) );
+        if ( GeneratorUtils.debugLoggingEnabled() ) {
+            messager.printMessage( Kind.NOTE, "Package name: " + packageName );
+            messager.printMessage( Kind.NOTE, "Class name: " + className );
+            messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
+            messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
+            messager.printMessage( Kind.NOTE, "onCloseMethodName: " + onCloseMethodName );
+            messager.printMessage( Kind.NOTE, "onShutdownMethodName: " + onShutdownMethodName );
+            messager.printMessage( Kind.NOTE, "onOpenMethodName: " + onOpenMethodName );
+            messager.printMessage( Kind.NOTE, "getTitleMethodName: " + getTitleMethodName );
+            messager.printMessage( Kind.NOTE, "getTitleWidgetMethodName: " + getTitleWidgetMethodName );
+            messager.printMessage( Kind.NOTE, "getWidgetMethodName: " + getWidgetMethodName );
+            messager.printMessage( Kind.NOTE, "isWidget: " + Boolean.toString( isWidget ) );
+            messager.printMessage( Kind.NOTE, "hasUberView: " + Boolean.toString( hasUberView ) );
 
-        messager.printMessage( Kind.NOTE, "getSplashFilterMethodName: " + getSplashFilterMethodName );
-        messager.printMessage( Kind.NOTE, "getInterceptMethodName: " + getInterceptMethodName );
-        messager.printMessage( Kind.NOTE, "getBodyHeightMethodName: " + getBodyHeightMethodName );
+            messager.printMessage( Kind.NOTE, "getSplashFilterMethodName: " + getSplashFilterMethodName );
+            messager.printMessage( Kind.NOTE, "getInterceptMethodName: " + getInterceptMethodName );
+            messager.printMessage( Kind.NOTE, "getBodyHeightMethodName: " + getBodyHeightMethodName );
 
-        messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
-        messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
+            messager.printMessage( Kind.NOTE, "securityTraitList: " + securityTraitList );
+            messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
+        }
 
         //Validate getWidgetMethodName and isWidget
         if ( !isWidget && getWidgetMethodName == null ) {
@@ -149,6 +153,8 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
                   identifier );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
+        root.put( "beanActivatorClass",
+                  beanActivatorClass );
         root.put( "onStartup0ParameterMethodName",
                   onStartup0ParameterMethodName );
         root.put( "onStartup1ParameterMethodName",

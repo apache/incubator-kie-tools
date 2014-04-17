@@ -52,7 +52,7 @@
 
     <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
 
-    <version.org.picketlink>2.6.0-SNAPSHOT</version.org.picketlink>
+    <version.org.picketlink>2.6.0.CR1</version.org.picketlink>
     <version.org.jboss.logging>3.1.1.GA</version.org.jboss.logging>
 
     <version.commons-httpclient>3.1</version.commons-httpclient>

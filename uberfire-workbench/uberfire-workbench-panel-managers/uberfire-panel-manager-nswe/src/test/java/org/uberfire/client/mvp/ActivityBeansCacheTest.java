@@ -1,8 +1,8 @@
 package org.uberfire.client.mvp;
 
-import org.junit.Test;
-
 import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 public class ActivityBeansCacheTest {
 
@@ -42,7 +42,7 @@ public class ActivityBeansCacheTest {
         cache.mockActivityBehaviour();
         cache.init();
 
-        assertFalse(cache.getActivities().isEmpty());
+        assertFalse(cache.getResourceActivities().isEmpty());
     }
 
     @Test
@@ -55,16 +55,16 @@ public class ActivityBeansCacheTest {
 
         cache.createActivitiesAndMetaInfo( priorityActivityOne, priorityActivityTwo );
 
-        ActivityBeansCache.ActivityAndMetaInfo firstActivityOnList = cache.getActivities().get( 0 );
-        ActivityBeansCache.ActivityAndMetaInfo secondActivityOnList = cache.getActivities().get( 1 );
+        ActivityBeansCache.ActivityAndMetaInfo firstActivityOnList = cache.getResourceActivities().get( 0 );
+        ActivityBeansCache.ActivityAndMetaInfo secondActivityOnList = cache.getResourceActivities().get( 1 );
 
         assertEquals( priorityActivityOne, firstActivityOnList.getPriority() );
         assertEquals( priorityActivityTwo, secondActivityOnList.getPriority() );
 
-        cache.sortActivitiesByPriority();
+        cache.sortResourceActivitiesByPriority();
 
-        firstActivityOnList = cache.getActivities().get( 0 );
-        secondActivityOnList = cache.getActivities().get( 1 );
+        firstActivityOnList = cache.getResourceActivities().get( 0 );
+        secondActivityOnList = cache.getResourceActivities().get( 1 );
 
         assertEquals( priorityActivityTwo, firstActivityOnList.getPriority() );
         assertEquals( priorityActivityOne, secondActivityOnList.getPriority() );
