@@ -46,8 +46,6 @@ public interface PlaceRequest {
     PlaceRequest addParameter( final String name,
                                final String value );
 
-    PlaceRequest getPlace();
-
     PlaceRequest clone();
 
     /**

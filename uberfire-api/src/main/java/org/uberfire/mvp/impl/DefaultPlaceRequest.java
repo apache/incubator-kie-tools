@@ -124,11 +124,6 @@ PlaceRequest {
     }
 
     @Override
-    public PlaceRequest getPlace() {
-        return this;
-    }
-
-    @Override
     public PlaceRequest clone() {
         return new DefaultPlaceRequest( identifier, parameters );
     }
