@@ -54,10 +54,18 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+
+</#if>
+<#if beanActivatorClass??>
+import org.jboss.errai.ioc.client.api.ActivatedBy;
+
 </#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
 @Named("${identifier}")
+<#if beanActivatorClass??>
+@ActivatedBy(${beanActivatorClass}.class)
+</#if>
 /*
  * WARNING! This class is generated. Do not modify.
  */

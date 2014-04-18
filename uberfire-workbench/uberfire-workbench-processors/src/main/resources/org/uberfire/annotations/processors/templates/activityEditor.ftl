@@ -54,6 +54,10 @@ import org.uberfire.backend.vfs.ObservablePath;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
+<#if beanActivatorClass??>
+import org.jboss.errai.ioc.client.api.ActivatedBy;
+
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
 @Named(${identifier})
@@ -61,6 +65,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 ${associatedResources}
 </#if>
 @Priority(${priority})
+<#if beanActivatorClass??>
+@ActivatedBy(${beanActivatorClass}.class)
+</#if>
 /*
  * WARNING! This class is generated. Do not modify.
  */

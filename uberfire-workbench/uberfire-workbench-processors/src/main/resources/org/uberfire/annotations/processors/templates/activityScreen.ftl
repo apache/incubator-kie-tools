@@ -49,9 +49,16 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 </#if>
 import com.google.gwt.user.client.ui.IsWidget;
 
+<#if beanActivatorClass??>
+import org.jboss.errai.ioc.client.api.ActivatedBy;
+
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
 @Named("${identifier}")
+<#if beanActivatorClass??>
+@ActivatedBy(${beanActivatorClass}.class)
+</#if>
 /*
  * WARNING! This class is generated. Do not modify.
  */

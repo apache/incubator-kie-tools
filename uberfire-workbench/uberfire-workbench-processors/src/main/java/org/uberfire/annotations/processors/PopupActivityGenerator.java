@@ -57,6 +57,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
 
         String identifier = ClientAPIModule.getWbPopupScreenIdentifierValueOnClass( classElement );
 
+        final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
+
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
@@ -135,6 +137,8 @@ public class PopupActivityGenerator extends AbstractGenerator {
                   identifier );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
+        root.put( "beanActivatorClass",
+                  beanActivatorClass );
         root.put( "onStartup0ParameterMethodName",
                   onStartup0ParameterMethodName );
         root.put( "onStartup1ParameterMethodName",

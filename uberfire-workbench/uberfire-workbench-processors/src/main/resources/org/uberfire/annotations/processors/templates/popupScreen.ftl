@@ -36,9 +36,16 @@ import org.uberfire.mvp.PlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
+<#if beanActivatorClass??>
+import org.jboss.errai.ioc.client.api.ActivatedBy;
+
+</#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPopupProcessor")
 @Named("${identifier}")
+<#if beanActivatorClass??>
+@ActivatedBy(${beanActivatorClass}.class)
+</#if>
 /*
  * WARNING! This class is generated. Do not modify.
  */

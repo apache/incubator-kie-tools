@@ -57,6 +57,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
         String identifier = ClientAPIModule.getWbScreenIdentifierValueOnClass( classElement );;
 
+        final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
+
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
@@ -155,6 +157,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   getContextIdMethodName );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
+        root.put( "beanActivatorClass",
+                  beanActivatorClass );
         root.put( "onStartup0ParameterMethodName",
                   onStartup0ParameterMethodName );
         root.put( "onStartup1ParameterMethodName",

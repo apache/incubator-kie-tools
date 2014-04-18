@@ -394,9 +394,26 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                       result.getExpectedCode() );
     }
 
+    @Test
+    public void testPerspectiveWithActivator() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest20";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest20.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
 
     private void printDiagnostics( List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
-        for ( Diagnostic diagnostic: diagnostics ){
+        for ( Diagnostic<? extends JavaFileObject> diagnostic: diagnostics ){
             System.out.println(diagnostic);
         }
     }

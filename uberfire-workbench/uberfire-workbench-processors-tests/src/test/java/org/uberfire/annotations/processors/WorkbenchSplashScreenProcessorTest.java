@@ -118,7 +118,7 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testWorkbenchScreenWithActivator() throws FileNotFoundException {
+    public void testSplashScreenWithActivator() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchSplashScreenTest7";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchSplashScreenTest7.expected";
 

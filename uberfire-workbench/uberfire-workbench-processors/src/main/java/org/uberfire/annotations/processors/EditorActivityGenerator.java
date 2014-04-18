@@ -93,6 +93,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
             }
         }
 
+        final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
+
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartupPathParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup2ParametersMethodName = GeneratorUtils.getOnStartupPathPlaceRequestParametersMethodName( classElement,
@@ -203,6 +205,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   GeneratorUtils.formatAssociatedResources( associatedResources ) );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
+        root.put( "beanActivatorClass",
+                  beanActivatorClass );
         root.put( "onStartup1ParameterMethodName",
                   onStartup1ParameterMethodName );
         root.put( "onStartup2ParametersMethodName",
