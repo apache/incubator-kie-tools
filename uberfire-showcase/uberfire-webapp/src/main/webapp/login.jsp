@@ -161,8 +161,8 @@
       </p>
 
       <p>
-        <input name="nosplash" type="checkbox"/>
-        <label for="nosplash">Deactivate Splash Screen</label>
+        <input id="nosplash" name="nosplash" type="checkbox"/>
+        Deactivate Splash Screen
         <br style="clear: both"/>
       </p>
 
