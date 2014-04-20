@@ -30,13 +30,13 @@ function TodoCtrl($scope) {
         });
     };
 
-    $scope.goto = function () {
+    $scope["goto"] = function () {
         $goToPlace($scope.placeText);
     };
 }
 
 $registerPlugin({
-    id: "my angular js",
+    id: "my_angular_js",
     type: "angularjs",
     templateUrl: "angular.sample.html",
     title: function () {
