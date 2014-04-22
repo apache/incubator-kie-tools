@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-parent-with-dependencies</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.5.0.20140419-M1</version>
     <relativePath>../uberfire-parent-with-dependencies/pom.xml</relativePath>
   </parent>
 
@@ -33,4 +33,18 @@
     <module>uberfire-project-archetype</module>
     <module>uberfire-component-archetype</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
