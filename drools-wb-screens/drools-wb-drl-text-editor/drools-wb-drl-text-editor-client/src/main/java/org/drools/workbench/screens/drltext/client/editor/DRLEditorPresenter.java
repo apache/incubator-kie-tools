@@ -152,56 +152,54 @@ public class DRLEditorPresenter {
             }
         } );
 
-        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+        this.path.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
-            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
-                newConcurrentRename( info.getSource(),
-                                     info.getTarget(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             reload();
-                                         }
-                                     }
-                                   ).show();
+            public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
+                newConcurrentRename(info.getSource(),
+                        info.getTarget(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                reload();
+                            }
+                        }
+                ).show();
             }
-        } );
+        });
 
-        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+        this.path.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
             @Override
-            public void execute( final ObservablePath.OnConcurrentDelete info ) {
-                newConcurrentDelete( info.getPath(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             placeManager.closePlace( place );
-                                         }
-                                     }
-                                   ).show();
+            public void execute(final ObservablePath.OnConcurrentDelete info) {
+                newConcurrentDelete(info.getPath(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                placeManager.closePlace(place);
+                            }
+                        }
+                ).show();
             }
-        } );
+        });
 
         makeMenuBar();
 
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
         loadContent();
-
-        placeManager.goTo("socialScreen");
     }
 
     private void reload() {
