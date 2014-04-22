@@ -16,23 +16,59 @@
 
 package org.kie.workbench.common.screens.socialscreen.client;
 
-import com.github.gwtbootstrap.client.ui.Label;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.workbench.model.Position;
 
-@WorkbenchScreen(identifier = "socialScreen")
+@WorkbenchScreen(identifier = "org.kie.workbench.common.screens.socialscreen")
 public class SocialScreenPresenter {
+
+    private final SocialScreenView view;
+
+    @Inject
+    public SocialScreenPresenter(
+            final SocialScreenView view,
+            final SocialScreenManager manager,
+            final Caller<MetadataService> metadataService
+    ) {
+
+        this.view = view;
+
+        metadataService.call(new RemoteCallback<Metadata>() {
+            @Override
+            public void callback(Metadata metadata) {
+                view.setDescription(metadata.getDescription());
+
+                for (DiscussionRecord record : metadata.getDiscussion()) {
+                    view.addDiscussionRow(record.getTimestamp(), record.getAuthor(), record.getNote());
+                }
+            }
+        }).getMetadata(manager.getCurrentPath());
+    }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "social tabs";
+        return "Collaboration";
     }
-
 
     @WorkbenchPartView
     public IsWidget asWidget() {
-        return new Label("hello");
+        return view;
     }
+
+    @DefaultPosition
+    public Position getDefaultPosition() {
+        return Position.SOUTH;
+    }
+
 }
