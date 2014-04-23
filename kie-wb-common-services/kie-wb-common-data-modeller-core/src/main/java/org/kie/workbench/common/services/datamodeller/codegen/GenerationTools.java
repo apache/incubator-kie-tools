@@ -38,6 +38,11 @@ public class GenerationTools {
     private static final Logger logger = LoggerFactory.getLogger(GenerationTools.class);
     private static final String TAB = "    ";
 
+    private static final String START_INDENT = "\n\n";
+    private static final String ANNOTATION_START_INDENT = "\n";
+    private static final String LINE_INDENT = "    ";
+    private static final String END_INDENT = "\n";
+
     public String fitToSize(int size, String name, char padChar) {
         int n = size - name.length();
 
@@ -648,5 +653,17 @@ public class GenerationTools {
 
     public String fileHashEmptyTag() {
         return FileHashingUtils.getFileHashEmptyTag();
+    }
+
+    public String indent(String source) throws Exception {
+        return START_INDENT + GenerationEngine.indentLines( source, LINE_INDENT );
+    }
+
+    public String indentFieldAnnotation( String source ) throws Exception {
+        return ANNOTATION_START_INDENT + "    " + source;
+    }
+
+    public String indentClassAnnotation(String source) throws Exception {
+        return ANNOTATION_START_INDENT + source;
     }
 }
