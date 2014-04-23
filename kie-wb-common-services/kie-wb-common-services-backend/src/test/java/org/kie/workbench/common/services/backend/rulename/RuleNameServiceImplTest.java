@@ -120,6 +120,7 @@ public class RuleNameServiceImplTest {
         assertEquals(1, service.getRuleNames(project, "some.pkg").size());
         assertEquals(7, service.getRuleNames(project, "org.test").size());
         assertEquals(2, service.getRuleNames(project, "org.rename").size());
+        assertFalse(service.getRuleNames(project, "pkg1").contains("This rule is in a dot file and should be ignored"));
         assertEquals(2, service.getRuleNames(project, "pkg1").size());
         assertEquals(2, service.getRuleNames(project, "pkg2").size());
 

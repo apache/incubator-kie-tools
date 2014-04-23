@@ -233,6 +233,7 @@ public class RuleNameServiceImpl
 
     private boolean isObservableResource(Path path) {
         return path != null
+                && !path.getFileName().startsWith(".")
                 && (path.getFileName().endsWith(".drl")
                 || path.getFileName().endsWith(".gdst")
                 || path.getFileName().endsWith(".rdrl")

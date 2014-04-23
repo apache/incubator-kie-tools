@@ -1,0 +1,6 @@
+package pkg1
+
+rule "This rule is in a dot file and should be ignored"
+  when
+  then
+end
