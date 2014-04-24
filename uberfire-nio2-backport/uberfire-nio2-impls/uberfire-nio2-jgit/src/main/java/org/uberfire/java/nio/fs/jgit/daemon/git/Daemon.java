@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.zip.Deflater;
 
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.internal.JGitText;
@@ -44,8 +45,6 @@ public class Daemon {
 
     private int timeout;
 
-    private PackConfig packConfig;
-
     private volatile RepositoryResolver<DaemonClient> repositoryResolver;
 
     private volatile UploadPackFactory<DaemonClient> uploadPackFactory;
@@ -75,9 +74,13 @@ public class Daemon {
                                       Repository db )
                     throws ServiceNotEnabledException,
                     ServiceNotAuthorizedException {
-                UploadPack up = new UploadPack( db );
+                final UploadPack up = new UploadPack( db );
                 up.setTimeout( getTimeout() );
-                up.setPackConfig( getPackConfig() );
+
+                final PackConfig config = new PackConfig( db );
+                config.setCompressionLevel( Deflater.BEST_COMPRESSION );
+                up.setPackConfig( config );
+
                 return up;
             }
         };
@@ -112,7 +115,7 @@ public class Daemon {
      * @param name name of the service; e.g. "receive-pack"/"git-receive-pack" or
      * "upload-pack"/"git-upload-pack".
      * @return the service; null if this daemon implementation doesn't support
-     *         the requested service type.
+     * the requested service type.
      */
     public synchronized DaemonService getService( String name ) {
         if ( !name.startsWith( "git-" ) ) {
@@ -141,22 +144,6 @@ public class Daemon {
      */
     public void setTimeout( final int seconds ) {
         timeout = seconds;
-    }
-
-    /**
-     * @return configuration controlling packing, may be null.
-     */
-    public PackConfig getPackConfig() {
-        return packConfig;
-    }
-
-    /**
-     * Set the configuration used by the pack generator.
-     * @param pc configuration controlling packing parameters. If null the
-     * source repository's settings will be used.
-     */
-    public void setPackConfig( PackConfig pc ) {
-        this.packConfig = pc;
     }
 
     /**
