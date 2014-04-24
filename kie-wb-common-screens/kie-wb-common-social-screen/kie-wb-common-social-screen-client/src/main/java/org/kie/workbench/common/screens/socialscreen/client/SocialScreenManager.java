@@ -41,8 +41,7 @@ public class SocialScreenManager {
 
     public void onResourceOpenedEvent(@Observes ResourceOpenedEvent event) {
         currentPath = event.getPath();
-//        placeManager.goTo(new SocialScreenPlace());
-        placeManager.goTo("MarkdownLiveEditor");
+        placeManager.goTo(new SocialScreenPlace());
 
     }
 

@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.markdown.Markdown;
 
 public class SocialScreenViewImpl
         extends Composite
@@ -43,7 +44,7 @@ public class SocialScreenViewImpl
     TabPanel tabPanel = new TabPanel(Bootstrap.Tabs.ABOVE);
 
     @UiField
-    TextArea descriptionArea;
+    Markdown descriptionArea;
 
     @UiField
     VerticalPanel discussionArea;
@@ -54,7 +55,7 @@ public class SocialScreenViewImpl
 
     @Override
     public void setDescription(String description) {
-        descriptionArea.setText(description);
+        descriptionArea.setContent(description);
     }
 
     @Override
