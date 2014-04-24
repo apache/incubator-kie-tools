@@ -20,7 +20,7 @@ public class ThreadLockServiceImpl implements LockService {
     }
 
     @Override
-    public void lock() {
+    public synchronized void lock() {
         while ( holder.get() != null ) {
             if ( holder.get().equals( Thread.currentThread() ) ) {
                 stackSize.incrementAndGet();
@@ -36,7 +36,7 @@ public class ThreadLockServiceImpl implements LockService {
     }
 
     @Override
-    public void unlock() {
+    public synchronized void unlock() {
         int size = stackSize.decrementAndGet();
         if ( size == 0 ) {
             holder.set( null );
