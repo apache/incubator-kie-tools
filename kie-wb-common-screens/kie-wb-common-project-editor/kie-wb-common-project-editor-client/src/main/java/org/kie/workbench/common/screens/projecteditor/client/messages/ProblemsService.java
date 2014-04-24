@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.messages;
 
+import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -28,6 +30,7 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.events.PerspectiveChange;
 
 /**
  * Service for Message Console, the Console is a screen that shows compile time errors.
@@ -36,12 +39,13 @@ import org.uberfire.client.workbench.PanelManager;
 @ApplicationScoped
 public class ProblemsService {
 
-    private static final String HOME_PERSPECTIVE = "Home";
-    private static final String ARTIFACT_PERSPECTIVE = "org.guvnor.m2repo.client.perspectives.GuvnorM2RepoPerspective";
-
     private final PlaceManager placeManager;
     private final PanelManager panelManager;
     private final ListDataProvider<BuildMessage> dataProvider = new ListDataProvider<BuildMessage>();
+
+    private List<String> allowedPerspectives = new ArrayList<String>();
+
+    private String currentPerspective;
 
     @Inject
     public ProblemsService( final PlaceManager placeManager,
@@ -50,13 +54,19 @@ public class ProblemsService {
         this.panelManager = panelManager;
     }
 
+    @PostConstruct
+    protected void init() {
+        allowedPerspectives.add("org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective");
+        allowedPerspectives.add("org.kie.workbench.client.perspectives.DroolsAuthoringPerspective");
+    }
+
     public void addBuildMessages( final @Observes BuildResults results ) {
         List<BuildMessage> list = dataProvider.getList();
         list.clear();
         for ( BuildMessage buildMessage : results.getMessages() ) {
             list.add( buildMessage );
         }
-        if ( !panelManager.getPerspective().getName().equals( HOME_PERSPECTIVE ) ) {
+        if (allowedPerspectives.contains(currentPerspective)) {
             placeManager.goTo( "org.kie.guvnor.Problems" );
         }
     }
@@ -72,13 +82,16 @@ public class ProblemsService {
         for ( BuildMessage buildMessage : addedMessages ) {
             list.add( buildMessage );
         }
-        if ( !panelManager.getPerspective().getName().equals( HOME_PERSPECTIVE ) &&
-                !panelManager.getPerspective().getName().equals( ARTIFACT_PERSPECTIVE ) ) {
+        if ( allowedPerspectives.contains(currentPerspective) ) {
             placeManager.goTo( "org.kie.guvnor.Problems" );
         }
     }
 
     public void addDataDisplay( HasData<BuildMessage> display ) {
         dataProvider.addDataDisplay( display );
+    }
+
+    public void onPerspectiveChange(@Observes PerspectiveChange perspectiveChange) {
+        currentPerspective = perspectiveChange.getIdentifier();
     }
 }
