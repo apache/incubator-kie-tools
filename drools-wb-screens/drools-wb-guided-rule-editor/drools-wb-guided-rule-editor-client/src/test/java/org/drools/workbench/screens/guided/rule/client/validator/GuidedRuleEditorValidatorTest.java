@@ -1,6 +1,7 @@
 package org.drools.workbench.screens.guided.rule.client.validator;
 
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -403,6 +404,22 @@ public class GuidedRuleEditorValidatorTest {
         fromEntryPointFactPattern.setFactPattern(new FactPattern("Person"));
         fromEntryPointFactPattern.setEntryPointName("entryPoint");
         model.lhs = new IPattern[]{fromEntryPointFactPattern};
+
+        assertTrue(validator.isValid());
+    }
+
+    @Test
+    public void testComparingFieldToExpression() throws Exception {
+        FactPattern f1 = new FactPattern();
+        f1.setBoundName("f1");
+
+        FactPattern f2 = new FactPattern();
+        SingleFieldConstraint constraint = new SingleFieldConstraint();
+        constraint.setOperator("==");
+        constraint.getExpressionValue().appendPart(new ExpressionVariable("field","java.lang.Number","Number"));
+        f2.addConstraint(constraint);
+
+        model.lhs=new IPattern[]{f1,f2};
 
         assertTrue(validator.isValid());
     }
