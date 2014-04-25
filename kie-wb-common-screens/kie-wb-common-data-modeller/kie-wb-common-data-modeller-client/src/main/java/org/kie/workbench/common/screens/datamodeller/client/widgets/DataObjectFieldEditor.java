@@ -391,6 +391,9 @@ public class DataObjectFieldEditor extends Composite {
         if (DataModelerUtils.isMultipleType(type)) {
             type = DataModelerUtils.getCanonicalClassName(type);
             getObjectField().setMultiple(true);
+            if (getObjectField().getBag() == null) {
+                getObjectField().setBag( ObjectPropertyTO.DEFAULT_PROPERTY_BAG );
+            }
         } else {
             getObjectField().setMultiple(false);
         }

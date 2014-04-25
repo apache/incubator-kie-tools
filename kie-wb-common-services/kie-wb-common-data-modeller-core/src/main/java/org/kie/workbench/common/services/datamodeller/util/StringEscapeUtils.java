@@ -13,6 +13,13 @@ public class StringEscapeUtils {
     /**
      * Comes from  org.apache.commons.lang.StringEscapeUtils
      */
+    public static String escapeJava( String str ) {
+        return org.apache.commons.lang.StringEscapeUtils.escapeJava( str );
+    }
+
+    /**
+     * Comes from  org.apache.commons.lang.StringEscapeUtils
+     */
     public static String unescapeJava( String str ) {
         return org.apache.commons.lang.StringEscapeUtils.unescapeJava( str );
     }

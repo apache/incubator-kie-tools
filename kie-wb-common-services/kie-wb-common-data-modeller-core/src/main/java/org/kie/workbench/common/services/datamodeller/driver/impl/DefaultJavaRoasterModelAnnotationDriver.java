@@ -97,7 +97,7 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
                 result = result.length() > 1 ? result.substring( 0, result.length()-1 ) : "";
             }*/
 
-            result = StringEscapeUtils.unescapeJava( result );
+            result = value;
 
         } else if ( Position.class.getName().equals( annotationDefinition.getClassName() ) ) {
             result = value;

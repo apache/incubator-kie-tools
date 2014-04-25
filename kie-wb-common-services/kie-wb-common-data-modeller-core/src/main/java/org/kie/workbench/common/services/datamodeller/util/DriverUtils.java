@@ -162,7 +162,7 @@ public class DriverUtils {
 
         try {
             String outerClass = classTypeResolver.getFullTypeName( type.getName() );
-            String argumentClass = classTypeResolver.getFullTypeName( type.getName() );
+            String argumentClass = classTypeResolver.getFullTypeName( argument.getName() );
 
             result[0] = true;
             result[1] = outerClass;
@@ -299,7 +299,7 @@ public class DriverUtils {
         }
 
         Object[] simpleGenerics = isSimpleGeneric( type, classTypeResolver );
-        if (isManagedType( type, classTypeResolver ) && multiple && Boolean.TRUE.equals( simpleGenerics[0] )) {
+        if (multiple && Boolean.TRUE.equals( simpleGenerics[0] ) && isManagedType( type, classTypeResolver )) {
 
             currentBag = (String)simpleGenerics[1];
             currentBag = classTypeResolver.getFullTypeName( currentBag );

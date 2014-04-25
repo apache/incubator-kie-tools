@@ -42,7 +42,7 @@ public class ObjectPropertyTO {
 
     private List<AnnotationTO> annotations = new ArrayList<AnnotationTO>();
     
-    private static final String DEFAULT_PROPERTY_BAG = "java.util.List";
+    public static final String DEFAULT_PROPERTY_BAG = "java.util.List";
 
     private DataModelTO.TOStatus status = DataModelTO.TOStatus.VOLATILE;
 

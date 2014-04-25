@@ -364,6 +364,11 @@ public class DataModelerServiceImpl implements DataModelerService {
 
             property = helper.to2Domain( propertyTO );
 
+            if (property.isFinal() || property.isStatic()) {
+                preservedFields.put( property.getName(), property.getName() );
+                continue;
+            }
+
             if (propertyTO.isVolatile()) {
                 //uncommon case
                 if (currentClassFields.containsKey( propertyTO.getName() )) {

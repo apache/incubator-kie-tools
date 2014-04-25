@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.drools.core.base.ClassTypeResolver;
 import org.jboss.forge.roaster.Roaster;
+import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
@@ -48,6 +49,7 @@ import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
+import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -127,9 +129,9 @@ public class JavaRoasterModelDriver implements ModelDriver {
                     continue;
                 }
                 try {
-                    JavaClassSource javaClassSource = Roaster.parse( JavaClassSource.class, fileContent );
-                    if ( javaClassSource.isClass() ) {
-                        addDataObject( dataModel, javaClassSource );
+                    JavaType<?> javaType = Roaster.parse( fileContent );
+                    if ( javaType.isClass() ) {
+                        addDataObject( dataModel, (JavaClassSource)javaType );
                     } else {
                         logger.debug( "No Class definition was found for file: " + scanResult.getFile() + ", it will be skipped." );
                     }
@@ -306,8 +308,13 @@ public class JavaRoasterModelDriver implements ModelDriver {
     public boolean updateSuperClassName( JavaClassSource javaClassSource, String superClassName, ClassTypeResolver classTypeResolver ) throws Exception {
 
         String oldSuperClassName = javaClassSource.getSuperType() != null ? classTypeResolver.getFullTypeName( javaClassSource.getSuperType() ) : null;
-        javaClassSource.setSuperType( superClassName );
-        return StringUtils.equals( oldSuperClassName, superClassName );
+
+        if (!StringUtils.equals( oldSuperClassName, superClassName )) {
+            //TODO remove the extra "import packageName.SuperClassName" added by Roaster when a class name is set as superclass.
+            javaClassSource.setSuperType( superClassName );
+            return true;
+        }
+        return false;
     }
 
     public void updateAnnotations( AnnotationTargetSource annotationTargetSource, List<Annotation> annotations, ClassTypeResolver classTypeResolver ) throws Exception {
@@ -365,7 +372,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
             annotationSource.setLiteralValue( memberDefinition.getName(), strValue.toString() );
 
         } else if (memberDefinition.isString()) {
-            annotationSource.setStringValue( memberDefinition.getName(), genTools.escapeStringForJavaCode( value != null ? value.toString() : null ) );
+            annotationSource.setStringValue( memberDefinition.getName(), ( value != null ? value.toString() : null ) );
         } else if (memberDefinition.isPrimitiveType()) {
             //primitive types are wrapped by the java.lang.type.
 
@@ -443,28 +450,95 @@ public class JavaRoasterModelDriver implements ModelDriver {
         field = javaClassSource.getField( fieldName );
         Type oldType = field.getType();
 
-        if ( !fieldName.equals( property.getName() )) {
-            field.setName( property.getName() );
-            //the field was renamed.
-            updateAccessors = true;
-        }
+        if (hasChangedToCollectionType( field, property, classTypeResolver ) ) {
+            //fields that changed to a collection like java.util.List<SomeEntity>
+            //needs to be removed and created again due to Roaster
+            updateCollectionField( javaClassSource, fieldName, property, classTypeResolver );
+        } else {
+            //for the rest of changes is better to manage the field update without removing the field.
 
-        if ( driverUtils.isManagedType( field.getType(), classTypeResolver ) &&
-                !driverUtils.equalsType( field.getType(), property.getClassName(), property.isMultiple(), property.getBag(), classTypeResolver ) ) {
-            //the has type changed.
-            //TODO review this collections treatment
-            String newClassName;
-            if (property.isMultiple()) {
-                newClassName = property.getBag() + "<" + property.getClassName() +">";
-            } else {
-                newClassName = property.getClassName();
+            if ( !fieldName.equals( property.getName() )) {
+                field.setName( property.getName() );
+                //the field was renamed, accessors must be updated.
+                updateAccessors = true;
             }
 
-            field.setType( newClassName );
-            updateAccessors = true;
+            if ( driverUtils.isManagedType( field.getType(), classTypeResolver ) &&
+                    !driverUtils.equalsType( field.getType(), property.getClassName(), property.isMultiple(), property.getBag(), classTypeResolver ) ) {
+                //the has type changed, and not to a collection type.
+
+                String newClassName = property.getClassName();
+                field.setType( newClassName );
+
+                //TODO enable this if when Roaster NullPointerException is fixed.
+                //if (field.getLiteralInitializer() != null) {
+                    //current field has an initializer, but the field type changed so we are not sure old initializer is
+                    //valid for the new type.
+                    if ( NamingUtils.getInstance().isPrimitiveTypeId( newClassName )) {
+                        setPrimitiveTypeDefaultInitializer( field, newClassName );
+                    } else {
+                        field.setLiteralInitializer( null );
+                    }
+                //}
+                updateAccessors = true;
+            }
+
+            updateAnnotations( field, property.getAnnotations(), classTypeResolver );
+
+            if (updateAccessors) {
+
+                String accessorName;
+                String methodSource;
+                String oldClassName;
+
+                //remove old accessors
+                //TODO check primitive types
+                Class<?> oldClass = classTypeResolver.resolveType( oldType.getName() );
+                oldClassName = oldClass.getName();
+
+                accessorName = genTools.toJavaGetter( fieldName, oldClassName );
+                removeMethod( javaClassSource, accessorName );
+
+                accessorName = genTools.toJavaSetter( fieldName );
+                removeMethod( javaClassSource, accessorName, oldClass );
+
+                //and generate the new ones
+                methodSource = genTools.indent( engine.generateFieldGetterString( context, property ) );
+                javaClassSource.addMethod( methodSource );
+
+                methodSource = genTools.indent( engine.generateFieldSetterString( context, property ) );
+                javaClassSource.addMethod( methodSource );
+            }
+        }
+    }
+
+    private void updateCollectionField(JavaClassSource javaClassSource, String fieldName, ObjectProperty property, ClassTypeResolver classTypeResolver) throws Exception {
+
+        GenerationTools genTools = new GenerationTools();
+        GenerationEngine engine = GenerationEngine.getInstance();
+        GenerationContext context = new GenerationContext( null );
+        boolean updateAccessors = true;
+        FieldSource<JavaClassSource> currentField;
+
+        currentField = javaClassSource.getField( fieldName );
+        Type currentType = currentField.getType();
+
+        StringBuilder fieldSource = new StringBuilder( );
+        List<AnnotationSource<JavaClassSource>> annotations = currentField.getAnnotations();
+        if (annotations != null) {
+            for (AnnotationSource<JavaClassSource> annotation : annotations) {
+                if (!isManagedAnnotation( annotation, classTypeResolver )) {
+                    fieldSource.append( annotation.toString() );
+                    fieldSource.append( "\n" );
+                }
+            }
         }
 
-        updateAnnotations( field, property.getAnnotations(), classTypeResolver );
+        fieldSource.append( engine.generateCompleteFieldString( context, property ) );
+
+        javaClassSource.removeField( currentField );
+        javaClassSource.addField( fieldSource.toString() );
+
 
         if (updateAccessors) {
 
@@ -474,7 +548,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
             //remove old accessors
             //TODO check primitive types
-            Class<?> oldClass = classTypeResolver.resolveType( oldType.getName() );
+            Class<?> oldClass = classTypeResolver.resolveType( currentType.getName() );
             oldClassName = oldClass.getName();
 
             accessorName = genTools.toJavaGetter( fieldName, oldClassName );
@@ -490,6 +564,14 @@ public class JavaRoasterModelDriver implements ModelDriver {
             methodSource = genTools.indent( engine.generateFieldSetterString( context, property ) );
             javaClassSource.addMethod( methodSource );
         }
+    }
+
+    private boolean hasChangedToCollectionType(FieldSource<JavaClassSource> field, ObjectProperty property, ClassTypeResolver classTypeResolver ) throws Exception {
+        DriverUtils driverUtils = DriverUtils.getInstance();
+
+        return driverUtils.isManagedType( field.getType(), classTypeResolver )
+                && !driverUtils.equalsType( field.getType(), property.getClassName(), property.isMultiple(), property.getBag(), classTypeResolver ) &&
+                property.isMultiple();
     }
 
     public void updateConstructors(JavaClassSource javaClassSource, DataObject dataObject) throws Exception {
@@ -630,6 +712,23 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     public boolean isHashCode(MethodSource<?> method) {
         return method.getName().equals( "hashCode" );
+    }
+
+    public void setPrimitiveTypeDefaultInitializer(FieldSource<?> field, String primitiveType) {
+
+        if (NamingUtils.BYTE.equals( primitiveType )) field.setLiteralInitializer( "0" );
+        if (NamingUtils.SHORT.equals( primitiveType )) field.setLiteralInitializer( "0" );
+        if (NamingUtils.INT.equals( primitiveType )) field.setLiteralInitializer( "0" );
+        if (NamingUtils.LONG.equals( primitiveType )) field.setLiteralInitializer( "0L" );
+        if (NamingUtils.FLOAT.equals( primitiveType )) field.setLiteralInitializer( "0.0f" );
+        if (NamingUtils.DOUBLE.equals( primitiveType )) field.setLiteralInitializer( "0.0d" );
+        if (NamingUtils.CHAR.equals( primitiveType )) field.setLiteralInitializer( "\'\\u0000\'" );
+        if (NamingUtils.BOOLEAN.equals( primitiveType )) field.setLiteralInitializer( "false" );
+    }
+
+    public boolean isManagedAnnotation( AnnotationSource<?> annotation, ClassTypeResolver classTypeResolver) throws Exception {
+        String annotationClassName = classTypeResolver.getFullTypeName( annotation.getName() );
+        return getConfiguredAnnotation( annotationClassName ) != null;
     }
 
 }
