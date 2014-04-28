@@ -44,13 +44,12 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.services.backend.source.SourceServices;
-import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
@@ -148,11 +147,12 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
             //De-serialize model
             final GlobalsModel model = load( path );
             final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
-            final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes( oracle );
+            final String[] fullyQualifiedClassNames = new String[ oracle.getProjectModelFields().size() ];
+            oracle.getProjectModelFields().keySet().toArray( fullyQualifiedClassNames );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new GlobalsEditorContent( model,
                                              Arrays.asList( fullyQualifiedClassNames ) );
