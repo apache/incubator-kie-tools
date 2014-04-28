@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.template.server;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -160,14 +161,21 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
             final TemplateModel model = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+            //Get FQCN's used by model
             final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
+            final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
+
+            //Get FQCN's used by Globals
+            consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        visitor.getConsumedModelClasses() );
+                                                        consumedFQCNs );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new GuidedTemplateEditorContent( model,
                                                     dataModel );

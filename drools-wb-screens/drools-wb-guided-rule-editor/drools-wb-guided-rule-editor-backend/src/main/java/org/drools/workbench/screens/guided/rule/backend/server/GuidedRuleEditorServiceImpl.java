@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.rule.backend.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -160,13 +161,13 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
             if ( dslrResourceType.accept( path ) ) {
                 final String[] dsls = utilities.loadDslsForPackage( path );
                 ruleModel = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
-                                                                                  globals,
-                                                                                  oracle,
-                                                                                  dsls );
+                                                                                         globals,
+                                                                                         oracle,
+                                                                                         dsls );
             } else {
                 ruleModel = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                          globals,
-                                                                          oracle );
+                                                                                 globals,
+                                                                                 oracle );
             }
 
             return ruleModel;
@@ -183,14 +184,21 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
 
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+            //Get FQCN's used by model
             final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
+            final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
+
+            //Get FQCN's used by Globals
+            consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        visitor.getConsumedModelClasses() );
+                                                        consumedFQCNs );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new GuidedEditorContent( model,
                                             dataModel );

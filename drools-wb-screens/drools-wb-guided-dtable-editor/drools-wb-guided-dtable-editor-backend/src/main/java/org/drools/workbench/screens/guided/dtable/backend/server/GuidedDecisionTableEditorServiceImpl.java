@@ -164,16 +164,23 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
             final GuidedDecisionTable52 model = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+            //Get FQCN's used by model
             final GuidedDecisionTableModelVisitor visitor = new GuidedDecisionTableModelVisitor( model );
+            final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
+
+            //Get FQCN's used by Globals
+            consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        visitor.getConsumedModelClasses() );
-            final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
+                                                        consumedFQCNs );
 
+            final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new GuidedDecisionTableEditorContent( model,
                                                          workItemDefinitions,

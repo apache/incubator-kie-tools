@@ -19,6 +19,7 @@ package org.drools.workbench.screens.testscenario.backend.server;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -222,15 +223,21 @@ public class ScenarioTestEditorServiceImpl
             final String packageName = projectService.resolvePackage( path ).getPackageName();
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+            //Get FQCN's used by model
             final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor( dataModel, scenario );
+            final Set<String> consumedFQCNs = visitor.visit();
+
+            //Get FQCN's used by Globals
+            consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
 
             DataModelOracleUtilities.populateDataModel( oracle,
                                                         dataModel,
-                                                        visitor.visit() );
+                                                        consumedFQCNs );
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new TestScenarioModelContent( scenario,
                                                  packageName,
