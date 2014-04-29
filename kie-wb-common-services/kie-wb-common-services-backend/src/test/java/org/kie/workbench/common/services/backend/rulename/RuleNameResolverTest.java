@@ -30,18 +30,18 @@ public class RuleNameResolverTest {
                 "rule test\n" +
                         "when\n" +
                         "then\n" +
-                        "end").getRuleNames();
+                        "end" ).getRuleNames();
 
-        assertEquals(1, ruleNames.size());
-        assertTrue(ruleNames.contains("test"));
+        assertEquals( 1, ruleNames.size() );
+        assertTrue( ruleNames.contains( "test" ) );
     }
 
     @Test
     public void testEmpty() throws Exception {
         Set<String> ruleNames = new RuleNameResolver(
-                "").getRuleNames();
+                "" ).getRuleNames();
 
-        assertEquals(0, ruleNames.size());
+        assertEquals( 0, ruleNames.size() );
     }
 
     @Test
@@ -50,10 +50,10 @@ public class RuleNameResolverTest {
                 "rule \"test rule\"\n" +
                         "when\n" +
                         "then\n" +
-                        "end").getRuleNames();
+                        "end" ).getRuleNames();
 
-        assertEquals(1, ruleNames.size());
-        assertTrue(ruleNames.contains("test rule"));
+        assertEquals( 1, ruleNames.size() );
+        assertTrue( ruleNames.contains( "test rule" ) );
     }
 
     @Test
@@ -62,10 +62,10 @@ public class RuleNameResolverTest {
                 "rule 'test rule'\n" +
                         "when\n" +
                         "then\n" +
-                        "end").getRuleNames();
+                        "end" ).getRuleNames();
 
-        assertEquals(1, ruleNames.size());
-        assertTrue(ruleNames.contains("test rule"));
+        assertEquals( 1, ruleNames.size() );
+        assertTrue( ruleNames.contains( "test rule" ) );
     }
 
     @Test
@@ -74,70 +74,70 @@ public class RuleNameResolverTest {
                 "rule test extends parentRule\n" +
                         "when\n" +
                         "then\n" +
-                        "end").getRuleNames();
+                        "end" ).getRuleNames();
 
-        assertEquals(1, ruleNames.size());
-        assertTrue(ruleNames.contains("test"));
+        assertEquals( 1, ruleNames.size() );
+        assertTrue( ruleNames.contains( "test" ) );
     }
 
     @Test
     public void testDTableSource() throws Exception {
         Set<String> ruleList = new RuleNameResolver(
-                getRuleDRL(1)
-                        + getRuleDRL(2)
-                        + getRuleDRL(3)
-                        + getRuleDRL(4)).getRuleNames();
+                getRuleDRL( 1 )
+                        + getRuleDRL( 2 )
+                        + getRuleDRL( 3 )
+                        + getRuleDRL( 4 ) ).getRuleNames();
 
-        assertEquals(4, ruleList.size());
-        assertTrue(ruleList.contains("test row 1"));
-        assertTrue(ruleList.contains("test row 2"));
-        assertTrue(ruleList.contains("test row 3"));
-        assertTrue(ruleList.contains("test row 4"));
+        assertEquals( 4, ruleList.size() );
+        assertTrue( ruleList.contains( "test row 1" ) );
+        assertTrue( ruleList.contains( "test row 2" ) );
+        assertTrue( ruleList.contains( "test row 3" ) );
+        assertTrue( ruleList.contains( "test row 4" ) );
     }
 
     @Test
     public void testIgnoreMultiLineCommentedRules() throws Exception {
         Set<String> ruleList = new RuleNameResolver(
-                getRuleDRL(1)
+                getRuleDRL( 1 )
                         + "/*\n"
-                        + getRuleDRL(2)
+                        + getRuleDRL( 2 )
                         + "/* there might be several /* */ pairs inside the comment.\n"
-                        + getRuleDRL(100)
+                        + getRuleDRL( 100 )
                         + "*/\n"
-                        + getRuleDRL(3)
+                        + getRuleDRL( 3 )
                         + "/*"
-                        + getRuleDRL(4)
+                        + getRuleDRL( 4 )
                         + "*/"
-                        + getRuleDRL(5)).getRuleNames();
+                        + getRuleDRL( 5 ) ).getRuleNames();
 
-        assertEquals(3, ruleList.size());
-        assertTrue(ruleList.contains("test row 1"));
-        assertTrue(ruleList.contains("test row 3"));
-        assertTrue(ruleList.contains("test row 5"));
+        assertEquals( 3, ruleList.size() );
+        assertTrue( ruleList.contains( "test row 1" ) );
+        assertTrue( ruleList.contains( "test row 3" ) );
+        assertTrue( ruleList.contains( "test row 5" ) );
     }
 
     @Test
     public void testIgnoreSingleLineCommentedRules() throws Exception {
         RuleNameResolver resolver = new RuleNameResolver(
-                getRuleDRL(1)
+                getRuleDRL( 1 )
                         + "package org.test;\n"
                         + "// rule \"I'm not here\"\n"
                         + "// when\n" +
                         "// then\n"
                         + "// end\n"
-                        + getRuleDRL(3)
+                        + getRuleDRL( 3 )
                         + "// Just for fun, I'll end the line with //\n"
-                        + getRuleDRL(4)
-                        + getRuleDRL(5)
-                        + "// end of file");
+                        + getRuleDRL( 4 )
+                        + getRuleDRL( 5 )
+                        + "// end of file" );
         Set<String> ruleList = resolver.getRuleNames();
 
-        assertEquals("org.test", resolver.getPackageName());
-        assertEquals(4, ruleList.size());
-        assertTrue(ruleList.contains("test row 1"));
-        assertTrue(ruleList.contains("test row 3"));
-        assertTrue(ruleList.contains("test row 4"));
-        assertTrue(ruleList.contains("test row 5"));
+        assertEquals( "org.test", resolver.getPackageName() );
+        assertEquals( 4, ruleList.size() );
+        assertTrue( ruleList.contains( "test row 1" ) );
+        assertTrue( ruleList.contains( "test row 3" ) );
+        assertTrue( ruleList.contains( "test row 4" ) );
+        assertTrue( ruleList.contains( "test row 5" ) );
     }
 
     @Test
@@ -147,15 +147,55 @@ public class RuleNameResolverTest {
                         "rule            test\n" +
                         "when\n" +
                         "then\n" +
-                        "end");
+                        "end" );
         Set<String> ruleNames = resolver.getRuleNames();
 
-        assertEquals("org.test2", resolver.getPackageName());
-        assertEquals(1, ruleNames.size());
-        assertTrue(ruleNames.contains("test"));
+        assertEquals( "org.test2", resolver.getPackageName() );
+        assertEquals( 1, ruleNames.size() );
+        assertTrue( ruleNames.contains( "test" ) );
     }
 
-    private String getRuleDRL(int line) {
+    @Test
+    public void testResolvePackageName1() throws Exception {
+        RuleNameResolver resolver = new RuleNameResolver( "package org.test;\n" );
+
+        Set<String> ruleList = resolver.getRuleNames();
+
+        assertEquals( 0, ruleList.size() );
+        assertEquals( "org.test", resolver.getPackageName() );
+    }
+
+    @Test
+    public void testResolvePackageName2() throws Exception {
+        RuleNameResolver resolver = new RuleNameResolver( "package org.test;" );
+
+        Set<String> ruleList = resolver.getRuleNames();
+
+        assertEquals( 0, ruleList.size() );
+        assertEquals( "org.test", resolver.getPackageName() );
+    }
+
+    @Test
+    public void testResolvePackageName3() throws Exception {
+        RuleNameResolver resolver = new RuleNameResolver( "package org.test\n" );
+
+        Set<String> ruleList = resolver.getRuleNames();
+
+        assertEquals( 0, ruleList.size() );
+        assertEquals( "org.test", resolver.getPackageName() );
+    }
+
+    @Test
+    public void testResolvePackageName4() throws Exception {
+        RuleNameResolver resolver = new RuleNameResolver( "package org.test" );
+
+        Set<String> ruleList = resolver.getRuleNames();
+
+        assertEquals( 0, ruleList.size() );
+        assertEquals( "org.test", resolver.getPackageName() );
+    }
+
+    private String getRuleDRL( int line ) {
         return "rule \"test row " + line + "\"\n" +
                 "when\n" +
                 "then\n" +
