@@ -62,9 +62,11 @@ public class ScenarioWidgetComponentCreator {
     protected ScenarioWidgetComponentCreator( final ScenarioParentWidget scenarioWidget,
                                               final Path path,
                                               final AsyncPackageDataModelOracle oracle,
+                                              final Scenario scenario,
                                               final Caller<RuleNamesService> ruleNamesService ) {
         this.scenarioWidget = scenarioWidget;
         this.oracle = oracle;
+        this.scenario = scenario;
         this.ruleNamesService = ruleNamesService;
         this.path = path;
 
@@ -73,7 +75,8 @@ public class ScenarioWidgetComponentCreator {
             public void callback( final Collection<String> ruleNames ) {
                 hasRules = !( ruleNames == null || ruleNames.isEmpty() );
             }
-        } ).getRuleNames(path, scenario.getPackageName());
+        } ).getRuleNames( path,
+                          scenario.getPackageName() );
     }
 
     protected GlobalPanel createGlobalPanel( final ScenarioHelper scenarioHelper,
@@ -237,7 +240,7 @@ public class ScenarioWidgetComponentCreator {
                     availableRulesBox.addItem( ruleName );
                 }
             }
-        } ).getRuleNames(path, scenario.getPackageName());
+        } ).getRuleNames( path, scenario.getPackageName() );
 
         return availableRulesBox;
     }

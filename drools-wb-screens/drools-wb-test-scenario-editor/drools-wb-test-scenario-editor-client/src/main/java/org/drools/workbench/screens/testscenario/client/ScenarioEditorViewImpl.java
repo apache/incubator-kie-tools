@@ -40,8 +40,8 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -347,8 +347,8 @@ public class ScenarioEditorViewImpl
         scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( this,
                                                                              path,
                                                                              oracle,
+                                                                             scenario,
                                                                              ruleNameService );
-        scenarioWidgetComponentCreator.setScenario( scenario );
         scenarioWidgetComponentCreator.setShowResults( false );
     }
 
@@ -367,10 +367,6 @@ public class ScenarioEditorViewImpl
 
     void setShowResults( boolean showResults ) {
         scenarioWidgetComponentCreator.setShowResults( showResults );
-    }
-
-    public void setScenario( final Scenario scenario ) {
-        scenarioWidgetComponentCreator.setScenario( scenario );
     }
 
     public Scenario getScenario() {
