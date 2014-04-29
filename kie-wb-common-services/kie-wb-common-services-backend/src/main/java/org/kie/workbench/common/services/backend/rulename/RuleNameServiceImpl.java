@@ -64,37 +64,39 @@ public class RuleNameServiceImpl
     }
 
     @Inject
-    public RuleNameServiceImpl(
-            SourceServices sourceServices,
-            ProjectService projectService,
-            @Named("ioStrategy") IOService ioService) {
+    public RuleNameServiceImpl( final SourceServices sourceServices,
+                                final ProjectService projectService,
+                                final @Named("ioStrategy") IOService ioService ) {
         this.sourceServices = sourceServices;
         this.projectService = projectService;
         this.ioService = ioService;
     }
 
     @Override
-    public Collection<String> getRuleNames(
-            final Path path,
-            final String packageName) {
+    public Collection<String> getRuleNames( final Path path,
+                                            final String packageName ) {
+        final Project project = projectService.resolveProject( path );
 
-        final Project project = projectService.resolveProject(path);
-
-        if (project == null) {
+        if ( project == null ) {
             return Collections.emptyList();
         } else {
-            return getRuleNames(project, packageName);
+            return getRuleNames( project,
+                                 packageName );
         }
     }
 
-    public void onProjectContextChange(@Observes final ProjectContextChangeEvent event) {
-        visitPaths(Files.newDirectoryStream(Paths.convert(event.getProject().getRootPath())));
+    public void onProjectContextChange( @Observes final ProjectContextChangeEvent event ) {
+        final Project project = event.getProject();
+        if ( project == null ) {
+            return;
+        }
+        visitPaths( Files.newDirectoryStream( Paths.convert( project.getRootPath() ) ) );
     }
 
-    private void visitPaths(final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream) {
-        for (final org.uberfire.java.nio.file.Path path : directoryStream) {
-            if (Files.isDirectory(path)) {
-                visitPaths(Files.newDirectoryStream(path));
+    private void visitPaths( final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream ) {
+        for ( final org.uberfire.java.nio.file.Path path : directoryStream ) {
+            if ( Files.isDirectory( path ) ) {
+                visitPaths( Files.newDirectoryStream( path ) );
             } else {
                 /*
                 This bit is hard to test,
@@ -104,155 +106,166 @@ public class RuleNameServiceImpl
 
                 So if the path has been added, skip it.
                  */
-                if (!pathHandles.containsKey(path)) {
-                    processResourceAdd(Paths.convert(path));
+                if ( !pathHandles.containsKey( path ) ) {
+                    processResourceAdd( Paths.convert( path ) );
                 }
             }
         }
     }
 
-    public void processResourceAdd(@Observes final ResourceAddedEvent resourceAddedEvent) {
-        processResourceAdd(resourceAddedEvent.getPath());
+    public void processResourceAdd( @Observes final ResourceAddedEvent resourceAddedEvent ) {
+        processResourceAdd( resourceAddedEvent.getPath() );
     }
 
-    public void processResourceDelete(@Observes final ResourceDeletedEvent resourceDeletedEvent) {
-        processResourceDelete(resourceDeletedEvent.getPath());
+    public void processResourceDelete( @Observes final ResourceDeletedEvent resourceDeletedEvent ) {
+        processResourceDelete( resourceDeletedEvent.getPath() );
     }
 
-    public void processResourceUpdate(@Observes final ResourceUpdatedEvent resourceUpdatedEvent) {
-        processResourceUpdate(resourceUpdatedEvent.getPath());
+    public void processResourceUpdate( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
+        processResourceUpdate( resourceUpdatedEvent.getPath() );
     }
 
-    public void processResourceCopied(@Observes final ResourceCopiedEvent resourceCopiedEvent) {
-        if (isObservableResource(resourceCopiedEvent.getDestinationPath())) {
-            addRuleNames(resourceCopiedEvent.getDestinationPath());
+    public void processResourceCopied( @Observes final ResourceCopiedEvent resourceCopiedEvent ) {
+        if ( isObservableResource( resourceCopiedEvent.getDestinationPath() ) ) {
+            addRuleNames( resourceCopiedEvent.getDestinationPath() );
         }
     }
 
-    public void processResourceRenamed(@Observes final ResourceRenamedEvent resourceRenamedEvent) {
-        processRename(resourceRenamedEvent.getPath(), resourceRenamedEvent.getDestinationPath());
+    public void processResourceRenamed( @Observes final ResourceRenamedEvent resourceRenamedEvent ) {
+        processRename( resourceRenamedEvent.getPath(),
+                       resourceRenamedEvent.getDestinationPath() );
     }
 
-    public void processBatchChanges(@Observes final ResourceBatchChangesEvent resourceBatchChangesEvent) {
-        for (Path path : resourceBatchChangesEvent.getBatch().keySet()) {
-            Collection<ResourceChange> resourceChanges = resourceBatchChangesEvent.getBatch().get(path);
-            for (ResourceChange resourceChange : resourceChanges) {
-                switch (resourceChange.getType()) {
+    public void processBatchChanges( @Observes final ResourceBatchChangesEvent resourceBatchChangesEvent ) {
+        for ( Path path : resourceBatchChangesEvent.getBatch().keySet() ) {
+            Collection<ResourceChange> resourceChanges = resourceBatchChangesEvent.getBatch().get( path );
+            for ( ResourceChange resourceChange : resourceChanges ) {
+                switch ( resourceChange.getType() ) {
                     case ADD:
-                        processResourceAdd(path);
+                        processResourceAdd( path );
                         break;
                     case UPDATE:
-                        processResourceUpdate(path);
+                        processResourceUpdate( path );
                         break;
                     case DELETE:
-                        processResourceDelete(path);
+                        processResourceDelete( path );
                         break;
                     case COPY:
-                        processResourceAdd(((ResourceCopied) resourceChange).getDestinationPath());
+                        processResourceAdd( ( (ResourceCopied) resourceChange ).getDestinationPath() );
                         break;
                     case RENAME:
                         ResourceRenamed resourceRenamed = (ResourceRenamed) resourceChange;
-                        processRename(path, resourceRenamed.getDestinationPath());
+                        processRename( path,
+                                       resourceRenamed.getDestinationPath() );
                         break;
                 }
             }
         }
     }
 
-    private void processResourceAdd(Path path) {
-        if (isObservableResource(path)) {
-            addRuleNames(path);
+    private void processResourceAdd( final Path path ) {
+        if ( isObservableResource( path ) ) {
+            addRuleNames( path );
         }
     }
 
-    private void processResourceDelete(Path path) {
-        if (isObservableResource(path)) {
-            deleteRuleNames(path);
+    private void processResourceDelete( final Path path ) {
+        if ( isObservableResource( path ) ) {
+            deleteRuleNames( path );
         }
     }
 
-    private void processResourceUpdate(Path path) {
-        if (isObservableResource(path)) {
-            deleteRuleNames(path);
-            addRuleNames(path);
+    private void processResourceUpdate( final Path path ) {
+        if ( isObservableResource( path ) ) {
+            deleteRuleNames( path );
+            addRuleNames( path );
         }
     }
 
-    private void processRename(Path path, Path destinationPath) {
-        if (isObservableResource(path)) {
-            deleteRuleNames(path);
+    private void processRename( final Path path,
+                                final Path destinationPath ) {
+        if ( isObservableResource( path ) ) {
+            deleteRuleNames( path );
         }
-        if (isObservableResource(destinationPath)) {
-            addRuleNames(destinationPath);
-        }
-    }
-
-    private void addRuleNames(Path path) {
-        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
-
-        if (sourceServices.hasServiceFor(convertedPath)) {
-            String drl = sourceServices.getServiceFor(
-                    convertedPath).getSource(convertedPath);
-
-            addRuleNames(path, drl);
-        } else if (path.getFileName().endsWith(".drl")) {
-            addRuleNames(path, ioService.readAllString(Paths.convert(path)));
+        if ( isObservableResource( destinationPath ) ) {
+            addRuleNames( destinationPath );
         }
     }
 
-    private void addRuleNames(Path path, String drl) {
-        synchronized (ruleNames) {
-            Project project = projectService.resolveProject(path);
+    private void addRuleNames( final Path path ) {
+        org.uberfire.java.nio.file.Path convertedPath = Paths.convert( path );
 
-            RuleNameResolver ruleNameResolver = new RuleNameResolver(drl);
-            if (ruleNames.containsKey(project)) {
-                ruleNames.get(project).add(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames());
+        if ( sourceServices.hasServiceFor( convertedPath ) ) {
+            String drl = sourceServices.getServiceFor( convertedPath ).getSource( convertedPath );
+
+            addRuleNames( path,
+                          drl );
+        } else if ( path.getFileName().endsWith( ".drl" ) ) {
+            addRuleNames( path,
+                          ioService.readAllString( Paths.convert( path ) ) );
+        }
+    }
+
+    private void addRuleNames( final Path path,
+                               final String drl ) {
+        synchronized ( ruleNames ) {
+            Project project = projectService.resolveProject( path );
+
+            RuleNameResolver ruleNameResolver = new RuleNameResolver( drl );
+            if ( ruleNames.containsKey( project ) ) {
+                ruleNames.get( project ).add( ruleNameResolver.getPackageName(),
+                                              ruleNameResolver.getRuleNames() );
             } else {
                 RuleNamesByPackageMap map = new RuleNamesByPackageMap();
-                map.add(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames());
-                ruleNames.put(project, map);
+                map.add( ruleNameResolver.getPackageName(),
+                         ruleNameResolver.getRuleNames() );
+                ruleNames.put( project,
+                               map );
             }
-            pathHandles.put(path, new PathHandle(ruleNameResolver.getPackageName(), ruleNameResolver.getRuleNames()));
+            pathHandles.put( path,
+                             new PathHandle( ruleNameResolver.getPackageName(),
+                                             ruleNameResolver.getRuleNames() ) );
         }
     }
 
-    private void deleteRuleNames(Path path) {
-        synchronized (ruleNames) {
-            if (pathHandles.containsKey(path)) {
-                PathHandle pathHandle = pathHandles.get(path);
+    private void deleteRuleNames( final Path path ) {
+        synchronized ( ruleNames ) {
+            if ( pathHandles.containsKey( path ) ) {
+                PathHandle pathHandle = pathHandles.get( path );
 
-                Project project = projectService.resolveProject(path);
+                Project project = projectService.resolveProject( path );
 
-                for (String deleteRuleName : pathHandle.ruleNames) {
-                    Set<String> strings = this.ruleNames.get(project).get(pathHandle.packageName);
-                    strings.remove(deleteRuleName);
+                for ( String deleteRuleName : pathHandle.ruleNames ) {
+                    Set<String> strings = this.ruleNames.get( project ).get( pathHandle.packageName );
+                    strings.remove( deleteRuleName );
                 }
             }
         }
     }
 
-    private boolean isObservableResource(Path path) {
+    private boolean isObservableResource( final Path path ) {
         return path != null
-                && !path.getFileName().startsWith(".")
-                && (path.getFileName().endsWith(".drl")
-                || path.getFileName().endsWith(".gdst")
-                || path.getFileName().endsWith(".rdrl")
-                || path.getFileName().endsWith(".rdslr")
-                || path.getFileName().endsWith(".template")
+                && !path.getFileName().startsWith( "." )
+                && ( path.getFileName().endsWith( ".drl" )
+                || path.getFileName().endsWith( ".gdst" )
+                || path.getFileName().endsWith( ".rdrl" )
+                || path.getFileName().endsWith( ".rdslr" )
+                || path.getFileName().endsWith( ".template" )
         );
     }
 
-    public Set<String> getRuleNames(Project project, String packageName) {
-        RuleNamesByPackageMap map = ruleNames.get(project);
-        if (map == null) {
+    public Set<String> getRuleNames( final Project project,
+                                     final String packageName ) {
+        RuleNamesByPackageMap map = ruleNames.get( project );
+        if ( map == null ) {
             return new HashSet<String>();
         }
 
-        Set<String> result = map.get(packageName);
-        if (result == null) {
+        Set<String> result = map.get( packageName );
+        if ( result == null ) {
             return new HashSet<String>();
         } else {
-            return new HashSet<String>(result);
+            return new HashSet<String>( result );
         }
     }
 
@@ -260,16 +273,18 @@ public class RuleNameServiceImpl
 
         HashMap<String, Set<String>> map = new HashMap<String, Set<String>>();
 
-        void add(String packageName, Set<String> ruleNames) {
-            if (map.containsKey(packageName)) {
-                map.get(packageName).addAll(ruleNames);
+        void add( final String packageName,
+                  final Set<String> ruleNames ) {
+            if ( map.containsKey( packageName ) ) {
+                map.get( packageName ).addAll( ruleNames );
             } else {
-                map.put(packageName, ruleNames);
+                map.put( packageName,
+                         ruleNames );
             }
         }
 
-        public Set<String> get(String packageName) {
-            return map.get(packageName);
+        public Set<String> get( final String packageName ) {
+            return map.get( packageName );
         }
     }
 
@@ -278,7 +293,8 @@ public class RuleNameServiceImpl
         String packageName;
         Set<String> ruleNames;
 
-        public PathHandle(String packageName, Set<String> ruleNames) {
+        public PathHandle( final String packageName,
+                           final Set<String> ruleNames ) {
             this.packageName = packageName;
             this.ruleNames = ruleNames;
         }
