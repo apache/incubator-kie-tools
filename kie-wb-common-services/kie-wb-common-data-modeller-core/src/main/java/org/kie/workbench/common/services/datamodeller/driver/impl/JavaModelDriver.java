@@ -36,6 +36,7 @@ import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.parser.JavaParser;
 import org.kie.workbench.common.services.datamodeller.parser.JavaParserFactory;
@@ -118,7 +119,7 @@ public class JavaModelDriver implements ModelDriver {
     }
 
     @Override
-    public DataModel loadModel( ) throws ModelDriverException {
+    public ModelDriverResult loadModel( ) throws ModelDriverException {
 
         JavaParser parser;
         DataModel dataModel;
@@ -157,7 +158,7 @@ public class JavaModelDriver implements ModelDriver {
                 }
             }
         }
-        return dataModel;
+        return new ModelDriverResult( dataModel );
     }
 
     @Override

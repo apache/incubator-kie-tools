@@ -242,4 +242,30 @@ public class DataModelerServiceHelper {
         return fingerPrints;
     }
 
+    /**
+     * Returns the list of persistent renamed data objects.
+     */
+    public Map<String, String> calculatePersistentDataObjectRenames(DataModelTO dataModelTO) {
+        Map<String, String> renames = new HashMap<String, String>( );
+        for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
+            if (!dataObjectTO.isVolatile() && dataObjectTO.classNameChanged()) {
+                renames.put( dataObjectTO.getOriginalClassName(), dataObjectTO.getClassName() );
+            }
+        }
+        return renames;
+    }
+
+    /**
+     * Returns the list of persistent deleted data objects.
+     */
+    public List<String> calculatePersistentDataObjectDeletions( DataModelTO dataModelTO ) {
+        List<String> deletions = new ArrayList<String>();
+        for ( DataObjectTO dataObjectTO : dataModelTO.getDeletedDataObjects() ) {
+            if ( !dataObjectTO.isVolatile() ) {
+                deletions.add( dataObjectTO.getOriginalClassName() );
+            }
+        }
+        return deletions;
+    }
+
 }

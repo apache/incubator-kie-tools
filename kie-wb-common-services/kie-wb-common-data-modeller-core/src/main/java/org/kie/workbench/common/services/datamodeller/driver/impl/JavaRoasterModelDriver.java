@@ -26,10 +26,12 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.core.base.ClassTypeResolver;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
+import org.jboss.forge.roaster.model.SyntaxError;
 import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 import org.jboss.forge.roaster.model.source.FieldSource;
+import org.jboss.forge.roaster.model.source.Import;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
@@ -44,8 +46,10 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
@@ -109,11 +113,13 @@ public class JavaRoasterModelDriver implements ModelDriver {
     }
 
     @Override
-    public DataModel loadModel() throws ModelDriverException {
+    public ModelDriverResult loadModel() throws ModelDriverException {
 
+        ModelDriverResult result = new ModelDriverResult( );
         DataModel dataModel;
         String fileContent;
         dataModel = createModel();
+        result.setDataModel( dataModel );
 
         List<Path> rootPaths = new ArrayList<Path>();
         rootPaths.add( javaRootPath );
@@ -131,7 +137,12 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 try {
                     JavaType<?> javaType = Roaster.parse( fileContent );
                     if ( javaType.isClass() ) {
-                        addDataObject( dataModel, (JavaClassSource)javaType );
+                        if (javaType.getSyntaxErrors() != null && javaType.getSyntaxErrors().isEmpty()) {
+                            //if a file has parsing errors it will be skipped
+                            addSyntaxErrors( result, scanResult.getFile(), javaType.getSyntaxErrors() );
+                        } else {
+                            addDataObject( dataModel, (JavaClassSource)javaType );
+                        }
                     } else {
                         logger.debug( "No Class definition was found for file: " + scanResult.getFile() + ", it will be skipped." );
                     }
@@ -143,7 +154,15 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 }
             }
         }
-        return dataModel;
+        return result;
+    }
+
+    private void addSyntaxErrors( ModelDriverResult result, Path file, List<SyntaxError> syntaxErrors ) {
+        ModelDriverError error;
+        for (SyntaxError syntaxError : syntaxErrors) {
+            error = new ModelDriverError( syntaxError.getDescription(), file);
+            result.addError( error );
+        }
     }
 
     @Override
@@ -282,6 +301,29 @@ public class JavaRoasterModelDriver implements ModelDriver {
         } catch ( ClassNotFoundException e ) {
             logger.error( "Class could not be resolved for name: " + name, e );
             throw new ModelDriverException( "Class could not be resolved for name: " + name + ". " + e.getMessage(), e );
+        }
+    }
+
+    public void updateImports(JavaClassSource javaClassSource, Map<String, String> renamedClasses, List<String> deletedClasses) {
+
+        List<Import> imports = javaClassSource.getImports();
+        String newClassName;
+        String currentPackage = javaClassSource.isDefaultPackage() ? null : javaClassSource.getPackage();
+        NamingUtils namingUtils = NamingUtils.getInstance();
+
+        if (imports != null) {
+            for (Import currentImport : imports) {
+                if (!currentImport.isWildcard() && !currentImport.isStatic()) {
+                    if ( (newClassName = renamedClasses.get( currentImport.getQualifiedName() ) ) != null ) {
+                        javaClassSource.removeImport( currentImport );
+                        if (!StringUtils.equals( currentPackage, namingUtils.extractPackageName( newClassName ) )) {
+                            javaClassSource.addImport( newClassName );
+                        }
+                    } else if (deletedClasses.contains( currentImport.getQualifiedName() )) {
+                        javaClassSource.removeImport( currentImport );
+                    }
+                }
+            }
         }
     }
 

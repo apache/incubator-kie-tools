@@ -114,8 +114,10 @@ public class DataModelOracleModelDriver implements ModelDriver {
         return ModelFactoryImpl.getInstance().newModel();
     }
 
-    @Override public DataModel loadModel( ) throws ModelDriverException {
-        return loadModel( oracleDataModel, projectClassLoader );
+    @Override public ModelDriverResult loadModel( ) throws ModelDriverException {
+        ModelDriverResult result = new ModelDriverResult( );
+        result.setDataModel( loadModel( oracleDataModel, projectClassLoader ) );
+        return result;
     }
 
     public DataModel loadModel( ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader ) throws ModelDriverException {

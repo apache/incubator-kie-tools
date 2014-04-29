@@ -1,0 +1,6 @@
+<beans>
+  <alternatives>
+    <class>org.kie.workbench.common.screens.datamodeller.backend.server.TestAppSetup</class>
+    <class>org.kie.workbench.common.screens.datamodeller.backend.server.TestIdentityFactory</class>
+  </alternatives>
+</beans>

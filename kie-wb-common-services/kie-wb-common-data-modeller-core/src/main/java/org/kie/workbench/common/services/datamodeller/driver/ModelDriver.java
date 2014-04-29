@@ -36,7 +36,7 @@ public interface ModelDriver {
 
     void generateModel(DataModel dataModel, ModelDriverListener generationListener) throws Exception;
 
-    DataModel loadModel() throws ModelDriverException;
+    ModelDriverResult loadModel() throws ModelDriverException;
 
     DataModel createModel();
 }

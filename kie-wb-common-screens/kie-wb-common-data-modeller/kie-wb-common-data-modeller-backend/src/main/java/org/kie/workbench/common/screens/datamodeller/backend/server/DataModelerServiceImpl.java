@@ -29,6 +29,8 @@ import javax.inject.Named;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.builder.LRUBuilderCache;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
@@ -57,6 +59,8 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
@@ -115,6 +119,9 @@ public class DataModelerServiceImpl implements DataModelerService {
     @Inject
     private LRUBuilderCache builderCache;
 
+    @Inject
+    private Event<IncrementalBuildResults> incrementalBuildEvent;
+
     private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
 
     public DataModelerServiceImpl() {
@@ -152,7 +159,12 @@ public class DataModelerServiceImpl implements DataModelerService {
             //ModelDriver modelDriver = new JavaModelDriver( ioService, Paths.convert( defaultPackage.getPackageMainSrcPath() ) , true, classLoader );
 
             ModelDriver modelDriver = new JavaRoasterModelDriver( ioService, Paths.convert( defaultPackage.getPackageMainSrcPath() ) , true, classLoader );
-            dataModel = modelDriver.loadModel();
+            ModelDriverResult result = modelDriver.loadModel();
+            dataModel = result.getDataModel();
+
+            if (result.hasErrors()) {
+                processErrors(project, result );
+            }
 
             //by now we still use the DMO to calculate project external dependencies.
             ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel( projectPath );
@@ -172,6 +184,21 @@ public class DataModelerServiceImpl implements DataModelerService {
             logger.error( "Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e );
             throw new ServiceException( "Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e );
         }
+    }
+
+    private void processErrors( Project project, ModelDriverResult result ) {
+        IncrementalBuildResults buildResults = new IncrementalBuildResults( );
+        BuildMessage buildMessage;
+        for ( ModelDriverError error : result.getErrors()) {
+            buildMessage = new BuildMessage();
+            buildMessage.setId( error.getId() );
+            buildMessage.setText( error.getMessage() );
+            buildMessage.setColumn( error.getColumn() );
+            buildMessage.setLine( error.getLine() );
+            buildMessage.setPath( Paths.convert( error.getFile() ) );
+            buildResults.addAddedMessage( new BuildMessage() );
+        }
+        incrementalBuildEvent.fire( buildResults );
     }
 
     @Override
@@ -239,6 +266,8 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         String newSource;
         DataModelerServiceHelper helper = DataModelerServiceHelper.getInstance();
+        Map<String, String> renames = helper.calculatePersistentDataObjectRenames( dataModelTO );
+        List<String> deletions = helper.calculatePersistentDataObjectDeletions( dataModelTO );
 
         classLoader = getProjectClassLoader( project );
         //ensure java sources directory exists.
@@ -293,7 +322,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
                 if (ioService.exists( sourceFile )) {
                     //common case, by construction the file should exist.
-                    newSource = updateJavaSource( dataObjectTO, sourceFile, classLoader );
+                    newSource = updateJavaSource( dataObjectTO, sourceFile, renames, deletions, classLoader );
                 } else {
                     //uncommon case
                     if (logger.isDebugEnabled()) logger.debug( "original content file: " + sourceFile + ", seems to not exists. Java source code will be generated from scratch.");
@@ -312,7 +341,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    private String updateJavaSource( DataObjectTO dataObjectTO, org.uberfire.java.nio.file.Path path, ClassLoader classLoader ) throws Exception {
+    private String updateJavaSource( DataObjectTO dataObjectTO, org.uberfire.java.nio.file.Path path, Map<String, String> renames, List<String> deletions, ClassLoader classLoader ) throws Exception {
 
         String originalSource;
         String newSource;
@@ -325,14 +354,14 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         JavaClassSource javaClassSource = Roaster.parse( JavaClassSource.class, originalSource );
         classTypeResolver = DriverUtils.getInstance().createClassTypeResolver( javaClassSource, classLoader );
-        updateJavaClassSource( dataObjectTO, javaClassSource, classTypeResolver);
+        updateJavaClassSource( dataObjectTO, javaClassSource, renames, deletions, classTypeResolver);
         newSource = javaClassSource.toString();
 
         if (logger.isDebugEnabled()) logger.debug( "updated source is: " + newSource );
         return newSource;
     }
 
-    private void updateJavaClassSource(DataObjectTO dataObjectTO, JavaClassSource javaClassSource, ClassTypeResolver classTypeResolver) throws Exception {
+    private void updateJavaClassSource(DataObjectTO dataObjectTO, JavaClassSource javaClassSource, Map<String, String> renames, List<String> deletions, ClassTypeResolver classTypeResolver) throws Exception {
 
         if (javaClassSource == null || !javaClassSource.isClass())  {
             logger.warn( "A null javaClassSource or javaClassSouce is not a Class, no processing will be done. javaClassSource: " + javaClassSource + " className: " + ( javaClassSource != null ? javaClassSource.getName() : null) );
@@ -349,6 +378,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         //update package, class name, and super class name if needed.
         modelDriver.updatePackage( javaClassSource, dataObjectTO.getPackageName() );
+        modelDriver.updateImports( javaClassSource, renames, deletions );
         modelDriver.updateAnnotations( javaClassSource, dataObject.getAnnotations(), classTypeResolver );
         modelDriver.updateClassName( javaClassSource, dataObjectTO.getName() );
         modelDriver.updateSuperClassName( javaClassSource, dataObjectTO.getSuperClassName(), classTypeResolver );
