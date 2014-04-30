@@ -8,6 +8,9 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.internal.JGitText;
@@ -19,11 +22,15 @@ import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.transport.resolver.UploadPackFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic daemon for the anonymous <code>git://</code> transport protocol.
  */
 public class Daemon {
+
+    private static final Logger LOG = LoggerFactory.getLogger( Daemon.class );
 
     /**
      * 9418: IANA assigned port number for Git.
@@ -32,15 +39,13 @@ public class Daemon {
 
     private static final int BACKLOG = 5;
 
-    private InetSocketAddress myAddress;
+    private volatile InetSocketAddress requestedListenAddress;
 
     private final DaemonService[] services;
 
     private final ThreadGroup processors;
 
-    private boolean run;
-
-    private Thread acceptThread;
+    private volatile ServerThread acceptThread;
 
     private int timeout;
 
@@ -49,8 +54,6 @@ public class Daemon {
     private volatile RepositoryResolver<DaemonClient> repositoryResolver;
 
     private volatile UploadPackFactory<DaemonClient> uploadPackFactory;
-
-    private ServerSocket listenSock = null;
 
     /**
      * Configure a daemon to listen on any available network port.
@@ -65,16 +68,17 @@ public class Daemon {
      * port will be chosen on all network interfaces.
      */
     public Daemon( final InetSocketAddress addr ) {
-        myAddress = addr;
+        requestedListenAddress = addr;
         processors = new ThreadGroup( "Git-Daemon" );
 
         repositoryResolver = (RepositoryResolver<DaemonClient>) RepositoryResolver.NONE;
 
         uploadPackFactory = new UploadPackFactory<DaemonClient>() {
+            @Override
             public UploadPack create( DaemonClient req,
                                       Repository db )
-                    throws ServiceNotEnabledException,
-                    ServiceNotAuthorizedException {
+                                              throws ServiceNotEnabledException,
+                                              ServiceNotAuthorizedException {
                 UploadPack up = new UploadPack( db );
                 up.setTimeout( getTimeout() );
                 up.setPackConfig( getPackConfig() );
@@ -90,8 +94,8 @@ public class Daemon {
             @Override
             protected void execute( final DaemonClient dc,
                                     final Repository db ) throws IOException,
-                    ServiceNotEnabledException,
-                    ServiceNotAuthorizedException {
+                                    ServiceNotEnabledException,
+                                    ServiceNotAuthorizedException {
                 UploadPack up = uploadPackFactory.create( dc, db );
                 InputStream in = dc.getInputStream();
                 OutputStream out = dc.getOutputStream();
@@ -101,10 +105,24 @@ public class Daemon {
     }
 
     /**
-     * @return the address connections are received on.
+     * Returns the address the ServerSocket should listen on when this daemon is started. If null, ServerSocket defaults
+     * are used.
      */
-    public synchronized InetSocketAddress getAddress() {
-        return myAddress;
+    public InetSocketAddress getRequestedListenAddress() {
+        return requestedListenAddress;
+    }
+
+    /**
+     * Returns the address the ServerSocket is currently listening on.
+     * 
+     * @return The actual address we are bound to, according to the live ServerSocket. Returns null if we are not
+     *         currently listening.
+     */
+    public InetSocketAddress getActualListenAddress() {
+        if ( acceptThread == null ) {
+            return null;
+        }
+        return (InetSocketAddress) acceptThread.listenSock.getLocalSocketAddress();
     }
 
     /**
@@ -190,58 +208,23 @@ public class Daemon {
             throw new IllegalStateException( JGitText.get().daemonAlreadyRunning );
         }
 
-        this.listenSock = new ServerSocket(
-                myAddress != null ? myAddress.getPort() : 0, BACKLOG,
-                myAddress != null ? myAddress.getAddress() : null );
-        myAddress = (InetSocketAddress) listenSock.getLocalSocketAddress();
-
-        run = true;
-        acceptThread = new Thread( processors, "Git-Daemon-Accept" ) {
-            public void run() {
-                while ( isRunning() ) {
-                    try {
-                        startClient( listenSock.accept() );
-                    } catch ( InterruptedIOException e ) {
-                        // Test again to see if we should keep accepting.
-                    } catch ( IOException e ) {
-                        break;
-                    }
-                }
-
-                try {
-                    if ( !listenSock.isClosed() ) {
-                        listenSock.close();
-                    }
-                } catch ( IOException err ) {
-                    //
-                } finally {
-                    synchronized ( Daemon.this ) {
-                        acceptThread = null;
-                    }
-                }
-            }
-        };
+        acceptThread = new ServerThread();
         acceptThread.start();
     }
 
     /**
      * @return true if this daemon is receiving connections.
      */
-    public synchronized boolean isRunning() {
-        return run;
+    public boolean isRunning() {
+        return acceptThread != null;
     }
 
     /**
-     * Stop this daemon.
+     * Attempts to stop this daemon as soon as possible. To verify thread termination, call {@link #isRunning()} and ensure it returns false.
      */
     public synchronized void stop() {
         if ( acceptThread != null ) {
-            run = false;
-            try {
-                listenSock.close();
-            } catch ( IOException e ) {
-            }
-            acceptThread.interrupt();
+            acceptThread.shutdown();
         }
     }
 
@@ -254,6 +237,7 @@ public class Daemon {
         }
 
         new Thread( processors, "Git-Daemon-Client " + peer.toString() ) {
+            @Override
             public void run() {
                 try {
                     dc.execute( s );
@@ -290,7 +274,7 @@ public class Daemon {
 
     Repository openRepository( DaemonClient client,
                                String name )
-            throws ServiceMayNotContinueException {
+                                       throws ServiceMayNotContinueException {
         // Assume any attempt to use \ was by a Windows client
         // and correct to the more typical / used in Git URIs.
         //
@@ -316,6 +300,79 @@ public class Daemon {
             // null signals it "wasn't found", which is all that is suitable
             // for the remote client to know.
             return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "JGit Daemon@" + requestedListenAddress + ": running=" + isRunning();
+    }
+
+    /**
+     * Helps with tracking down rogue daemon threads when the server fails to start.
+     */
+    private static final Map<ServerThread, Exception> runningDaemons = Collections.synchronizedMap( new IdentityHashMap<ServerThread, Exception>() );
+
+    private class ServerThread extends Thread {
+
+        final ServerSocket listenSock;
+        private volatile boolean keepRunning = true;
+
+        ServerThread() throws IOException {
+            super( processors, "Git-Daemon-Accept");
+            runningDaemons.put( this, new Exception("Started Here for Daemon@" + System.identityHashCode( Daemon.this ) ) );
+            try {
+                listenSock = new ServerSocket(
+                        requestedListenAddress != null ? requestedListenAddress.getPort() : 0,
+                                BACKLOG,
+                                requestedListenAddress != null ? requestedListenAddress.getAddress() : null );
+            } catch ( IOException ex ) {
+                LOG.error( "Failed to open socket for listening at " + requestedListenAddress );
+                LOG.error( "There are " + runningDaemons.size() + " already running:" );
+                for ( Exception trace : runningDaemons.values() ) {
+                    LOG.error("---- Start point of unterminated daemon:", trace);
+                }
+                throw ex;
+            }
+        }
+
+        @Override
+        public void run() {
+            LOG.debug( "Starting Git server thread for " + requestedListenAddress );
+            while ( keepRunning ) {
+                try {
+                    startClient( listenSock.accept() );
+                } catch ( InterruptedIOException e ) {
+                    // Test again to see if we should keep accepting.
+                } catch ( IOException e ) {
+                    break;
+                }
+            }
+
+            try {
+                if ( !listenSock.isClosed() ) {
+                    listenSock.close();
+                }
+            } catch ( IOException err ) {
+                LOG.error("Failed to close Git Daemon Socket", err);
+            } finally {
+                synchronized ( Daemon.this ) {
+                    acceptThread = null;
+                    runningDaemons.remove(this);
+                    LOG.debug( "Git server thread for " + requestedListenAddress + " terminated." );
+                }
+            }
+        }
+
+        public void shutdown() {
+            try {
+                if ( !listenSock.isClosed() ) {
+                    listenSock.close();
+                }
+            } catch ( IOException e ) {
+                LOG.error( "Failed to close git server socket", e );
+            }
+            interrupt();
         }
     }
 }

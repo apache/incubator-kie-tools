@@ -56,6 +56,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.ObjectId;
@@ -76,6 +77,10 @@ import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.util.FileUtils;
 import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.config.ConfigProperties;
+import org.uberfire.backend.server.config.ConfigProperties.ConfigProperty;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.message.MessageType;
@@ -136,45 +141,55 @@ import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
 import org.uberfire.java.nio.security.SecurityAware;
 import org.uberfire.security.authz.AuthorizationManager;
 
-public class JGitFileSystemProvider implements FileSystemProvider,
-SecurityAware {
+/**
+ * Manages a collection of Git repositories all located in a common parent directory. Each repository can be obtained in
+ * the form of a {@link JGitFileSystem} via the {@link #getFileSystem(URI)} method. Doing so implicitly opens the requested filesystem.
+ */
+public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware {
+
+    private static final Logger LOG = LoggerFactory.getLogger( JGitFileSystemProvider.class );
 
     protected static final String DEFAULT_IO_SERVICE_NAME = "default";
 
-    public static final String GIT_DEFAULT_REMOTE_NAME = DEFAULT_REMOTE_NAME;
-    public static final String GIT_LIST_ROOT_BRANCH_MODE = "listMode";
+    public static final String GIT_ENV_KEY_DEFAULT_REMOTE_NAME = DEFAULT_REMOTE_NAME;
+
+    /**
+     * Specifies the list mode for the repository parent directory. Must match one of the enum constants defined in
+     * {@link ListMode}.
+     */
+    public static final String GIT_ENV_KEY_LIST_MODE = "listMode";
+
+    public static final String GIT_ENV_KEY_DEST_PATH = "out-dir";
+    public static final String GIT_ENV_KEY_USER_NAME = "username";
+    public static final String GIT_ENV_KEY_PASSWORD = "password";
+    public static final String GIT_ENV_KEY_INIT = "init";
 
     private static final String SCHEME = "git";
+    private static final int SCHEME_SIZE = ( SCHEME + "://" ).length();
+    private static final int DEFAULT_SCHEME_SIZE = ( "default://" ).length();
 
-    public static final String REPOSITORIES_ROOT_DIR = ".niogit";
-    public static final String SSH_FILE_CERT_ROOT_DIR = ".security";
+    public static final String REPOSITORIES_CONTAINER_DIR = ".niogit";
+    public static final String SSH_FILE_CERT_CONTAINER_DIR = ".security";
+
     public static final String DEFAULT_HOST_NAME = "localhost";
     public static final String DEFAULT_HOST_ADDR = "127.0.0.1";
-    public static final boolean DAEMON_DEFAULT_ENABLED = true;
-    public static final int DAEMON_DEFAULT_PORT = 9418;
-    public static final boolean SSH_DEFAULT_ENABLED = true;
-    public static final int SSH_DEFAULT_PORT = 8001;
+    public static final String DAEMON_DEFAULT_ENABLED = "true";
+    public static final String DAEMON_DEFAULT_PORT = "9418";
+    public static final String SSH_DEFAULT_ENABLED = "true";
+    public static final String SSH_DEFAULT_PORT = "8001";
 
-    private static final String GIT_ENV_PROP_DEST_PATH = "out-dir";
+    private File gitReposParentDir;
 
-    public static File FILE_REPOSITORIES_ROOT;
-    public static boolean DAEMON_ENABLED;
-    public static int DAEMON_PORT;
-    private static String DAEMON_HOST_ADDR;
-    private static String DAEMON_HOST_NAME;
+    private boolean daemonEnabled;
+    private int daemonPort;
+    private String daemonHostAddr;
+    private String daemonHostName;
 
-    private static boolean SSH_ENABLED;
-    private static int SSH_PORT;
-    private static String SSH_HOST_ADDR;
-    private static String SSH_HOST_NAME;
-    private static File SSH_FILE_CERT_DIR;
-
-    public static final String USER_NAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String INIT = "init";
-
-    public static final int SCHEME_SIZE = ( SCHEME + "://" ).length();
-    public static final int DEFAULT_SCHEME_SIZE = ( "default://" ).length();
+    private boolean sshEnabled;
+    private int sshPort;
+    private String sshHostAddr;
+    private String sshHostName;
+    private File sshFileCertDir;
 
     private FileSystemState state = FileSystemState.NORMAL;
     private CommitInfo batchCommitInfo = null;
@@ -197,93 +212,41 @@ SecurityAware {
     private Daemon daemonService = null;
     private GitSSHService gitSSHService = null;
 
-    private void loadConfig() {
-        final String bareReposDir = System.getProperty( "org.uberfire.nio.git.dir" );
-        final String enabled = System.getProperty( "org.uberfire.nio.git.daemon.enabled" );
-        final String host = System.getProperty( "org.uberfire.nio.git.daemon.host" );
-        final String hostName = System.getProperty( "org.uberfire.nio.git.daemon.hostname" );
-        final String port = System.getProperty( "org.uberfire.nio.git.daemon.port" );
+    private void loadConfig( ConfigProperties config ) {
+        LOG.debug("Configuring from properties:");
 
-        final String sshEnabled = System.getProperty( "org.uberfire.nio.git.ssh.enabled" );
-        final String sshHost = System.getProperty( "org.uberfire.nio.git.ssh.host" );
-        final String sshHostName = System.getProperty( "org.uberfire.nio.git.ssh.hostname" );
-        final String sshPort = System.getProperty( "org.uberfire.nio.git.ssh.port" );
-        final String sshCertDir = System.getProperty( "org.uberfire.nio.git.ssh.cert.dir" );
+        final String currentDirectory = System.getProperty( "user.dir" );
 
-        if ( bareReposDir == null || bareReposDir.trim().isEmpty() ) {
-            FILE_REPOSITORIES_ROOT = new File( REPOSITORIES_ROOT_DIR );
-        } else {
-            FILE_REPOSITORIES_ROOT = new File( bareReposDir.trim(), REPOSITORIES_ROOT_DIR );
+        final ConfigProperty bareReposDirProp = config.get( "org.uberfire.nio.git.dir", currentDirectory );
+        final ConfigProperty enabledProp = config.get( "org.uberfire.nio.git.daemon.enabled", DAEMON_DEFAULT_ENABLED );
+        final ConfigProperty hostProp = config.get( "org.uberfire.nio.git.daemon.host", DEFAULT_HOST_ADDR );
+        final ConfigProperty hostNameProp = config.get( "org.uberfire.nio.git.daemon.hostname", hostProp.isDefault() ? DEFAULT_HOST_NAME : hostProp.getValue() );
+        final ConfigProperty portProp = config.get( "org.uberfire.nio.git.daemon.port", DAEMON_DEFAULT_PORT );
+        final ConfigProperty sshEnabledProp = config.get( "org.uberfire.nio.git.ssh.enabled", SSH_DEFAULT_ENABLED );
+        final ConfigProperty sshHostProp = config.get( "org.uberfire.nio.git.ssh.host", DEFAULT_HOST_ADDR );
+        final ConfigProperty sshHostNameProp = config.get( "org.uberfire.nio.git.ssh.hostname", sshHostProp.isDefault() ? DEFAULT_HOST_NAME : sshHostProp.getValue() );
+        final ConfigProperty sshPortProp = config.get( "org.uberfire.nio.git.ssh.port", SSH_DEFAULT_PORT );
+        final ConfigProperty sshCertDirProp = config.get( "org.uberfire.nio.git.ssh.cert.dir", currentDirectory );
+
+        if ( LOG.isDebugEnabled() ) {
+            LOG.debug( config.getConfigurationSummary( "Summary of JGit configuration:" ) );
         }
 
-        if ( enabled == null || enabled.trim().isEmpty() ) {
-            DAEMON_ENABLED = DAEMON_DEFAULT_ENABLED;
-        } else {
-            try {
-                DAEMON_ENABLED = Boolean.valueOf( enabled );
-            } catch ( Exception ex ) {
-                DAEMON_ENABLED = DAEMON_DEFAULT_ENABLED;
-            }
+        gitReposParentDir = new File( bareReposDirProp.getValue(), REPOSITORIES_CONTAINER_DIR );
+
+        daemonEnabled = enabledProp.getBooleanValue();
+        if ( daemonEnabled ) {
+            daemonPort = portProp.getIntValue();
+            daemonHostAddr = hostProp.getValue();
+            daemonHostName = hostNameProp.getValue();
         }
 
-        if ( DAEMON_ENABLED ) {
-            if ( port == null || port.trim().isEmpty() ) {
-                DAEMON_PORT = DAEMON_DEFAULT_PORT;
-            } else {
-                DAEMON_PORT = Integer.valueOf( port );
-            }
-            if ( host == null || host.trim().isEmpty() ) {
-                DAEMON_HOST_ADDR = DEFAULT_HOST_ADDR;
-            } else {
-                DAEMON_HOST_ADDR = host;
-            }
-            if ( hostName == null || hostName.trim().isEmpty() ) {
-                if ( host != null && !host.trim().isEmpty() ) {
-                    DAEMON_HOST_NAME = host;
-                } else {
-                    DAEMON_HOST_NAME = DEFAULT_HOST_NAME;
-                }
-            } else {
-                DAEMON_HOST_NAME = hostName;
-            }
-        }
-
-        if ( sshEnabled == null || sshEnabled.trim().isEmpty() ) {
-            SSH_ENABLED = SSH_DEFAULT_ENABLED;
-        } else {
-            try {
-                SSH_ENABLED = Boolean.valueOf( sshEnabled );
-            } catch ( Exception ex ) {
-                SSH_ENABLED = SSH_DEFAULT_ENABLED;
-            }
-        }
-
-        if ( SSH_ENABLED ) {
-            if ( sshPort == null || sshPort.trim().isEmpty() ) {
-                SSH_PORT = SSH_DEFAULT_PORT;
-            } else {
-                SSH_PORT = Integer.valueOf( sshPort );
-            }
-            if ( sshHost == null || sshHost.trim().isEmpty() ) {
-                SSH_HOST_ADDR = DEFAULT_HOST_ADDR;
-            } else {
-                SSH_HOST_ADDR = sshHost;
-            }
-            if ( sshHostName == null || sshHostName.trim().isEmpty() ) {
-                if ( sshHost != null && !sshHost.trim().isEmpty() ) {
-                    SSH_HOST_NAME = sshHost;
-                } else {
-                    SSH_HOST_NAME = DEFAULT_HOST_NAME;
-                }
-            } else {
-                SSH_HOST_NAME = sshHostName;
-            }
-
-            if ( sshCertDir == null || sshCertDir.trim().isEmpty() ) {
-                SSH_FILE_CERT_DIR = new File( SSH_FILE_CERT_ROOT_DIR );
-            } else {
-                SSH_FILE_CERT_DIR = new File( sshCertDir.trim(), SSH_FILE_CERT_ROOT_DIR );
-            }
+        sshEnabled = sshEnabledProp.getBooleanValue();
+        if ( sshEnabled ) {
+            sshPort = sshPortProp.getIntValue();
+            sshHostAddr = sshHostProp.getValue();
+            sshHostName = sshHostNameProp.getValue();
+            sshFileCertDir = new File( sshCertDirProp.getValue(), SSH_FILE_CERT_CONTAINER_DIR );
         }
 
     }
@@ -310,13 +273,10 @@ SecurityAware {
         clusterMap.remove( fileSystem.gitRepo().getRepository() );
     }
 
-    private static JGitFileSystemProvider provider = null;
-
-    public static JGitFileSystemProvider getInstance() {
-        if ( provider == null ) {
-            provider = new JGitFileSystemProvider();
-        }
-        return provider;
+    public Set<JGitFileSystem> getOpenFileSystems() {
+        Set<JGitFileSystem> open = new HashSet<JGitFileSystem>( fileSystems.values() );
+        open.removeAll( closedFileSystems );
+        return open;
     }
 
     @Override
@@ -356,17 +316,40 @@ SecurityAware {
     }
 
     public JGitFileSystemProvider() {
-        loadConfig();
+        loadConfig( new ConfigProperties( System.getProperties() ) );
         CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
 
-        if ( DAEMON_ENABLED ) {
-            fullHostNames.put( "git", DAEMON_HOST_NAME + ":" + DAEMON_PORT );
+        if ( daemonEnabled ) {
+            fullHostNames.put( "git", daemonHostName + ":" + daemonPort );
         }
-        if ( SSH_ENABLED ) {
-            fullHostNames.put( "ssh", SSH_HOST_NAME + ":" + SSH_PORT );
+        if ( sshEnabled ) {
+            fullHostNames.put( "ssh", sshHostName + ":" + sshPort );
         }
 
-        final String[] repos = FILE_REPOSITORIES_ROOT.list( new FilenameFilter() {
+        rescanForExistingRepositories();
+
+        if ( daemonEnabled ) {
+            buildAndStartDaemon();
+        } else {
+            daemonService = null;
+        }
+
+        if ( sshEnabled ) {
+            buildAndStartSSH();
+        } else {
+            gitSSHService = null;
+        }
+    }
+
+    /**
+     * Forgets all existing registered filesystems and scans for existing git repositories under
+     * {@link #gitReposParentDir}. Call this method any time you add or remove git repositories without using this
+     * class. If you only ever add or remove git repositories using the methods of this class, there is no need to call
+     * this method.
+     */
+    public final void rescanForExistingRepositories() {
+        fileSystems.clear();
+        final String[] repos = gitReposParentDir.list( new FilenameFilter() {
             @Override
             public boolean accept( final File dir,
                                    String name ) {
@@ -375,25 +358,17 @@ SecurityAware {
         } );
         if ( repos != null ) {
             for ( final String repo : repos ) {
-                final File repoDir = new File( FILE_REPOSITORIES_ROOT, repo );
+                final File repoDir = new File( gitReposParentDir, repo );
                 if ( repoDir.isDirectory() ) {
                     final String name = repoDir.getName().substring( 0, repoDir.getName().indexOf( DOT_GIT_EXT ) );
                     final JGitFileSystem fs = new JGitFileSystem( this, fullHostNames, newRepository( repoDir, true ), name, ALL, buildCredential( null ) );
+                    LOG.debug( "Registering existing GIT filesystem '" + name + "' at " + repoDir );
                     fileSystems.put( name, fs );
                     repoIndex.put( fs.gitRepo().getRepository(), fs );
+                } else {
+                    LOG.debug( "Not registering " + repoDir + " as a GIT filesystem because it is not a directory" );
                 }
             }
-        }
-        if ( DAEMON_ENABLED ) {
-            buildAndStartDaemon();
-        } else {
-            daemonService = null;
-        }
-
-        if ( SSH_ENABLED ) {
-            buildAndStartSSH();
-        } else {
-            gitSSHService = null;
         }
     }
 
@@ -461,19 +436,51 @@ SecurityAware {
 
         gitSSHService = new GitSSHService();
 
-        gitSSHService.setup( SSH_FILE_CERT_DIR, SSH_HOST_ADDR, SSH_PORT, authenticationService, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
+        gitSSHService.setup( sshFileCertDir, sshHostAddr, sshPort, authenticationService, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
 
         gitSSHService.start();
     }
 
+    private void shutdownSSH() {
+        if ( gitSSHService != null ) {
+            gitSSHService.stop();
+        }
+    }
+
     private void buildAndStartDaemon() {
-        daemonService = new Daemon( new InetSocketAddress( DAEMON_HOST_ADDR, DAEMON_PORT ) );
+        daemonService = new Daemon( new InetSocketAddress( daemonHostAddr, daemonPort ) );
         daemonService.setRepositoryResolver( new RepositoryResolverImpl<DaemonClient>() );
         try {
             daemonService.start();
         } catch ( java.io.IOException e ) {
             throw new IOException( e );
         }
+    }
+
+    private void shutdownDaemon() {
+        if ( daemonService != null && daemonService.isRunning() ) {
+            daemonService.stop();
+        }
+    }
+
+    /**
+     * Closes and disposes all open filesystems and stops the Git and SSH daemons if they are running. This filesystem
+     * provider can be reactivated by attempting to open a new filesystem, by creating a new filesystem, or by calling
+     * {@link #rescanForExistingRepositories()}.
+     */
+    public void shutdown() {
+        for ( JGitFileSystem fs : getOpenFileSystems() ) {
+            fs.close();
+        }
+        shutdownSSH();
+        shutdownDaemon();
+    }
+
+    /**
+     * Returns the directory that contains all the git repositories managed by this file system provider.
+     */
+    public File getGitRepoContainerDir() {
+        return gitReposParentDir;
     }
 
     @Override
@@ -509,14 +516,16 @@ SecurityAware {
 
         final String name = extractRepoName( uri );
 
+        LOG.debug( "Attempting to create new JGitFileSystem '" + name + "' for URI " + uri );
+
         if ( fileSystems.containsKey( name ) ) {
-            throw new FileSystemAlreadyExistsException();
+            throw new FileSystemAlreadyExistsException( "There is already a GIT filesystem called " + name );
         }
 
         ListBranchCommand.ListMode listMode;
-        if ( env.containsKey( GIT_LIST_ROOT_BRANCH_MODE ) ) {
+        if ( env.containsKey( GIT_ENV_KEY_LIST_MODE ) ) {
             try {
-                listMode = ListBranchCommand.ListMode.valueOf( (String) env.get( GIT_LIST_ROOT_BRANCH_MODE ) );
+                listMode = ListBranchCommand.ListMode.valueOf( (String) env.get( GIT_ENV_KEY_LIST_MODE ) );
             } catch ( Exception ex ) {
                 listMode = null;
             }
@@ -528,17 +537,17 @@ SecurityAware {
         final CredentialsProvider credential;
 
         boolean bare = true;
-        final String outPath = (String) env.get( GIT_ENV_PROP_DEST_PATH );
+        final String outPath = (String) env.get( GIT_ENV_KEY_DEST_PATH );
 
         final File repoDest;
         if ( outPath != null ) {
             repoDest = new File( outPath, name + DOT_GIT_EXT );
         } else {
-            repoDest = new File( FILE_REPOSITORIES_ROOT, name + DOT_GIT_EXT );
+            repoDest = new File( gitReposParentDir, name + DOT_GIT_EXT );
         }
 
-        if ( env.containsKey( GIT_DEFAULT_REMOTE_NAME ) ) {
-            final String originURI = env.get( GIT_DEFAULT_REMOTE_NAME ).toString();
+        if ( env.containsKey( GIT_ENV_KEY_DEFAULT_REMOTE_NAME ) ) {
+            final String originURI = env.get( GIT_ENV_KEY_DEFAULT_REMOTE_NAME ).toString();
             credential = buildCredential( env );
             git = cloneRepository( repoDest, originURI, bare, credential );
         } else {
@@ -552,11 +561,11 @@ SecurityAware {
 
         boolean init = false;
 
-        if ( env.containsKey( INIT ) && Boolean.valueOf( env.get( INIT ).toString() ) ) {
+        if ( env.containsKey( GIT_ENV_KEY_INIT ) && Boolean.valueOf( env.get( GIT_ENV_KEY_INIT ).toString() ) ) {
             init = true;
         }
 
-        if ( !env.containsKey( GIT_DEFAULT_REMOTE_NAME ) && init ) {
+        if ( !env.containsKey( GIT_ENV_KEY_DEFAULT_REMOTE_NAME ) && init ) {
             try {
                 final URI initURI = URI.create( getScheme() + "://master@" + name + "/readme.md" );
                 final CommentedOption op = setupOp( env );
@@ -579,7 +588,7 @@ SecurityAware {
             clusterMap.put( git.getRepository(), (ClusterService) _clusterService );
         }
 
-        if ( DAEMON_ENABLED && daemonService != null && !daemonService.isRunning() ) {
+        if ( daemonEnabled && daemonService != null && !daemonService.isRunning() ) {
             buildAndStartDaemon();
         }
 
@@ -1752,11 +1761,11 @@ SecurityAware {
 
     private CredentialsProvider buildCredential( final Map<String, ?> env ) {
         if ( env != null ) {
-            if ( env.containsKey( USER_NAME ) ) {
-                if ( env.containsKey( PASSWORD ) ) {
-                    return new UsernamePasswordCredentialsProvider( env.get( USER_NAME ).toString(), env.get( PASSWORD ).toString() );
+            if ( env.containsKey( GIT_ENV_KEY_USER_NAME ) ) {
+                if ( env.containsKey( GIT_ENV_KEY_PASSWORD ) ) {
+                    return new UsernamePasswordCredentialsProvider( env.get( GIT_ENV_KEY_USER_NAME ).toString(), env.get( GIT_ENV_KEY_PASSWORD ).toString() );
                 }
-                return new UsernamePasswordCredentialsProvider( env.get( USER_NAME ).toString(), "" );
+                return new UsernamePasswordCredentialsProvider( env.get( GIT_ENV_KEY_USER_NAME ).toString(), "" );
             }
         }
         return CredentialsProvider.getDefault();

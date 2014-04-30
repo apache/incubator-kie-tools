@@ -16,6 +16,9 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static org.fest.assertions.api.Assertions.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -25,18 +28,13 @@ import java.util.Map;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 
-import static org.fest.assertions.api.Assertions.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
-
 public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
-
-    private static final JGitFileSystemProvider PROVIDER = JGitFileSystemProvider.getInstance();
 
     @Test
     public void test() throws IOException {
         final URI originRepo = URI.create( "git://encoding-origin-name" );
 
-        final JGitFileSystem origin = (JGitFileSystem) PROVIDER.newFileSystem( originRepo, new HashMap<String, Object>() {{
+        final JGitFileSystem origin = (JGitFileSystem) provider.newFileSystem( originRepo, new HashMap<String, Object>() {{
             put( "listMode", "ALL" );
         }} );
 
@@ -55,25 +53,25 @@ public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
         final URI newRepo = URI.create( "git://my-encoding-repo-name" );
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put( JGitFileSystemProvider.GIT_DEFAULT_REMOTE_NAME, "git://localhost:9418/encoding-origin-name" );
+            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:9418/encoding-origin-name" );
             put( "listMode", "ALL" );
         }};
 
-        final FileSystem fs = PROVIDER.newFileSystem( newRepo, env );
+        final FileSystem fs = provider.newFileSystem( newRepo, env );
 
         assertThat( fs ).isNotNull();
 
         fs.getPath( "file+name.txt" ).toUri();
 
-        PROVIDER.getPath( fs.getPath( "file+name.txt" ).toUri() );
+        provider.getPath( fs.getPath( "file+name.txt" ).toUri() );
 
-        assertThat( PROVIDER.getPath( fs.getPath( "file+name.txt" ).toUri() ) ).isEqualTo( fs.getPath( "file+name.txt" ) );
+        assertThat( provider.getPath( fs.getPath( "file+name.txt" ).toUri() ) ).isEqualTo( fs.getPath( "file+name.txt" ) );
 
-        assertThat( PROVIDER.getPath( fs.getPath( "file name.txt" ).toUri() ) ).isEqualTo( fs.getPath( "file name.txt" ) );
+        assertThat( provider.getPath( fs.getPath( "file name.txt" ).toUri() ) ).isEqualTo( fs.getPath( "file name.txt" ) );
 
         assertThat( fs.getPath( "file.txt" ).toUri() );
 
-        assertThat( PROVIDER.getPath( fs.getPath( "file.txt" ).toUri() ) ).isEqualTo( fs.getPath( "file.txt" ) );
+        assertThat( provider.getPath( fs.getPath( "file.txt" ).toUri() ) ).isEqualTo( fs.getPath( "file.txt" ) );
     }
 
 }

@@ -16,37 +16,29 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static java.util.Collections.*;
+import static org.fest.assertions.api.Assertions.*;
+
 import java.net.URI;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
-import static java.util.Collections.*;
-import static org.fest.assertions.api.Assertions.*;
-
-public class JGitFileSystemProviderUnsupportedOpTest {
-
-    private static final JGitFileSystemProvider PROVIDER = JGitFileSystemProvider.getInstance();
-    private static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
+public class JGitFileSystemProviderUnsupportedOpTest extends AbstractTestInfra {
 
     @Test
     public void testNewFileSystemUnsupportedOp() {
         final URI newRepo = URI.create("git://someunsup-repo-name");
 
-        final FileSystem fs = PROVIDER.newFileSystem(newRepo, EMPTY_ENV);
+        final FileSystem fs = provider.newFileSystem(newRepo, EMPTY_ENV);
 
         final Path path = JGitPathImpl.create( (JGitFileSystem) fs, "", "repo2-name", false );
 
         try {
-            PROVIDER.newFileSystem(path, EMPTY_ENV);
+            provider.newFileSystem(path, EMPTY_ENV);
             failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
         } catch (Exception e) {
         }
@@ -56,13 +48,13 @@ public class JGitFileSystemProviderUnsupportedOpTest {
     public void testNewFileChannelUnsupportedOp() {
         final URI newRepo = URI.create("git://newfcrepo-name");
 
-        PROVIDER.newFileSystem(newRepo, EMPTY_ENV);
+        provider.newFileSystem(newRepo, EMPTY_ENV);
 
-        final Path path = PROVIDER.getPath(URI.create("git://newfcrepo-name/file.txt"));
+        final Path path = provider.getPath(URI.create("git://newfcrepo-name/file.txt"));
 
         final Set<? extends OpenOption> options = emptySet();
         try {
-            PROVIDER.newFileChannel(path, options);
+            provider.newFileChannel(path, options);
             failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
         } catch (Exception e) {
         }
@@ -72,13 +64,13 @@ public class JGitFileSystemProviderUnsupportedOpTest {
     public void testNewAsynchronousFileChannelUnsupportedOp() {
         final URI newRepo = URI.create("git://newasyncrepo-name");
 
-        PROVIDER.newFileSystem(newRepo, EMPTY_ENV);
+        provider.newFileSystem(newRepo, EMPTY_ENV);
 
-        final Path path = PROVIDER.getPath(URI.create("git://newasyncrepo-name/file.txt"));
+        final Path path = provider.getPath(URI.create("git://newasyncrepo-name/file.txt"));
 
         final Set<? extends OpenOption> options = emptySet();
         try {
-            PROVIDER.newAsynchronousFileChannel(path, options, null);
+            provider.newAsynchronousFileChannel(path, options, null);
             failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
         } catch (Exception e) {
         }
@@ -88,13 +80,13 @@ public class JGitFileSystemProviderUnsupportedOpTest {
     public void testCreateSymbolicLinkUnsupportedOp() {
         final URI newRepo = URI.create("git://symbolic-repo-name");
 
-        PROVIDER.newFileSystem(newRepo, EMPTY_ENV);
+        provider.newFileSystem(newRepo, EMPTY_ENV);
 
-        final Path link = PROVIDER.getPath(URI.create("git://symbolic-repo-name/link.lnk"));
-        final Path path = PROVIDER.getPath(URI.create("git://symbolic-repo-name/file.txt"));
+        final Path link = provider.getPath(URI.create("git://symbolic-repo-name/link.lnk"));
+        final Path path = provider.getPath(URI.create("git://symbolic-repo-name/file.txt"));
 
         try {
-            PROVIDER.createSymbolicLink(link, path);
+            provider.createSymbolicLink(link, path);
             failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
         } catch (Exception e) {
         }
@@ -104,13 +96,13 @@ public class JGitFileSystemProviderUnsupportedOpTest {
     public void testCreateLinkUnsupportedOp() {
         final URI newRepo = URI.create("git://link-repo-name");
 
-        PROVIDER.newFileSystem(newRepo, EMPTY_ENV);
+        provider.newFileSystem(newRepo, EMPTY_ENV);
 
-        final Path link = PROVIDER.getPath(URI.create("git://link-repo-name/link.lnk"));
-        final Path path = PROVIDER.getPath(URI.create("git://link-repo-name/file.txt"));
+        final Path link = provider.getPath(URI.create("git://link-repo-name/link.lnk"));
+        final Path path = provider.getPath(URI.create("git://link-repo-name/file.txt"));
 
         try {
-            PROVIDER.createLink(link, path);
+            provider.createLink(link, path);
             failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
         } catch (Exception e) {
         }
@@ -120,12 +112,12 @@ public class JGitFileSystemProviderUnsupportedOpTest {
     public void testReadSymbolicLinkUnsupportedOp() {
         final URI newRepo = URI.create("git://read-link-repo-name");
 
-        PROVIDER.newFileSystem(newRepo, EMPTY_ENV);
+        provider.newFileSystem(newRepo, EMPTY_ENV);
 
-        final Path link = PROVIDER.getPath(URI.create("git://read-link-repo-name/link.lnk"));
+        final Path link = provider.getPath(URI.create("git://read-link-repo-name/link.lnk"));
 
         try {
-            PROVIDER.readSymbolicLink(link);
+            provider.readSymbolicLink(link);
             failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
         } catch (Exception e) {
         }

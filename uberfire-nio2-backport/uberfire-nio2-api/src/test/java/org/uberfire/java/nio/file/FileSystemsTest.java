@@ -39,7 +39,7 @@ public class FileSystemsTest {
     @Before
     @After
     public void cleanup() throws IOException {
-        FileUtils.deleteDirectory( new File( JGitFileSystemProvider.REPOSITORIES_ROOT_DIR ) );
+        FileUtils.deleteDirectory( new File( JGitFileSystemProvider.REPOSITORIES_CONTAINER_DIR ) );
     }
 
     @Test

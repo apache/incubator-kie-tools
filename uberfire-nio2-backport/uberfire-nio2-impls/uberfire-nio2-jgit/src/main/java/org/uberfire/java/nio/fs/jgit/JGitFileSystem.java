@@ -71,7 +71,7 @@ public class JGitFileSystem implements FileSystem,
     private final Git gitRepo;
     private final ListBranchCommand.ListMode listMode;
     private final String toStringContent;
-    private boolean isClose = false;
+    private boolean isClosed = false;
     private final FileStore fileStore;
     private final String name;
     private final CredentialsProvider credential;
@@ -138,7 +138,7 @@ public class JGitFileSystem implements FileSystem,
 
     @Override
     public boolean isOpen() {
-        return !isClose;
+        return !isClosed;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class JGitFileSystem implements FileSystem,
 
     @Override
     public Iterable<Path> getRootDirectories() {
-        checkClose();
+        checkClosed();
         return new Iterable<Path>() {
             @Override
             public Iterator<Path> iterator() {
@@ -192,7 +192,7 @@ public class JGitFileSystem implements FileSystem,
 
     @Override
     public Iterable<FileStore> getFileStores() {
-        checkClose();
+        checkClosed();
         return new Iterable<FileStore>() {
             @Override
             public Iterator<FileStore> iterator() {
@@ -226,7 +226,7 @@ public class JGitFileSystem implements FileSystem,
 
     @Override
     public Set<String> supportedFileAttributeViews() {
-        checkClose();
+        checkClosed();
         return SUPPORTED_ATTR_VIEWS;
     }
 
@@ -234,7 +234,7 @@ public class JGitFileSystem implements FileSystem,
     public Path getPath( final String first,
                          final String... more )
             throws InvalidPathException {
-        checkClose();
+        checkClosed();
         if ( first == null || first.trim().isEmpty() ) {
             return new JGitFSPath( this );
         }
@@ -258,7 +258,7 @@ public class JGitFileSystem implements FileSystem,
     @Override
     public PathMatcher getPathMatcher( final String syntaxAndPattern )
             throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
-        checkClose();
+        checkClosed();
         checkNotEmpty( "syntaxAndPattern", syntaxAndPattern );
         throw new UnsupportedOperationException();
     }
@@ -266,14 +266,14 @@ public class JGitFileSystem implements FileSystem,
     @Override
     public UserPrincipalLookupService getUserPrincipalLookupService()
             throws UnsupportedOperationException {
-        checkClose();
+        checkClosed();
         throw new UnsupportedOperationException();
     }
 
     @Override
     public WatchService newWatchService()
             throws UnsupportedOperationException, IOException {
-        checkClose();
+        checkClosed();
         final WatchService ws = new WatchService() {
             private boolean wsClose = false;
 
@@ -290,7 +290,7 @@ public class JGitFileSystem implements FileSystem,
 
             @Override
             public WatchKey take() throws ClosedWatchServiceException, InterruptedException {
-                while ( !wsClose && !isClose ) {
+                while ( !wsClose && !isClosed ) {
                     if ( events.get( this ).size() > 0 ) {
                         return events.get( this ).poll();
                     } else {
@@ -305,7 +305,7 @@ public class JGitFileSystem implements FileSystem,
 
             @Override
             public boolean isClose() {
-                return isClose;
+                return isClosed;
             }
 
             @Override
@@ -328,11 +328,11 @@ public class JGitFileSystem implements FileSystem,
 
     @Override
     public void close() throws IOException {
-        if ( isClose ) {
+        if ( isClosed ) {
             return;
         }
         gitRepo.getRepository().close();
-        isClose = true;
+        isClosed = true;
         try {
 
             for ( final WatchService ws : new ArrayList<WatchService>( watchServices ) ) {
@@ -351,8 +351,8 @@ public class JGitFileSystem implements FileSystem,
         }
     }
 
-    private void checkClose() throws IllegalStateException {
-        if ( isClose ) {
+    private void checkClosed() throws IllegalStateException {
+        if ( isClosed ) {
             throw new IllegalStateException( "FileSystem is close." );
         }
     }

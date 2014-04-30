@@ -1,15 +1,16 @@
 package org.uberfire.io;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -17,37 +18,39 @@ import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
+import org.uberfire.java.nio.file.api.FileSystemProviders;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
-import static org.junit.Assert.*;
+import com.google.common.collect.ImmutableMap;
 
 public class BatchTest {
 
-    final static IOService ioService = new IOServiceDotFileImpl();
-    private static File path = null;
+    IOService ioService;
+    private File path;
 
-    @BeforeClass
-    public static void setup() throws IOException {
+    @Before
+    public void setup() throws IOException {
+        ioService = new IOServiceDotFileImpl();
         path = CommonIOServiceDotFileTest.createTempDirectory();
         System.setProperty( "org.uberfire.nio.git.dir", path.getAbsolutePath() );
         System.out.println( ".niogit: " + path.getAbsolutePath() );
 
         final URI newRepo = URI.create( "git://amend-repo-test" );
 
-        ioService.newFileSystem( newRepo, new HashMap<String, Object>() );
+        ioService.newFileSystem( newRepo, ImmutableMap.<String, Object>of() );
 
         final URI newRepo2 = URI.create( "git://check-amend-repo-test" );
 
-        ioService.newFileSystem( newRepo2, new HashMap<String, Object>() {{
-            put( "init", "true" );
-        }} );
+        ioService.newFileSystem( newRepo2, ImmutableMap.of( "init", "true" ) );
     }
 
-    @AfterClass
-    @BeforeClass
-    public static void cleanup() {
-        if ( path != null ) {
-            FileUtils.deleteQuietly( path );
-        }
+    @After
+    public void cleanup() {
+        FileUtils.deleteQuietly( path );
+        JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider( URI.create( "git://whatever" ) );
+        gitFsProvider.shutdown();
+        FileUtils.deleteQuietly( gitFsProvider.getGitRepoContainerDir() );
+        gitFsProvider.rescanForExistingRepositories();
     }
 
     @Test
@@ -111,6 +114,12 @@ public class BatchTest {
 
     @Test
     public void testBatch2() throws IOException, InterruptedException {
+
+        // XXX: Workaround for UF-70: amend-test-repo has to contain something so it can receive the BATCH flag
+        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+        // END workaround
+
         final Path f1 = ioService.get( URI.create( "git://check-amend-repo-test/f1.txt" ) );
         final Path f2 = ioService.get( URI.create( "git://check-amend-repo-test/f2.txt" ) );
         final Path f3 = ioService.get( URI.create( "git://check-amend-repo-test/f3.txt" ) );

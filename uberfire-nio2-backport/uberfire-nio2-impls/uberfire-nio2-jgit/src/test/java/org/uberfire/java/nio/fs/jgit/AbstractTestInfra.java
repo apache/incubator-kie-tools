@@ -16,6 +16,8 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,17 +32,48 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.util.FileUtils;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public abstract class AbstractTestInfra {
 
     protected static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
 
     private static final List<File> tempFiles = new ArrayList<File>();
+
+    protected JGitFileSystemProvider provider;
+
+    @Before
+    public void createGitFsProvider() {
+        provider = new JGitFileSystemProvider();
+    }
+
+    @After
+    public void destroyGitFsProvider() throws IOException {
+        if ( provider == null ) {
+            // this would mean that setup failed. no need to clean up.
+            return;
+        }
+
+        provider.shutdown();
+
+        if ( provider.getGitRepoContainerDir() != null && provider.getGitRepoContainerDir().exists() ) {
+            FileUtils.delete( provider.getGitRepoContainerDir(), FileUtils.RECURSIVE );
+        }
+    }
+
+    @AfterClass
+    @BeforeClass
+    public static void cleanup() {
+        for ( final File tempFile : tempFiles ) {
+            try {
+                FileUtils.delete( tempFile, FileUtils.RECURSIVE );
+            } catch ( IOException e ) {
+            }
+        }
+    }
 
     protected Git setupGit() throws IOException, GitAPIException {
         return setupGit( createTempDirectory() );
@@ -72,27 +105,6 @@ public abstract class AbstractTestInfra {
         tempFiles.add( temp );
 
         return temp;
-    }
-
-    @AfterClass
-    @BeforeClass
-    public static void cleanup() {
-        for ( final File tempFile : tempFiles ) {
-            try {
-                FileUtils.delete( tempFile, FileUtils.RECURSIVE );
-            } catch ( IOException e ) {
-            }
-        }
-    }
-
-    @AfterClass
-    @BeforeClass
-    public static void cleanupGit() {
-        try {
-            FileUtils.delete( JGitFileSystemProvider.FILE_REPOSITORIES_ROOT, FileUtils.RECURSIVE );
-        } catch ( Exception ex ) {
-
-        }
     }
 
     public File tempFile( final String content ) throws IOException {

@@ -145,10 +145,12 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         lockService.lock();
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
-            final Path path = fileSystems.values().iterator().next().get( 0 ).getRootDirectories().iterator().next();
-            setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+            List<FileSystem> fileSystemsOfARandomProvider = fileSystems.values().iterator().next();
+            FileSystem firstFsOfARandomProvider = fileSystemsOfARandomProvider.get( 0 );
+            final Path firstRootOfARandomFs = firstFsOfARandomProvider.getRootDirectories().iterator().next();
+            setAttribute( firstRootOfARandomFs, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
             if ( options != null && options.length == 1 ) {
-                setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, options[ 0 ] );
+                setAttribute( firstRootOfARandomFs, FileSystemState.FILE_SYSTEM_STATE_ATTR, options[ 0 ] );
             }
         }
     }
@@ -158,8 +160,10 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         lockService.unlock();
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
-            final Path path = fileSystems.values().iterator().next().get( 0 ).getRootDirectories().iterator().next();
-            setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
+            List<FileSystem> fileSystemsOfARandomProvider = fileSystems.values().iterator().next();
+            FileSystem firstFsOfARandomProvider = fileSystemsOfARandomProvider.get( 0 );
+            final Path firstRootOfARandomFs = firstFsOfARandomProvider.getRootDirectories().iterator().next();
+            setAttribute( firstRootOfARandomFs, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
         }
     }
 
