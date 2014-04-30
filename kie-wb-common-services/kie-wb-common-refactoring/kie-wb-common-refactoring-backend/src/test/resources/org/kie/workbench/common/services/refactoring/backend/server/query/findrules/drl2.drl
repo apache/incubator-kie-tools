@@ -1,0 +1,7 @@
+import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Bank;
+
+rule "myRule2" extends "myRule"
+when
+  Bank( mortgage.applicant != null )
+then
+end;

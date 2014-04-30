@@ -1,0 +1,8 @@
+import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant;
+import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage;
+
+rule "myRule"
+when
+  Mortgage( applicant.age != null )
+then
+end;

@@ -23,6 +23,7 @@
     <module>kie-wb-common-data-modeller-core</module>
     <module>kie-wb-common-security</module>
     <module>kie-wb-common-rest</module>
+    <module>kie-wb-common-refactoring</module>
   </modules>
 
 </project>

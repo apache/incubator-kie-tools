@@ -1,0 +1,9 @@
+import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant;
+import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Mortgage;
+
+rule "myRule"
+when
+  $a : Applicant( age > 20 )
+  Mortgage( applicant == $a )
+then
+end;

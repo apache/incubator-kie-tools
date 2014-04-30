@@ -160,6 +160,7 @@
               </b:Controls>
             </b:ControlGroup>
           </b:ControlGroup>
+
         </b:Fieldset>
         <g:SimplePanel ui:field="errorPanel"/>
         <b:FormActions>

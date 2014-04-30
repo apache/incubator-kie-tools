@@ -1,0 +1,7 @@
+import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Bank;
+
+rule "myRule2"
+when
+  Bank( mortgage.applicant.age > 45 )
+then
+end;

@@ -1,0 +1,8 @@
+import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant;
+
+rule "myRule3"
+ruleflow-group "myRuleFlowGroup2"
+when
+  Applicant( age > 40 )
+then
+end;
