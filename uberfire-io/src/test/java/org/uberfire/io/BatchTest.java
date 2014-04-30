@@ -32,6 +32,9 @@ public class BatchTest {
     public void setup() throws IOException {
         ioService = new IOServiceDotFileImpl();
         path = CommonIOServiceDotFileTest.createTempDirectory();
+
+        // XXX this is shaky at best: FileSystemProviders bootstraps the JGit FS in a static initializer.
+        //     if anything has referenced it before now, setting this system property will have no effect.
         System.setProperty( "org.uberfire.nio.git.dir", path.getAbsolutePath() );
         System.out.println( ".niogit: " + path.getAbsolutePath() );
 

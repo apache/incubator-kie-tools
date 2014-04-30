@@ -16,6 +16,8 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static org.fest.assertions.api.Assertions.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -29,9 +31,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.*;
+import com.google.common.collect.ImmutableMap;
 
 public class NewProviderDefineDirTest {
 
@@ -71,9 +72,9 @@ public class NewProviderDefineDirTest {
     public void testUsingProvidedPath() throws IOException {
 
         final File dir = createTempDirectory();
-        System.setProperty("org.uberfire.nio.git.dir", dir.toString());
 
-        final JGitFileSystemProvider provider = new JGitFileSystemProvider();
+        Map<String, String> gitPrefs = ImmutableMap.of( "org.uberfire.nio.git.dir", dir.toString() );
+        final JGitFileSystemProvider provider = new JGitFileSystemProvider( gitPrefs );
 
         final URI newRepo = URI.create("git://repo-name");
 
@@ -86,8 +87,6 @@ public class NewProviderDefineDirTest {
         final String[] repos = new File(dir, ".niogit").list();
 
         assertThat(repos).isNotEmpty().contains("repo-name.git");
-
-        System.setProperty("org.uberfire.nio.git.dir", "");
     }
 
 }

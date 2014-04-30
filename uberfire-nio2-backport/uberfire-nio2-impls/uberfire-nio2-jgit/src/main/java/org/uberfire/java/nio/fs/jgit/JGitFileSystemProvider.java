@@ -315,8 +315,32 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
         }
     }
 
+    /**
+     * Creates a JGit filesystem provider which takes its configuration from system properties. In a normal production
+     * deployment of UberFire, this is the constructor that will be invoked by the ServiceLoader mechanism.
+     * For a list of properties that affect the configuration of JGitFileSystemProvider, see the DEBUG log output of
+     * this class during startup.
+     */
     public JGitFileSystemProvider() {
-        loadConfig( new ConfigProperties( System.getProperties() ) );
+        this( new ConfigProperties( System.getProperties() ) );
+    }
+
+    /**
+     * Creates a JGit filesystem provider which takes its configuration from the given map.
+     * For a list of properties that affect the configuration of JGitFileSystemProvider, see the DEBUG log output of
+     * this class during startup.
+     */
+    public JGitFileSystemProvider( Map<String, String> gitPrefs ) {
+        this( new ConfigProperties( gitPrefs ) );
+    }
+
+    /**
+     * Creates a JGit filesystem provider which takes its configuration from the given ConfigProperties instance.
+     * For a list of properties that affect the configuration of JGitFileSystemProvider, see the DEBUG log output of
+     * this class during startup.
+     */
+    public JGitFileSystemProvider( ConfigProperties gitPrefs ) {
+        loadConfig( gitPrefs );
         CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
 
         if ( daemonEnabled ) {
