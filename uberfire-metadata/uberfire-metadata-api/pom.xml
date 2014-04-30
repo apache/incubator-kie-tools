@@ -32,4 +32,11 @@
   <name>Uberfire Metadata API</name>
   <description>Uberfire Metadata API</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
+  </dependencies>
+
 </project>

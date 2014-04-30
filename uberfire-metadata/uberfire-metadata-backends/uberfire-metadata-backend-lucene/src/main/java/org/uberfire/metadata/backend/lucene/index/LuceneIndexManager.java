@@ -29,13 +29,15 @@ import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SearcherFactory;
 import org.uberfire.metadata.backend.lucene.model.KClusterImpl;
+import org.uberfire.metadata.engine.Index;
+import org.uberfire.metadata.engine.IndexManager;
 import org.uberfire.metadata.model.KCluster;
 import org.uberfire.metadata.model.KObjectKey;
 import org.uberfire.metadata.search.ClusterSegment;
 
 import static org.uberfire.commons.validation.Preconditions.*;
 
-public class LuceneIndexManager {
+public class LuceneIndexManager implements IndexManager {
 
     private final LuceneIndexFactory factory;
     private final Map<KCluster, LuceneIndex> indexes = new HashMap<KCluster, LuceneIndex>();
@@ -45,10 +47,12 @@ public class LuceneIndexManager {
         this.indexes.putAll( factory.getIndexes() );
     }
 
+    @Override
     public boolean contains( final KCluster cluster ) {
         return indexes.containsKey( cluster );
     }
 
+    @Override
     public LuceneIndex indexOf( final KObjectKey object ) {
         final KCluster kcluster = kcluster( object );
         final LuceneIndex currentSetup = indexes.get( kcluster );
@@ -61,10 +65,12 @@ public class LuceneIndexManager {
         return index;
     }
 
+    @Override
     public KCluster kcluster( final KObjectKey object ) {
         return new KClusterImpl( object.getClusterId() );
     }
 
+    @Override
     public void delete( KCluster cluster ) {
         final LuceneIndex setup = indexes.remove( cluster );
         factory.remove( cluster );
@@ -73,6 +79,7 @@ public class LuceneIndexManager {
         }
     }
 
+    @Override
     public void dispose() {
         for ( final LuceneIndex index : indexes.values() ) {
             index.dispose();
@@ -80,7 +87,8 @@ public class LuceneIndexManager {
         factory.dispose();
     }
 
-    public LuceneIndex get( KCluster cluster ) {
+    @Override
+    public Index get( KCluster cluster ) {
         return indexes.get( cluster );
     }
 

@@ -75,6 +75,7 @@ public class ApplicationScopedProducer {
 
         final IOService service = new IOServiceIndexedImpl( watchService,
                                                             config.getIndexEngine(),
+                                                            config.getIndexers(),
                                                             DublinCoreView.class,
                                                             VersionAttributeView.class );
 

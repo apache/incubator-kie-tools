@@ -40,6 +40,7 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.metadata.engine.Index;
 
 import static org.junit.Assert.*;
 import static org.uberfire.metadata.io.KObjectUtil.*;
@@ -187,13 +188,16 @@ public class BatchIndexTest {
             ioService().write( file, "plans!?" );
         }
 
-        new BatchIndex( config.getIndexEngine(), ioService(), DublinCoreView.class ).run( ioService().get( "git://temp-repo-test/" ), new Runnable() {
+        new BatchIndex( config.getIndexEngine(),
+                        config.getIndexers(),
+                        ioService(),
+                        DublinCoreView.class ).run( ioService().get( "git://temp-repo-test/" ), new Runnable() {
             @Override
             public void run() {
                 try {
-                    final LuceneIndex index = config.getIndexManager().get( toKCluster( ioService().get( "git://temp-repo-test/" ).getFileSystem() ) );
+                    final Index index = config.getIndexManager().get( toKCluster( ioService().get( "git://temp-repo-test/" ).getFileSystem() ) );
 
-                    final IndexSearcher searcher = index.nrtSearcher();
+                    final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
                     {
                         final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
 
@@ -224,7 +228,8 @@ public class BatchIndexTest {
                         assertEquals( 1, hits.length );
                     }
 
-                    index.nrtRelease( searcher );
+                    ( (LuceneIndex) index ).nrtRelease( searcher );
+
                 } catch ( Exception ex ) {
                     ex.printStackTrace();
                     fail();
