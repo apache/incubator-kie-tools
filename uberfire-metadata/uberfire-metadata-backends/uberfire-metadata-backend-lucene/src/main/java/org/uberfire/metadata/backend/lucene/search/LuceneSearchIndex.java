@@ -37,6 +37,7 @@ import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.Version;
 import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.metadata.backend.lucene.index.LuceneIndexManager;
+import org.uberfire.metadata.engine.IndexManager;
 import org.uberfire.metadata.model.KObject;
 import org.uberfire.metadata.search.ClusterSegment;
 import org.uberfire.metadata.search.DateRange;
@@ -60,7 +61,8 @@ public class LuceneSearchIndex implements SearchIndex {
 
     public LuceneSearchIndex( final LuceneIndexManager indexManager,
                               final Analyzer analyzer ) {
-        this.indexManager = checkNotNull( "lucene", indexManager );
+        this.indexManager = checkNotNull( "lucene",
+                                          indexManager );
         this.queryParser = new QueryParser( Version.LUCENE_40, FULL_TEXT_FIELD, analyzer );
         this.queryParser.setAllowLeadingWildcard( true );
     }

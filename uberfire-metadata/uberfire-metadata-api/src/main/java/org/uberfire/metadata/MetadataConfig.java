@@ -16,7 +16,12 @@
 
 package org.uberfire.metadata;
 
+import java.util.Set;
+
+import org.uberfire.metadata.engine.IndexManager;
+import org.uberfire.metadata.engine.Indexer;
 import org.uberfire.metadata.engine.MetaIndexEngine;
+import org.uberfire.metadata.engine.MetaModelStore;
 import org.uberfire.metadata.search.SearchIndex;
 
 public interface MetadataConfig {
@@ -24,6 +29,12 @@ public interface MetadataConfig {
     SearchIndex getSearchIndex();
 
     MetaIndexEngine getIndexEngine();
+
+    IndexManager getIndexManager();
+
+    MetaModelStore getMetaModelStore();
+
+    Set<Indexer> getIndexers();
 
     void dispose();
 

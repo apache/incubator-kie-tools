@@ -19,16 +19,15 @@ package org.uberfire.metadata.backend.lucene.index;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.IndexSearcher;
+import org.uberfire.metadata.engine.Index;
 import org.uberfire.metadata.model.KCluster;
 
 /**
  *
  */
-public interface LuceneIndex {
+public interface LuceneIndex extends Index {
 
     public static final String CUSTOM_FIELD_FILENAME = "filename";
-
-    KCluster getCluster();
 
     void indexDocument( final String id,
                         final Document doc );
@@ -46,11 +45,4 @@ public interface LuceneIndex {
 
     void nrtRelease( final IndexSearcher searcher );
 
-    void dispose();
-
-    boolean freshIndex();
-
-    void commit();
-
-    void delete();
 }

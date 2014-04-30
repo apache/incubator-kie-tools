@@ -16,7 +16,10 @@
 
 package org.uberfire.metadata.backend.lucene;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
@@ -29,6 +32,7 @@ import org.uberfire.metadata.backend.lucene.index.directory.DirectoryFactory;
 import org.uberfire.metadata.backend.lucene.index.directory.DirectoryType;
 import org.uberfire.metadata.backend.lucene.metamodel.InMemoryMetaModelStore;
 import org.uberfire.metadata.backend.lucene.metamodel.NullMetaModelStore;
+import org.uberfire.metadata.engine.Indexer;
 import org.uberfire.metadata.engine.MetaModelStore;
 
 import static org.apache.lucene.util.Version.*;
@@ -39,6 +43,8 @@ public final class LuceneConfigBuilder {
     private FieldFactory fieldFactory;
     private DirectoryType type;
     private Analyzer analyzer;
+    private Set<Indexer> indexers;
+    private Map<String, Analyzer> analyzers;
 
     public LuceneConfigBuilder() {
     }
@@ -55,6 +61,16 @@ public final class LuceneConfigBuilder {
 
     public LuceneConfigBuilder withDefaultFieldFactory() {
         this.fieldFactory = new SimpleFieldFactory();
+        return this;
+    }
+
+    public LuceneConfigBuilder usingIndexers( final Set<Indexer> indexers ) {
+        this.indexers = indexers;
+        return this;
+    }
+
+    public LuceneConfigBuilder usingAnalyzers( final Map<String, Analyzer> analyzers ) {
+        this.analyzers = analyzers;
         return this;
     }
 
@@ -92,21 +108,43 @@ public final class LuceneConfigBuilder {
         if ( type == null ) {
             withDefaultDirectory();
         }
+        if ( analyzers == null ) {
+            withDefaultAnalyzers();
+        }
         if ( analyzer == null ) {
             withDefaultAnalyzer();
         }
+        if ( indexers == null ) {
+            withDefaultIndexers();
+        }
 
-        return new LuceneConfig( metaModelStore, fieldFactory, new DirectoryFactory( type, analyzer ), analyzer );
+        return new LuceneConfig( metaModelStore,
+                                 fieldFactory,
+                                 new DirectoryFactory( type,
+                                                       analyzer ),
+                                 indexers,
+                                 analyzer );
     }
 
     public void withDefaultDirectory() {
         useNIODirectory();
     }
 
+    public void withDefaultAnalyzers() {
+        this.analyzers = new HashMap<String, Analyzer>();
+        analyzers.put( LuceneIndex.CUSTOM_FIELD_FILENAME,
+                       new FilenameAnalyzer( LUCENE_40 ) );
+    }
+
     public void withDefaultAnalyzer() {
-        this.analyzer = new PerFieldAnalyzerWrapper( new StandardAnalyzer( LUCENE_40 ), new HashMap<String, Analyzer>() {{
-            put( LuceneIndex.CUSTOM_FIELD_FILENAME, new FilenameAnalyzer( LUCENE_40 ) );
-        }} );
+        this.analyzer = new PerFieldAnalyzerWrapper( new StandardAnalyzer( LUCENE_40 ),
+                                                     new HashMap<String, Analyzer>() {{
+                                                         putAll( analyzers );
+                                                     }} );
+    }
+
+    public void withDefaultIndexers() {
+        this.indexers = Collections.emptySet();
     }
 
 }

@@ -33,6 +33,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexableField;
 import org.uberfire.metadata.backend.lucene.fields.FieldFactory;
+import org.uberfire.metadata.engine.Index;
 import org.uberfire.metadata.engine.MetaIndexEngine;
 import org.uberfire.metadata.engine.MetaModelStore;
 import org.uberfire.metadata.model.KCluster;
@@ -56,14 +57,17 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     public LuceneIndexEngine( final FieldFactory fieldFactory,
                               final MetaModelStore metaModelStore,
                               final LuceneIndexManager indexManager ) {
-        this.fieldFactory = checkNotNull( "fieldFactory", fieldFactory );
-        this.metaModelStore = checkNotNull( "metaModelStore", metaModelStore );
-        this.indexManager = checkNotNull( "indexManager", indexManager );
+        this.fieldFactory = checkNotNull( "fieldFactory",
+                                          fieldFactory );
+        this.metaModelStore = checkNotNull( "metaModelStore",
+                                            metaModelStore );
+        this.indexManager = checkNotNull( "indexManager",
+                                          indexManager );
     }
 
     @Override
     public boolean freshIndex( final KCluster cluster ) {
-        final LuceneIndex index = indexManager.get( cluster );
+        final Index index = indexManager.get( cluster );
         if ( index == null ) {
             return !batchMode.containsKey( cluster );
         }
@@ -89,7 +93,8 @@ public class LuceneIndexEngine implements MetaIndexEngine {
         updateMetaModel( object );
 
         final LuceneIndex index = indexManager.indexOf( object );
-        index.indexDocument( object.getId(), newDocument( object ) );
+        index.indexDocument( object.getId(),
+                             newDocument( object ) );
 
         commitIfNotBatchMode( index.getCluster() );
     }
@@ -97,11 +102,21 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     private Document newDocument( final KObject object ) {
         final Document doc = new Document();
 
-        doc.add( new StringField( "id", object.getId(), Field.Store.YES ) );
-        doc.add( new StringField( "type", object.getType().getName(), Field.Store.YES ) );
-        doc.add( new TextField( "key", object.getKey(), Field.Store.YES ) );
-        doc.add( new StringField( "cluster.id", object.getClusterId(), Field.Store.YES ) );
-        doc.add( new StringField( "segment.id", object.getSegmentId(), Field.Store.YES ) );
+        doc.add( new StringField( "id",
+                                  object.getId(),
+                                  Field.Store.YES ) );
+        doc.add( new StringField( "type",
+                                  object.getType().getName(),
+                                  Field.Store.YES ) );
+        doc.add( new TextField( "key",
+                                object.getKey(),
+                                Field.Store.YES ) );
+        doc.add( new StringField( "cluster.id",
+                                  object.getClusterId(),
+                                  Field.Store.YES ) );
+        doc.add( new StringField( "segment.id",
+                                  object.getSegmentId(),
+                                  Field.Store.YES ) );
 
         final StringBuilder allText = new StringBuilder( object.getKey() ).append( '\n' );
 
@@ -115,7 +130,9 @@ public class LuceneIndexEngine implements MetaIndexEngine {
             }
         }
 
-        doc.add( new TextField( FULL_TEXT_FIELD, allText.toString().toLowerCase(), Field.Store.NO ) );
+        doc.add( new TextField( FULL_TEXT_FIELD,
+                                allText.toString().toLowerCase(),
+                                Field.Store.NO ) );
 
         return doc;
     }
@@ -130,11 +147,15 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     @Override
     public void rename( final KObjectKey from,
                         final KObject to ) {
-        checkNotNull( "from", from );
-        checkNotNull( "to", to );
-        checkCondition( "renames are allowed only from same cluster", from.getClusterId().equals( to.getClusterId() ) );
+        checkNotNull( "from",
+                      from );
+        checkNotNull( "to",
+                      to );
+        checkCondition( "renames are allowed only from same cluster",
+                        from.getClusterId().equals( to.getClusterId() ) );
         final LuceneIndex index = indexManager.indexOf( from );
-        index.rename( from.getId(), newDocument( to ) );
+        index.rename( from.getId(),
+                      newDocument( to ) );
 
         commitIfNotBatchMode( index.getCluster() );
     }
@@ -174,7 +195,7 @@ public class LuceneIndexEngine implements MetaIndexEngine {
 
     @Override
     public void commit( final KCluster cluster ) {
-        final LuceneIndex index = indexManager.get( cluster );
+        final Index index = indexManager.get( cluster );
         if ( index == null ) {
             return;
         }
