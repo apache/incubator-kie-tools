@@ -168,7 +168,7 @@
 
       <p>
         <% if (request.getParameter("gwt.codesvr") != null) { %>
-          <input type="hidden" name="gwt.codesvr" value="<%= request.getParameter("gwt.codesvr") %>"/>
+          <input type="hidden" name="gwt.codesvr" value="<%= org.owasp.encoder.Encode.forHtmlAttribute(request.getParameter("gwt.codesvr")) %>"/>
         <% } %>
         <% if (request.getParameter( FormAuthenticationScheme.LOGIN_ERROR_QUERY_PARAM ) != null) { %>
           <span class="error">Login failed. Please try again.</span>
