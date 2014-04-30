@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.rule.client.editor;
 
-import com.google.gwt.regexp.shared.RegExp;
+import org.kie.workbench.common.widgets.client.util.Unicode;
 import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 /**
@@ -24,13 +24,27 @@ import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
 public class BindingTextBox
         extends AbstractRestrictedEntryTextBox {
 
-    // A valid binding
-    private static final RegExp VALID = RegExp.compile( "(^\\$?\\w*$)" );
-
     @Override
     public boolean isValidValue( String value,
                                  boolean isOnFocusLost ) {
-        return VALID.test( value );
+        //Unable to use a RegEx to validate value as GWT uses the JS RegEx object that is does not handle Unicode.
+        //Furthermore we're unable to use GWT's Character class emulation as this too doesn't support Unicode fully.
+        //See https://gwt.googlesource.com/gwt/+/2.5.1/user/super/com/google/gwt/emul/java/lang/Character.java
+        //See https://bugzilla.redhat.com/show_bug.cgi?id=1086462
+        final char[] chars = value.toCharArray();
+        for ( int i = 0; i < chars.length; i++ ) {
+            final char c = chars[ i ];
+            if ( i == 0 ) {
+                if ( c == '$' ) {
+                    continue;
+                } else if ( !Unicode.isLetter( c ) ) {
+                    return false;
+                }
+            } else if ( !( Character.isDigit( c ) || Unicode.isLetter( c ) ) ) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
