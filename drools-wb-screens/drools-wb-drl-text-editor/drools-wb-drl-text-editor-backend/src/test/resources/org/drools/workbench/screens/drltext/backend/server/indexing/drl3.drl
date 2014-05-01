@@ -1,0 +1,10 @@
+package org.drools.workbench.screens.drltext.backend.server.indexing.classes;
+
+rule "myRule1"
+ruleflow-group "myRuleFlowGroup"
+when
+  $a1 : Applicant( age == 10 )
+  $a2 : Applicant( age != 10 )
+then
+  insert(new Applicant());
+end;

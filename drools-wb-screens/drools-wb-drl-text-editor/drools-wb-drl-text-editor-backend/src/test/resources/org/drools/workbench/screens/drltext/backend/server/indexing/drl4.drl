@@ -1,0 +1,10 @@
+package org.drools.workbench.screens.drltext.backend.server.indexing.classes;
+
+rule "myRule2"
+ruleflow-group "myRuleFlowGroup"
+when
+  $a : Applicant()
+  Mortgage( applicant == $a, amount > 1000000 )
+then
+  insert(new Applicant());
+end;

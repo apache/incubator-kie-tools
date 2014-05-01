@@ -34,7 +34,6 @@ import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.metadata.io.IOSearchIndex;
 import org.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.security.auth.AuthenticationManager;
@@ -60,6 +59,8 @@ public class ApplicationScopedProducer {
     @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
 
+    @Inject
+    @Named("luceneConfig")
     private LuceneConfig config;
 
     private IOService ioService;
@@ -69,13 +70,9 @@ public class ApplicationScopedProducer {
     public void setup() {
         SecurityFactory.setAuthzManager( new RuntimeAuthorizationManager() );
 
-        this.config = new LuceneConfigBuilder().withInMemoryMetaModelStore()
-                .useDirectoryBasedIndex()
-                .useNIODirectory()
-                .build();
-
         final IOService service = new IOServiceIndexedImpl( watchService,
                                                             config.getIndexEngine(),
+                                                            config.getIndexers(),
                                                             DublinCoreView.class,
                                                             VersionAttributeView.class,
                                                             OtherMetaView.class );
@@ -83,13 +80,15 @@ public class ApplicationScopedProducer {
         if ( clusterServiceFactory == null ) {
             ioService = service;
         } else {
-            ioService = new IOServiceClusterImpl( service, clusterServiceFactory );
+            ioService = new IOServiceClusterImpl( service,
+                                                  clusterServiceFactory );
         }
 
         ioService.setAuthenticationManager( authenticationManager );
         ioService.setAuthorizationManager( authorizationManager );
 
-        ioSearchService = new IOSearchIndex( config.getSearchIndex(), ioService );
+        ioSearchService = new IOSearchIndex( config.getSearchIndex(),
+                                             ioService );
     }
 
     @PreDestroy

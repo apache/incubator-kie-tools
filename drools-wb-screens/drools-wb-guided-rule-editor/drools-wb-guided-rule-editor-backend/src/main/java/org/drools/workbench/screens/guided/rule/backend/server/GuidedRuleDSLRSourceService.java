@@ -82,8 +82,9 @@ public class GuidedRuleDSLRSourceService
     }
 
     @Override
-    public String getSource(Path path) {
-        return getSource(path, guidedRuleEditorService.load(Paths.convert(path)));
+    public String getSource( final Path path ) {
+        return getSource( path,
+                          guidedRuleEditorService.load( Paths.convert( path ) ) );
     }
 
     /**

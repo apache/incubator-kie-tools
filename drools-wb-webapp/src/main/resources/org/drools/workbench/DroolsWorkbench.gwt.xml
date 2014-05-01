@@ -22,11 +22,11 @@
   <inherits name='org.kie.workbench.common.screens.organizationalunit.manager.KieWorkbenchOrganizationalUnitManager'/>
   <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorClient"/>
 
-
   <!-- Common Services -->
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
   <inherits name='org.kie.workbench.common.services.security.KieWorkbenchCommonSecurity'/>
+  <inherits name='org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringAPI'/>
 
   <!-- Models for Drools Workbench Screens -->
   <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>

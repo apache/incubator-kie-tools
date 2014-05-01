@@ -49,8 +49,9 @@ public class GuidedScoreCardSourceService
     }
 
     @Override
-    public String getSource(Path path) {
-        return getSource(path, guidedScoreCardEditorService.load(Paths.convert(path)));
+    public String getSource( final Path path ) {
+        return getSource( path,
+                          guidedScoreCardEditorService.load( Paths.convert( path ) ) );
     }
 
 }

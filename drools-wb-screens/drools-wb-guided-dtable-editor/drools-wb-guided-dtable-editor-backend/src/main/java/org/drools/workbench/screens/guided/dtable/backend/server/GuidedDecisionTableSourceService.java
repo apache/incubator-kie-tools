@@ -49,8 +49,9 @@ public class GuidedDecisionTableSourceService
     }
 
     @Override
-    public String getSource(Path path) {
-        return getSource(path, guidedDecisionTableEditorService.load(Paths.convert(path)));
+    public String getSource( final Path path ) {
+        return getSource( path,
+                          guidedDecisionTableEditorService.load( Paths.convert( path ) ) );
     }
 
 }

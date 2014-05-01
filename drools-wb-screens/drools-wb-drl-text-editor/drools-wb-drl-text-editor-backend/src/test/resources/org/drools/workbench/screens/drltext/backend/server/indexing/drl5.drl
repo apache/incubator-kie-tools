@@ -1,0 +1,10 @@
+import org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant;
+
+rule "myRule"
+ruleflow-group "myRuleFlowGroup"
+agenda-group "myAgendaGroup"
+when
+  Applicant( age == 10 )
+then
+  insert(new Applicant());
+end;

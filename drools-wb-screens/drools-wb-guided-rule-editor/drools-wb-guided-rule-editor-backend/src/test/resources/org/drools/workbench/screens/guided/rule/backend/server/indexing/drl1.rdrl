@@ -1,0 +1,9 @@
+import org.drools.workbench.screens.guided.rule.backend.server.indexing.classes.Applicant;
+
+rule "myRule"
+ruleflow-group "myRuleFlowGroup"
+when
+  Applicant( age == 10 )
+then
+  insert(new Applicant());
+end;
