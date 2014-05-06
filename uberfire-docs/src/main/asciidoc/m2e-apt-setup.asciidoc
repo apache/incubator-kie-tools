@@ -1,0 +1,239 @@
+= Setting up Eclipse Annotation Processing for UberFire
+Jonathan Fuerth <jfuerth@redhat.com>
+:source-highlighter: highlightjs
+:stylesheet: asciidoctor.css
+:link-suffix: .asciidoc
+
+UberFire's Workbench module uses Java annotation processors to
+generate code which then feeds into the GWT compiler. For a good
+UberFire Dev Mode experience, you'll need incremental annotation
+processing in your IDE. In other words, you want the annotation
+processors to run continuously as you edit the files, or at least
+every time you save your work.
+
+If you are using a recent version of NetBeans (8 or newer) or IntelliJ
+IDEA, you can stop reading now. Your editor finds annotation
+processors among your project's Maven dependencies and enables them
+automatically.
+
+If you are using Eclipse, you will need to take two steps to get
+annotation processing to work:
+
+. install the http://marketplace.eclipse.org/content/m2e-apt[m2e-apt
+plugin]
+. enable annotation processing in your workspace preferences
+
+== Install m2e-apt
+
+. Select Help -> Eclipse Marketplace
+. Enter ``m2e-apt'' in the search box, and click ``Go''
+. The m2e-apt plugin should be the only search result. Click the
+  ``Install'' button on its entry. As of this writing, the current
+  version is 1.0.1.
+. On the next screen, ensure the checkbox for ``Maven Integration
+  for Eclipse JDT APT'' is selected
+. Click ``Confirm >''
+. Restart Eclipse when prompted.
+
+== Enable annotation processing
+
+By default, m2e-apt is disabled. Follow these steps to enable it:
+
+. Open Eclipse Workspace Preferences
+. Navigate to Maven -> Annotation Processing
+. Select the ``Automatically Configure JDT APT'' radio button
+. Click ``OK''
+
+After allowing m2e to update your project configurations, you should
+see that each project has a new source folder called
+`target/generated-sources/annotations`.
+
+== Ensure your pom.xml is set up compatibly
+
+Unlike NetBeans and IDEA, annoataion processors are not picked up from
+your pom's general `<dependencies>` section. You must specify
+libraries that contain annotation processors in one of two places: as
+dependencies of the `maven-compiler-plugin`, _or_ in the configuration
+of `maven-processor-plugin`.
+
+To configure the annotation processors as dependencies of
+`maven-compiler-plugin`, do this:
+
+[source,xml]
+------
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.uberfire</groupId>
+            <artifactId>uberfire-workbench-processors</artifactId>
+            <version>${uberfire.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+------
+
+Alternatively, to configure the processors using
+`maven-processor-plugin`, do this:
+
+[source,xml]
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.bsc.maven</groupId>
+        <artifactId>maven-processor-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>process-uberfire</id>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <addCompileSourceRoots>false</addCompileSourceRoots>
+              <appendSourceArtifacts>false</appendSourceArtifacts>
+              <processors>
+                <processor>org.uberfire.annotations.processors.WorkbenchSplashScreenProcessor</processor>
+                <processor>org.uberfire.annotations.processors.WorkbenchContextProcessor</processor>
+                <processor>org.uberfire.annotations.processors.WorkbenchScreenProcessor</processor>
+                <processor>org.uberfire.annotations.processors.WorkbenchEditorProcessor</processor>
+                <processor>org.uberfire.annotations.processors.WorkbenchPopupProcessor</processor>
+                <processor>org.uberfire.annotations.processors.PerspectiveProcessor</processor>
+              </processors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+------
+
+Because this method has an explicit list of processors to invoke, it
+requires more maintenance in the long term. When upgrading UberFire,
+you will have to check if the new version contains any new annotation
+processors and add them to your configuration.
+
+.It's one or the other, not both!
+TIP: if you add a `maven-processor-plugin` entry to your pom, m2e-apt
+will ignore the dependencies of `maven-compiler-plugin` when
+scanning for annotation processors.
+
+== Verify it is working
+
+To check if incremental annotation processing is working, add a class
+like this one to your project:
+
+[source,java]
+------
+package com.example.app.client;
+
+import javax.enterprise.context.Dependent;
+
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
+
+@Dependent
+@WorkbenchScreen(identifier = "TestScreen")
+public class TestScreen {
+
+  private final Label label = new Label();
+
+  @WorkbenchPartTitle
+  public String getTitle() {
+    return "Test";
+  }
+
+  @WorkbenchPartView
+  public IsWidget getView() {
+    return label;
+  }
+
+}
+------
+
+After saving this file, check that a corresponding source file has
+been generated under
+`target/generated-sources/annoatations/__packagename__/TestScreenActivity.java`. If
+the file is not there, ensure you have followed all of the above
+instructions in this guide.
+
+Next, test that incremental processing is working: a change to
+`TestScreen.java` should automatically trigger a new round of
+annotation processing. Change the name of the `TestScreen.getTitle()`
+method to something else, say, `getTitle2()`. Save TestScreen.java
+and switch back to the generated `TestScreenActivity.java` buffer. It
+should already have updated its own `getTitle()` method to call
+`realPresenter.getTitle2()`.
+
+== Known Issues
+
+=== Snapshot updates
+
+If you are working with an UberFire SNAPSHOT dependency, JDT
+annotation processing will stop working every time the snapshots
+update (typically once a day). To fix this, follow these steps:
+
+. Select all project nodes in Eclipse's Project Explorer
+. Press `Alt F5` (or right click -> Maven -> Update Project
+  Configuration...).
+
+If annotation processing remains inactive, or if it is active but you
+are getting unusual error markers on your UberFire Workbench
+annotations, clean all projects.
+
+If, after doing a Maven config update and cleaning the workspace,
+annotation processing still doesn't work, restart Eclipse.
+
+=== When UberFire's sources exist in the workspace
+
+The annotation processing support built into Eclipse JDT has trouble
+accessing classes and resources that are defined in projects in the
+workspace. To work around this issue, make sure the
+`uberfire-workbench-processors` module is not part of any workspace
+where you are developing an UberFire application. All other UberFire
+framework modules can safely coexist in the workspace with an UberFire
+application.
+
+=== ``Rogue'' annotation processors
+
+Eclipse JDT has trouble with annotation processors that are not ``well
+behaved.'' For example, Eclipse goes into an infinite build loop when
+an annotation processor throws an exception from its
+constructor. There are many other corner cases that cause similarly
+disastrous outcomes.
+
+To find out which annotation processor is responsible, look in
+Eclipse's Error Log view (Window -> Show View -> Other... -> General
+-> Error Log). If the issue is caused by an UberFire annotation
+processor, please report it, along with the full stack trace from the
+error view, in https://issues.jboss.org/browse/UF[our bug tracker].

@@ -526,16 +526,6 @@ First up, we'll define some settings for `maven-compiler-plugin`:
             <artifactId>uberfire-workbench-processors</artifactId>
             <version>${uberfire.version}</version>
           </dependency>
-          <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-client-api</artifactId>
-            <version>${uberfire.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-security-api</artifactId>
-            <version>${uberfire.version}</version>
-          </dependency>
         </dependencies>
       </plugin>
 ------
@@ -544,11 +534,14 @@ The `source` and `target` options set the compiler for Java 1.6
 compliance. This is the version of the Java language that GWT 2.5.x
 supports.
 
-The dependencies on `uberfire-workbench-processors` and its
-requirements is the recommended way of hinting Eclipse's Maven
-integration that this module contains Java Annotation Processors that
-should be executed whenever an incremental build is performed. More on
-this later (TODO: link to m2e setup).
+The dependencies on the annotation processor modules activate these
+annotation processors during compilation. Although these processors
+would also be active during Maven builds if placed the main
+dependencies section of the pom, they must be specified as compiler
+dependencies to be recognized by the m2e annotation processing
+configurator in eclipse. Remember, if you are using Eclipse, you have
+to link:m2e-apt-setup{link-suffix}[set up the m2e-apt annotation
+processing configurator] before developing an UberFire application.
 
 Now we will use `build-helper-maven-plugin` to add the
 `generated-sources` directory as a source directory within our
