@@ -36,7 +36,7 @@ public interface WorkbenchPanelPresenter {
     public void addPart( final WorkbenchPartPresenter.View view,
                          final String contextId );
 
-    public void removePart( final PartDefinition part );
+    public boolean removePart( final PartDefinition part );
 
     public void addPanel( final PanelDefinition panel,
                           final WorkbenchPanelView view,
@@ -50,7 +50,7 @@ public interface WorkbenchPanelPresenter {
 
     public void setFocus( final boolean hasFocus );
 
-    public void selectPart( final PartDefinition part );
+    public boolean selectPart( final PartDefinition part );
 
     public void onPartFocus( final PartDefinition part );
 

@@ -41,10 +41,10 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     private final Map<PartDefinition, ContextActivity> partMap = new HashMap<PartDefinition, ContextActivity>();
 
     protected AbstractMultiPartWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
-                                                    final ActivityManager activityManager,
-                                                    final PanelManager panelManager,
-                                                    final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                                    final Event<MinimizePlaceEvent> minimizePanelEvent ) {
+                                                        final ActivityManager activityManager,
+                                                        final PanelManager panelManager,
+                                                        final Event<MaximizePlaceEvent> maximizePanelEvent,
+                                                        final Event<MinimizePlaceEvent> minimizePanelEvent ) {
         super( view, panelManager, maximizePanelEvent, minimizePanelEvent );
         this.activityManager = activityManager;
     }
@@ -98,9 +98,10 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     }
 
     @Override
-    public void removePart( final PartDefinition part ) {
-        super.removePart( part );
+    public boolean removePart( final PartDefinition part ) {
+        boolean removed = super.removePart( part );
         partMap.remove( partMap );
+        return removed;
     }
 
     public ContextActivity resolveContext( final PartDefinition part ) {

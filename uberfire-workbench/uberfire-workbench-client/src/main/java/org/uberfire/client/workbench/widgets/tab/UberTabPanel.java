@@ -1,8 +1,18 @@
 package org.uberfire.client.workbench.widgets.tab;
 
+import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.panels.MultiPartWidget;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.PartDefinition;
 
 import com.github.gwtbootstrap.client.ui.DropdownTab;
 import com.github.gwtbootstrap.client.ui.Tab;
@@ -24,20 +34,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.panels.MultiPartWidget;
-import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.PartDefinition;
-
-import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
 
 public class UberTabPanel
-        extends Composite
-        implements MultiPartWidget,
-                   ClickHandler {
+extends Composite
+implements MultiPartWidget,
+ClickHandler {
 
     private static final int MARGIN = 20;
 
@@ -55,6 +56,7 @@ public class UberTabPanel
     private boolean hasFocus = false;
     private Command addOnFocusHandler;
 
+    @Override
     public void clear() {
         tabPanel.clear();
         partTabIndex.clear();
@@ -64,53 +66,61 @@ public class UberTabPanel
         alreadyScheduled = false;
     }
 
-    public void selectPart( final PartDefinition id ) {
+    @Override
+    public boolean selectPart( final PartDefinition id ) {
         final TabLink tab = partTabIndex.get( id );
         if ( tab != null ) {
             int index = getTabs().getWidgetIndex( tab );
             tabPanel.selectTab( index );
+            return true;
         }
+        return false;
     }
 
-    public void remove( final PartDefinition id ) {
+    @Override
+    public boolean remove( final PartDefinition id ) {
         final TabLink tab = partTabIndex.get( id );
-        if ( tab != null ) {
-            int index = getTabs().getWidgetIndex( tab );
-            if ( index < 0 ) {
-                final DropdownTab _dropdown = (DropdownTab) getLastTab();
-                for ( int i = 0; i < _dropdown.getTabList().size(); i++ ) {
-                    final TabLink activeTab = _dropdown.getTabList().get( i ).asTabLink();
-                    if ( activeTab.equals( tab ) ) {
-                        index = i;
-                        break;
-                    }
-                }
-                final DropdownTab cloneDropdown = cloneDropdown( _dropdown, index );
-                if ( cloneDropdown.getTabList().size() > 0 ) {
-                    tabPanel.add( cloneDropdown );
-                }
-                tabPanel.remove( _dropdown );
-            } else {
-                final boolean wasActive = tab.isActive();
-
-                tabPanel.remove( tab );
-
-                if ( wasActive ) {
-                    try {
-                        tabPanel.selectTab( index <= 0 ? 0 : index - 1 );
-                    } catch ( final IndexOutOfBoundsException ex ) {
-                        //no more tabs, it's ok
-                    }
+        if ( tab == null ) {
+            return false;
+        }
+        int index = getTabs().getWidgetIndex( tab );
+        if ( index < 0 ) {
+            final DropdownTab _dropdown = (DropdownTab) getLastTab();
+            for ( int i = 0; i < _dropdown.getTabList().size(); i++ ) {
+                final TabLink activeTab = _dropdown.getTabList().get( i ).asTabLink();
+                if ( activeTab.equals( tab ) ) {
+                    index = i;
+                    break;
                 }
             }
+            final DropdownTab cloneDropdown = cloneDropdown( _dropdown, index );
+            if ( cloneDropdown.getTabList().size() > 0 ) {
+                tabPanel.add( cloneDropdown );
+            }
+            tabPanel.remove( _dropdown );
+        } else {
+            final boolean wasActive = tab.isActive();
 
-            tabIndex.remove( tabInvertedIndex.remove( tab ) );
-            partTabIndex.remove( id );
+            tabPanel.remove( tab );
 
-            scheduleResize();
+            if ( wasActive ) {
+                try {
+                    tabPanel.selectTab( index <= 0 ? 0 : index - 1 );
+                } catch ( final IndexOutOfBoundsException ex ) {
+                    //no more tabs, it's ok
+                }
+            }
         }
+
+        tabIndex.remove( tabInvertedIndex.remove( tab ) );
+        partTabIndex.remove( id );
+
+        scheduleResize();
+
+        return true;
     }
 
+    @Override
     public void changeTitle( final PartDefinition id,
                              final String title,
                              final IsWidget titleDecoration ) {
@@ -165,10 +175,12 @@ public class UberTabPanel
         initWidget( tabPanel );
     }
 
+    @Override
     public void setPresenter( final WorkbenchPanelPresenter presenter ) {
         this.presenter = presenter;
     }
 
+    @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
 
         if ( !tabIndex.containsKey( view ) ) {
@@ -296,9 +308,9 @@ public class UberTabPanel
         tabInvertedIndex.remove( tabLink );
 
         return createTab( view,
-                          tabLink.isActive(),
-                          content.getOffsetWidth(),
-                          content.getOffsetHeight() );
+                tabLink.isActive(),
+                content.getOffsetWidth(),
+                content.getOffsetHeight() );
     }
 
     DropdownTab cloneDropdown( final DropdownTab original,
@@ -495,10 +507,12 @@ public class UberTabPanel
         return tab;
     }
 
+    @Override
     public void setDndManager( final WorkbenchDragAndDropManager dndManager ) {
         this.dndManager = dndManager;
     }
 
+    @Override
     public void setFocus( final boolean hasFocus ) {
         this.hasFocus = hasFocus;
         if ( hasFocus ) {
@@ -533,6 +547,7 @@ public class UberTabPanel
         }
     }
 
+    @Override
     public void addOnFocusHandler( final Command command ) {
         this.addOnFocusHandler = command;
     }

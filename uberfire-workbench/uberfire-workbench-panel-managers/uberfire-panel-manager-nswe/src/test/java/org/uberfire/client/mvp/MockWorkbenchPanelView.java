@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
@@ -25,12 +23,15 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * A mock Workbench Panel view.
  */
 public class MockWorkbenchPanelView
-        implements
-        WorkbenchPanelView<WorkbenchPanelPresenter> {
+implements
+WorkbenchPanelView<WorkbenchPanelPresenter> {
 
     @Override
     public void onResize() {
@@ -71,11 +72,13 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public void selectPart( final PartDefinition part ) {
+    public boolean selectPart( final PartDefinition part ) {
+        return false;
     }
 
     @Override
-    public void removePart( final PartDefinition part ) {
+    public boolean removePart( final PartDefinition part ) {
+        return false;
     }
 
     @Override

@@ -2,10 +2,6 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.SplitPanel;
@@ -16,9 +12,14 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
+
 public abstract class BaseWorkbenchPanelView<P extends WorkbenchPanelPresenter>
-        extends ResizeComposite
-        implements WorkbenchPanelView<P> {
+extends ResizeComposite
+implements WorkbenchPanelView<P> {
 
     @Inject
     private PanelSupport panelSupport;
@@ -34,6 +35,7 @@ public abstract class BaseWorkbenchPanelView<P extends WorkbenchPanelPresenter>
 
     protected P presenter;
 
+    @Override
     public void addPanel( final PanelDefinition panel,
                           final WorkbenchPanelView view,
                           final Position position ) {

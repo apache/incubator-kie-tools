@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.workbench.widgets.listbar;
 
+import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
+import static com.google.gwt.dom.client.Style.Display.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -22,6 +25,24 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.client.UberFirePreferences;
+import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.panels.MultiPartWidget;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.dnd.DragArea;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.mvp.Command;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
+import org.uberfire.workbench.model.menu.MenuCustom;
+import org.uberfire.workbench.model.menu.MenuGroup;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.MenuItemCommand;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonGroup;
@@ -52,36 +73,15 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.client.UberFirePreferences;
-import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.panels.MultiPartWidget;
-import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.dnd.DragArea;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.commons.data.Pair;
-import org.uberfire.mvp.Command;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuCustom;
-import org.uberfire.workbench.model.menu.MenuGroup;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuItemCommand;
-
-import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
-import static com.google.gwt.dom.client.Style.Display.*;
-
 /**
  * The Menu Bar widget
  */
 public class ListBarWidget
-        extends Composite implements MultiPartWidget {
+extends Composite implements MultiPartWidget {
 
     interface ListBarWidgetBinder
-            extends
-            UiBinder<FocusPanel, ListBarWidget> {
+    extends
+    UiBinder<FocusPanel, ListBarWidget> {
 
     }
 
@@ -293,15 +293,15 @@ public class ListBarWidget
     }
 
     @Override
-    public void selectPart( final PartDefinition part ) {
+    public boolean selectPart( final PartDefinition part ) {
         if ( !parts.contains( part ) ) {
             //not necessary to check if current is part
-            return;
+            return false;
         }
 
         if ( currentPart != null ) {
             if ( currentPart.getK1().equals( part ) ) {
-                return;
+                return true;
             }
             parts.add( currentPart.getK1() );
             currentPart.getK2().getElement().getStyle().setDisplay( NONE );
@@ -318,6 +318,8 @@ public class ListBarWidget
         scheduleResize();
 
         SelectionEvent.fire( ListBarWidget.this, part );
+
+        return true;
     }
 
     private void setupDropdown() {
@@ -349,7 +351,7 @@ public class ListBarWidget
     }
 
     @Override
-    public void remove( final PartDefinition part ) {
+    public boolean remove( final PartDefinition part ) {
         if ( currentPart.getK1().equals( part ) ) {
             if ( parts.size() > 0 ) {
                 presenter.selectPart( parts.iterator().next() );
@@ -358,12 +360,14 @@ public class ListBarWidget
             }
         }
 
-        parts.remove( part );
+        boolean removed = parts.remove( part );
         partContentView.remove( part );
         partTitle.remove( part );
         setupDropdown();
 
         scheduleResize();
+
+        return removed;
     }
 
     @Override
@@ -558,8 +562,8 @@ public class ListBarWidget
                             @Override
                             public void onClick( final ClickEvent event ) {
                                 selectPart( part );
-//                                presenter.selectPart( part );
-//                                SelectionEvent.fire( ListBarWidget.this, part );
+                                //                                presenter.selectPart( part );
+                                //                                SelectionEvent.fire( ListBarWidget.this, part );
                             }
                         } );
                     }} );

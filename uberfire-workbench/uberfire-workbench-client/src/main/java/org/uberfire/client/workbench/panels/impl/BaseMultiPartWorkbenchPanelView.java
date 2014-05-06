@@ -2,9 +2,6 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.annotation.PostConstruct;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
@@ -13,8 +10,12 @@ import org.uberfire.client.workbench.widgets.panel.ContextPanel;
 import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
 import org.uberfire.workbench.model.PartDefinition;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
 public abstract class BaseMultiPartWorkbenchPanelView<P extends AbstractMultiPartWorkbenchPanelPresenter>
-        extends BaseWorkbenchPanelView<P> {
+extends BaseWorkbenchPanelView<P> {
 
     protected RequiresResizeFlowPanel container = new RequiresResizeFlowPanel();
     protected ContextPanel contextWidget = new ContextPanel();
@@ -58,9 +59,9 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends AbstractMultiPar
     }
 
     @Override
-    public void selectPart( final PartDefinition part ) {
+    public boolean selectPart( final PartDefinition part ) {
         setupContext( part );
-        widget.selectPart( part );
+        return widget.selectPart( part );
     }
 
     private void setupContext( final PartDefinition part ) {
@@ -80,11 +81,14 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends AbstractMultiPar
     }
 
     @Override
-    public void removePart( final PartDefinition part ) {
-        widget.remove( part );
-        if ( widget.getPartsSize() == 0 ) {
-            setupContext( null );
+    public boolean removePart( final PartDefinition part ) {
+        if ( widget.remove( part ) ) {
+            if ( widget.getPartsSize() == 0 ) {
+                setupContext( null );
+            }
+            return true;
         }
+        return false;
     }
 
     @Override

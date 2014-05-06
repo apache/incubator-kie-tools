@@ -18,6 +18,14 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
+import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.PartDefinition;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -26,12 +34,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.PartDefinition;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -39,7 +41,7 @@ import org.uberfire.workbench.model.PartDefinition;
 @Dependent
 @Named("StaticWorkbenchPanelView")
 public class StaticWorkbenchPanelView
-        extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
+extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
 
     @Inject
     PlaceManager placeManager;
@@ -97,7 +99,7 @@ public class StaticWorkbenchPanelView
     }
 
     PlaceRequest getPlaceOfPartView() {
-        return panel.getPartView().getPresenter().getDefinition().getPlace();
+        return getCurrentPartDefinition().getPlace();
     }
 
     @Override
@@ -107,13 +109,23 @@ public class StaticWorkbenchPanelView
     }
 
     @Override
-    public void selectPart( final PartDefinition part ) {
-        scheduleResize();
+    public boolean selectPart( final PartDefinition part ) {
+        PartDefinition currentPartDefinition = getCurrentPartDefinition();
+        if ( currentPartDefinition != null && currentPartDefinition.equals( part ) ) {
+            scheduleResize();
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void removePart( final PartDefinition part ) {
-        panel.clear();
+    public boolean removePart( final PartDefinition part ) {
+        PartDefinition currentPartDefinition = getCurrentPartDefinition();
+        if ( currentPartDefinition != null && currentPartDefinition.equals( part ) ) {
+            panel.clear();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -145,5 +157,19 @@ public class StaticWorkbenchPanelView
 
     void resizeSuper() {
         super.onResize();
+    }
+
+    private PartDefinition getCurrentPartDefinition() {
+        View partView = panel.getPartView();
+        if ( partView == null ) {
+            return null;
+        }
+
+        WorkbenchPartPresenter presenter = partView.getPresenter();
+        if ( presenter == null ) {
+            return null;
+        }
+
+        return presenter.getDefinition();
     }
 }

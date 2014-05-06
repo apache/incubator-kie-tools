@@ -20,11 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
@@ -32,13 +27,19 @@ import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
 @Named("SimpleWorkbenchPanelView")
 public class SimpleWorkbenchPanelView
-        extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
+extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
     @Inject
     protected ListBarWidget listBar;
@@ -113,13 +114,13 @@ public class SimpleWorkbenchPanelView
     }
 
     @Override
-    public void selectPart( final PartDefinition part ) {
-        listBar.selectPart( part );
+    public boolean selectPart( final PartDefinition part ) {
+        return listBar.selectPart( part );
     }
 
     @Override
-    public void removePart( final PartDefinition part ) {
-        listBar.clear();
+    public boolean removePart( final PartDefinition part ) {
+        return listBar.remove( part );
     }
 
     @Override

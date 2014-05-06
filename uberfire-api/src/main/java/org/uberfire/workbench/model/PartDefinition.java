@@ -18,7 +18,7 @@ package org.uberfire.workbench.model;
 import org.uberfire.mvp.PlaceRequest;
 
 /**
- * A Part in the Workbench. Parts are added to Panels.
+ * A Part in the Workbench. Parts are added to Panels. See the documentation of WorkbenchPanelPresenter for details.
  */
 public interface PartDefinition {
 

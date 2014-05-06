@@ -94,8 +94,8 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     }
 
     @Override
-    public void removePart( final PartDefinition part ) {
-        view.removePart( part );
+    public boolean removePart( final PartDefinition part ) {
+        return view.removePart( part );
     }
 
     @Override
@@ -124,11 +124,12 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     }
 
     @Override
-    public void selectPart( final PartDefinition part ) {
+    public boolean selectPart( final PartDefinition part ) {
         if ( !contains( part ) ) {
-            return;
+            return false;
         }
         view.selectPart( part );
+        return true;
     }
 
     private boolean contains( final PartDefinition part ) {

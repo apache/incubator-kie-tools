@@ -1,11 +1,12 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.SimplePanel;
 import org.uberfire.workbench.model.PartDefinition;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.ui.IsWidget;
 
 public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPanelPresenter> extends BaseWorkbenchTemplatePanelView<P> {
 
@@ -39,13 +40,21 @@ public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPane
     }
 
     @Override
-    public void selectPart( final PartDefinition part ) {
-        scheduleResize();
+    public boolean selectPart( final PartDefinition part ) {
+        if ( part.equals( panel.getPartDefinition() ) ) {
+            scheduleResize();
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void removePart( final PartDefinition part ) {
-        panel.clear();
+    public boolean removePart( final PartDefinition part ) {
+        if ( part.equals( panel.getPartDefinition() ) ) {
+            panel.clear();
+            return true;
+        }
+        return false;
     }
 
     @Override
