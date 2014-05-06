@@ -12,16 +12,18 @@ import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 
 @Dependent
-public class TemplateWorkbenchPanelPresenter extends AbstractTemplateWorkbenchPanelPresenter<TemplateWorkbenchPanelView> {
+public class TemplateWorkbenchPanelPresenter extends AbstractTemplateWorkbenchPanelPresenter<TemplateWorkbenchPanelPresenter> {
 
     @Inject
     public TemplateWorkbenchPanelPresenter( @Named("TemplateWorkbenchPanelView") final TemplateWorkbenchPanelView view,
                                             final PanelManager panelManager,
                                             final Event<MaximizePlaceEvent> maximizePanelEvent,
                                             final Event<MinimizePlaceEvent> minimizePanelEvent ) {
-        this.view = view;
-        this.panelManager = panelManager;
-        this.maximizePanelEvent = maximizePanelEvent;
-        this.minimizePanelEvent = minimizePanelEvent;
+        super( view, panelManager, maximizePanelEvent, minimizePanelEvent );
+    }
+
+    @Override
+    protected TemplateWorkbenchPanelPresenter asPresenterType() {
+        return this;
     }
 }

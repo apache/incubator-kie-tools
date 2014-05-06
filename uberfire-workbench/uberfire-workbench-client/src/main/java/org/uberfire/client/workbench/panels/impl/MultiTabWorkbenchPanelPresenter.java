@@ -25,11 +25,8 @@ import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 
-/**
- * A Workbench panel that can contain WorkbenchParts.
- */
 @Dependent
-public class MultiTabWorkbenchPanelPresenter extends BaseMultiPartWorkbenchPanelPresenter {
+public class MultiTabWorkbenchPanelPresenter extends AbstractMultiPartWorkbenchPanelPresenter<MultiTabWorkbenchPanelPresenter> {
 
     @Inject
     public MultiTabWorkbenchPanelPresenter( @Named("MultiTabWorkbenchPanelView") final MultiTabWorkbenchPanelView view,
@@ -37,11 +34,11 @@ public class MultiTabWorkbenchPanelPresenter extends BaseMultiPartWorkbenchPanel
                                             final PanelManager panelManager,
                                             final Event<MaximizePlaceEvent> maximizePanelEvent,
                                             final Event<MinimizePlaceEvent> minimizePanelEvent ) {
-        this.view = view;
-        this.activityManager = activityManager;
-        this.panelManager = panelManager;
-        this.maximizePanelEvent = maximizePanelEvent;
-        this.minimizePanelEvent = minimizePanelEvent;
+        super( view, activityManager, panelManager, maximizePanelEvent, minimizePanelEvent );
     }
 
+    @Override
+    protected MultiTabWorkbenchPanelPresenter asPresenterType() {
+        return this;
+    }
 }

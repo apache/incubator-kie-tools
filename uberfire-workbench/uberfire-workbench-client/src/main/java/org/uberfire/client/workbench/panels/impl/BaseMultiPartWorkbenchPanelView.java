@@ -13,7 +13,7 @@ import org.uberfire.client.workbench.widgets.panel.ContextPanel;
 import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
 import org.uberfire.workbench.model.PartDefinition;
 
-public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWorkbenchPanelPresenter>
+public abstract class BaseMultiPartWorkbenchPanelView<P extends AbstractMultiPartWorkbenchPanelPresenter>
         extends BaseWorkbenchPanelView<P> {
 
     protected RequiresResizeFlowPanel container = new RequiresResizeFlowPanel();
