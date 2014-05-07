@@ -87,6 +87,12 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
     </dependency>
+
+    <!-- async processing using jbpm executor -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-executor</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

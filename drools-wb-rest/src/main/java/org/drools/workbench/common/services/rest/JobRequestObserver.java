@@ -20,6 +20,18 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.drools.workbench.common.services.rest.cmd.AddRepositoryToOrgUnitCmd;
+import org.drools.workbench.common.services.rest.cmd.CompileProjectCmd;
+import org.drools.workbench.common.services.rest.cmd.CreateOrCloneRepositoryCmd;
+import org.drools.workbench.common.services.rest.cmd.CreateOrgUnitCmd;
+import org.drools.workbench.common.services.rest.cmd.CreateProjectCmd;
+import org.drools.workbench.common.services.rest.cmd.DeployProjectCmd;
+import org.drools.workbench.common.services.rest.cmd.InstallProjectCmd;
+import org.drools.workbench.common.services.rest.cmd.RemoveRepositoryCmd;
+import org.drools.workbench.common.services.rest.cmd.RemoveRepositoryFromOrgUnitCmd;
+import org.drools.workbench.common.services.rest.cmd.TestProjectCmd;
+import org.kie.internal.executor.api.CommandContext;
+import org.kie.internal.executor.api.ExecutorService;
 import org.kie.workbench.common.services.shared.rest.AddRepositoryToOrganizationalUnitRequest;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
 import org.kie.workbench.common.services.shared.rest.CreateOrCloneRepositoryRequest;
@@ -36,6 +48,8 @@ import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.workbench.common.services.rest.cmd.AbstractJobCommand.*;
+
 /**
  * Utility class observing requests for various functions of the REST service
  */
@@ -45,13 +59,13 @@ public class JobRequestObserver {
     private static final Logger logger = LoggerFactory.getLogger( JobRequestObserver.class );
 
     @Inject
-    protected JobRequestHelper helper;
-
-    @Inject
     protected JobRequestApprovalService approvalService;
 
     @Inject
     private Event<JobResult> jobResultEvent;
+
+    @Inject
+    private ExecutorService executorService;
 
     public void onCreateOrCloneRepositoryRequest( final @Observes CreateOrCloneRepositoryRequest jobRequest ) {
         logger.info( "CreateOrCloneRepositoryRequest event received." );
@@ -59,7 +73,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "CreateOrCloneRepositoryRequest event approved. Performing requested operation." );
-        helper.createOrCloneRepository( jobRequest.getJobId(), jobRequest.getRepository() );
+        executorService.scheduleRequest(CreateOrCloneRepositoryCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onRemoveRepositoryRequest( final @Observes RemoveRepositoryRequest jobRequest ) {
@@ -68,7 +82,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "RemoveRepositoryRequest event approved. Performing requested operation." );
-        helper.removeRepository( jobRequest.getJobId(), jobRequest.getRepositoryName() );
+        executorService.scheduleRequest(RemoveRepositoryCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onCreateProjectRequest( final @Observes CreateProjectRequest jobRequest ) {
@@ -77,7 +91,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "CreateProjectRequest event approved. Performing requested operation." );
-        helper.createProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
+        executorService.scheduleRequest(CreateProjectCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onCompileProjectRequest( final @Observes CompileProjectRequest jobRequest ) {
@@ -86,7 +100,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "CompileProjectRequest event approved. Performing requested operation." );
-        helper.compileProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
+        executorService.scheduleRequest(CompileProjectCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onInstallProjectRequest( final @Observes InstallProjectRequest jobRequest ) {
@@ -95,7 +109,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "InstallProjectRequest event approved. Performing requested operation." );
-        helper.installProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
+        executorService.scheduleRequest(InstallProjectCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onTestProjectRequest( final @Observes TestProjectRequest jobRequest ) {
@@ -104,7 +118,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "TestProjectRequest event approved. Performing requested operation." );
-        helper.testProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName(), jobRequest.getBuildConfig() );
+        executorService.scheduleRequest(TestProjectCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onDeployProjectRequest( final @Observes DeployProjectRequest jobRequest ) {
@@ -113,7 +127,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "DeployProjectRequest event approved. Performing requested operation." );
-        helper.installProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
+        executorService.scheduleRequest(DeployProjectCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onCreateOrganizationalUnitRequest( final @Observes CreateOrganizationalUnitRequest jobRequest ) {
@@ -122,7 +136,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "CreateOrganizationalUnitRequest event approved. Performing requested operation." );
-        helper.createOrganizationalUnit( jobRequest.getJobId(), jobRequest.getOrganizationalUnitName(), jobRequest.getOwner(), jobRequest.getRepositories() );
+        executorService.scheduleRequest(CreateOrgUnitCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onAddRepositoryToOrganizationalUnitRequest( final @Observes AddRepositoryToOrganizationalUnitRequest jobRequest ) {
@@ -131,7 +145,7 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "AddRepositoryToOrganizationalUnitRequest event approved. Performing requested operation." );
-        helper.addRepositoryToOrganizationalUnit( jobRequest.getJobId(), jobRequest.getOrganizationalUnitName(), jobRequest.getRepositoryName() );
+        executorService.scheduleRequest(AddRepositoryToOrgUnitCmd.class.getName(), getContext(jobRequest));
     }
 
     public void onAddRepositoryToOrganizationalUnitRequest( final @Observes RemoveRepositoryFromOrganizationalUnitRequest jobRequest ) {
@@ -140,12 +154,20 @@ public class JobRequestObserver {
             return;
         }
         logger.info( "RemoveRepositoryFromOrganizationalUnitRequest event approved. Performing requested operation." );
-        helper.removeRepositoryFromOrganizationalUnit( jobRequest.getJobId(), jobRequest.getOrganizationalUnitName(), jobRequest.getRepositoryName() );
+        executorService.scheduleRequest(RemoveRepositoryFromOrgUnitCmd.class.getName(), getContext(jobRequest));
     }
 
     private boolean approveRequest( final JobRequest jobRequest ) {
         final JobResult result = approvalService.requestApproval( jobRequest );
         return result.getStatus().equals( JobStatus.APPROVED );
+    }
+
+    protected CommandContext getContext(JobRequest jobRequest) {
+        CommandContext ctx = new CommandContext();
+        ctx.setData(JOB_REQUEST_KEY, jobRequest);
+        ctx.setData("retries", 0);
+
+        return ctx;
     }
 
 }
