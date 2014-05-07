@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.services.shared.rest;
 
+import java.io.Serializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class Entity {
+public class Entity implements Serializable {
     
     String name;
     String description;

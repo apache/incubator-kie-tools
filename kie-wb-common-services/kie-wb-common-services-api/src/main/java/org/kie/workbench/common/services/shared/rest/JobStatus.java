@@ -15,13 +15,15 @@
  */
 package org.kie.workbench.common.services.shared.rest;
 
+import java.io.Serializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Job status
  */
 @Portable
-public enum JobStatus {
+public enum JobStatus implements Serializable{
 
     GONE,
     ACCEPTED,

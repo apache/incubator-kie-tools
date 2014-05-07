@@ -15,10 +15,12 @@
  */
 package org.kie.workbench.common.services.shared.rest;
 
+import java.io.Serializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class JobRequest {
+public class JobRequest implements Serializable {
 
     private String jobId;
     private JobStatus status;

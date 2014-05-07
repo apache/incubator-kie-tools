@@ -1,11 +1,12 @@
 package org.kie.workbench.common.services.shared.rest;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class JobResult {
+public class JobResult implements Serializable {
 
     private JobStatus status;
     private String jobId;
