@@ -201,18 +201,23 @@ should already have updated its own `getTitle()` method to call
 
 If you are working with an UberFire SNAPSHOT dependency, JDT
 annotation processing will stop working every time the snapshots
-update (typically once a day). To fix this, follow these steps:
+update (typically once a day). You can recognize this problem by the
+existence of ``APT Problems'' error markers within your projects whose
+text starts with ``java.io.FileNotFoundException'' and
+``java.io.IOException.''
+
+To fix this, follow these steps:
 
 . Select all project nodes in Eclipse's Project Explorer
 . Press `Alt F5` (or right click -> Maven -> Update Project
   Configuration...).
-
-If annotation processing remains inactive, or if it is active but you
-are getting unusual error markers on your UberFire Workbench
-annotations, clean all projects.
-
-If, after doing a Maven config update and cleaning the workspace,
-annotation processing still doesn't work, restart Eclipse.
+. If the error markers disappear and do not come back, stop here.
+. If annotation processing remains inactive, or if it is active but
+  you are still getting unusual error markers on your UberFire
+  Workbench annotations, restart Eclipse.
+. Clean the projects that still have ``APT Problems'' error markers on
+  them (error markers persist across restarts even if the underlying
+  problem is gone; cleaning the project removes them).
 
 === When UberFire's sources exist in the workspace
 
