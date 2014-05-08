@@ -62,7 +62,7 @@ public class CEPOperatorsDropdown extends Composite
     protected HasParameterizedOperator hop;
 
     //Parameter key to store the current parameter set (i.e. which parameters are visible)
-    private static final String VISIBLE_PARAMETER_SET = "org.kie.guvnor.guided.editor.visibleParameterSet";
+    private static final String VISIBLE_PARAMETER_SET = "org.drools.workbench.models.commons.backend.rule.visibleParameterSet";
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
     private static final String CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder";
