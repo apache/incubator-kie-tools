@@ -101,12 +101,12 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     }
 
     </#if>
-    <#if onStartup2ParametersMethodName??>
+    <#if onStartup2ParameterMethodName??>
     @Override
     public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
         super.onStartup( path, place );
-        realPresenter.${onStartup2ParametersMethodName}( path, place );
+        realPresenter.${onStartup2ParameterMethodName}( path, place );
     }
 
     <#elseif onStartup1ParameterMethodName??>

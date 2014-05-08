@@ -156,6 +156,27 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
+    public void testWorkbenchScreenAllAnnotationsPrivate() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest20";
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+
+        assertFailedCompilation( diagnostics );
+        assertCompilationError( diagnostics, "19: Methods annotated with @WorkbenchPartView must be non-private" );
+        assertCompilationError( diagnostics, "24: Methods annotated with @WorkbenchPartTitle must be non-private" );
+        assertCompilationError( diagnostics, "29: Methods annotated with @OnStartup must be non-private" );
+        assertCompilationError( diagnostics, "33: Methods annotated with @OnMayClose must be non-private" );
+        assertCompilationError( diagnostics, "38: Methods annotated with @OnClose must be non-private" );
+        assertCompilationError( diagnostics, "42: Methods annotated with @OnOpen must be non-private" );
+        assertCompilationError( diagnostics, "46: Methods annotated with @OnLostFocus must be non-private" );
+        assertCompilationError( diagnostics, "50: Methods annotated with @OnFocus must be non-private" );
+
+        assertNull( result.getActualCode() );
+    }
+
+    @Test
     public void testWorkbenchScreenWorkbenchMenuAnnotationCorrectReturnType() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest9";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest9.expected";
@@ -234,8 +255,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
-        assertCompilationWarning( diagnostics,
-                "The WorkbenchScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
+        assertCompilationWarning( diagnostics, "24: warning: There is also an @OnStartup(PlaceRequest) method in this class. That method takes precedence over this one.");
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

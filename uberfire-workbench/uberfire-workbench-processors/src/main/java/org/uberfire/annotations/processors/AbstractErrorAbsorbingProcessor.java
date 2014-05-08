@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -16,6 +17,10 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
+/**
+ * Contains a series of adaptations and workarounds to make annotation processors work well under Eclipse JDT APT. Does
+ * not limit compatibility with other annotation processing environments (such as javac).
+ */
 public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor {
 
 	private Throwable rememberedInitError;
@@ -27,6 +32,15 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
             rememberedInitError = e;
         }
     }
+
+	/**
+     * Wraps the given processing environment with one that protects against known bugs in the Eclipse annotation
+     * processing implementation.
+     */
+	@Override
+	public synchronized void init( ProcessingEnvironment env ) {
+	    super.init( new EclipseWorkaroundProcessingEnvironment( env ) );
+	}
 
 	@Override
 	public final boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {

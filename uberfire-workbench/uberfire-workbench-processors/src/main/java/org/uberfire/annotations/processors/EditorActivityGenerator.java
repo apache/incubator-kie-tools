@@ -95,10 +95,21 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
 
-        final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartupPathParameterMethodName( classElement,
-                                                                                                         processingEnvironment );
-        final String onStartup2ParametersMethodName = GeneratorUtils.getOnStartupPathPlaceRequestParametersMethodName( classElement,
-                                                                                                                       processingEnvironment );
+        final ExecutableElement onStartupMethod = GeneratorUtils.getOnStartupMethodForEditors( classElement, processingEnvironment );
+
+        final String onStartup1ParameterMethodName;
+        final String onStartup2ParameterMethodName;
+        if ( onStartupMethod == null ) {
+            onStartup1ParameterMethodName = null;
+            onStartup2ParameterMethodName = null;
+        } else if ( onStartupMethod.getParameters().size() == 1 ) {
+            onStartup1ParameterMethodName = onStartupMethod.getSimpleName().toString();
+            onStartup2ParameterMethodName = null;
+        } else {
+            onStartup1ParameterMethodName = null;
+            onStartup2ParameterMethodName = onStartupMethod.getSimpleName().toString();
+        }
+
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
                                                                                     processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
@@ -148,7 +159,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Priority: " + priority );
             messager.printMessage( Kind.NOTE, "Resource types: " + associatedResources );
             messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
-            messager.printMessage( Kind.NOTE, "onStartup2ParametersMethodName: " + onStartup2ParametersMethodName );
+            messager.printMessage( Kind.NOTE, "onStartup2ParameterMethodName: " + onStartup2ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onMayCloseMethodName: " + onMayCloseMethodName );
             messager.printMessage( Kind.NOTE, "onCloseMethodName: " + onCloseMethodName );
             messager.printMessage( Kind.NOTE, "onShutdownMethodName: " + onShutdownMethodName );
@@ -178,12 +189,6 @@ public class EditorActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.WARNING, msg, classElement );
         }
 
-        //Validate onStartup1ParameterMethodName and onStartup2ParametersMethodName
-        if ( onStartup1ParameterMethodName != null && onStartup2ParametersMethodName != null ) {
-            final String msg = "The WorkbenchEditor has methods for both @OnStartup(Path) and @OnStartup(Path, Place). Method @OnStartup(Path, Place) will take precedence.";
-            messager.printMessage( Kind.WARNING, msg, classElement );
-        }
-
         //Validate getTitleMethodName
         if ( getTitleMethodName == null ) {
             throw new GenerationException( "The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.", packageName + "." + className );
@@ -209,8 +214,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   beanActivatorClass );
         root.put( "onStartup1ParameterMethodName",
                   onStartup1ParameterMethodName );
-        root.put( "onStartup2ParametersMethodName",
-                  onStartup2ParametersMethodName );
+        root.put( "onStartup2ParameterMethodName",
+                  onStartup2ParameterMethodName );
         root.put( "onMayCloseMethodName",
                   onMayCloseMethodName );
         root.put( "onCloseMethodName",

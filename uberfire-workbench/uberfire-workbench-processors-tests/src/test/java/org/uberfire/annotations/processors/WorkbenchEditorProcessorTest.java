@@ -245,7 +245,8 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 pathCompilationUnit );
 
-        assertSuccessfulCompilation( diagnostics );
+        assertFailedCompilation( diagnostics );
+        assertCompilationError( diagnostics, "Methods annotated with @OnStartup must take one argument of type org.uberfire.backend.vfs.Path and an optional second argument of type org.uberfire.mvp.PlaceRequest" );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
@@ -265,7 +266,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
 
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
-                                  "The WorkbenchEditor has methods for both @OnStartup(Path) and @OnStartup(Path, Place). Method @OnStartup(Path, Place) will take precedence." );
+                                  "27: warning: There is also an @OnStartup(Path, PlaceRequest) method in this class. That method takes precedence over this one." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

@@ -188,7 +188,7 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
 
         assertSuccessfulCompilation( diagnostics );
         assertCompilationWarning( diagnostics,
-                                  "The WorkbenchPopup has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
+                                  "24: warning: There is also an @OnStartup(PlaceRequest) method in this class. That method takes precedence over this one." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

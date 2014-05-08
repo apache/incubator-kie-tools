@@ -180,7 +180,7 @@ public abstract class AbstractProcessorTest {
             }
         }
 
-        fail ("Diagnostics did not contain the expected ERROR message: " + message + ".");
+        fail("Diagnostics did not contain the expected ERROR message. Actual diagnostics: " + diagnostics );
     }
 
     /**
@@ -198,7 +198,7 @@ public abstract class AbstractProcessorTest {
             }
         }
 
-        fail ("Diagnostics did not contain the expected WARNING message: " + message + ".");
+        fail( "Diagnostics did not contain the expected WARNING message. Actual diagnostics: " + diagnostics );
     }
 
     private List<String> getMessages( final List<Diagnostic<? extends JavaFileObject>> diagnostics,

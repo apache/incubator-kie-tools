@@ -59,10 +59,21 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
 
-        final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
-                                                                                                         processingEnvironment );
-        final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
-                                                                                                             processingEnvironment );
+        final ExecutableElement onStartupMethod = GeneratorUtils.getOnStartupMethodForNonEditors( classElement, processingEnvironment );
+
+        final String onStartup0ParameterMethodName;
+        final String onStartup1ParameterMethodName;
+        if ( onStartupMethod == null ) {
+            onStartup0ParameterMethodName = null;
+            onStartup1ParameterMethodName = null;
+        } else if ( onStartupMethod.getParameters().isEmpty() ) {
+            onStartup0ParameterMethodName = onStartupMethod.getSimpleName().toString();
+            onStartup1ParameterMethodName = null;
+        } else {
+            onStartup0ParameterMethodName = null;
+            onStartup1ParameterMethodName = onStartupMethod.getSimpleName().toString();
+        }
+
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
                                                                                     processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
@@ -131,12 +142,6 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         }
         if ( isWidget && getWidgetMethodName != null ) {
             final String msg = "The WorkbenchScreen both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.";
-            messager.printMessage( Kind.WARNING, msg, classElement );
-        }
-
-        //Validate onStartup0ParameterMethodName and onStartup1ParameterMethodName
-        if ( onStartup0ParameterMethodName != null && onStartup1ParameterMethodName != null ) {
-            final String msg = "The WorkbenchScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence.";
             messager.printMessage( Kind.WARNING, msg, classElement );
         }
 
