@@ -100,7 +100,7 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     @Override
     public boolean removePart( final PartDefinition part ) {
         boolean removed = super.removePart( part );
-        partMap.remove( partMap );
+        partMap.remove( part );
         return removed;
     }
 

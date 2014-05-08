@@ -24,12 +24,13 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.events.MinimizePlaceEvent;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 
 @Dependent
 public class MultiListWorkbenchPanelPresenter extends AbstractMultiPartWorkbenchPanelPresenter<MultiListWorkbenchPanelPresenter> {
 
     @Inject
-    public MultiListWorkbenchPanelPresenter( @Named("MultiListWorkbenchPanelView") final MultiListWorkbenchPanelView view,
+    public MultiListWorkbenchPanelPresenter( @Named("MultiListWorkbenchPanelView") final WorkbenchPanelView<MultiListWorkbenchPanelPresenter> view,
                                              final ActivityManager activityManager,
                                              final PanelManager panelManager,
                                              final Event<MaximizePlaceEvent> maximizePanelEvent,
