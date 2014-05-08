@@ -42,6 +42,6 @@ public class PropertyTypeImpl implements PropertyType {
 
     @Override
     public boolean isPrimitive() {
-        return NamingUtils.getInstance().isPrimitiveTypeId(className);
+        return NamingUtils.isPrimitiveTypeId(className);
     }
 }

@@ -39,4 +39,6 @@ public interface ValidationService {
 
     public Map<String, Boolean> evaluateArtifactIdentifiers( final String[] identifiers );
 
+    public boolean isTimerIntervalValid( final String timerInterval );
+
 }

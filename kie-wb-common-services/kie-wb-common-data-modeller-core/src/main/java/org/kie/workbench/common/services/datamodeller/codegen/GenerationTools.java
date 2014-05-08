@@ -287,7 +287,7 @@ public class GenerationTools {
                 String _propName = toJavaVar(prop.getName());
                 if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
 
-                    if (NamingUtils.getInstance().isPrimitiveTypeId(prop.getClassName())) {
+                    if (NamingUtils.isPrimitiveTypeId(prop.getClassName())) {
                         // Construction: "if (<_propName> != that.<_propName>) return false;
                         sb.append(indent + TAB);
                         addEqualsTermForPrimitive(sb, _propName, prop.getClassName());
@@ -351,7 +351,7 @@ public class GenerationTools {
                 String _propName = toJavaVar(prop.getName());
                 if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
 
-                    if (NamingUtils.getInstance().isPrimitiveTypeId(prop.getClassName())) {
+                    if (NamingUtils.isPrimitiveTypeId(prop.getClassName())) {
                         sb.append(indent + TAB);
                         addHashCodeTermForPrimitive(sb, _propName, prop.getClassName());
                     } else {

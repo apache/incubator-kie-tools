@@ -149,8 +149,8 @@ public class DataModelOracleModelDriver implements ModelDriver {
                               ObjectSource source,
                               ClassLoader classLoader) throws ModelDriverException {
 
-        String packageName = NamingUtils.getInstance().extractPackageName( factType );
-        String className = NamingUtils.getInstance().extractClassName( factType );
+        String packageName = NamingUtils.extractPackageName( factType );
+        String className = NamingUtils.extractClassName( factType );
         String superClass = DataModelOracleUtilities.getSuperType( oracleDataModel, factType );
         DataObject dataObject;
 

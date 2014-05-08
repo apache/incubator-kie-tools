@@ -72,7 +72,7 @@ public class AnnotationMemberDefinitionImpl implements AnnotationMemberDefinitio
 
     @Override
     public boolean isPrimitiveType() {
-        return NamingUtils.getInstance().isPrimitiveTypeClass(className);
+        return NamingUtils.isPrimitiveTypeClass(className);
     }
 
     @Override

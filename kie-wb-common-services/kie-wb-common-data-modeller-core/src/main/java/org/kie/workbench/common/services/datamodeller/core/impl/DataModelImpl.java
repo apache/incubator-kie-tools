@@ -109,8 +109,8 @@ public class DataModelImpl implements DataModel {
 
     @Override
     public DataObject addDataObject(String className, ObjectSource source, int modifiers) {
-        String name = NamingUtils.getInstance().extractClassName(className);
-        String packageName = NamingUtils.getInstance().extractPackageName(className);
+        String name = NamingUtils.extractClassName(className);
+        String packageName = NamingUtils.extractPackageName(className);
         return addDataObject(packageName, name, source, modifiers);
     }
 

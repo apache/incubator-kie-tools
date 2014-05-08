@@ -191,12 +191,13 @@ public class DataModelerServiceImpl implements DataModelerService {
         BuildMessage buildMessage;
         for ( ModelDriverError error : result.getErrors()) {
             buildMessage = new BuildMessage();
+            buildMessage.setLevel( BuildMessage.Level.ERROR );
             buildMessage.setId( error.getId() );
             buildMessage.setText( error.getMessage() );
             buildMessage.setColumn( error.getColumn() );
             buildMessage.setLine( error.getLine() );
             buildMessage.setPath( Paths.convert( error.getFile() ) );
-            buildResults.addAddedMessage( new BuildMessage() );
+            buildResults.addAddedMessage( buildMessage );
         }
         incrementalBuildEvent.fire( buildResults );
     }
@@ -568,12 +569,12 @@ public class DataModelerServiceImpl implements DataModelerService {
     private org.uberfire.java.nio.file.Path calculateFilePath( String className,
                                                                org.uberfire.java.nio.file.Path javaPath ) {
 
-        String name = NamingUtils.getInstance().extractClassName( className );
-        String packageName = NamingUtils.getInstance().extractPackageName( className );
+        String name = NamingUtils.extractClassName( className );
+        String packageName = NamingUtils.extractPackageName( className );
         org.uberfire.java.nio.file.Path filePath = javaPath;
 
         if ( packageName != null ) {
-            List<String> packageNameTokens = NamingUtils.getInstance().tokenizePackageName( packageName );
+            List<String> packageNameTokens = NamingUtils.tokenizePackageName( packageName );
             for ( String token : packageNameTokens ) {
                 filePath = filePath.resolve( token );
             }

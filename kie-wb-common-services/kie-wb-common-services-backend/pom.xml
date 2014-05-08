@@ -36,6 +36,11 @@
       <artifactId>drools-core</artifactId>
     </dependency>
 
+    <!--dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+    </dependency-->
+
     <!-- The version of commons-io in droolsjbpm-build-bootstrap pom is way too old-->
     <dependency>
       <groupId>commons-io</groupId>

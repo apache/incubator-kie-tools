@@ -104,7 +104,7 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
 
     @Override
     public boolean isPrimitiveType() {
-        return NamingUtils.getInstance().isPrimitiveTypeClass(getClassName());
+        return NamingUtils.isPrimitiveTypeClass(getClassName());
     }
 
     @Override

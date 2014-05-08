@@ -120,4 +120,8 @@ public class ValidationServiceImpl implements ValidationService {
         return result;
     }
 
+    public boolean isTimerIntervalValid( final String timerInterval ) {
+        return true;
+    }
+
 }

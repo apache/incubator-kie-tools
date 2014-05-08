@@ -70,7 +70,7 @@ public class ParserTestUtil {
                 fieldDescr.addModifier( new ModifierDescr( modifiers[i], -1, -1, -1, -1, modifiers[i] ) );
             }
         }
-        if ( NamingUtils.getInstance().isPrimitiveTypeId( type )) {
+        if ( NamingUtils.isPrimitiveTypeId( type )) {
             fieldDescr.setType( new TypeDescr(  ) );
             fieldDescr.getType().setPrimitiveType( new PrimitiveTypeDescr( type, -1, -1, -1, -1, type ) );
         } else {

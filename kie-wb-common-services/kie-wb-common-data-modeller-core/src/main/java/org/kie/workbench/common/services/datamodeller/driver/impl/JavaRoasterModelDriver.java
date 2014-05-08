@@ -34,6 +34,7 @@ import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.Import;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
+import org.jboss.forge.roaster.model.util.Types;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationTools;
@@ -137,7 +138,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 try {
                     JavaType<?> javaType = Roaster.parse( fileContent );
                     if ( javaType.isClass() ) {
-                        if (javaType.getSyntaxErrors() != null && javaType.getSyntaxErrors().isEmpty()) {
+                        if (javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty()) {
                             //if a file has parsing errors it will be skipped
                             addSyntaxErrors( result, scanResult.getFile(), javaType.getSyntaxErrors() );
                         } else {
@@ -150,7 +151,9 @@ public class JavaRoasterModelDriver implements ModelDriver {
                     //TODO add parsing errors processing. When a file can't be parsed the user should receive
                     //a notification and the data object won't be loaded into the IU.
                     logger.error( "An error was produced during file parsing: " + scanResult.getFile(), e );
-                    throw new ModelDriverException( e.getMessage(), e );
+                    addError( result, scanResult.getFile(), e );
+
+                    //throw new ModelDriverException( e.getMessage(), e );
                 }
             }
         }
@@ -163,6 +166,11 @@ public class JavaRoasterModelDriver implements ModelDriver {
             error = new ModelDriverError( syntaxError.getDescription(), file);
             result.addError( error );
         }
+    }
+
+    private void addError( ModelDriverResult result, Path file, Exception e ) {
+        ModelDriverError error = new ModelDriverError( e.getMessage(), file );
+        result.addError( error );
     }
 
     @Override
@@ -296,8 +304,11 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     private String resolveTypeName( ClassTypeResolver classTypeResolver, String name ) throws ModelDriverException {
         try {
-            Class typeClass = classTypeResolver.resolveType( name );
-            return typeClass.getName();
+            if ( Types.isQualified( name ) ) {
+                return name;
+            } else {
+                return classTypeResolver.getFullTypeName( name );
+            }
         } catch ( ClassNotFoundException e ) {
             logger.error( "Class could not be resolved for name: " + name, e );
             throw new ModelDriverException( "Class could not be resolved for name: " + name + ". " + e.getMessage(), e );
@@ -309,14 +320,13 @@ public class JavaRoasterModelDriver implements ModelDriver {
         List<Import> imports = javaClassSource.getImports();
         String newClassName;
         String currentPackage = javaClassSource.isDefaultPackage() ? null : javaClassSource.getPackage();
-        NamingUtils namingUtils = NamingUtils.getInstance();
 
         if (imports != null) {
             for (Import currentImport : imports) {
                 if (!currentImport.isWildcard() && !currentImport.isStatic()) {
                     if ( (newClassName = renamedClasses.get( currentImport.getQualifiedName() ) ) != null ) {
                         javaClassSource.removeImport( currentImport );
-                        if (!StringUtils.equals( currentPackage, namingUtils.extractPackageName( newClassName ) )) {
+                        if (!StringUtils.equals( currentPackage, NamingUtils.extractPackageName( newClassName ) )) {
                             javaClassSource.addImport( newClassName );
                         }
                     } else if (deletedClasses.contains( currentImport.getQualifiedName() )) {
@@ -349,7 +359,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     public boolean updateSuperClassName( JavaClassSource javaClassSource, String superClassName, ClassTypeResolver classTypeResolver ) throws Exception {
 
-        String oldSuperClassName = javaClassSource.getSuperType() != null ? classTypeResolver.getFullTypeName( javaClassSource.getSuperType() ) : null;
+        String oldSuperClassName = javaClassSource.getSuperType() != null ? resolveTypeName( classTypeResolver, javaClassSource.getSuperType() ) : null;
 
         if (!StringUtils.equals( oldSuperClassName, superClassName )) {
             //TODO remove the extra "import packageName.SuperClassName" added by Roaster when a class name is set as superclass.
@@ -366,7 +376,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
         List<AnnotationSource<?>> currentAnnotations = annotationTargetSource.getAnnotations();
         if (currentAnnotations != null) {
             for (AnnotationSource<?> currentAnnotation : currentAnnotations) {
-                currentAnnotationClassName = classTypeResolver.getFullTypeName( currentAnnotation.getName() );
+                currentAnnotationClassName = resolveTypeName( classTypeResolver, currentAnnotation.getName() );
                 if (driver.getConfiguredAnnotation( currentAnnotationClassName ) != null) {
                     annotationTargetSource.removeAnnotation( currentAnnotation );
                 }
@@ -459,7 +469,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
             methodName = genTools.toJavaGetter( property.getName(), property.getClassName() );
 
             //remove old getter if exists
-            removeMethod( javaClassSource, methodName );
+            removeMethodByParamsClassName( javaClassSource, methodName );
             //add the new getter
             javaClassSource.addMethod( methodSource );
 
@@ -469,8 +479,17 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
             //remove old setter if exists
             //TODO check collections
-            Class<?> fieldClass = classTypeResolver.resolveType( property.getClassName() );
-            removeMethod( javaClassSource, methodName, fieldClass );
+
+            //TODO aca tengo un problema cuando creo un Pojo en memoria y a su vez un field de ese tipo.
+            //Porque intento resolver la clase con el classTypeResolver y el Pojo aun no ha sido creado con lo cual
+            //tengo Class Not found exception.
+            //Tengo que implementar el remove de otra forma para este caso, posiblemente iterando todos los metodos.
+            //Cuando le cambio el tipo a un field de un pojo existente hacia un tipo de una clase creada en memoria
+            //Crei que podria darse tambien esta exception pero parece que no.
+            //Tengo que ver a ver porque no se da el error en este caso.
+
+            //Class<?> fieldClass = classTypeResolver.resolveType( property.getClassName() );
+            removeMethodByParamsClassName( javaClassSource, methodName, property.getClassName() );
             //add the new setter
             javaClassSource.addMethod( methodSource );
 
@@ -512,16 +531,16 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 String newClassName = property.getClassName();
                 field.setType( newClassName );
 
-                //TODO enable this if when Roaster NullPointerException is fixed.
-                //if (field.getLiteralInitializer() != null) {
+
+                if (field.getLiteralInitializer() != null) {
                     //current field has an initializer, but the field type changed so we are not sure old initializer is
                     //valid for the new type.
-                    if ( NamingUtils.getInstance().isPrimitiveTypeId( newClassName )) {
+                    if ( NamingUtils.isPrimitiveTypeId( newClassName )) {
                         setPrimitiveTypeDefaultInitializer( field, newClassName );
                     } else {
                         field.setLiteralInitializer( null );
                     }
-                //}
+                }
                 updateAccessors = true;
             }
 
@@ -539,10 +558,10 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 oldClassName = oldClass.getName();
 
                 accessorName = genTools.toJavaGetter( fieldName, oldClassName );
-                removeMethod( javaClassSource, accessorName );
+                removeMethodByParamsClass( javaClassSource, accessorName );
 
                 accessorName = genTools.toJavaSetter( fieldName );
-                removeMethod( javaClassSource, accessorName, oldClass );
+                removeMethodByParamsClass( javaClassSource, accessorName, oldClass );
 
                 //and generate the new ones
                 methodSource = genTools.indent( engine.generateFieldGetterString( context, property ) );
@@ -594,10 +613,10 @@ public class JavaRoasterModelDriver implements ModelDriver {
             oldClassName = oldClass.getName();
 
             accessorName = genTools.toJavaGetter( fieldName, oldClassName );
-            removeMethod( javaClassSource, accessorName );
+            removeMethodByParamsClass( javaClassSource, accessorName );
 
             accessorName = genTools.toJavaSetter( fieldName );
-            removeMethod( javaClassSource, accessorName, oldClass );
+            removeMethodByParamsClass( javaClassSource, accessorName, oldClass );
 
             //and generate the new ones
             methodSource = genTools.indent( engine.generateFieldGetterString( context, property ) );
@@ -705,18 +724,10 @@ public class JavaRoasterModelDriver implements ModelDriver {
             //check if the class has a setter/getter for the given field.
             Class<?> fieldClass = classTypeResolver.resolveType( field.getType().getName() );
             methodName = genTools.toJavaGetter( fieldName, fieldClass.getName() );
-            method = javaClassSource.getMethod( methodName );
-            if (method != null) {
-                logger.debug( "Removing getter: " + methodName + " for field: " + fieldName );
-                javaClassSource.removeMethod( method );
-            }
+            removeMethodByParamsClass( javaClassSource, methodName );
 
             methodName = genTools.toJavaSetter( fieldName );
-            method = javaClassSource.getMethod( methodName, fieldClass );
-            if (method != null) {
-                logger.debug( "Removing setter: " + methodName + " for field: " + fieldName );
-                javaClassSource.removeMethod( method );
-            }
+            removeMethodByParamsClass( javaClassSource, methodName, fieldClass );
 
             //finally remove the field.
             javaClassSource.removeField( field );
@@ -726,7 +737,18 @@ public class JavaRoasterModelDriver implements ModelDriver {
         }
     }
 
-    public void removeMethod( JavaClassSource javaClassSource, String methodName, Class<?>... paramTypes ) {
+    public void removeMethodByParamsClass( JavaClassSource javaClassSource, String methodName, Class<?>... paramTypes ) {
+        logger.debug( "Removing method: " + methodName + ", form class: " + javaClassSource.getName() );
+        MethodSource<JavaClassSource> method = javaClassSource.getMethod( methodName, paramTypes );
+        if (method != null) {
+            javaClassSource.removeMethod( method );
+            logger.debug( "Method method: " + methodName + ", was removed from class: " + javaClassSource.getName() );
+        } else {
+            logger.debug( "Method method: " + methodName + " not exists for class: " + javaClassSource.getName() );
+        }
+    }
+
+    public void removeMethodByParamsClassName( JavaClassSource javaClassSource, String methodName, String... paramTypes ) {
         logger.debug( "Removing method: " + methodName + ", form class: " + javaClassSource.getName() );
         MethodSource<JavaClassSource> method = javaClassSource.getMethod( methodName, paramTypes );
         if (method != null) {
@@ -769,7 +791,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
     }
 
     public boolean isManagedAnnotation( AnnotationSource<?> annotation, ClassTypeResolver classTypeResolver) throws Exception {
-        String annotationClassName = classTypeResolver.getFullTypeName( annotation.getName() );
+        String annotationClassName = resolveTypeName( classTypeResolver, annotation.getName() );
         return getConfiguredAnnotation( annotationClassName ) != null;
     }
 
