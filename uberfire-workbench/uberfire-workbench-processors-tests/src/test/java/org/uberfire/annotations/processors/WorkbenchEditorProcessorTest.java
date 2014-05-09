@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
@@ -59,8 +60,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                 "org/uberfire/annotations/processors/WorkbenchEditorTest2" );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.WorkbenchEditorTest2Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchEditorTest2Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -71,8 +71,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                 "org/uberfire/annotations/processors/WorkbenchEditorTest3" );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.WorkbenchEditorTest3Activity: The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchEditorTest3Activity: The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         assertNull( result.getActualCode() );
     }
 
@@ -83,8 +82,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                 "org/uberfire/annotations/processors/WorkbenchEditorTest4" );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.WorkbenchEditorTest4Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchEditorTest4Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -136,8 +134,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                 pathCompilationUnit );
 
         assertSuccessfulCompilation( diagnostics );
-        assertCompilationWarning( diagnostics,
-                                  "The WorkbenchEditor both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+        assertCompilationMessage( diagnostics, Kind.WARNING, Diagnostic.NOPOS, Diagnostic.NOPOS, "The WorkbenchEditor both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
@@ -246,7 +243,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                 pathCompilationUnit );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics, "Methods annotated with @OnStartup must take one argument of type org.uberfire.backend.vfs.Path and an optional second argument of type org.uberfire.mvp.PlaceRequest" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "Methods annotated with @OnStartup must take one argument of type org.uberfire.backend.vfs.Path and an optional second argument of type org.uberfire.mvp.PlaceRequest" );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
@@ -265,8 +262,7 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
                 pathCompilationUnit );
 
         assertSuccessfulCompilation( diagnostics );
-        assertCompilationWarning( diagnostics,
-                                  "27: warning: There is also an @OnStartup(Path, PlaceRequest) method in this class. That method takes precedence over this one." );
+        assertCompilationMessage( diagnostics, Kind.WARNING, 27, 17, "There is also an @OnStartup(Path, PlaceRequest) method in this class. That method takes precedence over this one." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),

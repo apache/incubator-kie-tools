@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
@@ -58,8 +59,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 "org/uberfire/annotations/processors/WorkbenchScreenTest2" );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                "org.uberfire.annotations.processors.WorkbenchScreenTest2Activity: The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchScreenTest2Activity: The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -69,8 +69,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/WorkbenchScreenTest3" );
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                "org.uberfire.annotations.processors.WorkbenchScreenTest3Activity: The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchScreenTest3Activity: The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         assertNull( result.getActualCode() );
     }
 
@@ -80,8 +79,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/WorkbenchScreenTest4" );
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                "org.uberfire.annotations.processors.WorkbenchScreenTest4Activity: The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchScreenTest4Activity: The WorkbenchScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -130,8 +128,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
-        assertCompilationWarning( diagnostics,
-                "The WorkbenchScreen both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
+        assertCompilationMessage( diagnostics, Kind.WARNING, Diagnostic.NOPOS, Diagnostic.NOPOS, "The WorkbenchScreen both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
@@ -164,14 +161,14 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 pathCompilationUnit );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics, "19: Methods annotated with @WorkbenchPartView must be non-private" );
-        assertCompilationError( diagnostics, "24: Methods annotated with @WorkbenchPartTitle must be non-private" );
-        assertCompilationError( diagnostics, "29: Methods annotated with @OnStartup must be non-private" );
-        assertCompilationError( diagnostics, "33: Methods annotated with @OnMayClose must be non-private" );
-        assertCompilationError( diagnostics, "38: Methods annotated with @OnClose must be non-private" );
-        assertCompilationError( diagnostics, "42: Methods annotated with @OnOpen must be non-private" );
-        assertCompilationError( diagnostics, "46: Methods annotated with @OnLostFocus must be non-private" );
-        assertCompilationError( diagnostics, "50: Methods annotated with @OnFocus must be non-private" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 19, 22, "Methods annotated with @WorkbenchPartView must be non-private" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 24, 20, "Methods annotated with @WorkbenchPartTitle must be non-private" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 29, 18, "Methods annotated with @OnStartup must be non-private" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 33, 21, "Methods annotated with @OnMayClose must be non-private" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 38, 18, "Methods annotated with @OnClose must be non-private" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 42, 18, "Methods annotated with @OnOpen must be non-private" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 46, 18, "Methods annotated with @OnLostFocus must be non-private" );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 50, 18, "Methods annotated with @OnFocus must be non-private" );
 
         assertNull( result.getActualCode() );
     }
@@ -255,7 +252,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
-        assertCompilationWarning( diagnostics, "24: warning: There is also an @OnStartup(PlaceRequest) method in this class. That method takes precedence over this one.");
+        assertCompilationMessage( diagnostics, Kind.WARNING, 24, 17, "There is also an @OnStartup(PlaceRequest) method in this class. That method takes precedence over this one." );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
         assertEquals( result.getActualCode(),
@@ -303,8 +300,7 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
                 pathCompilationUnit );
-        assertCompilationError( diagnostics,
-                "org.uberfire.annotations.processors.WorkbenchScreenTest16Activity: The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchScreenTest16Activity: The WorkbenchScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         assertNull( result.getActualCode() );
     }
 

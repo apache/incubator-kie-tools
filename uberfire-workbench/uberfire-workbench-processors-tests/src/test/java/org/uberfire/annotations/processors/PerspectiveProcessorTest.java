@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
@@ -59,8 +60,7 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/PerspectiveTest2" );
 
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.PerspectiveTest2Activity: The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.PerspectiveTest2Activity: The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
         assertNull( result.getActualCode() );
     }
 
@@ -70,8 +70,7 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/PerspectiveTest3" );
 
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.PerspectiveTest3Activity: The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.PerspectiveTest3Activity: The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
         assertNull( result.getActualCode() );
     }
 
@@ -298,8 +297,7 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                 result.setActualCode( code );
             }
         } ),pathCompilationUnit );
-        assertCompilationError( diagnostics,
-                                "The Template WorkbenchPerspective must provide only one @WorkbenchPanel annotated field." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "The Template WorkbenchPerspective must provide only one @WorkbenchPanel annotated field." );
         assertNull( result.getActualCode() );
     }
 

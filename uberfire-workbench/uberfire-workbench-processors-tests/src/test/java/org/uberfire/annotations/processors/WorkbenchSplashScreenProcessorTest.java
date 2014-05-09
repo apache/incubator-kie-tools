@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
@@ -59,8 +60,7 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
                 "org/uberfire/annotations/processors/WorkbenchSplashScreenTest2" );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.WorkbenchSplashScreenTest2Activity: The WorkbenchSplashScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchSplashScreenTest2Activity: The WorkbenchSplashScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -71,8 +71,7 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
                 "org/uberfire/annotations/processors/WorkbenchSplashScreenTest3" );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.WorkbenchSplashScreenTest3Activity: The WorkbenchSplashScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchSplashScreenTest3Activity: The WorkbenchSplashScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
         assertNull( result.getActualCode() );
     }
 
@@ -83,8 +82,7 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
                 "org/uberfire/annotations/processors/WorkbenchSplashScreenTest4" );
 
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.WorkbenchSplashScreenTest4Activity: The WorkbenchSplashScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchSplashScreenTest4Activity: The WorkbenchSplashScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
         assertNull( result.getActualCode() );
     }
 
@@ -94,8 +92,7 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/WorkbenchSplashScreenTest5" );
 
-        assertCompilationError( diagnostics,
-                                "org.uberfire.annotations.processors.WorkbenchSplashScreenTest5Activity: The WorkbenchSplashScreen must provide a @SplashFilter annotated method to return a org.uberfire.workbench.model.SplashScreenFilter." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchSplashScreenTest5Activity: The WorkbenchSplashScreen must provide a @SplashFilter annotated method to return a org.uberfire.workbench.model.SplashScreenFilter." );
         assertNull( result.getActualCode() );
     }
 

@@ -21,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -169,48 +168,43 @@ public abstract class AbstractProcessorTest {
      * Assert that the given error message is contained in the compilation
      * diagnostics.
      *
-     * @param diagnostics the list of diagnostic messages from the compiler
-     * @param message the message to search for. If any ERROR message in the given list contains this string, the assertion passes.
+     * @param diagnostics
+     *          the list of diagnostic messages from the compiler. Must not be null.
+     * @param kind
+     *          the kind of message to search for, or null to search messages of
+     *          any kind.
+     * @param line
+     *          the line number that must be attached to the message, or
+     *          {@link Diagnostic#NOPOS} if line number is not important.
+     * @param col
+     *          the column number that must be attached to the message, or
+     *          {@link Diagnostic#NOPOS} if column number is not important.
+     * @param message
+     *          the message to search for. If any otherwise matching message in
+     *          the given list contains this string, the assertion passes. Must not be null.
      */
-    public void assertCompilationError( List<Diagnostic<? extends JavaFileObject>> diagnostics,
-                                        final String message ) {
-        for (String msg : getMessages( diagnostics, Kind.ERROR )) {
-            if ( msg.contains( message ) ) {
-                return;
-            }
+    public void assertCompilationMessage(List<Diagnostic<? extends JavaFileObject>> diagnostics, Kind kind, long line, long col, final String message) {
+      StringBuilder sb = new StringBuilder(100);
+      for (Diagnostic<? extends JavaFileObject> msg : diagnostics) {
+        sb.append(msg.getKind())
+          .append(" ")
+          .append(msg.getLineNumber())
+          .append(":")
+          .append(msg.getColumnNumber())
+          .append(": ")
+          .append(msg.getMessage(null))
+          .append("\n");
+        if ( (kind == null || msg.getKind().equals(kind))
+                && (line == Diagnostic.NOPOS || msg.getLineNumber() == line)
+                && (col == Diagnostic.NOPOS || msg.getColumnNumber() == col)
+                && msg.getMessage(null).contains(message)) {
+          return;
         }
+      }
 
-        fail("Diagnostics did not contain the expected ERROR message. Actual diagnostics: " + diagnostics );
-    }
-
-    /**
-     * Assert that the given warning message is contained in the compilation
-     * diagnostics.
-     *
-     * @param diagnostics the list of diagnostic messages from the compiler
-     * @param message the message to search for. If any WARNING diagnostic in the given list contains this string, the assertion passes.
-     */
-    public void assertCompilationWarning( List<Diagnostic<? extends JavaFileObject>> diagnostics,
-                                          final String message ) {
-        for (String msg : getMessages( diagnostics, Kind.WARNING )) {
-            if ( msg.endsWith( message ) ) {
-                return;
-            }
-        }
-
-        fail( "Diagnostics did not contain the expected WARNING message. Actual diagnostics: " + diagnostics );
-    }
-
-    private List<String> getMessages( final List<Diagnostic<? extends JavaFileObject>> diagnostics,
-            final Kind kind ) {
-        final List<String> messages = new ArrayList<String>();
-        for ( Diagnostic<? extends JavaFileObject> diagnostic : diagnostics ) {
-            if ( diagnostic.getKind().equals( kind ) ) {
-                System.out.println( diagnostic.getMessage( null ) );
-                messages.add( diagnostic.getMessage( null ) );
-            }
-        }
-        return messages;
+      fail("Compiler diagnostics did not contain " + kind + " message " + line + ":" + col + ": " + message + "\n" +
+              "Dump of all " + diagnostics.size() + " actual messages:\n" +
+              sb);
     }
 
     /**
@@ -238,6 +232,6 @@ public abstract class AbstractProcessorTest {
 
         // ensure the error message was preserved so the user has a hope of tracking down the problem!
         List<Diagnostic<? extends JavaFileObject>> messages = compile( processorUnderTest, "org/uberfire/annotations/processors/AnnotatedWithEverything" );
-        assertCompilationError( messages, "Failing for testing purposes" );
+        assertCompilationMessage( messages, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "Failing for testing purposes" );
     }
 }
