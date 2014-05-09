@@ -15,6 +15,8 @@
  */
 package org.uberfire.client;
 
+import static org.uberfire.workbench.model.menu.MenuFactory.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,18 +24,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.framework.BusState;
-import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -50,7 +46,11 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * GWT's Entry-point for Uberfire-showcase
@@ -87,24 +87,24 @@ public class ShowcaseEntryPoint {
 
         final Menus menus =
                 newTopLevelMenu( "Home" )
-                        .respondsWith( new Command() {
-                            @Override
-                            public void execute() {
-                                if ( defaultPerspective != null ) {
-                                    placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
-                                } else {
-                                    Window.alert( "Default perspective not found." );
-                                }
-                            }
-                        } )
-                        .endMenu()
-                        .newTopLevelMenu( "Perspectives" )
-                        .withItems( getPerspectives() )
-                        .endMenu()
-                        .newTopLevelMenu( "Screens" )
-                        .withItems( getScreens() )
-                        .endMenu()
-                        .build();
+                .respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        if ( defaultPerspective != null ) {
+                            placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+                        } else {
+                            Window.alert( "Default perspective not found." );
+                        }
+                    }
+                } )
+                .endMenu()
+                .newTopLevelMenu( "Perspectives" )
+                .withItems( getPerspectives() )
+                .endMenu()
+                .newTopLevelMenu( "Screens" )
+                .withItems( getScreens() )
+                .endMenu()
+                .build();
 
         menubar.addMenus( menus );
     }
@@ -184,15 +184,15 @@ public class ShowcaseEntryPoint {
         //Sort Perspective Providers so they're always in the same sequence!
         List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>( activities );
         Collections.sort( sortedActivities,
-                          new Comparator<PerspectiveActivity>() {
+                new Comparator<PerspectiveActivity>() {
 
-                              @Override
-                              public int compare( PerspectiveActivity o1,
-                                                  PerspectiveActivity o2 ) {
-                                  return o1.getPerspective().getName().compareTo( o2.getPerspective().getName() );
-                              }
+            @Override
+            public int compare( PerspectiveActivity o1,
+                                PerspectiveActivity o2 ) {
+                return o1.getPerspective().getName().compareTo( o2.getPerspective().getName() );
+            }
 
-                          } );
+        } );
 
         return sortedActivities;
     }
