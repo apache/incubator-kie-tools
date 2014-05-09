@@ -4,6 +4,7 @@ import org.uberfire.java.nio.file.Path;
 
 public class ModelDriverError {
 
+
     private long id;
 
     private String message;
@@ -15,6 +16,10 @@ public class ModelDriverError {
     private int column;
 
     private Exception nativeError;
+
+    public ModelDriverError() {
+
+    }
 
     public ModelDriverError( long id, String message, Path file, int line, int column, Exception nativeError ) {
         this.id = id;

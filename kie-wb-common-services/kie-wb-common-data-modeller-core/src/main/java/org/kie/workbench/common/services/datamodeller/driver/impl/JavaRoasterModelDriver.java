@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,7 +35,6 @@ import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.Import;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
-import org.jboss.forge.roaster.model.util.Types;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationTools;
@@ -77,6 +77,14 @@ public class JavaRoasterModelDriver implements ModelDriver {
     private Map<String, AnnotationDefinition> configuredAnnotationsIndex = new HashMap<String, AnnotationDefinition>();
 
     private Map<String, AnnotationDriver> annotationDrivers = new HashMap<String, AnnotationDriver>();
+
+    private static final String DATA_OBJECT_LOAD_ERROR = "It was not possible to create or load DataObject: \"{0}\" .";
+
+    private static final String ANNOTATION_LOAD_ERROR = "It was not possible to create or load a DataObject or Field annotation for annotation class name: \"{0}\" .";
+
+    private static final String DATA_OBJECT_FIELD_LOAD_ERROR = "It was not possible to create or load field: \"{0}\" for DataObject: \"{1}\" .";
+
+    private static final String MODEL_LOAD_GENERIC_ERROR = "Unexpected error was produced when a DataModel was being loaded from the following path: \"{0}\" .";
 
     public JavaRoasterModelDriver() {
         configuredAnnotations.addAll( CommonAnnotations.getCommonAnnotations() );
@@ -139,25 +147,47 @@ public class JavaRoasterModelDriver implements ModelDriver {
                     JavaType<?> javaType = Roaster.parse( fileContent );
                     if ( javaType.isClass() ) {
                         if (javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty()) {
-                            //if a file has parsing errors it will be skipped
+                            //if a file has parsing errors it will be skipped.
                             addSyntaxErrors( result, scanResult.getFile(), javaType.getSyntaxErrors() );
                         } else {
-                            addDataObject( dataModel, (JavaClassSource)javaType );
+                            try {
+                                //try to load the data object.
+                                addDataObject( dataModel, (JavaClassSource)javaType );
+                            } catch (ModelDriverException e) {
+                                logger.error( "An error was produced when file: " + scanResult.getFile() + " was being loaded into a DataObject.", e );
+                                addModelDriverError(result , scanResult.getFile(), e );
+                            }
                         }
                     } else {
                         logger.debug( "No Class definition was found for file: " + scanResult.getFile() + ", it will be skipped." );
                     }
                 } catch ( Exception e ) {
-                    //TODO add parsing errors processing. When a file can't be parsed the user should receive
-                    //a notification and the data object won't be loaded into the IU.
-                    logger.error( "An error was produced during file parsing: " + scanResult.getFile(), e );
-                    addError( result, scanResult.getFile(), e );
-
-                    //throw new ModelDriverException( e.getMessage(), e );
+                    //Unexpected parsing o model loading exception.
+                    logger.error( errorMessage( MODEL_LOAD_GENERIC_ERROR, javaRootPath.toUri()), e );
+                    throw new ModelDriverException( errorMessage( MODEL_LOAD_GENERIC_ERROR, javaRootPath.toUri()), e );
                 }
             }
         }
         return result;
+    }
+
+    private void addModelDriverError( ModelDriverResult result, Path file, ModelDriverException e ) {
+        ModelDriverError error;
+
+        StringBuilder message = new StringBuilder( );
+        message.append( e.getMessage() );
+        Throwable cause = e.getCause();
+        while ( cause != null ) {
+            message.append( " : " );
+            message.append( cause.getMessage() );
+            if ( cause instanceof ModelDriverException ) {
+                cause = cause.getCause();
+            } else {
+                cause = null;
+            }
+        }
+        error = new ModelDriverError( message.toString(), file );
+        result.addError( error );
     }
 
     private void addSyntaxErrors( ModelDriverResult result, Path file, List<SyntaxError> syntaxErrors ) {
@@ -183,12 +213,15 @@ public class JavaRoasterModelDriver implements ModelDriver {
         String className;
         String packageName;
         String superClass;
+        String qualifiedName;
         int modifiers;
+        boolean hasErrors = false;
         DriverUtils driverUtils = DriverUtils.getInstance();
         ClassTypeResolver classTypeResolver;
 
         className = javaClassSource.getName();
         packageName = javaClassSource.getPackage();
+        qualifiedName = NamingUtils.createQualifiedName( packageName, className );
 
         if ( logger.isDebugEnabled() ) {
             logger.debug( "Building DataObject for, packageName: " + packageName + ", className: " + className );
@@ -200,29 +233,41 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         DataObject dataObject = dataModel.addDataObject( packageName, className, modifiers );
 
-        if ( javaClassSource.getSuperType() != null ) {
-            superClass = resolveTypeName( classTypeResolver, javaClassSource.getSuperType() );
-            dataObject.setSuperClassName( superClass );
-        }
-
-        List<AnnotationSource<JavaClassSource>> annotations = javaClassSource.getAnnotations();
-        if ( annotations != null ) {
-            for ( AnnotationSource annotation : annotations ) {
-                addDataObjectAnnotation( dataObject, annotation, classTypeResolver );
+        try {
+            if ( javaClassSource.getSuperType() != null ) {
+                superClass = resolveTypeName( classTypeResolver, javaClassSource.getSuperType() );
+                dataObject.setSuperClassName( superClass );
             }
-        }
 
-        List<FieldSource<JavaClassSource>> fields = javaClassSource.getFields();
-        if ( fields != null ) {
-            for ( FieldSource<JavaClassSource> field : fields ) {
-                if ( driverUtils.isManagedType( field.getType(), classTypeResolver ) ) {
-                    addProperty( dataObject, field, classTypeResolver );
-                } else {
-                    logger.debug( "field: " + field + "with fieldName: " + field.getName() + " won't be loaded by the diver because type: " + field.getType().getName() + " isn't a managed type." );
+            List<AnnotationSource<JavaClassSource>> annotations = javaClassSource.getAnnotations();
+            if ( annotations != null ) {
+                for ( AnnotationSource annotation : annotations ) {
+                    addDataObjectAnnotation( dataObject, annotation, classTypeResolver );
                 }
             }
+
+            List<FieldSource<JavaClassSource>> fields = javaClassSource.getFields();
+            if ( fields != null ) {
+                for ( FieldSource<JavaClassSource> field : fields ) {
+                    if ( driverUtils.isManagedType( field.getType(), classTypeResolver ) ) {
+                        addProperty( dataObject, field, classTypeResolver );
+                    } else {
+                        logger.debug( "field: " + field + "with fieldName: " + field.getName() + " won't be loaded by the diver because type: " + field.getType().getName() + " isn't a managed type." );
+                    }
+                }
+            }
+            return dataObject;
+        } catch ( ClassNotFoundException e) {
+            hasErrors = true;
+            logger.error( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
+            throw new ModelDriverException( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
+        } catch ( ModelDriverException e ) {
+            hasErrors = true;
+            logger.error( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
+            throw new ModelDriverException( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
+        } finally {
+            if (hasErrors) dataModel.removeDataObject( qualifiedName );
         }
-        return dataObject;
     }
 
     private ObjectProperty addProperty( DataObject dataObject, FieldSource<JavaClassSource> field, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
@@ -237,32 +282,37 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         modifiers = driverUtils.buildModifierRepresentation( field );
 
-        type = field.getType();
-        if ( type.isPrimitive() ) {
-            className = type.getName();
-        } else {
-            if ( driverUtils.isSimpleClass( type ) ) {
-                className = resolveTypeName( classTypeResolver, type.getName() );
+        try {
+            type = field.getType();
+            if ( type.isPrimitive() ) {
+                className = type.getName();
             } else {
-                //if this point was reached, we know it's a Collection. Managed type check was done previous to adding the property.
-                multiple = true;
-                Type elementsType = ( ( List<Type> ) type.getTypeArguments() ).get( 0 );
-                className = resolveTypeName( classTypeResolver, elementsType.getName() );
-                bag = resolveTypeName( classTypeResolver, type.getName() );
+                if ( driverUtils.isSimpleClass( type ) ) {
+                    className = resolveTypeName( classTypeResolver, type.getName() );
+                } else {
+                    //if this point was reached, we know it's a Collection. Managed type check was done previous to adding the property.
+                    multiple = true;
+                    Type elementsType = ( ( List<Type> ) type.getTypeArguments() ).get( 0 );
+                    className = resolveTypeName( classTypeResolver, elementsType.getName() );
+                    bag = resolveTypeName( classTypeResolver, type.getName() );
+                }
             }
-        }
 
-        if ( multiple ) {
-            property = dataObject.addProperty( field.getName(), className, true, bag, modifiers );
-        } else {
-            property = dataObject.addProperty( field.getName(), className, modifiers );
-        }
-
-        List<AnnotationSource<JavaClassSource>> annotations = field.getAnnotations();
-        if ( annotations != null ) {
-            for ( AnnotationSource annotation : annotations ) {
-                addPropertyAnnotation( property, annotation, classTypeResolver );
+            if ( multiple ) {
+                property = dataObject.addProperty( field.getName(), className, true, bag, modifiers );
+            } else {
+                property = dataObject.addProperty( field.getName(), className, modifiers );
             }
+
+            List<AnnotationSource<JavaClassSource>> annotations = field.getAnnotations();
+            if ( annotations != null ) {
+                for ( AnnotationSource annotation : annotations ) {
+                    addPropertyAnnotation( property, annotation, classTypeResolver );
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            logger.error( errorMessage( DATA_OBJECT_FIELD_LOAD_ERROR, field.getName(), dataObject.getClassName() ), e );
+            throw new ModelDriverException( errorMessage( DATA_OBJECT_FIELD_LOAD_ERROR, field.getName(), dataObject.getClassName() ), e );
         }
 
         return property;
@@ -284,34 +334,39 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     private Annotation createAnnotation( AnnotationSource annotationToken, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
 
-        String annotationClassName = resolveTypeName( classTypeResolver, annotationToken.getName() );
+        try {
+            String annotationClassName = resolveTypeName( classTypeResolver, annotationToken.getName() );
 
-        AnnotationDefinition annotationDefinition = getConfiguredAnnotation( annotationClassName );
-        Annotation annotation = null;
+            AnnotationDefinition annotationDefinition = getConfiguredAnnotation( annotationClassName );
+            Annotation annotation = null;
 
-        if ( annotationDefinition != null ) {
-            AnnotationDriver annotationDriver = getAnnotationDriver( annotationDefinition.getClassName() );
-            if ( annotationDriver != null ) {
-                annotation = annotationDriver.buildAnnotation( annotationDefinition, annotationToken );
+            if ( annotationDefinition != null ) {
+                AnnotationDriver annotationDriver = getAnnotationDriver( annotationDefinition.getClassName() );
+                if ( annotationDriver != null ) {
+                    annotation = annotationDriver.buildAnnotation( annotationDefinition, annotationToken );
+                } else {
+                    logger.warn( "AnnotationDriver for annotation: " + annotationToken.getName() + " is not configured for this ModelDriver driver" );
+                }
             } else {
-                logger.warn( "AnnotationDriver for annotation: " + annotationToken.getName() + " is not configured for this driver" );
+                logger.warn( "Annotation: " + annotationToken.getName() + " is not configured for this ModelDriver driver." );
             }
-        } else {
-            logger.warn( "Annotation: " + annotationToken.getName() + " is not configured for this driver." );
+            return annotation;
+        } catch ( ClassNotFoundException e ) {
+            logger.error( errorMessage( ANNOTATION_LOAD_ERROR, annotationToken.getName() ), e );
+            throw new ModelDriverException( errorMessage( ANNOTATION_LOAD_ERROR, annotationToken.getName() ), e );
         }
-        return annotation;
     }
 
-    private String resolveTypeName( ClassTypeResolver classTypeResolver, String name ) throws ModelDriverException {
+    private String resolveTypeName( ClassTypeResolver classTypeResolver, String name ) throws ClassNotFoundException {
         try {
-            if ( Types.isQualified( name ) ) {
+            if ( NamingUtils.isQualifiedName( name ) ) {
                 return name;
             } else {
                 return classTypeResolver.getFullTypeName( name );
             }
         } catch ( ClassNotFoundException e ) {
             logger.error( "Class could not be resolved for name: " + name, e );
-            throw new ModelDriverException( "Class could not be resolved for name: " + name + ". " + e.getMessage(), e );
+            throw e;
         }
     }
 
@@ -793,6 +848,10 @@ public class JavaRoasterModelDriver implements ModelDriver {
     public boolean isManagedAnnotation( AnnotationSource<?> annotation, ClassTypeResolver classTypeResolver) throws Exception {
         String annotationClassName = resolveTypeName( classTypeResolver, annotation.getName() );
         return getConfiguredAnnotation( annotationClassName ) != null;
+    }
+
+    private String errorMessage(String message, Object ... params) {
+        return MessageFormat.format( message, params );
     }
 
 }

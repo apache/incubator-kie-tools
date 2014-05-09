@@ -127,7 +127,7 @@ public class NamingUtils {
         return null;
     }
 
-    public static boolean isQualified( final String type ) {
+    public static boolean isQualifiedName( final String type ) {
         String[] tokens = tokenizeClassName( type );
         return ( tokens != null ) && ( tokens.length > 1 );
     }
@@ -138,6 +138,14 @@ public class NamingUtils {
             result = className.split( "\\." );
         }
         return result;
+    }
+
+    public static String createQualifiedName(String packageName, String className) {
+        if (packageName != null && !"".equals( packageName )) {
+            return packageName+"."+className;
+        } else {
+            return className;
+        }
     }
 
 }
