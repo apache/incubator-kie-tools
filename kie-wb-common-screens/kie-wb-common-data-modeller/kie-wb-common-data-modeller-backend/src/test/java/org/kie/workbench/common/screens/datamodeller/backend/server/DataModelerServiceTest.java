@@ -1,21 +1,25 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -38,11 +42,11 @@ public class DataModelerServiceTest {
         beanManager = startMain.go().getBeanManager();
 
         //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
+        final Bean pathsBean = ( Bean ) beanManager.getBeans( Paths.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
+        paths = ( Paths ) beanManager.getReference( pathsBean,
+                Paths.class,
+                cc );
 
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
@@ -52,16 +56,16 @@ public class DataModelerServiceTest {
     public void testDataModelerService() throws Exception {
 
         //Create DataModelerService bean
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelerService.class ).iterator().next();
+        final Bean dataModelServiceBean = ( Bean ) beanManager.getBeans( DataModelerService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelerService dataModelService = (DataModelerService) beanManager.getReference( dataModelServiceBean,
+        final DataModelerService dataModelService = ( DataModelerService ) beanManager.getReference( dataModelServiceBean,
                 DataModelerService.class,
                 cc );
 
         //Create ProjectServiceBean
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = ( Bean ) beanManager.getBeans( ProjectService.class ).iterator().next();
         final CreationalContext pscc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
+        final ProjectService projectService = ( ProjectService ) beanManager.getReference( projectServiceBean,
                 ProjectService.class,
                 pscc );
 
@@ -71,77 +75,130 @@ public class DataModelerServiceTest {
 
         Project project = projectService.resolveProject( packagePath );
 
+        systemAnnotations = dataModelService.getAnnotationDefinitions();
 
-
-        /*
-        final URL testUrl = this.getClass().getResource( "/" );
-        final org.uberfire.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
-        final Path testPath = paths.convert( testNioPath );
-        */
-
-        //Test a non-Project Path resolves to null
-        //final Package result = projectService.resolvePackage( testPath );
-
-
+        DataModelTO dataModelOriginalTO = createModel();
         DataModelTO dataModelTO = dataModelService.loadModel( project );
+        Map<String, DataObjectTO> objectsMap = new HashMap<String, DataObjectTO>();
 
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXXXX: " + dataModelTO);
-        for ( DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
-            System.out.println("dataObjectTO: " + dataObjectTO.getClassName() );
+        assertNotNull( dataModelTO );
+
+        assertEquals( dataModelOriginalTO.getDataObjects().size(), dataModelTO.getDataObjects().size() );
+
+        for ( DataObjectTO dataObjectTO : dataModelTO.getDataObjects() ) {
+            objectsMap.put( dataObjectTO.getClassName(), dataObjectTO );
         }
 
-        DataObjectTO pojo1 = dataModelTO.getDataObjectByClassName( "t1p1.Pojo1" );
-        assertNotNull( pojo1 );
-        assertName( "Pojo1", pojo1 );
-        assertPackageName( "t1p1", pojo1 );
-        assertClassName( "t1p1.Pojo1", pojo1 );
+        for ( DataObjectTO dataObjectTO : dataModelOriginalTO.getDataObjects() ) {
+            DataModelerAssert.assertEqualsDataObject( dataObjectTO, objectsMap.get( dataObjectTO.getClassName() ) );
+        }
 
-
-
-        //assertNotNull( oracle );
-
-        /*
-        assertEquals( 4,
-                      oracle.getProjectModelFields().size() );
-        assertContains( "t3p1.Bean1",
-                        oracle.getProjectModelFields().keySet() );
-        assertContains( "t3p2.Bean2",
-                        oracle.getProjectModelFields().keySet() );
-
-        assertTrue( oracle.getProjectEventTypes().get( "t3p1.Bean1" ) );
-        assertFalse( oracle.getProjectEventTypes().get( "t3p2.Bean2" ) );
-
-        assertEquals( 3,
-                      oracle.getProjectModelFields().get( "t3p1.Bean1" ).length );
-        assertContains( "this",
-                        oracle.getProjectModelFields().get( "t3p1.Bean1" ) );
-        assertContains( "field1",
-                        oracle.getProjectModelFields().get( "t3p1.Bean1" ) );
-        assertContains( "field2",
-                        oracle.getProjectModelFields().get( "t3p1.Bean1" ) );
-
-        assertEquals( 2,
-                      oracle.getProjectModelFields().get( "t3p2.Bean2" ).length );
-        assertContains( "this",
-                        oracle.getProjectModelFields().get( "t3p2.Bean2" ) );
-        assertContains( "field1",
-                        oracle.getProjectModelFields().get( "t3p2.Bean2" ) );
-                        */
     }
 
+    Map<String, AnnotationDefinitionTO> systemAnnotations = null;
 
-    void assertName(String name, DataObjectTO dataObjectTO) {
-        assertEquals( name, dataObjectTO.getName() );
+    private DataModelTO createModel() {
+        DataModelTO dataModelTO = new DataModelTO();
+
+        DataObjectTO pojo1 = createDataObject( "Pojo1", "t1p1", "t1p2.Pojo2" );
+
+        AnnotationTO annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.TYPE_SAFE_ANNOTATION, "value", "true" );
+        pojo1.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.ROLE_ANNOTATION, "value", "EVENT" );
+        pojo1.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.LABEL_ANNOTATION, "value", "Pojo1Label" );
+        pojo1.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, "value", "Pojo1Description" );
+        pojo1.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.DURATION_ANNOTATION, "value", "duration" );
+        pojo1.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.TIMESTAMP_ANNOTATION, "value", "timestamp" );
+        pojo1.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION, null, null );
+        pojo1.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.EXPIRES_ANNOTATION, "value", "1h25m" );
+        pojo1.addAnnotation( annotationTO );
+
+        ObjectPropertyTO propertyTO = addProperty( pojo1, "field1", "java.lang.Character", true, false, null );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "0" );
+        propertyTO.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.KEY_ANNOTATION, null, null );
+        propertyTO.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.LABEL_ANNOTATION, "value", "field1Label" );
+        propertyTO.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, "value", "field1Description" );
+        propertyTO.addAnnotation( annotationTO );
+        pojo1.getProperties().add( propertyTO );
+
+        propertyTO = addProperty( pojo1, "duration", "java.lang.Integer", true, false, null );
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "1" );
+        propertyTO.addAnnotation( annotationTO );
+        pojo1.getProperties().add( propertyTO );
+
+        propertyTO = addProperty( pojo1, "timestamp", "java.util.Date", true, false, null );
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "2" );
+        propertyTO.addAnnotation( annotationTO );
+        pojo1.getProperties().add( propertyTO );
+
+        propertyTO = addProperty( pojo1, "field2", "char", true, false, null );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "3" );
+        propertyTO.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.KEY_ANNOTATION, null, null );
+        propertyTO.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.LABEL_ANNOTATION, "value", "field2Label" );
+        propertyTO.addAnnotation( annotationTO );
+
+        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, "value", "field2Description" );
+        propertyTO.addAnnotation( annotationTO );
+        pojo1.getProperties().add( propertyTO );
+
+        propertyTO = addProperty( pojo1, "serialVersionUID", "long", true, false, null );
+        pojo1.getProperties().add( propertyTO );
+
+        dataModelTO.getDataObjects().add( pojo1 );
+
+        DataObjectTO pojo2 = createDataObject( "Pojo2", "t1p2", null );
+        dataModelTO.getDataObjects().add( pojo2 );
+
+        return dataModelTO;
+
     }
 
-    void assertPackageName(String packageName, DataObjectTO dataObjectTO) {
-        assertEquals( packageName, dataObjectTO.getPackageName() );
+    private DataObjectTO createDataObject( String name, String packageName, String superClassName ) {
+        return new DataObjectTO( name, packageName, superClassName );
     }
 
-    void assertClassName(String className, DataObjectTO dataObjectTO) {
-        assertEquals( className, dataObjectTO.getClassName() );
+    private ObjectPropertyTO addProperty( DataObjectTO dataObjectTO, String name, String className, boolean baseType, boolean multiple, String bag ) {
+        //todo set modifiers.
+        ObjectPropertyTO propertyTO = new ObjectPropertyTO( name, className, multiple, baseType, bag, -1 );
+        return propertyTO;
     }
 
+    private AnnotationTO createAnnotation( Map<String, AnnotationDefinitionTO> systemAnnotations, String name, String className, String memberName, String value ) {
+        AnnotationDefinitionTO annotationDefinitionTO = systemAnnotations.get( className );
 
+        AnnotationTO annotationTO = new AnnotationTO( annotationDefinitionTO );
+        annotationTO.setName( name );
+        annotationTO.setClassName( className );
+        if ( memberName != null ) {
+            annotationTO.setValue( memberName, value );
+        }
+
+        return annotationTO;
+    }
 
 }
