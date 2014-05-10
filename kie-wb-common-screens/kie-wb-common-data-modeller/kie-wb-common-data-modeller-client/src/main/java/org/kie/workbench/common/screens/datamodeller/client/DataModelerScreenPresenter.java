@@ -469,8 +469,16 @@ public class DataModelerScreenPresenter {
                     }
                 }
             } else if (resourceEvent instanceof ResourceUpdatedEvent) {
-                modelerService.call( new FileVerificationRemoteCallback(evtSessionInfo, resourceEvent.getPath()),
-                        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).verifiesHash(resourceEvent.getPath());
+                //TODO:
+                //at the moment the only editor that can update a .java file in this same session and same user is the
+                //datamodeller. So when we reach this point it means that the ResourceUpdateEvent for this .java file
+                //was produced when this datamodeler screen updated the file. Also this case is produced only when
+                //the datamodeller modifies one file. (if more than one file is deleted, modified, created, a
+                // ResourceBatchChangesEvent is produced instead.
+                // So no extra control is needed in this case.
+
+                //modelerService.call( new FileVerificationRemoteCallback(evtSessionInfo, resourceEvent.getPath()),
+                        //new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).verifiesHash(resourceEvent.getPath());
             }
 
             if (notifyChange) {
@@ -500,7 +508,6 @@ public class DataModelerScreenPresenter {
         @Override
         public void callback(Boolean verifiesHash) {
             /**
-             TODO, review this !!!!!!!
             if (!verifiesHash) {
                 InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo, currentProject, path);
                 getContext().setLastJavaFileChangeEvent(event);
