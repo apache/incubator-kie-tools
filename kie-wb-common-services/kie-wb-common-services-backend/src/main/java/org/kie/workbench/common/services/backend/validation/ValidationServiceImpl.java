@@ -27,6 +27,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
@@ -120,8 +121,14 @@ public class ValidationServiceImpl implements ValidationService {
         return result;
     }
 
+    @Override
     public boolean isTimerIntervalValid( final String timerInterval ) {
-        return true;
+        try {
+            new TimeIntervalParser().parse( timerInterval );
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
 }

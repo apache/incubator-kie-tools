@@ -134,7 +134,7 @@
                 <b:ListBox ui:field="typeSafeSelector" styleName="span10"></b:ListBox>
               </td>
               <td style="padding-left: 4px;">
-                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_typeSafeLabel}" text="{i18n.objectEditor_typeSafeHelp}" >
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_typeSafeLabel}" text="{i18n.objectEditor_typeSafeHelp}" html="true" >
                   <b:Icon ui:field="typeSafeHelpIcon" type="QUESTION_SIGN"></b:Icon>
                 </b:Popover>
               </td>
@@ -201,7 +201,7 @@
                 <b:ListBox ui:field="timestampFieldSelector" styleName="span10"></b:ListBox>
               </td>
               <td style="padding-left: 4px;">
-                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_timestampLabel}" text="{i18n.objectEditor_timestampHelp}" >
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_timestampLabel}" text="{i18n.objectEditor_timestampHelp}" html="true" >
                   <b:Icon ui:field="timestampHelpIcon" type="QUESTION_SIGN"></b:Icon>
                 </b:Popover>
               </td>
@@ -219,7 +219,7 @@
                 <b:ListBox ui:field="durationFieldSelector" styleName="span10"></b:ListBox>
               </td>
               <td style="padding-left: 4px;">
-                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_durationLabel}" text="{i18n.objectEditor_durationHelp}" >
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_durationLabel}" text="{i18n.objectEditor_durationHelp}" html="true" >
                   <b:Icon ui:field="durationHelpIcon" type="QUESTION_SIGN"></b:Icon>
                 </b:Popover>
               </td>
@@ -237,7 +237,7 @@
                 <b:TextBox ui:field="expires" styleName="span10"></b:TextBox>
               </td>
               <td style="padding-left: 4px;">
-                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_expiresLabel}" text="{i18n.objectEditor_expiresHelp}" >
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_expiresLabel}" text="{i18n.objectEditor_expiresHelp}" html="true" >
                   <b:Icon ui:field="expiresHelpIcon" type="QUESTION_SIGN"></b:Icon>
                 </b:Popover>
               </td>

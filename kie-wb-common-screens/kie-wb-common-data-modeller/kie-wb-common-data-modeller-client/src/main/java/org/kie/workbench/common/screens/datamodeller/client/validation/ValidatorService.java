@@ -88,11 +88,19 @@ public class ValidatorService {
 
     public void isValidTimerInterval( String expression, final ValidatorCallback callback ) {
 
-        //TODO, complete this validation.
-        if ("error".equals( expression ) ) {
+        if ( expression == null || (expression.length() > 0 && "".equals( expression.trim() )) ) {
             callback.onFailure();
         } else {
-            callback.onSuccess();
+            validationService.call( new RemoteCallback<Boolean>() {
+                @Override
+                public void callback( final Boolean value ) {
+                    if ( Boolean.TRUE.equals( value ) ) {
+                        callback.onSuccess();
+                    } else {
+                        callback.onFailure();
+                    }
+                }
+            } ).isTimerIntervalValid( expression );
         }
     }
 
