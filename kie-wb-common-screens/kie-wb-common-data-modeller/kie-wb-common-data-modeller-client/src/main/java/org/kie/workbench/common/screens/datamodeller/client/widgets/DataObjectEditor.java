@@ -850,7 +850,7 @@ public class DataObjectEditor extends Composite {
     private void loadPropertySelector(ListBox selector, DataObjectTO dataObject, List<String> types, String defaultValue) {
         if (dataObject == null) return;
 
-        List<ObjectPropertyTO> properties = DataModelerUtils.filterPropertiesByType(dataObject.getProperties(), types);
+        List<ObjectPropertyTO> properties = DataModelerUtils.filterPropertiesByType(dataObject.getProperties(), types, true);
         SortedMap<String, String> propertyNames = new TreeMap<String, String>();
         for (ObjectPropertyTO property : properties) {
             propertyNames.put( property.getName(), property.getName() );

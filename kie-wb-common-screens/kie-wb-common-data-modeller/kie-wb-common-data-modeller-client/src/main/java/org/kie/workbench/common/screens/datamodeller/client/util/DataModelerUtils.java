@@ -287,7 +287,7 @@ public class DataModelerUtils {
         return javaFilePathUri.replaceAll("/", ".");
     }
 
-    public static List<ObjectPropertyTO> filterPropertiesByType(Collection<ObjectPropertyTO> properties, List<String> expectedTypes) {
+    public static List<ObjectPropertyTO> filterPropertiesByType(Collection<ObjectPropertyTO> properties, List<String> expectedTypes, boolean skipUnmanaged) {
 
         final ArrayList<ObjectPropertyTO> result = new ArrayList<ObjectPropertyTO>( );
         if (properties == null || properties.size() == 0) return result;
@@ -303,6 +303,9 @@ public class DataModelerUtils {
 
         for ( ObjectPropertyTO propertyTO : properties ) {
             if (propertyTO.getClassName() != null && types.containsKey( propertyTO.getClassName() )) {
+
+                if (skipUnmanaged && ( ReflectionUtil.isStatic( propertyTO.getModifiers() ) || ReflectionUtil.isFinal( propertyTO.getModifiers() ))) continue;
+
                 result.add( propertyTO );
             }
         }
