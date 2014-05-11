@@ -470,7 +470,7 @@ public class DataObjectBrowser extends Composite {
                                     property.addAnnotation( getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
                                 }
 
-                                Integer position = DataModelerUtils.getInstance().getMaxPosition(getDataObject()) + 1;
+                                Integer position = DataModelerUtils.getMaxPosition(getDataObject()) + 1;
                                 property.addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.POSITION_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, position.toString());
 
                                 addDataObjectProperty(property);
@@ -508,7 +508,7 @@ public class DataObjectBrowser extends Composite {
             }
         });
 
-        List<ObjectPropertyTO> dataObjectProperties = (dataObject != null) ? DataModelerUtils.getInstance().getEditableProperties( dataObject ) : Collections.<ObjectPropertyTO>emptyList();
+        List<ObjectPropertyTO> dataObjectProperties = (dataObject != null) ? DataModelerUtils.getManagedProperties( dataObject ) : Collections.<ObjectPropertyTO>emptyList();
 
         ArrayList<ObjectPropertyTO> sortBuffer = new ArrayList<ObjectPropertyTO>();
         if (dataObject != null) sortBuffer.addAll(dataObjectProperties);
@@ -579,7 +579,7 @@ public class DataObjectBrowser extends Composite {
             String sPosRemoved = AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1");
             if (sPosRemoved != null && sPosRemoved.length() > 0) {
                 Integer posRemoved = Integer.parseInt(sPosRemoved);
-                DataModelerUtils.getInstance().recalculatePositions(dataObject, posRemoved);
+                DataModelerUtils.recalculatePositions(dataObject, posRemoved);
             }
 
 //            List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
@@ -594,7 +594,7 @@ public class DataObjectBrowser extends Composite {
 
     private String propertyTypeDisplay(ObjectPropertyTO property) {
         String displayName = property.getClassName();
-        if (property.isBaseType()) return DataModelerUtils.getInstance().extractClassName(displayName);
+        if (property.isBaseType()) return DataModelerUtils.extractClassName(displayName);
         String label = getContext().getHelper().getObjectLabelByClassName(displayName);
         if (label != null && !"".equals(label)) displayName = label;
         if (property.isMultiple()) {
@@ -653,7 +653,7 @@ public class DataObjectBrowser extends Composite {
                         @Override
                         public void execute() {
                             createNewProperty(dataObject,
-                                    DataModelerUtils.getInstance().unCapitalize(newPropertyId.getText()),
+                                    DataModelerUtils.unCapitalize(newPropertyId.getText()),
                                     newPropertyLabel.getText(),
                                     newPropertyType.getValue());
                         }
@@ -667,7 +667,7 @@ public class DataObjectBrowser extends Composite {
             ).show();
         } else {
             createNewProperty(dataObject,
-                    DataModelerUtils.getInstance().unCapitalize(newPropertyId.getText()),
+                    DataModelerUtils.unCapitalize(newPropertyId.getText()),
                     newPropertyLabel.getText(),
                     newPropertyType.getValue());
         }

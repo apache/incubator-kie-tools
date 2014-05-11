@@ -126,7 +126,7 @@ public class DataModelerContext {
     public void appendPackage(String packageName) {
 
         if (packageName != null && !"".equals(packageName)) {
-            String[] subPackages = DataModelerUtils.getInstance().calculateSubPackages(packageName);
+            String[] subPackages = DataModelerUtils.calculateSubPackages(packageName);
             String subPackage = null;
             for (int i = 0; subPackages != null && i < subPackages.length; i++) {
                 subPackage = subPackages[i];

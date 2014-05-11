@@ -66,7 +66,7 @@ public class ValidatorService {
 
     public void isValidPackageIdentifier( String identifier,
                                           final ValidatorCallback callback ) {
-        String[] packageTerms = DataModelerUtils.getInstance().getPackageTerms( identifier );
+        String[] packageTerms = DataModelerUtils.getPackageTerms( identifier );
         validationService.call(
                 new RemoteCallback<Map<String, Boolean>>() {
                     @Override

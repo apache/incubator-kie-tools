@@ -42,10 +42,6 @@ public class DataModelerUtils {
     public static final String CHAR = "char";
     public static final String BOOLEAN = "boolean";
 
-    public static DataModelerUtils getInstance() {
-        return new DataModelerUtils();
-    }
-
     public static Boolean isMultipleType(String type) {
         return type.lastIndexOf(DataModelerUtils.MULTIPLE) >= 0;
     }
@@ -109,7 +105,7 @@ public class DataModelerUtils {
         return sb.toString();
     }
 
-    public String extractClassName(String fullClassName) {
+    public static String extractClassName(String fullClassName) {
 
         if (fullClassName == null) return null;
         int index = fullClassName.lastIndexOf(".");
@@ -121,7 +117,7 @@ public class DataModelerUtils {
         }
     }
 
-    public String extractPackageName(String fullClassName) {
+    public static String extractPackageName(String fullClassName) {
         if (fullClassName == null) return null;
         int index = fullClassName.lastIndexOf(".");
         if (index > 0) {
@@ -132,11 +128,11 @@ public class DataModelerUtils {
         }
     }
 
-    public String[] getPackageTerms(String packageName) {
+    public static String[] getPackageTerms(String packageName) {
         return packageName.split("\\.", -1);
     }
 
-    public String[] calculateSubPackages(String packageName) {
+    public static String[] calculateSubPackages(String packageName) {
         String packageTerms[];
         String subpackages[];
 
@@ -154,7 +150,7 @@ public class DataModelerUtils {
         return subpackages;
     }
 
-    public String unCapitalize(String str) {
+    public static String unCapitalize(String str) {
         int strLen = str != null ? str.length() : 0;
         if (strLen == 0) return str;
         if (strLen > 1 && Character.isUpperCase(str.charAt(0)) && Character.isUpperCase(str.charAt(1))) {
@@ -167,7 +163,7 @@ public class DataModelerUtils {
         }
     }
 
-    public Integer getMaxPosition(DataObjectTO dataObjectTO) {
+    public static Integer getMaxPosition(DataObjectTO dataObjectTO) {
         List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
         Integer maxPosition = -1;
         Integer currentPosition;
@@ -184,15 +180,17 @@ public class DataModelerUtils {
         return maxPosition;
     }
 
-    public void recalculatePositions(DataObjectTO dataObjectTO, Integer positionRemoved) {
+    public static void recalculatePositions(DataObjectTO dataObjectTO, Integer positionRemoved) {
         if (dataObjectTO == null || positionRemoved < 0) return;
         List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
 
         if (properties != null && properties.size() > 0) {
             for (ObjectPropertyTO property : properties) {
-                Integer pos = Integer.parseInt(AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1"), 10);
-                if (pos > positionRemoved) {
-                    property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION ).setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf(pos-1).toString());
+                if (DataModelerUtils.isManagedProperty( property )) {
+                    Integer pos = Integer.parseInt(AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1"), 10);
+                    if (pos > positionRemoved) {
+                        property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION ).setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf(pos-1).toString());
+                    }
                 }
             }
         }
@@ -217,48 +215,54 @@ public class DataModelerUtils {
      *
      *          fieldPos 4 becomes 2    or:   when fP == oP --> fP = nP
      */
-    public void recalculatePositions(DataObjectTO dataObjectTO, Integer oldPosition, Integer newPosition) {
+    public static void recalculatePositions(DataObjectTO dataObjectTO, Integer oldPosition, Integer newPosition) {
         if (dataObjectTO == null || oldPosition == -1 || newPosition.equals(oldPosition)) return;
         List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
 
         if (properties != null && properties.size() > 0) {
             for (ObjectPropertyTO property : properties) {
-                String sfieldPos = AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1");
-                if (sfieldPos != null && sfieldPos.length() > 0) {
-                    Integer fieldPos = Integer.parseInt(sfieldPos, 10);
+                if (isManagedProperty( property )) {
+                    String sfieldPos = AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1");
+                    if (sfieldPos != null && sfieldPos.length() > 0) {
+                        Integer fieldPos = Integer.parseInt(sfieldPos, 10);
 
-                    if (newPosition < oldPosition) {
-                        if (fieldPos >= newPosition && fieldPos < oldPosition) {
-                            property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
-                                    .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos + 1 ).toString());
+                        if (newPosition < oldPosition) {
+                            if (fieldPos >= newPosition && fieldPos < oldPosition) {
+                                property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
+                                        .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos + 1 ).toString());
+                            }
+                        } else {
+                            if (fieldPos <= newPosition && fieldPos > oldPosition) {
+                                property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
+                                        .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos - 1 ).toString());
+                            }
                         }
-                    } else {
-                        if (fieldPos <= newPosition && fieldPos > oldPosition) {
+
+                        if (fieldPos == oldPosition)
                             property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
-                                    .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos - 1 ).toString());
-                        }
+                                    .setValue(AnnotationDefinitionTO.VALUE_PARAM, newPosition.toString());
+
                     }
-
-                    if (fieldPos == oldPosition)
-                        property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
-                                .setValue(AnnotationDefinitionTO.VALUE_PARAM, newPosition.toString());
-
                 }
             }
         }
     }
 
-    public List<ObjectPropertyTO> getEditableProperties(DataObjectTO dataObjectTO) {
+    public static List<ObjectPropertyTO> getManagedProperties( DataObjectTO dataObjectTO ) {
         List<ObjectPropertyTO> editableProperties = new ArrayList<ObjectPropertyTO>( );
 
         if ( dataObjectTO != null && dataObjectTO.getProperties() != null ) {
             for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
-                if (!ReflectionUtil.isFinal( propertyTO.getModifiers() ) && !ReflectionUtil.isStatic( propertyTO.getModifiers() )) {
+                if ( isManagedProperty( propertyTO ) ) {
                     editableProperties.add( propertyTO );
                 }
             }
         }
         return editableProperties;
+    }
+
+    public static boolean isManagedProperty( ObjectPropertyTO propertyTO ) {
+        return !ReflectionUtil.isFinal( propertyTO.getModifiers() ) && !ReflectionUtil.isStatic( propertyTO.getModifiers() );
     }
 
     public static String calculateExpectedClassName(Path projectRootPath, Path javaFilePath) {

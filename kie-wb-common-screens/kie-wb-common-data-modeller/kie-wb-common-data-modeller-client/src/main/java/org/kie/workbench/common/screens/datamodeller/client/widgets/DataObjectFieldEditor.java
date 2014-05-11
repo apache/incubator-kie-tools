@@ -308,7 +308,7 @@ public class DataObjectFieldEditor extends Composite {
         };
 
         final String oldValue = getObjectField().getName();
-        final String newValue = DataModelerUtils.getInstance().unCapitalize(name.getValue());
+        final String newValue = DataModelerUtils.unCapitalize(name.getValue());
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
         if (oldValue.equalsIgnoreCase(name.getValue())) {
@@ -434,7 +434,7 @@ public class DataObjectFieldEditor extends Composite {
         final String oldPosition = (annotation != null) ? annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString() : "-1";
         final String newPosition = positionSelector.getValue();
 
-        DataModelerUtils.getInstance().recalculatePositions(getDataObject(), Integer.parseInt(oldPosition, 10), Integer.parseInt(newPosition, 10));
+        DataModelerUtils.recalculatePositions(getDataObject(), Integer.parseInt(oldPosition, 10), Integer.parseInt(newPosition, 10));
 
         notifyFieldChange(AnnotationDefinitionTO.POSITION_ANNOTATION, oldPosition, newPosition);
     }
