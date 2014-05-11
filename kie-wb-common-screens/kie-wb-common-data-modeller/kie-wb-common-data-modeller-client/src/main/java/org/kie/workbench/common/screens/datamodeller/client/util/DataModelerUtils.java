@@ -186,7 +186,7 @@ public class DataModelerUtils {
 
         if (properties != null && properties.size() > 0) {
             for (ObjectPropertyTO property : properties) {
-                if (DataModelerUtils.isManagedProperty( property )) {
+                if (DataModelerUtils.isManagedProperty( property ) && hasPosition( property ) ) {
                     Integer pos = Integer.parseInt(AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1"), 10);
                     if (pos > positionRemoved) {
                         property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION ).setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf(pos-1).toString());
@@ -221,7 +221,7 @@ public class DataModelerUtils {
 
         if (properties != null && properties.size() > 0) {
             for (ObjectPropertyTO property : properties) {
-                if (isManagedProperty( property )) {
+                if (isManagedProperty( property ) && hasPosition( property )) {
                     String sfieldPos = AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1");
                     if (sfieldPos != null && sfieldPos.length() > 0) {
                         Integer fieldPos = Integer.parseInt(sfieldPos, 10);
@@ -246,6 +246,10 @@ public class DataModelerUtils {
                 }
             }
         }
+    }
+
+    public static boolean hasPosition(ObjectPropertyTO propertyTO) {
+        return propertyTO != null && propertyTO.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION ) != null;
     }
 
     public static List<ObjectPropertyTO> getManagedProperties( DataObjectTO dataObjectTO ) {
@@ -305,4 +309,5 @@ public class DataModelerUtils {
 
         return result;
     }
+
 }

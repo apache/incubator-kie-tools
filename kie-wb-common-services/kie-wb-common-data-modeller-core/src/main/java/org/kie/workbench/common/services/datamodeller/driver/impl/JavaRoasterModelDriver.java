@@ -44,6 +44,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefin
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.services.datamodeller.driver.ModelDriverExceptio
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
@@ -247,14 +249,28 @@ public class JavaRoasterModelDriver implements ModelDriver {
             }
 
             List<FieldSource<JavaClassSource>> fields = javaClassSource.getFields();
+            Integer naturalOrder = 0;
+            List<PropertyPosition> naturalOrderPositions = new ArrayList<PropertyPosition>();
+            ObjectProperty property;
+
             if ( fields != null ) {
                 for ( FieldSource<JavaClassSource> field : fields ) {
                     if ( driverUtils.isManagedType( field.getType(), classTypeResolver ) ) {
-                        addProperty( dataObject, field, classTypeResolver );
+
+                        property = addProperty( dataObject, field, classTypeResolver );
+
+                        if ( isManagedProperty( property ) ) {
+                            AnnotationImpl position = new AnnotationImpl( PositionAnnotationDefinition.getInstance() );
+                            position.setValue( "value", naturalOrder.toString() );
+                            naturalOrderPositions.add( new PropertyPosition( property, position ) );
+                            naturalOrder++;
+                        }
+
                     } else {
                         logger.debug( "field: " + field + "with fieldName: " + field.getName() + " won't be loaded by the diver because type: " + field.getType().getName() + " isn't a managed type." );
                     }
                 }
+                verifyPositions( dataObject, naturalOrderPositions );
             }
             return dataObject;
         } catch ( ClassNotFoundException e) {
@@ -268,6 +284,18 @@ public class JavaRoasterModelDriver implements ModelDriver {
         } finally {
             if (hasErrors) dataModel.removeDataObject( qualifiedName );
         }
+    }
+
+    private boolean isManagedProperty( ObjectProperty property ) {
+        return !property.isStatic() && !property.isFinal();
+    }
+
+    private List<ObjectProperty> filterManagedProperties( DataObject dataObject ) {
+        List<ObjectProperty> result = new ArrayList<ObjectProperty>( );
+        for ( ObjectProperty property : dataObject.getProperties().values() ) {
+            if (isManagedProperty( property )) result.add( property );
+        }
+        return result;
     }
 
     private ObjectProperty addProperty( DataObject dataObject, FieldSource<JavaClassSource> field, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
@@ -852,6 +880,134 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     private String errorMessage(String message, Object ... params) {
         return MessageFormat.format( message, params );
+    }
+
+    private void verifyPositions( DataObject dataObject,
+            List<PropertyPosition> naturalOrderPositions ) {
+
+        //1) check if all fields has position and all positions are consumed
+        HashMap<String, String> availablePositions = new HashMap<String, String>();
+        int i = 0;
+        List<ObjectProperty> managedProperties = filterManagedProperties( dataObject );
+
+        for ( ObjectProperty property : managedProperties ) {
+            availablePositions.put( String.valueOf( i ), "" );
+            i++;
+        }
+
+        boolean recalculate = false;
+        org.kie.workbench.common.services.datamodeller.core.Annotation position;
+        for ( ObjectProperty property : managedProperties ) {
+            position = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
+            if ( position == null ) {
+                //the position is missing for at least one field.
+                recalculate = true;
+                break;
+            } else {
+                String value = (String) position.getValue( "value" );
+                if ( value != null ) {
+                    availablePositions.remove( value.trim() );
+                }
+            }
+        }
+
+        org.kie.workbench.common.services.datamodeller.core.Annotation desiredPosition;
+        List<PropertyPosition> desiredPositions = new ArrayList<PropertyPosition>();
+
+        if ( recalculate || availablePositions.size() > 0 ) {
+            //we need to recalculate positions.
+            for ( PropertyPosition propertyPosition : naturalOrderPositions ) {
+                desiredPosition = propertyPosition.property.removeAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
+                if ( desiredPosition != null ) {
+                    desiredPositions.add( new PropertyPosition( propertyPosition.property, desiredPosition ) );
+                }
+                propertyPosition.property.addAnnotation( propertyPosition.position );
+            }
+            recalculatePositions( dataObject, desiredPositions );
+        }
+    }
+
+    private void recalculatePositions( DataObject dataObject,
+            List<PropertyPosition> desiredPositions ) {
+
+        Collection<ObjectProperty> properties = filterManagedProperties( dataObject );
+        org.kie.workbench.common.services.datamodeller.core.Annotation currentPosition;
+
+        for ( PropertyPosition desiredPosition : desiredPositions ) {
+            ObjectProperty property = dataObject.getProperties().get( desiredPosition.property.getName() );
+            currentPosition = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
+            recalculatePositions( properties, currentPosition, desiredPosition.position );
+        }
+    }
+
+    private void recalculatePositions( Collection<ObjectProperty> properties,
+            org.kie.workbench.common.services.datamodeller.core.Annotation oldPositionAnnotaion,
+            org.kie.workbench.common.services.datamodeller.core.Annotation newPositionAnnotation ) {
+
+        Integer newPosition;
+        Integer oldPosition;
+        Integer maxPosition = properties.size() - 1;
+
+        try {
+            oldPosition = Integer.parseInt( (String) oldPositionAnnotaion.getValue( "value" ) );
+        } catch ( NumberFormatException e ) {
+            //the old position is calculated by construction. This case is not possible.
+            return;
+        }
+
+        try {
+            newPosition = Integer.parseInt( (String) newPositionAnnotation.getValue( "value" ) );
+        } catch ( NumberFormatException e ) {
+            //if the value for the desired annotation is not valid it has no sence to continue.
+            return;
+        }
+
+        if ( newPosition < 0 ) {
+            newPosition = 0;
+        }
+        if ( newPosition > maxPosition ) {
+            newPosition = maxPosition;
+        }
+
+        if ( newPosition == oldPosition ) {
+            return;
+        }
+
+        org.kie.workbench.common.services.datamodeller.core.Annotation propertyPositionAnnotation;
+        int propertyPosition;
+        for ( ObjectProperty property : properties ) {
+
+            propertyPositionAnnotation = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
+            propertyPosition = Integer.parseInt( (String) propertyPositionAnnotation.getValue( "value" ) );
+
+            if ( newPosition < oldPosition ) {
+                if ( propertyPosition >= newPosition && propertyPosition < oldPosition ) {
+                    propertyPositionAnnotation.setValue( "value", Integer.valueOf( propertyPosition + 1 ).toString() );
+                }
+            } else {
+                if ( propertyPosition <= newPosition && propertyPosition > oldPosition ) {
+                    propertyPositionAnnotation.setValue( "value", Integer.valueOf( propertyPosition - 1 ).toString() );
+                }
+            }
+
+            if ( propertyPosition == oldPosition ) {
+                propertyPositionAnnotation.setValue( "value", newPosition.toString() );
+            }
+
+        }
+
+    }
+
+    static class PropertyPosition {
+
+        ObjectProperty property;
+        org.kie.workbench.common.services.datamodeller.core.Annotation position;
+
+        PropertyPosition( ObjectProperty property,
+                org.kie.workbench.common.services.datamodeller.core.Annotation position ) {
+            this.property = property;
+            this.position = position;
+        }
     }
 
 }
