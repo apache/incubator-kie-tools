@@ -84,45 +84,52 @@ public class SuperclassSelector extends Composite {
         superclassList.addItem("", NOT_SELECTED);
 
         if (getDataModel() != null) {
-            SortedMap<String, String> sortedClassNames = new TreeMap<String, String>();
-             boolean isExtensible = false;
-             String className;
-             String classLabel;
+            SortedMap<String, String> sortedModelClasses = new TreeMap<String, String>( );
+            SortedMap<String, String> sortedExternalClasses = new TreeMap<String, String>( );
+            boolean isExtensible = false;
+            String className;
+            String classLabel;
+            String selectedValue = NOT_SELECTED;
 
-            // first, all data object form this model in order
+            // first, all data objects form this model in order
             for (DataObjectTO internalDataObject : getDataModel().getDataObjects()) {
                 className = internalDataObject.getClassName();
                 classLabel = DataModelerUtils.getDataObjectFullLabel(internalDataObject);
                 isExtensible = !internalDataObject.isAbstract() && !internalDataObject.isFinal() && !internalDataObject.isInterface();
                 if (isExtensible) {
                     if (dataObject != null && className.toLowerCase().equals(dataObject.getClassName().toLowerCase())) continue;
-                    sortedClassNames.put(classLabel, className);
+                    sortedModelClasses.put( classLabel, className );
                 }
-            }
-            for (Map.Entry<String, String> classNameEntry : sortedClassNames.entrySet()) {
-                superclassList.addItem(classNameEntry.getKey(), classNameEntry.getValue());
             }
 
             // Then add all external types, ordered
-            sortedClassNames.clear();
             for (DataObjectTO externalDataObject : getDataModel().getExternalClasses()) {
                 className = externalDataObject.getClassName();
                 classLabel = DataModelerUtils.EXTERNAL_PREFIX + className;
                 isExtensible = !externalDataObject.isAbstract() && !externalDataObject.isFinal() && !externalDataObject.isInterface();
                 if (isExtensible) {
                     if (dataObject != null && className.toLowerCase().equals(dataObject.getClassName().toLowerCase())) continue;
-                    sortedClassNames.put(classLabel, className);
+                    sortedExternalClasses.put(classLabel, className);
                 }
-            }
-            for (Map.Entry<String, String> classNameEntry : sortedClassNames.entrySet()) {
-                superclassList.addItem(classNameEntry.getKey(), classNameEntry.getValue());
             }
 
             if (dataObject != null && dataObject.getSuperClassName() != null) {
-                superclassList.setSelectedValue(dataObject.getSuperClassName());
-            } else {
-                superclassList.setSelectedValue(NOT_SELECTED);
+                selectedValue = dataObject.getSuperClassName();
+                if (!sortedModelClasses.containsKey( selectedValue ) && !sortedExternalClasses.containsKey( selectedValue )) {
+                    //the model was loaded but the super class is not a model class nor an external class, e.g. java.lang.Object. Still needs to be loaded.
+                    sortedModelClasses.put( selectedValue, selectedValue );
+                }
             }
+
+            for (Map.Entry<String, String> classNameEntry : sortedModelClasses.entrySet()) {
+                superclassList.addItem(classNameEntry.getKey(), classNameEntry.getValue());
+            }
+
+            for (Map.Entry<String, String> classNameEntry : sortedExternalClasses.entrySet()) {
+                superclassList.addItem(classNameEntry.getKey(), classNameEntry.getValue());
+            }
+
+            superclassList.setSelectedValue( selectedValue );
         }
     }
 }
