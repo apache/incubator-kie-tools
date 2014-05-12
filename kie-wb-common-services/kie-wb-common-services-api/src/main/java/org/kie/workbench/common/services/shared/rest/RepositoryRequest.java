@@ -21,10 +21,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class RepositoryRequest extends Entity {
 
-    String userName;
-    String password;
-    String requestType;
-    String gitURL;
+    private String userName;
+    private String password;
+    private String requestType;
+    private String gitURL;
     
     public String getUserName() {
         return userName;

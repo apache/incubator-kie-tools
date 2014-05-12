@@ -4,10 +4,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class CreateProjectRequest extends JobRequest {
+    
 	private String repositoryName;
 	private String projectName;
 	private String description;
-
     
 	public String getRepositoryName() {
 		return repositoryName;

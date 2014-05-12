@@ -10,7 +10,7 @@ public class CreateOrganizationalUnitRequest extends JobRequest {
     private String organizationalUnitName;
     private String owner;
     private String description;
-    List<String> repositories;
+    private List<String> repositories;
 
     public String getOrganizationalUnitName() {
         return organizationalUnitName;

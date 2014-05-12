@@ -4,6 +4,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class RemoveRepositoryRequest extends JobRequest {
+    
     private String repositoryName;
 
 	public String getRepositoryName() {

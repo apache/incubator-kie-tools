@@ -23,8 +23,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class Entity implements Serializable {
     
-    String name;
-    String description;
+    private String name;
+    private String description;
 
     public String getName() {
         return name;

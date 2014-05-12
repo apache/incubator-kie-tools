@@ -23,8 +23,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class BuildConfig implements Serializable {
 
-    String name;
-    String value;
+    private String name;
+    private String value;
 
     public String getName() {
         return name;

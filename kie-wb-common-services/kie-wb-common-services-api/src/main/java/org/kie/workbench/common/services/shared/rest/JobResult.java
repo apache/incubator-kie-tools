@@ -11,7 +11,7 @@ public class JobResult implements Serializable {
     private JobStatus status;
     private String jobId;
     private String result;
-    private long lastModified;
+    private Long lastModified;
     private List<String> detailedResult;
 
     public JobStatus getStatus() {
@@ -38,7 +38,7 @@ public class JobResult implements Serializable {
         this.result = result;
     }
 
-    public long getLastModified() {
+    public Long getLastModified() {
         return lastModified;
     }
 

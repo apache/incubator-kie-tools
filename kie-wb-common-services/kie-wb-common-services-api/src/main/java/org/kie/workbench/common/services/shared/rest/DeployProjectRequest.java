@@ -4,9 +4,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class DeployProjectRequest extends JobRequest {
+    
 	private String repositoryName;
 	private String projectName;
-    private BuildConfig buildConfig;
     
 	public String getRepositoryName() {
 		return repositoryName;

@@ -23,8 +23,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class OrganizationalUnit extends Entity {
     
-    String owner;
-    List<String> repositories;
+    private String owner;
+    private List<String> repositories;
     
     public String getOwner() {
         return owner;
