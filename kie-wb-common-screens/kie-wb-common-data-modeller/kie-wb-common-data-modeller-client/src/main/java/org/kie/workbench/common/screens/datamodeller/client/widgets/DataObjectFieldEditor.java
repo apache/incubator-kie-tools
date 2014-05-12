@@ -254,11 +254,11 @@ public class DataObjectFieldEditor extends Composite {
 
     private void loadDataObjectField(DataObjectTO dataObject, ObjectPropertyTO objectField) {
         clean();
-        initTypeList();
         setReadonly(true);
         if (dataObject != null && objectField != null) {
             setDataObject(dataObject);
             setObjectField(objectField);
+            initTypeList();
 
             initPositions();
 
@@ -288,6 +288,8 @@ public class DataObjectFieldEditor extends Composite {
             }
 
             setReadonly( false );
+        } else {
+            initTypeList();
         }
     }
 
@@ -442,8 +444,18 @@ public class DataObjectFieldEditor extends Composite {
     private void initTypeList() {
         typeSelector.clear();
 
-        SortedMap<String, String> typeNames = new TreeMap<String, String>();
+        SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>( );
+        SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>( );
+        String currentFieldType = null;
+        boolean currentFieldTypeIncluded = false;
+
         if (getDataModel() != null) {
+
+
+            if (getDataObject() != null && getObjectField() != null) {
+                currentFieldType = getObjectField().getClassName();
+            }
+
             // First add all base types, ordered
             for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
                 if (!baseType.getValue().isPrimitive()) {
@@ -452,28 +464,43 @@ public class DataObjectFieldEditor extends Composite {
                 // TODO add multiple types for base types?
             }
 
-            // Second add all model types, ordered
+            // collect all model types, ordered
             for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
                 String className = dataObject.getClassName();
                 String className_m = className + DataModelerUtils.MULTIPLE;
                 String classLabel = DataModelerUtils.getDataObjectFullLabel(dataObject);
                 String classLabel_m = classLabel  + DataModelerUtils.MULTIPLE;
-                typeNames.put(classLabel, className);
-                typeNames.put(classLabel_m, className_m);
-            }
-            for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
-                typeSelector.addItem(typeName.getKey(), typeName.getValue());
+                sortedModelTypeNames.put(classLabel, className);
+                sortedModelTypeNames.put(classLabel_m, className_m);
+                if (className.equals( currentFieldType )) currentFieldTypeIncluded = true;
             }
 
-            // Then add all external types, ordered
-            typeNames.clear();
+            // collect external types, ordered
             for (DataObjectTO externalDataObject : getDataModel().getExternalClasses()) {
                 String extClass = externalDataObject.getClassName();
                 String extClass_m = extClass + DataModelerUtils.MULTIPLE;
-                typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
-                typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);
+                sortedExternalTypeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
+                sortedExternalTypeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);
+                if (extClass.equals( currentFieldType )) currentFieldTypeIncluded = true;
             }
-            for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
+
+            //check if current fields type is present
+            if (currentFieldType != null && !currentFieldTypeIncluded && !getContext().getHelper().isBaseType( currentFieldType )) {
+                //uncommon case. A field was loaded but the class isn't within the model or externall classes.
+
+                String extClass = currentFieldType;
+                String extClass_m = extClass + DataModelerUtils.MULTIPLE;
+                sortedExternalTypeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
+                sortedExternalTypeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);
+            }
+
+            //add project classes to the selector.
+            for (Map.Entry<String, String> typeName : sortedModelTypeNames.entrySet()) {
+                typeSelector.addItem(typeName.getKey(), typeName.getValue());
+            }
+
+            //add external classes to the selector.
+            for (Map.Entry<String, String> typeName : sortedExternalTypeNames.entrySet()) {
                 typeSelector.addItem(typeName.getKey(), typeName.getValue());
             }
 
