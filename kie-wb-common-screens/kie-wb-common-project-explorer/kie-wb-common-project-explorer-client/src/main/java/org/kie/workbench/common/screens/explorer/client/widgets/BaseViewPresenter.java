@@ -109,6 +109,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     protected FolderItem activeFolderItem = null;
     protected Package activePackage = null;
     protected FolderListing activeContent = null;
+    private boolean isOnLoading = false;
 
     @PostConstruct
     public void init() {
@@ -210,7 +211,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                 refresh( false );
                             }
                         },
-                        new HasBusyIndicatorDefaultErrorCallback( getView() ) ).deleteItem( folderItem, comment );
+                        new HasBusyIndicatorDefaultErrorCallback( getView() )
+                                    ).deleteItem( folderItem, comment );
             }
         } );
 
@@ -250,9 +252,10 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                                            refresh();
                                                                        }
                                                                    },
-                                                                   new HasBusyIndicatorDefaultErrorCallback( getView() ) ).renameItem( folderItem,
-                                                                                                                                       details.getNewFileName(),
-                                                                                                                                       details.getCommitMessage() );
+                                                                   new HasBusyIndicatorDefaultErrorCallback( getView() )
+                                                                               ).renameItem( folderItem,
+                                                                                             details.getNewFileName(),
+                                                                                             details.getCommitMessage() );
                                                        }
                                                    }
         );
@@ -292,9 +295,10 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                 refresh();
                             }
                         },
-                        new HasBusyIndicatorDefaultErrorCallback( getView() ) ).copyItem( folderItem,
-                                                                                          details.getNewFileName(),
-                                                                                          details.getCommitMessage() );
+                        new HasBusyIndicatorDefaultErrorCallback( getView() )
+                                    ).copyItem( folderItem,
+                                                details.getNewFileName(),
+                                                details.getCommitMessage() );
             }
         }
         );
@@ -449,7 +453,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                         buildResultsEvent.fire( results );
                     }
                 },
-                new DefaultErrorCallback() ).build( project );
+                new DefaultErrorCallback()
+                         ).build( project );
     }
 
     @Override
@@ -484,8 +489,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     @Override
     public void activeFolderItemSelected( final FolderItem item ) {
-        if ( Utils.hasFolderItemChanged( item,
-                                         activeFolderItem ) ) {
+        if ( !isOnLoading && Utils.hasFolderItemChanged( item, activeFolderItem ) ) {
             activeFolderItem = item;
             fireContextChangeEvent();
 
@@ -494,9 +498,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             explorerService.call( new RemoteCallback<FolderListing>() {
                 @Override
                 public void callback( final FolderListing folderListing ) {
+                    isOnLoading = true;
                     loadContent( folderListing );
                     getView().setItems( folderListing );
                     getView().hideBusyIndicator();
+                    isOnLoading = false;
                 }
             }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing( activeOrganizationalUnit,
                                                                                          activeRepository,
