@@ -41,7 +41,7 @@ public class SourceServicesImpl
     }
 
     @Inject
-    public SourceServicesImpl( @Any Instance<SourceService> sourceServiceList ) {
+    public SourceServicesImpl( @Any Instance<SourceService<?>> sourceServiceList ) {
         for ( SourceService sourceService : sourceServiceList ) {
             sourceServices.add( sourceService );
         }
