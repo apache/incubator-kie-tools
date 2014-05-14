@@ -107,7 +107,7 @@ public class ActivityManagerImpl implements ActivityManager {
             if ( authzManager.authorize( instance, identity ) ) {
                 activities.add( instance );
             } else {
-                //If user does not have permission destroy bean to avoid memory leak
+                // Since user does not have permission, destroy bean to avoid memory leak
                 if ( activityBean.getScope().equals( Dependent.class ) ) {
                     iocManager.destroyBean( instance );
                 }
@@ -130,9 +130,11 @@ public class ActivityManagerImpl implements ActivityManager {
     }
 
     /**
-     * Get a set of Bean definitions that can handle the @Identifier
+     * Gets the bean definition of the activity associated with the given place ID, if one exists.
+     * 
      * @param identifier
-     * @return
+     *            the place ID. Null is permitted, but always resolves to an empty collection.
+     * @return an unmodifiable collection with zero or one item, depending on if the resolution was successful.
      */
     private Collection<IOCBeanDef<Activity>> resolveById( final String identifier ) {
         if ( identifier == null ) {

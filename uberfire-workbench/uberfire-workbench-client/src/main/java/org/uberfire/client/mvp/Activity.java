@@ -15,16 +15,30 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPopup;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.authz.RuntimeResource;
 
 /**
- * Base Activity life-cycles
+ * Common top-level interface for all Workbench Activity classes. No concrete class implements this interface directly;
+ * see the subinterfaces for specific activity types that do get implemented.
+ * <p>
+ * Also, implementations of this interface and its subinterfaces are typically not written by hand; instead, they are
+ * generated from classes annotated with {@link WorkbenchScreen}, {@link WorkbenchEditor}, {@link WorkbenchPopup}, and
+ * others by an UberFire annotation processor.
+ * <p>
+ * Developers of UberFire applications will not typically come into direct contact with things that implement Activity
+ * or its subinterfaces; instead, they will work with a {@link PlaceManager} to manipulate activities at arm's length.
+ * <p>
+ * If you do need to get your hands on a particular {@code Activity} instance, do so using an {@link ActivityManager}.
+ * 
+ * @see PlaceManager
+ * @see ActivityManager
  */
-public interface Activity
-        extends
-        RuntimeResource {
+public interface Activity extends RuntimeResource {
 
     void launch( final PlaceRequest place,
                  final Command callback );
