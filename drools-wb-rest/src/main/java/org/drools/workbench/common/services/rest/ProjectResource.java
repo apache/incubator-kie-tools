@@ -34,7 +34,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Variant;
 
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -187,7 +189,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories")
-    public JobRequest createOrCloneRepository( RepositoryRequest repository ) {
+    public Response createOrCloneRepository( RepositoryRequest repository ) {
         logger.info( "-----createOrCloneRepository--- , repository name:" + repository.getName() );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -200,13 +202,13 @@ public class ProjectResource {
 
         jobRequestObserver.createOrCloneRepositoryRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}")
-    public JobRequest removeRepository(@PathParam("repositoryName") String repositoryName ) {
+    public Response removeRepository(@PathParam("repositoryName") String repositoryName ) {
         logger.info( "-----removeRepository--- , repositoryName:" + repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -220,14 +222,14 @@ public class ProjectResource {
 
         jobRequestObserver.removeRepositoryRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects")
-    public JobRequest createProject(
+    public Response createProject(
             @PathParam("repositoryName") String repositoryName,
             Entity project ) {
         logger.info( "-----createProject--- , repositoryName:" + repositoryName + ", project name:" + project.getName() );
@@ -245,13 +247,13 @@ public class ProjectResource {
 
         jobRequestObserver.createProjectRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}")
-    public JobRequest deleteProject(
+    public Response deleteProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.info( "-----deleteProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
@@ -275,13 +277,14 @@ public class ProjectResource {
         //TODO: Delete project. ProjectService does not have a removeProject method yet.
         //createProjectRequestEvent.fire(jobRequest);
         
-        return jobRequest;*/
+        return createAcceptedStatusResponse(jobRequest);
+        */
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/compile")
-    public JobRequest compileProject(
+    public Response compileProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.info( "-----compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
@@ -298,13 +301,13 @@ public class ProjectResource {
 
         jobRequestObserver.compileProjectRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/install")
-    public JobRequest installProject(
+    public Response installProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.info( "-----installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
@@ -321,14 +324,14 @@ public class ProjectResource {
 
         jobRequestObserver.installProjectRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/test")
-    public JobRequest testProject(
+    public Response testProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName,
             BuildConfig mavenConfig ) {
@@ -347,13 +350,13 @@ public class ProjectResource {
 
         jobRequestObserver.testProjectRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}/projects/{projectName}/maven/deploy")
-    public JobRequest deployProject(
+    public Response deployProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.info( "-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
@@ -370,7 +373,7 @@ public class ProjectResource {
 
         jobRequestObserver.deployProjectRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @GET
@@ -421,7 +424,7 @@ public class ProjectResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits")
-    public JobRequest createOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
+    public Response createOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
         logger.info( "-----createOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnit.getName() + ", OrganizationalUnit owner:" + organizationalUnit.getOwner() );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -436,13 +439,13 @@ public class ProjectResource {
 
         jobRequestObserver.createOrganizationalUnitRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
-    public JobRequest addRepositoryToOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
+    public Response addRepositoryToOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                          @PathParam("repositoryName") String repositoryName ) {
         logger.info( "-----addRepositoryToOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", Repository name:" + repositoryName );
         checkOrganizationalUnitExistence(organizationalUnitName);
@@ -459,13 +462,13 @@ public class ProjectResource {
 
         jobRequestObserver.addRepositoryToOrganizationalUnitRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
-    public JobRequest removeRepositoryFromOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
+    public Response removeRepositoryFromOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                               @PathParam("repositoryName") String repositoryName ) {
         logger.info( "-----removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", Repository name:" + repositoryName );
         checkOrganizationalUnitExistence(organizationalUnitName);
@@ -482,13 +485,13 @@ public class ProjectResource {
 
         jobRequestObserver.removeRepositoryFromOrganizationalUnitRequest(jobRequest);
 
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}")
-    public JobRequest deleteOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
+    public Response deleteOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
         logger.info( "-----deleteOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName );
         checkOrganizationalUnitExistence(organizationalUnitName);
         
@@ -502,7 +505,7 @@ public class ProjectResource {
         
         jobRequestObserver.removeOrganizationalUnitRequest(jobRequest);
         
-        return jobRequest;
+        return createAcceptedStatusResponse(jobRequest);
     }
     
     private org.uberfire.backend.repositories.Repository checkRepositoryExistence(String repoName) { 
@@ -521,6 +524,12 @@ public class ProjectResource {
             throw RestOperationException.notFound("Organizational unit " + orgUnitName + " does not exist.");
         }
         return origOrgUnit;
+    }
+   
+    private static Variant defaultVariant = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE).add().build().get(0);
+    
+    private Response createAcceptedStatusResponse(JobRequest jobRequest) { 
+        return Response.status(Status.ACCEPTED).entity(jobRequest).variant(defaultVariant).build();
     }
 
 }
