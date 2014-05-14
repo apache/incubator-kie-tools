@@ -71,7 +71,6 @@ import org.uberfire.io.IOService;
  */
 @Path("/")
 @Named
-@GZIP
 @ApplicationScoped
 public class ProjectResource {
 
@@ -169,6 +168,20 @@ public class ProjectResource {
         }
         return result;
     }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/repositories/{repositoryName}")
+    public RepositoryResponse getRepository(@PathParam("repositoryName") String repositoryName ) {
+        logger.info( "-----getRepository " + repositoryName + "--- " );
+        org.uberfire.backend.repositories.Repository origRepo = checkRepositoryExistence(repositoryName);
+        
+        RepositoryResponse repo = new RepositoryResponse();
+        repo.setGitURL( origRepo.getUri() );
+        repo.setName( origRepo.getAlias() );
+        
+        return repo;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -193,8 +206,7 @@ public class ProjectResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}")
-    public JobRequest removeRepository(
-            @PathParam("repositoryName") String repositoryName ) {
+    public JobRequest removeRepository(@PathParam("repositoryName") String repositoryName ) {
         logger.info( "-----removeRepository--- , repositoryName:" + repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -374,7 +386,6 @@ public class ProjectResource {
             OrganizationalUnit orgUnit = new OrganizationalUnit();
             orgUnit.setName( ou.getName() );
             orgUnit.setOwner( ou.getOwner() );
-            orgUnit.setRepositories( new ArrayList<String>() );
             List<String> repoNames = new ArrayList<String>();
             for ( Repository r : ou.getRepositories() ) {
                 repoNames.add( r.getAlias() );
@@ -386,6 +397,26 @@ public class ProjectResource {
         return organizationalUnits;
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/organizationalunits/{organizationalUnitName}")
+    public OrganizationalUnit getOrganizationalUnit(@PathParam("organizationalUnitName") String organizationalUnitName) { 
+        logger.info( "-----getOrganizationalUnit " + organizationalUnitName + "--- " );
+        org.uberfire.backend.organizationalunit.OrganizationalUnit origOrgUnit
+            = checkOrganizationalUnitExistence(organizationalUnitName);
+        
+        OrganizationalUnit orgUnit = new OrganizationalUnit();
+        orgUnit.setName( origOrgUnit.getName() );
+        orgUnit.setOwner( origOrgUnit.getOwner() );
+        List<String> repoNames = new ArrayList<String>();
+        for ( Repository r : origOrgUnit.getRepositories() ) {
+            repoNames.add( r.getAlias() );
+        }
+        orgUnit.setRepositories( repoNames );
+
+        return orgUnit;
+    }
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
