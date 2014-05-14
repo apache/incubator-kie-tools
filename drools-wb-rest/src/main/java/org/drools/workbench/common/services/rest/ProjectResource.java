@@ -39,6 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.resteasy.annotations.GZIP;
+import org.kie.workbench.common.services.rest.RestOperationException;
 import org.kie.workbench.common.services.shared.rest.AddRepositoryToOrganizationalUnitRequest;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.CompileProjectRequest;
@@ -218,7 +219,8 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             Entity project ) {
         logger.info( "-----createProject--- , repositoryName:" + repositoryName + ", project name:" + project.getName() );
-
+        checkRepositoryExistence(repositoryName);
+        
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateProjectRequest jobRequest = new CreateProjectRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
@@ -241,6 +243,7 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.info( "-----deleteProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        checkRepositoryExistence(repositoryName);
 
         throw new WebApplicationException( Response.status( Response.Status.NOT_ACCEPTABLE )
                                                    .entity( "UNIMPLEMENTED" ).build() );
@@ -270,6 +273,7 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.info( "-----compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CompileProjectRequest jobRequest = new CompileProjectRequest();
@@ -292,6 +296,7 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.info( "-----installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         InstallProjectRequest jobRequest = new InstallProjectRequest();
@@ -316,6 +321,7 @@ public class ProjectResource {
             @PathParam("projectName") String projectName,
             BuildConfig mavenConfig ) {
         logger.info( "-----testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         TestProjectRequest jobRequest = new TestProjectRequest();
@@ -339,6 +345,7 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
         logger.info( "-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         DeployProjectRequest jobRequest = new DeployProjectRequest();
@@ -407,6 +414,8 @@ public class ProjectResource {
     public JobRequest addRepositoryToOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                          @PathParam("repositoryName") String repositoryName ) {
         logger.info( "-----addRepositoryToOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", Repository name:" + repositoryName );
+        checkOrganizationalUnitExistence(organizationalUnitName);
+        checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         AddRepositoryToOrganizationalUnitRequest jobRequest = new AddRepositoryToOrganizationalUnitRequest();
@@ -428,7 +437,9 @@ public class ProjectResource {
     public JobRequest removeRepositoryFromOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                               @PathParam("repositoryName") String repositoryName ) {
         logger.info( "-----removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", Repository name:" + repositoryName );
-
+        checkOrganizationalUnitExistence(organizationalUnitName);
+        checkRepositoryExistence(repositoryName);
+        
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         RemoveRepositoryFromOrganizationalUnitRequest jobRequest = new RemoveRepositoryFromOrganizationalUnitRequest();
         jobRequest.setStatus( JobStatus.ACCEPTED );
@@ -448,7 +459,8 @@ public class ProjectResource {
     @Path("/organizationalunits/{organizationalUnitName}")
     public JobRequest deleteOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
         logger.info( "-----deleteOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName );
-
+        checkOrganizationalUnitExistence(organizationalUnitName);
+        
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         RemoveOrganizationalUnitRequest jobRequest = new RemoveOrganizationalUnitRequest();
         jobRequest.setStatus(JobStatus.ACCEPTED);
@@ -460,6 +472,24 @@ public class ProjectResource {
         jobRequestObserver.removeOrganizationalUnitRequest(jobRequest);
         
         return jobRequest;
+    }
+    
+    private org.uberfire.backend.repositories.Repository checkRepositoryExistence(String repoName) { 
+        org.uberfire.backend.repositories.Repository repo = repositoryService.getRepository(repoName);
+        if( repo == null ) { 
+            throw RestOperationException.notFound("Repository " + repoName + " does not exist.");
+        }
+        return repo;
+    }
+    
+    private org.uberfire.backend.organizationalunit.OrganizationalUnit checkOrganizationalUnitExistence(String orgUnitName) { 
+        org.uberfire.backend.organizationalunit.OrganizationalUnit origOrgUnit
+            = organizationalUnitService.getOrganizationalUnit(orgUnitName);
+        
+        if( origOrgUnit == null ) { 
+            throw RestOperationException.notFound("Organizational unit " + orgUnitName + " does not exist.");
+        }
+        return origOrgUnit;
     }
 
 }
