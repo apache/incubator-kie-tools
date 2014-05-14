@@ -19,11 +19,11 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
 /**
- * Base class for Activities
+ * Implementation of behaviour common to all activities.
+ * <p>
+ * AbstractActivity is not typically subclassed directly, even by generated code. See the more purpose-based subclasses.
  */
-public abstract class AbstractActivity
-implements
-Activity {
+public abstract class AbstractActivity implements Activity {
 
     protected PlaceManager placeManager;
 
@@ -37,7 +37,7 @@ Activity {
 
     @Override
     public void launch( final PlaceRequest place,
-            final Command callback ) {
+                        final Command callback ) {
         this.place = place;
         this.callback = callback;
     }

@@ -15,15 +15,11 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.workbench.model.PanelDefinition;
 
-/**
- * Pop-up Activity life-cycles
- */
-public interface ContextActivity
-        extends
-        Activity {
+import com.google.gwt.user.client.ui.IsWidget;
+
+public interface ContextActivity extends Activity {
 
     void onAttach( final PanelDefinition definition );
 

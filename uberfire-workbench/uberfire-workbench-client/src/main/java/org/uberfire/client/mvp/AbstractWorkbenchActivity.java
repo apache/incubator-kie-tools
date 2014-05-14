@@ -15,17 +15,19 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
- * Base class for Activities
+ * Implementation of behaviour common to all workbench editors and screens.
+ * <p>
+ * AbstractWorkbenchActivity is not typically subclassed directly, even by generated code. See the more purpose-based
+ * subclasses.
  */
-public abstract class AbstractWorkbenchActivity extends AbstractActivity
-        implements
-        WorkbenchActivity {
+public abstract class AbstractWorkbenchActivity extends AbstractActivity implements WorkbenchActivity {
 
     public AbstractWorkbenchActivity( final PlaceManager placeManager ) {
         super( placeManager );
@@ -64,7 +66,7 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
 
     @Override
     public void onLostFocus() {
-        //Do nothing.  
+        //Do nothing.
     }
 
     @Override

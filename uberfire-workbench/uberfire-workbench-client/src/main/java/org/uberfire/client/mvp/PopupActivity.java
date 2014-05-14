@@ -15,15 +15,11 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;
 
-/**
- * Pop-up Activity life-cycles
- */
-public interface PopupActivity
-        extends
-        Activity {
+import com.google.gwt.user.client.ui.IsWidget;
+
+public interface PopupActivity extends Activity {
 
     void onStartup();
 

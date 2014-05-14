@@ -19,9 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.annotations.WorkbenchSplashScreen;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
@@ -30,11 +28,15 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
- * Base class for Pop-up Activities
+ * Implementation of behaviour common to all splash screen activities. Concrete implementations are typically not written by
+ * hand; rather, they are generated from classes annotated with {@link WorkbenchSplashScreen}.
  */
-public abstract class AbstractSplashScreenActivity extends AbstractActivity
-        implements SplashScreenActivity {
+public abstract class AbstractSplashScreenActivity extends AbstractActivity implements SplashScreenActivity {
 
     @Inject
     private PlaceManager placeManager;
@@ -45,7 +47,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
-    private SplashView splash = new SplashView();
+    private final SplashView splash = new SplashView();
 
     private Boolean showAgain;
     private SplashScreenFilter splashFilter;
@@ -64,7 +66,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity
     public void launch( final PlaceRequest place,
                         final Command callback ) {
         super.launch( place,
-                      callback );
+                callback );
 
         wbServices.loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
             @Override
@@ -130,7 +132,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity
 
     @Override
     public void onStartup( final PlaceRequest place ) {
-        //Do nothing.  
+        //Do nothing.
     }
 
     @Override

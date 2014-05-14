@@ -15,17 +15,18 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.annotations.WorkbenchContext;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
- * Base class for Context Activities
+ * Implementation of behaviour common to all context activities. Concrete implementations are typically not written by
+ * hand; rather, they are generated from classes annotated with {@link WorkbenchContext}.
  */
-public abstract class AbstractWorkbenchContextActivity
-        extends AbstractActivity
-        implements ContextActivity {
+public abstract class AbstractWorkbenchContextActivity extends AbstractActivity implements ContextActivity {
 
     protected PanelDefinition panel;
 

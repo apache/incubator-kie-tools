@@ -16,16 +16,16 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 /**
- * Base class for Editor Activities
+ * Implementation of behaviour common to all workbench editor activities. Concrete implementations are typically not written by
+ * hand; rather, they are generated from classes annotated with {@link WorkbenchEditor}.
  */
-public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchActivity
-        implements
-        WorkbenchEditorActivity {
+public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchActivity implements WorkbenchEditorActivity {
 
     protected ObservablePath path;
 
@@ -61,7 +61,7 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
     @Override
     public void onSave() {
-        //Do nothing.  
+        //Do nothing.
     }
 
     @Override

@@ -15,16 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
-/**
- * Splash Screen Activity life-cycles
- */
-public interface SplashScreenActivity
-        extends
-        Activity {
+import com.google.gwt.user.client.ui.IsWidget;
+
+public interface SplashScreenActivity extends Activity {
 
     void forceShow();
 

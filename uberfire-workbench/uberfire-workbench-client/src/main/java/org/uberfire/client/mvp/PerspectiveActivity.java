@@ -20,12 +20,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
-/**
- * Perspective Activity life-cycles
- */
-public interface PerspectiveActivity
-        extends
-        ContextSensitiveActivity {
+public interface PerspectiveActivity extends ContextSensitiveActivity {
 
     void onStartup();
 

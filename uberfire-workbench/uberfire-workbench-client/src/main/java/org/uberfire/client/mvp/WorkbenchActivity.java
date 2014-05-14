@@ -15,19 +15,15 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
-/**
- * Base Workbench Part Activity life-cycles
- */
-public interface WorkbenchActivity
-        extends
-        ContextSensitiveActivity {
+import com.google.gwt.user.client.ui.IsWidget;
+
+public interface WorkbenchActivity extends ContextSensitiveActivity {
 
     void launch( final AcceptItem acceptItem,
                  final PlaceRequest place,

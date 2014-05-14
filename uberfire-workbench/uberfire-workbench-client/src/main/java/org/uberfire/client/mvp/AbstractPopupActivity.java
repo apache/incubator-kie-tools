@@ -19,22 +19,23 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
- * Base class for Pop-up Activities
+ * Implementation of behaviour common to all popup activities. Concrete implementations are typically not written by
+ * hand; rather, they are generated from classes annotated with {@link WorkbenchPopup}.
  */
-public abstract class AbstractPopupActivity extends AbstractActivity
-        implements
-        PopupActivity {
+public abstract class AbstractPopupActivity extends AbstractActivity implements PopupActivity {
 
     @Inject
     private SyncBeanManager iocManager;
@@ -42,7 +43,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     @Inject
     private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
-    private PopupView popup = new PopupView();
+    private final PopupView popup = new PopupView();
 
     public AbstractPopupActivity( final PlaceManager placeManager ) {
         super( placeManager );
@@ -58,7 +59,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity
     public void launch( final PlaceRequest place,
                         final Command callback ) {
         super.launch( place,
-                      callback );
+                callback );
 
         onStartup( place );
 
@@ -84,12 +85,12 @@ public abstract class AbstractPopupActivity extends AbstractActivity
 
     @Override
     public void onStartup() {
-        //Do nothing.  
+        //Do nothing.
     }
 
     @Override
     public void onStartup( final PlaceRequest place ) {
-        //Do nothing.  
+        //Do nothing.
     }
 
     @Override

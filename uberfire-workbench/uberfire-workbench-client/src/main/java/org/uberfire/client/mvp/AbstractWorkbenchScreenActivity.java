@@ -17,13 +17,14 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+fire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
- * Base class for Screen Activities
+ * Implementation of behaviour common to all workbench screen activities. Concrete implementations are typically not written by
+ * hand; rather, they are generated from classes annotated with {@link WorkbenchScreen}.
  */
-public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity
-        implements
-        WorkbenchScreenActivity {
+public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity implements WorkbenchScreenActivity {
 
     public AbstractWorkbenchScreenActivity( final PlaceManager placeManager ) {
         super( placeManager );
@@ -41,11 +42,11 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
 
     @Override
     public void onStartup() {
-        //Do nothing.  
+        //Do nothing.
     }
 
     @Override
     public void onStartup( final PlaceRequest place ) {
-        //Do nothing.  
+        //Do nothing.
     }
 }
