@@ -15,7 +15,7 @@
 */
 package org.drools.workbench.common.services.rest;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -40,8 +40,11 @@ public class JobRequestApprovalService {
     @KSession("ksession1")
     private Instance<KieSession> ksessionInjected = null;
 
+    @Inject
+    private Event<JobResult> jobResultEvent;
+    
     public JobResult requestApproval( final JobRequest jobRequest ) {
-        logger.info( "Approval request for Job: " + jobRequest.getJobId() + " received." );
+        logger.debug( "Approval request for Job: " + jobRequest.getJobId() + " received." );
         final JobResult jobResult = new JobResult();
         jobResult.setJobId( jobRequest.getJobId() );
         jobResult.setStatus( jobRequest.getStatus() );
@@ -68,7 +71,9 @@ public class JobRequestApprovalService {
                 ksession.delete( fhJobResult );
             }
         }
-        logger.info( "Approval request for Job: " + jobRequest.getJobId() + " result: " + jobRequest.getStatus() );
+        jobResult.setLastModified( System.currentTimeMillis() );
+        logger.debug( "Approval request for Job: " + jobRequest.getJobId() + " result: " + jobRequest.getStatus() );
+        jobResultEvent.fire(jobResult);
         return jobResult;
     }
 
