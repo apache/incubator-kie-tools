@@ -1,5 +1,8 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -10,6 +13,9 @@ public interface Navigator extends IsWidget {
     void setOptions( final NavigatorOptions options );
 
     void loadContent( final FolderListing content );
+
+    void loadContent( final FolderListing content,
+                      final Map<FolderItem, List<FolderItem>> siblings );
 
     boolean isAttached();
 

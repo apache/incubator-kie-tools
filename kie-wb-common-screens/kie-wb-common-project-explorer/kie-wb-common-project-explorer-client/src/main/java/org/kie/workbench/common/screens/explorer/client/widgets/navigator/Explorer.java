@@ -1,6 +1,7 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.repositories.Repository;
@@ -221,9 +223,10 @@ public class Explorer extends Composite {
         }
     }
 
-    public void loadContent( final FolderListing content ) {
+    public void loadContent( final FolderListing content,
+                             final Map<FolderItem, List<FolderItem>> siblings ) {
         if ( content != null ) {
-            activeNavigator.loadContent( content );
+            activeNavigator.loadContent( content, siblings );
         }
     }
 

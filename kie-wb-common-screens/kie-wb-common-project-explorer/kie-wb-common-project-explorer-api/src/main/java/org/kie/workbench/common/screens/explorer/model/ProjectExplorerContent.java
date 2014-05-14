@@ -2,6 +2,8 @@ package org.kie.workbench.common.screens.explorer.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.Project;
@@ -20,6 +22,7 @@ public class ProjectExplorerContent {
     private Set<Repository> repositories = new HashSet<Repository>();
     private Set<Project> projects = new HashSet<Project>();
     private FolderListing folderListing;
+    private Map<FolderItem, List<FolderItem>> siblings;
 
     public ProjectExplorerContent() {
     }
@@ -30,7 +33,8 @@ public class ProjectExplorerContent {
                                    final Repository repository,
                                    final Set<Project> projects,
                                    final Project project,
-                                   final FolderListing folderListing ) {
+                                   final FolderListing folderListing,
+                                   final Map<FolderItem, List<FolderItem>> siblings ) {
         this.organizationalUnits = organizationalUnits;
         this.organizationalUnit = organizationalUnit;
         this.repositories = repositories;
@@ -38,6 +42,7 @@ public class ProjectExplorerContent {
         this.projects = projects;
         this.project = project;
         this.folderListing = folderListing;
+        this.siblings = siblings;
     }
 
     public OrganizationalUnit getOrganizationalUnit() {
@@ -68,4 +73,7 @@ public class ProjectExplorerContent {
         return Collections.unmodifiableSet( projects );
     }
 
+    public Map<FolderItem, List<FolderItem>> getSiblings() {
+        return siblings;
+    }
 }

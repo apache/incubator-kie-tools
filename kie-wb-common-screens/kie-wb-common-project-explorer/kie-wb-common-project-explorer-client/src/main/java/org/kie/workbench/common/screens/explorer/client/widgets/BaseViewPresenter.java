@@ -183,7 +183,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         explorerService.call( new RemoteCallback<FolderListing>() {
             @Override
             public void callback( FolderListing fl ) {
-                getView().getExplorer().loadContent( fl );
+                getView().getExplorer().loadContent( fl, null );
             }
         } ).getFolderListing( activeOrganizationalUnit,
                               activeRepository,
@@ -319,7 +319,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     private void loadContent( final FolderListing content ) {
         if ( !activeContent.equals( content ) ) {
             activeContent = content;
-            getView().getExplorer().loadContent( content );
+            getView().getExplorer().loadContent( content, null );
         }
     }
 
@@ -394,7 +394,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                       activeRepository,
                                       content.getProjects(),
                                       activeProject,
-                                      content.getFolderListing() );
+                                      content.getFolderListing(),
+                                      content.getSiblings() );
 
                 getView().hideBusyIndicator();
             }

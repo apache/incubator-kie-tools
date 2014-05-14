@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -29,6 +31,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.View;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.uberfire.backend.organizationalunit.OrganizationalUnit;
@@ -83,17 +86,18 @@ public class TechnicalViewWidget extends Composite implements View {
                             final Repository activeRepository,
                             final Set<Project> projects,
                             final Project activeProject,
-                            final FolderListing folderListing ) {
+                            final FolderListing folderListing,
+                            final Map<FolderItem, List<FolderItem>> siblings ) {
         explorer.setupHeader( organizationalUnits, activeOrganizationalUnit,
                               repositories, activeRepository,
                               projects, activeProject );
-        explorer.loadContent( folderListing );
+        explorer.loadContent( folderListing, siblings );
 
     }
 
     @Override
     public void setItems( final FolderListing activeFolderListing ) {
-        explorer.loadContent( activeFolderListing );
+        explorer.loadContent( activeFolderListing, null );
     }
 
     @Override

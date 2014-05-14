@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -118,11 +119,12 @@ public class BusinessViewWidget extends Composite implements View {
                             final Repository repository,
                             final Set<Project> projects,
                             final Project project,
-                            final FolderListing folderListing ) {
+                            final FolderListing folderListing,
+                            final Map<FolderItem, List<FolderItem>> siblings ) {
         explorer.setupHeader( organizationalUnits, organizationalUnit,
                               repositories, repository,
                               projects, project );
-        explorer.loadContent( folderListing );
+        explorer.loadContent( folderListing, siblings );
         setItems( folderListing );
     }
 

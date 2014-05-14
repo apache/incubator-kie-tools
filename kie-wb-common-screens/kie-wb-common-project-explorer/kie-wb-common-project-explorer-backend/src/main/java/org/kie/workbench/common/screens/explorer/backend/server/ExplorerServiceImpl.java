@@ -19,8 +19,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
@@ -222,7 +225,8 @@ public class ExplorerServiceImpl
                         addAll( projects );
                     }},
                     selectedProject,
-                    new FolderListing( null, Collections.<FolderItem>emptyList(), Collections.<FolderItem>emptyList() )
+                    new FolderListing( null, Collections.<FolderItem>emptyList(), Collections.<FolderItem>emptyList() ),
+                    Collections.<FolderItem, List<FolderItem>>emptyMap()
             );
         }
 
@@ -252,6 +256,49 @@ public class ExplorerServiceImpl
             folderListing = new FolderListing( toFolderItem( selectedPackage ),
                                                getItems( selectedPackage ),
                                                getPackageSegments( selectedPackage ) );
+        }
+
+        final Map<FolderItem, List<FolderItem>> siblings = new HashMap<FolderItem, List<FolderItem>>();
+
+        if ( folderListing.getSegments().size() > 1 ) {
+            final ListIterator<FolderItem> li = folderListing.getSegments().listIterator( folderListing.getSegments().size() );
+            while ( li.hasPrevious() ) {
+                final FolderItem currentItem = li.previous();
+                final List<FolderItem> result = new ArrayList<FolderItem>();
+
+                if ( currentItem.getItem() instanceof Package ) {
+                    result.addAll( getSegmentSiblings( (Package) currentItem.getItem() ) );
+                } else if ( currentItem.getItem() instanceof Path ) {
+                    result.addAll( getSegmentSiblings( (Path) currentItem.getItem() ) );
+                }
+                siblings.put( currentItem, result );
+            }
+        }
+
+        if ( selectedItem != null && selectedItem.getType().equals( FolderItemType.FOLDER ) &&
+                !siblings.containsKey( selectedItem ) ) {
+            final List<FolderItem> result = new ArrayList<FolderItem>();
+
+            if ( selectedItem.getItem() instanceof Package ) {
+                result.addAll( getSegmentSiblings( (Package) selectedItem.getItem() ) );
+            } else if ( selectedItem.getItem() instanceof Path ) {
+                result.addAll( getSegmentSiblings( (Path) selectedItem.getItem() ) );
+            }
+            siblings.put( selectedItem, result );
+        }
+
+        if ( folderListing.getItem().getType().equals( FolderItemType.FOLDER ) &&
+                !siblings.containsKey( folderListing.getItem() ) ) {
+            final List<FolderItem> result = new ArrayList<FolderItem>();
+
+            if ( folderListing.getItem().getItem() instanceof Package ) {
+                result.addAll( getSegmentSiblings( (Package) folderListing.getItem().getItem() ) );
+            } else if ( folderListing.getItem().getItem() instanceof Path ) {
+                result.addAll( getSegmentSiblings( (Path) folderListing.getItem().getItem() ) );
+            }
+            if ( !result.isEmpty() ) {
+                siblings.put( folderListing.getItem(), result );
+            }
         }
 
         final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
@@ -296,7 +343,8 @@ public class ExplorerServiceImpl
                     addAll( projects );
                 }},
                 selectedProject,
-                folderListing
+                folderListing,
+                siblings
         );
     }
 
@@ -668,6 +716,35 @@ public class ExplorerServiceImpl
         return Lists.reverse( result );
     }
 
+    private List<FolderItem> getSegmentSiblings( final Path path ) {
+        final List<FolderItem> result = new ArrayList<FolderItem>();
+        org.uberfire.java.nio.file.Path nioParentPath = Paths.convert( path ).getParent();
+
+        for ( org.uberfire.java.nio.file.Path sibling : Files.newDirectoryStream( nioParentPath, dotFileFilter ) ) {
+            result.add( toFolderItem( sibling ) );
+        }
+
+        return result;
+    }
+
+    private List<FolderItem> getSegmentSiblings( final Package pkg ) {
+        final List<FolderItem> result = new ArrayList<FolderItem>();
+        final Package parentPkg = projectService.resolveParentPackage( pkg );
+        if ( parentPkg == null ) {
+            return emptyList();
+        }
+        final Set<Package> siblings = projectService.resolvePackages( parentPkg );
+        if ( siblings != null && !siblings.isEmpty() ) {
+            for ( final Package sibling : siblings ) {
+                if ( !sibling.equals( pkg ) ) {
+                    result.add( toFolderItem( sibling ) );
+                }
+            }
+        }
+
+        return result;
+    }
+
     private FolderItem toFolderItem( final org.uberfire.java.nio.file.Path path ) {
         if ( Files.isRegularFile( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
@@ -745,7 +822,8 @@ public class ExplorerServiceImpl
                                                                identity.getName(),
                                                                null,
                                                                comment ),
-                                          StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+                                          StandardDeleteOption.NON_EMPTY_DIRECTORIES
+                                        );
             }
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -784,7 +862,8 @@ public class ExplorerServiceImpl
                                     new CommentedOption( sessionInfo.getId(),
                                                          identity.getName(),
                                                          null,
-                                                         comment ) );
+                                                         comment )
+                                  );
 
                     //Delegate additional changes required for a rename to applicable Helpers
                     if ( _target != null ) {
@@ -833,7 +912,8 @@ public class ExplorerServiceImpl
                                     new CommentedOption( sessionInfo.getId(),
                                                          identity.getName(),
                                                          null,
-                                                         comment ) );
+                                                         comment )
+                                  );
 
                     //Delegate additional changes required for a copy to applicable Helpers
                     if ( _target != null ) {

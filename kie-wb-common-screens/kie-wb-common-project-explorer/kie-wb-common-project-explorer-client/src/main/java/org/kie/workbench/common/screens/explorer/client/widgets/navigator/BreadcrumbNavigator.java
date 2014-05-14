@@ -1,5 +1,7 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -50,6 +52,12 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
     @Override
     public void setOptions( final NavigatorOptions options ) {
         this.options = options;
+    }
+
+    @Override
+    public void loadContent( final FolderListing content,
+                             final Map<FolderItem, List<FolderItem>> siblings ) {
+        loadContent( content );
     }
 
     @Override
