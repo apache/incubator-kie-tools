@@ -31,6 +31,9 @@ public class BindingTextBox
         //Furthermore we're unable to use GWT's Character class emulation as this too doesn't support Unicode fully.
         //See https://gwt.googlesource.com/gwt/+/2.5.1/user/super/com/google/gwt/emul/java/lang/Character.java
         //See https://bugzilla.redhat.com/show_bug.cgi?id=1086462
+        if ( value == null ) {
+            return true;
+        }
         final char[] chars = value.toCharArray();
         for ( int i = 0; i < chars.length; i++ ) {
             final char c = chars[ i ];
