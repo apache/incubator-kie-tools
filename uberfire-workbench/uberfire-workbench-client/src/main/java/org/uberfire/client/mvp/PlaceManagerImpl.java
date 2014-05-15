@@ -45,7 +45,6 @@ import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SavePlaceEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -205,19 +204,19 @@ implements PlaceManager {
         if ( place == null || place.equals( DefaultPlaceRequest.NOWHERE ) ) {
             return;
         }
-        final Pair<Activity, PlaceRequest> requestPair = resolveActivity( place );
+        final ResolvedRequest resolved = resolveActivity( place );
 
-        if ( requestPair.getK1() != null ) {
-            final Activity activity = requestPair.getK1();
+        if ( resolved.getActivity() != null ) {
+            final Activity activity = resolved.getActivity();
             if ( activity instanceof WorkbenchActivity ) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
-                launchActivity( requestPair.getK2(),
+                launchActivity( resolved.getPlaceRequest(),
                         workbenchActivity,
                         workbenchActivity.getDefaultPosition(),
                         panel,
                         callback );
             } else if ( activity instanceof PopupActivity ) {
-                launchActivity( requestPair.getK2(),
+                launchActivity( resolved.getPlaceRequest(),
                         (PopupActivity) activity,
                         callback );
             } else if ( activity instanceof PerspectiveActivity ) {
@@ -225,7 +224,7 @@ implements PlaceManager {
                     @Override
                     public void execute() {
                         if ( closeAllCurrentPanels() ) {
-                            launchActivity( requestPair.getK2(),
+                            launchActivity( resolved.getPlaceRequest(),
                                     (PerspectiveActivity) activity,
                                     callback );
                         }
@@ -255,7 +254,7 @@ implements PlaceManager {
                 }
             }
         } else {
-            goTo( requestPair.getK2(), panel );
+            goTo( resolved.getPlaceRequest(), panel );
         }
     }
 
@@ -298,58 +297,56 @@ implements PlaceManager {
      * @param place
      *            A non-null place request that could have originated from within application code, from within the
      *            framework, or by parsing a hash fragment from a browser history event.
-     * @return a non-null Pair, where:
+     * @return a non-null ResolvedRequest, where:
      * <ul>
-     *  <li>the K1 value is either the unambiguous resolved Activity instance, or null if the activity was not resolvable;
-     *  <li>the K2 value is a substitute PlaceRequest that should be navigated to recursively.
+     *  <li>the Activity value is either the unambiguous resolved Activity instance, or null if the activity was not resolvable;
+     *  <li>if there is an Activity value, the PlaceRequest represents that Activity; otherwise it is a substitute PlaceRequest
+     *      that should be navigated to recursively (ultimately by another call to this method). The PlaceRequest is never null.
+     *      TODO (UF-94) : make this simpler. with enough tests in place, we should experiment with doing the recursive lookup automatically.
      * </ul>
      */
-    private Pair<Activity, PlaceRequest> resolveActivity( final PlaceRequest place ) {
+    private ResolvedRequest resolveActivity( final PlaceRequest place ) {
 
-        final Pair<Activity, PlaceRequest> existingPair = resolveExistingParts( place );
+        final ResolvedRequest existingDestination = resolveExistingParts( place );
 
-        if ( existingPair != null ) {
-            return existingPair;
+        if ( existingDestination != null ) {
+            return existingDestination;
         }
 
-        final Set<Activity> activities = getActivities( place );
+        final Set<Activity> activities = activityManager.getActivities( place );
 
         if ( activities == null || activities.size() == 0 ) {
             boolean ignoreUnknown = (Boolean) UberFirePreferences.getProperty("org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces", false);
             if ( ignoreUnknown ) {
-                return Pair.newPair( null, PlaceRequest.NOWHERE );
+                return new ResolvedRequest( null, PlaceRequest.NOWHERE );
             }
 
             System.out.println("Launching notfound activity for placeRequest " + place);
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
             notFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
 
-            return Pair.newPair( null, notFoundPopup );
+            return new ResolvedRequest( null, notFoundPopup );
         } else if ( activities.size() > 1 ) {
             final PlaceRequest multiplePlaces = new DefaultPlaceRequest( "workbench.activities.multiple" ).addParameter( "requestedPlaceIdentifier", null );
 
-            return Pair.newPair( null, multiplePlaces );
+            return new ResolvedRequest( null, multiplePlaces );
         }
 
-        return Pair.newPair( activities.iterator().next(), place );
+        return new ResolvedRequest( activities.iterator().next(), place );
     }
 
-    Set<Activity> getActivities( PlaceRequest place ) {
-        return activityManager.getActivities( place );
-    }
-
-    private Pair<Activity, PlaceRequest> resolveExistingParts( final PlaceRequest place ) {
+    private ResolvedRequest resolveExistingParts( final PlaceRequest place ) {
         final Activity activity = getActivity( place );
 
         if ( activity != null ) {
-            return new Pair<Activity, PlaceRequest>( activity, place );
+            return new ResolvedRequest( activity, place );
         }
 
         if ( place instanceof PathPlaceRequest ) {
             for ( final Map.Entry<PlaceRequest, PartDefinition> entry : existingWorkbenchParts.entrySet() ) {
                 if ( entry.getKey() instanceof PathPlaceRequest &&
                         ( (PathPlaceRequest) entry.getKey() ).getPath().compareTo( ( (PathPlaceRequest) place ).getPath() ) == 0 ) {
-                    return new Pair<Activity, PlaceRequest>( getActivity( entry.getKey() ), entry.getKey() );
+                    return new ResolvedRequest( getActivity( entry.getKey() ), entry.getKey() );
                 }
             }
         }
@@ -364,10 +361,10 @@ implements PlaceManager {
         if ( place == null ) {
             return;
         }
-        final Pair<Activity, PlaceRequest> requestPair = resolveActivity( place );
+        final ResolvedRequest resolved = resolveActivity( place );
 
-        if ( requestPair.getK1() != null ) {
-            final Activity activity = requestPair.getK1();
+        if ( resolved.getActivity() != null ) {
+            final Activity activity = resolved.getActivity();
 
             if ( activity instanceof WorkbenchActivity ) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
@@ -380,7 +377,7 @@ implements PlaceManager {
                 throw new IllegalArgumentException( "placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel." );
             }
         } else {
-            goTo( requestPair.getK2() );
+            goTo( resolved.getPlaceRequest() );
         }
     }
 
@@ -794,4 +791,58 @@ implements PlaceManager {
         }
     }
 
+    /**
+     * The result of an attempt to resolve a PlaceRequest to an Activity.
+     */
+    private static class ResolvedRequest {
+        private final Activity activity;
+        private final PlaceRequest placeRequest;
+
+        public ResolvedRequest(final Activity resolvedActivity, final PlaceRequest substitutePlace ) {
+            this.activity = resolvedActivity;
+            this.placeRequest = substitutePlace;
+        }
+
+        public Activity getActivity() {
+            return activity;
+        }
+
+        public PlaceRequest getPlaceRequest() {
+            return placeRequest;
+        }
+
+        @Override
+        public boolean equals( final Object o ) {
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
+
+            final ResolvedRequest resolvedRequest = (ResolvedRequest) o;
+
+            if ( activity != null ? !activity.equals( resolvedRequest.activity ) : resolvedRequest.activity != null ) {
+                return false;
+            }
+            if ( placeRequest != null ? !placeRequest.equals( resolvedRequest.placeRequest ) : resolvedRequest.placeRequest != null ) {
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 0;
+            result = activity != null ? activity.hashCode() : 0;
+            result = 31 * result + ( placeRequest != null ? placeRequest.hashCode() : 0 );
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "{activity=" + activity + ", placeRequest=" + placeRequest + "}";
+        }
+    }
 }
