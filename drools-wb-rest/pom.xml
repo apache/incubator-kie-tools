@@ -44,6 +44,7 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-test-scenario-editor-backend</artifactId>
     </dependency>
+   
     
     <!-- for test? -->
     <dependency>
@@ -92,6 +93,11 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-executor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.deltaspike.core</groupId>
+      <artifactId>deltaspike-core-api</artifactId>
+      <version>0.7</version>
     </dependency>
   </dependencies>
 

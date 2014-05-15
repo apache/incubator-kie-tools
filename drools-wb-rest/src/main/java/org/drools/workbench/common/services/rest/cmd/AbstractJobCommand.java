@@ -2,6 +2,7 @@ package org.drools.workbench.common.services.rest.cmd;
 
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.drools.workbench.common.services.rest.JobRequestApprovalService;
 import org.drools.workbench.common.services.rest.JobRequestHelper;
 import org.drools.workbench.common.services.rest.JobResultManager;
@@ -24,7 +25,7 @@ public abstract class AbstractJobCommand implements Command {
     // for command implementations
     
     protected JobRequestHelper getHelper(CommandContext ctx) throws Exception {
-        BeanManager beanManager = CDIUtils.lookUpBeanManager(ctx);
+        BeanManager beanManager = getBeanManager();
         return CDIUtils.createBean(JobRequestHelper.class, beanManager);
     }
 
@@ -39,13 +40,17 @@ public abstract class AbstractJobCommand implements Command {
     // private helper methods 
     
     private JobRequestApprovalService getApprovalService(CommandContext ctx) throws Exception {
-        BeanManager beanManager = CDIUtils.lookUpBeanManager(ctx);
+        BeanManager beanManager = getBeanManager();
         return CDIUtils.createBean(JobRequestApprovalService.class, beanManager);
     }
        
     private JobResultManager getJobManager(CommandContext ctx) throws Exception {
-        BeanManager beanManager = CDIUtils.lookUpBeanManager(ctx);
+        BeanManager beanManager = getBeanManager();
         return CDIUtils.createBean(JobResultManager.class, beanManager);
+    }
+   
+    private BeanManager getBeanManager() { 
+        return BeanManagerProvider.getInstance().getBeanManager();
     }
     
     @Override
