@@ -44,7 +44,7 @@ public class JobRequestApprovalService {
     private Event<JobResult> jobResultEvent;
     
     public JobResult requestApproval( final JobRequest jobRequest ) {
-        logger.debug( "Approval request for Job: " + jobRequest.getJobId() + " received." );
+        logger.debug( "--- approve job request ---, job: {} ", jobRequest.getJobId() );
         final JobResult jobResult = new JobResult();
         jobResult.setJobId( jobRequest.getJobId() );
         jobResult.setStatus( jobRequest.getStatus() );
@@ -72,7 +72,6 @@ public class JobRequestApprovalService {
             }
         }
         jobResult.setLastModified( System.currentTimeMillis() );
-        logger.debug( "Approval request for Job: " + jobRequest.getJobId() + " result: " + jobRequest.getStatus() );
         jobResultEvent.fire(jobResult);
         return jobResult;
     }

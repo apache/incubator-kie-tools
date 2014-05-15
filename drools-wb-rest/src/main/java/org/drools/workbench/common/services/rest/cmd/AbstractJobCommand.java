@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractJobCommand implements Command {
 
-    private static final Logger logger = LoggerFactory.getLogger( AbstractJobCommand.class );
+    protected static final Logger logger = LoggerFactory.getLogger( AbstractJobCommand.class );
             
     public static final String JOB_REQUEST_KEY = "JobRequest";
 
@@ -56,27 +56,28 @@ public abstract class AbstractJobCommand implements Command {
         JobResult result = approvalService.requestApproval(request);
        
         // save job
+        logger.debug( "--- job {} ---, status: {}",  result.getJobId(), result.getStatus());
         JobResultManager jobMgr = getJobManager(ctx);
         result.setLastModified(System.currentTimeMillis());
         jobMgr.putJob(result);
        
         // if approved, process
         if( JobStatus.APPROVED.equals(result.getStatus()) ) { 
-            logger.debug( request.getClass().getSimpleName() + "approved. Performing requested operation." );
             try { 
                 result = internalExecute(ctx, request); 
             } catch( Exception e ) { 
-                JobResult jobResult = new JobResult();
-                jobResult.setJobId(request.getJobId());
-                jobResult.setStatus(JobStatus.SERVER_ERROR);
-                jobResult.setResult("Request failed because of " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                logger.error("{} failed because of thrown {}: {}", request.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getMessage(), e);
+                result.setStatus(JobStatus.SERVER_ERROR);
+                result.setResult("Request failed because of " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                logger.error("{} [{}] failed because of thrown {}: {}", 
+                        request.getClass().getSimpleName(), request.getJobId(), 
+                        e.getClass().getSimpleName(), e.getMessage(), e);
             }
+
+            // save job
+            logger.debug( "--- job {} ---, status: {}",  result.getJobId(), result.getStatus());
+            result.setLastModified(System.currentTimeMillis());
+            jobMgr.putJob(result);
         }
-        
-        // save job
-        result.setLastModified(System.currentTimeMillis());
-        jobMgr.putJob(result);
             
         return getEmptyResult();
     }

@@ -57,6 +57,7 @@ import org.uberfire.io.IOService;
 @ApplicationScoped
 public class JobRequestHelper {
 
+    // TODO: add more logging in this class? (not at the beginning of methods, but during.. )
     private static final Logger logger = LoggerFactory.getLogger( JobRequestHelper.class );
 
     @Inject
@@ -78,10 +79,7 @@ public class JobRequestHelper {
     @Inject
     private ScenarioTestEditorService scenarioTestEditorService;
 
-    public JobResult createOrCloneRepository( final String jobId,
-                                         final RepositoryRequest repository ) {
-        logger.info( "-----JobRequestHelper:createOrCloneRepository--- , repository name:" + repository.getName() );
-
+    public JobResult createOrCloneRepository( final String jobId, final RepositoryRequest repository ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -148,10 +146,7 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult removeRepository( final String jobId,
-                                  final String repositoryName ) {
-        logger.info( "-----removeRepository--- , repository name:" + repositoryName );
-
+    public JobResult removeRepository( final String jobId, final String repositoryName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -167,10 +162,7 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult createProject( final String jobId,
-                               final String repositoryName,
-                               final String projectName ) {
-        logger.info( "-----JobRequestHelper:createProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public JobResult createProject( final String jobId, final String repositoryName, final String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -206,7 +198,6 @@ public class JobRequestHelper {
 
     private org.uberfire.backend.repositories.Repository makeRepository( final Path repositoryRoot ) {
         return new GitRepository() {
-
             @Override
             public Path getRoot() {
                 return repositoryRoot;
@@ -214,10 +205,7 @@ public class JobRequestHelper {
         };
     }
 
-    public JobResult compileProject( final String jobId,
-                                final String repositoryName,
-                                final String projectName ) {
-        logger.info( "-----JobRequestHelper:compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public JobResult compileProject( final String jobId, final String repositoryName, final String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -252,14 +240,10 @@ public class JobRequestHelper {
                     ", text:" + message.getText();
             result.add( detailedStringMessage );
         }
-
         return result;
     }
 
-    public JobResult installProject( final String jobId,
-                                final String repositoryName,
-                                final String projectName ) {
-        logger.info( "-----JobRequestHelper:installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public JobResult installProject( final String jobId, final String repositoryName, final String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -290,7 +274,6 @@ public class JobRequestHelper {
                 result.setDetailedResult( errorResult );
                 result.setStatus( JobStatus.FAIL );
             }
-
             return result;
         }
     }
@@ -305,11 +288,7 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult testProject( final String jobId,
-                             final String repositoryName,
-                             final String projectName,
-                             final BuildConfig config ) {
-        logger.info( "-----JobRequestHelper:testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public JobResult testProject( final String jobId, final String repositoryName, final String projectName, final BuildConfig config ) {
         final JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -364,10 +343,7 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult deployProject( final String jobId,
-                               final String repositoryName,
-                               final String projectName ) {
-        logger.info( "-----JobRequestHelper:deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+    public JobResult deployProject( final String jobId, final String repositoryName, final String projectName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -395,7 +371,6 @@ public class JobRequestHelper {
     }
 
     public JobResult removeOrganizationalUnit( final String jobId, final String organizationalUnitName) {
-        logger.info( "-----JobRequestHelper:removeOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName );
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -418,11 +393,8 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult createOrganizationalUnit( final String jobId,
-                                          final String organizationalUnitName,
-                                          final String organizationalUnitOwner,
-                                          final List<String> repositoryNameList ) {
-        logger.info( "-----JobRequestHelper:createOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", OrganizationalUnit owner:" + organizationalUnitOwner );
+    public JobResult createOrganizationalUnit( final String jobId, final String organizationalUnitName,
+            final String organizationalUnitOwner, final List<String> repositoryNameList ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -463,10 +435,7 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult addRepositoryToOrganizationalUnit( final String jobId,
-                                                   final String organizationalUnitName,
-                                                   final String repositoryName ) {
-        logger.info( "-----JobRequestHelper:addRepositoryToOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
+    public JobResult addRepositoryToOrganizationalUnit( final String jobId, final String organizationalUnitName, final String repositoryName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 
@@ -500,10 +469,7 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult removeRepositoryFromOrganizationalUnit( final String jobId,
-                                                        final String organizationalUnitName,
-                                                        final String repositoryName ) {
-        logger.info( "-----JobRequestHelper:removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", repository name:" + repositoryName );
+    public JobResult removeRepositoryFromOrganizationalUnit( final String jobId, final String organizationalUnitName, final String repositoryName ) {
         JobResult result = new JobResult();
         result.setJobId( jobId );
 

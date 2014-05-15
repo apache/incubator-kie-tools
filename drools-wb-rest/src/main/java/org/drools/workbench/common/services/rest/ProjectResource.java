@@ -76,7 +76,7 @@ import org.uberfire.io.IOService;
 @ApplicationScoped
 public class ProjectResource {
 
-    private static final Logger logger = LoggerFactory.getLogger( JobRequestHelper.class );
+    private static final Logger logger = LoggerFactory.getLogger( ProjectResource.class );
 
     @Context
     protected UriInfo uriInfo;
@@ -116,18 +116,16 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/jobs/{jobId}")
     public JobResult getJobStatus( @PathParam("jobId") String jobId ) {
-        logger.info( "-----getJobStatus--- , jobId:" + jobId );
+        logger.debug( "-----getJobStatus--- , jobId: {}", jobId );
 
         JobResult job = jobManager.getJob( jobId );
-
         if ( job == null ) {
             //the job has gone probably because its done and has been removed.
-            logger.info( "-----getJobStatus--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed." );
+            logger.debug( "-----getJobStatus--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed." );
             job = new JobResult();
             job.setStatus( JobStatus.GONE );
             return job;
         }
-        logger.info( "-----getJobStatus--- , jobId:" + jobId );
 
         return job;
     }
@@ -136,13 +134,13 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/jobs/{jobId}")
     public JobResult removeJob( @PathParam("jobId") String jobId ) {
-        logger.info( "-----removeJob--- , jobId:" + jobId );
+        logger.debug( "-----removeJob--- , jobId: {}", jobId );
 
         JobResult job = jobManager.removeJob( jobId );
 
         if ( job == null ) {
             //the job has gone probably because its done and has been removed.
-            logger.info( "-----removeJob--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed." );
+            logger.debug( "-----removeJob--- , can not find jobId:" + jobId + ", the job has gone probably because its done and has been removed." );
             job = new JobResult();
             job.setStatus( JobStatus.GONE );
             return job;
@@ -158,7 +156,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories")
     public Collection<RepositoryResponse> getRepositories() {
-        logger.info( "-----getRepositories--- " );
+        logger.debug( "-----getRepositories--- " );
 
         Collection<org.uberfire.backend.repositories.Repository> repos = repositoryService.getRepositories();
         List<RepositoryResponse> result = new ArrayList<RepositoryResponse>();
@@ -175,7 +173,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}")
     public RepositoryResponse getRepository(@PathParam("repositoryName") String repositoryName ) {
-        logger.info( "-----getRepository " + repositoryName + "--- " );
+        logger.debug( "-----getRepository---, repository name: {}",  repositoryName);
         org.uberfire.backend.repositories.Repository origRepo = checkRepositoryExistence(repositoryName);
         
         RepositoryResponse repo = new RepositoryResponse();
@@ -190,7 +188,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories")
     public Response createOrCloneRepository( RepositoryRequest repository ) {
-        logger.info( "-----createOrCloneRepository--- , repository name:" + repository.getName() );
+        logger.debug( "-----createOrCloneRepository--- , repository name: {}", repository.getName() );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateOrCloneRepositoryRequest jobRequest = new CreateOrCloneRepositoryRequest();
@@ -209,7 +207,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/repositories/{repositoryName}")
     public Response removeRepository(@PathParam("repositoryName") String repositoryName ) {
-        logger.info( "-----removeRepository--- , repositoryName:" + repositoryName );
+        logger.debug( "-----removeRepository--- , repositoryName: {}", repositoryName );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
 
@@ -232,7 +230,7 @@ public class ProjectResource {
     public Response createProject(
             @PathParam("repositoryName") String repositoryName,
             Entity project ) {
-        logger.info( "-----createProject--- , repositoryName:" + repositoryName + ", project name:" + project.getName() );
+        logger.debug( "-----createProject--- , repositoryName: {} , project name: {}", repositoryName, project.getName() );
         checkRepositoryExistence(repositoryName);
         
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -256,7 +254,7 @@ public class ProjectResource {
     public Response deleteProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
-        logger.info( "-----deleteProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        logger.debug( "-----deleteProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence(repositoryName);
 
         throw new WebApplicationException( Response.status( Response.Status.NOT_ACCEPTABLE )
@@ -287,7 +285,7 @@ public class ProjectResource {
     public Response compileProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
-        logger.info( "-----compileProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        logger.debug( "-----compileProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -310,7 +308,7 @@ public class ProjectResource {
     public Response installProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
-        logger.info( "-----installProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        logger.debug( "-----installProject--- , repositoryName: {}, project name: {}" , repositoryName, projectName );
         checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -335,7 +333,7 @@ public class ProjectResource {
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName,
             BuildConfig mavenConfig ) {
-        logger.info( "-----testProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        logger.debug( "-----testProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -359,7 +357,7 @@ public class ProjectResource {
     public Response deployProject(
             @PathParam("repositoryName") String repositoryName,
             @PathParam("projectName") String projectName ) {
-        logger.info( "-----deployProject--- , repositoryName:" + repositoryName + ", project name:" + projectName );
+        logger.debug( "-----deployProject--- , repositoryName: {}, project name: {}", repositoryName, projectName );
         checkRepositoryExistence(repositoryName);
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
@@ -380,7 +378,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits")
     public Collection<OrganizationalUnit> getOrganizationalUnits() {
-        logger.info( "-----getOrganizationalUnits--- " );
+        logger.debug( "-----getOrganizationalUnits--- " );
         Collection<org.uberfire.backend.organizationalunit.OrganizationalUnit> origOrgUnits
                 = organizationalUnitService.getOrganizationalUnits();
 
@@ -404,7 +402,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}")
     public OrganizationalUnit getOrganizationalUnit(@PathParam("organizationalUnitName") String organizationalUnitName) { 
-        logger.info( "-----getOrganizationalUnit " + organizationalUnitName + "--- " );
+        logger.debug( "-----getOrganizationalUnit ---, OrganizationalUnit name: {}", organizationalUnitName );
         org.uberfire.backend.organizationalunit.OrganizationalUnit origOrgUnit
             = checkOrganizationalUnitExistence(organizationalUnitName);
         
@@ -425,7 +423,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits")
     public Response createOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
-        logger.info( "-----createOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnit.getName() + ", OrganizationalUnit owner:" + organizationalUnit.getOwner() );
+        logger.debug( "-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {}", organizationalUnit.getName(), organizationalUnit.getOwner() );
 
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();
         CreateOrganizationalUnitRequest jobRequest = new CreateOrganizationalUnitRequest();
@@ -447,7 +445,7 @@ public class ProjectResource {
     @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
     public Response addRepositoryToOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                          @PathParam("repositoryName") String repositoryName ) {
-        logger.info( "-----addRepositoryToOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", Repository name:" + repositoryName );
+        logger.debug( "-----addRepositoryToOrganizationalUnit--- , OrganizationalUnit name: {}, Repository name: {}", organizationalUnitName, repositoryName );
         checkOrganizationalUnitExistence(organizationalUnitName);
         checkRepositoryExistence(repositoryName);
 
@@ -470,7 +468,7 @@ public class ProjectResource {
     @Path("/organizationalunits/{organizationalUnitName}/repositories/{repositoryName}")
     public Response removeRepositoryFromOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName,
                                                               @PathParam("repositoryName") String repositoryName ) {
-        logger.info( "-----removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName + ", Repository name:" + repositoryName );
+        logger.debug( "-----removeRepositoryFromOrganizationalUnit--- , OrganizationalUnit name: {}, Repository name: {}", organizationalUnitName, repositoryName );
         checkOrganizationalUnitExistence(organizationalUnitName);
         checkRepositoryExistence(repositoryName);
         
@@ -492,7 +490,7 @@ public class ProjectResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizationalunits/{organizationalUnitName}")
     public Response deleteOrganizationalUnit( @PathParam("organizationalUnitName") String organizationalUnitName ) {
-        logger.info( "-----deleteOrganizationalUnit--- , OrganizationalUnit name:" + organizationalUnitName );
+        logger.debug( "-----deleteOrganizationalUnit--- , OrganizationalUnit name: {}", organizationalUnitName );
         checkOrganizationalUnitExistence(organizationalUnitName);
         
         String id = "" + System.currentTimeMillis() + "-" + counter.incrementAndGet();

@@ -5,6 +5,7 @@ import org.kie.internal.executor.api.CommandContext;
 import org.kie.workbench.common.services.shared.rest.CreateProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.JobStatus;
 
 public class CreateProjectCmd extends AbstractJobCommand {
 
@@ -13,6 +14,14 @@ public class CreateProjectCmd extends AbstractJobCommand {
         JobRequestHelper helper = getHelper(ctx);
         CreateProjectRequest jobRequest = (CreateProjectRequest) request;
 
-        return helper.createProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
+        JobResult result = null;
+        try { 
+            result= helper.createProject( jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName() );
+        } finally { 
+            JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
+            logger.debug( "-----createProject--- , repositoryName: {}, project name: {} [{}]", 
+                    jobRequest.getRepositoryName(), jobRequest.getProjectName(), status);
+        }
+        return result;
     }
 }

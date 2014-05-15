@@ -5,6 +5,7 @@ import org.kie.internal.executor.api.CommandContext;
 import org.kie.workbench.common.services.shared.rest.DeployProjectRequest;
 import org.kie.workbench.common.services.shared.rest.JobRequest;
 import org.kie.workbench.common.services.shared.rest.JobResult;
+import org.kie.workbench.common.services.shared.rest.JobStatus;
 
 public class DeployProjectCmd extends AbstractJobCommand {
 
@@ -13,6 +14,14 @@ public class DeployProjectCmd extends AbstractJobCommand {
         JobRequestHelper helper = getHelper(ctx);
         DeployProjectRequest jobRequest = (DeployProjectRequest) request;
 
-        return helper.deployProject(jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName());
+        JobResult result = null;
+        try {
+            result = helper.deployProject(jobRequest.getJobId(), jobRequest.getRepositoryName(), jobRequest.getProjectName());
+        } finally {
+            JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
+            logger.debug("-----deployProject--- , repositoryName: {}, project name: {} [{}]", 
+                    jobRequest.getRepositoryName(), jobRequest.getProjectName(), status);
+        }
+        return result;
     }
 }
