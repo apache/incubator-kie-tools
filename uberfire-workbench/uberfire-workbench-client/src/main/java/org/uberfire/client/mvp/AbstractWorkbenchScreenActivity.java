@@ -15,9 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
-fire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
 /**
