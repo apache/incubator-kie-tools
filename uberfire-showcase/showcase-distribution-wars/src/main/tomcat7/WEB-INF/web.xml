@@ -10,9 +10,7 @@
   <filter>
     <filter-name>Security Filter</filter-name>
 
-    <!--  This filter is temporarily in an Errai package until PicketLink 6.0.0.CR2 is released.
-          The real filter's class name is org.picketlink.authentication.web.AuthenticationFilter -->
-    <filter-class>org.jboss.errai.security.server.tmp.AuthenticationFilter</filter-class>
+    <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
 
     <init-param>
       <param-name>authType</param-name>
@@ -25,6 +23,10 @@
     <init-param>
       <param-name>host-page</param-name>
       <param-value>/showcase.html</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceReAuthentication</param-name>
+      <param-value>true</param-value>
     </init-param>
   </filter>
 
