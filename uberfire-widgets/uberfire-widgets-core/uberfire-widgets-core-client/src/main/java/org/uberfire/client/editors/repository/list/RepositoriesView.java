@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -30,7 +31,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryUpdatedEvent;
 import org.uberfire.client.resources.i18n.CoreConstants;
 
 @Dependent
@@ -71,13 +76,10 @@ public class RepositoriesView extends Composite
                                                                     null,
                                                                     repository.getPublicURIs(),
                                                                     CoreConstants.INSTANCE.Empty(),
-                                                                    new Command() {
-
-                                                                        @Override
-                                                                        public void execute() {
-                                                                            presenter.removeRepository( repository );
-                                                                        }
-                                                                    } );
+                                                                    repository.getBranch(),
+                                                                    repository.getBranches(),
+                                                                    new RemoveRepositoryCmd(repository, presenter),
+                                                                    new UpdateRepositoryCmd(repository, presenter)  );
         repositoryToWidgetMap.put( repository,
                                    item );
         panel.add( item );
@@ -108,5 +110,15 @@ public class RepositoriesView extends Composite
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
         panel.setPixelSize( width, height );
+    }
+
+    @Override
+    public void updateRepository(final Repository old, final Repository updated) {
+        RepositoriesViewItem item = (RepositoriesViewItem) repositoryToWidgetMap.remove(old);
+
+        if (item != null) {
+            item.update(updated);
+            repositoryToWidgetMap.put(updated, item);
+        }
     }
 }

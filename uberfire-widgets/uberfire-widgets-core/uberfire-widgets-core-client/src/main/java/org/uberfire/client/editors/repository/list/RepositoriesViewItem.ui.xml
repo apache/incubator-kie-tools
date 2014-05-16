@@ -79,8 +79,13 @@
               <g:FlowPanel ui:field="linksPanel" addStyleNames="{style.protocols}"/>
             </div>
           </div>
-          <b:Button ui:field="btnRemoveRepository" icon="MINUS_SIGN" type="DANGER" text="{i18n.Delete}" addStyleNames="{style.delete}"/>
+          <div class="control-group" style="padding-top:10px; padding-left:14px;">
+            <b:ListBox b:id="branches" ui:field="branchesDropdown"/>
+            <b:Button ui:field="btnChangeBranch" icon="FOLDER_CLOSE_ALT" type="PRIMARY" text="{i18n.Update}"/>
+            <b:Button ui:field="btnRemoveRepository" icon="MINUS_SIGN" type="DANGER" text="{i18n.Delete}"/>
+          </div>
         </div>
+
       </div>
     </div>
 

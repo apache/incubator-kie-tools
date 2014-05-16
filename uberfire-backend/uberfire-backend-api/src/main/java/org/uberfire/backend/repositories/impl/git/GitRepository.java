@@ -26,6 +26,8 @@ public class GitRepository implements Repository {
     private Collection<String> roles = new ArrayList<String>();
 
     private boolean requiresRefresh = true;
+    private Collection<String> branches;
+    private String branch;
 
     public GitRepository() {
     }
@@ -65,6 +67,26 @@ public class GitRepository implements Repository {
 
     public void setRoot( final Path root ) {
         this.root = root;
+    }
+
+
+    public void setBranches( final Collection<String> branches ) {
+        this.branches = branches;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    @Override
+    public Collection<String> getBranches() {
+        return branches;
+    }
+
+    @Override
+    public String getBranch() {
+
+        return branch;
     }
 
     @Override
@@ -136,9 +158,9 @@ public class GitRepository implements Repository {
         if ( roles != null ? !roles.equals( that.roles ) : that.roles != null ) {
             return false;
         }
-        if ( root != null ? !root.equals( that.root ) : that.root != null ) {
-            return false;
-        }
+//        if ( root != null ? !root.equals( that.root ) : that.root != null ) {
+//            return false;
+//        }
 
         return true;
     }
@@ -148,7 +170,7 @@ public class GitRepository implements Repository {
         int result = environment.hashCode();
         result = 31 * result + ( publicURIs.hashCode() );
         result = 31 * result + ( alias != null ? alias.hashCode() : 0 );
-        result = 31 * result + ( root != null ? root.hashCode() : 0 );
+//        result = 31 * result + ( root != null ? root.hashCode() : 0 );
         result = 31 * result + ( roles != null ? roles.hashCode() : 0 );
         return result;
     }
@@ -156,7 +178,7 @@ public class GitRepository implements Repository {
     @Override
     public String toString() {
         return "GitRepository [alias=" + alias + ", environment=" + environment + ", root=" + root + ", roles=" + roles
-                + ", publicURI=" + publicURIs + "]";
+                + ", publicURI=" + publicURIs + ", branches=" + branches +"]";
     }
 
 

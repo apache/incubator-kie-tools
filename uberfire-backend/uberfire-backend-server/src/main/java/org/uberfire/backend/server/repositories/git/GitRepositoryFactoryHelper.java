@@ -3,7 +3,9 @@ package org.uberfire.backend.server.repositories.git;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,7 +53,13 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem( EnvironmentParameters.SCHEME );
         checkNotNull( "schemeConfigItem", schemeConfigItem );
 
+        String branch = repoConfig.getConfigItemValue(EnvironmentParameters.BRANCH);
+        if (branch == null) {
+            branch =  "master";
+        }
+
         final GitRepository repo = new GitRepository( repoConfig.getName() );
+        repo.setBranch(branch);
 
         for ( final ConfigItem item : repoConfig.getItems() ) {
             if ( item instanceof SecureConfigItem ) {
@@ -82,11 +90,20 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
         Path defaultRoot = fs.getRootDirectories().iterator().next();
         for ( final Path path : fs.getRootDirectories() ) {
-            if ( path.toUri().toString().contains( "/master@" ) ) {
+            String gitBranch = getBranchName(path);
+            if ( gitBranch.equals(branch) ) {
                 defaultRoot = path;
                 break;
             }
         }
+        Set<String> branches = new HashSet<String>();
+        // collect all branches
+        for ( final Path path : fs.getRootDirectories() ) {
+            String gitBranch = getBranchName(path);
+            branches.add(gitBranch);
+        }
+        repo.setBranches(branches);
+
 
         repo.setRoot( convert( defaultRoot ) );
         final String[] uris = fs.toString().split( "\\r?\\n" );
@@ -105,5 +122,15 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         repo.setPublicURIs( publicURIs );
 
         return repo;
+    }
+
+    protected String getBranchName(final Path path) {
+        String gitBranch = path.toUri().getAuthority();
+
+        if (gitBranch.indexOf("@") != -1) {
+            return gitBranch.split("@")[0];
+        }
+
+        return gitBranch;
     }
 }

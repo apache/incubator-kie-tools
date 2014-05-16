@@ -1,5 +1,6 @@
 package org.uberfire.backend.repositories;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,4 +29,7 @@ public interface Repository extends RuntimeResource, Cacheable {
 
     void setRoot( final Path root );
 
+    Collection<String> getBranches();
+
+    String getBranch();
 }

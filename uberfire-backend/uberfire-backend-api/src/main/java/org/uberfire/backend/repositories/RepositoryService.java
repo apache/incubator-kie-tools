@@ -42,4 +42,6 @@ public interface RepositoryService {
 
     void removeRepository( final String alias );
 
+    Repository updateRepository( Repository repository, Map<String, Object> config );
+
 }

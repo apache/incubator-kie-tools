@@ -153,4 +153,8 @@ public interface CoreConstants
     String Revert();
 
     String textResourceTypeDescription();
+
+    String Branches();
+
+    String Update();
 }

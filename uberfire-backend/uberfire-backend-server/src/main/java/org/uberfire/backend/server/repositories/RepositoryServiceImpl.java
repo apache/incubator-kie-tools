@@ -158,6 +158,10 @@ public class RepositoryServiceImpl implements RepositoryService {
         if ( !env.containsKey( SCHEME ) ) {
             repositoryConfig.addConfigItem( configurationFactory.newConfigItem( SCHEME, scheme ) );
         }
+
+        if ( !env.containsKey( BRANCH ) ) {
+            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( BRANCH, env.get(BRANCH) ) );
+        }
         for ( final Map.Entry<String, Object> entry : env.entrySet() ) {
             if ( entry.getKey().startsWith( "crypt:" ) ) {
                 repositoryConfig.addConfigItem( configurationFactory.newSecuredConfigItem( entry.getKey(),
@@ -263,6 +267,34 @@ public class RepositoryServiceImpl implements RepositoryService {
                                                                 repository );
                 }
             }
+        }
+    }
+
+    @Override
+    public Repository updateRepository( Repository repository, Map<String, Object> config ) {
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
+
+        if ( thisRepositoryConfig != null && config != null) {
+
+            for (Map.Entry<String, Object> entry : config.entrySet()) {
+
+                ConfigItem configItem = thisRepositoryConfig.getConfigItem(entry.getKey());
+                if (configItem == null) {
+                    thisRepositoryConfig.addConfigItem(configurationFactory.newConfigItem(entry.getKey(), entry.getValue()));
+                } else {
+                    configItem.setValue(entry.getValue());
+                }
+            }
+
+            configurationService.updateConfiguration( thisRepositoryConfig );
+
+            final Repository updatedRepo = repositoryFactory.newRepository( thisRepositoryConfig );
+            configuredRepositories.put( updatedRepo.getAlias(), updatedRepo );
+            rootToRepo.put( updatedRepo.getRoot(), updatedRepo );
+
+            return updatedRepo;
+        } else {
+            throw new IllegalArgumentException( "Repository " + repository.getAlias() + " not found" );
         }
     }
 
