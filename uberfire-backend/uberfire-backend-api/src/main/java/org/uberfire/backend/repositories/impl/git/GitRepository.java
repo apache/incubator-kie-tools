@@ -27,7 +27,7 @@ public class GitRepository implements Repository {
 
     private boolean requiresRefresh = true;
     private Collection<String> branches;
-    private String branch;
+    private String currentBranch;
 
     public GitRepository() {
     }
@@ -74,8 +74,8 @@ public class GitRepository implements Repository {
         this.branches = branches;
     }
 
-    public void setBranch(String branch) {
-        this.branch = branch;
+    public void setCurrentBranch(String currentBranch) {
+        this.currentBranch = currentBranch;
     }
 
     @Override
@@ -84,9 +84,9 @@ public class GitRepository implements Repository {
     }
 
     @Override
-    public String getBranch() {
+    public String getCurrentBranch() {
 
-        return branch;
+        return currentBranch;
     }
 
     @Override
@@ -158,9 +158,15 @@ public class GitRepository implements Repository {
         if ( roles != null ? !roles.equals( that.roles ) : that.roles != null ) {
             return false;
         }
-//        if ( root != null ? !root.equals( that.root ) : that.root != null ) {
-//            return false;
-//        }
+        if ( root != null ? !root.equals( that.root ) : that.root != null ) {
+            return false;
+        }
+        if ( currentBranch != null ? !currentBranch.equals( that.currentBranch) : that.currentBranch != null ) {
+            return false;
+        }
+        if ( branches != null ? !branches.equals( that.branches ) : that.branches != null ) {
+            return false;
+        }
 
         return true;
     }
@@ -170,8 +176,10 @@ public class GitRepository implements Repository {
         int result = environment.hashCode();
         result = 31 * result + ( publicURIs.hashCode() );
         result = 31 * result + ( alias != null ? alias.hashCode() : 0 );
-//        result = 31 * result + ( root != null ? root.hashCode() : 0 );
+        result = 31 * result + ( root != null ? root.hashCode() : 0 );
         result = 31 * result + ( roles != null ? roles.hashCode() : 0 );
+        result = 31 * result + ( branches != null ? branches.hashCode() : 0 );
+        result = 31 * result + ( currentBranch != null ? currentBranch.hashCode() : 0 );
         return result;
     }
 

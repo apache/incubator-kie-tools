@@ -31,5 +31,5 @@ public interface Repository extends RuntimeResource, Cacheable {
 
     Collection<String> getBranches();
 
-    String getBranch();
+    String getCurrentBranch();
 }

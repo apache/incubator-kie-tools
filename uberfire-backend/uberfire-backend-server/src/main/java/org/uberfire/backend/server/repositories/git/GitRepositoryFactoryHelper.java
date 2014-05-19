@@ -59,7 +59,7 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         }
 
         final GitRepository repo = new GitRepository( repoConfig.getName() );
-        repo.setBranch(branch);
+        repo.setCurrentBranch(branch);
 
         for ( final ConfigItem item : repoConfig.getItems() ) {
             if ( item instanceof SecureConfigItem ) {
