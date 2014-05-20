@@ -18,6 +18,7 @@ package org.uberfire.client.editors.fileexplorer;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
@@ -32,6 +33,7 @@ import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.backend.repositories.RepositoryUpdatedEvent;
 import org.uberfire.backend.vfs.DirectoryStream;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -198,6 +200,23 @@ public class FileExplorerPresenter {
             view.removeRepository( repository );
             repositories.remove( repository );
         }
+    }
+
+    public void updateRootDirectory( @Observes RepositoryUpdatedEvent event ) {
+        final Repository repository = event.getRepository();
+        final Repository updatedRepository = event.getUpdatedRepository();
+        if ( repository == null ) {
+            return;
+        }
+
+        if ( repositories.contains( repository ) ) {
+            view.removeRepository( repository );
+            repositories.remove( repository );
+        }
+        // add refreshed repository
+        view.addNewRepository( updatedRepository );
+        repositories.add( updatedRepository );
+
     }
 
     // Refresh when a Resource has been added

@@ -17,6 +17,7 @@
 package org.uberfire.client.editors.repository.list;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -31,6 +32,7 @@ import org.uberfire.backend.repositories.NewRepositoryEvent;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.repositories.RepositoryService;
+import org.uberfire.backend.repositories.RepositoryUpdatedEvent;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -53,6 +55,9 @@ public class RepositoriesPresenter {
     private Event<RepositoryRemovedEvent> repositoryRemovedEvent;
 
     @Inject
+    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
+
+    @Inject
     private SyncBeanManager iocManager;
 
     public interface View
@@ -66,6 +71,8 @@ public class RepositoriesPresenter {
         void removeIfExists( Repository repository );
 
         void clear();
+
+        void updateRepository(final Repository old, final Repository updated);
     }
 
     @Inject
@@ -102,6 +109,18 @@ public class RepositoriesPresenter {
     @WorkbenchPartView
     public IsWidget getView() {
         return view;
+    }
+
+    public void updateRepository( final Repository repository, final Map<String, Object> config ) {
+        repositoryService.call( new RemoteCallback<Repository>() {
+
+            @Override
+            public void callback( Repository updatedRepository ) {
+                view.updateRepository(repository, updatedRepository);
+                repositoryUpdatedEvent.fire( new RepositoryUpdatedEvent( repository, updatedRepository ) );
+            }
+            } ).updateRepository( repository, config );
+
     }
 
     public void removeRepository( final Repository repository ) {

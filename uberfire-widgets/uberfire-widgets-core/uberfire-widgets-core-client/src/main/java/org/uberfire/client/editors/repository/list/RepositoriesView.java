@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -71,13 +70,10 @@ public class RepositoriesView extends Composite
                                                                     null,
                                                                     repository.getPublicURIs(),
                                                                     CoreConstants.INSTANCE.Empty(),
-                                                                    new Command() {
-
-                                                                        @Override
-                                                                        public void execute() {
-                                                                            presenter.removeRepository( repository );
-                                                                        }
-                                                                    } );
+                                                                    repository.getCurrentBranch(),
+                                                                    repository.getBranches(),
+                                                                    new RemoveRepositoryCmd(repository, presenter),
+                                                                    new UpdateRepositoryCmd(repository, presenter)  );
         repositoryToWidgetMap.put( repository,
                                    item );
         panel.add( item );
@@ -108,5 +104,15 @@ public class RepositoriesView extends Composite
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
         panel.setPixelSize( width, height );
+    }
+
+    @Override
+    public void updateRepository(final Repository old, final Repository updated) {
+        RepositoriesViewItem item = (RepositoriesViewItem) repositoryToWidgetMap.remove(old);
+
+        if (item != null) {
+            item.update(updated, presenter);
+            repositoryToWidgetMap.put(updated, item);
+        }
     }
 }

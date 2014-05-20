@@ -1,8 +1,10 @@
 package org.uberfire.client.editors.repository.list;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -18,6 +20,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.backend.repositories.PublicURI;
+import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.navigator.CommitNavigator;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -53,16 +56,25 @@ public class RepositoriesViewItem extends Composite {
     @UiField
     public FlowPanel linksPanel;
 
-    private Command cmdRemoveRepository;
+    @UiField
+    public ListBox branchesDropdown;
+
+    private RemoveRepositoryCmd cmdRemoveRepository;
+
+    private UpdateRepositoryCmd cmdUpdateRepository;
 
     public RepositoriesViewItem( final String repositoryName,
                                  final String owner,
                                  final List<PublicURI> publicURIs,
                                  final String description,
-                                 final Command cmdRemoveRepository ) {
+                                 final String currentBranch,
+                                 final Collection<String> branches,
+                                 final RemoveRepositoryCmd cmdRemoveRepository,
+                                 final UpdateRepositoryCmd cmdUpdateRepository) {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         this.cmdRemoveRepository = cmdRemoveRepository;
+        this.cmdUpdateRepository = cmdUpdateRepository;
         if ( owner != null && !owner.isEmpty() ) {
             ownerReference.setText( owner + " / " );
         }
@@ -101,6 +113,16 @@ public class RepositoriesViewItem extends Composite {
 
         myGitCopyButton.getElement().setId( "view-button-" + uriId );
 
+        // populate branches
+        int index = 0;
+        for (String branch : branches) {
+            branchesDropdown.addItem(branch, branch);
+            if (currentBranch.equals(branch)) {
+                branchesDropdown.setSelectedIndex(index);
+            }
+            index++;
+        }
+
         glueCopy( myGitCopyButton.getElement() );
     }
 
@@ -109,6 +131,20 @@ public class RepositoriesViewItem extends Composite {
         if ( cmdRemoveRepository != null ) {
             cmdRemoveRepository.execute();
         }
+    }
+
+    @UiHandler("btnChangeBranch")
+    public void onClickButtonUpdateRepository( final ClickEvent event ) {
+        if ( cmdUpdateRepository != null ) {
+            final String branch = branchesDropdown.getValue( branchesDropdown.getSelectedIndex() );
+            cmdUpdateRepository.add("branch", branch);
+            cmdUpdateRepository.execute();
+        }
+    }
+
+    public void update(final Repository repository, final RepositoriesPresenter presenter) {
+        this.cmdRemoveRepository = new RemoveRepositoryCmd(repository, presenter);
+        this.cmdUpdateRepository = new UpdateRepositoryCmd(repository, presenter);
     }
 
     public static native void glueCopy( final com.google.gwt.user.client.Element element ) /*-{

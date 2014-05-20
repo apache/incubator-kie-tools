@@ -17,6 +17,7 @@ import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
 import org.uberfire.backend.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.backend.repositories.RepositoryUpdatedEvent;
 import org.uberfire.backend.server.config.ConfigGroup;
 import org.uberfire.backend.server.config.ConfigItem;
 import org.uberfire.backend.server.config.ConfigType;
@@ -246,6 +247,12 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     }
 
     public void updateRegisteredOU(@Observes @OrgUnit SystemRepositoryChangedEvent changedEvent) {
+        registeredOrganizationalUnits.clear();
+        loadOrganizationalUnits();
+    }
+
+    // refresh org unit in case repository changed otherwise it will have outdated information
+    public void updateRegisteredOUonRepoChange(@Observes RepositoryUpdatedEvent changedEvent) {
         registeredOrganizationalUnits.clear();
         loadOrganizationalUnits();
     }

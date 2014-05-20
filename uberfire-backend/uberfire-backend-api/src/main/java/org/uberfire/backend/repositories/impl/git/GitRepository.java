@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.repositories.PublicURI;
@@ -26,6 +28,8 @@ public class GitRepository implements Repository {
     private Collection<String> roles = new ArrayList<String>();
 
     private boolean requiresRefresh = true;
+    private final Set<String> branches = new HashSet<String>();
+    private String currentBranch;
 
     public GitRepository() {
     }
@@ -65,6 +69,27 @@ public class GitRepository implements Repository {
 
     public void setRoot( final Path root ) {
         this.root = root;
+    }
+
+
+    public void setBranches( final Collection<String> branches ) {
+        this.branches.clear();
+        this.branches.addAll(branches);
+    }
+
+    public void setCurrentBranch(String currentBranch) {
+        this.currentBranch = currentBranch;
+    }
+
+    @Override
+    public Collection<String> getBranches() {
+        return Collections.unmodifiableSet(branches);
+    }
+
+    @Override
+    public String getCurrentBranch() {
+
+        return currentBranch;
     }
 
     @Override
@@ -139,6 +164,12 @@ public class GitRepository implements Repository {
         if ( root != null ? !root.equals( that.root ) : that.root != null ) {
             return false;
         }
+        if ( currentBranch != null ? !currentBranch.equals( that.currentBranch) : that.currentBranch != null ) {
+            return false;
+        }
+        if ( branches != null ? !branches.equals( that.branches ) : that.branches != null ) {
+            return false;
+        }
 
         return true;
     }
@@ -150,13 +181,15 @@ public class GitRepository implements Repository {
         result = 31 * result + ( alias != null ? alias.hashCode() : 0 );
         result = 31 * result + ( root != null ? root.hashCode() : 0 );
         result = 31 * result + ( roles != null ? roles.hashCode() : 0 );
+        result = 31 * result + ( branches != null ? branches.hashCode() : 0 );
+        result = 31 * result + ( currentBranch != null ? currentBranch.hashCode() : 0 );
         return result;
     }
 
     @Override
     public String toString() {
         return "GitRepository [alias=" + alias + ", environment=" + environment + ", root=" + root + ", roles=" + roles
-                + ", publicURI=" + publicURIs + "]";
+                + ", publicURI=" + publicURIs + ", branches=" + branches +"]";
     }
 
 

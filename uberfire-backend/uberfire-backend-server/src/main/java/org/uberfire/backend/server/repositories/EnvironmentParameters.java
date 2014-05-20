@@ -7,4 +7,6 @@ public class EnvironmentParameters {
 
     public static final String SCHEME = "scheme";
 
+    public static final String BRANCH = "branch";
+
 }
