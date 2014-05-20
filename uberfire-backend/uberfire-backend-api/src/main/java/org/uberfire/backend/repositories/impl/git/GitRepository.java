@@ -73,6 +73,7 @@ public class GitRepository implements Repository {
 
 
     public void setBranches( final Collection<String> branches ) {
+        this.branches.clear();
         this.branches.addAll(branches);
     }
 

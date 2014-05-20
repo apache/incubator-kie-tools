@@ -29,7 +29,17 @@ public interface Repository extends RuntimeResource, Cacheable {
 
     void setRoot( final Path root );
 
+    /**
+     * Returns "read-only" view of all branches available in this repository.
+     * @return
+     */
     Collection<String> getBranches();
 
+    /**
+     * Returns current branch that is configured for this repository.
+     * It will always provide branch name even if there was no explicit
+     * branch selected/created - which in that case is always 'master'
+     * @return
+     */
     String getCurrentBranch();
 }
