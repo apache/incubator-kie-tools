@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.projecteditor.client.messages;
+package org.kie.workbench.common.screens.messageconsole.client.console;
 
 import javax.inject.Inject;
 
@@ -35,43 +35,42 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.tables.ResizableHeader;
 
-public class ProblemsScreenViewImpl
+public class MessageConsoleScreenViewImpl
         extends Composite
-        implements ProblemsScreenView,
+        implements MessageConsoleScreenView,
                    RequiresResize {
 
     private static Binder uiBinder = GWT.create( Binder.class );
     private Presenter presenter;
     private final PlaceManager placeManager;
 
-    interface Binder extends UiBinder<Widget, ProblemsScreenViewImpl> {
+    interface Binder extends UiBinder<Widget, MessageConsoleScreenViewImpl> {
 
     }
 
     @UiField(provided = true)
-    DataGrid<BuildMessage> dataGrid;
+    DataGrid<MessageConsoleServiceRow> dataGrid;
 
     @UiField
     HorizontalPanel panel;
 
-    public static final ProvidesKey<BuildMessage> KEY_PROVIDER = new ProvidesKey<BuildMessage>() {
+    public static final ProvidesKey<MessageConsoleServiceRow> KEY_PROVIDER = new ProvidesKey<MessageConsoleServiceRow>() {
         @Override
-        public Object getKey( BuildMessage item ) {
-            return item == null ? null : item.getId();
+        public Object getKey( MessageConsoleServiceRow item ) {
+            return item != null ? item.getMessageId() : null;
         }
     };
 
     @Inject
-    public ProblemsScreenViewImpl( ProblemsService problemsService,
-                                   PlaceManager placeManager ) {
+    public MessageConsoleScreenViewImpl( MessageConsoleService messageConsoleService,
+            PlaceManager placeManager ) {
         this.placeManager = placeManager;
-        dataGrid = new DataGrid<BuildMessage>( KEY_PROVIDER );
+        dataGrid = new DataGrid<MessageConsoleServiceRow>( KEY_PROVIDER );
         dataGrid.setWidth( "100%" );
 
         dataGrid.setAutoHeaderRefreshDisabled( true );
@@ -80,7 +79,7 @@ public class ProblemsScreenViewImpl
 
         setUpColumns();
 
-        problemsService.addDataDisplay( dataGrid );
+        messageConsoleService.addDataDisplay( dataGrid );
 
         initWidget( uiBinder.createAndBindUi( this ) );
     }
@@ -101,10 +100,10 @@ public class ProblemsScreenViewImpl
     }
 
     private void addLineColumn() {
-        Column<BuildMessage, String> lineColumn = new Column<BuildMessage, String>( new TextCell() ) {
+        Column<MessageConsoleServiceRow, ?> lineColumn = new Column<MessageConsoleServiceRow, String>( new TextCell() ) {
             @Override
-            public String getValue( BuildMessage message ) {
-                return Integer.toString( message.getLine() );
+            public String getValue( MessageConsoleServiceRow row ) {
+                return row != null ? Integer.toString( row.getMessageLine() ) : null;
             }
         };
         dataGrid.addColumn( lineColumn,
@@ -115,10 +114,10 @@ public class ProblemsScreenViewImpl
     }
 
     private void addColumnColumn() {
-        Column<BuildMessage, String> column = new Column<BuildMessage, String>( new TextCell() ) {
+        Column<MessageConsoleServiceRow, ?> column = new Column<MessageConsoleServiceRow, String>( new TextCell() ) {
             @Override
-            public String getValue( BuildMessage message ) {
-                return Integer.toString( message.getColumn() );
+            public String getValue( MessageConsoleServiceRow row ) {
+                return Integer.toString( row.getMessageColumn() );
             }
         };
         dataGrid.addColumn( column,
@@ -129,10 +128,10 @@ public class ProblemsScreenViewImpl
     }
 
     private void addTextColumn() {
-        Column<BuildMessage, String> column = new Column<BuildMessage, String>( new TextCell() ) {
+        Column<MessageConsoleServiceRow, ?> column = new Column<MessageConsoleServiceRow, String>( new TextCell() ) {
             @Override
-            public String getValue( BuildMessage message ) {
-                return message.getText();
+            public String getValue( MessageConsoleServiceRow row ) {
+                return row.getMessageText();
             }
         };
         dataGrid.addColumn( column,
@@ -143,23 +142,23 @@ public class ProblemsScreenViewImpl
     }
 
     private void addFileNameColumn() {
-        Column<BuildMessage, String> column = new Column<BuildMessage, String>( new ClickableTextCell() ) {
+        Column<MessageConsoleServiceRow, String> column = new Column<MessageConsoleServiceRow, String>( new ClickableTextCell() ) {
             @Override
-            public String getValue( BuildMessage message ) {
-                if ( message.getPath() != null ) {
-                    return message.getPath().getFileName();
+            public String getValue( MessageConsoleServiceRow row ) {
+                if ( row.getMessagePath() != null ) {
+                    return row.getMessagePath().getFileName();
                 } else {
                     return "-";
                 }
             }
         };
-        column.setFieldUpdater( new FieldUpdater<BuildMessage, String>() {
+        column.setFieldUpdater( new FieldUpdater<MessageConsoleServiceRow, String>() {
             @Override
             public void update( int index,
-                                BuildMessage buildMessage,
+                    MessageConsoleServiceRow row,
                                 String value ) {
-                if ( buildMessage.getPath() != null ) {
-                    placeManager.goTo( buildMessage.getPath() );
+                if ( row.getMessagePath() != null ) {
+                    placeManager.goTo( row.getMessagePath() );
                 }
             }
         } );
@@ -171,13 +170,12 @@ public class ProblemsScreenViewImpl
     }
 
     private void addLevelColumn() {
-        Column<BuildMessage, ImageResource> column = new Column<BuildMessage, ImageResource>( new ImageResourceCell() ) {
+        Column<MessageConsoleServiceRow, ?> column = new Column<MessageConsoleServiceRow, ImageResource>( new ImageResourceCell() ) {
             @Override
-            public ImageResource getValue( BuildMessage message ) {
-                switch ( message.getLevel() ) {
+            public ImageResource getValue( MessageConsoleServiceRow row ) {
+                switch ( row.getMessageLevel() ) {
                     case ERROR:
                         return ProjectEditorResources.INSTANCE.Error();
-
                     case WARNING:
                         return ProjectEditorResources.INSTANCE.Warning();
                     case INFO:

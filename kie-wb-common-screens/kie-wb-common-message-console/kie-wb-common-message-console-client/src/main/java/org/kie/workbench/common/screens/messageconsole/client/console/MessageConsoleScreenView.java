@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.projecteditor.client.messages;
+package org.kie.workbench.common.screens.messageconsole.client.console;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 
-public interface ProblemsScreenView
+public interface MessageConsoleScreenView
         extends HasBusyIndicator,
                 IsWidget {
 

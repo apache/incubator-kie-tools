@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.projecteditor.client.messages;
+package org.kie.workbench.common.screens.messageconsole.client.console;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -22,13 +22,15 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.screens.messageconsole.events.MessageUtils;
+import org.kie.workbench.common.screens.messageconsole.events.PublishBatchMessagesEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -42,32 +44,32 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "org.kie.guvnor.Problems")
-public class ProblemsScreen
-        implements ProblemsScreenView.Presenter {
+@WorkbenchScreen(identifier = "org.kie.workbench.common.screens.messageconsole.MessageConsole")
+public class MessageConsoleScreen
+        implements MessageConsoleScreenView.Presenter {
 
     private final PlaceManager placeManager;
-    private final ProblemsScreenView view;
-    private final ProblemsService problemsService;
+    private final MessageConsoleScreenView view;
+    private final MessageConsoleService messageConsoleService;
 
     private final Caller<BuildService> buildService;
-    private final Event<BuildResults> buildResultsEvent;
+    private final Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
 
     private Project project;
 
     private Menus menus;
 
     @Inject
-    public ProblemsScreen( final ProblemsScreenView view,
-                           final PlaceManager placeManager,
-                           final ProblemsService problemsService,
-                           final Caller<BuildService> buildService,
-                           final Event<BuildResults> buildResultsEvent ) {
+    public MessageConsoleScreen( final MessageConsoleScreenView view,
+            final PlaceManager placeManager,
+            final MessageConsoleService messageConsoleService,
+            final Caller<BuildService> buildService,
+            final Event<PublishBatchMessagesEvent> publishBatchMessagesEvent ) {
         this.view = view;
         this.placeManager = placeManager;
-        this.problemsService = problemsService;
+        this.messageConsoleService = messageConsoleService;
         this.buildService = buildService;
-        this.buildResultsEvent = buildResultsEvent;
+        this.publishBatchMessagesEvent = publishBatchMessagesEvent;
 
         makeMenuBar();
 
@@ -76,15 +78,25 @@ public class ProblemsScreen
 
     private void makeMenuBar() {
         menus = MenuFactory
-                .newTopLevelMenu( ProjectEditorResources.CONSTANTS.RefreshProblemsPanel() )
+                //TODO use constants
+                .newTopLevelMenu( "refresh" )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Refreshing() );
+                        view.showBusyIndicator( "ProjectEditorResources.CONSTANTS.Refreshing()" );
                         buildService.call( new RemoteCallback<BuildResults>() {
                             @Override
                             public void callback( final BuildResults results ) {
-                                buildResultsEvent.fire( results );
+                                PublishBatchMessagesEvent batchMessages = new PublishBatchMessagesEvent();
+                                batchMessages.setCleanExisting( true );
+                                batchMessages.setMessageType( MessageUtils.BUILD_SYSTEM_MESSAGE );
+
+                                if ( results.getMessages() != null ) {
+                                    for ( BuildMessage buildMessage : results.getMessages() ) {
+                                        batchMessages.getMessagesToPublish().add( MessageUtils.convert( buildMessage ) );
+                                    }
+                                }
+                                publishBatchMessagesEvent.fire( batchMessages );
                                 view.hideBusyIndicator();
                             }
                         }, new HasBusyIndicatorDefaultErrorCallback( view ) ).build( project );
@@ -106,7 +118,8 @@ public class ProblemsScreen
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ProjectEditorResources.CONSTANTS.Problems();
+        //TODO set properly defined constants
+        return "Message console";//ProjectEditorResources.CONSTANTS.Problems();
     }
 
     @WorkbenchPartView
