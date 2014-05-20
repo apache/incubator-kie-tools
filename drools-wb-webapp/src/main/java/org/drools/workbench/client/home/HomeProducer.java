@@ -43,7 +43,7 @@ public class HomeProducer {
 
                                                       @Override
                                                       public void execute() {
-                                                          placeManager.goTo( "org.drools.workbench.client.perspectives.AuthoringPerspective" );
+                                                          placeManager.goTo( "org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective" );
                                                       }
                                                   } ) );
         model.addSection( s1 );

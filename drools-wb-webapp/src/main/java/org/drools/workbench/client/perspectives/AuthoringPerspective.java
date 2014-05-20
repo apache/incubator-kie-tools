@@ -51,10 +51,12 @@ import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 
 /**
- * A Perspective for Rule authors
+ * A Perspective for Rule authors. Note the @WorkbenchPerspective has the same identifier as kie-drools-wb
+ * since org.kie.workbench.common.screens.projecteditor.client.messages.ProblemsService "white-lists" a
+ * set of Perspectives for which to show the Problems Panel
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.drools.workbench.client.perspectives.AuthoringPerspective")
+@WorkbenchPerspective(identifier = "org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective")
 public class AuthoringPerspective {
 
     @Inject
