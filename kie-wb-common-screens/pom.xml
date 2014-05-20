@@ -18,6 +18,7 @@
 
   <modules>
     <module>kie-wb-common-default-editor</module>
+    <module>kie-wb-common-message-console</module>
     <module>kie-wb-common-project-imports-editor</module>
     <module>kie-wb-common-project-editor</module>
     <module>kie-wb-common-project-explorer</module>
