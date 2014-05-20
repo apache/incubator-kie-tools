@@ -111,7 +111,7 @@ public class RepositoriesView extends Composite
         RepositoriesViewItem item = (RepositoriesViewItem) repositoryToWidgetMap.remove(old);
 
         if (item != null) {
-            item.update(updated);
+            item.update(updated, presenter);
             repositoryToWidgetMap.put(updated, item);
         }
     }

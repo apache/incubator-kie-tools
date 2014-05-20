@@ -21,10 +21,6 @@ public class UpdateRepositoryCmd implements Command {
         this.data.put(name, value);
     }
 
-    public void setRepository(Repository repository) {
-        this.repository = repository;
-    }
-
     @Override
     public void execute() {
         presenter.updateRepository(repository, data);

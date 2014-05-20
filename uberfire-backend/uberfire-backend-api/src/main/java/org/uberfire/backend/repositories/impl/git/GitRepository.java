@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.repositories.PublicURI;
@@ -26,7 +28,7 @@ public class GitRepository implements Repository {
     private Collection<String> roles = new ArrayList<String>();
 
     private boolean requiresRefresh = true;
-    private Collection<String> branches;
+    private final Set<String> branches = new HashSet<String>();
     private String currentBranch;
 
     public GitRepository() {
@@ -71,7 +73,7 @@ public class GitRepository implements Repository {
 
 
     public void setBranches( final Collection<String> branches ) {
-        this.branches = branches;
+        this.branches.addAll(branches);
     }
 
     public void setCurrentBranch(String currentBranch) {
@@ -80,7 +82,7 @@ public class GitRepository implements Repository {
 
     @Override
     public Collection<String> getBranches() {
-        return branches;
+        return Collections.unmodifiableSet(branches);
     }
 
     @Override

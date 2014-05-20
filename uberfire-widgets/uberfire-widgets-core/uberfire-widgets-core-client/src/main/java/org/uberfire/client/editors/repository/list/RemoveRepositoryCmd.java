@@ -7,13 +7,10 @@ public class RemoveRepositoryCmd implements Command {
 
     private Repository repository;
     private RepositoriesPresenter presenter;
+
     public RemoveRepositoryCmd(Repository repository, RepositoriesPresenter presenter) {
         this.repository = repository;
         this.presenter = presenter;
-    }
-
-    public void setRepository(Repository repository) {
-        this.repository = repository;
     }
 
     @Override

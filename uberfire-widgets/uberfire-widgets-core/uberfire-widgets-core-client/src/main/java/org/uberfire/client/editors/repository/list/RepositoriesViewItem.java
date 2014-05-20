@@ -142,14 +142,9 @@ public class RepositoriesViewItem extends Composite {
         }
     }
 
-    public void update(final Repository repository) {
-        if (this.cmdUpdateRepository != null) {
-            this.cmdUpdateRepository.setRepository(repository);
-        }
-
-        if (this.cmdRemoveRepository != null) {
-            this.cmdRemoveRepository.setRepository(repository);
-        }
+    public void update(final Repository repository, final RepositoriesPresenter presenter) {
+        this.cmdRemoveRepository = new RemoveRepositoryCmd(repository, presenter);
+        this.cmdUpdateRepository = new UpdateRepositoryCmd(repository, presenter);
     }
 
     public static native void glueCopy( final com.google.gwt.user.client.Element element ) /*-{
