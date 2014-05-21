@@ -352,16 +352,16 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
         getSuperTypes( factType,
                        new Callback<List<String>>() {
-            @Override
-            public void callback( List<String> result ) {
-                if ( result != null ) {
-                    callback.callback( result.get( 0 ) );
+                           @Override
+                           public void callback( List<String> result ) {
+                               if ( result != null ) {
+                                   callback.callback( result.get( 0 ) );
 
-                } else {
-                    callback.callback( null );
-                }
-            }
-        } );
+                               } else {
+                                   callback.callback( null );
+                               }
+                           }
+                       } );
     }
 
     @Override
@@ -563,7 +563,8 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         }
 
         //Check method information
-        final List<MethodInfo> mis = projectMethodInformation.get( modelClassName );
+        final String fgcnModelClassName = getFQCNByFactName( modelClassName );
+        final List<MethodInfo> mis = projectMethodInformation.get( fgcnModelClassName );
         if ( mis != null ) {
             for ( MethodInfo mi : mis ) {
                 if ( mi.getName().equals( fieldName ) ) {
@@ -586,7 +587,8 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         }
 
         //Check method information
-        final List<MethodInfo> mis = projectMethodInformation.get( modelClassName );
+        final String fgcnModelClassName = getFQCNByFactName( modelClassName );
+        final List<MethodInfo> mis = projectMethodInformation.get( fgcnModelClassName );
         if ( mis != null ) {
             for ( MethodInfo mi : mis ) {
                 if ( mi.getName().equals( fieldName ) ) {
