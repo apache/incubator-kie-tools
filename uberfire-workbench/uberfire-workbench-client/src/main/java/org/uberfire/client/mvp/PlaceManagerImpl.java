@@ -63,8 +63,12 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 public class PlaceManagerImpl
 implements PlaceManager {
 
+    /** Activities that are currently open in the current perspective. */
     private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
+
+    /** Places that are currently open in the current perspective. */
     private final Map<PlaceRequest, PartDefinition> existingWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
+
     private final Map<PlaceRequest, Command> onOpenCallbacks = new HashMap<PlaceRequest, Command>();
 
     private EventBus tempBus = null;
@@ -157,12 +161,12 @@ implements PlaceManager {
     @Override
     public void goTo( final Path path,
                       final PanelDefinition panel ) {
-        goTo( getPlace( path ), null, panel );
+        goTo( new PathPlaceRequest( path ), null, panel );
     }
 
     @Override
     public void goTo( final Path path ) {
-        goTo( getPlace( path ), null, null );
+        goTo( new PathPlaceRequest( path ), null, null );
     }
 
     @Override
@@ -182,13 +186,13 @@ implements PlaceManager {
     public void goTo( final Path path,
                       final Command callback,
                       final PanelDefinition panel ) {
-        goTo( getPlace( path ), callback, panel );
+        goTo( new PathPlaceRequest( path ), callback, panel );
     }
 
     @Override
     public void goTo( Path path,
                       Command callback ) {
-        goTo( getPlace( path ), callback, null );
+        goTo( new PathPlaceRequest( path ), callback, null );
     }
 
     @Override
@@ -383,7 +387,7 @@ implements PlaceManager {
 
     private PlaceRequest getPlace( final Path path,
                                    final PlaceRequest placeRequest ) {
-        final PlaceRequest request = getPlace( path );
+        final PlaceRequest request = new PathPlaceRequest( path );
 
         for ( final Map.Entry<String, String> entry : placeRequest.getParameters().entrySet() ) {
             request.addParameter( entry.getKey(), entry.getValue() );
@@ -392,14 +396,14 @@ implements PlaceManager {
         return request;
     }
 
-    private PlaceRequest getPlace( final Path path ) {
-        return new PathPlaceRequest( path );
-    }
-
     /**
-     * Lookup the WorkbenchActivity corresponding to the WorkbenchPart
+     * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match
+     * by path, but see {@link #resolveExistingParts(PlaceRequest)} for a variant that does.
+     * 
      * @param place
-     * @return
+     *            the PlaceRequest whose activity to search for
+     * @return the activity that currently exists in service of the given PlaceRequest's ID. Null if no current activity
+     *         handles the given PlaceRequest.
      */
     @Override
     public Activity getActivity( final PlaceRequest place ) {
@@ -498,18 +502,34 @@ implements PlaceManager {
         return unmodifiableCollection( activeSplashScreens.values() );
     }
 
+    /**
+     * Returns all the PlaceRequests that map to activies that are currently in the open state and accessible
+     * somewhere in the current perspective.
+     * 
+     * @return an unmodifiable view of the current active place requests. This view may or may not update after
+     * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
+     * set; instead, call this method again for current information.
+     */
     public Collection<PlaceRequest> getActivePlaceRequests() {
-        return existingWorkbenchActivities.keySet();
+        return unmodifiableCollection( existingWorkbenchActivities.keySet() );
     }
 
-    public Collection<PlaceRequest> getActivePlaceRequestsWithPath() {
-        return new ArrayList<PlaceRequest>( existingWorkbenchActivities.size() ) {{
-            for ( final PlaceRequest placeRequest : existingWorkbenchActivities.keySet() ) {
-                if ( placeRequest instanceof PathPlaceRequest ) {
-                    add( placeRequest );
-                }
+    /**
+     * Returns all the PathPlaceRequests that map to activies that are currently in the open state and accessible
+     * somewhere in the current perspective.
+     * 
+     * @return an unmodifiable view of the current active place requests. This view may or may not update after
+     * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
+     * set; instead, call this method again for current information.
+     */
+    public Collection<PathPlaceRequest> getActivePlaceRequestsWithPath() {
+        ArrayList<PathPlaceRequest> pprs = new ArrayList<PathPlaceRequest>();
+        for ( final PlaceRequest placeRequest : existingWorkbenchActivities.keySet() ) {
+            if ( placeRequest instanceof PathPlaceRequest ) {
+                pprs.add( (PathPlaceRequest) placeRequest );
             }
-        }};
+        }
+        return pprs;
     }
 
     private void launchActivity( final PlaceRequest place,

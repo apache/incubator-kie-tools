@@ -18,12 +18,7 @@ package org.uberfire.client.mvp;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.mvp.PlaceRequest;
 
-/**
- * Workbench Editor Activity life-cycles
- */
-public interface WorkbenchEditorActivity
-        extends
-        WorkbenchActivity {
+public interface WorkbenchEditorActivity extends WorkbenchActivity {
 
     public void onStartup( final ObservablePath path );
 
