@@ -12,7 +12,6 @@ import org.jboss.errai.ioc.client.container.CreationalContext;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCDependentBean;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,6 +64,12 @@ public class PlaceManagerTest {
     /** Returned by the mock activityManager for the special "workbench.activity.notfound" place. */
     private final Activity notFoundActivity = mock(Activity.class);
 
+    /** The setup method makes this the current place. */
+    private final PlaceRequest kansas = new DefaultPlaceRequest( "kansas" );
+
+    /** The setup method links this activity with the kansas PlaceRequest. */
+    private final WorkbenchScreenActivity kansasActivity = mock( WorkbenchScreenActivity.class );
+
     @Before
     public void setup() {
         IOC.getBeanManager().destroyAllBeans();
@@ -83,97 +88,76 @@ public class PlaceManagerTest {
                         return mockObservablePath;
                     }
                 }, null ) );
+
+
+        // every test starts in Kansas, with no side effect interactions recorded
+        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
+        placeManager.goTo( kansas, mock(Command.class), (PanelDefinition) null );
+        resetInjectedMocks();
+        reset( kansasActivity );
+    }
+
+    /**
+     * Resets all the mocks that were injected into the PlaceManager under test. This should probably only be used in
+     * the setup method.
+     */
+    @SuppressWarnings("unchecked")
+    private void resetInjectedMocks() {
+        reset( workbenchPartBeforeCloseEvent );
+        reset( workbenchPartCloseEvent );
+        reset( perspectiveChangeEvent );
+        reset( workbenchPartLostFocusEvent );
+        reset( newSplashScreenActiveEvent );
+        reset( activityManager );
+        reset( placeHistoryHandler );
+        reset( selectWorkbenchPartEvent );
+        reset( panelManager );
+        reset( wbServices );
     }
 
     @Test
     public void testGoToNewPlaceById() throws Exception {
-        PlaceRequest kansas = new DefaultPlaceRequest( "kansas" );
-        WorkbenchScreenActivity kansasActivity = mock( WorkbenchScreenActivity.class );
-        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
+        PlaceRequest oz = new DefaultPlaceRequest( "oz" );
+        WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
+        when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
         Command onLaunchCallback = mock(Command.class);
 
-        placeManager.goTo( kansas, onLaunchCallback, (PanelDefinition) null );
+        placeManager.goTo( oz, onLaunchCallback, (PanelDefinition) null );
 
-        // as of UberFire 0.4. this event only happens if the place is already visible.
-        // it might be be better if the event was fired unconditionally. needs investigation.
-        verify( selectWorkbenchPartEvent, never() ).fire( any( SelectPlaceEvent.class ) );
-
-        verify( panelManager ).addWorkbenchPanel( panelManager.getRoot(), null );
-        Assert.assertTrue( placeManager.getActivePlaceRequests().contains( kansas ) );
-        Assert.assertEquals( PlaceStatus.OPEN, placeManager.getStatus( kansas ) );
-        verify( placeHistoryHandler ).onPlaceChange( kansas );
-
-        //( (PathPlaceRequest) place ).getPath().onDelete( new Command() {} ); // only for PathPlaceRequests
-
-        // activityManager.getSplashScreenInterceptor( place ); // need separate test for splash screens!
-
-        verify( kansasActivity ).launch( any( AcceptItem.class ), eq( kansas ), eq( onLaunchCallback ) );
-
-        verifyActivityLaunchSideEffects( kansas, kansasActivity, onLaunchCallback );
-
+        verifyActivityLaunchSideEffects( oz, ozActivity, onLaunchCallback );
     }
 
     @Test
     public void testGoToPlaceWeAreAlreadyAt() throws Exception {
-        PlaceRequest kansas = new DefaultPlaceRequest( "kansas" );
-        WorkbenchScreenActivity kansasActivity = mock( WorkbenchScreenActivity.class );
-
-        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
 
         Command onLaunchCallback = mock(Command.class);
         placeManager.goTo( kansas, onLaunchCallback, (PanelDefinition) null );
 
-        // have to reset the mocks because we don't want side effects from above to interfere
-        // with the verification of going to the same place again
-        resetMockInteractions();
-        reset( kansasActivity );
-
-        placeManager.goTo( kansas, onLaunchCallback, (PanelDefinition) null );
-
+        // note "refEq" tests equality field by field using reflection. don't read it as "reference equals!" :)
         verify( selectWorkbenchPartEvent ).fire( refEq( new SelectPlaceEvent( kansas ) ) );
+        verify( onLaunchCallback, never() ).execute();
 
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
     }
 
     @Test
     public void testGoToNowhereDoesNothing() throws Exception {
-        PlaceRequest kansas = new DefaultPlaceRequest( "kansas" );
-        WorkbenchScreenActivity kansasActivity = mock( WorkbenchScreenActivity.class );
-
-        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
-
-        placeManager.goTo( kansas, mock(Command.class), (PanelDefinition) null );
-
-        // have to reset the mocks because we don't want side effects from above to interfere
-        // with the verification of going to the same place again
-        resetMockInteractions();
-        reset( kansasActivity );
-
         Command onLaunchCallback = mock(Command.class);
         placeManager.goTo( PlaceRequest.NOWHERE, onLaunchCallback, (PanelDefinition) null );
 
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
+        verify( onLaunchCallback, never() ).execute();
     }
 
-    // XXX would like to remove this behaviour (should throw NPE)
+    // XXX would like to remove this behaviour (should throw NPE) but too many things are up in the air right now
     @Test
     public void testGoToNullDoesNothing() throws Exception {
-        PlaceRequest kansas = new DefaultPlaceRequest( "kansas" );
-        WorkbenchScreenActivity kansasActivity = mock( WorkbenchScreenActivity.class );
-
-        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
-
-        placeManager.goTo( kansas, mock(Command.class), (PanelDefinition) null );
-
-        // have to reset the mocks because we don't want side effects from above to interfere
-        // with the verification of going to the same place again
-        resetMockInteractions();
-        reset( kansasActivity );
 
         Command onLaunchCallback = mock(Command.class);
         placeManager.goTo( (PlaceRequest) null, onLaunchCallback, (PanelDefinition) null );
 
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
+        verify( onLaunchCallback, never() ).execute();
     }
 
     @Test
@@ -225,6 +209,20 @@ public class PlaceManagerTest {
         }
     }
 
+
+
+
+
+
+
+    //TODO test closing places
+
+
+    // TODO test splash screens, including this special side effect
+    // activityManager.getSplashScreenInterceptor( place ); // need separate test for splash screens!
+
+
+
     /**
      * Verifies that all the expected side effects of an activity launch have happened.
      * 
@@ -256,7 +254,6 @@ public class PlaceManagerTest {
 
         // contract between PlaceManager and Activity
         verify( activity ).launch( any( AcceptItem.class ), eq( placeRequest ), eq( onLaunchCallback ) );
-
     }
 
     /**
@@ -287,16 +284,4 @@ public class PlaceManagerTest {
 
     }
 
-    private void resetMockInteractions() {
-        reset( workbenchPartBeforeCloseEvent );
-        reset( workbenchPartCloseEvent );
-        reset( perspectiveChangeEvent );
-        reset( workbenchPartLostFocusEvent );
-        reset( newSplashScreenActiveEvent );
-        reset( activityManager );
-        reset( placeHistoryHandler );
-        reset( selectWorkbenchPartEvent );
-        reset( panelManager );
-        reset( wbServices );
-    }
 }
