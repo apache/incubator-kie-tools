@@ -26,6 +26,7 @@ import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.workbench.common.screens.messageconsole.events.UnpublishMessagesEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
@@ -103,6 +104,9 @@ public class DataModelerScreenPresenter {
     private Event<ProjectContextChangeEvent> projectContextChangeEvent;
 
     @Inject
+    private Event<UnpublishMessagesEvent> unpublishMessagesEvent;
+
+    @Inject
     private ProjectContext workbenchContext;
 
     private Project currentProject;
@@ -136,6 +140,7 @@ public class DataModelerScreenPresenter {
         makeMenuBar();
         initContext();
         open = true;
+        cleanSystemMessages();
         processProjectChange( workbenchContext.getActiveProject() );
     }
 
@@ -155,6 +160,7 @@ public class DataModelerScreenPresenter {
     @OnClose
     public void OnClose() {
         open = false;
+        cleanSystemMessages();
         clearContext();
     }
 
@@ -666,6 +672,14 @@ public class DataModelerScreenPresenter {
         //clean the deleted dataobjects status, mark all dataobjects as persisted (except readonly objects), etc.
         getDataModel().setPersistedStatus( false );
         getDataModel().updateFingerPrints( result.getObjectFingerPrints() );
+    }
+
+    private void cleanSystemMessages() {
+        UnpublishMessagesEvent unpublishMessage = new UnpublishMessagesEvent();
+        unpublishMessage.setShowSystemConsole( false );
+        unpublishMessage.setMessageType( "DataModeler" );
+        unpublishMessage.setUserId( (sessionInfo != null && sessionInfo.getIdentity() != null) ? sessionInfo.getIdentity().getName() : null );
+        unpublishMessagesEvent.fire( unpublishMessage );
     }
 
     private void showReadonlyStateInfo() {

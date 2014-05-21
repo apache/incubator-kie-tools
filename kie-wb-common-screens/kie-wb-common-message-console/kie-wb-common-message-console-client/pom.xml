@@ -58,12 +58,6 @@
       <artifactId>kie-wb-common-ui</artifactId>
     </dependency>
 
-    <!-- TODO MOVE THIS VERSION NUMBER TO Kie-wb-withdependencies -->
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-project-editor-client</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-message-console-api</artifactId>

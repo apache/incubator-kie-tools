@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
-import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.messageconsole.client.console.resources.MessageConsoleResources;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.tables.ResizableHeader;
@@ -107,7 +107,7 @@ public class MessageConsoleScreenViewImpl
             }
         };
         dataGrid.addColumn( lineColumn,
-                            new ResizableHeader( ProjectEditorResources.CONSTANTS.Line(),
+                            new ResizableHeader( MessageConsoleResources.CONSTANTS.Line(),
                                                  dataGrid,
                                                  lineColumn ) );
         dataGrid.setColumnWidth( lineColumn, 60, Style.Unit.PCT );
@@ -121,7 +121,7 @@ public class MessageConsoleScreenViewImpl
             }
         };
         dataGrid.addColumn( column,
-                            new ResizableHeader( ProjectEditorResources.CONSTANTS.Column(),
+                            new ResizableHeader( MessageConsoleResources.CONSTANTS.Column(),
                                                  dataGrid,
                                                  column ) );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
@@ -135,7 +135,7 @@ public class MessageConsoleScreenViewImpl
             }
         };
         dataGrid.addColumn( column,
-                            new ResizableHeader( ProjectEditorResources.CONSTANTS.Text(),
+                            new ResizableHeader( MessageConsoleResources.CONSTANTS.Text(),
                                                  dataGrid,
                                                  column ) );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
@@ -163,7 +163,7 @@ public class MessageConsoleScreenViewImpl
             }
         } );
         dataGrid.addColumn( column,
-                            new ResizableHeader( ProjectEditorResources.CONSTANTS.FileName(),
+                            new ResizableHeader( MessageConsoleResources.CONSTANTS.FileName(),
                                                  dataGrid,
                                                  column ) );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
@@ -175,17 +175,17 @@ public class MessageConsoleScreenViewImpl
             public ImageResource getValue( MessageConsoleServiceRow row ) {
                 switch ( row.getMessageLevel() ) {
                     case ERROR:
-                        return ProjectEditorResources.INSTANCE.Error();
+                        return MessageConsoleResources.INSTANCE.Error();
                     case WARNING:
-                        return ProjectEditorResources.INSTANCE.Warning();
+                        return MessageConsoleResources.INSTANCE.Warning();
                     case INFO:
                     default:
-                        return ProjectEditorResources.INSTANCE.Information();
+                        return MessageConsoleResources.INSTANCE.Information();
                 }
             }
         };
         dataGrid.addColumn( column,
-                            new ResizableHeader( ProjectEditorResources.CONSTANTS.Level(),
+                            new ResizableHeader( MessageConsoleResources.CONSTANTS.Level(),
                                                  dataGrid,
                                                  column ) );
         dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );

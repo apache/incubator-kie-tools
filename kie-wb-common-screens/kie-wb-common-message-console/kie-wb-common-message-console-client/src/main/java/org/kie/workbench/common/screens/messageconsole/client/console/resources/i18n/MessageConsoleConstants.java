@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.messageconsole.client.console;
+package org.kie.workbench.common.screens.messageconsole.client.console.resources.i18n;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import com.google.gwt.i18n.client.Messages;
 
-public interface MessageConsoleScreenView
-        extends HasBusyIndicator,
-                IsWidget {
+public interface MessageConsoleConstants extends Messages {
 
-    interface Presenter {
+    String Line();
 
-    }
+    String Column();
 
-    void setPresenter( Presenter presenter );
+    String Text();
+
+    String Level();
+
+    String FileName();
+
+    String MessageConsole();
+
+    String RefreshProblemsPanel();
+
+    String Refreshing();
+
 }

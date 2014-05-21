@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.screens.messageconsole.client.console.resources.MessageConsoleResources;
 import org.kie.workbench.common.screens.messageconsole.events.MessageUtils;
 import org.kie.workbench.common.screens.messageconsole.events.PublishBatchMessagesEvent;
 import org.jboss.errai.common.client.api.Caller;
@@ -78,12 +79,11 @@ public class MessageConsoleScreen
 
     private void makeMenuBar() {
         menus = MenuFactory
-                //TODO use constants
-                .newTopLevelMenu( "refresh" )
+                .newTopLevelMenu( MessageConsoleResources.CONSTANTS.RefreshProblemsPanel() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        view.showBusyIndicator( "ProjectEditorResources.CONSTANTS.Refreshing()" );
+                        view.showBusyIndicator( MessageConsoleResources.CONSTANTS.Refreshing() );
                         buildService.call( new RemoteCallback<BuildResults>() {
                             @Override
                             public void callback( final BuildResults results ) {
@@ -118,8 +118,7 @@ public class MessageConsoleScreen
 
     @WorkbenchPartTitle
     public String getTitle() {
-        //TODO set properly defined constants
-        return "Message console";//ProjectEditorResources.CONSTANTS.Problems();
+        return MessageConsoleResources.CONSTANTS.MessageConsole();
     }
 
     @WorkbenchPartView
