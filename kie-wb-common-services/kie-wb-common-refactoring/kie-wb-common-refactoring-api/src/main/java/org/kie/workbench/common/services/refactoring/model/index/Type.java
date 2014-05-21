@@ -31,10 +31,6 @@ public class Type implements IndexElementsGenerator {
                                                             typeTerm );
     }
 
-    public ValueTypeIndexTerm getTypeTerm() {
-        return typeTerm;
-    }
-
     @Override
     public List<Pair<String, String>> toIndexElements() {
         final List<Pair<String, String>> indexElements = new ArrayList<Pair<String, String>>();

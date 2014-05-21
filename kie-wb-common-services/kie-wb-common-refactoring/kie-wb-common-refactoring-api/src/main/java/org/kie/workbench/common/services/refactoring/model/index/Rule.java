@@ -39,10 +39,6 @@ public class Rule implements IndexElementsGenerator {
         this.parentRuleTerm = parentRuleTerm;
     }
 
-    public ValueRuleIndexTerm getRule() {
-        return ruleTerm;
-    }
-
     @Override
     public List<Pair<String, String>> toIndexElements() {
         final List<Pair<String, String>> indexElements = new ArrayList<Pair<String, String>>();
