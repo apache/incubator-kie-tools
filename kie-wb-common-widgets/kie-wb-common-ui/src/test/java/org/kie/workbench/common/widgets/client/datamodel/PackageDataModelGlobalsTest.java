@@ -56,6 +56,8 @@ public class PackageDataModelGlobalsTest {
         assertEquals( 2,
                       oracle.getFactTypes().length );
         assertEquals( "Product",
+                      oracle.getFactTypes()[ 0 ] );
+        assertEquals( "Product.Colour",
                       oracle.getFactTypes()[ 1 ] );
 
         assertEquals( 1,

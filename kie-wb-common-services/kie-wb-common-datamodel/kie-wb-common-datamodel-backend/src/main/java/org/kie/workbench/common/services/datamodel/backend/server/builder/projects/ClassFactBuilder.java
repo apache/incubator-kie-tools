@@ -338,7 +338,8 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 if ( enumField.isEnumConstant() ) {
                     String shortName = fieldClazz.getName().substring( fieldClazz.getName().lastIndexOf( "." ) + 1 ) + "." + enumField.getName();
                     if ( shortName.contains( "$" ) ) {
-                        shortName = shortName.substring( shortName.lastIndexOf( "$" ) + 1 );
+                        shortName = shortName.replaceAll( "\\$",
+                                                          "." );
                     }
                     enumValues.add( shortName + "=" + shortName );
                 }

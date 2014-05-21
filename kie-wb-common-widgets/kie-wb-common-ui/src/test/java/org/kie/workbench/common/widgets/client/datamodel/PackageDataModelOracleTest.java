@@ -356,10 +356,10 @@ public class PackageDataModelOracleTest {
 
         assertEquals( 1,
                       oracle.getFactTypes().length );
-        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+        assertEquals( "TestSuperClass.NestedClass",
                       oracle.getFactTypes()[ 0 ] );
 
-        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+        oracle.getFieldCompletions( "TestSuperClass.NestedClass",
                                     new Callback<ModelField[]>() {
                                         @Override
                                         public void callback( final ModelField[] fields ) {
@@ -369,16 +369,16 @@ public class PackageDataModelOracleTest {
                                     } );
 
         assertEquals( DataType.TYPE_THIS,
-                      oracle.getFieldType( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFieldType( "TestSuperClass.NestedClass",
                                            "this" ) );
-        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
-                      oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
+        assertEquals( "TestSuperClass.NestedClass",
+                      oracle.getFieldClassName( "TestSuperClass.NestedClass",
                                                 "this" ) );
         assertEquals( DataType.TYPE_STRING,
-                      oracle.getFieldType( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFieldType( "TestSuperClass.NestedClass",
                                            "nestedField1" ) );
         assertEquals( String.class.getName(),
-                      oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFieldClassName( "TestSuperClass.NestedClass",
                                                 "nestedField1" ) );
     }
 
@@ -424,10 +424,10 @@ public class PackageDataModelOracleTest {
                                                                  dataModel );
         assertEquals( 1,
                       oracle.getFactTypes().length );
-        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+        assertEquals( "TestSuperClass.NestedClass",
                       oracle.getFactTypes()[ 0 ] );
 
-        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+        oracle.getFieldCompletions( "TestSuperClass.NestedClass",
                                     new Callback<ModelField[]>() {
                                         @Override
                                         public void callback( final ModelField[] fields ) {
@@ -437,16 +437,16 @@ public class PackageDataModelOracleTest {
                                     } );
 
         assertEquals( DataType.TYPE_THIS,
-                      oracle.getFieldType( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFieldType( "TestSuperClass.NestedClass",
                                            "this" ) );
-        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
-                      oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
+        assertEquals( "TestSuperClass.NestedClass",
+                      oracle.getFieldClassName( "TestSuperClass.NestedClass",
                                                 "this" ) );
         assertEquals( DataType.TYPE_STRING,
-                      oracle.getFieldType( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFieldType( "TestSuperClass.NestedClass",
                                            "nestedField1" ) );
         assertEquals( String.class.getName(),
-                      oracle.getFieldClassName( TestSuperClass.NestedClass.class.getSimpleName(),
+                      oracle.getFieldClassName( "TestSuperClass.NestedClass",
                                                 "nestedField1" ) );
     }
 
@@ -493,10 +493,10 @@ public class PackageDataModelOracleTest {
                                                                  dataModel );
         assertEquals( 1,
                       oracle.getFactTypes().length );
-        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+        assertEquals( "TestSuperClass.NestedClass",
                       oracle.getFactTypes()[ 0 ] );
 
-        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+        oracle.getFieldCompletions( "TestSuperClass.NestedClass",
                                     new Callback<ModelField[]>() {
                                         @Override
                                         public void callback( final ModelField[] fields ) {
@@ -504,7 +504,7 @@ public class PackageDataModelOracleTest {
                                                           fields.length );
                                         }
                                     } );
-        oracle.getMethodInfos( TestSuperClass.NestedClass.class.getSimpleName(),
+        oracle.getMethodInfos( "TestSuperClass.NestedClass",
                                new Callback<List<MethodInfo>>() {
                                    @Override
                                    public void callback( final List<MethodInfo> methodInfos ) {
@@ -514,9 +514,9 @@ public class PackageDataModelOracleTest {
                                        //Use SimpleName as the return type has been imported
                                        final MethodInfo mf0 = new MethodInfo( "methodDoingSomethingThatReturnsAnInnerClass",
                                                                               new ArrayList<String>(),
-                                                                              TestSuperClass.NestedClass.class.getSimpleName(),
+                                                                              "TestSuperClass.NestedClass",
                                                                               null,
-                                                                              TestSuperClass.NestedClass.class.getSimpleName() );
+                                                                              "TestSuperClass.NestedClass" );
 
                                        //Use FQCN as the return type has not been imported
                                        final MethodInfo mf1 = new MethodInfo( "methodDoingSomethingWithNestedField1",
@@ -582,10 +582,10 @@ public class PackageDataModelOracleTest {
                                                                  dataModel );
         assertEquals( 1,
                       oracle.getFactTypes().length );
-        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+        assertEquals( "TestSuperClass.NestedClass",
                       oracle.getFactTypes()[ 0 ] );
 
-        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+        oracle.getFieldCompletions( "TestSuperClass.NestedClass",
                                     new Callback<ModelField[]>() {
                                         @Override
                                         public void callback( final ModelField[] fields ) {
@@ -593,7 +593,7 @@ public class PackageDataModelOracleTest {
                                                           fields.length );
                                         }
                                     } );
-        oracle.getMethodInfos( TestSuperClass.NestedClass.class.getSimpleName(),
+        oracle.getMethodInfos( "TestSuperClass.NestedClass",
                                new Callback<List<MethodInfo>>() {
                                    @Override
                                    public void callback( final List<MethodInfo> methodInfos ) {
@@ -603,9 +603,9 @@ public class PackageDataModelOracleTest {
                                        //Use SimpleName as the return type has been imported
                                        final MethodInfo mf0 = new MethodInfo( "methodDoingSomethingThatReturnsAnInnerClass",
                                                                               new ArrayList<String>(),
-                                                                              TestSuperClass.NestedClass.class.getSimpleName(),
+                                                                              "TestSuperClass.NestedClass",
                                                                               null,
-                                                                              TestSuperClass.NestedClass.class.getSimpleName() );
+                                                                              "TestSuperClass.NestedClass" );
 
                                        //Use SimpleName as the return type has been imported
                                        final MethodInfo mf1 = new MethodInfo( "methodDoingSomethingThatReturnsAnOuterClass",
@@ -667,10 +667,10 @@ public class PackageDataModelOracleTest {
                                                                  dataModel );
         assertEquals( 1,
                       oracle.getFactTypes().length );
-        assertEquals( TestSuperClass.NestedClass.class.getSimpleName(),
+        assertEquals( "TestSuperClass.NestedClass",
                       oracle.getFactTypes()[ 0 ] );
 
-        oracle.getFieldCompletions( TestSuperClass.NestedClass.class.getSimpleName(),
+        oracle.getFieldCompletions( "TestSuperClass.NestedClass",
                                     new Callback<ModelField[]>() {
                                         @Override
                                         public void callback( final ModelField[] fields ) {
@@ -678,7 +678,7 @@ public class PackageDataModelOracleTest {
                                                           fields.length );
                                         }
                                     } );
-        oracle.getMethodInfos( TestSuperClass.NestedClass.class.getSimpleName(),
+        oracle.getMethodInfos( "TestSuperClass.NestedClass",
                                new Callback<List<MethodInfo>>() {
                                    @Override
                                    public void callback( final List<MethodInfo> methodInfos ) {
@@ -688,9 +688,9 @@ public class PackageDataModelOracleTest {
                                        //Use SimpleName as the return type is in the same package represented by the Oracle
                                        final MethodInfo mf0 = new MethodInfo( "methodDoingSomethingThatReturnsAnInnerClass",
                                                                               new ArrayList<String>(),
-                                                                              TestSuperClass.NestedClass.class.getSimpleName(),
+                                                                              "TestSuperClass.NestedClass",
                                                                               null,
-                                                                              TestSuperClass.NestedClass.class.getSimpleName() );
+                                                                              "TestSuperClass.NestedClass" );
 
                                        //Use SimpleName as the return type is in the same package represented by the Oracle
                                        final MethodInfo mf1 = new MethodInfo( "methodDoingSomethingThatReturnsAnOuterClass",

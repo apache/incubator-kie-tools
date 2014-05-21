@@ -330,7 +330,8 @@ public class AsyncPackageDataModelOracleUtilities {
             typeName = typeName.substring( dotIndex + 1 );
         }
         if ( typeName.contains( "$" ) ) {
-            typeName = typeName.substring( typeName.lastIndexOf( "$" ) + 1 );
+            typeName = typeName.replaceAll( "\\$",
+                                            "." );
         }
         return typeName;
     }
