@@ -58,7 +58,7 @@ public class GuidedRuleTemplateFileIndexer implements Indexer {
             final String content = ioService.readAllString( path );
             final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
 
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( path );
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder();
             final GuidedRuleTemplateIndexVisitor visitor = new GuidedRuleTemplateIndexVisitor( builder,
                                                                                                model );
             visitor.visit();

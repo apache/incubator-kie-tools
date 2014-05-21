@@ -58,7 +58,7 @@ public class GuidedDecisionTableFileIndexer implements Indexer {
             final String content = ioService.readAllString( path );
             final GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( content );
 
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( path );
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder();
             final GuidedDecisionTableModelIndexVisitor visitor = new GuidedDecisionTableModelIndexVisitor( builder,
                                                                                                            model );
             visitor.visit();

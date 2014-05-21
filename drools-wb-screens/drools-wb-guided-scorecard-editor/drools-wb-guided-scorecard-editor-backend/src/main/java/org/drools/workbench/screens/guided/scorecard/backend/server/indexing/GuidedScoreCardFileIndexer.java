@@ -64,8 +64,7 @@ public class GuidedScoreCardFileIndexer implements Indexer {
             final ScoreCardModel model = GuidedScoreCardXMLPersistence.getInstance().unmarshall( content );
 
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( path );
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder();
             final GuidedScoreCardIndexVisitor visitor = new GuidedScoreCardIndexVisitor( dmo,
                                                                                          builder,
                                                                                          model );

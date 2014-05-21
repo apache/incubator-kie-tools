@@ -108,8 +108,8 @@ public class GuidedDecisionTableModelIndexVisitor {
         final String parentRuleName = model.getParentName();
         for ( List<DTCellValue52> row : model.getData() ) {
             final String ruleName = "Row " + row.get( 0 ).getNumericValue().longValue() + " " + model.getTableName();
-            builder.addRule( new Rule( new ValueRuleIndexTerm( ruleName ),
-                                       ( parentRuleName == null ? null : new ValueRuleIndexTerm( parentRuleName ) ) ) );
+            builder.addGenerator( new Rule( new ValueRuleIndexTerm( ruleName ),
+                                            ( parentRuleName == null ? null : new ValueRuleIndexTerm( parentRuleName ) ) ) );
         }
     }
 
@@ -118,14 +118,14 @@ public class GuidedDecisionTableModelIndexVisitor {
         for ( List<DTCellValue52> row : model.getData() ) {
             final String attributeValue = row.get( iCol ).getStringValue();
             if ( !( attributeValue == null || attributeValue.isEmpty() ) ) {
-                builder.addRuleAttribute( new RuleAttribute( new ValueRuleAttributeIndexTerm( o.getAttribute() ),
-                                                             new ValueRuleAttributeValueIndexTerm( attributeValue ) ) );
+                builder.addGenerator( new RuleAttribute( new ValueRuleAttributeIndexTerm( o.getAttribute() ),
+                                                         new ValueRuleAttributeValueIndexTerm( attributeValue ) ) );
             }
         }
     }
 
     private void visit( final Pattern52 o ) {
-        builder.addType( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getFactType() ) ) ) );
+        builder.addGenerator( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getFactType() ) ) ) );
         for ( ConditionCol52 c : o.getChildColumns() ) {
             visit( c );
         }
@@ -145,9 +145,9 @@ public class GuidedDecisionTableModelIndexVisitor {
     private void visit( final ConditionCol52 o ) {
         final Pattern52 p = model.getPattern( o );
         final String fullyQualifiedClassName = getFullyQualifiedClassName( p.getFactType() );
-        builder.addField( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
-                                         new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getFieldType() ) ),
-                                         new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
+                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getFieldType() ) ),
+                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
     }
 
     private void visit( final BRLActionColumn o ) {
@@ -163,18 +163,18 @@ public class GuidedDecisionTableModelIndexVisitor {
 
     private void visit( final ActionInsertFactCol52 o ) {
         final String fullyQualifiedClassName = getFullyQualifiedClassName( o.getFactType() );
-        builder.addType( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
-        builder.addField( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
-                                         new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getType() ) ),
-                                         new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
+                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getType() ) ),
+                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
     }
 
     private void visit( final ActionSetFieldCol52 o ) {
         final Pattern52 p = model.getConditionPattern( o.getBoundName() );
         final String fullyQualifiedClassName = getFullyQualifiedClassName( p.getFactType() );
-        builder.addField( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
-                                         new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getType() ) ),
-                                         new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( o.getFactField() ),
+                                             new ValueTypeIndexTerm( getFullyQualifiedClassName( o.getType() ) ),
+                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
     }
 
     private String getFullyQualifiedClassName( final String typeName ) {

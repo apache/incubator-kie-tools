@@ -89,7 +89,7 @@ public class TestScenarioIndexVisitor {
             final FactData factData = (FactData) fixture;
             final String typeName = factData.getType();
             final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-            builder.addType( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+            builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
 
             factDataToFullyQualifiedClassNameMap.put( factData.getName(),
                                                       fullyQualifiedClassName );
@@ -98,9 +98,9 @@ public class TestScenarioIndexVisitor {
                 final String fieldName = field.getName();
                 final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                              fieldName );
-                builder.addField( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                                 new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                                 new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+                builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
+                                                     new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
+                                                     new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
             }
 
         } else if ( fixture instanceof VerifyFact ) {
@@ -115,20 +115,20 @@ public class TestScenarioIndexVisitor {
                 fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
             }
             if ( fullyQualifiedClassName != null ) {
-                builder.addType( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+                builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
             }
 
             for ( VerifyField field : verifyFact.getFieldValues() ) {
                 final String fieldName = field.getFieldName();
                 final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                              fieldName );
-                builder.addField( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                                 new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                                 new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+                builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
+                                                     new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
+                                                     new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
             }
         } else if ( fixture instanceof VerifyRuleFired ) {
             final VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
-            builder.addRule( new Rule( new ValueRuleIndexTerm( verifyRuleFired.getRuleName() ) ) );
+            builder.addGenerator( new Rule( new ValueRuleIndexTerm( verifyRuleFired.getRuleName() ) ) );
         }
     }
 

@@ -55,15 +55,15 @@ public class GuidedScoreCardIndexVisitor {
         //Add type
         final String typeName = model.getFactName();
         final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-        builder.addType( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
 
         //Add field
         final String fieldName = model.getFieldName();
         final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                      fieldName );
-        builder.addField( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                         new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                         new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
+                                             new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
+                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
 
         //Add Characteristics
         for ( Characteristic c : model.getCharacteristics() ) {
@@ -77,15 +77,15 @@ public class GuidedScoreCardIndexVisitor {
         //Add type
         final String typeName = c.getFact();
         final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-        builder.addType( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
 
         //Add field
         final String fieldName = c.getField();
         final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                      fieldName );
-        builder.addField( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                         new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                         new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
+                                             new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
+                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
     }
 
     private String getFullyQualifiedClassName( final String typeName ) {

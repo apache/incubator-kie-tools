@@ -75,8 +75,7 @@ public class EnumFileIndexer implements Indexer {
 
             final String packageName = getPackageName( path );
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( path );
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder();
             final EnumIndexVisitor visitor = new EnumIndexVisitor( dmo,
                                                                    builder,
                                                                    enumLoader,

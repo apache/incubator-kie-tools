@@ -64,15 +64,15 @@ public class EnumIndexVisitor {
             //Add type
             final String typeName = getTypeName( e.getKey() );
             final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-            builder.addType( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+            builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
 
             //Add field
             final String fieldName = getFieldName( e.getKey() );
             final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                          fieldName );
-            builder.addField( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                             new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
-                                             new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+            builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
+                                                 new ValueTypeIndexTerm( fieldFullyQualifiedClassName ),
+                                                 new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
         }
 
         results.addAll( builder.build() );

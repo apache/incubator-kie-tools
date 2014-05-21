@@ -68,8 +68,7 @@ public class TestScenarioFileIndexer implements Indexer {
             final Scenario model = ScenarioXMLPersistence.getInstance().unmarshal( content );
 
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( path );
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder( );
             final TestScenarioIndexVisitor visitor = new TestScenarioIndexVisitor( dmo,
                                                                                    builder,
                                                                                    model );

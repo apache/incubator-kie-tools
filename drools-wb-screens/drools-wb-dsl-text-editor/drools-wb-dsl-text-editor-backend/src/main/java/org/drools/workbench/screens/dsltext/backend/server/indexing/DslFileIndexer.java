@@ -33,6 +33,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
+import org.kie.workbench.common.services.refactoring.model.index.IndexElementsGenerator;
 import org.kie.workbench.common.services.refactoring.model.index.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,10 +102,13 @@ public class DslFileIndexer implements Indexer {
                 }
 
                 //Don't include rules created to parse DSL
-                final DefaultIndexBuilder builder = new DefaultIndexBuilder( path ) {
+                final DefaultIndexBuilder builder = new DefaultIndexBuilder() {
                     @Override
-                    public DefaultIndexBuilder addRule( Rule rule ) {
-                        return this;
+                    public DefaultIndexBuilder addGenerator( final IndexElementsGenerator generator ) {
+                        if ( generator instanceof Rule ) {
+                            return this;
+                        }
+                        return super.addGenerator( generator );
                     }
                 };
 
