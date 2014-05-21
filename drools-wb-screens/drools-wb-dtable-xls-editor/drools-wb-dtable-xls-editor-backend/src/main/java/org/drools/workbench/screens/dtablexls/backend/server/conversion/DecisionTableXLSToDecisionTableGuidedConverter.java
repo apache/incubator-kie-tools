@@ -460,9 +460,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         sb.append( DateUtils.format( now.getTime() ) );
         sb.append( " " );
         sb.append( now.get( Calendar.HOUR_OF_DAY ) );
-        sb.append( ":" );
+        sb.append( "-" );
         sb.append( now.get( Calendar.MINUTE ) );
-        sb.append( ":" );
+        sb.append( "-" );
         sb.append( now.get( Calendar.SECOND ) );
         sb.append( ")" );
         sb.append( "." ).append( type.getSuffix() );
