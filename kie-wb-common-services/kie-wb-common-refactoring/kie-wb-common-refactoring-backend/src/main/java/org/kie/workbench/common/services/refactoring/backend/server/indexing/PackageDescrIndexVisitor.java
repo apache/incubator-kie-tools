@@ -272,9 +272,9 @@ public class PackageDescrIndexVisitor {
         if ( mfs != null ) {
             for ( ModelField mf : mfs ) {
                 if ( mf.getName().equals( fieldName ) ) {
-                    builder.addField( new TypeField( new ValueFieldIndexTerm( fieldName ),
-                                                     new ValueTypeIndexTerm( mf.getClassName() ),
-                                                     new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+                    builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),
+                                                         new ValueTypeIndexTerm( mf.getClassName() ),
+                                                         new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
                     return mf.getClassName();
                 }
             }
@@ -283,8 +283,8 @@ public class PackageDescrIndexVisitor {
     }
 
     protected void visit( final AttributeDescr descr ) {
-        builder.addRuleAttribute( new RuleAttribute( new ValueRuleAttributeIndexTerm( descr.getName() ),
-                                                     new ValueRuleAttributeValueIndexTerm( descr.getValue() ) ) );
+        builder.addGenerator( new RuleAttribute( new ValueRuleAttributeIndexTerm( descr.getName() ),
+                                                 new ValueRuleAttributeValueIndexTerm( descr.getValue() ) ) );
     }
 
     protected void visit( final BindingDescr descr ) {
@@ -363,12 +363,12 @@ public class PackageDescrIndexVisitor {
     }
 
     protected void visit( final GlobalDescr descr ) {
-        builder.addType( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( packageDescr,
-                                                                                       descr.getType() ) ) ) );
+        builder.addGenerator( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( packageDescr,
+                                                                                            descr.getType() ) ) ) );
     }
 
     protected void visit( final ImportDescr descr ) {
-        builder.addType( new Type( new ValueTypeIndexTerm( descr.getTarget() ) ) );
+        builder.addGenerator( new Type( new ValueTypeIndexTerm( descr.getTarget() ) ) );
     }
 
     protected void visit( final LiteralRestrictionDescr descr ) {
@@ -413,7 +413,7 @@ public class PackageDescrIndexVisitor {
             context.addBoundType( descr.getIdentifier(),
                                   fullyQualifiedClassName );
         }
-        builder.addType( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
+        builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
         visit( descr.getConstraint() );
         context.endPattern();
     }
@@ -432,8 +432,8 @@ public class PackageDescrIndexVisitor {
     }
 
     protected void visit( final RuleDescr descr ) {
-        builder.addRule( new Rule( new ValueRuleIndexTerm( descr.getName() ),
-                                   ( descr.getParentName() == null ? null : new ValueRuleIndexTerm( descr.getParentName() ) ) ) );
+        builder.addGenerator( new Rule( new ValueRuleIndexTerm( descr.getName() ),
+                                        ( descr.getParentName() == null ? null : new ValueRuleIndexTerm( descr.getParentName() ) ) ) );
         for ( AttributeDescr d : descr.getAttributes().values() ) {
             visit( d );
         }
@@ -455,11 +455,11 @@ public class PackageDescrIndexVisitor {
     }
 
     protected void visit( final TypeDeclarationDescr descr ) {
-        builder.addType( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( packageDescr,
-                                                                                       descr.getTypeName() ) ) ) );
+        builder.addGenerator( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( packageDescr,
+                                                                                            descr.getTypeName() ) ) ) );
         if ( !( descr.getSuperTypeName() == null || descr.getSuperTypeName().isEmpty() ) ) {
-            builder.addType( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( packageDescr,
-                                                                                           descr.getSuperTypeName() ) ) ) );
+            builder.addGenerator( new Type( new ValueTypeIndexTerm( getFullyQualifiedClassName( packageDescr,
+                                                                                                descr.getSuperTypeName() ) ) ) );
         }
     }
 

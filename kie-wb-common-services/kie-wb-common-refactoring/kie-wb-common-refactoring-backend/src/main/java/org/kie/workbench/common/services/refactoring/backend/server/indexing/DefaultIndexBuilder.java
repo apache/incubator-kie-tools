@@ -20,72 +20,27 @@ import java.util.List;
 import java.util.Set;
 
 import org.kie.workbench.common.services.refactoring.model.index.IndexElementsGenerator;
-import org.kie.workbench.common.services.refactoring.model.index.Rule;
-import org.kie.workbench.common.services.refactoring.model.index.RuleAttribute;
-import org.kie.workbench.common.services.refactoring.model.index.Type;
-import org.kie.workbench.common.services.refactoring.model.index.TypeField;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.java.nio.file.Path;
 
 public class DefaultIndexBuilder {
 
-    private Path path;
-    private Set<Rule> rules;
-    private Set<RuleAttribute> ruleAttributes;
-    private Set<Type> types;
-    private Set<TypeField> typeFields;
+    private Set<IndexElementsGenerator> generators = new HashSet<IndexElementsGenerator>();
 
-    public DefaultIndexBuilder( final Path path ) {
-        this.path = PortablePreconditions.checkNotNull( "path",
-                                                        path );
-        this.rules = new HashSet<Rule>();
-        this.ruleAttributes = new HashSet<RuleAttribute>();
-        this.types = new HashSet<Type>();
-        this.typeFields = new HashSet<TypeField>();
+    public DefaultIndexBuilder() {
     }
 
-    public DefaultIndexBuilder addRule( final Rule rule ) {
-        this.rules.add( PortablePreconditions.checkNotNull( "rule",
-                                                            rule ) );
-        return this;
-    }
-
-    public DefaultIndexBuilder addRuleAttribute( final RuleAttribute ruleAttribute ) {
-        this.ruleAttributes.add( PortablePreconditions.checkNotNull( "ruleAttribute",
-                                                                     ruleAttribute ) );
-        return this;
-    }
-
-    public DefaultIndexBuilder addType( final Type type ) {
-        this.types.add( PortablePreconditions.checkNotNull( "type",
-                                                            type ) );
-        return this;
-    }
-
-    public DefaultIndexBuilder addField( final TypeField typeField ) {
-        this.typeFields.add( PortablePreconditions.checkNotNull( "typeField",
-                                                                 typeField ) );
+    public DefaultIndexBuilder addGenerator( final IndexElementsGenerator generator ) {
+        this.generators.add( PortablePreconditions.checkNotNull( "generator",
+                                                                 generator ) );
         return this;
     }
 
     public Set<Pair<String, String>> build() {
         final Set<Pair<String, String>> indexElements = new HashSet<Pair<String, String>>();
-        for ( Rule rule : rules ) {
+        for ( IndexElementsGenerator generator : generators ) {
             addIndexElements( indexElements,
-                              rule );
-        }
-        for ( RuleAttribute ruleAttribute : ruleAttributes ) {
-            addIndexElements( indexElements,
-                              ruleAttribute );
-        }
-        for ( Type type : types ) {
-            addIndexElements( indexElements,
-                              type );
-        }
-        for ( TypeField typeField : typeFields ) {
-            addIndexElements( indexElements,
-                              typeField );
+                              generator );
         }
         return indexElements;
     }
