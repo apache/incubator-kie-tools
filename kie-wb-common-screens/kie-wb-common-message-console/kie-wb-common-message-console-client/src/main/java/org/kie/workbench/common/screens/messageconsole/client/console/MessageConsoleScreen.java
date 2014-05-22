@@ -79,7 +79,7 @@ public class MessageConsoleScreen
 
     private void makeMenuBar() {
         menus = MenuFactory
-                .newTopLevelMenu( MessageConsoleResources.CONSTANTS.RefreshProblemsPanel() )
+                .newTopLevelMenu( MessageConsoleResources.CONSTANTS.RefreshMessageConsole() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {

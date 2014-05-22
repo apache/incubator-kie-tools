@@ -32,7 +32,7 @@ public interface MessageConsoleConstants extends Messages {
 
     String MessageConsole();
 
-    String RefreshProblemsPanel();
+    String RefreshMessageConsole();
 
     String Refreshing();
 
