@@ -10,6 +10,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,12 +66,12 @@ import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
 
 public class IOServiceClusterImpl implements IOClusteredService {
 
-    private static final Logger logger = LoggerFactory.getLogger(IOServiceClusterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger( IOServiceClusterImpl.class );
 
     private final IOServiceIdentifiable service;
     private final ClusterService clusterService;
     private NewFileSystemListener newFileSystemListener = null;
-    private AtomicBoolean started = new AtomicBoolean(false);
+    private AtomicBoolean started = new AtomicBoolean( false );
 
     public IOServiceClusterImpl( final IOService service,
                                  final ClusterServiceFactory clusterServiceFactory ) {
@@ -81,9 +82,9 @@ public class IOServiceClusterImpl implements IOClusteredService {
                                  final ClusterServiceFactory clusterServiceFactory,
                                  final boolean autoStart ) {
         checkNotNull( "clusterServiceFactory", clusterServiceFactory );
-        this.service = checkInstanceOf("service", service, IOServiceIdentifiable.class);
+        this.service = checkInstanceOf( "service", service, IOServiceIdentifiable.class );
 
-        logger.debug("Creating instance of cluster service with auto start {}", autoStart);
+        logger.debug( "Creating instance of cluster service with auto start {}", autoStart );
         this.clusterService = clusterServiceFactory.build( new MessageHandlerResolver() {
 
             final MessageHandler newFs = new NewFileSystemMessageHandler();
@@ -113,18 +114,18 @@ public class IOServiceClusterImpl implements IOClusteredService {
             }
         } );
 
-        if ( autoStart ) {
-            start();
-        }
-
+        this.clusterService.onStart( new Runnable() {
+            @Override
+            public void run() {
+                start();
+            }
+        } );
     }
-
 
     @Override
     public void start() {
-        this.clusterService.start();
-        started.set(true);
-        logger.debug("Starting cluster service {}", this);
+        started.set( true );
+        logger.debug( "Starting cluster service {}", this );
         //New cluster members are executed within locked
         new LockExecuteReleaseTemplate<Void>().execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
             @Override
@@ -172,14 +173,14 @@ public class IOServiceClusterImpl implements IOClusteredService {
                                     }
                                 }
 
-                                for ( final FileSystemInfo fileSystemInfo : fileSystems.values() ) {
+                                for ( final FileSystemInfo fileSystemInfo : new HashSet<FileSystemInfo>( fileSystems.values() ) ) {
                                     try {
                                         final URI newFS = URI.create( fileSystemInfo.getScheme() + "://" + fileSystemInfo.getId() );
                                         service.newFileSystem( newFS, Collections.<String, Object>emptyMap() );
                                     } catch ( FileSystemAlreadyExistsException ex ) {
                                     }
 
-                                    final URI fs = URI.create( fileSystemInfo.getScheme() + "://" + fileSystemInfo.getId() + "?sync=" + fileSystemInfo.getUri().split( "\n" )[0] + "&force" );
+                                    final URI fs = URI.create( fileSystemInfo.getScheme() + "://" + fileSystemInfo.getId() + "?sync=" + fileSystemInfo.getUri().split( "\n" )[ 0 ] + "&force" );
                                     service.getFileSystem( fs );
                                 }
 
@@ -906,9 +907,9 @@ public class IOServiceClusterImpl implements IOClusteredService {
                 final String scheme = content.get( "fs_scheme" );
                 final String id = content.get( "fs_id" );
                 String uris = content.get( "fs_uri" );
-                String[] supportedUris = uris.split("\n");
+                String[] supportedUris = uris.split( "\n" );
 
-                for (String supportedUri : supportedUris) {
+                for ( String supportedUri : supportedUris ) {
                     try {
                         String origin;
                         try {
@@ -923,10 +924,10 @@ public class IOServiceClusterImpl implements IOClusteredService {
                             service.getFileSystem( fs );
                         }
                         break;
-                    } catch (Exception e) {
+                    } catch ( Exception e ) {
                         // try the other supported uri in case of failure
-                        logger.warn("File system synchronization for origin {} failed with error {}, trying another if available",
-                                supportedUri, e.getMessage());
+                        logger.warn( "File system synchronization for origin {} failed with error {}, trying another if available",
+                                     supportedUri, e.getMessage() );
                     }
                 }
             }
@@ -943,7 +944,13 @@ public class IOServiceClusterImpl implements IOClusteredService {
             if ( QUERY_FOR_FS.equals( type ) ) {
                 Map<String, String> replyContent = new HashMap<String, String>();
                 int i = 0;
+
+                final Set<FileSystem> fileSystems = new HashSet<FileSystem>();
                 for ( FileSystem fs : service.getFileSystems() ) {
+                    fileSystems.add( fs );
+                }
+
+                for ( final FileSystem fs : fileSystems ) {
                     replyContent.put( "fs_scheme_" + i, fs.getRootDirectories().iterator().next().toUri().getScheme() );
                     replyContent.put( "fs_id_" + i, ( (FileSystemId) fs ).id() );
                     replyContent.put( "fs_uri_" + i, fs.toString() );

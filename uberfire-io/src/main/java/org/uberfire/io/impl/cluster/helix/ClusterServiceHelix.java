@@ -1,5 +1,7 @@
 package org.uberfire.io.impl.cluster.helix;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,7 +30,7 @@ import static org.apache.helix.HelixManagerFactory.*;
 
 public class ClusterServiceHelix implements ClusterService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClusterServiceHelix.class);
+    private static final Logger logger = LoggerFactory.getLogger( ClusterServiceHelix.class );
 
     private final String clusterName;
     private final String instanceName;
@@ -38,6 +40,7 @@ public class ClusterServiceHelix implements ClusterService {
     private int stackSize = 0;
     private final Map<String, MessageHandlerResolver> messageHandlerResolver = new HashMap<String, MessageHandlerResolver>();
     private AtomicBoolean started = new AtomicBoolean( false );
+    private final Collection<Runnable> onStart = new ArrayList<Runnable>();
 
     public ClusterServiceHelix( final String clusterName,
                                 final String zkAddress,
@@ -69,6 +72,9 @@ public class ClusterServiceHelix implements ClusterService {
             this.participantManager.getStateMachineEngine().registerStateModelFactory( "LeaderStandby", new LockTransitionalFactory( lock ) );
             this.participantManager.getMessagingService().registerMessageHandlerFactory( Message.MessageType.USER_DEFINE_MSG.toString(), new MessageHandlerResolverWrapper( messageHandlerResolver ).convert() );
             started.set( true );
+            for ( final Runnable runnable : onStart ) {
+                runnable.run();
+            }
         } catch ( final Exception ex ) {
             throw new RuntimeException( ex );
         }
@@ -83,6 +89,11 @@ public class ClusterServiceHelix implements ClusterService {
         if ( this.participantManager != null && this.participantManager.isConnected() ) {
             this.participantManager.disconnect();
         }
+    }
+
+    @Override
+    public void onStart( Runnable runnable ) {
+        this.onStart.add( runnable );
     }
 
     private void enablePartition() {
@@ -308,12 +319,12 @@ public class ClusterServiceHelix implements ClusterService {
                                         getTaskResultMap().put( entry.getKey(), entry.getValue() );
                                     }
                                 }};
-                            } catch (final Throwable e) {
-                                logger.error("Error while processing cluster message", e);
+                            } catch ( final Throwable e ) {
+                                logger.error( "Error while processing cluster message", e );
                                 return new HelixTaskResult() {{
                                     setSuccess( false );
-                                    setMessage(e.getMessage());
-                                    setException(new RuntimeException(e));
+                                    setMessage( e.getMessage() );
+                                    setException( new RuntimeException( e ) );
 
                                 }};
                             }
