@@ -179,7 +179,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                                     } catch ( FileSystemAlreadyExistsException ex ) {
                                     }
 
-                                    final URI fs = URI.create( fileSystemInfo.getScheme() + "://" + fileSystemInfo.getId() + "?sync=" + fileSystemInfo.getUri() + "&force" );
+                                    final URI fs = URI.create( fileSystemInfo.getScheme() + "://" + fileSystemInfo.getId() + "?sync=" + fileSystemInfo.getUri().split( "\n" )[0] + "&force" );
                                     service.getFileSystem( fs );
                                 }
 
