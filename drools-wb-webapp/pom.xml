@@ -266,6 +266,24 @@
       <artifactId>kie-wb-common-default-editor-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-message-console-api</artifactId>
+      <version>6.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-message-console-backend</artifactId>
+      <version>6.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-message-console-client</artifactId>
+      <version>6.1.0-SNAPSHOT</version>
+    </dependency>
+
     <!-- Drools Workbench REST -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -574,6 +592,8 @@
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-refactoring-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-java-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-java-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-message-console-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-message-console-client</compileSourcesArtifact>
 
             <!-- Models for drools-wb -->
             <compileSourcesArtifact>org.drools:drools-workbench-models-commons</compileSourcesArtifact>
