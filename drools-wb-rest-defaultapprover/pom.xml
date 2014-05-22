@@ -12,12 +12,44 @@
   <artifactId>drools-wb-rest-defaultapprover</artifactId>
   <packaging>kjar</packaging>
 
+  <!-- maven-enforcer-plugin was overwritten here due to the use of kie-maven-plugin
+  now it is possible to have SNAPSHOT versions-->
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-maven-plugin</artifactId>
+          <version>${drools.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.3.1</version>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requirePluginVersions>
+                  <banSnapshots>false</banSnapshots>
+                  <banLatest>false</banLatest>
+                  <banRelease>false</banRelease>
+                </requirePluginVersions>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
-        <version>${drools.version}</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>

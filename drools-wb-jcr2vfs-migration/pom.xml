@@ -17,7 +17,51 @@
   <properties>
     <version.org.drools.jcrGuvnor>5.6.0.Final</version.org.drools.jcrGuvnor>
     <version.migrate.org.jbpm.bpmn2>5.5.0.CR1</version.migrate.org.jbpm.bpmn2>
+    <version.org.apache.lucene.core>2.4.1</version.org.apache.lucene.core>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-bpmn2</artifactId>
+        <version>${version.migrate.org.jbpm.bpmn2}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${version.org.apache.lucene.core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>droolsjbpm-ide-common</artifactId>
+        <version>${version.org.drools.jcrGuvnor}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnor-repository</artifactId>
+        <version>${version.org.drools.jcrGuvnor}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnor-webapp-core</artifactId>
+        <version>${version.org.drools.jcrGuvnor}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
+        <version>${version.org.drools.jcrGuvnor}</version>
+        <classifier>jars-as-uberjar</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
+        <version>${version.org.drools.jcrGuvnor}</version>
+        <classifier>war-as-jar</classifier>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
 
   <modules>
     <module>drools-wb-jcr2vfs-migration-core</module>
