@@ -273,12 +273,17 @@ public final class JGitUtil {
                         .setRemote( origin )
                         .call();
 
-                git.branchCreate()
-                        .setName( "master" )
-                        .setUpstreamMode( CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM )
-                        .setStartPoint( "upstream/master" )
-                        .setForce( true )
-                        .call();
+                final List<Ref> branches = git.branchList().setListMode( ListBranchCommand.ListMode.ALL ).call();
+
+                for ( final Ref branch : branches ) {
+                    final String branchName = branch.getName().substring( branch.getName().lastIndexOf( "/" ) + 1 );
+                    git.branchCreate()
+                            .setName( branchName )
+                            .setUpstreamMode( CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM )
+                            .setStartPoint( "upstream/" + branchName )
+                            .setForce( true )
+                            .call();
+                }
 
             } catch ( final InvalidRemoteException e ) {
                 throw e;
