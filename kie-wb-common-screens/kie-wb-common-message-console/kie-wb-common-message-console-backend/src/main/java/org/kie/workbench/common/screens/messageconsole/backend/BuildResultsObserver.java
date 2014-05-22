@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.backend.messages;
+package org.kie.workbench.common.screens.messageconsole.backend;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;

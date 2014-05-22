@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2012 JBoss Inc
+  ~ Copyright 2014 JBoss Inc
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -25,22 +25,24 @@
     <version>6.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-wb-common-message-console-api</artifactId>
+  <artifactId>kie-wb-common-message-console-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Common - Message Console API</name>
-  <description>Kie Workbench - Common - Message Console API</description>
+  <name>Kie Workbench - Common - Message Console Backend</name>
+  <description>Kie Workbench - Common - Message Console Backend</description>
 
   <dependencies>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-message-console-api</artifactId>
+      <!-- TODO MOVE THIS VERSION NUMBER TO Kie-wb-withdependencies -->
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -50,17 +52,5 @@
 
   </dependencies>
 
-  <build>
-    <resources>
-      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
-  </build>
 
 </project>

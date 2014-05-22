@@ -17,6 +17,7 @@
 
   <modules>
     <module>kie-wb-common-message-console-api</module>
+    <module>kie-wb-common-message-console-backend</module>
     <module>kie-wb-common-message-console-client</module>
   </modules>
 
