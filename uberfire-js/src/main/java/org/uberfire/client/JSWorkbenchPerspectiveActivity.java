@@ -29,6 +29,11 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
+    public PlaceRequest getPlace() {
+        return place;
+    }
+
+    @Override
     public void onOpen() {
         loadState();
         nativePerspective.onOpen();

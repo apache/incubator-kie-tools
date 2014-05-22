@@ -23,6 +23,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceHistoryHandler;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceManagerImpl;
@@ -41,6 +42,8 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -266,6 +269,57 @@ public class PlaceManagerTest {
         assertFalse( placeManager.getActivePlaceRequests().contains( kansas ) );
     }
 
+    /**
+     * Tests the basics of launching a perspective. We call it "empty" because this perspective doesn't have any panels
+     * or parts in its definition.
+     */
+    @Test
+    public void testLaunchingEmptyPerspective() throws Exception {
+        PerspectiveActivity ozPerspectiveActivity = mock( PerspectiveActivity.class );
+        PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest( "oz_perspective" );
+        PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
+
+        when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
+        when( ozPerspectiveActivity.getPerspective() ).thenReturn( ozPerspectiveDef );
+        when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
+
+        placeManager.goTo( ozPerspectivePlace );
+
+        // verify perspective changed to oz
+        verify( perspectiveChangeEvent ).fire( refEq( new PerspectiveChange( ozPerspectiveDef, null, null ) ) );
+        verify( ozPerspectiveActivity ).onOpen();
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
+
+        // note to self (jfuerth): I'm planning to move the responsibility for bootstrapping a perspective
+        // from PerspectiveActivity.onOpen() to PlaceManager. When that happens, we'll need more assertions
+        // here about the interaction between PlaceManager and PanelManager when a perspective changes
+    }
+
+    @Test
+    public void testLaunchingActivityTiedToDifferentPerspective() throws Exception {
+        PerspectiveActivity ozPerspectiveActivity = mock( PerspectiveActivity.class );
+        PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest( "oz_perspective" );
+        PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
+
+        when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
+        when( ozPerspectiveActivity.getPerspective() ).thenReturn( ozPerspectiveDef );
+        when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
+
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+        when( emeraldCityActivity.getOwningPlace() ).thenReturn( ozPerspectivePlace );
+
+        placeManager.goTo( emeraldCityPlace, (PanelDefinition) null );
+
+        // verify perspective changed to oz
+        verify( perspectiveChangeEvent ).fire( refEq( new PerspectiveChange( ozPerspectiveDef, null, null ) ) );
+        verify( ozPerspectiveActivity ).onOpen();
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
+
+        // and the workbench activity should have launched (after the perspective change)
+        verifyActivityLaunchSideEffects( emeraldCityPlace, emeraldCityActivity );
+    }
 
     // TODO test going to splash screens, including this special side effect
     // activityManager.getSplashScreenInterceptor( place ); // need separate test for splash screens!
@@ -273,8 +327,6 @@ public class PlaceManagerTest {
     // TODO test closing a splash screen, including the side effect of removing it from the activeSplashScreens map
 
     // TODO test going to popup screens
-
-    // TODO test going to perspectives
 
     // TODO test going to an unresolvable/unknown place
 

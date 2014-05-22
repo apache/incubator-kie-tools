@@ -89,4 +89,5 @@ public interface PlaceManager {
     void executeOnOpenCallback( final PlaceRequest place );
 
     Collection<SplashScreenActivity> getActiveSplashScreens();
+
 }

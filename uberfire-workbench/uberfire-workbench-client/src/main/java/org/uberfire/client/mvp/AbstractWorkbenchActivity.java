@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
@@ -37,6 +38,14 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity impleme
     @Override
     public Position getDefaultPosition() {
         return CompassPosition.ROOT;
+    }
+
+    /**
+     * This default implementation returns null, meaning this activity can be displayed in any perspective.
+     */
+    @Override
+    public PlaceRequest getOwningPlace() {
+        return null;
     }
 
     @Override

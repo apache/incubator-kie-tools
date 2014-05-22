@@ -89,6 +89,11 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public PlaceRequest getPlace() {
+        return place;
+    }
+
+    @Override
     public String toString() {
         return getClass().getName() + ": " + place;
     }

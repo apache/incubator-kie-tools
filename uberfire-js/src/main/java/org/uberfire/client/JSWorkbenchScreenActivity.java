@@ -38,6 +38,11 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     }
 
     @Override
+    public PlaceRequest getPlace() {
+        return place;
+    }
+
+    @Override
     public boolean onMayClose() {
         return nativePlugin.onMayClose();
     }
@@ -55,6 +60,11 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     @Override
     public Position getDefaultPosition() {
         return CompassPosition.ROOT;
+    }
+
+    @Override
+    public PlaceRequest getOwningPlace() {
+        return null;
     }
 
     @Override

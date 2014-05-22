@@ -85,4 +85,11 @@ public interface Activity extends RuntimeResource {
      */
     void onShutdown();
 
+    /**
+     * Returns the PlaceRequest that this Activity is currently tied to.
+     * 
+     * @return the PlaceRequest that this activity was started for, or null if this activity is not in the started
+     *         state.
+     */
+    PlaceRequest getPlace();
 }

@@ -61,6 +61,9 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 public class PlaceManagerImpl
 implements PlaceManager {
 
+    /** The perspective that's currently open. Starts off null, but once the workbench has been bootstrapped, never goes null again. */
+    private PerspectiveActivity currentPerspective;
+
     /** Activities that are currently open in the current perspective. */
     private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
 
@@ -79,9 +82,6 @@ implements PlaceManager {
 
     @Inject
     private Event<PerspectiveChange> perspectiveChangeEvent;
-
-    @Inject
-    private Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
 
     @Inject
     private Event<NewSplashScreenActiveEvent> newSplashScreenActiveEvent;
@@ -171,45 +171,29 @@ implements PlaceManager {
             final Activity activity = resolved.getActivity();
             if ( activity instanceof WorkbenchActivity ) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
+
+                // check if we need to open the owning perspective before launching this screen/editor
+                if ( workbenchActivity.getOwningPlace() != null && getStatus( workbenchActivity.getOwningPlace() ) == PlaceStatus.CLOSE ) {
+                    loadingPerspective.doAfterPerspectiveLoads( new Command() {
+                        @Override
+                        public void execute() {
+                            goTo( place, panel );
+                        }
+                    } );
+                    goTo( workbenchActivity.getOwningPlace(), null );
+                    return;
+                }
+
                 launchWorkbenchActivityAtPosition( resolved.getPlaceRequest(),
                                                    workbenchActivity,
                                                    workbenchActivity.getDefaultPosition(),
                                                    panel );
+
             } else if ( activity instanceof PopupActivity ) {
                 launchPopupActivity( resolved.getPlaceRequest(),
                                      (PopupActivity) activity );
             } else if ( activity instanceof PerspectiveActivity ) {
-                final Command launchActivity = new Command() {
-                    @Override
-                    public void execute() {
-                        if ( closeAllCurrentPanels() ) {
-                            launchPerspectiveActivity( resolved.getPlaceRequest(),
-                                                       (PerspectiveActivity) activity );
-                        }
-
-                    }
-                };
-                final Command loadPerspective = new Command() {
-                    @Override
-                    public void execute() {
-                        final PerspectiveDefinition activePerspective = getPanelManager().getPerspective();
-                        if ( activePerspective != null && !activePerspective.isTransient() ) {
-                            wbServices.save( activePerspective, new Command() {
-                                @Override
-                                public void execute() {
-                                    launchActivity.execute();
-                                }
-                            } );
-                        } else {
-                            launchActivity.execute();
-                        }
-                    }
-                };
-                if ( loadingPerspective.isLoading() ) {
-                    loadingPerspective.executeOnLoad( loadPerspective );
-                } else {
-                    loadPerspective.execute();
-                }
+                launchPerspectiveActivity( place, (PerspectiveActivity) activity );
             }
         } else {
             goTo( resolved.getPlaceRequest(), panel );
@@ -374,6 +358,9 @@ implements PlaceManager {
 
     @Override
     public PlaceStatus getStatus( final PlaceRequest place ) {
+        if ( currentPerspective != null && currentPerspective.getPlace().equals( place ) ) {
+            return PlaceStatus.OPEN;
+        }
         return resolveExistingParts( place ) != null ? PlaceStatus.OPEN : PlaceStatus.CLOSE;
     }
 
@@ -579,17 +566,56 @@ implements PlaceManager {
 
     private void launchPerspectiveActivity( final PlaceRequest place,
                                             final PerspectiveActivity activity ) {
-        loadingPerspective.startLoading();
-        activeSplashScreens.clear();
-        firePerspectiveChangeEvent( activity );
-        final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
-        if ( splashScreen != null ) {
-            activeSplashScreens.put( place.getIdentifier(), splashScreen );
-            splashScreen.onOpen();
+
+        // this is the logic that actually launches the new perspective.
+        // we will execute it after saving the current one on the server.
+        final Command launchActivity = new Command() {
+            @Override
+            public void execute() {
+                if ( closeAllCurrentPanels() ) {
+                    try {
+                        currentPerspective = activity;
+                        loadingPerspective.startLoading();
+                        activeSplashScreens.clear();
+                        firePerspectiveChangeEvent( activity );
+                        final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
+                        if ( splashScreen != null ) {
+                            activeSplashScreens.put( place.getIdentifier(), splashScreen );
+                            splashScreen.onOpen();
+                        }
+                        fireNewSplashScreenActiveEvent();
+                    } finally {
+                        loadingPerspective.endLoading();
+                        activity.onOpen();
+                    }
+                }
+
+            }
+        };
+
+        // this saves the current perspective (if necessary) then executes the code above
+        final Command savePreviousPerspective = new Command() {
+            @Override
+            public void execute() {
+                final PerspectiveDefinition activePerspective = getPanelManager().getPerspective();
+                if ( activePerspective != null && !activePerspective.isTransient() ) {
+                    wbServices.save( activePerspective, new Command() {
+                        @Override
+                        public void execute() {
+                            launchActivity.execute();
+                        }
+                    } );
+                } else {
+                    launchActivity.execute();
+                }
+            }
+        };
+
+        if ( loadingPerspective.isLoading() ) {
+            loadingPerspective.doAfterPerspectiveLoads( savePreviousPerspective );
+        } else {
+            savePreviousPerspective.execute();
         }
-        fireNewSplashScreenActiveEvent();
-        loadingPerspective.endLoading();
-        activity.onOpen();
     }
 
     /**
@@ -689,7 +715,7 @@ implements PlaceManager {
         boolean loading = false;
         private Command command;
 
-        public void executeOnLoad( final Command command ) {
+        public void doAfterPerspectiveLoads( final Command command ) {
             this.command = command;
         }
 

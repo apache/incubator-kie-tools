@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
@@ -33,6 +34,15 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
     boolean onMayClose();
 
     Position getDefaultPosition();
+
+    /**
+     * Returns the PlaceRequest for the perspective that this activity should always be displayed in. When the
+     * PlaceManager is asked to go to this activity, it will switching to the owning perspective first, and then show
+     * this activity in it.
+     * 
+     * @return the owning perspective's place request, or null if this activity can appear in any perspective.
+     */
+    PlaceRequest getOwningPlace();
 
     void onFocus();
 
