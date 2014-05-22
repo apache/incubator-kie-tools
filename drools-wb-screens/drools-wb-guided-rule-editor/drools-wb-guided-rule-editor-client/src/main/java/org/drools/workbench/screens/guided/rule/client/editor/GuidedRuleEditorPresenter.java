@@ -32,12 +32,12 @@ import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResour
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
@@ -241,8 +241,7 @@ public class GuidedRuleEditorPresenter {
                                                       new CommandBuilder().addNoSuchFileException( view,
                                                                                                    multiPage,
                                                                                                    menus ).build()
-                      )
-                    ).loadContent( path );
+                      ) ).loadContent( path );
     }
 
     private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
@@ -250,6 +249,11 @@ public class GuidedRuleEditorPresenter {
 
             @Override
             public void callback( final GuidedEditorContent content ) {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( path == null ) {
+                    return;
+                }
+
                 multiPage.clear();
                 multiPage.addWidget( view,
                                      CommonConstants.INSTANCE.EditTabTitle() );
@@ -408,13 +412,13 @@ public class GuidedRuleEditorPresenter {
             new SaveOperationService().save( path,
                                              new CommandWithCommitMessage() {
                                                  @Override
-                                                 public void execute(final String commitMessage) {
-                                                     view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-                                                     service.call(getSaveSuccessCallback(),
-                                                             new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
-                                                             view.getContent(),
-                                                             metadataWidget.getContent(),
-                                                             commitMessage);
+                                                 public void execute( final String commitMessage ) {
+                                                     view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                     service.call( getSaveSuccessCallback(),
+                                                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                            view.getContent(),
+                                                                                                                            metadataWidget.getContent(),
+                                                                                                                            commitMessage );
 
                                                  }
                                              }
@@ -422,7 +426,7 @@ public class GuidedRuleEditorPresenter {
 
             concurrentUpdateSessionInfo = null;
         } else {
-            ErrorPopup.showMessage(validator.getErrors().get(0));
+            ErrorPopup.showMessage( validator.getErrors().get( 0 ) );
         }
     }
 

@@ -222,8 +222,7 @@ public class DRLEditorPresenter {
                                                                    new CommandBuilder().addNoSuchFileException( view,
                                                                                                                 multiPage,
                                                                                                                 menus ).build()
-                                   )
-                                 ).loadContent( path );
+                                   ) ).loadContent( path );
     }
 
     private RemoteCallback<DrlModelContent> getLoadContentSuccessCallback() {
@@ -231,6 +230,11 @@ public class DRLEditorPresenter {
 
             @Override
             public void callback( final DrlModelContent content ) {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( path == null ) {
+                    return;
+                }
+
                 multiPage.clear();
                 multiPage.addWidget( view,
                                      DRLTextEditorConstants.INSTANCE.DRL() );

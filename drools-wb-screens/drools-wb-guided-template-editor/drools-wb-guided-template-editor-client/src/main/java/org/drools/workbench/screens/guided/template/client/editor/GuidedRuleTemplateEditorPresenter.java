@@ -32,12 +32,12 @@ import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTempla
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.DefaultErrorCallback;
@@ -240,8 +240,7 @@ public class GuidedRuleTemplateEditorPresenter {
                                                       new CommandBuilder().addNoSuchFileException( view,
                                                                                                    multiPage,
                                                                                                    menus ).build()
-                      )
-                    ).loadContent( path );
+                      ) ).loadContent( path );
     }
 
     private RemoteCallback<GuidedTemplateEditorContent> getModelSuccessCallback() {
@@ -249,6 +248,11 @@ public class GuidedRuleTemplateEditorPresenter {
 
             @Override
             public void callback( final GuidedTemplateEditorContent content ) {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( path == null ) {
+                    return;
+                }
+
                 multiPage.clear();
                 multiPage.addWidget( view,
                                      CommonConstants.INSTANCE.EditTabTitle() );

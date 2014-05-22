@@ -27,10 +27,10 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -214,6 +214,11 @@ public class ScenarioEditorPresenter {
         return new RemoteCallback<TestScenarioModelContent>() {
             @Override
             public void callback( TestScenarioModelContent content ) {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( path == null ) {
+                    return;
+                }
+
                 scenario = content.getScenario();
                 ifFixturesSizeZeroThenAddExecutionTrace();
 

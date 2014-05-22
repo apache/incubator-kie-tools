@@ -207,8 +207,7 @@ public class DSLEditorPresenter {
                                                                    new CommandBuilder().addNoSuchFileException( view,
                                                                                                                 multiPage,
                                                                                                                 menus ).build()
-                                   )
-                                 ).load( path );
+                                   ) ).load( path );
     }
 
     private RemoteCallback<String> getModelSuccessCallback() {
@@ -216,6 +215,11 @@ public class DSLEditorPresenter {
 
             @Override
             public void callback( final String dsl ) {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( path == null ) {
+                    return;
+                }
+
                 multiPage.clear();
                 multiPage.addWidget( view,
                                      DSLTextEditorConstants.INSTANCE.DSL() );
@@ -228,8 +232,7 @@ public class DSLEditorPresenter {
                             metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                             metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                                isReadOnly ),
-                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
-                                                ).getMetadata( path );
+                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
                         }
                     }
 

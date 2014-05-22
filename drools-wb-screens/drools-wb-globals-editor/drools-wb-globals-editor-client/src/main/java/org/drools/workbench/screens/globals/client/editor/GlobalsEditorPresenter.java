@@ -205,8 +205,7 @@ public class GlobalsEditorPresenter {
                                                                    new CommandBuilder().addNoSuchFileException( view,
                                                                                                                 multiPage,
                                                                                                                 menus ).build()
-                                   )
-                                 ).loadContent( path );
+                                   ) ).loadContent( path );
     }
 
     private RemoteCallback<GlobalsEditorContent> getModelSuccessCallback() {
@@ -214,6 +213,11 @@ public class GlobalsEditorPresenter {
 
             @Override
             public void callback( final GlobalsEditorContent content ) {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( path == null ) {
+                    return;
+                }
+
                 multiPage.clear();
                 multiPage.addWidget( view,
                                      CommonConstants.INSTANCE.EditTabTitle() );
