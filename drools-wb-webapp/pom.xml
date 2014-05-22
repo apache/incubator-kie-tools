@@ -269,19 +269,16 @@
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-message-console-api</artifactId>
-      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-message-console-backend</artifactId>
-      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-message-console-client</artifactId>
-      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Drools Workbench REST -->
