@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-metadata-backends</artifactId>
-    <version>0.4.0.Beta5</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>uberfire-metadata-backend-lucene</artifactId>
