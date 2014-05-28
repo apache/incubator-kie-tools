@@ -55,7 +55,6 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
@@ -111,8 +110,8 @@ implements PlaceManager {
     @PostConstruct
     public void initPlaceHistoryHandler() {
         getPlaceHistoryHandler().register( this,
-                produceEventBus(),
-                DefaultPlaceRequest.NOWHERE );
+                                           produceEventBus(),
+                                           DefaultPlaceRequest.NOWHERE );
     }
 
     PlaceHistoryHandler getPlaceHistoryHandler() {
@@ -215,22 +214,22 @@ implements PlaceManager {
             if ( activity instanceof WorkbenchActivity ) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
                 launchActivity( resolved.getPlaceRequest(),
-                        workbenchActivity,
-                        workbenchActivity.getDefaultPosition(),
-                        panel,
-                        callback );
+                                workbenchActivity,
+                                workbenchActivity.getDefaultPosition(),
+                                panel,
+                                callback );
             } else if ( activity instanceof PopupActivity ) {
                 launchActivity( resolved.getPlaceRequest(),
-                        (PopupActivity) activity,
-                        callback );
+                                (PopupActivity) activity,
+                                callback );
             } else if ( activity instanceof PerspectiveActivity ) {
                 final Command launchActivity = new Command() {
                     @Override
                     public void execute() {
                         if ( closeAllCurrentPanels() ) {
                             launchActivity( resolved.getPlaceRequest(),
-                                    (PerspectiveActivity) activity,
-                                    callback );
+                                            (PerspectiveActivity) activity,
+                                            callback );
                         }
 
                     }
@@ -373,10 +372,10 @@ implements PlaceManager {
             if ( activity instanceof WorkbenchActivity ) {
                 final WorkbenchActivity workbenchActivity = (WorkbenchActivity) activity;
                 launchActivity( place,
-                        workbenchActivity,
-                        part,
-                        panel,
-                        null );
+                                workbenchActivity,
+                                part,
+                                panel,
+                                null );
             } else {
                 throw new IllegalArgumentException( "placeRequest does not represent a WorkbenchActivity. Only WorkbenchActivities can be launched in a specific targetPanel." );
             }
@@ -434,7 +433,7 @@ implements PlaceManager {
         if ( placeToClose == null ) {
             return;
         }
-        workbenchPartBeforeCloseEvent.fire( new BeforeClosePlaceEvent( placeToClose, false ) );
+        closePlace( placeToClose, false );
     }
 
     @Override
@@ -462,7 +461,7 @@ implements PlaceManager {
         if ( placeToClose == null ) {
             return;
         }
-        workbenchPartBeforeCloseEvent.fire( new BeforeClosePlaceEvent( placeToClose, true ) );
+        closePlace( placeToClose, true );
     }
 
     @Override
@@ -479,7 +478,7 @@ implements PlaceManager {
         checkNotNull( "place", place );
         checkNotNull( "command", command );
         this.onOpenCallbacks.put( place,
-                command );
+                                  command );
     }
 
     @Override
@@ -553,10 +552,10 @@ implements PlaceManager {
         }
 
         launchActivity( place,
-                activity,
-                part,
-                panel,
-                callback );
+                        activity,
+                        part,
+                        panel,
+                        callback );
     }
 
     Event<SelectPlaceEvent> getSelectWorkbenchPartEvent() {
@@ -565,7 +564,7 @@ implements PlaceManager {
 
     PanelDefinition addWorkbenchPanelTo( Position position ) {
         return getPanelManager().addWorkbenchPanel( getPanelManager().getRoot(),
-                position );
+                                                    position );
     }
 
     private void launchActivity( final PlaceRequest place,
@@ -575,21 +574,11 @@ implements PlaceManager {
                                  final Command callback ) {
 
         //Record new place\part\activity
-        existingWorkbenchActivities.put( place,
-                activity );
-        existingWorkbenchParts.put( place,
-                part );
+        existingWorkbenchActivities.put( place, activity );
+        existingWorkbenchParts.put( place, part );
         updateHistory( place );
         checkPathDelete( place );
 
-        revealActivityWithCalBackToAttachToWorkbench( place, activity, part, panel, callback );
-    }
-
-    private void revealActivityWithCalBackToAttachToWorkbench( final PlaceRequest place,
-                                                               final WorkbenchActivity activity,
-                                                               final PartDefinition part,
-                                                               final PanelDefinition panel,
-                                                               Command callback ) {
         final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
 
         //Reveal activity with call-back to attach to Workbench
@@ -597,11 +586,11 @@ implements PlaceManager {
             @Override
             public void add( final UIPart uiPart ) {
                 getPanelManager().addWorkbenchPart( place,
-                        part,
-                        panel,
-                        activity.getMenus(),
-                        uiPart,
-                        activity.contextId() );
+                                                    part,
+                                                    panel,
+                                                    activity.getMenus(),
+                                                    uiPart,
+                                                    activity.contextId() );
                 if ( splashScreen != null ) {
                     activeSplashScreens.put( place.getIdentifier(), splashScreen );
                     fireNewSplashScreenActiveEvent();
@@ -609,6 +598,8 @@ implements PlaceManager {
                 }
             }
         }, place, callback );
+        activity.onStartup( place );
+        activity.onOpen();
     }
 
     PanelManager getPanelManager() {
@@ -676,48 +667,38 @@ implements PlaceManager {
         getPlaceHistoryHandler().onPlaceChange( request );
     }
 
-    @SuppressWarnings("unused")
-    private void onWorkbenchPartBeforeClose( @Observes BeforeClosePlaceEvent event ) {
-        final PlaceRequest place = event.getPlace();
-        if ( place == null ) {
-            return;
-        }
+    private void closePlace( final PlaceRequest place, final boolean force ) {
+
+        // XXX this method should not call lifecycle methods on activities! it should ask the ActivityManager to do so.
+
         final Activity activity = existingWorkbenchActivities.get( place );
         if ( activity == null ) {
             return;
         }
 
+        workbenchPartBeforeCloseEvent.fire(new BeforeClosePlaceEvent( place, force, true ));
+
         activeSplashScreens.remove( place.getIdentifier() );
 
         if ( activity instanceof WorkbenchActivity ) {
-            onWorkbenchPartBeforeClose( (WorkbenchActivity) activity, place, event.isForce() );
+            WorkbenchActivity activity1 = (WorkbenchActivity) activity;
+            if ( force || onMayCloseList.containsKey( place ) || activity1.onMayClose() ) {
+                onMayCloseList.remove( place );
+                activity1.onClose();
+            } else {
+                return;
+            }
         } else if ( activity instanceof PopupActivity ) {
-            onWorkbenchPartBeforeClose( (PopupActivity) activity, place, event.isForce() );
+            PopupActivity activity1 = (PopupActivity) activity;
+            if ( force || activity1.onMayClose() ) {
+                activity1.onClose();
+            } else {
+                return;
+            }
         }
-    }
 
-    private void onWorkbenchPartBeforeClose( final WorkbenchActivity activity,
-                                             final PlaceRequest place,
-                                             final boolean force ) {
-        if ( force || onMayCloseList.containsKey( place ) || activity.onMayClose() ) {
-            onMayCloseList.remove( place );
-            activity.onClose();
-            workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
-        }
-    }
-
-    private void onWorkbenchPartBeforeClose( final PopupActivity activity,
-                                             final PlaceRequest place,
-                                             final boolean force ) {
-        if ( force || activity.onMayClose() ) {
-            activity.onClose();
-            workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
-        }
-    }
-
-    private void onWorkbenchPartClose( @Observes ClosePlaceEvent event ) {
-        final PlaceRequest place = event.getPlace();
-        final Activity activity = existingWorkbenchActivities.remove( place );
+        workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
+        existingWorkbenchActivities.remove( place );
         existingWorkbenchParts.remove( place );
 
         if ( activity instanceof PopupActivity ) {
@@ -728,17 +709,11 @@ implements PlaceManager {
             ( (PerspectiveActivity) activity ).onShutdown();
         }
 
-        Scheduler.get().scheduleFinally( new Scheduler.ScheduledCommand() {
+        if ( place instanceof PathPlaceRequest ) {
+            ( (PathPlaceRequest) place ).getPath().dispose();
+        }
 
-            @Override
-            public void execute() {
-                if ( place instanceof PathPlaceRequest ) {
-                    ( (PathPlaceRequest) place ).getPath().dispose();
-                }
-
-                activityManager.destroyActivity( activity );
-            }
-        } );
+        activityManager.destroyActivity( activity );
     }
 
     @SuppressWarnings("unused")

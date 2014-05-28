@@ -34,18 +34,7 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
                         final PlaceRequest place,
                         final Command callback ) {
         super.launch( place, callback );
-        onStartup( place );
         acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
-        onOpen();
     }
 
-    @Override
-    public void onStartup() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onStartup( final PlaceRequest place ) {
-        //Do nothing.
-    }
 }

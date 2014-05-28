@@ -60,7 +60,13 @@ public interface PanelManager {
 
     void onPanelFocus( final PanelDefinition panel );
 
-    void onBeforePartClose( final PartDefinition part );
+    /**
+     * Closes the given part. This is a convenience method for <tt>placeManager.closePlace(part.getPlace())</tt>.
+     * 
+     * @param part
+     *            the part to close (remove from the GUI). Must not be null.
+     */
+    void closePart( final PartDefinition part );
 
     WorkbenchPanelView getPanelView( final PanelDefinition panel );
 

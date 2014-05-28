@@ -31,10 +31,6 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
 
     boolean onMayClose();
 
-    void onClose();
-
-    void onShutdown();
-
     Position getDefaultPosition();
 
     void onFocus();

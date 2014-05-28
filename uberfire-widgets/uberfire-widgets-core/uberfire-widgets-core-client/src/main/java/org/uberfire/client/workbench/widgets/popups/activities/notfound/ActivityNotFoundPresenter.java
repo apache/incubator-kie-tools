@@ -16,19 +16,17 @@
 package org.uberfire.client.workbench.widgets.popups.activities.notfound;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.client.resources.i18n.CoreConstants;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.resources.i18n.CoreConstants;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 
 /**
  * Popup presenter for when an Activity cannot be found
@@ -37,9 +35,7 @@ import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 @WorkbenchPopup(identifier = "workbench.activity.notfound")
 public class ActivityNotFoundPresenter {
 
-    public interface View
-            extends
-            UberView<ActivityNotFoundPresenter> {
+    public interface View extends UberView<ActivityNotFoundPresenter> {
 
         void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );
 
@@ -50,9 +46,6 @@ public class ActivityNotFoundPresenter {
 
     @Inject
     private PlaceManager placeManager;
-
-    @Inject
-    private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
     private PlaceRequest place;
 
@@ -78,7 +71,7 @@ public class ActivityNotFoundPresenter {
     }
 
     public void close() {
-        closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place ) );
+        placeManager.closePlace( this.place );
     }
 
 }

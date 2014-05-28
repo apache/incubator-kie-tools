@@ -113,7 +113,7 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     @Override
     public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
-        super.onStartup( path );
+        super.onStartup( path, place );
         realPresenter.${onStartup1ParameterMethodName}( path );
     }
 

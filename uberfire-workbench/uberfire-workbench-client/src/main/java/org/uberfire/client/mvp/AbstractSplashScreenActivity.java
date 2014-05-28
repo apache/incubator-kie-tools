@@ -126,23 +126,8 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     }
 
     @Override
-    public void onStartup() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onStartup( final PlaceRequest place ) {
-        //Do nothing.
-    }
-
-    @Override
     public void onClose() {
         saveState();
-    }
-
-    @Override
-    public void onShutdown() {
-        //Do nothing.
     }
 
     @Override

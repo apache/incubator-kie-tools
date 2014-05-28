@@ -92,7 +92,7 @@ public class ${className} extends AbstractSplashScreenActivity {
     <#elseif onStartup0ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
-        super.onStartup();
+        super.onStartup( place );
         realPresenter.${onStartup0ParameterMethodName}();
     }
 

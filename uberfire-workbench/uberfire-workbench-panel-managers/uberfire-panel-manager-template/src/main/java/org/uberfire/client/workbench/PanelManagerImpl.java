@@ -19,7 +19,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
@@ -39,13 +38,11 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
 
     //constructor for unit testing
     public PanelManagerImpl( final DefaultBeanFactory factory,
-                             final Event<BeforeClosePlaceEvent> beforeClosePlaceEvent,
                              final Event<PlaceGainFocusEvent> placeGainFocusEvent,
                              final Event<PlaceLostFocusEvent> placeLostFocusEvent,
                              final Event<SelectPlaceEvent> selectPlaceEvent,
                              final WorkbenchStatusBarPresenter statusBar ) {
         this.factory = factory;
-        this.beforeClosePlaceEvent = beforeClosePlaceEvent;
         this.placeGainFocusEvent = placeGainFocusEvent;
         this.placeLostFocusEvent = placeLostFocusEvent;
         this.selectPlaceEvent = selectPlaceEvent;

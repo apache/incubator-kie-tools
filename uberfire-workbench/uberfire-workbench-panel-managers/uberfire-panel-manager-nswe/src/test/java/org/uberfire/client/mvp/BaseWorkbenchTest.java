@@ -64,7 +64,6 @@ public abstract class BaseWorkbenchTest {
         factory = new MockBeanFactory();
 
         //Events used by PanelManager and PlaceManager
-        workbenchPartBeforeCloseEvent = mock( Event.class );
         workbenchPartOnFocusEvent = mock( Event.class );
         workbenchPartLostFocusEvent = mock( Event.class );
         selectWorkbenchPartEvent = mock( Event.class );
@@ -75,7 +74,6 @@ public abstract class BaseWorkbenchTest {
 
         //Dummy Panel Manager\Workbench
         panelManager = new PanelManagerImplUnitTestWrapper( factory,
-                                             workbenchPartBeforeCloseEvent,
                                              workbenchPartOnFocusEvent,
                                              workbenchPartLostFocusEvent,
                                              selectWorkbenchPartEvent,

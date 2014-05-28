@@ -18,9 +18,11 @@ package org.uberfire.client.mvp;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.mvp.PlaceRequest;
 
+/**
+ * An Editor is an activity that is associated with a VFS path. It is expected that the editor will provide the end user
+ * some means of editing and saving the resource represented by the VFS path.
+ */
 public interface WorkbenchEditorActivity extends WorkbenchActivity {
-
-    public void onStartup( final ObservablePath path );
 
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place );

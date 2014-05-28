@@ -41,16 +41,20 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
         final PathPlaceRequest pathPlace = (PathPlaceRequest) place;
 
-        onStartup( pathPlace.getPath(), place );
-
         acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
-
-        onOpen();
     }
 
+    /**
+     * Overrides the default implementation by redirecting calls that are {@link PathPlaceRequest} instances to
+     * {@link #onStartup(ObservablePath, PlaceRequest)}. Non-path place requests are handed up to the super impl.
+     */
     @Override
-    public void onStartup( final ObservablePath path ) {
-        this.path = path;
+    public final void onStartup( PlaceRequest place ) {
+        if ( place instanceof PathPlaceRequest ) {
+            onStartup( ((PathPlaceRequest) place).getPath(), place );
+        } else {
+            super.onStartup( place );
+        }
     }
 
     @Override

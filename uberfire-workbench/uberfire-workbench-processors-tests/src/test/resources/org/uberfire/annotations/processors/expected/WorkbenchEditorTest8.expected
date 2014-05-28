@@ -64,7 +64,7 @@ public class WorkbenchEditorTest8Activity extends AbstractWorkbenchEditorActivit
     @Override
     public void onStartup(final ObservablePath path,
                         final PlaceRequest place) {
-        super.onStartup( path );
+        super.onStartup( path, place );
         realPresenter.onStartup( path );
     }
 

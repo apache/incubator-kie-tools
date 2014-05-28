@@ -15,12 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.mvp.PlaceRequest;
 
 public interface WorkbenchScreenActivity extends WorkbenchActivity {
-
-    public void onStartup();
-
-    public void onStartup( final PlaceRequest place );
 
 }

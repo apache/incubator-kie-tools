@@ -59,26 +59,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
-    public void onStartup() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onStartup( final PlaceRequest place ) {
-        //Do nothing.
-    }
-
-    @Override
-    public void onClose() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onShutdown() {
-        //Do nothing.
-    }
-
-    @Override
     public void onOpen() {
     }
 

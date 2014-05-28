@@ -4,17 +4,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.DropPlaceEvent;
@@ -36,10 +36,14 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 
-public abstract class AbstractPanelManagerImpl implements PanelManager  {
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SimplePanel;
 
-    @Inject
-    Event<BeforeClosePlaceEvent> beforeClosePlaceEvent;
+/**
+ * Base class for implementations of PanelManager. This class relies on ErraiIOC field injection, so all subclasses must
+ * be instantiated via the BeanManager. Subclasses instantiated with <tt>new</tt> will not behave properly.
+ */
+public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Inject
     Event<PlaceGainFocusEvent> placeGainFocusEvent;
@@ -58,6 +62,9 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Inject
     SyncBeanManager iocManager;
+
+    @Inject
+    Instance<PlaceManager> placeManager;
 
     PanelDefinition root = null;
 
@@ -132,6 +139,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         onPanelFocus( panel );
     }
 
+    @Override
     public void addWorkbenchPart( final PlaceRequest place,
                                   final PartDefinition part,
                                   final PanelDefinition panel,
@@ -247,8 +255,8 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     }
 
     @Override
-    public void onBeforePartClose( final PartDefinition part ) {
-        beforeClosePlaceEvent.fire( new BeforeClosePlaceEvent( part.getPlace() ) );
+    public void closePart( final PartDefinition part ) {
+        placeManager.get().closePlace( part.getPlace() );
     }
 
     @SuppressWarnings("unused")

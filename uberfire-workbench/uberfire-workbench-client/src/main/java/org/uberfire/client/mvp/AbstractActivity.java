@@ -19,7 +19,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
 /**
- * Implementation of behaviour common to all activities.
+ * Implementation of behaviour common to all activity types.
  * <p>
  * AbstractActivity is not typically subclassed directly, even by generated code. See the more purpose-based subclasses.
  */
@@ -29,7 +29,7 @@ public abstract class AbstractActivity implements Activity {
 
     protected PlaceRequest place;
 
-    protected Command callback;
+    private Command onOpenCallback;
 
     public AbstractActivity( final PlaceManager placeManager ) {
         this.placeManager = placeManager;
@@ -37,20 +37,42 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public void launch( final PlaceRequest place,
-                        final Command callback ) {
+                        final Command onOpenCallback ) {
         this.place = place;
-        this.callback = callback;
+        this.onOpenCallback = onOpenCallback;
     }
 
+    @Override
+    public void onStartup( PlaceRequest place ) {
+        if (place != this.place) {
+            throw new IllegalStateException( "Got onStartup call with non-matching place (expected " + this.place + ", got " + place + ")");
+        }
+    }
+
+    /**
+     * Invokes the <tt>onOpenCallback</tt> that was given to {@link #launch(PlaceRequest, Command)}.
+     */
     @Override
     public void onOpen() {
         executeOnOpenCallback();
         placeManager.executeOnOpenCallback( this.place );
     }
 
+    /** Does nothing. */
+    @Override
+    public void onClose() {
+        // Do nothing.
+    }
+
+    /** Does nothing. */
+    @Override
+    public void onShutdown() {
+        // Do nothing.
+    }
+
     private void executeOnOpenCallback() {
-        if ( callback != null ) {
-            callback.execute();
+        if ( onOpenCallback != null ) {
+            onOpenCallback.execute();
         }
     }
 

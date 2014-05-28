@@ -79,15 +79,15 @@ public class PlaceManagerTest {
         // for now (and this will have to change for UF-61), PathPlaceRequest performs an IOC lookup for ObservablePath in its constructor
         // as part of UF-61, we'll need to refactor ObservablePath and PathFactory so they ask for any beans they need as constructor params.
         IOC.getBeanManager().registerBean( IOCDependentBean.newBean(
-                (SyncBeanManagerImpl) IOC.getBeanManager(), ObservablePath.class, ObservablePath.class,
-                null, "ObservablePath", true, new BeanProvider<ObservablePath>() {
-                    @Override
-                    public ObservablePath getInstance( CreationalContext context ) {
-                        final ObservablePath mockObservablePath = mock( ObservablePath.class );
-                        when( mockObservablePath.wrap( any( Path.class ) ) ).thenReturn( mockObservablePath );
-                        return mockObservablePath;
-                    }
-                }, null ) );
+                                                                    (SyncBeanManagerImpl) IOC.getBeanManager(), ObservablePath.class, ObservablePath.class,
+                                                                    null, "ObservablePath", true, new BeanProvider<ObservablePath>() {
+                                                                        @Override
+                                                                        public ObservablePath getInstance( CreationalContext context ) {
+                                                                            final ObservablePath mockObservablePath = mock( ObservablePath.class );
+                                                                            when( mockObservablePath.wrap( any( Path.class ) ) ).thenReturn( mockObservablePath );
+                                                                            return mockObservablePath;
+                                                                        }
+                                                                    }, null ) );
 
 
         // every test starts in Kansas, with no side effect interactions recorded
@@ -209,19 +209,43 @@ public class PlaceManagerTest {
         }
     }
 
+    @Test
+    public void testForceCloseExistingScreenActivity() throws Exception {
+        placeManager.forceClosePlace( kansas );
+
+        verify( workbenchPartBeforeCloseEvent ).fire( refEq( new BeforeClosePlaceEvent( kansas, true, true ) ) );
+        verify( workbenchPartCloseEvent ).fire( refEq( new ClosePlaceEvent( kansas ) ) );
+        verify( kansasActivity ).onClose();
+        verify( kansasActivity ).onShutdown();
+
+        assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( kansas ));
+        assertNull( placeManager.getActivity( kansas ) );
+        assertFalse( placeManager.getActivePlaceRequests().contains( kansas ) );
+
+        // TODO test closing a splash screen, including the side effect
+    }
 
 
 
 
 
 
-    //TODO test closing places
 
-
-    // TODO test splash screens, including this special side effect
+    // TODO test going to splash screens, including this special side effect
     // activityManager.getSplashScreenInterceptor( place ); // need separate test for splash screens!
 
 
+    // TODO test going to popup screens
+
+    // TODO test going to perspectives
+
+    // TODO test going to an unresolvable/unknown place
+
+    // TODO test going to a place with a specific target panel
+
+    // TODO test closing all panels when there are a variety of different types of panels open
+
+    // TODO compare/contrast closeAllPlaces with closeAllCurrentPanels (former is public API; latter is called before launching a new perspective)
 
     /**
      * Verifies that all the expected side effects of an activity launch have happened.
@@ -247,13 +271,15 @@ public class PlaceManagerTest {
 
         // state changes in PlaceManager itself (contract between PlaceManager and everyone)
         assertTrue(
-                "Actual place requests: " + placeManager.getActivePlaceRequests(),
-                placeManager.getActivePlaceRequests().contains( placeRequest ) );
+                   "Actual place requests: " + placeManager.getActivePlaceRequests(),
+                   placeManager.getActivePlaceRequests().contains( placeRequest ) );
         assertSame( activity, placeManager.getActivity( placeRequest ) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( placeRequest ) );
 
         // contract between PlaceManager and Activity
-        verify( activity ).launch( any( AcceptItem.class ), eq( placeRequest ), eq( onLaunchCallback ) );
+        verify( activity, times( 1 ) ).launch( any( AcceptItem.class ), eq( placeRequest ), eq( onLaunchCallback ) );
+        verify( activity, times( 1 ) ).onStartup( eq( placeRequest ) );
+        verify( activity, times( 1 ) ).onOpen();
     }
 
     /**
@@ -274,8 +300,8 @@ public class PlaceManagerTest {
 
         // state changes in PlaceManager itself (contract between PlaceManager and everyone)
         assertTrue(
-                "Actual place requests: " + placeManager.getActivePlaceRequests(),
-                placeManager.getActivePlaceRequests().contains( expectedCurrentPlace ) );
+                   "Actual place requests: " + placeManager.getActivePlaceRequests(),
+                   placeManager.getActivePlaceRequests().contains( expectedCurrentPlace ) );
         assertSame( activity, placeManager.getActivity( expectedCurrentPlace ) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( expectedCurrentPlace ) );
 

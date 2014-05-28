@@ -15,14 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -37,20 +30,16 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class AbstractPopupActivity extends AbstractActivity implements PopupActivity {
 
-    @Inject
-    private SyncBeanManager iocManager;
-
-    @Inject
-    private Event<BeforeClosePlaceEvent> closePlaceEvent;
-
     private final PopupView popup = new PopupView();
 
     public AbstractPopupActivity( final PlaceManager placeManager ) {
         super( placeManager );
+
+        // this handler notifies PlaceManager to clean up after the popup's view has been closed
         popup.addCloseHandler( new CloseHandler<PopupView>() {
             @Override
             public void onClose( CloseEvent<PopupView> event ) {
-                closePlaceEvent.fire( new BeforeClosePlaceEvent( place ) );
+                placeManager.closePlace( place );
             }
         } );
     }
@@ -58,8 +47,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     @Override
     public void launch( final PlaceRequest place,
                         final Command callback ) {
-        super.launch( place,
-                callback );
+        super.launch( place, callback );
 
         onStartup( place );
 
@@ -84,36 +72,8 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     public abstract IsWidget getWidget();
 
     @Override
-    public void onStartup() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onStartup( final PlaceRequest place ) {
-        //Do nothing.
-    }
-
-    @Override
     public boolean onMayClose() {
         return true;
-    }
-
-    @Override
-    public void onClose() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onShutdown() {
-        //Do nothing.
-    }
-
-    @SuppressWarnings("unused")
-    private void onClose( @Observes ClosePlaceEvent event ) {
-        final PlaceRequest place = event.getPlace();
-        if ( place.equals( this.place ) ) {
-            popup.hide();
-        }
     }
 
 }

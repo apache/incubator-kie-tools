@@ -55,7 +55,7 @@ public class WorkbenchScreenTest8Activity extends AbstractWorkbenchScreenActivit
 
     @Override
     public void onStartup(final PlaceRequest place) {
-        super.onStartup();
+        super.onStartup( place );
         realPresenter.onStartup();
     }
 

@@ -58,7 +58,12 @@ public interface WorkbenchPanelPresenter {
 
     public void onPanelFocus();
 
-    public void onBeforePartClose( final PartDefinition part );
+    /**
+     * Closes the part identified by the given PartDefinition, if such a part is currently managed by this presenter.
+     * 
+     * @param part description of the part to close.
+     */
+    public void closePart( final PartDefinition part );
 
     public void maximize();
 

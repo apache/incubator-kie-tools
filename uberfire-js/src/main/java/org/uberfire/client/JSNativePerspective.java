@@ -2,12 +2,10 @@ package org.uberfire.client;
 
 import java.util.Collection;
 import java.util.Collections;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.json.client.JSONObject;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.perspective.JSPanelDefinition;
 import org.uberfire.client.perspective.JSPartDefinition;
@@ -25,6 +23,10 @@ import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.json.client.JSONObject;
 
 @Dependent
 public class JSNativePerspective {
@@ -244,10 +246,6 @@ public class JSNativePerspective {
     private static native void executeOnShutdown( final JavaScriptObject o ) /*-{
         o.on_shutdown();
     }-*/;
-
-    public void onStartup() {
-        //To change body of created methods use File | Settings | File Templates.
-    }
 
     public void onStartup( final PlaceRequest place ) {
         //To change body of created methods use File | Settings | File Templates.

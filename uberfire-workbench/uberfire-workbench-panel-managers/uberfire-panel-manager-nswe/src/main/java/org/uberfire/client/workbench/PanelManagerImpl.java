@@ -19,7 +19,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
@@ -40,13 +39,11 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
 
     //constructor for unit testing
     public PanelManagerImpl( final NSWEExtendedBeanFactory factory,
-                             final Event<BeforeClosePlaceEvent> beforeClosePlaceEvent,
                              final Event<PlaceGainFocusEvent> placeGainFocusEvent,
                              final Event<PlaceLostFocusEvent> placeLostFocusEvent,
                              final Event<SelectPlaceEvent> selectPlaceEvent,
                              final WorkbenchStatusBarPresenter statusBar ) {
         this.factory = factory;
-        this.beforeClosePlaceEvent = beforeClosePlaceEvent;
         this.placeGainFocusEvent = placeGainFocusEvent;
         this.placeLostFocusEvent = placeLostFocusEvent;
         this.selectPlaceEvent = selectPlaceEvent;
@@ -69,7 +66,7 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
             mapPanelDefinitionToPresenter.put( targetPanel,
-                                               targetPanelPresenter );
+                    targetPanelPresenter );
         }
 
         switch ( position ) {
@@ -89,11 +86,11 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
                 if ( !childPanel.isMinimized() ) {
                     final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
                     mapPanelDefinitionToPresenter.put( childPanel,
-                                                       childPanelPresenter );
+                            childPanelPresenter );
 
                     targetPanelPresenter.addPanel( childPanel,
-                                                   childPanelPresenter.getPanelView(),
-                                                   position );
+                            childPanelPresenter.getPanelView(),
+                            position );
                 }
                 newPanel = childPanel;
                 break;

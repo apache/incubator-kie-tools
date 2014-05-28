@@ -15,15 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.mvp.PlaceRequest;
-
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface PopupActivity extends Activity {
-
-    void onStartup();
-
-    void onStartup( final PlaceRequest place );
 
     String getTitle();
 
@@ -32,9 +26,5 @@ public interface PopupActivity extends Activity {
     IsWidget getWidget();
 
     boolean onMayClose();
-
-    void onClose();
-
-    void onShutdown();
 
 }

@@ -17,16 +17,17 @@ package org.uberfire.client;
 
 import java.util.Collection;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
+
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 
 public class JSSplashScreenActivity implements SplashScreenActivity {
 
@@ -35,7 +36,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
     private final JSNativeSplashScreen nativeSplashScreen;
     private PlaceRequest place;
-    private SplashView splash = new SplashView();
+    private final SplashView splash = new SplashView();
 
     public JSSplashScreenActivity( final JSNativeSplashScreen nativeSplashScreen ) {
         this.nativeSplashScreen = nativeSplashScreen;
@@ -112,11 +113,6 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
         } );
 
         onOpen();
-    }
-
-    @Override
-    public void onStartup() {
-        nativeSplashScreen.onStartup();
     }
 
     @Override
