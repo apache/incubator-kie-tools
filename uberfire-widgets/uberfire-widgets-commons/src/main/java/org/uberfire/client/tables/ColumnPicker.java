@@ -19,58 +19,78 @@ package org.uberfire.client.tables;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.DataGrid;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.uberfire.client.resources.CommonResources;
 
 public class ColumnPicker<T> {
 
-    private final Image COLUMN_PICKER_IMAGE = new Image( CommonResources.INSTANCE.images().columnPicker() );
+    private final DataGrid<T> dataGrid;
+    private final List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();
+    private final PopupPanel popup = new PopupPanel( true );
 
-    private final CellTable<T> cellTable;
-    private List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();
-
-    public ColumnPicker( CellTable<T> cellTable ) {
-        this.cellTable = cellTable;
+    public ColumnPicker( DataGrid<T> dataGrid ) {
+        this.dataGrid = dataGrid;
     }
 
-    public void addColumn( Column<T, ?> column,
-                           Header<String> header,
-                           boolean visible ) {
+    public void addColumn( final Column<T, ?> column,
+                           final Header<String> header,
+                           final boolean visible ) {
         addColumn( new ColumnMeta<T>( column,
                                       header,
                                       visible ) );
     }
 
-    private void addColumn( ColumnMeta<T> columnMeta ) {
+    private void addColumn( final ColumnMeta<T> columnMeta ) {
         columnMetaList.add( columnMeta );
         if ( columnMeta.isVisible() ) {
-            cellTable.addColumn( columnMeta.getColumn(),
-                                 columnMeta.getHeader() );
+            dataGrid.addColumn( columnMeta.getColumn(),
+                                columnMeta.getHeader() );
         }
     }
 
-    public ToggleButton createToggleButton() {
-        final ToggleButton button = new ToggleButton( COLUMN_PICKER_IMAGE );
-        final PopupPanel popup = new PopupPanel( true );
+    public Button createToggleButton() {
+        final Button button = new Button();
+        button.setToggle( true );
+        button.setIcon( IconType.LIST_UL );
+
+        popup.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
         popup.addAutoHidePartner( button.getElement() );
         popup.addCloseHandler( new CloseHandler<PopupPanel>() {
             public void onClose( CloseEvent<PopupPanel> popupPanelCloseEvent ) {
-                button.setDown( false );
+                if ( popupPanelCloseEvent.isAutoClosed() ) {
+                    button.setActive( false );
+                }
             }
         } );
+
+        button.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                if ( !button.isActive() ) {
+                    showColumnPickerPopup( button.getAbsoluteLeft(),
+                                           button.getAbsoluteTop() + button.getOffsetHeight() );
+                } else {
+                    popup.hide( false );
+                }
+            }
+        } );
+        return button;
+    }
+
+    private void showColumnPickerPopup( final int left,
+                                        final int top ) {
         VerticalPanel popupContent = new VerticalPanel();
         for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
             final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
@@ -79,40 +99,93 @@ public class ColumnPicker<T> {
                 public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
                     boolean visible = booleanValueChangeEvent.getValue();
                     if ( visible ) {
-                        // WORKAROUND because CellTable does not support insertColumn at this time
-                        for ( ColumnMeta<T> resettingColumnMeta : columnMetaList ) {
-                            if ( resettingColumnMeta.isVisible() ) {
-                                cellTable.removeColumn( resettingColumnMeta.getColumn() );
-                            }
-                        }
-                        columnMeta.setVisible( visible );
-                        for ( ColumnMeta<T> resettingColumnMeta : columnMetaList ) {
-                            if ( resettingColumnMeta.isVisible() ) {
-                                cellTable.addColumn( resettingColumnMeta.getColumn(),
-                                                     resettingColumnMeta.getHeader() );
-                            }
-                        }
+                        dataGrid.insertColumn( getVisibleColumnIndex( columnMeta ),
+                                               columnMeta.getColumn(),
+                                               columnMeta.getHeader() );
                     } else {
-                        columnMeta.setVisible( visible );
-                        cellTable.removeColumn( columnMeta.getColumn() );
+                        dataGrid.removeColumn( columnMeta.getColumn() );
                     }
+                    columnMeta.setVisible( visible );
+                    adjustColumnWidths();
                 }
             } );
             popupContent.add( checkBox );
         }
-        popup.add( popupContent );
-        button.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                if ( button.isDown() ) {
-                    popup.setPopupPosition( button.getAbsoluteLeft(),
-                                            button.getAbsoluteTop() + button.getOffsetHeight() );
-                    popup.show();
-                } else {
-                    popup.hide( false );
-                }
+        popup.setWidget( popupContent );
+        popup.setPopupPosition( left,
+                                top );
+        popup.show();
+    }
+
+    private int getVisibleColumnIndex( final ColumnMeta<T> columnMeta ) {
+        int index = 0;
+        for ( final ColumnMeta<T> cm : columnMetaList ) {
+            if ( cm.equals( columnMeta ) ) {
+                return index;
             }
-        } );
-        return button;
+            if ( cm.isVisible() ) {
+                index++;
+            }
+        }
+        return index;
+    }
+
+    private void adjustColumnWidths() {
+        int totalVisibleColumnsCount = 0;
+        for ( ColumnMeta<T> cm : columnMetaList ) {
+            if ( cm.isVisible() ) {
+                totalVisibleColumnsCount++;
+            }
+        }
+        if ( totalVisibleColumnsCount == 0 ) {
+            return;
+        }
+        for ( ColumnMeta<T> cm : columnMetaList ) {
+            if ( cm.isVisible() ) {
+                dataGrid.setColumnWidth( cm.getColumn(),
+                                         100 / totalVisibleColumnsCount,
+                                         Style.Unit.PCT );
+            }
+        }
+    }
+
+    protected void columnMoved( final int visibleFromIndex,
+                                final int visibleBeforeIndex ) {
+        int visibleColumnFromIndex = 0;
+        ColumnMeta<T> columnMetaToMove = null;
+        for ( int i = 0; i < columnMetaList.size(); i++ ) {
+            final ColumnMeta<T> columnMeta = columnMetaList.get( i );
+            if ( columnMeta.isVisible() ) {
+                if ( visibleFromIndex == visibleColumnFromIndex ) {
+                    columnMetaToMove = columnMeta;
+                    break;
+                }
+                visibleColumnFromIndex++;
+            }
+        }
+        if ( columnMetaToMove == null ) {
+            return;
+        }
+
+        columnMetaList.remove( columnMetaToMove );
+
+        boolean columnInserted = false;
+        int visibleColumnBeforeIndex = 0;
+        for ( int i = 0; i < columnMetaList.size(); i++ ) {
+            final ColumnMeta<T> columnMeta = columnMetaList.get( i );
+            if ( columnMeta.isVisible() ) {
+                if ( visibleBeforeIndex == visibleColumnBeforeIndex ) {
+                    columnMetaList.add( i,
+                                        columnMetaToMove );
+                    columnInserted = true;
+                    break;
+                }
+                visibleColumnBeforeIndex++;
+            }
+        }
+        if ( !columnInserted ) {
+            columnMetaList.add( columnMetaToMove );
+        }
     }
 
     private static class ColumnMeta<T> {
@@ -144,5 +217,6 @@ public class ColumnPicker<T> {
         public void setVisible( boolean visible ) {
             this.visible = visible;
         }
+
     }
 }

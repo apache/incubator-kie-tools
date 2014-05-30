@@ -16,38 +16,41 @@
 
 package org.uberfire.client.tables;
 
+import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 
 public class SelectionColumn<T> extends Column<T, Boolean> {
 
-    public static <T> SelectionColumn<T> createAndAddSelectionColumn(CellTable<T> cellTable) {
-        SelectionColumn<T> selectionColumn = new SelectionColumn<T>(cellTable);
-        cellTable.addColumn(selectionColumn, SafeHtmlUtils.fromSafeConstant("<br>"));
+    public static <T> SelectionColumn<T> createAndAddSelectionColumn( DataGrid<T> dataGrid ) {
+        SelectionColumn<T> selectionColumn = new SelectionColumn<T>( dataGrid );
+        dataGrid.addColumn( selectionColumn, SafeHtmlUtils.fromSafeConstant( "<br>" ) );
         return selectionColumn;
     }
 
-    private final CellTable<T> cellTable;
+    private final DataGrid<T> dataGrid;
 
-    public SelectionColumn(CellTable<T> cellTable) {
-        super(new CheckboxCell(true));
-        this.cellTable = cellTable;
+    public SelectionColumn( DataGrid<T> dataGrid ) {
+        super( new CheckboxCell( true,
+                                 true ) );
+        this.dataGrid = dataGrid;
         addUpdater();
     }
 
     private void addUpdater() {
-        setFieldUpdater(new FieldUpdater<T, Boolean>() {
-            public void update(int index, T object, Boolean value) {
-                cellTable.getSelectionModel().setSelected(object, value);
+        setFieldUpdater( new FieldUpdater<T, Boolean>() {
+            public void update( int index,
+                                T object,
+                                Boolean value ) {
+                dataGrid.getSelectionModel().setSelected( object, value );
             }
-        });
+        } );
     }
 
-    public Boolean getValue(T object) {
-        return cellTable.getSelectionModel().isSelected(object);
+    public Boolean getValue( T object ) {
+        return dataGrid.getSelectionModel().isSelected( object );
     }
 
 }
