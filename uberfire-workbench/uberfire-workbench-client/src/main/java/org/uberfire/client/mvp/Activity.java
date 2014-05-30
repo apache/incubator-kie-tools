@@ -18,7 +18,6 @@ package org.uberfire.client.mvp;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.authz.RuntimeResource;
 
@@ -39,10 +38,9 @@ import org.uberfire.security.authz.RuntimeResource;
  * Activities have the following lifecycle, which is normally driven by an {@link ActivityManager}:
  * <ol>
  *  <li>The activity starts off in the <i>uninitialized</i> state.
- *  <li>{@link #launch(PlaceRequest, Command)} is called to notify the Activity of the PlaceRequest that caused it to be created.
- *       The activity is "associated" with this PlaceRequest until the onShutdown method is invoked.
- *  <li>{@link #onStartup(PlaceRequest)} is called with the same PlaceRequest as was passed to launch(). This puts the activity
- *      in the <i>started</i> state.
+ *  <li>{@link #onStartup(PlaceRequest)} is called with the the PlaceRequest that caused it to be created.
+ *       The activity is "associated" with this PlaceRequest until the onShutdown method is invoked. This puts the activity
+ *       in the <i>started</i> state.
  *  <li>{@link #onOpen()} is called to notify the Activity that its view has been added to the UI, and its associated
  *       place is considered "open." This puts the activity in the <i>open</i> state.
  *  <li>{@link #onClose()} is called to notify the Activity that its view has been removed from the UI, and its associated
@@ -64,19 +62,7 @@ public interface Activity extends RuntimeResource {
 
     /**
      * Called by the framework to notify this activity that it is now associated with the given PlaceRequest.
-     * (TODO: might be redundant with onStartup(). if so, remove this method)
-     * 
-     * @param place
-     *            The place that resolved to this activity
-     * @param onOpenCallback
-     *            a callback that this Activity must invoke every time its {@link #onOpen()} method is called.
-     *            Can be null, which means no callback is required when this activity is opened.
-     */
-    void launch( final PlaceRequest place,
-                 final Command onOpenCallback );
-
-    /**
-     * Called by the framework to notify this activity that it is now associated with the given PlaceRequest.
+     * When this lifecycle method is invoked, the activity's widget has not yet been added to the GUI.
      * 
      * @param place
      *            The place that resolved to this activity
@@ -84,10 +70,7 @@ public interface Activity extends RuntimeResource {
     void onStartup( final PlaceRequest place );
 
     /**
-     * Called by the framework to notify this activity that its Widget has been added to the live GUI. This method is
-     * responsible for invoking the <tt>onOpenCallback</tt> that was passed to {@link #launch(PlaceRequest, Command)};
-     * note that {@link AbstractActivity#onOpen()} takes care of this, so if your Activity subclasses AbstractActivity,
-     * the easiest way to fulfill the obligation is to call <tt>super.onOpen()</tt> or not override this method at all.
+     * Called by the framework to notify this activity that its Widget has been added to the live GUI.
      */
     void onOpen();
 

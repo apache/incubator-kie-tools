@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -51,15 +50,9 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
-    public void launch( final PlaceRequest place,
-                        final Command callback ) {
-        super.launch( place,
-                callback );
+    public void onStartup( PlaceRequest place ) {
+        super.onStartup( place );
         loadState();
-    }
-
-    @Override
-    public void onOpen() {
     }
 
     @Override
@@ -85,9 +78,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
     private void loadState() {
-
-        //Call OnStartup before getting the Perspective definition in case any setup is required by @WorkbenchPerspective's
-        onStartup( place );
 
         final PerspectiveDefinition perspective = getPerspective();
 
@@ -122,15 +112,13 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
             placeManager.goTo( part, panelManager.getRoot() );
         }
         buildPerspective( panelManager.getRoot() );
-
-        onOpen();
     }
 
     private void buildPerspective( final PanelDefinition panel ) {
         for ( PanelDefinition child : panel.getChildren() ) {
             final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
-                    child,
-                    child.getPosition() );
+                                                                           child,
+                                                                           child.getPosition() );
             addChildren( target );
         }
     }

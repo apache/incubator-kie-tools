@@ -1,18 +1,15 @@
 package org.uberfire.client.mvp;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import java.util.HashSet;
 
 import org.junit.Test;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.*;
 
 /**
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
@@ -39,16 +36,12 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere, root );
 
-        verify( spy ).launch( any( AcceptItem.class ),
-                              eq( somewhere ),
-                              isNull( Command.class ) );
         verify( spy ).onStartup( eq( somewhere ) );
         verify( spy ).onOpen();
 
         verify( spy,
-                times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ),
-                                     isNull( Command.class ) );
+                times( 1 ) ).onStartup( eq( somewhere ) );
+
         verify( selectWorkbenchPartEvent,
                 times( 1 ) ).fire( any( SelectPlaceEvent.class ) );
     }
@@ -75,11 +68,6 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
         placeManager.goTo( somewhereTheSame, root );
 
 
-
-        verify( spy,
-                times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ),
-                                     isNull( Command.class ) );
         verify( spy,
                 times( 1 ) ).onStartup( eq( somewhere ) );
         verify( spy,
@@ -121,18 +109,10 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
         placeManager.goTo( somewhereElse, root  );
 
         verify( spy1,
-                times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ),
-                                     isNull( Command.class ) );
-        verify( spy1,
                 times( 1 ) ).onStartup( eq( somewhere ) );
         verify( spy1,
                 times( 1 ) ).onOpen();
 
-        verify( spy2,
-                times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhereElse ),
-                                     isNull( Command.class ) );
         verify( spy2,
                 times( 1 ) ).onStartup( eq( somewhereElse ) );
         verify( spy2,

@@ -1,21 +1,19 @@
 package org.uberfire.client.mvp;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import java.util.HashSet;
 
 import org.junit.Test;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 
 public class AbstractWorkbenchContextActivityTest extends BaseWorkbenchTest {
 
 
     @Test
-      public void testAbstractWorkbenchContextActivityLaunch() throws Exception {
+    public void testAbstractWorkbenchContextActivityLaunch() throws Exception {
 
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
@@ -30,8 +28,8 @@ public class AbstractWorkbenchContextActivityTest extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere );
 
-        verify( activity , never()).launch( eq( somewhere ), any(Command.class));
-
+        verify( activity , never()).onStartup( eq( somewhere ) );
+        verify( activity , never()).onOpen();
     }
 
 

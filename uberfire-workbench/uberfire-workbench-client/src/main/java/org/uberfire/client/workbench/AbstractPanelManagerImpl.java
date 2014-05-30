@@ -1,5 +1,7 @@
 package org.uberfire.client.workbench;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -155,6 +157,8 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                                   final Menus menus,
                                   final UIPart uiPart,
                                   final String contextId ) {
+        checkNotNull( "panel", panel );
+
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
             partPresenter = getBeanFactory().newWorkbenchPart( menus, uiPart.getTitle(), uiPart.getTitleDecoration(), part );

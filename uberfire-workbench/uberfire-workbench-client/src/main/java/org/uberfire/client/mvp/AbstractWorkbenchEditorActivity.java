@@ -17,7 +17,6 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
@@ -33,17 +32,6 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         super( placeManager );
     }
 
-    @Override
-    public void launch( final AcceptItem acceptPanel,
-                        final PlaceRequest place,
-                        final Command callback ) {
-        super.launch( place, callback );
-
-        final PathPlaceRequest pathPlace = (PathPlaceRequest) place;
-
-        acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
-    }
-
     /**
      * Overrides the default implementation by redirecting calls that are {@link PathPlaceRequest} instances to
      * {@link #onStartup(ObservablePath, PlaceRequest)}. Non-path place requests are handed up to the super impl.
@@ -53,6 +41,7 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         if ( place instanceof PathPlaceRequest ) {
             onStartup( ((PathPlaceRequest) place).getPath(), place );
         } else {
+            // XXX should throw an exception here instead? can an editor be launched without a path?
             super.onStartup( place );
         }
     }
@@ -60,6 +49,7 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
+        super.onStartup( place );
         this.path = path;
     }
 

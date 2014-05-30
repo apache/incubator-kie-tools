@@ -17,8 +17,6 @@ package org.uberfire.client.mvp;
 
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -42,22 +40,6 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
                 placeManager.closePlace( place );
             }
         } );
-    }
-
-    @Override
-    public void launch( final PlaceRequest place,
-                        final Command callback ) {
-        super.launch( place, callback );
-
-        onStartup( place );
-
-        final IsWidget widget = getWidget();
-
-        popup.setContent( widget );
-        popup.setTitle( getTitle() );
-        popup.show();
-
-        onOpen();
     }
 
     @Override

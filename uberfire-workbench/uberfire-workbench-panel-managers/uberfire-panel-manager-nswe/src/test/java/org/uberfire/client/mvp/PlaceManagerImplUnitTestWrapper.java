@@ -5,8 +5,6 @@ import javax.enterprise.event.Event;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.Position;
 
 public class PlaceManagerImplUnitTestWrapper extends PlaceManagerImpl {
 
@@ -25,7 +23,7 @@ public class PlaceManagerImplUnitTestWrapper extends PlaceManagerImpl {
     }
 
     public PlaceManagerImplUnitTestWrapper( Activity activity,
-                                                PanelManager panelManagerFake ) {
+                                            PanelManager panelManagerFake ) {
         this.activity = activity;
         this.panelManagerFake = panelManagerFake;
     }
@@ -41,10 +39,12 @@ public class PlaceManagerImplUnitTestWrapper extends PlaceManagerImpl {
         this.placeHistoryHandler = placeHistoryHandler;
     }
 
+    @Override
     PanelManager getPanelManager() {
         return panelManagerFake;
     }
 
+    @Override
     PlaceHistoryHandler getPlaceHistoryHandler() {
         return placeHistoryHandler;
     }
@@ -54,26 +54,27 @@ public class PlaceManagerImplUnitTestWrapper extends PlaceManagerImpl {
         return activity;
     }
 
-    PanelDefinition addWorkbenchPanelTo( Position position ) {
-        return null;
-    }
-
+    @Override
     public void updateHistory( PlaceRequest request ) {
 
     }
 
+    @Override
     SplashScreenActivity getSplashScreenInterceptor( PlaceRequest place ) {
         return splashScreenActivity;
     }
 
+    @Override
     Event<SelectPlaceEvent> getSelectWorkbenchPartEvent() {
         return selectWorkbenchPartEvent;
     }
 
 
+    @Override
     void fireNewSplashScreenActiveEvent() {
     }
 
+    @Override
     void firePerspectiveChangeEvent( PerspectiveActivity activity ) {
     }
 

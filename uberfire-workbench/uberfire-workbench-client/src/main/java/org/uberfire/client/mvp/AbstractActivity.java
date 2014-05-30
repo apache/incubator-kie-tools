@@ -15,7 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.mvp.Command;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import org.uberfire.mvp.PlaceRequest;
 
 /**
@@ -29,32 +30,20 @@ public abstract class AbstractActivity implements Activity {
 
     protected PlaceRequest place;
 
-    private Command onOpenCallback;
-
     public AbstractActivity( final PlaceManager placeManager ) {
         this.placeManager = placeManager;
     }
 
     @Override
-    public void launch( final PlaceRequest place,
-                        final Command onOpenCallback ) {
-        this.place = place;
-        this.onOpenCallback = onOpenCallback;
-    }
-
-    @Override
     public void onStartup( PlaceRequest place ) {
-        if (place != this.place) {
-            throw new IllegalStateException( "Got onStartup call with non-matching place (expected " + this.place + ", got " + place + ")");
-        }
+        this.place = checkNotNull( "place", place );
     }
 
-    /**
-     * Invokes the <tt>onOpenCallback</tt> that was given to {@link #launch(PlaceRequest, Command)}.
-     */
     @Override
     public void onOpen() {
-        executeOnOpenCallback();
+        if ( this.place == null ) {
+            throw new IllegalStateException( "Activity has not been started" );
+        }
         placeManager.executeOnOpenCallback( this.place );
     }
 
@@ -68,12 +57,6 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void onShutdown() {
         // Do nothing.
-    }
-
-    private void executeOnOpenCallback() {
-        if ( onOpenCallback != null ) {
-            onOpenCallback.execute();
-        }
     }
 
     @Override

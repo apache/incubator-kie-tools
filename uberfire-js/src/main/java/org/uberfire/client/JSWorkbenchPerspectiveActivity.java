@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -17,8 +16,6 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
 
     private PlaceRequest place;
 
-    private Command callback;
-
     private final JSNativePerspective nativePerspective;
 
     public JSWorkbenchPerspectiveActivity( final JSNativePerspective nativePerspective ) {
@@ -26,15 +23,9 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
-    public void launch( final PlaceRequest place,
-                        final Command callback ) {
-        this.place = place;
-        this.callback = callback;
-        loadState();
-    }
-
-    @Override
     public void onStartup( final PlaceRequest place ) {
+        this.place = place;
+        loadState();
         nativePerspective.onStartup( place );
     }
 
@@ -118,9 +109,6 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
 
     //Initialise Workbench state to that of the provided perspective
     private void initialisePerspective( final PerspectiveDefinition perspective ) {
-
-        onStartup( place );
-
         nativePerspective.getPanelManager().setPerspective( perspective );
 
         Set<PartDefinition> parts = nativePerspective.getPanelManager().getRoot().getParts();
@@ -130,8 +118,6 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
             nativePerspective.getPlaceManager().goTo( part, nativePerspective.getPanelManager().getRoot() );
         }
         buildPerspective( nativePerspective.getPanelManager().getRoot() );
-
-        onOpen();
     }
 
     private void buildPerspective( final PanelDefinition panel ) {

@@ -21,7 +21,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
-import org.uberfire.client.mvp.AcceptItem;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceHistoryHandler;
@@ -92,7 +91,7 @@ public class PlaceManagerTest {
 
         // every test starts in Kansas, with no side effect interactions recorded
         when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
-        placeManager.goTo( kansas, mock(Command.class), (PanelDefinition) null );
+        placeManager.goTo( kansas, (PanelDefinition) null );
         resetInjectedMocks();
         reset( kansasActivity );
     }
@@ -120,44 +119,37 @@ public class PlaceManagerTest {
         PlaceRequest oz = new DefaultPlaceRequest( "oz" );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
         when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
-        Command onLaunchCallback = mock(Command.class);
 
-        placeManager.goTo( oz, onLaunchCallback, (PanelDefinition) null );
+        placeManager.goTo( oz, (PanelDefinition) null );
 
-        verifyActivityLaunchSideEffects( oz, ozActivity, onLaunchCallback );
+        verifyActivityLaunchSideEffects( oz, ozActivity );
     }
 
     @Test
     public void testGoToPlaceWeAreAlreadyAt() throws Exception {
 
-        Command onLaunchCallback = mock(Command.class);
-        placeManager.goTo( kansas, onLaunchCallback, (PanelDefinition) null );
+        placeManager.goTo( kansas, (PanelDefinition) null );
 
         // note "refEq" tests equality field by field using reflection. don't read it as "reference equals!" :)
         verify( selectWorkbenchPartEvent ).fire( refEq( new SelectPlaceEvent( kansas ) ) );
-        verify( onLaunchCallback, never() ).execute();
 
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
     }
 
     @Test
     public void testGoToNowhereDoesNothing() throws Exception {
-        Command onLaunchCallback = mock(Command.class);
-        placeManager.goTo( PlaceRequest.NOWHERE, onLaunchCallback, (PanelDefinition) null );
+        placeManager.goTo( PlaceRequest.NOWHERE, (PanelDefinition) null );
 
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
-        verify( onLaunchCallback, never() ).execute();
     }
 
     // XXX would like to remove this behaviour (should throw NPE) but too many things are up in the air right now
     @Test
     public void testGoToNullDoesNothing() throws Exception {
 
-        Command onLaunchCallback = mock(Command.class);
-        placeManager.goTo( (PlaceRequest) null, onLaunchCallback, (PanelDefinition) null );
+        placeManager.goTo( (PlaceRequest) null, (PanelDefinition) null );
 
         verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
-        verify( onLaunchCallback, never() ).execute();
     }
 
     @Test
@@ -172,10 +164,9 @@ public class PlaceManagerTest {
 
             when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
 
-            Command onLaunchCallback = mock(Command.class);
-            placeManager.goTo( yellowBrickRoad, onLaunchCallback, (PanelDefinition) null );
+            placeManager.goTo( yellowBrickRoad, (PanelDefinition) null );
 
-            verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity, onLaunchCallback );
+            verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity );
 
             // special contract just for path-type place requests (subject to preference)
             verify( yellowBrickRoad.getPath() ).onDelete( any( Command.class ) );
@@ -196,10 +187,9 @@ public class PlaceManagerTest {
 
             when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
 
-            Command onLaunchCallback = mock(Command.class);
-            placeManager.goTo( yellowBrickRoad, onLaunchCallback, (PanelDefinition) null );
+            placeManager.goTo( yellowBrickRoad, (PanelDefinition) null );
 
-            verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity, onLaunchCallback );
+            verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity );
 
             // special contract just for path-type place requests (subject to preference)
             verify( yellowBrickRoad.getPath(), never() ).onDelete( any( Command.class ) );
@@ -254,10 +244,8 @@ public class PlaceManagerTest {
      *            The place request that was passed to some variant of PlaceManager.goTo().
      * @param activity
      *            <b>A Mockito mock<b> of the activity that was resolved for <tt>placeRequest</tt>.
-     * @param onLaunchCallback
-     *            The callback that was passed to PlaceManager.goTo(). Null if no callback was used.
      */
-    private void verifyActivityLaunchSideEffects(PlaceRequest placeRequest, WorkbenchScreenActivity activity, Command onLaunchCallback) {
+    private void verifyActivityLaunchSideEffects(PlaceRequest placeRequest, WorkbenchScreenActivity activity) {
 
         // as of UberFire 0.4. this event only happens if the place is already visible.
         // it might be be better if the event was fired unconditionally. needs investigation.
@@ -277,7 +265,6 @@ public class PlaceManagerTest {
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( placeRequest ) );
 
         // contract between PlaceManager and Activity
-        verify( activity, times( 1 ) ).launch( any( AcceptItem.class ), eq( placeRequest ), eq( onLaunchCallback ) );
         verify( activity, times( 1 ) ).onStartup( eq( placeRequest ) );
         verify( activity, times( 1 ) ).onOpen();
     }
@@ -306,8 +293,8 @@ public class PlaceManagerTest {
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( expectedCurrentPlace ) );
 
         // contract between PlaceManager and Activity
-        verify( activity, never() ).launch( any( AcceptItem.class ), any( PlaceRequest.class ), any( Command.class ) );
-
+        verify( activity, never() ).onStartup( any( PlaceRequest.class ) );
+        verify( activity, never() ).onOpen();
     }
 
 }
