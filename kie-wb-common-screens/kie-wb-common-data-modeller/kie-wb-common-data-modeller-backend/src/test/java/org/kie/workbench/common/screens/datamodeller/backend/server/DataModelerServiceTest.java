@@ -53,7 +53,7 @@ public class DataModelerServiceTest {
         fs.forceAsDefault();
     }
 
-    @Ignore //@Test
+    @Test
     public void testDataModelerService() throws Exception {
 
         //Create DataModelerService bean
