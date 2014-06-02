@@ -37,11 +37,15 @@ public class ClickableImageResourceCell extends ImageResourceCell {
 
     private boolean asAnchor = false;
 
-    public ClickableImageResourceCell() {
-    }
+    private int minWidth = -1;
 
     public ClickableImageResourceCell(boolean asAnchor) {
         this.asAnchor = asAnchor;
+    }
+
+    public ClickableImageResourceCell( boolean asAnchor, int minWidth ) {
+        this.asAnchor = asAnchor;
+        this.minWidth = minWidth;
     }
 
     @Override
@@ -73,7 +77,9 @@ public class ClickableImageResourceCell extends ImageResourceCell {
                 startAnchor = new SafeHtml() {
                     @Override
                     public String asString() {
-                        return "<div style=\"cursor: pointer;\">";
+                        String minWidthStyle = minWidth > 0 ? " min-width:"+minWidth+"px;" : "";
+
+                        return "<div style=\"cursor: pointer;"+minWidthStyle+"\">";
                     }
                 };
 

@@ -158,7 +158,7 @@ public class DataModelBrowser extends Composite {
         dataObjectsTable.addColumn( dataObjectColumn, Constants.INSTANCE.modelBrowser_columnName() );
 
         // Init delete column
-        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true);
+        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true, 16);
         final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(clickableImageResourceCell);
         decorator.setPlacement(Placement.LEFT);
         decorator.setText(Constants.INSTANCE.modelBrowser_action_deleteDataObject());
