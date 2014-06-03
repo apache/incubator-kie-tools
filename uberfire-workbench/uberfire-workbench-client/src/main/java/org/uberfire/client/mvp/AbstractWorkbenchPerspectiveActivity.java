@@ -52,6 +52,10 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     @Override
     public void onStartup( PlaceRequest place ) {
         super.onStartup( place );
+    }
+
+    @Override
+    public void onOpen() {
         loadState();
     }
 

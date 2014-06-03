@@ -528,9 +528,6 @@ implements PlaceManager {
 
         final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
 
-        // XXX how sure are we that this activity isn't already started? should delegate lifecycle calls to ActivityManager
-        activity.onStartup( place );
-
         UIPart uiPart = new UIPart( activity.getTitle(), activity.getTitleDecoration(), activity.getWidget() );
 
         getPanelManager().addWorkbenchPart( place,
@@ -542,7 +539,6 @@ implements PlaceManager {
         if ( splashScreen != null ) {
             activeSplashScreens.put( place.getIdentifier(), splashScreen );
             fireNewSplashScreenActiveEvent();
-            splashScreen.onStartup( place );
             splashScreen.onOpen();
         }
 
@@ -578,7 +574,6 @@ implements PlaceManager {
         updateHistory( place );
         checkPathDelete( place );
 
-        activity.onStartup( place );
         activity.onOpen();
     }
 
@@ -588,10 +583,8 @@ implements PlaceManager {
         activeSplashScreens.clear();
         firePerspectiveChangeEvent( activity );
         final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
-        activity.onStartup( place );
         if ( splashScreen != null ) {
             activeSplashScreens.put( place.getIdentifier(), splashScreen );
-            splashScreen.onStartup( place );
             splashScreen.onOpen();
         }
         fireNewSplashScreenActiveEvent();
@@ -599,6 +592,10 @@ implements PlaceManager {
         activity.onOpen();
     }
 
+    /**
+     * Gets the splash screen for the given place from the ActivityManager.
+     * TODO: inline this method once the UnitTestWrapper thing is gone.
+     */
     SplashScreenActivity getSplashScreenInterceptor( PlaceRequest place ) {
         return activityManager.getSplashScreenInterceptor( place );
     }
@@ -616,8 +613,6 @@ implements PlaceManager {
     }
 
     private void closePlace( final PlaceRequest place, final boolean force ) {
-
-        // XXX this method should not call lifecycle methods on activities! it should ask the ActivityManager to do so.
 
         final Activity activity = existingWorkbenchActivities.get( place );
         if ( activity == null ) {
@@ -649,19 +644,11 @@ implements PlaceManager {
         existingWorkbenchActivities.remove( place );
         visibleWorkbenchParts.remove( place );
 
-        if ( activity instanceof PopupActivity ) {
-            ( (PopupActivity) activity ).onShutdown();
-        } else if ( activity instanceof WorkbenchActivity ) {
-            ( (WorkbenchActivity) activity ).onShutdown();
-        } else if ( activity instanceof PerspectiveActivity ) {
-            ( (PerspectiveActivity) activity ).onShutdown();
-        }
+        activityManager.destroyActivity( activity );
 
         if ( place instanceof PathPlaceRequest ) {
             ( (PathPlaceRequest) place ).getPath().dispose();
         }
-
-        activityManager.destroyActivity( activity );
     }
 
     @SuppressWarnings("unused")

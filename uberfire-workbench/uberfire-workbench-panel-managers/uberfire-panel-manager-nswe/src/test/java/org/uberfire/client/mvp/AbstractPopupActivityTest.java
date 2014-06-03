@@ -28,7 +28,7 @@ public class AbstractPopupActivityTest  extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere );
 
-        verify( activity ).onStartup( eq( somewhere ) );
+        verify( activity, never() ).onStartup( any( PlaceRequest.class ) );
         verify( activity ).onOpen();
     }
 

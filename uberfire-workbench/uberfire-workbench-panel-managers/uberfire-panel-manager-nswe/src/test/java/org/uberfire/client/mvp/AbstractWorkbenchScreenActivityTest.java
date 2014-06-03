@@ -23,6 +23,7 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
+        activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy = spy( activity );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -36,11 +37,8 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere, root );
 
-        verify( spy ).onStartup( eq( somewhere ) );
+        verify( spy, never() ).onStartup( any( PlaceRequest.class ) );
         verify( spy ).onOpen();
-
-        verify( spy,
-                times( 1 ) ).onStartup( eq( somewhere ) );
 
         verify( selectWorkbenchPartEvent,
                 times( 1 ) ).fire( any( SelectPlaceEvent.class ) );
@@ -53,6 +51,7 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
         final PlaceRequest somewhereTheSame = new DefaultPlaceRequest( "Somewhere" );
 
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
+        activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy = spy( activity );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -68,8 +67,7 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
         placeManager.goTo( somewhereTheSame, root );
 
 
-        verify( spy,
-                times( 1 ) ).onStartup( eq( somewhere ) );
+        verify( spy, never() ).onStartup( any( PlaceRequest.class ) );
         verify( spy,
                 times( 1 ) ).onOpen();
 
@@ -86,10 +84,12 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
 
         //The first place
         final WorkbenchScreenActivity activity1 = new MockWorkbenchScreenActivity( placeManager );
+        activity1.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy1 = spy( activity1 );
 
         //The second place
         final WorkbenchScreenActivity activity2 = new MockWorkbenchScreenActivity( placeManager );
+        activity2.onStartup( somewhereElse ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy2 = spy( activity2 );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -108,13 +108,11 @@ public class AbstractWorkbenchScreenActivityTest extends BaseWorkbenchTest {
         placeManager = new PlaceManagerImplUnitTestWrapper( spy2, panelManager, selectWorkbenchPartEvent );
         placeManager.goTo( somewhereElse, root  );
 
-        verify( spy1,
-                times( 1 ) ).onStartup( eq( somewhere ) );
+        verify( spy1, never() ).onStartup( any( PlaceRequest.class ) );
         verify( spy1,
                 times( 1 ) ).onOpen();
 
-        verify( spy2,
-                times( 1 ) ).onStartup( eq( somewhereElse ) );
+        verify( spy2, never() ).onStartup( any( PlaceRequest.class ) );
         verify( spy2,
                 times( 1 ) ).onOpen();
 

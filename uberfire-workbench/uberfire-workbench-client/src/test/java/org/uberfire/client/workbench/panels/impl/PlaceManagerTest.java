@@ -24,6 +24,7 @@ import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceHistoryHandler;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceManagerImpl;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
@@ -40,6 +41,8 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+
+import com.google.gwt.event.shared.EventBus;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PlaceManagerTest {
@@ -112,6 +115,15 @@ public class PlaceManagerTest {
         reset( selectWorkbenchPartEvent );
         reset( panelManager );
         reset( wbServices );
+    }
+
+    @Test
+    public void testPlaceManagerGetsInitializedToADefaultPlace() throws Exception {
+        placeManager.initPlaceHistoryHandler();
+
+        verify( placeHistoryHandler ).register( any( PlaceManager.class ),
+                                                any( EventBus.class ),
+                                                any( PlaceRequest.class ) );
     }
 
     @Test
@@ -206,7 +218,8 @@ public class PlaceManagerTest {
         verify( workbenchPartBeforeCloseEvent ).fire( refEq( new BeforeClosePlaceEvent( kansas, true, true ) ) );
         verify( workbenchPartCloseEvent ).fire( refEq( new ClosePlaceEvent( kansas ) ) );
         verify( kansasActivity ).onClose();
-        verify( kansasActivity ).onShutdown();
+        verify( kansasActivity, never() ).onShutdown();
+        verify( activityManager ).destroyActivity( kansasActivity );
 
         assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( kansas ));
         assertNull( placeManager.getActivity( kansas ) );
@@ -265,7 +278,7 @@ public class PlaceManagerTest {
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( placeRequest ) );
 
         // contract between PlaceManager and Activity
-        verify( activity, times( 1 ) ).onStartup( eq( placeRequest ) );
+        verify( activity, never() ).onStartup( any( PlaceRequest.class ) ); // this is ActivityManager's job now
         verify( activity, times( 1 ) ).onOpen();
     }
 

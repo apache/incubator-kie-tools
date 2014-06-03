@@ -29,8 +29,8 @@ public class AbstractWorkbenchPerspectiveActivityTest extends BaseWorkbenchTest 
 
         placeManager.goTo( somewhere );
 
-        verify( perspectiveActivity ).onStartup( eq( somewhere ) );
-
+        verify( perspectiveActivity, never() ).onStartup( any( PlaceRequest.class ) );
+        verify( perspectiveActivity ).onOpen();
     }
 
 }

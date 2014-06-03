@@ -25,8 +25,13 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     @Override
     public void onStartup( final PlaceRequest place ) {
         this.place = place;
-        loadState();
         nativePerspective.onStartup( place );
+    }
+
+    @Override
+    public void onOpen() {
+        loadState();
+        nativePerspective.onOpen();
     }
 
     @Override
@@ -62,11 +67,6 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     @Override
     public ToolBar getToolBar() {
         return null;
-    }
-
-    @Override
-    public void onOpen() {
-        nativePerspective.onOpen();
     }
 
     @Override

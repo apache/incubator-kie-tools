@@ -54,7 +54,7 @@ public class AbstractSplashScreenActivityTest extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere );
 
-        verify( splashScreenActivity ).onStartup( eq( somewhere ) );
+        verify( splashScreenActivity, never() ).onStartup( eq( somewhere ) );
         verify( splashScreenActivity ).onOpen();
 
     }

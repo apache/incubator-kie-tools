@@ -29,6 +29,8 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
         doReturn( uri ).when( path ).toURI();
         final WorkbenchEditorActivity activity = new MockWorkbenchEditorActivity( placeManager );
+        activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
+
         final WorkbenchEditorActivity spy = spy( activity );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -42,13 +44,10 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere, root );
 
-        verify( spy ).onStartup( argThat( new EqualPaths( path ) ),
-                                 eq( somewhere ) );
+        verify( spy, never() ).onStartup( any( ObservablePath.class ),
+                                          any( PlaceRequest.class ) );
         verify( spy ).onOpen();
 
-        verify( spy,
-                times( 1 ) ).onStartup( argThat( new EqualPaths( path ) ),
-                                        eq( somewhere ) );
         verify( selectWorkbenchPartEvent,
                 times( 1 ) ).fire( any( SelectPlaceEvent.class ) );
     }
@@ -64,6 +63,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
         doReturn( uri ).when( path ).toURI();
         final WorkbenchEditorActivity activity = new MockWorkbenchEditorActivity( placeManager );
+        activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchEditorActivity spy = spy( activity );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -81,9 +81,8 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         placeManager.goTo( somewhere, root );
         placeManager.goTo( somewhereTheSame , root);
 
-        verify( spy,
-                times( 1 ) ).onStartup( argThat( new EqualPaths( path ) ),
-                                        eq( somewhere ) );
+        verify( spy, never() ).onStartup( any( ObservablePath.class ),
+                                          any( PlaceRequest.class ) );
         verify( spy,
                 times( 1 ) ).onOpen();
 
@@ -104,6 +103,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         doReturn( uri1 ).when( path1 ).toURI();
         final PlaceRequest somewhere =  new PathPlaceRequestUnitTestWrapper(path1);
         final WorkbenchEditorActivity activity1 = new MockWorkbenchEditorActivity( placeManager );
+        activity1.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchEditorActivity spy1 = spy( activity1 );
 
         //The second place
@@ -111,6 +111,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         doReturn( uri2 ).when( path2 ).toURI();
         final PlaceRequest  somewhereElse =  new PathPlaceRequestUnitTestWrapper(path2);
         final WorkbenchEditorActivity activity2 = new MockWorkbenchEditorActivity( placeManager );
+        activity2.onStartup( somewhereElse ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchEditorActivity spy2 = spy( activity2 );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -128,15 +129,13 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         placeManager = new PlaceManagerImplUnitTestWrapper( spy2, panelManager, selectWorkbenchPartEvent );
         placeManager.goTo( somewhereElse , root);
 
-        verify( spy1,
-                times( 1 ) ).onStartup( argThat( new EqualPaths( path1 ) ),
-                                        eq( somewhere ) );
+        verify( spy1, never() ).onStartup( any( ObservablePath.class ),
+                                           any( PlaceRequest.class ) );
         verify( spy1,
                 times( 1 ) ).onOpen();
 
-        verify( spy2,
-                times( 1 ) ).onStartup( argThat( new EqualPaths( path2 ) ),
-                                        eq( somewhereElse ) );
+        verify( spy2, never() ).onStartup( any( ObservablePath.class ),
+                                           any( PlaceRequest.class ) );
         verify( spy2,
                 times( 1 ) ).onOpen();
 

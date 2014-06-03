@@ -20,6 +20,8 @@ import static java.util.Collections.*;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -48,8 +50,16 @@ public class ActivityManagerImpl implements ActivityManager {
     @Inject
     private User identity;
 
+    /**
+     * Activities in this set have had their {@link Activity#onStartup(PlaceRequest)} method called and have not been
+     * shut down yet. This set tracks objects by identity, so it is possible that it could have multiple activities of
+     * the same type within it (for example, multiple editors of the same type for different files.)
+     */
+    private final Map<Activity, PlaceRequest> startedActivities = new IdentityHashMap<Activity, PlaceRequest>();
+
     @Override
     public <T extends Activity> Set<T> getActivities( final Class<T> clazz ) {
+        // not calling onStartup. See UF-105.
         return secure( iocManager.lookupBeans( clazz ) );
     }
 
@@ -64,7 +74,7 @@ public class ActivityManagerImpl implements ActivityManager {
             }
         }
 
-        return secure( resultBean );
+        return startIfNecessary( secure( resultBean ), placeRequest );
     }
 
     @Override
@@ -77,7 +87,7 @@ public class ActivityManagerImpl implements ActivityManager {
             beans = resolveById( placeRequest.getIdentifier() );
         }
 
-        return secure( beans );
+        return startIfNecessary( secure( beans ), placeRequest );
     }
 
     @Override
@@ -95,7 +105,14 @@ public class ActivityManagerImpl implements ActivityManager {
 
     @Override
     public void destroyActivity( final Activity activity ) {
-        iocManager.destroyBean( activity );
+        if ( startedActivities.remove( activity ) != null ) {
+            activity.onShutdown();
+            if ( iocManager.lookupBean( activity.getClass() ).getScope() == Dependent.class ) {
+                iocManager.destroyBean( activity );
+            }
+        } else {
+            throw new IllegalStateException( "Activity " + activity + " is not currently in the started state" );
+        }
     }
 
     private <T extends Activity> Set<T> secure( final Collection<IOCBeanDef<T>> activityBeans ) {
@@ -127,6 +144,22 @@ public class ActivityManagerImpl implements ActivityManager {
         }
 
         return null;
+    }
+
+    private <T extends Activity> T startIfNecessary( T activity, PlaceRequest place ) {
+        if (activity == null) return null;
+        if ( !startedActivities.containsKey( activity ) ) {
+            activity.onStartup( place );
+            startedActivities.put( activity, place );
+        }
+        return activity;
+    }
+
+    private Set<Activity> startIfNecessary( Set<Activity> activities, PlaceRequest place ) {
+        for ( Activity activity : activities ) {
+            startIfNecessary( activity, place );
+        }
+        return activities;
     }
 
     /**
