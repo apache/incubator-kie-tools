@@ -29,8 +29,6 @@ import java.util.Scanner;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.commons.data.Pair;
@@ -62,16 +60,6 @@ import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
     private static final JGitFileSystemProvider PROVIDER = JGitFileSystemProvider.getInstance();
-
-    @BeforeClass
-    public static void setup() throws IOException {
-        PROVIDER.buildAndStartDaemon();
-    }
-
-    @AfterClass
-    public static void tearDown() throws IOException {
-        PROVIDER.forceStopDaemon();
-    }
 
     @Test
     @Ignore
@@ -252,7 +240,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         assertThat( fs.getPath( "file.txt" ).toFile() ).isNotNull().exists();
 
-        commit( ( (JGitFileSystem) fs ).gitRepo(), "master", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
+        commit( ((JGitFileSystem)fs).gitRepo(), "master", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
             put( "fileXXXXX.txt", tempFile( "temp" ) );
         }} );
 
