@@ -6,10 +6,12 @@ import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
+import org.uberfire.client.workbench.pmgr.nswe.NSWEPanelManager;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 
-public class PanelManagerImplUnitTestWrapper extends PanelManagerImpl {
+public class PanelManagerImplUnitTestWrapper extends NSWEPanelManager {
 
     private final WorkbenchPanelPresenter workbenchPanelPresenter;
 
@@ -24,7 +26,7 @@ public class PanelManagerImplUnitTestWrapper extends PanelManagerImpl {
     }
 
     @Override
-    WorkbenchPanelPresenter getWorkbenchPanelPresenter( PanelDefinition panel ) {
+    protected WorkbenchPanelPresenter getWorkbenchPanelPresenter( PanelDefinition panel ) {
         return workbenchPanelPresenter;
     }
 

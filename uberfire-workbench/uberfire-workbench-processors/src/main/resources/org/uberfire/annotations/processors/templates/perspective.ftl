@@ -47,8 +47,8 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 </#if>
 <#if isTemplate>
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.TemplatePanelDefinitionImpl;
-import org.uberfire.client.workbench.TemplatePerspectiveDefinitionImpl;
+import org.uberfire.client.workbench.pmgr.template.TemplatePanelDefinitionImpl;
+import org.uberfire.client.workbench.pmgr.template.TemplatePerspectiveDefinitionImpl;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;

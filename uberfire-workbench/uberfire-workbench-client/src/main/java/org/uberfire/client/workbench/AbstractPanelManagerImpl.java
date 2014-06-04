@@ -48,35 +48,35 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Inject
-    Event<PlaceGainFocusEvent> placeGainFocusEvent;
+    protected Event<PlaceGainFocusEvent> placeGainFocusEvent;
 
     @Inject
-    Event<PlaceLostFocusEvent> placeLostFocusEvent;
+    protected Event<PlaceLostFocusEvent> placeLostFocusEvent;
 
     @Inject
-    Event<PanelFocusEvent> panelFocusEvent;
+    protected Event<PanelFocusEvent> panelFocusEvent;
 
     @Inject
-    Event<SelectPlaceEvent> selectPlaceEvent;
+    protected Event<SelectPlaceEvent> selectPlaceEvent;
 
     @Inject
-    WorkbenchStatusBarPresenter statusBar;
+    protected WorkbenchStatusBarPresenter statusBar;
 
     @Inject
-    SyncBeanManager iocManager;
+    protected SyncBeanManager iocManager;
 
     @Inject
-    Instance<PlaceManager> placeManager;
+    protected Instance<PlaceManager> placeManager;
 
-    PanelDefinition root = null;
+    protected PanelDefinition root = null;
 
-    PerspectiveDefinition perspective;
+    protected PerspectiveDefinition perspective;
 
-    Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPartPresenter>();
+    protected final Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
-    Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
+    protected final Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
 
-    PartDefinition activePart = null;
+    protected PartDefinition activePart = null;
 
     @Override
     public PerspectiveDefinition getPerspective() {
@@ -186,6 +186,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         //Select newly inserted part
         selectPlaceEvent.fire( new SelectPlaceEvent( place ) );
     }
+
     @Override
     public PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
@@ -205,7 +206,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         return defaultPerspective;
     }
 
-    WorkbenchPanelPresenter getWorkbenchPanelPresenter( PanelDefinition panel ) {
+    protected WorkbenchPanelPresenter getWorkbenchPanelPresenter( PanelDefinition panel ) {
         return mapPanelDefinitionToPresenter.get( panel );
     }
 
