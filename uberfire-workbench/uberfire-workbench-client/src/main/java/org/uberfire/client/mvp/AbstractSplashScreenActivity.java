@@ -55,11 +55,10 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
 
     @Override
     public void onStartup(PlaceRequest place) {
-        System.out.println("AbstractSplashScreenActivity.onStartup("+place+")");
+        super.onStartup( place );
         wbServices.loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
             @Override
             public void execute( final SplashScreenFilter response ) {
-                System.out.println("AbstractSplashScreenActivity.onStartup() - callback("+response+")");
                 if ( response != null ) {
                     splashFilter = response;
                 }
