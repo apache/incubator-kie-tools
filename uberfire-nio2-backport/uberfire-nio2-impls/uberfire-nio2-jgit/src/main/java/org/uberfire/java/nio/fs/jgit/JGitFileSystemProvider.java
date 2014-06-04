@@ -148,7 +148,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public static final String SSH_FILE_CERT_ROOT_DIR = ".security";
     public static final String DEFAULT_HOST_NAME = "localhost";
     public static final String DEFAULT_HOST_ADDR = "127.0.0.1";
-    public static final boolean DAEMON_DEFAULT_ENABLED = false;
+    public static final boolean DAEMON_DEFAULT_ENABLED = true;
     public static final int DAEMON_DEFAULT_PORT = 9418;
     public static final boolean SSH_DEFAULT_ENABLED = true;
     public static final int SSH_DEFAULT_PORT = 8001;
