@@ -62,6 +62,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
         String identifier = null;
         Integer priority = 0;
         List<String> associatedResources = null;
+        Integer preferredHeight = null;
+        Integer preferredWidth = null;
 
         for ( final AnnotationMirror am : classElement.getAnnotationMirrors() ) {
             if ( annotationName.equals( am.getAnnotationType().toString() ) ) {
@@ -72,6 +74,16 @@ public class EditorActivityGenerator extends AbstractGenerator {
                         priority = (Integer) entry.getValue().getValue();
                     } else if ( "supportedTypes".equals( entry.getKey().getSimpleName().toString() ) ) {
                         associatedResources = GeneratorUtils.extractValue( entry.getValue() );
+                    } else if ( "preferredHeight".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        final int _preferredHeight = (Integer) entry.getValue().getValue();
+                        if ( _preferredHeight > 0 ) {
+                            preferredHeight = _preferredHeight;
+                        }
+                    } else if ( "preferredWidth".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        final int _preferredWidth = (Integer) entry.getValue().getValue();
+                        if ( _preferredWidth > 0 ) {
+                            preferredWidth = _preferredWidth;
+                        }
                     }
                 }
                 break;
@@ -138,6 +150,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
         logger.debug( "getContextIdMethodName: " + getContextIdMethodName );
         logger.debug( "Priority: " + priority );
         logger.debug( "Resource types: " + associatedResources );
+        logger.debug( "Preferred Height: " + preferredHeight );
+        logger.debug( "Preferred Width: " + preferredWidth );
         logger.debug( "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
         logger.debug( "onStartup2ParametersMethodName: " + onStartup2ParametersMethodName );
         logger.debug( "onMayCloseMethodName: " + onMayCloseMethodName );
@@ -197,6 +211,10 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   priority.toString().replace( ",", "" ) );
         root.put( "associatedResources",
                   GeneratorUtils.formatAssociatedResources( associatedResources ) );
+        root.put( "preferredHeight",
+                  preferredHeight );
+        root.put( "preferredWidth",
+                  preferredWidth );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "onStartup1ParameterMethodName",

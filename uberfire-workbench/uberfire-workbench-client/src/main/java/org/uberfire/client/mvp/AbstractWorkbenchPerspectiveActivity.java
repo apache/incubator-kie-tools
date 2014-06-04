@@ -43,6 +43,9 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     private PlaceManager placeManager;
 
     @Inject
+    private ActivityManager activityManager;
+
+    @Inject
     private WorkbenchServicesProxy wbServices;
 
     public AbstractWorkbenchPerspectiveActivity( final PlaceManager placeManager ) {
@@ -147,10 +150,33 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     private void buildPerspective( final PanelDefinition panel ) {
         for ( PanelDefinition child : panel.getChildren() ) {
+
+            if ( child.getHeight() == null || child.getWidth() == null ) {
+                buildSize( child );
+            }
+
             final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
                                                                            child,
                                                                            child.getPosition() );
             addChildren( target );
+        }
+    }
+
+    private void buildSize( final PanelDefinition panel ) {
+        if ( panel.getParts().isEmpty() ) {
+            return;
+        }
+        for ( final PartDefinition partDefinition : panel.getParts() ) {
+            final Activity currentActivity = activityManager.getActivity( partDefinition.getPlace() );
+            if ( currentActivity instanceof WorkbenchActivity ) {
+                final Integer width = ( (WorkbenchActivity) currentActivity ).preferredWidth();
+                final Integer height = ( (WorkbenchActivity) currentActivity ).preferredHeight();
+                if ( width != null || height != null ) {
+                    panel.setHeight( height );
+                    panel.setWidth( width );
+                    break;
+                }
+            }
         }
     }
 

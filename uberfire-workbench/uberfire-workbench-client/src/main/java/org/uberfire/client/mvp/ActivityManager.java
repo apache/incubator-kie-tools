@@ -27,6 +27,10 @@ public interface ActivityManager {
 
     Set<Activity> getActivities( final PlaceRequest placeRequest );
 
+    boolean containsActivity( final PlaceRequest placeRequest );
+
+    Activity getActivity( final PlaceRequest placeRequest );
+
     <T extends Activity> T getActivity( final Class<T> clazz,
                                         final PlaceRequest placeRequest );
 

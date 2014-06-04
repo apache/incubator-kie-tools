@@ -21,6 +21,8 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
@@ -51,12 +53,37 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        String identifier = ClientAPIModule.getWbScreenIdentifierValueOnClass( classElement );;
+        final String annotationName = ClientAPIModule.getWorkbenchScreenClass().getName();
+
+        String identifier = null;
+        Integer preferredHeight = null;
+        Integer preferredWidth = null;
+
+        for ( final AnnotationMirror am : classElement.getAnnotationMirrors() ) {
+            if ( annotationName.equals( am.getAnnotationType().toString() ) ) {
+                for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet() ) {
+                    if ( "identifier".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        identifier = entry.getValue().toString();
+                    } else if ( "preferredHeight".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        final int _preferredHeight = (Integer) entry.getValue().getValue();
+                        if ( _preferredHeight > 0 ) {
+                            preferredHeight = _preferredHeight;
+                        }
+                    } else if ( "preferredWidth".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        final int _preferredWidth = (Integer) entry.getValue().getValue();
+                        if ( _preferredWidth > 0 ) {
+                            preferredWidth = _preferredWidth;
+                        }
+                    }
+                }
+                break;
+            }
+        }
 
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
-                                                                                                             processingEnvironment );
+                                                                                                               processingEnvironment );
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
                                                                                     processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
@@ -97,6 +124,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         logger.debug( "Package name: " + packageName );
         logger.debug( "Class name: " + className );
         logger.debug( "Identifier: " + identifier );
+        logger.debug( "Preferred Height: " + preferredHeight );
+        logger.debug( "Preferred Width: " + preferredWidth );
         logger.debug( "getContextIdMethodName: " + getContextIdMethodName );
         logger.debug( "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
         logger.debug( "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
@@ -149,6 +178,10 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
+        root.put( "preferredHeight",
+                  preferredHeight );
+        root.put( "preferredWidth",
+                  preferredWidth );
         root.put( "getContextIdMethodName",
                   getContextIdMethodName );
         root.put( "realClassName",

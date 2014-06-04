@@ -19,7 +19,9 @@ package org.uberfire.client.mvp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
@@ -27,6 +29,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Identity;
@@ -48,6 +51,8 @@ public class ActivityManagerImpl implements ActivityManager {
 
     @Inject
     private Identity identity;
+
+    private final Map<Object, Boolean> containsCache = new HashMap<Object, Boolean>();
 
     @Override
     public <T extends Activity> Set<T> getActivities( final Class<T> clazz ) {
@@ -82,6 +87,34 @@ public class ActivityManagerImpl implements ActivityManager {
     }
 
     @Override
+    public boolean containsActivity( final PlaceRequest placeRequest ) {
+        if ( containsCache.containsKey( placeRequest.getIdentifier() ) ) {
+            return containsCache.get( placeRequest.getIdentifier() );
+        }
+
+        Path path = null;
+        if ( placeRequest instanceof PathPlaceRequest ) {
+            path = ( (PathPlaceRequest) placeRequest ).getPath();
+            if ( containsCache.containsKey( path ) ) {
+                return containsCache.get( path );
+            }
+        }
+
+        final Activity result = getActivity( placeRequest );
+        containsCache.put( placeRequest.getIdentifier(), result != null );
+        if ( path != null ) {
+            containsCache.put( path, result != null );
+        }
+
+        return result != null;
+    }
+
+    @Override
+    public Activity getActivity( final PlaceRequest placeRequest ) {
+        return getActivity( Activity.class, placeRequest );
+    }
+
+    @Override
     public <T extends Activity> T getActivity( final Class<T> clazz,
                                                final PlaceRequest placeRequest ) {
         final Set<Activity> activities = getActivities( placeRequest );
@@ -100,6 +133,9 @@ public class ActivityManagerImpl implements ActivityManager {
     }
 
     public <T extends Activity> Set<T> secure( final Collection<IOCBeanDef<T>> activityBeans ) {
+        if ( activityBeans == null || activityBeans.isEmpty() ) {
+            return emptySet();
+        }
         final Set<T> activities = new HashSet<T>( activityBeans.size() );
 
         for ( final IOCBeanDef<T> activityBean : activityBeans ) {

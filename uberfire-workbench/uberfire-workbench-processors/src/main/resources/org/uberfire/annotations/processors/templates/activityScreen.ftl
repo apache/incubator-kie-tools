@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Named("${identifier}")
+@Named(${identifier})
 /*
  * WARNING! This class is generated. Do not modify.
  */
@@ -82,6 +82,20 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
+    }
+
+    </#if>
+    <#if preferredHeight??>
+    @Override
+    public Integer preferredHeight() {
+       return ${preferredHeight};
+    }
+
+    </#if>
+    <#if preferredWidth??>
+    @Override
+    public Integer preferredWidth() {
+       return ${preferredWidth};
     }
 
     </#if>

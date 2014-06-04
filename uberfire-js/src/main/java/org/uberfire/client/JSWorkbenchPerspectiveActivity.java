@@ -3,7 +3,9 @@ package org.uberfire.client;
 import java.util.Collection;
 import java.util.Set;
 
+import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -168,7 +170,12 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     private void buildPerspective( final PanelDefinition panel ) {
-        for ( PanelDefinition child : panel.getChildren() ) {
+        for ( final PanelDefinition child : panel.getChildren() ) {
+
+            if ( child.getHeight() == null || child.getWidth() == null ) {
+                buildSize( child );
+            }
+
             final PanelDefinition target = nativePerspective.getPanelManager().addWorkbenchPanel( panel,
                                                                                                   child,
                                                                                                   child.getPosition() );
@@ -176,9 +183,27 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
         }
     }
 
+    private void buildSize( final PanelDefinition panel ) {
+        if ( panel.getParts().isEmpty() ) {
+            return;
+        }
+        for ( final PartDefinition partDefinition : panel.getParts() ) {
+            final Activity currentActivity = nativePerspective.getActivityManager().getActivity( partDefinition.getPlace() );
+            if ( currentActivity instanceof WorkbenchActivity ) {
+                final Integer width = ( (WorkbenchActivity) currentActivity ).preferredWidth();
+                final Integer height = ( (WorkbenchActivity) currentActivity ).preferredHeight();
+                if ( width != null || height != null ) {
+                    panel.setHeight( height );
+                    panel.setWidth( width );
+                    break;
+                }
+            }
+        }
+    }
+
     private void addChildren( final PanelDefinition panel ) {
-        Set<PartDefinition> parts = panel.getParts();
-        for ( PartDefinition part : parts ) {
+        final Set<PartDefinition> parts = panel.getParts();
+        for ( final PartDefinition part : parts ) {
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
             part.setPlace( place );
             nativePerspective.getPlaceManager().goTo( part, panel );

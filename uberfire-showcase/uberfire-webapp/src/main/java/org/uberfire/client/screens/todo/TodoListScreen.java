@@ -26,16 +26,18 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.markdown.Markdown;
+import org.uberfire.workbench.model.Position;
 
 @Dependent
-@WorkbenchScreen(identifier = "TodoListScreen")
+@WorkbenchScreen(identifier = "TodoListScreen", preferredWidth = 400)
 public class TodoListScreen
         extends Composite
         implements RequiresResize {
@@ -73,6 +75,11 @@ public class TodoListScreen
                 } ).readAllString( o );
             }
         } ).get( "default://uf-playground/todo.md" );
+    }
+
+    @DefaultPosition
+    public Position getDefaultPosition() {
+        return Position.EAST;
     }
 
     @WorkbenchPartTitle

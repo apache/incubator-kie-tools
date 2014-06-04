@@ -6,7 +6,9 @@ import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
 public class PlaceManagerImplUnitTestWrapper extends PlaceManagerImpl {
 
@@ -55,7 +57,7 @@ public class PlaceManagerImplUnitTestWrapper extends PlaceManagerImpl {
     }
 
     PanelDefinition addWorkbenchPanelTo( Position position ) {
-        return null;
+        return new PanelDefinitionImpl( PanelType.ROOT_SIMPLE );
     }
 
     public void updateHistory( PlaceRequest request ) {

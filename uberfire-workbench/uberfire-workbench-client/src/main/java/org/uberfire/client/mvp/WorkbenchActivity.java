@@ -56,4 +56,8 @@ public interface WorkbenchActivity
     ToolBar getToolBar();
 
     String contextId();
+
+    Integer preferredHeight();
+
+    Integer preferredWidth();
 }

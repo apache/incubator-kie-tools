@@ -86,4 +86,14 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity
         return null;
     }
 
+    @Override
+    public Integer preferredHeight() {
+        return null;
+    }
+
+    @Override
+    public Integer preferredWidth() {
+        return null;
+    }
+
 }

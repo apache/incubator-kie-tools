@@ -24,8 +24,6 @@ $registerPerspective({
                 ]
             },
             {
-                width: 300,
-                min_width: 200,
                 position: "east",
                 panel_type: "multi_list",
                 parts: [

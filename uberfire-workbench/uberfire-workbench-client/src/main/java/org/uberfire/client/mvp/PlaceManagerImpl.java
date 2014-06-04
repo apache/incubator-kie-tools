@@ -508,7 +508,7 @@ public class PlaceManagerImpl
         if ( _panel != null ) {
             panel = _panel;
         } else {
-            panel = addWorkbenchPanelTo( position );
+            panel = addWorkbenchPanelTo( position, activity.preferredHeight(), activity.preferredWidth() );
         }
 
         launchActivity( place,
@@ -522,9 +522,11 @@ public class PlaceManagerImpl
         return selectWorkbenchPartEvent;
     }
 
-    PanelDefinition addWorkbenchPanelTo( Position position ) {
+    PanelDefinition addWorkbenchPanelTo( final Position position,
+                                         final Integer height,
+                                         final Integer width ) {
         return getPanelManager().addWorkbenchPanel( getPanelManager().getRoot(),
-                                                    position );
+                                                    position, height, width, null, null );
     }
 
     private void launchActivity( final PlaceRequest place,
@@ -541,6 +543,14 @@ public class PlaceManagerImpl
         updateHistory( place );
         checkPathDelete( place );
 
+        if ( activity.preferredWidth() != null && panel.getWidth() == null ) {
+            panel.setWidth( activity.preferredWidth() );
+        }
+
+        if ( activity.preferredHeight() != null && panel.getHeight() == null ) {
+            panel.setHeight( activity.preferredHeight() );
+        }
+
         revealActivityWithCalBackToAttachToWorkbench( place, activity, part, panel, callback );
     }
 
@@ -548,7 +558,7 @@ public class PlaceManagerImpl
                                                                final WorkbenchActivity activity,
                                                                final PartDefinition part,
                                                                final PanelDefinition panel,
-                                                               Command callback ) {
+                                                               final Command callback ) {
         final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
 
         //Reveal activity with call-back to attach to Workbench

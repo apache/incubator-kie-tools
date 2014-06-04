@@ -79,7 +79,6 @@ public class ShowcaseEntryPoint {
         add( "RepositoryEditor" );
         add( "SportsNewsGadget" );
         add( "StockQuotesGadget" );
-        add( "TodoListScreen" );
         add( "WeatherGadget" );
         add( "YouTubeScreen" );
         add( "YouTubeVideos" );
