@@ -35,11 +35,8 @@ import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
 import org.kie.workbench.common.widgets.client.tables.AbstractPathPagedTable;
 import org.uberfire.client.common.CheckboxCellImpl;
-import org.uberfire.client.tables.ColumnPicker;
 import org.uberfire.client.tables.ComparableImageResource;
 import org.uberfire.client.tables.ComparableImageResourceCell;
-import org.uberfire.client.tables.SortableHeader;
-import org.uberfire.client.tables.SortableHeaderGroup;
 import org.uberfire.client.tables.TitledTextCell;
 import org.uberfire.client.tables.TitledTextColumn;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -62,8 +59,10 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
 
         setDataProvider( new AsyncDataProvider<SearchPageRow>() {
             protected void onRangeChanged( HasData<SearchPageRow> display ) {
-                updateRowCount( 0, true );
-                updateRowData( 0, Collections.<SearchPageRow>emptyList() );
+                updateRowCount( 0,
+                                true );
+                updateRowData( 0,
+                               Collections.<SearchPageRow>emptyList() );
             }
         } );
     }
@@ -77,8 +76,8 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
 
         setDataProvider( new AsyncDataProvider<SearchPageRow>() {
             protected void onRangeChanged( HasData<SearchPageRow> display ) {
-                queryRequest.setStartRowIndex( pager.getPageStart() );
-                queryRequest.setPageSize( pageSize );
+                queryRequest.setStartRowIndex( dataGrid.getPageStart() );
+                queryRequest.setPageSize( dataGrid.getPageSize() );
 
                 createCall( new RemoteCallback<PageResponse<SearchPageRow>>() {
                     public void callback( final PageResponse<SearchPageRow> response ) {
@@ -102,8 +101,8 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
 
         setDataProvider( new AsyncDataProvider<SearchPageRow>() {
             protected void onRangeChanged( HasData<SearchPageRow> display ) {
-                searchRequest.setStartRowIndex( pager.getPageStart() );
-                searchRequest.setPageSize( pageSize );
+                searchRequest.setStartRowIndex( dataGrid.getPageStart() );
+                searchRequest.setPageSize( dataGrid.getPageSize() );
 
                 createCall( new RemoteCallback<PageResponse<SearchPageRow>>() {
                     public void callback( final PageResponse<SearchPageRow> response ) {
@@ -118,9 +117,7 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
     }
 
     @Override
-    protected void addAncillaryColumns( final ColumnPicker<SearchPageRow> columnPicker,
-                                        final SortableHeaderGroup<SearchPageRow> sortableHeaderGroup ) {
-
+    protected void addAncillaryColumns() {
         final Column<SearchPageRow, ComparableImageResource> formatColumn = new Column<SearchPageRow, ComparableImageResource>( new ComparableImageResourceCell() ) {
 
             public ComparableImageResource getValue( SearchPageRow row ) {
@@ -137,12 +134,8 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
             }
         };
 
-        columnPicker.addColumn( formatColumn,
-                                new SortableHeader<SearchPageRow, ComparableImageResource>(
-                                        sortableHeaderGroup,
-                                        Constants.INSTANCE.Format(),
-                                        formatColumn ),
-                                true );
+        dataGrid.addColumn( formatColumn,
+                            Constants.INSTANCE.Format() );
 
         final TitledTextColumn<SearchPageRow> titleColumn = new TitledTextColumn<SearchPageRow>() {
             public TitledTextCell.TitledText getValue( SearchPageRow row ) {
@@ -150,12 +143,8 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
                                                       row.getAbbreviatedDescription() );
             }
         };
-        columnPicker.addColumn( titleColumn,
-                                new SortableHeader<SearchPageRow, TitledTextCell.TitledText>(
-                                        sortableHeaderGroup,
-                                        Constants.INSTANCE.Name(),
-                                        titleColumn ),
-                                true );
+        dataGrid.addColumn( titleColumn,
+                            Constants.INSTANCE.Name() );
 
         final Column<SearchPageRow, Date> createdDateColumn = new Column<SearchPageRow, Date>(
                 new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
@@ -163,12 +152,9 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
                 return row.getCreatedDate();
             }
         };
-        columnPicker.addColumn( createdDateColumn,
-                                new SortableHeader<SearchPageRow, Date>(
-                                        sortableHeaderGroup,
-                                        Constants.INSTANCE.CreatedDate(),
-                                        createdDateColumn ),
-                                false );
+        dataGrid.addColumn( createdDateColumn,
+                            Constants.INSTANCE.CreatedDate(),
+                            false );
 
         final Column<SearchPageRow, Date> lastModifiedColumn = new Column<SearchPageRow, Date>(
                 new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
@@ -176,25 +162,17 @@ public class SearchResultTable extends AbstractPathPagedTable<SearchPageRow> {
                 return row.getLastModified();
             }
         };
-        columnPicker.addColumn( lastModifiedColumn,
-                                new SortableHeader<SearchPageRow, Date>(
-                                        sortableHeaderGroup,
-                                        Constants.INSTANCE.LastModified(),
-                                        lastModifiedColumn ),
-                                true );
+        dataGrid.addColumn( lastModifiedColumn,
+                            Constants.INSTANCE.LastModified() );
 
         final Column<SearchPageRow, Boolean> isDisabledColumn = new Column<SearchPageRow, Boolean>( new CheckboxCellImpl( true ) ) {
             public Boolean getValue( final SearchPageRow row ) {
                 return row.isDisabled();
             }
         };
-        columnPicker.addColumn( isDisabledColumn,
-                                new SortableHeader<SearchPageRow, Boolean>(
-                                        sortableHeaderGroup,
-                                        Constants.INSTANCE.Disabled(),
-                                        isDisabledColumn ),
-                                false );
-
+        dataGrid.addColumn( isDisabledColumn,
+                            Constants.INSTANCE.Disabled(),
+                            false );
     }
 
     private ClientTypeRegistry getClientTypeRegistry() {

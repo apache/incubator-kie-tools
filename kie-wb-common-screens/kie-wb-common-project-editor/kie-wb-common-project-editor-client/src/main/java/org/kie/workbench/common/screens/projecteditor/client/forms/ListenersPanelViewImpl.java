@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
@@ -33,11 +32,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ListenerModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.client.tables.SimpleTable;
 
 public class ListenersPanelViewImpl
         extends Composite
@@ -55,87 +54,84 @@ public class ListenersPanelViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField(provided = true)
-    DataGrid<ListenerModel> grid;
+    SimpleTable<ListenerModel> dataGrid = new SimpleTable<ListenerModel>();
 
     @UiField
     Button addButton;
 
     @Inject
     public ListenersPanelViewImpl() {
-//        grid = new CellTable<ListenerModel>();
-//        grid.setHeight("100%");
-//        grid.setWidth("100%");
-        grid = new DataGrid<ListenerModel>();
-
-        grid.setEmptyTableWidget(new Label("---"));
-        grid.setBordered(true);
-
         addKindColumn();
         addTypeColumn();
         addDeleteColumn();
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     private void addDeleteColumn() {
-        Column<ListenerModel, String> column = new Column<ListenerModel, String>(new ButtonCell()) {
+        Column<ListenerModel, String> column = new Column<ListenerModel, String>( new ButtonCell() ) {
             @Override
-            public String getValue(ListenerModel object) {
+            public String getValue( ListenerModel object ) {
                 return ProjectEditorResources.CONSTANTS.Delete();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<ListenerModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<ListenerModel, String>() {
             @Override
-            public void update(int index, ListenerModel model, String value) {
-                presenter.onDelete(model);
+            public void update( int index,
+                                ListenerModel model,
+                                String value ) {
+                presenter.onDelete( model );
             }
-        });
+        } );
 
-        grid.addColumn(column);
-        grid.setColumnWidth(column, "70px");
+        dataGrid.addColumn( column,
+                            CommonConstants.INSTANCE.Delete() );
     }
 
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     private void addTypeColumn() {
 
-        Column<ListenerModel, String> column = new Column<ListenerModel, String>(new EditTextCell()) {
+        Column<ListenerModel, String> column = new Column<ListenerModel, String>( new EditTextCell() ) {
             @Override
-            public String getValue(ListenerModel listenerModel) {
+            public String getValue( ListenerModel listenerModel ) {
                 return listenerModel.getType();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<ListenerModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<ListenerModel, String>() {
             @Override
-            public void update(int index, ListenerModel model, String value) {
-                model.setType(value);
+            public void update( int index,
+                                ListenerModel model,
+                                String value ) {
+                model.setType( value );
             }
-        });
+        } );
 
-        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Type());
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.Type() );
     }
 
     private void addKindColumn() {
         ArrayList<String> options = new ArrayList<String>();
-        options.add(WORKING_MEMORY_EVENT_LISTENER);
-        options.add(AGENDA_EVENT_LISTENER);
-        options.add(PROCESS_EVENT_LISTENER);
+        options.add( WORKING_MEMORY_EVENT_LISTENER );
+        options.add( AGENDA_EVENT_LISTENER );
+        options.add( PROCESS_EVENT_LISTENER );
 
-        Column<ListenerModel, String> column = new Column<ListenerModel, String>(new SelectionCell(options)) {
+        Column<ListenerModel, String> column = new Column<ListenerModel, String>( new SelectionCell( options ) ) {
             @Override
-            public String getValue(ListenerModel listenerModel) {
-                if (listenerModel.getKind() == null || listenerModel.getKind().equals(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER)) {
+            public String getValue( ListenerModel listenerModel ) {
+                if ( listenerModel.getKind() == null || listenerModel.getKind().equals( ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER ) ) {
                     return WORKING_MEMORY_EVENT_LISTENER;
-                } else if (listenerModel.getKind().equals(ListenerModel.Kind.PROCESS_EVENT_LISTENER)) {
+                } else if ( listenerModel.getKind().equals( ListenerModel.Kind.PROCESS_EVENT_LISTENER ) ) {
                     return PROCESS_EVENT_LISTENER;
-                } else if (listenerModel.getKind().equals(ListenerModel.Kind.AGENDA_EVENT_LISTENER)) {
+                } else if ( listenerModel.getKind().equals( ListenerModel.Kind.AGENDA_EVENT_LISTENER ) ) {
                     return AGENDA_EVENT_LISTENER;
                 } else {
                     return listenerModel.getKind().toString();
@@ -143,28 +139,31 @@ public class ListenersPanelViewImpl
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<ListenerModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<ListenerModel, String>() {
             @Override
-            public void update(int index, ListenerModel model, String value) {
-                if (value.equals(WORKING_MEMORY_EVENT_LISTENER)) {
-                    model.setKind(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER);
-                } else if (value.equals(PROCESS_EVENT_LISTENER)) {
-                    model.setKind(ListenerModel.Kind.PROCESS_EVENT_LISTENER);
-                } else if (value.equals(AGENDA_EVENT_LISTENER)) {
-                    model.setKind(ListenerModel.Kind.AGENDA_EVENT_LISTENER);
+            public void update( int index,
+                                ListenerModel model,
+                                String value ) {
+                if ( value.equals( WORKING_MEMORY_EVENT_LISTENER ) ) {
+                    model.setKind( ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER );
+                } else if ( value.equals( PROCESS_EVENT_LISTENER ) ) {
+                    model.setKind( ListenerModel.Kind.PROCESS_EVENT_LISTENER );
+                } else if ( value.equals( AGENDA_EVENT_LISTENER ) ) {
+                    model.setKind( ListenerModel.Kind.AGENDA_EVENT_LISTENER );
                 }
             }
-        });
+        } );
 
-        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Kind());
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.Kind() );
     }
 
-    public void setModels(List<ListenerModel> listeners) {
-        grid.setRowData(listeners);
+    public void setModels( List<ListenerModel> listeners ) {
+        dataGrid.setRowData( listeners );
     }
 
     @UiHandler("addButton")
-    public void onAddClick(ClickEvent event) {
+    public void onAddClick( ClickEvent event ) {
         presenter.onAdd();
     }
 

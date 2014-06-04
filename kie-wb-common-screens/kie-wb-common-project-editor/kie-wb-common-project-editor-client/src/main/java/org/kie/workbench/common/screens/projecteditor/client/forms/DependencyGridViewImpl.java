@@ -18,11 +18,8 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.DataGrid;
-import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -34,6 +31,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Dependency;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.client.tables.SimpleTable;
 
 public class DependencyGridViewImpl
         extends Composite
@@ -50,7 +49,7 @@ public class DependencyGridViewImpl
     private Presenter presenter;
 
     @UiField(provided = true)
-    DataGrid<Dependency> dataGrid = new DataGrid<Dependency>();
+    SimpleTable<Dependency> dataGrid = new SimpleTable<Dependency>();
 
     @UiField
     Button addDependencyButton;
@@ -59,8 +58,7 @@ public class DependencyGridViewImpl
     Button addFromRepositoryDependencyButton;
 
     public DependencyGridViewImpl() {
-        dataGrid.setEmptyTableWidget( new Label( ProjectEditorResources.CONSTANTS.NoDependencies() ) );
-        dataGrid.setAutoHeaderRefreshDisabled( true );
+        dataGrid.setEmptyTableCaption( ProjectEditorResources.CONSTANTS.NoDependencies() );
 
         addGroupIdColumn();
         addArtifactIdColumn();
@@ -121,7 +119,7 @@ public class DependencyGridViewImpl
                 // Clear view data. Restore old data.
                 if ( hasError ) {
                     cell.clearViewData( dependency );
-                    refresh();
+                    redraw();
                 } else {
                     if ( validHandler != null ) {
                         validHandler.handle( dependency, sValue );
@@ -185,8 +183,8 @@ public class DependencyGridViewImpl
 
         column.setFieldUpdater( fieldUpdater );
 
-        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.GroupID() );
-        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.GroupID() );
     }
 
     private void addArtifactIdColumn() {
@@ -228,8 +226,8 @@ public class DependencyGridViewImpl
 
         column.setFieldUpdater( fieldUpdater );
 
-        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.ArtifactID() );
-        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.ArtifactID() );
     }
 
     private void addVersionColumn() {
@@ -270,8 +268,8 @@ public class DependencyGridViewImpl
 
         column.setFieldUpdater( fieldUpdater );
 
-        dataGrid.addColumn( column, ProjectEditorResources.CONSTANTS.VersionID() );
-        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.VersionID() );
     }
 
     // BZ-1007894
@@ -308,8 +306,8 @@ public class DependencyGridViewImpl
             }
         } );
 
-        dataGrid.addColumn( column );
-        dataGrid.setColumnWidth( column, 40, Style.Unit.PCT );
+        dataGrid.addColumn( column,
+                            CommonConstants.INSTANCE.Delete() );
     }
 
     @Override
@@ -339,7 +337,7 @@ public class DependencyGridViewImpl
     }
 
     @Override
-    public void refresh() {
+    public void redraw() {
         dataGrid.redraw();
     }
 

@@ -79,7 +79,7 @@ public class DependencyGrid
         view.setReadOnly();
     }
 
-    public void refresh() {
-        view.refresh();
+    public void redraw() {
+        view.redraw();
     }
 }

@@ -28,7 +28,8 @@ public class DependencySelectorPopupViewImpl
 
         setTitle( "Artifacts" );
         add( dependencyPagedJarTable );
-        setPixelSize( 800, 500 );
+        setPixelSize( 800,
+                      500 );
     }
 
     @Override

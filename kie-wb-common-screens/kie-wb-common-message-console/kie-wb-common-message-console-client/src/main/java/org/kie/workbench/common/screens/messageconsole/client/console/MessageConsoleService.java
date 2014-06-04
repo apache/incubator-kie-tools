@@ -30,7 +30,6 @@ import org.kie.workbench.common.screens.messageconsole.events.PublishMessagesEve
 import org.kie.workbench.common.screens.messageconsole.events.SystemMessage;
 import org.kie.workbench.common.screens.messageconsole.events.UnpublishMessagesEvent;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
@@ -42,16 +41,8 @@ import org.uberfire.security.Identity;
 @ApplicationScoped
 public class MessageConsoleService {
 
-    private final PlaceManager placeManager;
-    private final PanelManager panelManager;
-
-    private final ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>( );
-
-    private List<String> allowedPerspectives = new ArrayList<String>();
-
-    private static final String MESSAGE_CONSOLE = "org.kie.workbench.common.screens.messageconsole.MessageConsole";
-
-    private String currentPerspective;
+    @Inject
+    private PlaceManager placeManager;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -59,56 +50,72 @@ public class MessageConsoleService {
     @Inject
     private Identity identity;
 
-    @Inject
-    public MessageConsoleService( final PlaceManager placeManager,
-            final PanelManager panelManager ) {
-        this.placeManager = placeManager;
-        this.panelManager = panelManager;
-    }
+    private List<String> allowedPerspectives = new ArrayList<String>();
+
+    private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
+
+    private static final String MESSAGE_CONSOLE = "org.kie.workbench.common.screens.messageconsole.MessageConsole";
+
+    private String currentPerspective;
 
     @PostConstruct
     protected void init() {
-        allowedPerspectives.add("org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective");
-        allowedPerspectives.add("org.kie.workbench.client.perspectives.DroolsAuthoringPerspective");
-        allowedPerspectives.add("org.drools.workbench.client.perspectives.AuthoringPerspective");
+        allowedPerspectives.add( "org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective" );
+        allowedPerspectives.add( "org.kie.workbench.client.perspectives.DroolsAuthoringPerspective" );
+        allowedPerspectives.add( "org.drools.workbench.client.perspectives.AuthoringPerspective" );
     }
 
     public void publishMessages( final @Observes PublishMessagesEvent publishEvent ) {
-        publishMessages( publishEvent.getSessionId(), publishEvent.getUserId(), publishEvent.getPlace(), publishEvent.getMessagesToPublish() );
-        if (publishEvent.isShowSystemConsole() && allowedPerspectives.contains(currentPerspective)) {
+        publishMessages( publishEvent.getSessionId(),
+                         publishEvent.getUserId(),
+                         publishEvent.getPlace(),
+                         publishEvent.getMessagesToPublish() );
+        if ( publishEvent.isShowSystemConsole() && allowedPerspectives.contains( currentPerspective ) ) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
 
     public void unpublishMessages( final @Observes UnpublishMessagesEvent unpublishEvent ) {
-        unpublishMessages( unpublishEvent.getSessionId(), unpublishEvent.getUserId(), unpublishEvent.getMessageType(), unpublishEvent.getMessagesToUnpublish() );
-        if (unpublishEvent.isShowSystemConsole() && allowedPerspectives.contains(currentPerspective)) {
+        unpublishMessages( unpublishEvent.getSessionId(),
+                           unpublishEvent.getUserId(),
+                           unpublishEvent.getMessageType(),
+                           unpublishEvent.getMessagesToUnpublish() );
+        if ( unpublishEvent.isShowSystemConsole() && allowedPerspectives.contains( currentPerspective ) ) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
 
     public void publishBatchMessages( final @Observes PublishBatchMessagesEvent publishBatchEvent ) {
         if ( publishBatchEvent.isCleanExisting() ) {
-            unpublishMessages( publishBatchEvent.getSessionId(), publishBatchEvent.getUserId(), publishBatchEvent.getMessageType(), publishBatchEvent.getMessagesToUnpublish() );
+            unpublishMessages( publishBatchEvent.getSessionId(),
+                               publishBatchEvent.getUserId(),
+                               publishBatchEvent.getMessageType(),
+                               publishBatchEvent.getMessagesToUnpublish() );
         } else {
             //only remove provided messages
             removeRowsByMessage( publishBatchEvent.getMessagesToUnpublish() );
         }
-        publishMessages( publishBatchEvent.getSessionId(), publishBatchEvent.getUserId(), publishBatchEvent.getPlace(), publishBatchEvent.getMessagesToPublish() );
-        if (publishBatchEvent.isShowSystemConsole() && allowedPerspectives.contains(currentPerspective)) {
+        publishMessages( publishBatchEvent.getSessionId(),
+                         publishBatchEvent.getUserId(),
+                         publishBatchEvent.getPlace(),
+                         publishBatchEvent.getMessagesToPublish() );
+        if ( publishBatchEvent.isShowSystemConsole() && allowedPerspectives.contains( currentPerspective ) ) {
             placeManager.goTo( MESSAGE_CONSOLE );
         }
     }
 
-    public void addDataDisplay( HasData<MessageConsoleServiceRow> display ) {
+    public void addDataDisplay( final HasData<MessageConsoleServiceRow> display ) {
         dataProvider.addDataDisplay( display );
     }
 
-    public void onPerspectiveChange(@Observes PerspectiveChange perspectiveChange) {
+    public void onPerspectiveChange( final @Observes PerspectiveChange perspectiveChange ) {
         currentPerspective = perspectiveChange.getIdentifier();
     }
 
-    private void publishMessages( String sessionId, String userId, PublishMessagesEvent.Place place, List<SystemMessage> messages ) {
+    private void publishMessages( final String sessionId,
+                                  final String userId,
+                                  final PublishMessagesEvent.Place place,
+                                  final List<SystemMessage> messages ) {
         List<MessageConsoleServiceRow> list = dataProvider.getList();
         List<SystemMessage> newMessages = filterMessages( sessionId, userId, null, messages );
         List<MessageConsoleServiceRow> newRows = new ArrayList<MessageConsoleServiceRow>();
@@ -116,13 +123,19 @@ public class MessageConsoleService {
         int index = ( place != null && place == PublishMessagesEvent.Place.TOP ) ? 0 : ( list != null && list.size() > 0 ? list.size() : 0 );
 
         for ( SystemMessage systemMessage : newMessages ) {
-            newRows.add( new MessageConsoleServiceRow( sessionId, userId, systemMessage ) );
+            newRows.add( new MessageConsoleServiceRow( sessionId,
+                                                       userId,
+                                                       systemMessage ) );
         }
 
-        list.addAll( index, newRows );
+        list.addAll( index,
+                     newRows );
     }
 
-    private void unpublishMessages( String sessionId, String userId, String messageType, List<SystemMessage> messages ) {
+    private void unpublishMessages( final String sessionId,
+                                    final String userId,
+                                    final String messageType,
+                                    final List<SystemMessage> messages ) {
 
         String currentSessionId = sessionInfo != null ? sessionInfo.getId() : null;
         String currentUserId = identity != null ? identity.getName() : null;
@@ -152,17 +165,22 @@ public class MessageConsoleService {
         removeRowsByMessage( messages );
     }
 
-    private void removeRowsByMessage(List<SystemMessage> messages) {
-        List<MessageConsoleServiceRow> rowsToDelete = new ArrayList<MessageConsoleServiceRow>( );
-        if (messages != null) {
-            for (MessageConsoleServiceRow row : dataProvider.getList()) {
-                if (messages.contains( row.getMessage() )) rowsToDelete.add( row );
+    private void removeRowsByMessage( final List<SystemMessage> messages ) {
+        List<MessageConsoleServiceRow> rowsToDelete = new ArrayList<MessageConsoleServiceRow>();
+        if ( messages != null ) {
+            for ( MessageConsoleServiceRow row : dataProvider.getList() ) {
+                if ( messages.contains( row.getMessage() ) ) {
+                    rowsToDelete.add( row );
+                }
             }
             dataProvider.getList().removeAll( rowsToDelete );
         }
     }
 
-    private List<SystemMessage> filterMessages( String sessionId, String userId, String messageType, List<SystemMessage> messages ) {
+    private List<SystemMessage> filterMessages( final String sessionId,
+                                                final String userId,
+                                                final String messageType,
+                                                final List<SystemMessage> messages ) {
         List<SystemMessage> result = new ArrayList<SystemMessage>();
 
         String currentSessionId = sessionInfo != null ? sessionInfo.getId() : null;

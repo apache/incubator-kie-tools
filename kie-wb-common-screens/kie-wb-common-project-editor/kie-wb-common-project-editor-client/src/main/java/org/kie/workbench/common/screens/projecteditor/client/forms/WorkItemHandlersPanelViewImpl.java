@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonCell;
-import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -31,12 +30,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.client.tables.SimpleTable;
 
 public class WorkItemHandlersPanelViewImpl
         extends Composite
@@ -50,95 +48,98 @@ public class WorkItemHandlersPanelViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField(provided = true)
-    DataGrid<WorkItemHandlerModel> grid;
+    SimpleTable<WorkItemHandlerModel> dataGrid = new SimpleTable<WorkItemHandlerModel>();
 
     @UiField
     Button addButton;
 
     @Inject
     public WorkItemHandlersPanelViewImpl() {
-        grid = new DataGrid<WorkItemHandlerModel>();
-
-        grid.setEmptyTableWidget(new Label("---"));
-        grid.setBordered(true);
-
         addNameColumn();
         addTypeColumn();
         addDeleteColumn();
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     private void addDeleteColumn() {
-        Column<WorkItemHandlerModel, String> column = new Column<WorkItemHandlerModel, String>(new ButtonCell()) {
+        Column<WorkItemHandlerModel, String> column = new Column<WorkItemHandlerModel, String>( new ButtonCell() ) {
             @Override
-            public String getValue(WorkItemHandlerModel object) {
+            public String getValue( WorkItemHandlerModel object ) {
                 return ProjectEditorResources.CONSTANTS.Delete();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<WorkItemHandlerModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<WorkItemHandlerModel, String>() {
             @Override
-            public void update(int index, WorkItemHandlerModel model, String value) {
-                presenter.onDelete(model);
+            public void update( int index,
+                                WorkItemHandlerModel model,
+                                String value ) {
+                presenter.onDelete( model );
             }
-        });
+        } );
 
-        grid.addColumn(column);
-        grid.setColumnWidth(column, "70px");
+        dataGrid.addColumn( column,
+                            CommonConstants.INSTANCE.Delete() );
     }
 
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     private void addTypeColumn() {
 
-        Column<WorkItemHandlerModel, String> column = new Column<WorkItemHandlerModel, String>(new EditTextCell()) {
+        Column<WorkItemHandlerModel, String> column = new Column<WorkItemHandlerModel, String>( new EditTextCell() ) {
             @Override
-            public String getValue(WorkItemHandlerModel model) {
+            public String getValue( WorkItemHandlerModel model ) {
                 return model.getType();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<WorkItemHandlerModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<WorkItemHandlerModel, String>() {
             @Override
-            public void update(int index, WorkItemHandlerModel model, String value) {
-                model.setType(value);
+            public void update( int index,
+                                WorkItemHandlerModel model,
+                                String value ) {
+                model.setType( value );
             }
-        });
+        } );
 
-        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Type());
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.Type() );
     }
 
     private void addNameColumn() {
 
-        Column<WorkItemHandlerModel, String> column = new Column<WorkItemHandlerModel, String>(new EditTextCell()) {
+        Column<WorkItemHandlerModel, String> column = new Column<WorkItemHandlerModel, String>( new EditTextCell() ) {
             @Override
-            public String getValue(WorkItemHandlerModel model) {
+            public String getValue( WorkItemHandlerModel model ) {
                 return model.getName();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<WorkItemHandlerModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<WorkItemHandlerModel, String>() {
             @Override
-            public void update(int index, WorkItemHandlerModel model, String value) {
-                model.setName(value);
+            public void update( int index,
+                                WorkItemHandlerModel model,
+                                String value ) {
+                model.setName( value );
             }
-        });
+        } );
 
-        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Name());
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.Name() );
     }
 
-    public void setModels(List<WorkItemHandlerModel> handlerModels) {
-        grid.setRowData(handlerModels);
+    public void setModels( List<WorkItemHandlerModel> handlerModels ) {
+        dataGrid.setRowData( handlerModels );
     }
 
     @UiHandler("addButton")
-    public void onAddClick(ClickEvent event) {
+    public void onAddClick( ClickEvent event ) {
         presenter.onAdd();
     }
 

@@ -27,16 +27,15 @@ import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import org.guvnor.common.services.project.model.ClockTypeOption;
@@ -44,7 +43,9 @@ import org.guvnor.common.services.project.model.KSessionModel;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.ClickableImageResourceCell;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.client.tables.SimpleTable;
 
 public class KSessionsPanelViewImpl
         extends Composite
@@ -58,13 +59,7 @@ public class KSessionsPanelViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
-
-    @UiField(provided = true)
-    DataGrid<KSessionModel> grid;
-
-    @UiField
-    Button addButton;
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     public static final ProvidesKey<KSessionModel> KEY_PROVIDER = new ProvidesKey<KSessionModel>() {
         @Override
@@ -73,15 +68,17 @@ public class KSessionsPanelViewImpl
         }
     };
 
+    @UiField(provided = true)
+    SimpleTable<KSessionModel> dataGrid = new SimpleTable<KSessionModel>( KEY_PROVIDER );
+
+    @UiField
+    Button addButton;
+
     private final KSessionModelOptionsPopUp kSessionModelOptionsPopUp;
 
     @Inject
-    public KSessionsPanelViewImpl(KSessionModelOptionsPopUp kSessionModelOptionsPopUp) {
+    public KSessionsPanelViewImpl( KSessionModelOptionsPopUp kSessionModelOptionsPopUp ) {
         this.kSessionModelOptionsPopUp = kSessionModelOptionsPopUp;
-        grid = new DataGrid<KSessionModel>( KEY_PROVIDER );
-
-        grid.setEmptyTableWidget(new Label("---"));
-
         setUpNameColumn();
         setUpDefaultColumn();
         setUpStateColumn();
@@ -89,46 +86,53 @@ public class KSessionsPanelViewImpl
         setUpOptionsColumn();
         setUpRemoveColumn();
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     private void setUpNameColumn() {
         final EditTextCell cell = new EditTextCell();
-        Column<KSessionModel, String> column = new Column<KSessionModel, String>(cell) {
+        Column<KSessionModel, String> column = new Column<KSessionModel, String>( cell ) {
             @Override
-            public String getValue(KSessionModel kSessionModel) {
+            public String getValue( KSessionModel kSessionModel ) {
                 return kSessionModel.getName();
             }
         };
-        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Name());
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.Name() );
+        dataGrid.setColumnWidth( column,
+                                 40,
+                                 Style.Unit.PCT );
 
-        column.setFieldUpdater(new FieldUpdater<KSessionModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<KSessionModel, String>() {
             @Override
-            public void update(int row, KSessionModel kSessionModel, String value) {
+            public void update( int row,
+                                KSessionModel kSessionModel,
+                                String value ) {
 
-                cell.clearViewData(KEY_PROVIDER.getKey(kSessionModel));
+                cell.clearViewData( KEY_PROVIDER.getKey( kSessionModel ) );
 
-                presenter.onRename(kSessionModel, value);
+                presenter.onRename( kSessionModel,
+                                    value );
             }
-        });
+        } );
     }
 
     @Override
     public void refresh() {
-        grid.redraw();
+        dataGrid.refresh();
     }
 
     private void setUpClockColumn() {
         ArrayList<String> options = new ArrayList<String>();
-        options.add(ProjectEditorResources.CONSTANTS.Realtime());
-        options.add(ProjectEditorResources.CONSTANTS.Pseudo());
+        options.add( ProjectEditorResources.CONSTANTS.Realtime() );
+        options.add( ProjectEditorResources.CONSTANTS.Pseudo() );
 
-        Column<KSessionModel, String> column = new Column<KSessionModel, String>(new SelectionCell(options)) {
+        Column<KSessionModel, String> column = new Column<KSessionModel, String>( new SelectionCell( options ) ) {
             @Override
-            public String getValue(KSessionModel kSessionModel) {
-                if (kSessionModel.getClockType().equals(ClockTypeOption.PSEUDO)) {
+            public String getValue( KSessionModel kSessionModel ) {
+                if ( kSessionModel.getClockType().equals( ClockTypeOption.PSEUDO ) ) {
                     return ProjectEditorResources.CONSTANTS.Pseudo();
-                } else if (kSessionModel.getClockType().equals(ClockTypeOption.REALTIME)) {
+                } else if ( kSessionModel.getClockType().equals( ClockTypeOption.REALTIME ) ) {
                     return ProjectEditorResources.CONSTANTS.Realtime();
                 } else {
                     return kSessionModel.getClockType().toString();
@@ -136,33 +140,39 @@ public class KSessionsPanelViewImpl
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<KSessionModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<KSessionModel, String>() {
             @Override
-            public void update(int index, KSessionModel model, String value) {
-                if (value.equals(ProjectEditorResources.CONSTANTS.Pseudo())) {
-                    model.setClockType(ClockTypeOption.PSEUDO);
+            public void update( int index,
+                                KSessionModel model,
+                                String value ) {
+                if ( value.equals( ProjectEditorResources.CONSTANTS.Pseudo() ) ) {
+                    model.setClockType( ClockTypeOption.PSEUDO );
                 } else {
-                    model.setClockType(ClockTypeOption.REALTIME);
+                    model.setClockType( ClockTypeOption.REALTIME );
                 }
             }
-        });
+        } );
 
-        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Clock());
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.Clock() );
+        dataGrid.setColumnWidth( column,
+                                 60,
+                                 Style.Unit.PCT );
     }
 
     private void setUpStateColumn() {
         ArrayList<String> options = new ArrayList<String>();
-        options.add(ProjectEditorResources.CONSTANTS.Stateful());
-        options.add(ProjectEditorResources.CONSTANTS.Stateless());
+        options.add( ProjectEditorResources.CONSTANTS.Stateful() );
+        options.add( ProjectEditorResources.CONSTANTS.Stateless() );
 
-        Column<KSessionModel, String> column = new Column<KSessionModel, String>(new SelectionCell(options)) {
+        Column<KSessionModel, String> column = new Column<KSessionModel, String>( new SelectionCell( options ) ) {
             @Override
-            public String getValue(KSessionModel kSessionModel) {
-                if (kSessionModel.getType() == null) {
+            public String getValue( KSessionModel kSessionModel ) {
+                if ( kSessionModel.getType() == null ) {
                     return ProjectEditorResources.CONSTANTS.Stateful();
-                } else if (kSessionModel.getType().equals("stateful")) {
+                } else if ( kSessionModel.getType().equals( "stateful" ) ) {
                     return ProjectEditorResources.CONSTANTS.Stateful();
-                } else if (kSessionModel.getType().equals("stateless")) {
+                } else if ( kSessionModel.getType().equals( "stateless" ) ) {
                     return ProjectEditorResources.CONSTANTS.Stateless();
                 } else {
                     return kSessionModel.getType();
@@ -170,121 +180,143 @@ public class KSessionsPanelViewImpl
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<KSessionModel, String>() {
+        column.setFieldUpdater( new FieldUpdater<KSessionModel, String>() {
             @Override
-            public void update(int index, KSessionModel model, String value) {
-                if (value.equals(ProjectEditorResources.CONSTANTS.Stateful())) {
-                    model.setType("stateful");
+            public void update( int index,
+                                KSessionModel model,
+                                String value ) {
+                if ( value.equals( ProjectEditorResources.CONSTANTS.Stateful() ) ) {
+                    model.setType( "stateful" );
                 } else {
-                    model.setType("stateless");
+                    model.setType( "stateless" );
                 }
             }
-        });
+        } );
 
-        grid.addColumn(column, ProjectEditorResources.CONSTANTS.State());
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.State() );
+        dataGrid.setColumnWidth( column,
+                                 60,
+                                 Style.Unit.PCT );
     }
 
     private void setUpDefaultColumn() {
-        Column<KSessionModel, Boolean> column = new Column<KSessionModel, Boolean>(new CheckboxCell()) {
-            @Override public Boolean getValue(KSessionModel model) {
+        Column<KSessionModel, Boolean> column = new Column<KSessionModel, Boolean>( new CheckboxCell() ) {
+            @Override
+            public Boolean getValue( KSessionModel model ) {
                 return model.isDefault();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<KSessionModel, Boolean>() {
+        column.setFieldUpdater( new FieldUpdater<KSessionModel, Boolean>() {
             @Override
-            public void update(int index, KSessionModel model, Boolean value) {
-                model.setDefault(value);
-                presenter.onDefaultChanged(model);
+            public void update( int index,
+                                KSessionModel model,
+                                Boolean value ) {
+                model.setDefault( value );
+                presenter.onDefaultChanged( model );
             }
-        });
+        } );
 
-        column.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        column.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
 
-        grid.addColumn(column, ProjectEditorResources.CONSTANTS.Default());
-        grid.setColumnWidth(column, "80px");
+        dataGrid.addColumn( column,
+                            ProjectEditorResources.CONSTANTS.Default() );
+        dataGrid.setColumnWidth( column,
+                                 80,
+                                 Style.Unit.PX );
     }
 
     private void setUpOptionsColumn() {
-        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
-        TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
-        decorator.setText(ProjectEditorResources.CONSTANTS.Options());
-        Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>(decorator) {
+        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell( true );
+        TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>( typeImageCell );
+        decorator.setText( ProjectEditorResources.CONSTANTS.Options() );
+        Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>( decorator ) {
             @Override
-            public ImageResource getValue(KSessionModel model) {
+            public ImageResource getValue( KSessionModel model ) {
                 return CommonImages.INSTANCE.edit();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<KSessionModel, ImageResource>() {
+        column.setFieldUpdater( new FieldUpdater<KSessionModel, ImageResource>() {
             @Override
-            public void update(int index, KSessionModel model, ImageResource value) {
-                presenter.onOptionsSelectedForKSessions(model);
+            public void update( int index,
+                                KSessionModel model,
+                                ImageResource value ) {
+                presenter.onOptionsSelectedForKSessions( model );
             }
-        });
+        } );
 
-        column.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        column.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
 
-        grid.addColumn(column);
-        grid.setColumnWidth(column, "40px");
+        dataGrid.addColumn( column,
+                            CommonConstants.INSTANCE.Edit() );
+        dataGrid.setColumnWidth( column,
+                                 80,
+                                 Style.Unit.PX );
     }
 
     private void setUpRemoveColumn() {
-        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
-        TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
-        decorator.setText(ProjectEditorResources.CONSTANTS.Delete());
-        Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>(decorator) {
+        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell( true );
+        TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>( typeImageCell );
+        decorator.setText( ProjectEditorResources.CONSTANTS.Delete() );
+        Column<KSessionModel, ImageResource> column = new Column<KSessionModel, ImageResource>( decorator ) {
             @Override
-            public ImageResource getValue(KSessionModel model) {
+            public ImageResource getValue( KSessionModel model ) {
                 return CommonImages.INSTANCE.DeleteItemSmall();
             }
         };
 
-        column.setFieldUpdater(new FieldUpdater<KSessionModel, ImageResource>() {
+        column.setFieldUpdater( new FieldUpdater<KSessionModel, ImageResource>() {
             @Override
-            public void update(int index, KSessionModel model, ImageResource value) {
-                presenter.onDelete(model);
+            public void update( int index,
+                                KSessionModel model,
+                                ImageResource value ) {
+                presenter.onDelete( model );
             }
-        });
+        } );
 
-        column.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        column.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
 
-        grid.addColumn(column);
-        grid.setColumnWidth(column, "40px");
+        dataGrid.addColumn( column,
+                            CommonConstants.INSTANCE.Delete() );
+        dataGrid.setColumnWidth( column,
+                                 80,
+                                 Style.Unit.PX );
     }
 
     @Override
-    public void showOptionsPopUp(KSessionModel kSessionModel) {
-        kSessionModelOptionsPopUp.show(kSessionModel);
+    public void showOptionsPopUp( KSessionModel kSessionModel ) {
+        kSessionModelOptionsPopUp.show( kSessionModel );
     }
 
     @Override
     public void showXsdIDError() {
-        ErrorPopup.showMessage(ProjectEditorResources.CONSTANTS.XsdIDError());
+        ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.XsdIDError() );
     }
 
     @Override
     public void makeReadOnly() {
-        addButton.setEnabled(false);
+        addButton.setEnabled( false );
     }
 
     @Override
     public void makeEditable() {
-        addButton.setEnabled(true);
+        addButton.setEnabled( true );
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setItemList(List<KSessionModel> list) {
-        grid.setRowData(list);
+    public void setItemList( List<KSessionModel> list ) {
+        dataGrid.setRowData( list );
     }
 
     @UiHandler("addButton")
-    public void onAddClicked(ClickEvent event) {
+    public void onAddClicked( ClickEvent event ) {
         presenter.onAdd();
     }
 

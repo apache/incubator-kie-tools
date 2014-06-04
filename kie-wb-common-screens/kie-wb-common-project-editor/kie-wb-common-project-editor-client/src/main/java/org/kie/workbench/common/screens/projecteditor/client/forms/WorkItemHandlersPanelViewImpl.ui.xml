@@ -19,11 +19,11 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:bootstrapBase='urn:import:com.github.gwtbootstrap.client.ui.base'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'
+             xmlns:uf="urn:import:org.uberfire.client.tables">
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
-
 
   <bootstrap:Container>
     <bootstrapBase:InlineLabel text='{i18n.WorkItemHandlers}'/>
@@ -32,9 +32,7 @@
       <bootstrap:ButtonGroup>
         <bootstrap:Button text="Add" ui:field="addButton"/>
       </bootstrap:ButtonGroup>
-
-      <bootstrap:DataGrid ui:field="grid" height="200px" width="520px"/>
-
+      <uf:SimpleTable ui:field="dataGrid" height="200px" width="500px"/>
     </bootstrap:Container>
   </bootstrap:Container>
 

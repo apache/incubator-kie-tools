@@ -38,11 +38,9 @@ import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGri
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.forms.POMEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.InfoPopup;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 @ApplicationScoped
@@ -199,8 +197,7 @@ public class ProjectScreenViewImpl
     public void showDependenciesPanel() {
         dropDownButton.setText(ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList());
         deckPanel.showWidget(DEPENDENCY_PANEL_INDEX);
-        dependencyGrid.refresh();
-
+        dependencyGrid.redraw();
     }
 
     @Override

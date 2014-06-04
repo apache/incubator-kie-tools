@@ -19,8 +19,9 @@ package org.kie.workbench.common.screens.messageconsole.client.console;
 import org.kie.workbench.common.screens.messageconsole.events.SystemMessage;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.paging.AbstractPageRow;
 
-public class MessageConsoleServiceRow {
+public class MessageConsoleServiceRow extends AbstractPageRow {
 
     String sessionId;
 

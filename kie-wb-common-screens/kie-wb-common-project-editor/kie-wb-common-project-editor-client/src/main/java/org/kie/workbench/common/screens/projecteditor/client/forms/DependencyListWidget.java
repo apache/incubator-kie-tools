@@ -15,6 +15,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.m2repo.client.widgets.ArtifactListPresenter;
 import org.guvnor.m2repo.model.JarListPageRow;
@@ -74,9 +75,10 @@ public class DependencyListWidget
                 onPathSelect.execute( row.getPath() );
             }
         } );
-        dependencyPagedJarTable.getView().addColumn( selectColumn, null, "Select" );
+        dependencyPagedJarTable.getView().addColumn( selectColumn,
+                                                     "Select" );
 
-        dependencyPagedJarTable.getView().setContentHeight( "300px" );
+        dependencyPagedJarTable.getView().setContentHeight( "200px" );
 
         panel.add( dependencyPagedJarTable.getView() );
     }

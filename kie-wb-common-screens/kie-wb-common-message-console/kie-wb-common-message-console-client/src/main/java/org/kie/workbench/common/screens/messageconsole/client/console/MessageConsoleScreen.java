@@ -27,18 +27,17 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.messageconsole.client.console.resources.MessageConsoleResources;
 import org.kie.workbench.common.screens.messageconsole.events.MessageUtils;
 import org.kie.workbench.common.screens.messageconsole.events.PublishBatchMessagesEvent;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -46,35 +45,23 @@ import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.workbench.common.screens.messageconsole.MessageConsole")
-public class MessageConsoleScreen
-        implements MessageConsoleScreenView.Presenter {
+public class MessageConsoleScreen {
 
-    private final PlaceManager placeManager;
-    private final MessageConsoleScreenView view;
-    private final MessageConsoleService messageConsoleService;
+    @Inject
+    private Caller<BuildService> buildService;
 
-    private final Caller<BuildService> buildService;
-    private final Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
+    @Inject
+    private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
+
+    @Inject
+    private MessageConsoleViewImpl view;
 
     private Project project;
 
     private Menus menus;
 
-    @Inject
-    public MessageConsoleScreen( final MessageConsoleScreenView view,
-            final PlaceManager placeManager,
-            final MessageConsoleService messageConsoleService,
-            final Caller<BuildService> buildService,
-            final Event<PublishBatchMessagesEvent> publishBatchMessagesEvent ) {
-        this.view = view;
-        this.placeManager = placeManager;
-        this.messageConsoleService = messageConsoleService;
-        this.buildService = buildService;
-        this.publishBatchMessagesEvent = publishBatchMessagesEvent;
-
+    public MessageConsoleScreen() {
         makeMenuBar();
-
-        view.setPresenter( this );
     }
 
     private void makeMenuBar() {

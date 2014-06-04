@@ -96,13 +96,4 @@
 
   </build>
 
-  <dependencies>
-    <!-- this is a workaround due a bug introduced by maven-compiler-plugin v3 related to log4j dependency -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
 </project>
