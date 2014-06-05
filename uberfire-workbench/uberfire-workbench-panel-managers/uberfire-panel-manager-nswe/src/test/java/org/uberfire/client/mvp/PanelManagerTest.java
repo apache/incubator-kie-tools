@@ -14,9 +14,9 @@ import org.junit.Test;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.Position;
 
 /**
  * Tests that the PanelManager keeps the underlying Perspective model consistent
@@ -33,7 +33,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
         activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy = spy( activity );
-        when( spy.getDefaultPosition() ).thenReturn( Position.ROOT );
+        when( spy.getDefaultPosition() ).thenReturn( CompassPosition.ROOT );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
             add( spy );
@@ -50,10 +50,10 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         assertTrue( root.isRoot() );
         assertEquals( 1,
                       root.getParts().size() );
-        assertNull( root.getChild( Position.NORTH ) );
-        assertNull( root.getChild( Position.SOUTH ) );
-        assertNull( root.getChild( Position.EAST ) );
-        assertNull( root.getChild( Position.WEST ) );
+        assertNull( root.getChild( CompassPosition.NORTH ) );
+        assertNull( root.getChild( CompassPosition.SOUTH ) );
+        assertNull( root.getChild( CompassPosition.EAST ) );
+        assertNull( root.getChild( CompassPosition.WEST ) );
 
         assertEquals( somewhere,
                       getPart( root.getParts(),
@@ -68,7 +68,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
         activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy = spy( activity );
-        when( spy.getDefaultPosition() ).thenReturn( Position.ROOT );
+        when( spy.getDefaultPosition() ).thenReturn( CompassPosition.ROOT );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
             add( spy );
@@ -86,10 +86,10 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         assertTrue( root.isRoot() );
         assertEquals( 1,
                       root.getParts().size() );
-        assertNull( root.getChild( Position.NORTH ) );
-        assertNull( root.getChild( Position.SOUTH ) );
-        assertNull( root.getChild( Position.EAST ) );
-        assertNull( root.getChild( Position.WEST ) );
+        assertNull( root.getChild( CompassPosition.NORTH ) );
+        assertNull( root.getChild( CompassPosition.SOUTH ) );
+        assertNull( root.getChild( CompassPosition.EAST ) );
+        assertNull( root.getChild( CompassPosition.WEST ) );
 
         assertEquals( somewhere,
                       getPart( root.getParts(),
@@ -102,10 +102,10 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         assertTrue( root.isRoot() );
         assertEquals( 1,
                       root.getParts().size() );
-        assertNull( root.getChild( Position.NORTH ) );
-        assertNull( root.getChild( Position.SOUTH ) );
-        assertNull( root.getChild( Position.EAST ) );
-        assertNull( root.getChild( Position.WEST ) );
+        assertNull( root.getChild( CompassPosition.NORTH ) );
+        assertNull( root.getChild( CompassPosition.SOUTH ) );
+        assertNull( root.getChild( CompassPosition.EAST ) );
+        assertNull( root.getChild( CompassPosition.WEST ) );
 
         assertEquals( somewhere,
                       getPart( root.getParts(),
@@ -122,7 +122,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final WorkbenchScreenActivity activity1 = new MockWorkbenchScreenActivity( placeManager );
         activity1.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy1 = spy( activity1 );
-        when( spy1.getDefaultPosition() ).thenReturn( Position.ROOT );
+        when( spy1.getDefaultPosition() ).thenReturn( CompassPosition.ROOT );
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
             add( spy1 );
         }} );
@@ -130,7 +130,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final WorkbenchScreenActivity activity2 = new MockWorkbenchScreenActivity( placeManager );
         activity2.onStartup( elsewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy2 = spy( activity2 );
-        when( spy2.getDefaultPosition() ).thenReturn( Position.ROOT );
+        when( spy2.getDefaultPosition() ).thenReturn( CompassPosition.ROOT );
         when( activityManager.getActivities( elsewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
             add( spy2 );
         }} );
@@ -148,10 +148,10 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         assertTrue( root.isRoot() );
         assertEquals( 1,
                       root.getParts().size() );
-        assertNull( root.getChild( Position.NORTH ) );
-        assertNull( root.getChild( Position.SOUTH ) );
-        assertNull( root.getChild( Position.EAST ) );
-        assertNull( root.getChild( Position.WEST ) );
+        assertNull( root.getChild( CompassPosition.NORTH ) );
+        assertNull( root.getChild( CompassPosition.SOUTH ) );
+        assertNull( root.getChild( CompassPosition.EAST ) );
+        assertNull( root.getChild( CompassPosition.WEST ) );
 
         assertEquals( somewhere,
                       getPart( root.getParts(),
@@ -164,10 +164,10 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         assertTrue( root.isRoot() );
         assertEquals( 2,
                       root.getParts().size() );
-        assertNull( root.getChild( Position.NORTH ) );
-        assertNull( root.getChild( Position.SOUTH ) );
-        assertNull( root.getChild( Position.EAST ) );
-        assertNull( root.getChild( Position.WEST ) );
+        assertNull( root.getChild( CompassPosition.NORTH ) );
+        assertNull( root.getChild( CompassPosition.SOUTH ) );
+        assertNull( root.getChild( CompassPosition.EAST ) );
+        assertNull( root.getChild( CompassPosition.WEST ) );
 
         final List<PlaceRequest> places =  toPlaces( root.getParts() );
 

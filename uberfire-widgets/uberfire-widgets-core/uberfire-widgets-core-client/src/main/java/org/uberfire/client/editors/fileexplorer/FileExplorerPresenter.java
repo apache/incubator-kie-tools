@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -49,6 +50,7 @@ import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
 @Dependent
@@ -67,11 +69,11 @@ public class FileExplorerPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    private Set<Repository> repositories = new HashSet<Repository>();
+    private final Set<Repository> repositories = new HashSet<Repository>();
 
     public interface View
-            extends
-            UberView<FileExplorerPresenter> {
+    extends
+    UberView<FileExplorerPresenter> {
 
         void reset();
 
@@ -94,24 +96,24 @@ public class FileExplorerPresenter {
         repositories.clear();
 
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
-                                    @Override
-                                    public void callback( Collection<Repository> response ) {
-                                        for ( final Repository root : response ) {
-                                            if ( repositories.contains( root ) ) {
-                                                view.removeRepository( root );
-                                            }
-                                            view.addNewRepository( root );
-                                            repositories.add( root );
-                                        }
-                                    }
-                                }, new ErrorCallback<Message>() {
-                                    @Override
-                                    public boolean error( final Message o,
-                                                          final Throwable throwable ) {
-                                        return false;
-                                    }
-                                }
-                              ).getRepositories();
+            @Override
+            public void callback( Collection<Repository> response ) {
+                for ( final Repository root : response ) {
+                    if ( repositories.contains( root ) ) {
+                        view.removeRepository( root );
+                    }
+                    view.addNewRepository( root );
+                    repositories.add( root );
+                }
+            }
+        }, new ErrorCallback<Message>() {
+            @Override
+            public boolean error( final Message o,
+                                  final Throwable throwable ) {
+                return false;
+            }
+        }
+                ).getRepositories();
     }
 
     public void loadDirectoryContent( final FileExplorerItem item,
@@ -155,7 +157,7 @@ public class FileExplorerPresenter {
 
     @DefaultPosition
     public Position getDefaultPosition() {
-        return Position.WEST;
+        return CompassPosition.WEST;
     }
 
     public void redirect( final Path path ) {

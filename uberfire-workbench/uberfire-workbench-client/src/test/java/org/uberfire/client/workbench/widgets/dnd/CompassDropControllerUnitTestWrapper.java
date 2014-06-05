@@ -1,13 +1,14 @@
 package org.uberfire.client.workbench.widgets.dnd;
 
+import static org.mockito.Mockito.*;
+
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
-
-import static org.mockito.Mockito.*;
 
 public class CompassDropControllerUnitTestWrapper extends CompassDropController {
 
@@ -37,7 +38,7 @@ public class CompassDropControllerUnitTestWrapper extends CompassDropController 
     }
 
     public void mockDropTargetPositionNone() {
-        when( mock.getDropPosition() ).thenReturn( Position.NONE );
+        when( mock.getDropPosition() ).thenReturn( CompassPosition.NONE );
     }
 
     public void mockDropTargetPosition(Position position) {

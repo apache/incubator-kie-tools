@@ -15,9 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 
 /**
  * A mock Workbench Part view.

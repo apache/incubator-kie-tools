@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
@@ -53,7 +54,7 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     @Override
     public Position getDefaultPosition() {
-        return Position.ROOT;
+        return CompassPosition.ROOT;
     }
 
     @Override

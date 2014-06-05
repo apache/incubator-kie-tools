@@ -18,27 +18,27 @@ package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
+import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
+import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
+import org.uberfire.workbench.model.CompassPosition;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
-import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
-import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
-import org.uberfire.workbench.model.Position;
-
 /**
  * Helper to add or remove WorkbenchPanels from the North of a
  * VerticalSplitterPanel.
  */
 @ApplicationScoped
-@WorkbenchPosition(position = Position.NORTH)
+@WorkbenchPosition(position = CompassPosition.NORTH)
 public class PanelHelperNorth
-        implements
-        PanelHelper {
+implements
+PanelHelper {
 
     @Inject
     private NSWEExtendedBeanFactory factory;
@@ -56,7 +56,7 @@ public class PanelHelperNorth
             final SimplePanel sp = (SimplePanel) parent;
             final VerticalSplitterPanel vsp = factory.newVerticalSplitterPanel( newPanel,
                                                                                 targetPanel,
-                                                                                Position.NORTH,
+                                                                                CompassPosition.NORTH,
                                                                                 preferredSize,
                                                                                 preferredMinSize );
 
@@ -64,7 +64,7 @@ public class PanelHelperNorth
             sp.setWidget( vsp );
 
             //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
-            //so ensure we set the sizes of the new Panel and it's children after the 
+            //so ensure we set the sizes of the new Panel and it's children after the
             //browser has added the new DIVs to the HTML tree. This does occasionally
             //add slight flicker when adding a new Panel.
             scheduleResize( vsp );
@@ -75,7 +75,7 @@ public class PanelHelperNorth
     public void remove( final WorkbenchPanelView panel ) {
         final VerticalSplitterPanel vsp = (VerticalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
-        final Widget southWidget = vsp.getWidget( Position.SOUTH );
+        final Widget southWidget = vsp.getWidget( CompassPosition.SOUTH );
 
         vsp.clear();
 

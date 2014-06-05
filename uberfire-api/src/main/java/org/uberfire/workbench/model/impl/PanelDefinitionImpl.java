@@ -15,6 +15,9 @@
  */
 package org.uberfire.workbench.model.impl;
 
+import static org.uberfire.workbench.model.ContextDisplayMode.*;
+import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -30,16 +34,13 @@ import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import static org.uberfire.workbench.model.ContextDisplayMode.*;
-import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
-
 /**
  * Default implementation of PanelDefinition
  */
 @Portable
 public class PanelDefinitionImpl
-        implements
-        PanelDefinition {
+implements
+PanelDefinition {
 
     private Integer height = null;
     private Integer width = null;
@@ -47,14 +48,14 @@ public class PanelDefinitionImpl
     private Integer minHeight = null;
     private Integer minWidth = null;
 
-    private Set<PartDefinition> parts = new HashSet<PartDefinition>();
+    private final Set<PartDefinition> parts = new HashSet<PartDefinition>();
 
     //Ideally this should be a Set but the order of insertion is important
-    private List<PanelDefinition> children = new ArrayList<PanelDefinition>();
+    private final List<PanelDefinition> children = new ArrayList<PanelDefinition>();
 
     private Position position;
-    private PanelType panelType;
-    private PanelType defaultChildPanelType;
+    private final PanelType panelType;
+    private final PanelType defaultChildPanelType;
     private boolean isRoot;
     private ContextDefinition contextDefinition;
     private ContextDisplayMode contextDisplayMode = SHOW;
@@ -66,7 +67,7 @@ public class PanelDefinitionImpl
     public PanelDefinitionImpl( final PanelType type ) {
         this.panelType = type;
         if ( PanelTypeHelper.isRoot( type ) ) {
-            this.position = Position.ROOT;
+            this.position = CompassPosition.ROOT;
             this.isRoot = true;
         }
         this.defaultChildPanelType = getDefaultChildType( type );
@@ -76,7 +77,7 @@ public class PanelDefinitionImpl
                                 final PanelType defaultChildPanelType ) {
         this.panelType = type;
         if ( PanelTypeHelper.isRoot( type ) ) {
-            this.position = Position.ROOT;
+            this.position = CompassPosition.ROOT;
             this.isRoot = true;
         }
         this.defaultChildPanelType = defaultChildPanelType;
@@ -143,7 +144,7 @@ public class PanelDefinitionImpl
 
     @Override
     public void appendChild(
-            final PanelDefinition panel ) {
+                            final PanelDefinition panel ) {
 
         if ( panel == null ) {
             return;
@@ -279,7 +280,7 @@ public class PanelDefinitionImpl
     }
 
     private void checkPosition( final Position position ) {
-        if ( position == Position.ROOT || position == Position.SELF || position == Position.NONE ) {
+        if ( position == CompassPosition.ROOT || position == CompassPosition.SELF || position == CompassPosition.NONE ) {
             throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );
         }
     }

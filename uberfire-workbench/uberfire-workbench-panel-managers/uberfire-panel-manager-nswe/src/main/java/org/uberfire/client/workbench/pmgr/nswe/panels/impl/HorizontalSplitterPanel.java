@@ -17,25 +17,26 @@ package org.uberfire.client.workbench.pmgr.nswe.panels.impl;
 
 import javax.enterprise.context.Dependent;
 
+import org.uberfire.client.workbench.panels.SplitPanel;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.widgets.split.WorkbenchSplitLayoutPanel;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.PanelDefinition;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.panels.SplitPanel;
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.widgets.split.WorkbenchSplitLayoutPanel;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.Position;
 
 /**
  * A split panel to contain WorkbenchPanels split horizontally.
  */
 @Dependent
 public class HorizontalSplitterPanel extends ResizeComposite
-        implements
-        SplitPanel {
+implements
+SplitPanel {
 
     WorkbenchSplitLayoutPanel slp = new WorkbenchSplitLayoutPanel();
     SimpleLayoutPanel eastWidgetContainer = new SimpleLayoutPanel();
@@ -48,7 +49,7 @@ public class HorizontalSplitterPanel extends ResizeComposite
     @Override
     public void setup( final WorkbenchPanelView eastWidget,
                        final WorkbenchPanelView westWidget,
-                       final Position position,
+                       final CompassPosition position,
                        final Integer preferredSize,
                        final Integer preferredMinSize ) {
 
@@ -91,7 +92,7 @@ public class HorizontalSplitterPanel extends ResizeComposite
     }
 
     @Override
-    public Widget getWidget( Position position ) {
+    public Widget getWidget( CompassPosition position ) {
         switch ( position ) {
             case EAST:
                 return this.westWidgetContainer.getWidget();
@@ -123,8 +124,8 @@ public class HorizontalSplitterPanel extends ResizeComposite
 
     int getChildSize( final PanelDefinition panel ) {
         int childSize = 0;
-        final PanelDefinition eastPanel = panel.getChild( Position.EAST );
-        final PanelDefinition westPanel = panel.getChild( Position.WEST );
+        final PanelDefinition eastPanel = panel.getChild( CompassPosition.EAST );
+        final PanelDefinition westPanel = panel.getChild( CompassPosition.WEST );
         if ( eastPanel != null ) {
             childSize = childSize + assertSize( eastPanel.getWidth() ) + getChildSize( eastPanel );
         }

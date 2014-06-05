@@ -26,6 +26,7 @@ import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
@@ -68,10 +69,10 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
             mapPanelDefinitionToPresenter.put( targetPanel,
-                    targetPanelPresenter );
+                                               targetPanelPresenter );
         }
 
-        switch ( position ) {
+        switch ( (CompassPosition) position ) {
             case ROOT:
                 newPanel = root;
                 break;
@@ -88,11 +89,11 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
                 if ( !childPanel.isMinimized() ) {
                     final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
                     mapPanelDefinitionToPresenter.put( childPanel,
-                            childPanelPresenter );
+                                                       childPanelPresenter );
 
                     targetPanelPresenter.addPanel( childPanel,
-                            childPanelPresenter.getPanelView(),
-                            position );
+                                                   childPanelPresenter.getPanelView(),
+                                                   position );
                 }
                 newPanel = childPanel;
                 break;

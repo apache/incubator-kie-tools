@@ -15,8 +15,9 @@
  */
 package org.uberfire.client.workbench.panels;
 
+import org.uberfire.workbench.model.CompassPosition;
+
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.workbench.model.Position;
 
 /**
  * Common operations for Workbench Split Panels.
@@ -31,12 +32,12 @@ public interface SplitPanel {
 
     public void setup( final WorkbenchPanelView eastWidget,
                        final WorkbenchPanelView westWidget,
-                       final Position position,
+                       final CompassPosition position,
                        final Integer preferredSize,
                        final Integer preferredMinSize );
 
     public void clear();
 
-    public Widget getWidget( Position position );
+    public Widget getWidget( CompassPosition position );
 
 }

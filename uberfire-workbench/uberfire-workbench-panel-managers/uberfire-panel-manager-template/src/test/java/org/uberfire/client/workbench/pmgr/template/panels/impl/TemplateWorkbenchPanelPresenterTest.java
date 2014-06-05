@@ -1,17 +1,14 @@
 package org.uberfire.client.workbench.pmgr.template.panels.impl;
 
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.pmgr.template.TemplatePanelDefinitionImpl;
-import org.uberfire.client.workbench.pmgr.template.panels.impl.TemplateWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.pmgr.template.panels.impl.TemplateWorkbenchPanelView;
-import org.uberfire.workbench.model.Position;
 
-import static org.mockito.Mockito.*;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TemplateWorkbenchPanelPresenterTest {
@@ -25,7 +22,7 @@ public class TemplateWorkbenchPanelPresenterTest {
 
         TemplateWorkbenchPanelPresenter template = new TemplateWorkbenchPanelPresenter( view, panelManager, null, null );
         TemplatePanelDefinitionImpl panel = mock( TemplatePanelDefinitionImpl.class );
-        template.addPanel( panel, view, Position.EAST );
+        template.addPanel( panel, view, null );
         verify( panel ).setPerspective( widget );
     }
 

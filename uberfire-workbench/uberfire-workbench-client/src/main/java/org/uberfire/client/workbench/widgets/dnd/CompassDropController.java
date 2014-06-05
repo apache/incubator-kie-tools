@@ -19,19 +19,21 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.allen_sauer.gwt.dnd.client.DragContext;
-import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.DropPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
+
+import com.allen_sauer.gwt.dnd.client.DragContext;
+import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A Drop Controller covering the entire DecoratedWorkbenchPanel that renders a Compass
@@ -39,8 +41,8 @@ import org.uberfire.workbench.model.menu.Menus;
  */
 @Dependent
 public class CompassDropController
-        implements
-        DropController {
+implements
+DropController {
 
     private final CompassWidget compass = getCompassWidgetInstance();
 
@@ -85,13 +87,13 @@ public class CompassDropController
 
         //If not dropTarget has been identified do nothing
         Position p = compass.getDropPosition();
-        if ( p == Position.NONE ) {
+        if ( p == CompassPosition.NONE ) {
             return;
         }
 
         compass.onDrop( context );
 
-        //Move Part from source to target 
+        //Move Part from source to target
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
         final Menus menus = workbenchContext.getMenus();
 
@@ -100,14 +102,14 @@ public class CompassDropController
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
         final PanelDefinition dropPanel = dropTarget.getPresenter().getDefinition();
 
-        //If the Target Panel is the same as the Source we're trying to reposition the 
-        //Source's tab within itself. If the Source Panel has only one Tab there is no 
+        //If the Target Panel is the same as the Source we're trying to reposition the
+        //Source's tab within itself. If the Source Panel has only one Tab there is no
         //net effect. If we're trying to drop as a new tab there is no net effect.
         if ( sourcePanel.equals( dropPanel ) ) {
             if ( sourcePanel.getParts().size() == 1 ) {
                 return;
             }
-            if ( p == Position.SELF ) {
+            if ( p == CompassPosition.SELF ) {
                 return;
             }
         }

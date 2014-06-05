@@ -1,5 +1,8 @@
 package org.uberfire.client.mvp;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,9 +16,6 @@ import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.annotations.Priority;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.commons.data.Pair;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class ActivityMetaInfoTest {
 

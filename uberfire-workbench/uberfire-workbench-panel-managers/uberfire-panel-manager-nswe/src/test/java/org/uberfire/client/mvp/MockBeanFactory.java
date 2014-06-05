@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -25,17 +23,19 @@ import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPan
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
 import org.uberfire.client.workbench.pmgr.nswe.part.WorkbenchPartPresenterDefault;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Mock BeanFactory that doesn't use CDI.
  */
 public class MockBeanFactory
-        implements
-        NSWEExtendedBeanFactory {
+implements
+NSWEExtendedBeanFactory {
 
     @Override
     public WorkbenchPartPresenter newWorkbenchPart( final Menus menus,
@@ -52,11 +52,11 @@ public class MockBeanFactory
 
     @Override
     public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition ) {
-//        final MultiTabWorkbenchPanelPresenter panel = new MultiTabWorkbenchPanelPresenter( new MockWorkbenchPanelView(),
-//                                                                                   null,
-//                                                                                   null,
-//                                                                                   null );
-//        panel.setDefinition( definition );
+        //        final MultiTabWorkbenchPanelPresenter panel = new MultiTabWorkbenchPanelPresenter( new MockWorkbenchPanelView(),
+        //                                                                                   null,
+        //                                                                                   null,
+        //                                                                                   null );
+        //        panel.setDefinition( definition );
         return null;
     }
 
@@ -72,7 +72,7 @@ public class MockBeanFactory
     @Override
     public HorizontalSplitterPanel newHorizontalSplitterPanel( WorkbenchPanelView eastPanel,
                                                                WorkbenchPanelView westPanel,
-                                                               Position position,
+                                                               CompassPosition position,
                                                                Integer preferredSize,
                                                                Integer preferredMinSize ) {
         return null;
@@ -81,7 +81,7 @@ public class MockBeanFactory
     @Override
     public VerticalSplitterPanel newVerticalSplitterPanel( WorkbenchPanelView northPanel,
                                                            WorkbenchPanelView southPanel,
-                                                           Position position,
+                                                           CompassPosition position,
                                                            Integer preferredSize,
                                                            Integer preferredMinSize ) {
         return null;

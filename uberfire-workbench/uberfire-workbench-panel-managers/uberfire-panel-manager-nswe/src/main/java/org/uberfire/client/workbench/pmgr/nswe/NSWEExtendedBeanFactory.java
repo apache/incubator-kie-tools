@@ -19,7 +19,7 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
-import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.CompassPosition;
 
 /**
  * A Factory definition to create new instances of managed beans.
@@ -28,13 +28,13 @@ public interface NSWEExtendedBeanFactory extends BeanFactory {
 
     public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelView eastPanel,
                                                                final WorkbenchPanelView westPanel,
-                                                               final Position position,
+                                                               final CompassPosition position,
                                                                final Integer preferredSize,
                                                                final Integer preferredMinSize );
 
     public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelView northPanel,
                                                            final WorkbenchPanelView southPanel,
-                                                           final Position position,
+                                                           final CompassPosition position,
                                                            final Integer preferredSize,
                                                            final Integer preferredMinSize );
 

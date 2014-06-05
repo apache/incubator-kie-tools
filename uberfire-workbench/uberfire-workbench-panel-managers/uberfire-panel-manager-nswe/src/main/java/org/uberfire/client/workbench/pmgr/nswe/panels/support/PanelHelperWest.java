@@ -18,24 +18,24 @@ package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
+import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
+import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.workbench.model.CompassPosition;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
-import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
-import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
-import org.uberfire.workbench.model.Position;
-
 /**
  * Helper to add or remove WorkbenchPanels from the West of a
  * HorizontalSplitterPanel.
  */
 @ApplicationScoped
-@WorkbenchPosition(position = Position.WEST)
+@WorkbenchPosition(position = CompassPosition.WEST)
 public class PanelHelperWest
         implements
         PanelHelper {
@@ -56,7 +56,7 @@ public class PanelHelperWest
             final SimplePanel sp = (SimplePanel) parent;
             final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
                                                                                     newPanel,
-                                                                                    Position.WEST,
+                                                                                    CompassPosition.WEST,
                                                                                     preferredSize,
                                                                                     preferredMinSize );
 
@@ -75,7 +75,7 @@ public class PanelHelperWest
     public void remove( final WorkbenchPanelView panel ) {
         final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
-        final Widget eastWidget = vsp.getWidget( Position.EAST );
+        final Widget eastWidget = vsp.getWidget( CompassPosition.EAST );
 
         vsp.clear();
 

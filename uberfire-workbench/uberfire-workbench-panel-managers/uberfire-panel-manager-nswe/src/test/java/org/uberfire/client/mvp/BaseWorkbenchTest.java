@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+import static org.mockito.Mockito.*;
+import static org.uberfire.workbench.model.PanelType.*;
+
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
@@ -30,9 +33,6 @@ import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
-
-import static org.mockito.Mockito.*;
-import static org.uberfire.workbench.model.PanelType.*;
 
 /**
  * Base class for tests requiring a dummy Workbench

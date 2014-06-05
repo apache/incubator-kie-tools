@@ -20,19 +20,19 @@ import javax.enterprise.context.ApplicationScoped;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
-import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.CompassPosition;
 
 /**
  * BeanFactory using Errai IOCBeanManager to instantiate (CDI) beans
  */
 @ApplicationScoped
 public class NSWEExtendedDefaultBeanFactory
-        extends DefaultBeanFactory implements NSWEExtendedBeanFactory {
+extends DefaultBeanFactory implements NSWEExtendedBeanFactory {
 
     @Override
     public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelView eastPanel,
                                                                final WorkbenchPanelView westPanel,
-                                                               final Position position,
+                                                               final CompassPosition position,
                                                                final Integer preferredSize,
                                                                final Integer preferredMinSize ) {
         final HorizontalSplitterPanel hsp = iocManager.lookupBean( HorizontalSplitterPanel.class ).getInstance();
@@ -47,7 +47,7 @@ public class NSWEExtendedDefaultBeanFactory
     @Override
     public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelView northPanel,
                                                            final WorkbenchPanelView southPanel,
-                                                           final Position position,
+                                                           final CompassPosition position,
                                                            final Integer preferredSize,
                                                            final Integer preferredMinSize ) {
         final VerticalSplitterPanel vsp = iocManager.lookupBean( VerticalSplitterPanel.class ).getInstance();

@@ -3,34 +3,35 @@ package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
-
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.BaseWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelSupport;
 import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
+
+import com.google.gwt.user.client.ui.Widget;
 
 @ApplicationScoped
 public class PanelSupportImpl implements PanelSupport {
 
     @Inject
-    @WorkbenchPosition(position = Position.NORTH)
+    @WorkbenchPosition(position = CompassPosition.NORTH)
     protected PanelHelper helperNorth;
 
     @Inject
-    @WorkbenchPosition(position = Position.SOUTH)
+    @WorkbenchPosition(position = CompassPosition.SOUTH)
     protected PanelHelper helperSouth;
 
     @Inject
-    @WorkbenchPosition(position = Position.EAST)
+    @WorkbenchPosition(position = CompassPosition.EAST)
     protected PanelHelper helperEast;
 
     @Inject
-    @WorkbenchPosition(position = Position.WEST)
+    @WorkbenchPosition(position = CompassPosition.WEST)
     protected PanelHelper helperWest;
 
     @Override
@@ -38,7 +39,7 @@ public class PanelSupportImpl implements PanelSupport {
                           final WorkbenchPanelView newView,
                           final WorkbenchPanelView targetView,
                           final Position position ) {
-        switch ( position ) {
+        switch ( (CompassPosition) position ) {
             case NORTH:
                 helperNorth.add( newView,
                                  targetView,
@@ -76,21 +77,21 @@ public class PanelSupportImpl implements PanelSupport {
     @Override
     public void remove( final BaseWorkbenchPanelView<?> view,
                         final Widget parent ) {
-        Position position = Position.NONE;
+        CompassPosition position = CompassPosition.NONE;
 
         if ( parent instanceof HorizontalSplitterPanel ) {
             final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
-            if ( view.asWidget().equals( hsp.getWidget( Position.EAST ) ) ) {
-                position = Position.EAST;
-            } else if ( view.asWidget().equals( hsp.getWidget( Position.WEST ) ) ) {
-                position = Position.WEST;
+            if ( view.asWidget().equals( hsp.getWidget( CompassPosition.EAST ) ) ) {
+                position = CompassPosition.EAST;
+            } else if ( view.asWidget().equals( hsp.getWidget( CompassPosition.WEST ) ) ) {
+                position = CompassPosition.WEST;
             }
         } else if ( parent instanceof VerticalSplitterPanel ) {
             final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
-            if ( view.asWidget().equals( vsp.getWidget( Position.NORTH ) ) ) {
-                position = Position.NORTH;
-            } else if ( view.asWidget().equals( vsp.getWidget( Position.SOUTH ) ) ) {
-                position = Position.SOUTH;
+            if ( view.asWidget().equals( vsp.getWidget( CompassPosition.NORTH ) ) ) {
+                position = CompassPosition.NORTH;
+            } else if ( view.asWidget().equals( vsp.getWidget( CompassPosition.SOUTH ) ) ) {
+                position = CompassPosition.SOUTH;
             }
         }
 
