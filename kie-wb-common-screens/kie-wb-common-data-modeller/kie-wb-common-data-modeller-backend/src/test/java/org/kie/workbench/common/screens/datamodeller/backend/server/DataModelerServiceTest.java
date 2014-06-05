@@ -13,6 +13,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;

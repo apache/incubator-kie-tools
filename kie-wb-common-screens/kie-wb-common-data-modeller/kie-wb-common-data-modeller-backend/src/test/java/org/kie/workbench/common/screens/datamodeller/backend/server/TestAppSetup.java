@@ -16,17 +16,25 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
+import java.util.HashSet;
+import java.util.Map;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.m2repo.service.M2RepoService;
+import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.metadata.engine.Indexer;
+import org.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.mockito.Mockito.*;
@@ -72,5 +80,35 @@ public class TestAppSetup {
     public ServletContext servletContext() {
         return mock( ServletContext.class );
     }
+
+    @Produces
+    @Named("luceneConfig")
+    public LuceneConfig luceneConfig() {
+        return mock( LuceneConfig.class );
+    }
+    /*
+    protected IOService ioService() {
+        if ( ioService == null ) {
+            final TestIndexer indexer = getIndexer();
+            final Map<String, Analyzer> analyzers = getAnalyzers();
+            config = new LuceneConfigBuilder()
+                    .withInMemoryMetaModelStore()
+                    .usingIndexers( new HashSet<Indexer>() {{
+                        add( indexer );
+                    }} )
+                    .usingAnalyzers( analyzers )
+                    .useDirectoryBasedIndex()
+                    .useInMemoryDirectory()
+                    .build();
+
+            //Mock CDI injection and setup
+            ioService = new IOServiceIndexedImpl( config.getIndexEngine(),
+                    config.getIndexers() );
+            indexer.setIOService( ioService );
+            indexer.setResourceTypeDefinition( getResourceTypeDefinition() );
+        }
+        return ioService;
+    }
+    */
 
 }

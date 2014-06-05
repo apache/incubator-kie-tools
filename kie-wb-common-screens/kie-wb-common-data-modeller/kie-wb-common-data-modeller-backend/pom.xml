@@ -58,6 +58,16 @@
       <artifactId>kie-wb-common-data-modeller-core</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-java-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-refactoring-backend</artifactId>
+    </dependency>
+
     <!-- Weld Modules. For tests only -->
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -74,6 +84,25 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-fs</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-jgit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-refactoring-backend</artifactId>
+      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
 
