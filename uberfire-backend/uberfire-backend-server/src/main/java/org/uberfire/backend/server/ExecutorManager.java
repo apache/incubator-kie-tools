@@ -16,7 +16,7 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import static javax.ejb.TransactionAttributeType.*;
 
 @Stateless
-@TransactionAttribute(NEVER)
+@TransactionAttribute(NOT_SUPPORTED)
 public class ExecutorManager {
 
     @Inject
