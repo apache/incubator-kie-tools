@@ -20,6 +20,9 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
 
+/**
+ * Data Transfer Object for the content of the UI
+ */
 @Portable
 public class UserManagerContent {
 
@@ -30,6 +33,11 @@ public class UserManagerContent {
         //Errai marshalling
     }
 
+    /**
+     * Constructor
+     * @param userInformation Information for all Users. Cannot be null.
+     * @param capabilities Capabilities supported by the User Manager. Cannot be null.
+     */
     public UserManagerContent( final List<UserInformation> userInformation,
                                final UserManagerCapabilities capabilities ) {
         this.userInformation = PortablePreconditions.checkNotNull( "userInformation",
@@ -38,10 +46,16 @@ public class UserManagerContent {
                                                                 capabilities );
     }
 
+    /**
+     * @return Information for all Users. Will not be null.
+     */
     public List<UserInformation> getUserInformation() {
         return userInformation;
     }
 
+    /**
+     * @return The capabilities supported by the User Manager
+     */
     public UserManagerCapabilities getCapabilities() {
         return capabilities;
     }

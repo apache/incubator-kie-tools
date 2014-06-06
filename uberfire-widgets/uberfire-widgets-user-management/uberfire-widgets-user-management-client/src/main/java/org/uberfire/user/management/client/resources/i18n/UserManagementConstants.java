@@ -58,6 +58,4 @@ public interface UserManagementConstants
 
     String genericError();
 
-    String noUserManagerInstalledMessage();
-
 }

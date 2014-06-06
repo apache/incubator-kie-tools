@@ -20,6 +20,9 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
 
+/**
+ * Data Transfer Object containing basic user information.
+ */
 @Portable
 public class UserInformation {
 
@@ -30,6 +33,11 @@ public class UserInformation {
         //Errai marshalling
     }
 
+    /**
+     * Constructor
+     * @param userName A unique System Identifier for the User. Cannot be null
+     * @param userRoles List of Role Names assigned to the User. Cannot be null, but can be empty
+     */
     public UserInformation( final String userName,
                             final Set<String> userRoles ) {
         this.userName = PortablePreconditions.checkNotNull( "userName",
@@ -38,10 +46,16 @@ public class UserInformation {
                                                              userRoles );
     }
 
+    /**
+     * @return The System Identifier for the User
+     */
     public String getUserName() {
         return userName;
     }
 
+    /**
+     * @return The Role Names assigned to the User. Will not be null.
+     */
     public Set<String> getUserRoles() {
         return userRoles;
     }

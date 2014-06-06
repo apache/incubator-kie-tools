@@ -33,6 +33,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.user.management.client.resources.i18n.UserManagementConstants;
 
+/**
+ * Popup to add a new User
+ */
 public class AddUserPopup extends Modal {
 
     interface AddUserPopupBinder

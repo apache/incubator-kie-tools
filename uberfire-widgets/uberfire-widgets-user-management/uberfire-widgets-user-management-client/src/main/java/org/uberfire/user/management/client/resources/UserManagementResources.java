@@ -17,15 +17,14 @@ package org.uberfire.user.management.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import org.uberfire.user.management.client.resources.css.UserManagementCss;
 
+/**
+ * Container for User Management Editor's GWT resources
+ */
 public interface UserManagementResources
         extends
         ClientBundle {
 
     UserManagementResources INSTANCE = GWT.create( UserManagementResources.class );
-
-    @Source("css/UserManagementCss.css")
-    UserManagementCss css();
 
 }

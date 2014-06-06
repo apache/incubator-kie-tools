@@ -18,11 +18,14 @@ package org.uberfire.user.management.client.utils;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Utilities to handle conversion of User's roles
+ */
 public class UserManagementUtils {
 
     /**
-     * Convert Set<String> of roles into a display-friendly list of Users' roles
-     * @param roles
+     * Convert Set<String> of roles into a comma-separated display-friendly list of Users' roles
+     * @param roles Cannot be null.
      * @return
      */
     public static String convertUserRoles( final Set<String> roles ) {
@@ -45,8 +48,8 @@ public class UserManagementUtils {
     }
 
     /**
-     * Convert String of roles into a Set<String> collection of Users' roles
-     * @param roles
+     * Convert a comma-separated String of roles into a Set<String> collection of Users' roles
+     * @param roles Cannot be null.
      * @return
      */
     public static Set<String> convertUserRoles( final String roles ) {

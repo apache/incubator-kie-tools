@@ -28,6 +28,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.user.management.client.popups.AddUserPopup;
@@ -35,16 +36,18 @@ import org.uberfire.user.management.client.popups.EditUserPasswordPopup;
 import org.uberfire.user.management.client.popups.EditUserRolesPopup;
 import org.uberfire.user.management.client.resources.i18n.UserManagementConstants;
 import org.uberfire.user.management.client.utils.UserManagementUtils;
-import org.uberfire.user.management.client.widgets.UserManagementViewController;
 import org.uberfire.user.management.model.UserInformation;
 import org.uberfire.user.management.model.UserManagerContent;
 import org.uberfire.user.management.service.UserManagementService;
 
+/**
+ * Uberfire compliant Editor to manage Users
+ */
 @WorkbenchScreen(identifier = "UserManagementPresenter")
 public class UserManagementPresenter {
 
     @Inject
-    private UserManagementViewController view;
+    private UserManagementView view;
 
     @Inject
     private AddUserPopup addUserPopup;
@@ -58,24 +61,17 @@ public class UserManagementPresenter {
     @Inject
     private Caller<UserManagementService> userManagementService;
 
-    private PlaceRequest place;
     private boolean isReadOnly;
 
+    /**
+     * Launch the Editor
+     * @param place
+     * @see WorkbenchScreenActivity#onStartup(PlaceRequest)
+     */
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
-        this.place = place;
         this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
 
-        userManagementService.call( new RemoteCallback<Boolean>() {
-            @Override
-            public void callback( final Boolean result ) {
-                final boolean isUserManagerInstalled = Boolean.TRUE.equals( result );
-                view.setUserManagerInstalled( isUserManagerInstalled );
-            }
-        } ).isUserManagerInstalled();
-    }
-
-    public void loadContent() {
         userManagementService.call( new RemoteCallback<UserManagerContent>() {
                                         @Override
                                         public void callback( final UserManagerContent content ) {
@@ -95,16 +91,30 @@ public class UserManagementPresenter {
                                   ).loadContent();
     }
 
+    /**
+     * Provide a title for the Editor
+     * @return
+     * @see WorkbenchScreenActivity#getTitle()
+     */
     @WorkbenchPartTitle
     public String getTitle() {
         return UserManagementConstants.INSTANCE.userManagementTitle();
     }
 
+    /**
+     * Provide the Widget for the Editor that Uberfire inserts into the Workbench
+     * @return
+     * @see WorkbenchScreenActivity#getWidget()
+     */
     @WorkbenchPartView
     public UberView<UserManagementPresenter> getView() {
         return view;
     }
 
+    /**
+     * Request to add a new User, called when the user clicks on the "Add" (user) button in the UI
+     * This implementation launches a popup to capture the User's User Name and Roles.
+     */
     public void addUser() {
         addUserPopup.setCallbackCommand( new Command() {
 
@@ -137,6 +147,11 @@ public class UserManagementPresenter {
         addUserPopup.show();
     }
 
+    /**
+     * Request to delete a User, called when the user clicks on the "Delete" (user) button in the UI
+     * This implementation prompts for confirmation before removal of the User from the underlying Identity Manager.
+     * @param userInformation User information representing the User to delete. Cannot be null.
+     */
     public void deleteUser( final UserInformation userInformation ) {
         userManagementService.call( new RemoteCallback<Void>() {
                                         @Override
@@ -156,12 +171,17 @@ public class UserManagementPresenter {
                                   ).deleteUser( userInformation );
     }
 
-    public void editUserRoles( final UserInformation oldUserInformation ) {
+    /**
+     * Request to update a User's Roles, called when the user clicks on the "Edit" (user) button in the UI
+     * This implementation launches a popup to capture the User's Roles.
+     * @param userInformation User information representing the User to edit. Cannot be null.
+     */
+    public void editUserRoles( final UserInformation userInformation ) {
         editUserRolesPopup.setCallbackCommand( new Command() {
 
             @Override
             public void execute() {
-                final String userName = oldUserInformation.getUserName();
+                final String userName = userInformation.getUserName();
                 final Set<String> userRoles = UserManagementUtils.convertUserRoles( editUserRolesPopup.getUserRoles() );
 
                 final UserInformation newUserInformation = new UserInformation( userName,
@@ -169,7 +189,7 @@ public class UserManagementPresenter {
                 userManagementService.call( new RemoteCallback<Void>() {
                                                 @Override
                                                 public void callback( final Void o ) {
-                                                    view.updateUser( oldUserInformation,
+                                                    view.updateUser( userInformation,
                                                                      newUserInformation );
                                                 }
                                             },
@@ -186,10 +206,15 @@ public class UserManagementPresenter {
             }
 
         } );
-        editUserRolesPopup.setUserInformation( oldUserInformation );
+        editUserRolesPopup.setUserInformation( userInformation );
         editUserRolesPopup.show();
     }
 
+    /**
+     * Request to update a User's Password, called when the user clicks on the "Password" button in the UI
+     * This implementation launches a popup to capture the User's new password.
+     * @param userInformation User information representing the User to edit. Cannot be null.
+     */
     public void editUserPassword( final UserInformation userInformation ) {
         editUserPasswordPopup.setCallbackCommand( new Command() {
 

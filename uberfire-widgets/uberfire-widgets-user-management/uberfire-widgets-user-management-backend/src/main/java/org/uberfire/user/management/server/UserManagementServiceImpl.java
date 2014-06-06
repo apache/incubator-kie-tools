@@ -38,6 +38,9 @@ import org.uberfire.user.management.model.UserManagerCapabilities;
 import org.uberfire.user.management.model.UserManagerContent;
 import org.uberfire.user.management.service.UserManagementService;
 
+/**
+ * Default implementation of UserManagementService that delegates to PicketLink.
+ */
 @Service
 @ApplicationScoped
 public class UserManagementServiceImpl implements UserManagementService {
@@ -45,11 +48,10 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Inject
     private PartitionManager partitionManager;
 
-    @Override
-    public boolean isUserManagerInstalled() {
-        return true;
-    }
-
+    /**
+     * @return
+     * @see UserManagementService#loadContent()
+     */
     @Override
     public UserManagerContent loadContent() {
         return new UserManagerContent( loadUserInformation(),
@@ -87,6 +89,11 @@ public class UserManagementServiceImpl implements UserManagementService {
         return userRoles;
     }
 
+    /**
+     * @param userInformation Basic user information. Cannot be null.
+     * @param userPassword User's password. Cannot be null.
+     * @see UserManagementService#addUser(UserInformation, String)
+     */
     @Override
     public void addUser( final UserInformation userInformation,
                          final String userPassword ) {
@@ -128,6 +135,10 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
     }
 
+    /**
+     * @param userInformation Basic user information. Cannot be null.
+     * @see UserManagementService#updateUser(UserInformation)
+     */
     @Override
     public void updateUser( final UserInformation userInformation ) {
         PortablePreconditions.checkNotNull( "userInformation",
@@ -165,6 +176,11 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
     }
 
+    /**
+     * @param userInformation Basic user information. Cannot be null.
+     * @param userPassword User's password. Cannot be null.
+     * @see UserManagementService#updateUser(UserInformation, String)
+     */
     @Override
     public void updateUser( final UserInformation userInformation,
                             final String userPassword ) {
@@ -209,6 +225,10 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
     }
 
+    /**
+     * @param userInformation Basic user information. Cannot be null.
+     * @see UserManagementService#deleteUser(UserInformation)
+     */
     @Override
     public void deleteUser( final UserInformation userInformation ) {
         PortablePreconditions.checkNotNull( "userInformation",

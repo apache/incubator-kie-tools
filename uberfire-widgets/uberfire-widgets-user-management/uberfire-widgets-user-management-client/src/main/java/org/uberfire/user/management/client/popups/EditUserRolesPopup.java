@@ -20,7 +20,6 @@ import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
@@ -36,6 +35,9 @@ import org.uberfire.user.management.client.resources.i18n.UserManagementConstant
 import org.uberfire.user.management.client.utils.UserManagementUtils;
 import org.uberfire.user.management.model.UserInformation;
 
+/**
+ * Popup to edit a User's Roles
+ */
 public class EditUserRolesPopup extends Modal {
 
     interface EditUserRolesPopupBinder

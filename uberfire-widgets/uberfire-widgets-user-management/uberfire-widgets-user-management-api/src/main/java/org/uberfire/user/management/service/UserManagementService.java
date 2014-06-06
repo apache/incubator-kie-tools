@@ -19,21 +19,45 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.user.management.model.UserInformation;
 import org.uberfire.user.management.model.UserManagerContent;
 
+/**
+ * Service definition used by the UI
+ */
 @Remote
 public interface UserManagementService {
 
-    boolean isUserManagerInstalled();
-
+    /**
+     * The UI requires User information and details of the capabilities supported by the User Manager.
+     * To minimize network traffic this method should return everything needed by the UI in a single call.
+     * @return A non-null Data Transfer Object containing all information needed to initialise the UI
+     */
     UserManagerContent loadContent();
 
+    /**
+     * Request to create a new user
+     * @param userInformation Basic user information. Cannot be null.
+     * @param userPassword User's password. Cannot be null.
+     */
     void addUser( final UserInformation userInformation,
                   final String userPassword );
 
+    /**
+     * Request to update a User's basic information
+     * @param userInformation Basic user information. Cannot be null.
+     */
     void updateUser( final UserInformation userInformation );
 
+    /**
+     * Request to update a User's basic information and password
+     * @param userInformation Basic user information. Cannot be null.
+     * @param userPassword User's password. Cannot be null.
+     */
     void updateUser( final UserInformation userInformation,
                      final String userPassword );
 
+    /**
+     * Request to delete a User.
+     * @param userInformation Basic user information. Cannot be null.
+     */
     void deleteUser( final UserInformation userInformation );
 
 }

@@ -34,6 +34,9 @@ import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.user.management.client.resources.i18n.UserManagementConstants;
 import org.uberfire.user.management.model.UserInformation;
 
+/**
+ * Popup to edit a User's password
+ */
 public class EditUserPasswordPopup extends Modal {
 
     interface EditUserRolesPopupBinder

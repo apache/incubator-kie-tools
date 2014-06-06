@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.user.management.client.widgets;
+package org.uberfire.user.management.client;
 
 import javax.annotation.PostConstruct;
 
@@ -27,6 +27,7 @@ import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -37,14 +38,17 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.uberfire.client.common.ButtonCell;
+import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.tables.ResizableHeader;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.user.management.client.UserManagementPresenter;
 import org.uberfire.user.management.client.resources.i18n.UserManagementConstants;
 import org.uberfire.user.management.client.utils.UserManagementUtils;
 import org.uberfire.user.management.model.UserInformation;
 import org.uberfire.user.management.model.UserManagerContent;
 
+/**
+ * Default implementation of the View widget for the User Management Editor
+ */
 public class UserManagerViewImpl extends Composite implements UserManagementView {
 
     interface UserManagerWidgetBinder
@@ -72,6 +76,9 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
 
     private static UserManagerWidgetBinder uiBinder = GWT.create( UserManagerWidgetBinder.class );
 
+    /**
+     * Setup widgets in view
+     */
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -181,12 +188,22 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
         deleteUserButton.setEnabled( false );
     }
 
+    /**
+     * Inject Presenter into View to support MVP pattern
+     * @param presenter
+     * @see UberView#init(Object)
+     */
     @Override
     public void init( final UserManagementPresenter presenter ) {
         this.presenter = PortablePreconditions.checkNotNull( "presenter",
                                                              presenter );
     }
 
+    /**
+     * @param content
+     * @param isReadOnly
+     * @see UserManagementView#setContent(UserManagerContent, boolean)
+     */
     @Override
     public void setContent( final UserManagerContent content,
                             final boolean isReadOnly ) {
@@ -203,11 +220,20 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
         deleteUserButton.setEnabled( !isReadOnly && isDeleteUserSupported );
     }
 
+    /**
+     * @param userInformation Basic user information of new user. Cannot be null.
+     * @see UserManagementView#addUser(UserInformation)
+     */
     @Override
     public void addUser( final UserInformation userInformation ) {
         this.dataProvider.getList().add( userInformation );
     }
 
+    /**
+     * @param oldUserInformation Original user information. Cannot be null.
+     * @param newUserInformation Updated user information. Cannot be null.
+     * @see UserManagementView#updateUser(UserInformation, UserInformation)
+     */
     @Override
     public void updateUser( final UserInformation oldUserInformation,
                             final UserInformation newUserInformation ) {
@@ -219,11 +245,20 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
                                          newUserInformation );
     }
 
+    /**
+     * @param userInformation Basic user information or user to be removed. Cannot be null.
+     * @see UserManagementView#deleteUser(UserInformation)
+     */
     @Override
     public void deleteUser( final UserInformation userInformation ) {
         this.dataProvider.getList().remove( userInformation );
     }
 
+    /**
+     * Click Handler for "Add" (User) button
+     * @param event
+     * @see ClickHandler#onClick(ClickEvent)
+     */
     @UiHandler(value = "addUserButton")
     public void onClickAddUserButton( final ClickEvent event ) {
         presenter.addUser();

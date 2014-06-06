@@ -17,6 +17,10 @@ package org.uberfire.user.management.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+/**
+ * Data Transfer Object defining the capabilities of the installed User Manager.
+ * This is used to align the operations available in the UI to those supported by the User Manager.
+ */
 @Portable
 public class UserManagerCapabilities {
 
@@ -29,6 +33,13 @@ public class UserManagerCapabilities {
         //Errai marshalling
     }
 
+    /**
+     * Constructor
+     * @param isAddUserSupported True if the User Manager supports creation of new Users
+     * @param isUpdateUserPasswordSupported True if the User Manager supports updates to a User's password
+     * @param isDeleteUserSupported True if the User Manager supports deletion of Users
+     * @param isUpdateUserRolesSupported True if the User Manager supports changes to a Users' Roles
+     */
     public UserManagerCapabilities( final boolean isAddUserSupported,
                                     final boolean isUpdateUserPasswordSupported,
                                     final boolean isDeleteUserSupported,
@@ -39,18 +50,30 @@ public class UserManagerCapabilities {
         this.isUpdateUserRolesSupported = isUpdateUserRolesSupported;
     }
 
+    /**
+     * @return True if the User Manager supports creation of new Users
+     */
     public boolean isAddUserSupported() {
         return isAddUserSupported;
     }
 
+    /**
+     * @return True if the User Manager supports updates to a User's password
+     */
     public boolean isUpdateUserPasswordSupported() {
         return isUpdateUserPasswordSupported;
     }
 
+    /**
+     * @return True if the User Manager supports deletion of Users
+     */
     public boolean isDeleteUserSupported() {
         return isDeleteUserSupported;
     }
 
+    /**
+     * @return True if the User Manager supports changes to a Users' Roles
+     */
     public boolean isUpdateUserRolesSupported() {
         return isUpdateUserRolesSupported;
     }
