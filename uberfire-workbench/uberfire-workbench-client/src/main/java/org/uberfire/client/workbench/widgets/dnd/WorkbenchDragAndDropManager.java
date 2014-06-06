@@ -17,13 +17,15 @@ package org.uberfire.client.workbench.widgets.dnd;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * A Manager of drag and drop operations within the Workbench.
@@ -31,7 +33,7 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 @ApplicationScoped
 public class WorkbenchDragAndDropManager {
 
-    //A registry of SimplePanels and their respective DropController
+    /** Maps panels to the drop controllers we have registered them with (so we can unregister them later). */
     Map<WorkbenchPanelView, DropController> dropControllerMap = new HashMap<WorkbenchPanelView, DropController>();
 
     //The context of the drag operation

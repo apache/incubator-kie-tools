@@ -23,9 +23,6 @@ import org.uberfire.client.workbench.widgets.split.WorkbenchSplitLayoutPanel;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -79,7 +76,6 @@ SplitPanel {
 
         westWidgetContainer.setWidget( westWidget );
         eastWidgetContainer.setWidget( eastWidget );
-        scheduleResize( getSlp() );
     }
 
     WorkbenchSplitLayoutPanel getSlp() {
@@ -103,17 +99,6 @@ SplitPanel {
         }
     }
 
-    @Override
-    public void onResize() {
-        //It is possible that the SplitterPanel is removed from the DOM before the resize is called
-        if ( isAttached() ) {
-            final Widget parent = getParent();
-            setPixelSize( parent.getOffsetWidth(),
-                          parent.getOffsetHeight() );
-            super.onResize();
-        }
-    }
-
     private int assertSize( final Integer size ) {
         return ( size == null ? DEFAULT_SIZE : size );
     }
@@ -133,20 +118,6 @@ SplitPanel {
             childSize = childSize + assertSize( westPanel.getWidth() ) + getChildSize( westPanel );
         }
         return childSize;
-    }
-
-    private void scheduleResize( final Widget widget ) {
-        if ( widget instanceof RequiresResize ) {
-            final RequiresResize requiresResize = (RequiresResize) widget;
-            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-                @Override
-                public void execute() {
-                    requiresResize.onResize();
-                }
-
-            } );
-        }
     }
 
 }

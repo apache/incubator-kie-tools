@@ -107,7 +107,7 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     //Initialise Workbench state to that of the provided perspective
     private void initialisePerspective( final PerspectiveDefinition perspective ) {
 
-        panelManager.setPerspective( perspective );
+        panelManager.setPerspective( perspective ); // TODO move this to PlaceManager
 
         Set<PartDefinition> parts = panelManager.getRoot().getParts();
         for ( PartDefinition part : parts ) {

@@ -16,18 +16,17 @@
 package org.uberfire.client.workbench.pmgr.template;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.AbstractPanelManagerImpl;
 import org.uberfire.client.workbench.BeanFactory;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
+
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 @ApplicationScoped
 public class TemplatePanelManager extends AbstractPanelManagerImpl {
@@ -36,19 +35,7 @@ public class TemplatePanelManager extends AbstractPanelManagerImpl {
     private DefaultBeanFactory factory;
 
     public TemplatePanelManager() {
-    }
-
-    //constructor for unit testing
-    public TemplatePanelManager( final DefaultBeanFactory factory,
-                             final Event<PlaceGainFocusEvent> placeGainFocusEvent,
-                             final Event<PlaceLostFocusEvent> placeLostFocusEvent,
-                             final Event<SelectPlaceEvent> selectPlaceEvent,
-                             final WorkbenchStatusBarPresenter statusBar ) {
-        this.factory = factory;
-        this.placeGainFocusEvent = placeGainFocusEvent;
-        this.placeLostFocusEvent = placeLostFocusEvent;
-        this.selectPlaceEvent = selectPlaceEvent;
-        this.statusBar = statusBar;
+        super( new SimplePanel(), new FlowPanel(), new FlowPanel() );
     }
 
     @Override
@@ -88,6 +75,23 @@ public class TemplatePanelManager extends AbstractPanelManagerImpl {
                                                targetPanelPresenter );
         }
         return targetPanelPresenter;
+    }
+
+    @Override
+    public void setWorkbenchSize( int width,
+                                  int height ) {
+        headerPanel.setWidth( width + "px" );
+        footerPanel.setWidth( width + "px" );
+        perspectiveRootContainer.setWidth( width + "px" );
+        int leftoverHeight = height - headerPanel.getOffsetHeight() - footerPanel.getOffsetHeight();
+        perspectiveRootContainer.setHeight( leftoverHeight + "px" );
+    }
+
+    @Override
+    protected void arrangePanelsInDOM() {
+        RootLayoutPanel.get().add( headerPanel );
+        RootLayoutPanel.get().add( perspectiveRootContainer );
+        RootLayoutPanel.get().add( footerPanel );
     }
 
 }

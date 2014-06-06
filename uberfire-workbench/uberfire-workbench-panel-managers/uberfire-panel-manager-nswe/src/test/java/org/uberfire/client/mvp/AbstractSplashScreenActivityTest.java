@@ -6,10 +6,14 @@ import static org.mockito.Mockito.*;
 import java.util.HashSet;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-public class AbstractSplashScreenActivityTest extends BaseWorkbenchTest {
+import com.google.gwtmockito.GwtMockitoTestRunner;
+
+@RunWith(GwtMockitoTestRunner.class)
+public class AbstractSplashScreenActivityTest extends BasePanelManagerTest {
 
 
     @Test
