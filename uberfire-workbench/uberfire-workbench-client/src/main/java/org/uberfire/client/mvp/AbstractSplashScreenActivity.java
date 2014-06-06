@@ -16,14 +16,11 @@
 package org.uberfire.client.mvp;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
@@ -39,13 +36,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public abstract class AbstractSplashScreenActivity extends AbstractActivity implements SplashScreenActivity {
 
     @Inject
-    private PlaceManager placeManager;
-
-    @Inject
     private WorkbenchServicesProxy wbServices;
-
-    @Inject
-    private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
     private final SplashView splash = new SplashView();
 
@@ -63,14 +54,12 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     }
 
     @Override
-    public void launch( final PlaceRequest place,
-                        final Command callback ) {
-        super.launch( place,
-                callback );
-
+    public void onStartup(PlaceRequest place) {
+        System.out.println("AbstractSplashScreenActivity.onStartup("+place+")");
         wbServices.loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
             @Override
             public void execute( final SplashScreenFilter response ) {
+                System.out.println("AbstractSplashScreenActivity.onStartup() - callback("+response+")");
                 if ( response != null ) {
                     splashFilter = response;
                 }
@@ -81,6 +70,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     }
 
     public void init() {
+        System.out.println("AbstractSplashScreenActivity.init()");
         if ( !splashFilter.displayNextTime() ) {
             return;
         }
@@ -108,7 +98,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
 
     @Override
     public void forceShow() {
-        onStartup( place );
+        System.out.println("AbstractSplashScreenActivity.forceShow()");
 
         final IsWidget widget = getWidget();
 
@@ -121,28 +111,11 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
                 AbstractSplashScreenActivity.this.onClose();
             }
         } );
-
-        onOpen();
-    }
-
-    @Override
-    public void onStartup() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onStartup( final PlaceRequest place ) {
-        //Do nothing.
     }
 
     @Override
     public void onClose() {
         saveState();
-    }
-
-    @Override
-    public void onShutdown() {
-        //Do nothing.
     }
 
     @Override

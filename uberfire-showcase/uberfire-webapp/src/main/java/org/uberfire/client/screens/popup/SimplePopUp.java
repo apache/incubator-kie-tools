@@ -1,8 +1,14 @@
 package org.uberfire.client.screens.popup;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchPopup;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Label;
@@ -11,25 +17,19 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 
 /**
- *
+ * An example popup
  */
 @WorkbenchPopup(identifier = "MyTestPopUp")
 public class SimplePopUp {
 
     @Inject
-    public Event<BeforeClosePlaceEvent> beforeClosePlaceEvent;
+    private PlaceManager placeManager;
 
     private PlaceRequest place;
 
-    private VerticalPanel view = new VerticalPanel();
+    private final VerticalPanel view = new VerticalPanel();
     private Label l;
     private TextBox t;
     private Button b;
@@ -43,7 +43,7 @@ public class SimplePopUp {
 
             @Override
             public void onClick( final ClickEvent event ) {
-                beforeClosePlaceEvent.fire( new BeforeClosePlaceEvent( place ) );
+                placeManager.closePlace( place );
             }
         } );
         view.add( l );

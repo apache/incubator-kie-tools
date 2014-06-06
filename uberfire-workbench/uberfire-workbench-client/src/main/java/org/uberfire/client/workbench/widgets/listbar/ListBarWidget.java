@@ -163,7 +163,7 @@ extends Composite implements MultiPartWidget {
                 @Override
                 public void onClick( ClickEvent event ) {
                     if ( currentPart != null ) {
-                        presenter.onBeforePartClose( currentPart.getK1() );
+                        presenter.closePart( currentPart.getK1() );
                     }
                 }
             } );

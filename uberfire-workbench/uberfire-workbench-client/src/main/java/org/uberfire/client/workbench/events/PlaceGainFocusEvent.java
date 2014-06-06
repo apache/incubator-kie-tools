@@ -19,7 +19,8 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.UberFireEvent;
 
 /**
- * An event when a WorkbenchPart gains focus
+ * A CDI event fired by the framework each time a workbench screen or editor is selected within a panel. Application
+ * code may observe and react to this event, but must not fire the event.
  */
 public class PlaceGainFocusEvent extends UberFireEvent {
 
@@ -35,7 +36,7 @@ public class PlaceGainFocusEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "PlaceGainFocusEvent [place=" + place + "]";
+        return "PlaceGainFocusEvent [place=" + place + "]";
     }
 
 }

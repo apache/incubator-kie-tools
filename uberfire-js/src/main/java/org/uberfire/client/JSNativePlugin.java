@@ -2,8 +2,12 @@ package org.uberfire.client;
 
 import java.util.Collection;
 import java.util.Collections;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -11,8 +15,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class JSNativePlugin {
@@ -282,10 +284,6 @@ public class JSNativePlugin {
     private static native String getTemplateUrl( final JavaScriptObject o ) /*-{
         return o.templateUrl;
     }-*/;
-
-    public void onStartup() {
-        //To change body of created methods use File | Settings | File Templates.
-    }
 
     public void onStartup( PlaceRequest place ) {
         //To change body of created methods use File | Settings | File Templates.

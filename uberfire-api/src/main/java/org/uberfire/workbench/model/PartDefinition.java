@@ -18,38 +18,20 @@ package org.uberfire.workbench.model;
 import org.uberfire.mvp.PlaceRequest;
 
 /**
- * A Part in the Workbench. Parts are added to Panels. See the documentation of WorkbenchPanelPresenter for details.
+ * Describes the assignment of a {@link PlaceRequest} to a tab/card/item in a {@link PanelDefinition}. Given this
+ * information, you can find out (or dictate) which panel within the current perspective will contain the GUI element
+ * for the given PlaceRequest. However, the {@link PartDefinition} does not contain any information about the GUI
+ * itself, presumably because PartDefinition objects can be sent to the server. The UI (Widget) information is contained
+ * with UIPart. The mapping of PartDefinitions to UIParts is maintained by a PanelManager.
  */
 public interface PartDefinition {
 
-    /**
-     * Get the PlaceRequest that this Part will contain.
-     * @return the place
-     */
     PlaceRequest getPlace();
-
-    /**
-     * Set the PlaceRequest that this Part will contain.
-     * @param place the place to set
-     */
     void setPlace( final PlaceRequest place );
 
-    /**
-     * Get the parent Panel containing this Part.
-     * @return the parentPanel
-     */
     PanelDefinition getParentPanel();
-
-    /**
-     * Set the parent Panel containing this Part.
-     * @param parentPanel the parentPanel to set
-     */
     void setParentPanel( final PanelDefinition parentPanel );
 
-    /**
-     * Set whether this Part is minimized or not.
-     * @param isMinimized true if Part is minimized
-     */
     void setMinimized( final boolean isMinimized );
 
     /**

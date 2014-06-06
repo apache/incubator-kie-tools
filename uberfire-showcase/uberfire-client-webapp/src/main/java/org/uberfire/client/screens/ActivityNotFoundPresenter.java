@@ -13,41 +13,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client.workbench.widgets.popups.activities.notfound;
+package org.uberfire.client.screens;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
+
 /**
- * Popup presenter for when an Activity cannot be found
+ * Popup presenter for when an Activity cannot be found.
+ * <p>
+ * XXX this class is here temporarily (until UF-100 gets fixed).
  */
 @ApplicationScoped
 @WorkbenchPopup(identifier = "workbench.activity.notfound")
 public class ActivityNotFoundPresenter {
 
-    public interface View extends UberView<ActivityNotFoundPresenter> {
-
-        void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );
-
-    }
-
-    @Inject
-    private View view;
-
-    @Inject
-    private PlaceManager placeManager;
-
     private PlaceRequest place;
+
+    private final Label view = new Label("Activity not found");
 
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
@@ -57,21 +48,17 @@ public class ActivityNotFoundPresenter {
     @OnOpen
     public void onOpen() {
         final String identifier = place.getParameter( "requestedPlaceIdentifier", null );
-        view.setRequestedPlaceIdentifier( identifier );
+        view.setText( "Activity not found: " + identifier );
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return CoreConstants.INSTANCE.ActivityNotFound();
+        return "Not Found";
     }
 
     @WorkbenchPartView
-    public UberView<ActivityNotFoundPresenter> getView() {
+    public IsWidget getView() {
         return view;
-    }
-
-    public void close() {
-        placeManager.closePlace( this.place );
     }
 
 }

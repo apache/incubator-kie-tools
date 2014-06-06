@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
@@ -25,15 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface WorkbenchActivity extends ContextSensitiveActivity {
 
-    void launch( final AcceptItem acceptItem,
-                 final PlaceRequest place,
-                 final Command callback );
-
     boolean onMayClose();
-
-    void onClose();
-
-    void onShutdown();
 
     Position getDefaultPosition();
 

@@ -44,16 +44,6 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity impleme
     }
 
     @Override
-    public void onClose() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onShutdown() {
-        //Do nothing.
-    }
-
-    @Override
     public abstract String getTitle();
 
     @Override

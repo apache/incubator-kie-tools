@@ -2,27 +2,23 @@ package org.uberfire.client;
 
 import java.util.Collection;
 
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.mvp.AcceptItem;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
+
 public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
-    private PlaceManager placeManager;
+    private final PlaceManager placeManager;
 
     private PlaceRequest place;
 
-    private Command callback;
-
-    private JSNativePlugin nativePlugin;
+    private final JSNativePlugin nativePlugin;
 
     public JSWorkbenchScreenActivity( final JSNativePlugin nativePlugin,
                                       final PlaceManager placeManager ) {
@@ -31,35 +27,13 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     }
 
     @Override
-    public void launch( final PlaceRequest place,
-                        final Command callback ) {
+    public void onStartup( PlaceRequest place ) {
         this.place = place;
-        this.callback = callback;
-    }
-
-    @Override
-    public void launch( final AcceptItem acceptPanel,
-                        final PlaceRequest place,
-                        final Command callback ) {
-        launch( place, callback );
-        onStartup( place );
-        acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
+        nativePlugin.onStartup( place );
 
         if ( nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase( "angularjs" ) ) {
             bind();
         }
-
-        onOpen();
-    }
-
-    @Override
-    public void onStartup() {
-        nativePlugin.onStartup();
-    }
-
-    @Override
-    public void onStartup( final PlaceRequest place ) {
-        nativePlugin.onStartup( place );
     }
 
     @Override
@@ -120,8 +94,7 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     @Override
     public void onOpen() {
         nativePlugin.onOpen();
-
-        executeOnOpenCallback();
+        placeManager.executeOnOpenCallback( this.place );
     }
 
     @Override
@@ -137,13 +110,6 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     @Override
     public Collection<String> getTraits() {
         return nativePlugin.getTraits();
-    }
-
-    private void executeOnOpenCallback() {
-        if ( callback != null ) {
-            callback.execute();
-        }
-        placeManager.executeOnOpenCallback( this.place );
     }
 
     // Alias registerPlugin with a global JS function.

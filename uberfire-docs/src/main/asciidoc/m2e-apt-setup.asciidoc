@@ -48,51 +48,45 @@ After allowing m2e to update your project configurations, you should
 see that each project has a new source folder called
 `target/generated-sources/annotations`.
 
-== Ensure your pom.xml is set up compatibly
+== Put the annotation processors on your project's classpath
 
-Unlike NetBeans and IDEA, annoataion processors are not picked up from
-your pom's general `<dependencies>` section. You must specify
-libraries that contain annotation processors in one of two places: as
-dependencies of the `maven-compiler-plugin`, _or_ in the configuration
-of `maven-processor-plugin`.
+Once m2e-apt is installed and enabled (or by default if you're using
+NetBeans or IDEA), annotation processors on your project's
+compile-time build path will get picked up and enabled automatically.
 
-To configure the annotation processors as dependencies of
-`maven-compiler-plugin`, do this:
+For UberFire, you'll require the UberFire Workbench annotation
+processors (naturally), and we also recommend the Errai annotation
+processors since UberFire builds upon Errai and you'll be coming into
+contact with annotations from that framework too. Note that the Errai
+processors are optional: they don't generate any code; they simply
+give you an early check that you're using the annotations properly.
 
 [source,xml]
 ------
 <project>
   ...
-  <build>
+  <dependencies>
     ...
-    <plugins>
-      ...
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-workbench-processors</artifactId>
-            <version>${uberfire.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      ...
-    </plugins>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-processors</artifactId>
+      <version>${uberfire.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-annotation-processors</artifactId>
+      <version>${errai.version}</version>
+      <scope>provided</scope>
+    </dependency>
     ...
-  </build>
+  </dependencies>
   ...
 </project>
 ------
 
-Alternatively, to configure the processors using
-`maven-processor-plugin`, do this:
+Alternatively, if you need to control exactly which processors run
+within the IDE, configure the processors using
+`maven-processor-plugin`, like this:
 
 [source,xml]
 <project>
@@ -141,8 +135,8 @@ processors and add them to your configuration.
 
 .It's one or the other, not both!
 TIP: if you add a `maven-processor-plugin` entry to your pom, m2e-apt
-will ignore the dependencies of `maven-compiler-plugin` when
-scanning for annotation processors.
+will ignore the main project dependencies when scanning for annotation
+processors.
 
 == Verify it is working
 

@@ -15,11 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.mvp.Command;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import org.uberfire.mvp.PlaceRequest;
 
 /**
- * Implementation of behaviour common to all activities.
+ * Implementation of behaviour common to all activity types.
  * <p>
  * AbstractActivity is not typically subclassed directly, even by generated code. See the more purpose-based subclasses.
  */
@@ -29,29 +30,33 @@ public abstract class AbstractActivity implements Activity {
 
     protected PlaceRequest place;
 
-    protected Command callback;
-
     public AbstractActivity( final PlaceManager placeManager ) {
         this.placeManager = placeManager;
     }
 
     @Override
-    public void launch( final PlaceRequest place,
-                        final Command callback ) {
-        this.place = place;
-        this.callback = callback;
+    public void onStartup( PlaceRequest place ) {
+        this.place = checkNotNull( "place", place );
     }
 
     @Override
     public void onOpen() {
-        executeOnOpenCallback();
+        if ( this.place == null ) {
+            throw new IllegalStateException( "Activity has not been started" );
+        }
         placeManager.executeOnOpenCallback( this.place );
     }
 
-    private void executeOnOpenCallback() {
-        if ( callback != null ) {
-            callback.execute();
-        }
+    /** Does nothing. */
+    @Override
+    public void onClose() {
+        // Do nothing.
+    }
+
+    /** Does nothing. */
+    @Override
+    public void onShutdown() {
+        // Do nothing.
     }
 
     @Override

@@ -497,7 +497,7 @@ ClickHandler {
                 @Override
                 public void onClick( final ClickEvent event ) {
                     final WorkbenchPartPresenter.View partToDeselect = tabInvertedIndex.get( tab.asTabLink() );
-                    presenter.onBeforePartClose( partToDeselect.getPresenter().getDefinition() );
+                    presenter.closePart( partToDeselect.getPresenter().getDefinition() );
                 }
             } );
         }};

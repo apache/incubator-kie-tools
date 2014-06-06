@@ -89,7 +89,7 @@ public class ${className} extends AbstractPopupActivity {
     <#elseif onStartup0ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
-        super.onStartup();
+        super.onStartup( place );
         realPresenter.${onStartup0ParameterMethodName}();
     }
 

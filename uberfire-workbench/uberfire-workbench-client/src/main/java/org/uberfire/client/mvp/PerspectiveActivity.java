@@ -15,20 +15,11 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
 public interface PerspectiveActivity extends ContextSensitiveActivity {
-
-    void onStartup();
-
-    void onStartup( final PlaceRequest place );
-
-    void onClose();
-
-    void onShutdown();
 
     PerspectiveDefinition getPerspective();
 

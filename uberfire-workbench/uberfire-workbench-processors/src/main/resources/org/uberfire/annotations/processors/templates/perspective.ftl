@@ -114,7 +114,7 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
 <#elseif onStartup0ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
-        super.onStartup();
+        super.onStartup( place );
         realPresenter.${onStartup0ParameterMethodName}();
     }
 

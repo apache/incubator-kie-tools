@@ -16,8 +16,6 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.annotations.WorkbenchContext;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -32,13 +30,6 @@ public abstract class AbstractWorkbenchContextActivity extends AbstractActivity 
 
     public AbstractWorkbenchContextActivity( final PlaceManager placeManager ) {
         super( placeManager );
-    }
-
-    @Override
-    public void launch( final PlaceRequest place,
-                        final Command callback ) {
-        super.launch( place, callback );
-        onOpen();
     }
 
     @Override

@@ -16,8 +16,6 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Implementation of behaviour common to all workbench screen activities. Concrete implementations are typically not written by
@@ -29,23 +27,4 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
         super( placeManager );
     }
 
-    @Override
-    public void launch( final AcceptItem acceptPanel,
-                        final PlaceRequest place,
-                        final Command callback ) {
-        super.launch( place, callback );
-        onStartup( place );
-        acceptPanel.add( new UIPart( getTitle(), getTitleDecoration(), getWidget() ) );
-        onOpen();
-    }
-
-    @Override
-    public void onStartup() {
-        //Do nothing.
-    }
-
-    @Override
-    public void onStartup( final PlaceRequest place ) {
-        //Do nothing.
-    }
 }

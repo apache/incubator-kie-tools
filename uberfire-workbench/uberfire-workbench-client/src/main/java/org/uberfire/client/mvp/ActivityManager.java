@@ -18,6 +18,7 @@ package org.uberfire.client.mvp;
 import java.util.Set;
 
 import org.jboss.errai.ioc.client.api.ActivatedBy;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -47,8 +48,15 @@ public interface ActivityManager {
      * @param abstractScreenActivityClass
      *            the type of activities to enumerate. Must not be null. Passing in {@code Activity.class} will yield
      *            all possible activity types.
-     * @return the set of available activities. Never null.
+     * @return the set of available activities. Never null. Each object in the returned set must be freed by the caller
+     *         via a call to {@link SyncBeanManager#destroyBean(Object)}.
+     * @deprecated this method returns Activity instances that have not had their onStartup() methods invoked, so they
+     *             can not be displayed according to the normal Activity lifecycle. It is also up to the caller to free
+     *             each of the returned Activity instances by calling {@link SyncBeanManager#destroyBean(Object)} on
+     *             them. Consider using the Errai bean manager and UberFire AuthorizationManager directly instead of
+     *             using this method. See UF-105 for details.
      */
+    @Deprecated
     <T extends Activity> Set<T> getActivities( final Class<T> abstractScreenActivityClass );
 
     /**
@@ -64,14 +72,17 @@ public interface ActivityManager {
     SplashScreenActivity getSplashScreenInterceptor( PlaceRequest placeRequest );
 
     /**
-     * Returns the set of activities that can handle the given PlaceRequest. If the PlaceRequest is for a certain place
-     * ID, this method will return a set with at most one activity in it. If the PlaceRequest is for a certain path, the
-     * returned set can contain any number of activities.
+     * Returns the set of activities that can handle the given PlaceRequest. The activities will be in the
+     * <i>started</i> state (see {@link Activity} for details on the activity lifecycle). If the PlaceRequest is for a
+     * certain place ID, this method will return a set with at most one activity in it. If the PlaceRequest is for a
+     * certain path, the returned set can contain any number of activities.
      * 
      * @param placeRequest
      *            the PlaceRequest to resolve activities for. Although null is permitted for convenience, it always
      *            resolves to the empty set.
      * @return an unmodifiable set of activities that can handle the given PlaceRequest. Never null, but can be empty.
+     *         To prevent memory leaks, pass Activity in the returned set to {@link #destroyActivity(Activity)} when you
+     *         are done with it.
      */
     Set<Activity> getActivities( final PlaceRequest placeRequest );
 

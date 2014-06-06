@@ -1,9 +1,13 @@
 package org.uberfire.client.mvp;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.junit.Test;
@@ -13,9 +17,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests that the PanelManager keeps the underlying Perspective model consistent
@@ -30,6 +31,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
+        activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy = spy( activity );
         when( spy.getDefaultPosition() ).thenReturn( Position.ROOT );
 
@@ -64,6 +66,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
         final WorkbenchScreenActivity activity = new MockWorkbenchScreenActivity( placeManager );
+        activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy = spy( activity );
         when( spy.getDefaultPosition() ).thenReturn( Position.ROOT );
 
@@ -117,6 +120,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         final PlaceRequest elsewhere = new DefaultPlaceRequest( "Elsewhere" );
 
         final WorkbenchScreenActivity activity1 = new MockWorkbenchScreenActivity( placeManager );
+        activity1.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy1 = spy( activity1 );
         when( spy1.getDefaultPosition() ).thenReturn( Position.ROOT );
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -124,6 +128,7 @@ public class PanelManagerTest extends BaseWorkbenchTest {
         }} );
 
         final WorkbenchScreenActivity activity2 = new MockWorkbenchScreenActivity( placeManager );
+        activity2.onStartup( elsewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchScreenActivity spy2 = spy( activity2 );
         when( spy2.getDefaultPosition() ).thenReturn( Position.ROOT );
         when( activityManager.getActivities( elsewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{

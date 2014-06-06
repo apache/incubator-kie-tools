@@ -1,5 +1,8 @@
 package org.uberfire.client.mvp;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import java.util.HashSet;
 
 import org.junit.Test;
@@ -7,15 +10,8 @@ import org.mockito.ArgumentMatcher;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.*;
 
 /**
  * Initial (poor coverage) integration tests for PlaceManager, PanelManager and
@@ -33,6 +29,8 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
         doReturn( uri ).when( path ).toURI();
         final WorkbenchEditorActivity activity = new MockWorkbenchEditorActivity( placeManager );
+        activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
+
         final WorkbenchEditorActivity spy = spy( activity );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -46,17 +44,10 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere, root );
 
-        verify( spy ).launch( any( AcceptItem.class ),
-                              eq( somewhere ),
-                              isNull( Command.class ) );
-        verify( spy ).onStartup( argThat( new EqualPaths( path ) ),
-                                 eq( somewhere ) );
+        verify( spy, never() ).onStartup( any( ObservablePath.class ),
+                                          any( PlaceRequest.class ) );
         verify( spy ).onOpen();
 
-        verify( spy,
-                times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ),
-                                     isNull( Command.class ) );
         verify( selectWorkbenchPartEvent,
                 times( 1 ) ).fire( any( SelectPlaceEvent.class ) );
     }
@@ -72,6 +63,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
         doReturn( uri ).when( path ).toURI();
         final WorkbenchEditorActivity activity = new MockWorkbenchEditorActivity( placeManager );
+        activity.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchEditorActivity spy = spy( activity );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -89,13 +81,8 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         placeManager.goTo( somewhere, root );
         placeManager.goTo( somewhereTheSame , root);
 
-        verify( spy,
-                times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ),
-                                     isNull( Command.class ) );
-        verify( spy,
-                times( 1 ) ).onStartup( argThat( new EqualPaths( path ) ),
-                                        eq( somewhere ) );
+        verify( spy, never() ).onStartup( any( ObservablePath.class ),
+                                          any( PlaceRequest.class ) );
         verify( spy,
                 times( 1 ) ).onOpen();
 
@@ -116,6 +103,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         doReturn( uri1 ).when( path1 ).toURI();
         final PlaceRequest somewhere =  new PathPlaceRequestUnitTestWrapper(path1);
         final WorkbenchEditorActivity activity1 = new MockWorkbenchEditorActivity( placeManager );
+        activity1.onStartup( somewhere ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchEditorActivity spy1 = spy( activity1 );
 
         //The second place
@@ -123,6 +111,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         doReturn( uri2 ).when( path2 ).toURI();
         final PlaceRequest  somewhereElse =  new PathPlaceRequestUnitTestWrapper(path2);
         final WorkbenchEditorActivity activity2 = new MockWorkbenchEditorActivity( placeManager );
+        activity2.onStartup( somewhereElse ); // normally, ActivityManager calls this before returning the activity
         final WorkbenchEditorActivity spy2 = spy( activity2 );
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( new HashSet<Activity>( 1 ) {{
@@ -140,23 +129,13 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
         placeManager = new PlaceManagerImplUnitTestWrapper( spy2, panelManager, selectWorkbenchPartEvent );
         placeManager.goTo( somewhereElse , root);
 
-        verify( spy1,
-                times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhere ),
-                                     isNull( Command.class ) );
-        verify( spy1,
-                times( 1 ) ).onStartup( argThat( new EqualPaths( path1 ) ),
-                                        eq( somewhere ) );
+        verify( spy1, never() ).onStartup( any( ObservablePath.class ),
+                                           any( PlaceRequest.class ) );
         verify( spy1,
                 times( 1 ) ).onOpen();
 
-        verify( spy2,
-                times( 1 ) ).launch( any( AcceptItem.class ),
-                                     eq( somewhereElse ),
-                                     isNull( Command.class ) );
-        verify( spy2,
-                times( 1 ) ).onStartup( argThat( new EqualPaths( path2 ) ),
-                                        eq( somewhereElse ) );
+        verify( spy2, never() ).onStartup( any( ObservablePath.class ),
+                                           any( PlaceRequest.class ) );
         verify( spy2,
                 times( 1 ) ).onOpen();
 
@@ -167,7 +146,7 @@ public class AbstractWorkbenchEditorActivityTest extends BaseWorkbenchTest {
 
     private class EqualPaths extends ArgumentMatcher<ObservablePath> {
 
-        private Path path;
+        private final Path path;
 
         private EqualPaths( final ObservablePath path ) {
             this.path = path;

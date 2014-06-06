@@ -22,9 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Methods annotated with this will be called by the Workbench when a
- * WorkbenchPart is closed. WorkbenchParts can perform any clean-up tasks in the
- * annotated method. The method should take zero arguments and return void.
+ * Methods annotated with this will be called by the Workbench immediately after a WorkbenchPart is closed.
+ * WorkbenchParts can perform any clean-up tasks in the annotated method, but this does not include removing the view
+ * widget from the DOM; this will have already been taken care of by the framework. The method must take zero
+ * arguments and return void.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

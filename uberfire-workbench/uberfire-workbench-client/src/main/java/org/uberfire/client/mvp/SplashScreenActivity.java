@@ -24,10 +24,6 @@ public interface SplashScreenActivity extends Activity {
 
     void forceShow();
 
-    void onStartup();
-
-    void onStartup( final PlaceRequest place );
-
     String getTitle();
 
     IsWidget getTitleDecoration();
@@ -35,10 +31,6 @@ public interface SplashScreenActivity extends Activity {
     IsWidget getWidget();
 
     Integer getBodyHeight();
-
-    void onClose();
-
-    void onShutdown();
 
     SplashScreenFilter getFilter();
 

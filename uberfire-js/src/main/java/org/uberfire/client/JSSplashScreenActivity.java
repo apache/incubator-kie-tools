@@ -17,16 +17,16 @@ package org.uberfire.client;
 
 import java.util.Collection;
 
+import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.client.workbench.widgets.splash.SplashView;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.SplashScreenFilter;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.client.mvp.SplashScreenActivity;
-import org.uberfire.client.workbench.widgets.splash.SplashView;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.SplashScreenFilter;
 
 public class JSSplashScreenActivity implements SplashScreenActivity {
 
@@ -35,7 +35,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
     private final JSNativeSplashScreen nativeSplashScreen;
     private PlaceRequest place;
-    private SplashView splash = new SplashView();
+    private final SplashView splash = new SplashView();
 
     public JSSplashScreenActivity( final JSNativeSplashScreen nativeSplashScreen ) {
         this.nativeSplashScreen = nativeSplashScreen;
@@ -43,8 +43,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
     }
 
     @Override
-    public void launch( final PlaceRequest place,
-                        final Command callback ) {
+    public void onStartup( final PlaceRequest place ) {
         this.place = place;
 
         nativeSplashScreen.getWbServices().loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
@@ -56,6 +55,8 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
                 init();
             }
         } );
+
+        nativeSplashScreen.onStartup( place );
     }
 
     public void init() {
@@ -97,8 +98,6 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
     @Override
     public void forceShow() {
-        onStartup( place );
-
         final IsWidget widget = getWidget();
 
         splash.setContent( widget, getBodyHeight() );
@@ -110,18 +109,6 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
                 JSSplashScreenActivity.this.onClose();
             }
         } );
-
-        onOpen();
-    }
-
-    @Override
-    public void onStartup() {
-        nativeSplashScreen.onStartup();
-    }
-
-    @Override
-    public void onStartup( final PlaceRequest place ) {
-        nativeSplashScreen.onStartup( place );
     }
 
     @Override

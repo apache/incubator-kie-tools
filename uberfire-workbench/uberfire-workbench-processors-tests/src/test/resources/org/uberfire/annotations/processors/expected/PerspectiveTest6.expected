@@ -63,7 +63,7 @@ public class PerspectiveTest6Activity extends AbstractWorkbenchPerspectiveActivi
 
     @Override
     public void onStartup(final PlaceRequest place) {
-        super.onStartup();
+        super.onStartup( place );
         realPresenter.onStartup();
     }
 

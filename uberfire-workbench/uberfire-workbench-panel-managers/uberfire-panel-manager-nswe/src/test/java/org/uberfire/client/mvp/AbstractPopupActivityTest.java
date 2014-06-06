@@ -1,15 +1,13 @@
 package org.uberfire.client.mvp;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import java.util.HashSet;
 
 import org.junit.Test;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 
 public class AbstractPopupActivityTest  extends BaseWorkbenchTest {
 
@@ -30,8 +28,8 @@ public class AbstractPopupActivityTest  extends BaseWorkbenchTest {
 
         placeManager.goTo( somewhere );
 
-        verify( activity ).launch( eq( somewhere ), any(Command.class));
-
+        verify( activity, never() ).onStartup( any( PlaceRequest.class ) );
+        verify( activity ).onOpen();
     }
 
 }

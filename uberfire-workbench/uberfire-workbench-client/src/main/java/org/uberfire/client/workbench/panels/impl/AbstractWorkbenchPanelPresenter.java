@@ -152,8 +152,8 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     }
 
     @Override
-    public void onBeforePartClose( final PartDefinition part ) {
-        panelManager.onBeforePartClose( part );
+    public void closePart( final PartDefinition part ) {
+        panelManager.closePart( part );
     }
 
     @Override
