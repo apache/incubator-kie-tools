@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -67,23 +65,10 @@ public abstract class AbstractWatchService implements IOWatchService {
     private boolean isDisposed = false;
 
     private boolean started;
-    private final ExecutorService executorService;
-    private Set<Runnable> watchThreads = new HashSet<Runnable>();
+    private ExecutorManager executorManager = null;
+    private Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
 
     public AbstractWatchService() {
-
-        ExecutorService _execservice = null;
-        try {
-            _execservice = (ExecutorService) new InitialContext().lookup( System.getProperty( "org.uberfire.async.manager", "java:comp/env/uf/workManager" ) );
-        } catch ( final Exception ignored ) {
-        }
-
-        if ( _execservice == null ) {
-            executorService = Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors() );
-        } else {
-            executorService = _execservice;
-        }
-
         final boolean autostart = Boolean.parseBoolean( System.getProperty( "org.uberfire.watcher.autostart", "true" ) );
         if ( autostart ) {
             start();
@@ -97,8 +82,8 @@ public abstract class AbstractWatchService implements IOWatchService {
     public synchronized void start() {
         if ( !started ) {
             this.started = true;
-            for ( Runnable watchThread : watchThreads ) {
-                executorService.execute( watchThread );
+            for ( AsyncWatchService watchThread : watchThreads ) {
+                getExecutorManager().execute( watchThread );
             }
             watchServices.clear();
         }
@@ -122,9 +107,13 @@ public abstract class AbstractWatchService implements IOWatchService {
         watchServices.add( ws );
 
         //this.getClass().getName() + "(" + ws.toString() + ")"
-        final Runnable watchThread = new Runnable() {
+        final AsyncWatchService asyncWatchService = new AsyncWatchService() {
             @Override
-            public void run() {
+            public void execute( final Event<ResourceBatchChangesEvent> resourceBatchChanges,
+                                 final Event<ResourceUpdatedEvent> resourceUpdatedEvent,
+                                 final Event<ResourceRenamedEvent> resourceRenamedEvent,
+                                 final Event<ResourceDeletedEvent> resourceDeletedEvent,
+                                 final Event<ResourceAddedEvent> resourceAddedEvent ) {
                 while ( !isDisposed && !ws.isClose() ) {
                     final WatchKey wk = ws.take();
                     if ( wk == null ) {
@@ -188,10 +177,29 @@ public abstract class AbstractWatchService implements IOWatchService {
         };
 
         if ( started ) {
-            executorService.execute( watchThread );
+            getExecutorManager().execute( asyncWatchService );
         } else {
-            watchThreads.add( watchThread );
+            watchThreads.add( asyncWatchService );
         }
+    }
+
+    private ExecutorManager getExecutorManager() {
+        if ( executorManager == null ) {
+            ExecutorManager _executorManager = null;
+            try {
+                _executorManager = InitialContext.doLookup( "java:module/ExecutorManager" );
+            } catch ( final Exception ignored ) {
+            }
+
+            if ( _executorManager == null ) {
+                executorManager = new ExecutorManager();
+                executorManager.setEvents( resourceBatchChanges, resourceUpdatedEvent, resourceRenamedEvent, resourceDeletedEvent, resourceAddedEvent );
+            } else {
+                executorManager = _executorManager;
+            }
+        }
+
+        return executorManager;
     }
 
     private ResourceEvent toEvent( final Path path,
