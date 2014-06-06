@@ -7,9 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,24 +67,38 @@ public abstract class AbstractWatchService implements IOWatchService {
     private boolean isDisposed = false;
 
     private boolean started;
-    private Set<Thread> watchThreads = new HashSet<Thread>();
+    private final ExecutorService executorService;
+    private Set<Runnable> watchThreads = new HashSet<Runnable>();
 
     public AbstractWatchService() {
-        final boolean autostart = Boolean.parseBoolean(System.getProperty("org.uberfire.watcher.autostart", "true"));
-        if (autostart) {
+
+        ExecutorService _execservice = null;
+        try {
+            _execservice = (ExecutorService) new InitialContext().lookup( System.getProperty( "org.uberfire.async.manager", "java:comp/env/uf/workManager" ) );
+        } catch ( final Exception ignored ) {
+        }
+
+        if ( _execservice == null ) {
+            executorService = Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors() );
+        } else {
+            executorService = _execservice;
+        }
+
+        final boolean autostart = Boolean.parseBoolean( System.getProperty( "org.uberfire.watcher.autostart", "true" ) );
+        if ( autostart ) {
             start();
         }
     }
 
-    public void configureOnEvent(@Observes ApplicationStarted applicationStartedEvent) {
+    public void configureOnEvent( @Observes ApplicationStarted applicationStartedEvent ) {
         start();
     }
 
     public synchronized void start() {
-        if (!started) {
+        if ( !started ) {
             this.started = true;
-            for (Thread watchThread : watchThreads) {
-                watchThread.start();
+            for ( Runnable watchThread : watchThreads ) {
+                executorService.execute( watchThread );
             }
             watchServices.clear();
         }
@@ -104,7 +121,8 @@ public abstract class AbstractWatchService implements IOWatchService {
         fileSystems.add( fs );
         watchServices.add( ws );
 
-        Thread watchThread = new Thread( this.getClass().getName() + "(" + ws.toString() + ")" ) {
+        //this.getClass().getName() + "(" + ws.toString() + ")"
+        final Runnable watchThread = new Runnable() {
             @Override
             public void run() {
                 while ( !isDisposed && !ws.isClose() ) {
@@ -169,10 +187,10 @@ public abstract class AbstractWatchService implements IOWatchService {
             }
         };
 
-        if (started) {
-            watchThread.start();
+        if ( started ) {
+            executorService.execute( watchThread );
         } else {
-            watchThreads.add(watchThread);
+            watchThreads.add( watchThread );
         }
     }
 
