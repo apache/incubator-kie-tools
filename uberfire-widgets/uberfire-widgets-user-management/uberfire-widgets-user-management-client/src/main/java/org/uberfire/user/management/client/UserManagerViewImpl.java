@@ -59,7 +59,7 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
 
     @UiField(provided = true)
     CellTable<UserInformation> table = new CellTable<UserInformation>();
-    ListDataProvider<UserInformation> dataProvider;
+    ListDataProvider<UserInformation> dataProvider = new ListDataProvider<UserInformation>();
 
     @UiField
     FluidContainer container;
@@ -67,12 +67,33 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
     @UiField
     Button addUserButton;
 
-    private boolean isReadOnly = false;
-    private ButtonCell deleteUserButton;
-    private ButtonCell editUserRolesButton;
-    private ButtonCell editUserPasswordButton;
+    protected boolean isReadOnly = false;
 
-    private UserManagementPresenter presenter;
+    protected ButtonCell editUserRolesButton = new ButtonCell( ButtonSize.SMALL );
+    protected Column<UserInformation, String> editUserRolesColumn = new Column<UserInformation, String>( editUserRolesButton ) {
+        @Override
+        public String getValue( final UserInformation userInformation ) {
+            return UserManagementConstants.INSTANCE.editRoles();
+        }
+    };
+
+    protected ButtonCell editUserPasswordButton = new ButtonCell( ButtonSize.SMALL );
+    protected Column<UserInformation, String> editUserPasswordColumn = new Column<UserInformation, String>( editUserPasswordButton ) {
+        @Override
+        public String getValue( final UserInformation userInformation ) {
+            return UserManagementConstants.INSTANCE.editPassword();
+        }
+    };
+
+    protected ButtonCell deleteUserButton = new ButtonCell( ButtonSize.SMALL );
+    protected Column<UserInformation, String> deleteUserColumn = new Column<UserInformation, String>( deleteUserButton ) {
+        @Override
+        public String getValue( final UserInformation userInformation ) {
+            return UserManagementConstants.INSTANCE.remove();
+        }
+    };
+
+    protected UserManagementPresenter presenter;
 
     private static UserManagerWidgetBinder uiBinder = GWT.create( UserManagerWidgetBinder.class );
 
@@ -86,7 +107,6 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
         //Setup table
         table.setEmptyTableWidget( new Label( UserManagementConstants.INSTANCE.noUsersDefined() ) );
 
-        //Columns
         final TextColumn<UserInformation> userNameColumn = new TextColumn<UserInformation>() {
 
             @Override
@@ -104,15 +124,8 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
 
         };
 
-        editUserRolesButton = new ButtonCell( ButtonSize.SMALL );
         editUserRolesButton.setType( ButtonType.DEFAULT );
         editUserRolesButton.setIcon( IconType.EDIT );
-        final Column<UserInformation, String> editUserRolesColumn = new Column<UserInformation, String>( editUserRolesButton ) {
-            @Override
-            public String getValue( final UserInformation userInformation ) {
-                return UserManagementConstants.INSTANCE.editRoles();
-            }
-        };
         editUserRolesColumn.setFieldUpdater( new FieldUpdater<UserInformation, String>() {
             public void update( final int index,
                                 final UserInformation userInformation,
@@ -124,15 +137,8 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
             }
         } );
 
-        editUserPasswordButton = new ButtonCell( ButtonSize.SMALL );
         editUserPasswordButton.setType( ButtonType.DEFAULT );
         editUserPasswordButton.setIcon( IconType.EDIT );
-        final Column<UserInformation, String> editUserPasswordColumn = new Column<UserInformation, String>( editUserPasswordButton ) {
-            @Override
-            public String getValue( final UserInformation userInformation ) {
-                return UserManagementConstants.INSTANCE.editPassword();
-            }
-        };
         editUserPasswordColumn.setFieldUpdater( new FieldUpdater<UserInformation, String>() {
             public void update( final int index,
                                 final UserInformation userInformation,
@@ -144,15 +150,8 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
             }
         } );
 
-        deleteUserButton = new ButtonCell( ButtonSize.SMALL );
         deleteUserButton.setType( ButtonType.DANGER );
         deleteUserButton.setIcon( IconType.MINUS_SIGN );
-        final Column<UserInformation, String> deleteUserColumn = new Column<UserInformation, String>( deleteUserButton ) {
-            @Override
-            public String getValue( final UserInformation userInformation ) {
-                return UserManagementConstants.INSTANCE.remove();
-            }
-        };
         deleteUserColumn.setFieldUpdater( new FieldUpdater<UserInformation, String>() {
             public void update( final int index,
                                 final UserInformation userInformation,
@@ -208,7 +207,7 @@ public class UserManagerViewImpl extends Composite implements UserManagementView
     public void setContent( final UserManagerContent content,
                             final boolean isReadOnly ) {
         this.isReadOnly = isReadOnly;
-        this.dataProvider = new ListDataProvider<UserInformation>( content.getUserInformation() );
+        this.dataProvider.setList( content.getUserInformation() );
         this.dataProvider.addDataDisplay( table );
         final boolean isAddUserSupported = content.getCapabilities().isAddUserSupported();
         final boolean isUpdateUserRolesSupported = content.getCapabilities().isUpdateUserRolesSupported();
