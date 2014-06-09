@@ -45,8 +45,13 @@ import org.uberfire.user.management.service.UserManagementService;
 @ApplicationScoped
 public class UserManagementServiceImpl implements UserManagementService {
 
-    @Inject
     private PartitionManager partitionManager;
+
+    @Inject
+    public UserManagementServiceImpl( final PartitionManager partitionManager ) {
+        this.partitionManager = PortablePreconditions.checkNotNull( "partitionManager",
+                                                                    partitionManager );
+    }
 
     /**
      * @return
