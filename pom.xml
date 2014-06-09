@@ -26,7 +26,7 @@
 
   <groupId>org.uberfire</groupId>
   <artifactId>uberfire-parent-metadata</artifactId>
-  <version>0.4.0.CR1</version>
+  <version>0.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>UberFire parent metadata</name>
