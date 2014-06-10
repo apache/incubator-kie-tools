@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.Deflater;
 
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
@@ -20,6 +21,8 @@ import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.transport.resolver.UploadPackFactory;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 
 /**
  * Basic daemon for the anonymous <code>git://</code> transport protocol.
@@ -37,11 +40,9 @@ public class Daemon {
 
     private final DaemonService[] services;
 
-    private final ThreadGroup processors;
+    private final AtomicBoolean run = new AtomicBoolean( false );
 
-    private boolean run;
-
-    private Thread acceptThread;
+//    private Thread acceptThread;
 
     private int timeout;
 
@@ -65,7 +66,6 @@ public class Daemon {
      */
     public Daemon( final InetSocketAddress addr ) {
         myAddress = addr;
-        processors = new ThreadGroup( "Git-Daemon" );
 
         repositoryResolver = (RepositoryResolver<DaemonClient>) RepositoryResolver.NONE;
 
@@ -173,7 +173,7 @@ public class Daemon {
      * @throws IllegalStateException the daemon is already running.
      */
     public synchronized void start() throws IOException {
-        if ( acceptThread != null ) {
+        if ( run.get() ) {
             throw new IllegalStateException( JGitText.get().daemonAlreadyRunning );
         }
 
@@ -182,8 +182,14 @@ public class Daemon {
                 myAddress != null ? myAddress.getAddress() : null );
         myAddress = (InetSocketAddress) listenSock.getLocalSocketAddress();
 
-        run = true;
-        acceptThread = new Thread( processors, "Git-Daemon-Accept" ) {
+        run.set( true );
+        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+            @Override
+            public String getDescription() {
+                return "Git-Daemon-Accept";
+            }
+
+            @Override
             public void run() {
                 while ( isRunning() ) {
                     try {
@@ -199,36 +205,28 @@ public class Daemon {
                     if ( !listenSock.isClosed() ) {
                         listenSock.close();
                     }
-                } catch ( IOException err ) {
-                    //
-                } finally {
-                    synchronized ( Daemon.this ) {
-                        acceptThread = null;
-                    }
+                } catch ( final IOException ignored ) {
                 }
             }
-        };
-        acceptThread.start();
+        } );
     }
 
     /**
      * @return true if this daemon is receiving connections.
      */
-    public synchronized boolean isRunning() {
-        return run;
+    public boolean isRunning() {
+        return run.get();
     }
 
     /**
      * Stop this daemon.
      */
     public synchronized void stop() {
-        if ( acceptThread != null ) {
-            run = false;
+        if ( run.getAndSet( false ) ) {
             try {
                 listenSock.close();
             } catch ( IOException e ) {
             }
-            acceptThread.interrupt();
         }
     }
 
@@ -240,7 +238,13 @@ public class Daemon {
             dc.setRemoteAddress( ( (InetSocketAddress) peer ).getAddress() );
         }
 
-        new Thread( processors, "Git-Daemon-Client " + peer.toString() ) {
+        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+            @Override
+            public String getDescription() {
+                return "Git-Daemon-Client " + peer.toString();
+            }
+
+            @Override
             public void run() {
                 try {
                     dc.execute( s );
@@ -263,7 +267,7 @@ public class Daemon {
                     }
                 }
             }
-        }.start();
+        } );
     }
 
     synchronized DaemonService matchService( final String cmd ) {

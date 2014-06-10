@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.uberfire.backend.repositories.Repository;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -72,7 +71,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private Event<SystemRepositoryChangedEvent> orgUnitChangedEvent;
     @Inject
     private Event<SystemRepositoryChangedEvent> changedEvent;
-    private ExecutorService executorService;
+
     private CheckConfigurationUpdates configUpdates;
 
     private FileSystem fs;
@@ -100,9 +99,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
-            executorService = Executors.newSingleThreadExecutor();
             configUpdates = new CheckConfigurationUpdates( fs.newWatchService() );
-            executorService.execute( configUpdates );
+            SimpleAsyncExecutorService.getDefaultInstance().execute( configUpdates );
         }
     }
 
@@ -111,9 +109,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         if ( configUpdates != null ) {
             configUpdates.deactivate();
         }
-        if ( this.executorService != null ) {
-            this.executorService.shutdownNow();
-        }
+        SimpleAsyncExecutorService.getDefaultInstance().shutdownNow();
     }
 
     @Override
@@ -133,7 +129,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                                                                                          }
                                                                                          return false;
                                                                                      }
-                                                                                 } );
+                                                                                 }
+                                                                               );
         //Only load and cache if a file was found!
         final Iterator<Path> it = foundConfigs.iterator();
         if ( it.hasNext() ) {

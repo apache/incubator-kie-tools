@@ -8,9 +8,6 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-/**
- * TODO: update me
- */
 public interface AsyncWatchService {
 
     void execute( final Event<ResourceBatchChangesEvent> resourceBatchChanges,
@@ -19,4 +16,5 @@ public interface AsyncWatchService {
                   final Event<ResourceDeletedEvent> resourceDeletedEvent,
                   final Event<ResourceAddedEvent> resourceAddedEvent );
 
+    String getDescription();
 }

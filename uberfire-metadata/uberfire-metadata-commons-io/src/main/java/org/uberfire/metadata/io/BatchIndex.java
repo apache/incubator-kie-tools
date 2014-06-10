@@ -21,8 +21,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.Path;
@@ -67,7 +70,13 @@ public final class BatchIndex {
 
     public void runAsync( final FileSystem fs ) {
         if ( fs != null && fs.getRootDirectories().iterator().hasNext() ) {
-            new Thread() {
+            SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+                @Override
+                public String getDescription() {
+                    return "FS BatchIndex [" + ( (FileSystemId) fs ).id() + "]";
+                }
+
+                @Override
                 public void run() {
                     final AtomicBoolean indexFinished = new AtomicBoolean( false );
                     indexEngine.beforeDispose( new Runnable() {
@@ -92,16 +101,22 @@ public final class BatchIndex {
                         }
                     }
                 }
-            }.start();
+            } );
         }
     }
 
     public void runAsync( final Path root ) {
-        new Thread() {
+        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+            @Override
+            public String getDescription() {
+                return "Path BatchIndex [" + root.toString() + "]";
+            }
+
+            @Override
             public void run() {
                 BatchIndex.this.run( root );
             }
-        }.start();
+        } );
     }
 
     public void run( final Path root ) {

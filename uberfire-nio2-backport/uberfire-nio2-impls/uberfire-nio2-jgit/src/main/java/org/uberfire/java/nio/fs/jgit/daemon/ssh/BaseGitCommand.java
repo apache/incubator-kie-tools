@@ -34,6 +34,8 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemResourceAdaptor;
@@ -97,7 +99,17 @@ public abstract class BaseGitCommand implements Command,
     }
 
     public void start( final Environment env ) throws IOException {
-        new Thread( this ).start();
+        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+            @Override
+            public String getDescription() {
+                return "Git Command [" + getClass().getName() + "]";
+            }
+
+            @Override
+            public void run() {
+                BaseGitCommand.this.run();
+            }
+        } );
     }
 
     public void run() {
@@ -113,7 +125,7 @@ public abstract class BaseGitCommand implements Command,
             } else {
                 err.write( "Can't resolve repository name.".getBytes() );
             }
-        } catch ( final Throwable t ) {
+        } catch ( final Throwable ignored ) {
         }
         if ( callback != null ) {
             callback.onExit( 0 );

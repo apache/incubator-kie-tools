@@ -27,6 +27,13 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+
+    <!-- EJB for AsyncExecutorService -->
+    <dependency>
+      <groupId>org.jboss.ejb3</groupId>
+      <artifactId>jboss-ejb3-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 

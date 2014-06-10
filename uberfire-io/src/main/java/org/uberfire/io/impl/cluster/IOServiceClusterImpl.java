@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.cluster.LockExecuteNotifySyncReleaseTemplate;
@@ -70,8 +72,9 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
     private final IOServiceIdentifiable service;
     private final ClusterService clusterService;
+    private final AtomicBoolean started = new AtomicBoolean( false );
+
     private NewFileSystemListener newFileSystemListener = null;
-    private AtomicBoolean started = new AtomicBoolean( false );
 
     public IOServiceClusterImpl( final IOService service,
                                  final ClusterServiceFactory clusterServiceFactory ) {
@@ -153,7 +156,12 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
                         onSync.set( true );
 
-                        new Thread() {
+                        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+                            @Override
+                            public String getDescription() {
+                                return "Cluster Messaging Reply [" + service.getId() + "/QUERY_FOR_FS]";
+                            }
+
                             @Override
                             public void run() {
                                 for ( final Map.Entry<String, String> entry : content.entrySet() ) {
@@ -186,7 +194,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
                                 msgAnsweredOrTimedout.set( true );
                             }
-                        }.start();
+                        } );
                     }
                 } );
 

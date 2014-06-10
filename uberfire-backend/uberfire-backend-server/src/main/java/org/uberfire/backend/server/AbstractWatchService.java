@@ -65,7 +65,7 @@ public abstract class AbstractWatchService implements IOWatchService {
     private boolean isDisposed = false;
 
     private boolean started;
-    private ExecutorManager executorManager = null;
+    private WatchServiceExecutorManager executorManager = null;
     private Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
 
     public AbstractWatchService() {
@@ -106,7 +106,6 @@ public abstract class AbstractWatchService implements IOWatchService {
         fileSystems.add( fs );
         watchServices.add( ws );
 
-        //this.getClass().getName() + "(" + ws.toString() + ")"
         final AsyncWatchService asyncWatchService = new AsyncWatchService() {
             @Override
             public void execute( final Event<ResourceBatchChangesEvent> resourceBatchChanges,
@@ -174,6 +173,11 @@ public abstract class AbstractWatchService implements IOWatchService {
                     }
                 }
             }
+
+            @Override
+            public String getDescription() {
+                return AbstractWatchService.this.getClass().getName() + "(" + ws.toString() + ")";
+            }
         };
 
         if ( started ) {
@@ -183,16 +187,16 @@ public abstract class AbstractWatchService implements IOWatchService {
         }
     }
 
-    private ExecutorManager getExecutorManager() {
+    private WatchServiceExecutorManager getExecutorManager() {
         if ( executorManager == null ) {
-            ExecutorManager _executorManager = null;
+            WatchServiceExecutorManager _executorManager = null;
             try {
-                _executorManager = InitialContext.doLookup( "java:module/ExecutorManager" );
+                _executorManager = InitialContext.doLookup( "java:module/WatchServiceExecutorManager" );
             } catch ( final Exception ignored ) {
             }
 
             if ( _executorManager == null ) {
-                executorManager = new ExecutorManager();
+                executorManager = new WatchServiceExecutorManager();
                 executorManager.setEvents( resourceBatchChanges, resourceUpdatedEvent, resourceRenamedEvent, resourceDeletedEvent, resourceAddedEvent );
             } else {
                 executorManager = _executorManager;
