@@ -62,6 +62,8 @@ import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
@@ -317,7 +319,12 @@ public class ExplorerServiceImpl
             _selectedPackage = null;
         }
 
-        new Thread() {
+        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+            @Override
+            public String getDescription() {
+                return "Serialize Navigation State";
+            }
+
             @Override
             public void run() {
                 try {
@@ -328,7 +335,7 @@ public class ExplorerServiceImpl
                     LOGGER.error( "Can't serialize user's state navigation", e );
                 }
             }
-        }.start();
+        } );
 
         return new ProjectExplorerContent(
                 new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER ) {{
@@ -612,7 +619,12 @@ public class ExplorerServiceImpl
             final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
             final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );
 
-            new Thread() {
+            SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+                @Override
+                public String getDescription() {
+                    return "Serialize Navigation State";
+                }
+
                 @Override
                 public void run() {
                     try {
@@ -626,7 +638,7 @@ public class ExplorerServiceImpl
                         LOGGER.error( "Can't serialize user's state navigation", e );
                     }
                 }
-            }.start();
+            } );
         }
 
         return result;
