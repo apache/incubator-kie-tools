@@ -120,11 +120,11 @@ public interface ProjectEditorConstants
 
     String ArtifactIDMoreInfo();
 
-    String VersionID();
+    String Version();
 
-    String VersionIDExample();
+    String VersionExample();
 
-    String VersionIDMoreInfo();
+    String VersionMoreInfo();
 
     String MoreInfo();
 
@@ -146,7 +146,7 @@ public interface ProjectEditorConstants
 
     String ArtifactIdMissing();
 
-    String VersionIdMissing();
+    String VersionMissing();
 
     String ProjectScreen();
 

@@ -64,8 +64,7 @@ public class POMEditorPanelViewImpl
 
     @Inject
     public POMEditorPanelViewImpl( Event<NotificationEvent> notificationEvent,
-                                   GAVEditor gavEditor,
-                                   DependencyGrid dependencyGrid ) {
+                                   GAVEditor gavEditor ) {
         this.gavEditor = gavEditor;
         initWidget( uiBinder.createAndBindUi( this ) );
         this.notificationEvent = notificationEvent;

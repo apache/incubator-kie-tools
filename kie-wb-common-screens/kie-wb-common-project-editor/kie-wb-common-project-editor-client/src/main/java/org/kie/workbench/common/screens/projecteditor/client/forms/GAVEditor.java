@@ -27,7 +27,7 @@ public class GAVEditor
         this.gav = gav;
         view.setGroupId( gav.getGroupId() );
         view.setArtifactId( gav.getArtifactId() );
-        view.setVersionId( gav.getVersion() );
+        view.setVersion( gav.getVersion() );
     }
 
     @Override
@@ -47,10 +47,10 @@ public class GAVEditor
     }
 
     @Override
-    public void onVersionIdChange( String versionId ) {
-        gav.setVersion( versionId );
+    public void onVersionChange( String version ) {
+        gav.setVersion( version );
         for ( VersionChangeHandler handler : versionChangeHandlers ) {
-            handler.onChange( versionId );
+            handler.onChange( version );
         }
     }
 

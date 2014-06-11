@@ -7,21 +7,21 @@ public interface GAVEditorView
 
     interface Presenter {
 
-        void onGroupIdChange(String groupId);
+        void onGroupIdChange( String groupId );
 
-        void onArtifactIdChange(String artifactId);
+        void onArtifactIdChange( String artifactId );
 
-        void onVersionIdChange(String versionId);
+        void onVersionChange( String version );
 
     }
 
-    void setPresenter(Presenter presenter);
+    void setPresenter( Presenter presenter );
 
-    void setGroupId(String id);
+    void setGroupId( String id );
 
-    void setArtifactId(String id);
+    void setArtifactId( String id );
 
     void setReadOnly();
 
-    void setVersionId(String versionId);
+    void setVersion( String version );
 }

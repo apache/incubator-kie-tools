@@ -38,7 +38,7 @@ public class GAVEditorViewImpl
     TextBox artifactIdTextBox;
 
     @UiField
-    TextBox versionIdTextBox;
+    TextBox versionTextBox;
 
     private Presenter presenter;
 
@@ -69,15 +69,15 @@ public class GAVEditorViewImpl
     }
 
     @Override
-    public void setVersionId( String versionId ) {
-        versionIdTextBox.setText( versionId );
+    public void setVersion( String version ) {
+        versionTextBox.setText( version );
     }
 
     @Override
     public void setReadOnly() {
         groupIdTextBox.setReadOnly( true );
         artifactIdTextBox.setReadOnly( true );
-        versionIdTextBox.setReadOnly( true );
+        versionTextBox.setReadOnly( true );
     }
 
     @UiHandler("groupIdTextBox")
@@ -92,10 +92,10 @@ public class GAVEditorViewImpl
         presenter.onArtifactIdChange( artifactIdTextBox.getText() );
     }
 
-    @UiHandler("versionIdTextBox")
+    @UiHandler("versionTextBox")
     //Use KeyUpEvent as ValueChangeEvent is only fired when the focus is lost
-    public void onVersionIdChange( KeyUpEvent event ) {
-        presenter.onVersionIdChange( versionIdTextBox.getText() );
+    public void onVersionChange( KeyUpEvent event ) {
+        presenter.onVersionChange( versionTextBox.getText() );
     }
 
 }

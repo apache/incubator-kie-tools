@@ -248,7 +248,7 @@ public class DependencyGridViewImpl
             @Override
             public void handle( Dependency dep,
                                 String value ) {
-                Window.alert( ProjectEditorResources.CONSTANTS.VersionIdMissing() );
+                Window.alert( ProjectEditorResources.CONSTANTS.VersionMissing() );
             }
         };
         fieldUpdater.notValidValueHandler = new DependencyFieldUpdaterHandler() {
@@ -269,7 +269,7 @@ public class DependencyGridViewImpl
         column.setFieldUpdater( fieldUpdater );
 
         dataGrid.addColumn( column,
-                            ProjectEditorResources.CONSTANTS.VersionID() );
+                            ProjectEditorResources.CONSTANTS.Version() );
     }
 
     // BZ-1007894

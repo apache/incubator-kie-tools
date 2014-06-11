@@ -67,18 +67,18 @@
 
                 <bootstrap:FluidRow>
                     <bootstrap:Column size="2">
-                        <bootstrap:ControlLabel for="versionIdTextBox">
-                            <ui:text from="{i18n.VersionID}"/>
+                        <bootstrap:ControlLabel for="versionTextBox">
+                            <ui:text from="{i18n.Version}"/>
                         </bootstrap:ControlLabel>
                     </bootstrap:Column>
                     <bootstrap:Column size="4">
                         <bootstrap:Controls>
-                            <bootstrap:TextBox ui:field="versionIdTextBox"/>
+                            <bootstrap:TextBox ui:field="versionTextBox"/>
                         </bootstrap:Controls>
                     </bootstrap:Column>
                     <bootstrap:Column size="6">
-                        <bootstrap:HelpInline text="{i18n.VersionIDExample}"></bootstrap:HelpInline>
-                        <bootstrap:Popover placement="LEFT" trigger="HOVER" heading="{i18n.MoreInfo}" text="{i18n.VersionIDMoreInfo}">
+                        <bootstrap:HelpInline text="{i18n.VersionExample}"></bootstrap:HelpInline>
+                        <bootstrap:Popover placement="LEFT" trigger="HOVER" heading="{i18n.MoreInfo}" text="{i18n.VersionMoreInfo}">
                             <bootstrap:Icon ui:field="gavHelpIcon3" type="QUESTION_SIGN"></bootstrap:Icon>
                         </bootstrap:Popover>
                     </bootstrap:Column>
