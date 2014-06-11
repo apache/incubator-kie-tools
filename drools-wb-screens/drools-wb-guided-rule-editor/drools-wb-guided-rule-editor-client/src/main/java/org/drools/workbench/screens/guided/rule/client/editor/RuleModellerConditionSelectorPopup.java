@@ -38,7 +38,6 @@ import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.common.InfoPopup;
@@ -264,21 +263,18 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     // Free form DRL
     private void addFreeFormDrl() {
-        if ( UserCapabilities.canSeeModulesTree() ) {
-            choices.addItem( SECTION_SEPARATOR );
-            choices.addItem( GuidedRuleEditorResources.CONSTANTS.FreeFormDrl(),
-                             "FF" );
-            cmds.put( "FF",
-                      new Command() {
+        choices.addItem( SECTION_SEPARATOR );
+        choices.addItem( GuidedRuleEditorResources.CONSTANTS.FreeFormDrl(),
+                         "FF" );
+        cmds.put( "FF",
+                  new Command() {
 
-                          public void execute() {
-                              model.addLhsItem( new FreeFormLine(),
-                                                Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              hide();
-                          }
-                      } );
-
-        }
+                      public void execute() {
+                          model.addLhsItem( new FreeFormLine(),
+                                            Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
+                          hide();
+                      }
+                  } );
     }
 
     private void addNewDSLLhs( final DSLSentence sentence,

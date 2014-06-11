@@ -43,7 +43,6 @@ import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.common.InfoPopup;
 
@@ -380,79 +379,77 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         List<String> rhsVars = model.getRHSBoundFacts();
         String[] globals = oracle.getGlobalVariables();
 
-        if ( UserCapabilities.canSeeModulesTree() ) {
+        choices.addItem( SECTION_SEPARATOR );
+        choices.addItem( GuidedRuleEditorResources.CONSTANTS.AddFreeFormDrl(),
+                         "FF" );
+        cmds.put( "FF",
+                  new Command() {
+
+                      public void execute() {
+                          model.addRhsItem( new FreeFormLine(),
+                                            Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
+                          hide();
+                      }
+                  } );
+
+        //Add globals
+        if ( globals.length > 0 ) {
             choices.addItem( SECTION_SEPARATOR );
-            choices.addItem( GuidedRuleEditorResources.CONSTANTS.AddFreeFormDrl(),
-                             "FF" );
-            cmds.put( "FF",
+        }
+        for ( int i = 0; i < globals.length; i++ ) {
+            final String v = globals[ i ];
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
+                             "GLOBCALL" + v );
+            cmds.put( "GLOBCALL" + v,
                       new Command() {
 
                           public void execute() {
-                              model.addRhsItem( new FreeFormLine(),
-                                                Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
+                              addCallMethod( v,
+                                             Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
                               hide();
                           }
                       } );
 
-            //Add globals
-            if ( globals.length > 0 ) {
-                choices.addItem( SECTION_SEPARATOR );
-            }
-            for ( int i = 0; i < globals.length; i++ ) {
-                final String v = globals[ i ];
-                choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
-                                 "GLOBCALL" + v );
-                cmds.put( "GLOBCALL" + v,
-                          new Command() {
+        }
 
-                              public void execute() {
-                                  addCallMethod( v,
-                                                 Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  hide();
-                              }
-                          } );
+        //Method calls
+        if ( lhsVars.size() > 0 ) {
+            choices.addItem( SECTION_SEPARATOR );
+        }
+        for ( Iterator<String> iter = lhsVars.iterator(); iter.hasNext(); ) {
+            final String v = iter.next();
 
-            }
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
+                             "CALL" + v );
+            cmds.put( "CALL" + v,
+                      new Command() {
 
-            //Method calls
-            if ( lhsVars.size() > 0 ) {
-                choices.addItem( SECTION_SEPARATOR );
-            }
-            for ( Iterator<String> iter = lhsVars.iterator(); iter.hasNext(); ) {
-                final String v = iter.next();
+                          public void execute() {
+                              addCallMethod( v,
+                                             Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
+                              hide();
+                          }
+                      } );
+        }
 
-                choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
-                                 "CALL" + v );
-                cmds.put( "CALL" + v,
-                          new Command() {
+        //Update, not modify
+        if ( rhsVars.size() > 0 ) {
+            choices.addItem( SECTION_SEPARATOR );
+        }
+        for ( Iterator<String> iter = rhsVars.iterator(); iter.hasNext(); ) {
+            final String v = iter.next();
 
-                              public void execute() {
-                                  addCallMethod( v,
-                                                 Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  hide();
-                              }
-                          } );
-            }
+            choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
+                             "CALL" + v );
+            cmds.put( "CALL" + v,
+                      new Command() {
 
-            //Update, not modify
-            if ( rhsVars.size() > 0 ) {
-                choices.addItem( SECTION_SEPARATOR );
-            }
-            for ( Iterator<String> iter = rhsVars.iterator(); iter.hasNext(); ) {
-                final String v = iter.next();
-
-                choices.addItem( GuidedRuleEditorResources.CONSTANTS.CallMethodOn0( v ),
-                                 "CALL" + v );
-                cmds.put( "CALL" + v,
-                          new Command() {
-
-                              public void execute() {
-                                  addCallMethod( v,
-                                                 Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  hide();
-                              }
-                          } );
-            }
+                          public void execute() {
+                              addCallMethod( v,
+                                             Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
+                              hide();
+                          }
+                      } );
         }
     }
 
