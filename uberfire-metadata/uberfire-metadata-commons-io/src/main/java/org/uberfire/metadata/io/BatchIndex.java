@@ -70,7 +70,7 @@ public final class BatchIndex {
 
     public void runAsync( final FileSystem fs ) {
         if ( fs != null && fs.getRootDirectories().iterator().hasNext() ) {
-            SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+            SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return "FS BatchIndex [" + ( (FileSystemId) fs ).id() + "]";
@@ -106,7 +106,7 @@ public final class BatchIndex {
     }
 
     public void runAsync( final Path root ) {
-        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Path BatchIndex [" + root.toString() + "]";

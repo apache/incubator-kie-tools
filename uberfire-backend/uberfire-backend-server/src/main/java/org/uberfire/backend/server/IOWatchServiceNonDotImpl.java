@@ -10,7 +10,7 @@ import org.uberfire.java.nio.file.WatchEvent;
 public class IOWatchServiceNonDotImpl extends AbstractWatchService {
 
     @Override
-    protected boolean filterEvent( WatchEvent<?> object ) {
+    public boolean doFilter( WatchEvent<?> object ) {
         final WatchContext context = (WatchContext) object.context();
         if ( object.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
             if ( context.getOldPath().getFileName().toString().startsWith( "." ) ) {

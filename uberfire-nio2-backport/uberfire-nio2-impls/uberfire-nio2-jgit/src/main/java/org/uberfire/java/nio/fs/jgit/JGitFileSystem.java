@@ -289,18 +289,19 @@ public class JGitFileSystem implements FileSystem,
             }
 
             @Override
-            public WatchKey take() throws ClosedWatchServiceException, InterruptedException {
-                while ( !wsClose && !isClose ) {
-                    if ( events.get( this ).size() > 0 ) {
+            public synchronized WatchKey take() throws ClosedWatchServiceException, InterruptedException {
+                while ( true ) {
+                    if ( wsClose || isClose ) {
+                        throw new ClosedWatchServiceException();
+                    } else if ( events.get( this ).size() > 0 ) {
                         return events.get( this ).poll();
                     } else {
                         try {
-                            Thread.sleep( 200 );
-                        } catch ( java.lang.InterruptedException e ) {
+                            this.wait();
+                        } catch ( final java.lang.InterruptedException e ) {
                         }
                     }
                 }
-                return null;
             }
 
             @Override
@@ -309,8 +310,9 @@ public class JGitFileSystem implements FileSystem,
             }
 
             @Override
-            public void close() throws IOException {
+            public synchronized void close() throws IOException {
                 wsClose = true;
+                notifyAll();
                 watchServices.remove( this );
             }
 
@@ -422,7 +424,7 @@ public class JGitFileSystem implements FileSystem,
 
             @Override
             public boolean reset() {
-                return false;
+                return isOpen();
             }
 
             @Override
@@ -435,8 +437,12 @@ public class JGitFileSystem implements FileSystem,
             }
         };
 
-        for ( final Queue<WatchKey> queue : events.values() ) {
-            queue.add( wk );
+        for ( final Map.Entry<WatchService, Queue<WatchKey>> watchServiceQueueEntry : events.entrySet() ) {
+            watchServiceQueueEntry.getValue().add( wk );
+            final WatchService ws = watchServiceQueueEntry.getKey();
+            synchronized ( ws ) {
+                ws.notifyAll();
+            }
         }
     }
 

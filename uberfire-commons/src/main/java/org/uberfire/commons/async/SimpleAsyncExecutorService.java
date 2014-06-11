@@ -1,11 +1,12 @@
 package org.uberfire.commons.async;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.annotation.Resource;
+import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.naming.InitialContext;
@@ -16,6 +17,9 @@ import static javax.ejb.TransactionAttributeType.*;
 @TransactionAttribute(NOT_SUPPORTED)
 public class SimpleAsyncExecutorService {
 
+    @Resource
+    SessionContext sessionContext;
+
     private final ExecutorService executorService;
 
     private static SimpleAsyncExecutorService instance;
@@ -23,7 +27,7 @@ public class SimpleAsyncExecutorService {
 
     private final AtomicBoolean hasAlreadyShutdown = new AtomicBoolean( false );
 
-    public static SimpleAsyncExecutorService getDefaultInstance() {
+    public static synchronized SimpleAsyncExecutorService getDefaultInstance() {
         if ( instance == null ) {
             SimpleAsyncExecutorService _executorManager = null;
             try {
@@ -41,13 +45,22 @@ public class SimpleAsyncExecutorService {
         return instance;
     }
 
-    public static SimpleAsyncExecutorService getUnmanagedInstance() {
+    public static synchronized SimpleAsyncExecutorService getUnmanagedInstance() {
         if ( instance != null && instance.executorService != null ) {
             return instance;
         } else if ( unmanagedInstance == null ) {
             unmanagedInstance = new SimpleAsyncExecutorService( false );
         }
         return unmanagedInstance;
+    }
+
+    public static synchronized void shutdownInstances() {
+        if ( unmanagedInstance != null ) {
+            unmanagedInstance.shutdown();
+        }
+        if ( instance != null && instance.executorService != null ) {
+            instance.shutdown();
+        }
     }
 
     public SimpleAsyncExecutorService() {
@@ -67,16 +80,9 @@ public class SimpleAsyncExecutorService {
         }
     }
 
-    public void shutdown() {
+    private void shutdown() {
         if ( !hasAlreadyShutdown.getAndSet( true ) && executorService != null ) {
             executorService.shutdown();
         }
-    }
-
-    public List<Runnable> shutdownNow() {
-        if ( !hasAlreadyShutdown.getAndSet( true ) && executorService != null ) {
-            return executorService.shutdownNow();
-        }
-        return Collections.emptyList();
     }
 }

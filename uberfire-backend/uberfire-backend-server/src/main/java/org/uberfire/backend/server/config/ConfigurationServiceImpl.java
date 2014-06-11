@@ -100,7 +100,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
             configUpdates = new CheckConfigurationUpdates( fs.newWatchService() );
-            SimpleAsyncExecutorService.getDefaultInstance().execute( configUpdates );
+            SimpleAsyncExecutorService.getUnmanagedInstance().execute( configUpdates );
         }
     }
 
@@ -109,7 +109,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         if ( configUpdates != null ) {
             configUpdates.deactivate();
         }
-        SimpleAsyncExecutorService.getDefaultInstance().shutdownNow();
     }
 
     @Override

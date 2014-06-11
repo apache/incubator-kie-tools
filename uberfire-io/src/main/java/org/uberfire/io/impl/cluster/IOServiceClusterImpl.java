@@ -156,7 +156,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
                         onSync.set( true );
 
-                        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+                        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
                             @Override
                             public String getDescription() {
                                 return "Cluster Messaging Reply [" + service.getId() + "/QUERY_FOR_FS]";
