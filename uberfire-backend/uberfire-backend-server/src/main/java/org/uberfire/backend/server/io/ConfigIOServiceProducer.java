@@ -10,6 +10,7 @@ import javax.inject.Named;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.backend.server.repositories.RepositoryServiceImpl;
 import org.uberfire.backend.server.security.RepositoryAuthorizationManager;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
@@ -65,6 +66,7 @@ public class ConfigIOServiceProducer {
     @PreDestroy
     public void onShutdown() {
         configIOService.dispose();
+        SimpleAsyncExecutorService.shutdownInstances();
     }
 
     @Produces
