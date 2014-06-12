@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -14,9 +17,14 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.naming.InitialContext;
 
 import org.uberfire.backend.repositories.Repository;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.backend.server.config.watch.AsyncConfigWatchService;
+import org.uberfire.backend.server.config.watch.AsyncWatchServiceCallback;
+import org.uberfire.backend.server.config.watch.ConfigServiceWatchServiceExecutor;
+import org.uberfire.backend.server.config.watch.ConfigServiceWatchServiceExecutorImpl;
+import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -36,9 +44,9 @@ import org.uberfire.security.Identity;
 import static org.uberfire.backend.server.util.Paths.*;
 
 @ApplicationScoped
-public class ConfigurationServiceImpl implements ConfigurationService {
+public class ConfigurationServiceImpl implements ConfigurationService,
+                                                 AsyncWatchServiceCallback {
 
-    private static final String LAST_MODIFIED_MARKER_FILE = ".lastmodified";
     private static final String MONITOR_DISABLED = "org.uberfire.sys.repo.monitor.disabled";
     //    private static final String MONITOR_CHECK_INTERVAL = "org.uberfire.sys.repo.monitor.interval";
     // mainly for windows as *NIX is based on POSIX but escape always to keep it consistent
@@ -56,7 +64,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     //Cache of ConfigGroups to avoid reloading them from file
     private final Map<ConfigType, List<ConfigGroup>> configuration = new ConcurrentHashMap<ConfigType, List<ConfigGroup>>();
-    private long localLastModifiedValue = -1;
+    private AtomicLong localLastModifiedValue = new AtomicLong( -1 );
 
     @Inject
     @Named("configIO")
@@ -72,7 +80,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Inject
     private Event<SystemRepositoryChangedEvent> changedEvent;
 
-    private CheckConfigurationUpdates configUpdates;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private ConfigServiceWatchServiceExecutor executor = null;
+
+    private CheckConfigurationUpdates configUpdates = null;
 
     private FileSystem fs;
 
@@ -100,7 +112,17 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
             configUpdates = new CheckConfigurationUpdates( fs.newWatchService() );
-            SimpleAsyncExecutorService.getUnmanagedInstance().execute( configUpdates );
+            executorService.execute( new DescriptiveRunnable() {
+                @Override
+                public String getDescription() {
+                    return configUpdates.getDescription();
+                }
+
+                @Override
+                public void run() {
+                    configUpdates.execute( getWatchServiceExecutor() );
+                }
+            } );
         }
     }
 
@@ -109,6 +131,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         if ( configUpdates != null ) {
             configUpdates.deactivate();
         }
+        executorService.shutdownNow();
     }
 
     @Override
@@ -238,10 +261,17 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         ioService.write( lastModifiedPath, new Date().toString().getBytes(), commentedOption );
 
         // update the last value to avoid to be retriggered byt the monitor
-        localLastModifiedValue = getLastModified();
+        localLastModifiedValue.set( getLastModified() );
     }
 
-    private class CheckConfigurationUpdates implements Runnable {
+    @Override
+    public void callback( long value ) {
+        localLastModifiedValue.set( value );
+        // invalidate cached values as system repo has changed
+        configuration.clear();
+    }
+
+    private class CheckConfigurationUpdates implements AsyncConfigWatchService {
 
         private final WatchService ws;
         private boolean active = true;
@@ -250,15 +280,20 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             this.ws = watchService;
         }
 
-        @Override
-        public void run() {
+        public void deactivate() {
+            this.active = false;
+        }
 
+        @Override
+        public void execute( final ConfigServiceWatchServiceExecutor wsExecutor ) {
             while ( active ) {
                 try {
 
-                    final WatchKey wk = ws.take();
-                    if ( wk == null ) {
-                        continue;
+                    final WatchKey wk;
+                    try {
+                        wk = ws.take();
+                    } catch ( final Exception ex ) {
+                        break;
                     }
 
                     final List<WatchEvent<?>> events = wk.pollEvents();
@@ -290,26 +325,40 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                     }
 
                     if ( markerFileModified ) {
-                        long currentValue = getLastModified();
-                        if ( currentValue > localLastModifiedValue ) {
-                            localLastModifiedValue = currentValue;
-                            // invalidate cached values as system repo has changed
-                            configuration.clear();
-                            // notify first repository
-                            repoChangedEvent.fire( new SystemRepositoryChangedEvent() );
-                            // then org unit
-                            orgUnitChangedEvent.fire( new SystemRepositoryChangedEvent() );
-                            // lastly all others
-                            changedEvent.fire( new SystemRepositoryChangedEvent() );
-                        }
+                        wsExecutor.execute( wk, localLastModifiedValue.get(), ConfigurationServiceImpl.this );
+                    }
+
+                    boolean valid = wk.reset();
+                    if ( !valid ) {
+                        break;
                     }
                 } catch ( final Exception ignored ) {
                 }
             }
         }
 
-        public void deactivate() {
-            this.active = false;
+        @Override
+        public String getDescription() {
+            return "Config File Watch Service";
         }
     }
+
+    protected ConfigServiceWatchServiceExecutor getWatchServiceExecutor() {
+        if ( executor == null ) {
+            ConfigServiceWatchServiceExecutorImpl _executor = null;
+            try {
+                _executor = InitialContext.doLookup( "java:module/ConfigServiceWatchServiceExecutorImpl" );
+            } catch ( final Exception ignored ) {
+            }
+
+            if ( _executor == null ) {
+                _executor = new ConfigServiceWatchServiceExecutorImpl();
+                _executor.setConfig( systemRepository, ioService, repoChangedEvent, orgUnitChangedEvent, changedEvent );
+            }
+            executor = _executor;
+        }
+
+        return executor;
+    }
+
 }

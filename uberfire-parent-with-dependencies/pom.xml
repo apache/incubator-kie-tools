@@ -87,7 +87,7 @@
 
     <version.javax.servlet.servlet-api>3.0.1</version.javax.servlet.servlet-api>
     <version.javax.servlet.jsp-api>2.0</version.javax.servlet.jsp-api>
-    <version.org.jboss.ejb3.api>3.1.0</version.org.jboss.ejb3.api>
+    <version.org.jboss.spec.javax.ejb.3.1>1.0.2.Final</version.org.jboss.spec.javax.ejb.3.1>
 
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <version.com.google.gwt.gwtmockito>1.1.2</version.com.google.gwt.gwtmockito>
@@ -445,9 +445,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.ejb3</groupId>
-        <artifactId>jboss-ejb3-api</artifactId>
-        <version>${version.org.jboss.ejb3.api}</version>
+        <groupId>org.jboss.spec.javax.ejb</groupId>
+        <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.ejb.3.1}</version>
       </dependency>
 
       <!-- Bootstrap -->

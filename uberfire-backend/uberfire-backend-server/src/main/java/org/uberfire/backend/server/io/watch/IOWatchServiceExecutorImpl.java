@@ -1,4 +1,4 @@
-package org.uberfire.backend.server;
+package org.uberfire.backend.server.io.watch;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,9 +39,9 @@ import static org.uberfire.backend.server.util.Paths.*;
 
 @Stateless
 @TransactionAttribute(NOT_SUPPORTED)
-public class WatchServiceExecutor {
+public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( WatchServiceExecutor.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( IOWatchServiceExecutorImpl.class );
 
     @Inject
     private Event<ResourceBatchChangesEvent> resourceBatchChanges;

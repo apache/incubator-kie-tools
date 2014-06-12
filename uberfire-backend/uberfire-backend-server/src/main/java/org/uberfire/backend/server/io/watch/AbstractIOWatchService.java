@@ -1,4 +1,4 @@
-package org.uberfire.backend.server;
+package org.uberfire.backend.server.io.watch;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,8 +7,10 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.annotation.PreDestroy;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
 
 import org.uberfire.backend.server.util.Filter;
 import org.uberfire.commons.async.DescriptiveRunnable;
@@ -19,32 +21,41 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-public abstract class AbstractWatchService implements IOWatchService,
-                                                      Filter<WatchEvent<?>> {
-
-    @Inject
-    private WatchServiceExecutorFactory factory;
+public abstract class AbstractIOWatchService implements IOWatchService,
+                                                        Filter<WatchEvent<?>> {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool( new DescriptiveThreadFactory() );
 
     private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
-    private boolean isDisposed = false;
+    protected boolean isDisposed = false;
 
     private boolean started;
     private Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
-    private WatchServiceExecutor watchServiceExecutor = null;
+    @Inject
+    private Event<ResourceBatchChangesEvent> resourceBatchChanges;
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+    @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+    @Inject
+    private Event<ResourceAddedEvent> resourceAddedEvent;
 
-    public AbstractWatchService() {
+    private IOWatchServiceExecutor executor = null;
+
+    public AbstractIOWatchService() {
         final boolean autostart = Boolean.parseBoolean( System.getProperty( "org.uberfire.watcher.autostart", "true" ) );
         if ( autostart ) {
             start();
         }
-    }
-
-    public void configureOnEvent( @Observes ApplicationStarted applicationStartedEvent ) {
-        start();
     }
 
     public synchronized void start() {
@@ -68,7 +79,7 @@ public abstract class AbstractWatchService implements IOWatchService,
     }
 
     @PreDestroy
-    void dispose() {
+    protected void dispose() {
         isDisposed = true;
         for ( final WatchService watchService : watchServices ) {
             watchService.close();
@@ -81,6 +92,7 @@ public abstract class AbstractWatchService implements IOWatchService,
         return fileSystems.contains( fs );
     }
 
+    @Override
     public void addWatchService( final FileSystem fs,
                                  final WatchService ws ) {
         fileSystems.add( fs );
@@ -88,7 +100,7 @@ public abstract class AbstractWatchService implements IOWatchService,
 
         final AsyncWatchService asyncWatchService = new AsyncWatchService() {
             @Override
-            public void execute( final WatchServiceExecutor wsExecutor ) {
+            public void execute( final IOWatchServiceExecutor wsExecutor ) {
                 while ( !isDisposed ) {
                     final WatchKey wk;
                     try {
@@ -97,7 +109,7 @@ public abstract class AbstractWatchService implements IOWatchService,
                         break;
                     }
 
-                    wsExecutor.execute( wk, AbstractWatchService.this );
+                    wsExecutor.execute( wk, AbstractIOWatchService.this );
 
                     // Reset the key -- this step is critical if you want to
                     // receive further watch events.  If the key is no longer valid,
@@ -111,7 +123,7 @@ public abstract class AbstractWatchService implements IOWatchService,
 
             @Override
             public String getDescription() {
-                return AbstractWatchService.this.getClass().getName() + "(" + ws.toString() + ")";
+                return AbstractIOWatchService.this.getClass().getName() + "(" + ws.toString() + ")";
             }
         };
 
@@ -132,10 +144,25 @@ public abstract class AbstractWatchService implements IOWatchService,
         }
     }
 
-    private WatchServiceExecutor getWatchServiceExecutor() {
-        if ( watchServiceExecutor == null ) {
-            watchServiceExecutor = factory.getWatchServiceExecutor();
+    public void configureOnEvent( @Observes ApplicationStarted applicationStartedEvent ) {
+        start();
+    }
+
+    protected IOWatchServiceExecutor getWatchServiceExecutor() {
+        if ( executor == null ) {
+            IOWatchServiceExecutorImpl _executor = null;
+            try {
+                _executor = InitialContext.doLookup( "java:module/IOWatchServiceExecutorImpl" );
+            } catch ( final Exception ignored ) {
+            }
+
+            if ( _executor == null ) {
+                _executor = new IOWatchServiceExecutorImpl();
+                _executor.setEvents( resourceBatchChanges, resourceUpdatedEvent, resourceRenamedEvent, resourceDeletedEvent, resourceAddedEvent );
+            }
+            executor = _executor;
         }
-        return watchServiceExecutor;
+
+        return executor;
     }
 }
