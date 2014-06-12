@@ -74,7 +74,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
                     }
                 } );
             }
-            watchServices.clear();
+            watchThreads.clear();
         }
     }
 
