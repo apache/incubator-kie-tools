@@ -15,39 +15,6 @@
  */
 package org.uberfire.client.workbench;
 
-import static java.util.Collections.*;
-import static org.uberfire.workbench.model.PanelType.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -57,12 +24,34 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ApplicationReadyEvent;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static java.util.Collections.sort;
 
 /**
  * Responsible for bootstrapping the client-side Workbench user interface. Normally this happens automatically with no
@@ -107,9 +96,7 @@ import com.google.gwt.user.client.ui.Widget;
  * </pre>
  */
 @ApplicationScoped
-public class Workbench
-extends Composite
-implements RequiresResize {
+public class Workbench {
 
     /**
      * List of classes who want to do stuff (often server communication) before the workbench shows up.
@@ -122,39 +109,37 @@ implements RequiresResize {
     @Inject
     private Event<ApplicationReadyEvent> appReady;
 
-    private final FlowPanel container = new FlowPanel();
-
-    private FlowPanel headers;
-
-    private FlowPanel footers;
-
-    private boolean isStandaloneMode = false;
-    private final Set<String> headersToKeep = new HashSet<String>();
-
-    private final SimplePanel workbench = new SimplePanel();
-
-    private AbsolutePanel workbenchContainer;
-
-    @Inject
-    private PanelManager panelManager;
+    // ------------------------
+    // core services
 
     @Inject
     private SyncBeanManager iocManager;
 
     @Inject
-    private WorkbenchDragAndDropManager dndManager;
-
-    @Inject
     private PlaceManager placeManager;
-
-    @Inject
-    private WorkbenchPickupDragController dragController;
 
     @Inject
     private WorkbenchServicesProxy wbServices;
 
     @Inject
     private VFSServiceProxy vfsService;
+
+    // ------------------------
+    // Layout handling
+
+    @Inject
+    LayoutSelection layoutSelection;
+
+    private WorkbenchLayout layout;
+
+    @Inject
+    private PanelManager panelManager;
+
+    // ------------------------
+
+
+    private boolean isStandaloneMode = false;
+    private final Set<String> headersToKeep = new HashSet<String>();
 
     private final WorkbenchCloseHandler workbenchCloseHandler = GWT.create( WorkbenchCloseHandler.class );
 
@@ -168,6 +153,7 @@ implements RequiresResize {
         }
 
     };
+
 
     /**
      * Requests that the workbench does not attempt to create any UI parts until the given responsible party has
@@ -219,7 +205,8 @@ implements RequiresResize {
 
     @PostConstruct
     public void setup() {
-        initWidget( container );
+
+        layout = layoutSelection.get();
 
         isStandaloneMode = Window.Location.getParameterMap().containsKey( "standalone" );
 
@@ -230,11 +217,11 @@ implements RequiresResize {
         }
     }
 
-    private <T extends OrderableIsWidget> FlowPanel setupMarginWidgets( Class<T> marginType ) {
+    private <T> void setupMarginWidgets( Class<T> marginType ) {
         final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
         final List<OrderableIsWidget> instances = new ArrayList<OrderableIsWidget>();
         for ( final IOCBeanDef<T> headerBean : headerBeans ) {
-            OrderableIsWidget instance = headerBean.getInstance();
+            OrderableIsWidget instance = (OrderableIsWidget)headerBean.getInstance();
 
             // for regular mode (not standalone) we add every header and footer widget;
             // for standalone mode, we only add the ones requested in the URL
@@ -259,40 +246,28 @@ implements RequiresResize {
         FlowPanel marginContainer = new FlowPanel();
 
         for ( final OrderableIsWidget widget : instances ) {
-            marginContainer.add( widget.asWidget() );
+            layout.addMargin( marginType, widget.asWidget() );
         }
 
-        return marginContainer;
+    }
+
+    public IsWidget getLayoutRoot() {
+        return layout.getRoot();
     }
 
     private void bootstrap() {
         System.out.println("Workbench starting...");
         appReady.fire( new ApplicationReadyEvent() );
 
-        headers = setupMarginWidgets( Header.class );
-        footers = setupMarginWidgets( Footer.class );
-
-        if ( !isStandaloneMode ) {
-            container.add( headers );
+        if(!isStandaloneMode) {
+            setupMarginWidgets(Header.class);
+            setupMarginWidgets(Footer.class);
         }
 
-        //Container panels for workbench
-        workbenchContainer = dragController.getBoundaryPanel();
-        workbenchContainer.add( workbench );
-        container.add( workbenchContainer );
+        // bootstrap the actual layout
 
-        if ( !isStandaloneMode ) {
-            container.add( footers );
-        }
+        layout.onBootstrap();
 
-        //Clear environment
-        workbench.clear();
-        dndManager.unregisterDropControllers();
-
-        //Add default workbench widget
-        final PanelDefinition root = new PanelDefinitionImpl( ROOT_STATIC );
-        panelManager.setRoot( root );
-        workbench.setWidget( panelManager.getPanelView( root ) );
 
         //Size environment - Defer so Widgets have been rendered and hence sizes available
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
@@ -301,8 +276,7 @@ implements RequiresResize {
             public void execute() {
                 final int width = Window.getClientWidth();
                 final int height = Window.getClientHeight();
-                doResizeWorkbenchContainer( width,
-                        height );
+                layout.resizeTo(width, height);
             }
 
         } );
@@ -331,17 +305,17 @@ implements RequiresResize {
         Window.addResizeHandler( new ResizeHandler() {
             @Override
             public void onResize( ResizeEvent event ) {
-                doResizeWorkbenchContainer( event.getWidth(),
-                        event.getHeight() );
+                layout.resizeTo(event.getWidth(), event.getHeight());
             }
         } );
 
         Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                onResize();
+                layout.onResize();
             }
         } );
+
     }
 
     private void handleStandaloneMode( final Map<String, List<String>> parameters ) {
@@ -364,7 +338,7 @@ implements RequiresResize {
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans( PerspectiveActivity.class );
+        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans(PerspectiveActivity.class);
 
         for ( final IOCBeanDef<PerspectiveActivity> perspective : perspectives ) {
             final PerspectiveActivity instance = perspective.getInstance();
@@ -375,34 +349,5 @@ implements RequiresResize {
             }
         }
         return defaultPerspective;
-    }
-
-    @Override
-    public void onResize() {
-        final int width = Window.getClientWidth();
-        final int height = Window.getClientHeight();
-        doResizeWorkbenchContainer( width, height );
-    }
-
-    private void doResizeWorkbenchContainer( final int width,
-                                             final int height ) {
-        final int headersHeight = headers.asWidget().getOffsetHeight();
-        final int footersHeight = footers.asWidget().getOffsetHeight();
-        final int availableHeight;
-        if ( !isStandaloneMode ) {
-            availableHeight = height - headersHeight - footersHeight;
-        } else {
-            availableHeight = height;
-        }
-
-        workbenchContainer.setPixelSize( width, availableHeight );
-        workbench.setPixelSize( width, availableHeight );
-
-        final Widget w = workbench.getWidget();
-        if ( w != null ) {
-            if ( w instanceof RequiresResize ) {
-                ( (RequiresResize) w ).onResize();
-            }
-        }
     }
 }

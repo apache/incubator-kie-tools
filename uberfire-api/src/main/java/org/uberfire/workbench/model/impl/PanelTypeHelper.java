@@ -29,6 +29,12 @@ public final class PanelTypeHelper {
                 return null;
             case TEMPLATE:
                 return TEMPLATE;
+            case ROOT_SPLIT_LAYOUT:
+                return LAYOUT_PANEL;
+            case ROOT_LAYOUT_PANEL:
+                return LAYOUT_PANEL;
+            case LAYOUT_PANEL:
+                return LAYOUT_PANEL;
             default:
                 throw new IllegalArgumentException( "Unhandled PanelType. Expect subsequent errors." );
         }

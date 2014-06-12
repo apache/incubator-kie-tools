@@ -58,6 +58,7 @@ public class PanelDefinitionImpl
     private boolean isRoot;
     private ContextDefinition contextDefinition;
     private ContextDisplayMode contextDisplayMode = SHOW;
+    private PanelDefinition parent = null;
 
     public PanelDefinitionImpl() {
         this( PanelType.ROOT_TAB );
@@ -80,6 +81,18 @@ public class PanelDefinitionImpl
             this.isRoot = true;
         }
         this.defaultChildPanelType = defaultChildPanelType;
+    }
+
+    public void setParent(PanelDefinition parent)
+    {
+        this.parent = parent;
+    }
+
+    @Override
+    public PanelDefinition getParent() {
+        if(!isRoot() && parent==null)
+            throw new IllegalStateException("PanelDefinition is not properly initialised: It requires a parent panel definition");
+        return parent;
     }
 
     @Override
@@ -107,11 +120,16 @@ public class PanelDefinitionImpl
         if ( children.contains( panel ) ) {
             return;
         }
+
+        // parent wiring
+        ((PanelDefinitionImpl)panel).setParent(this);
+
         checkPosition( position );
         panel.setPosition( position );
         final PanelDefinition existingChild = getChild( position );
         if ( existingChild == null ) {
             children.add( panel );
+
         } else {
             removeChild( position );
             children.add( panel );
@@ -134,6 +152,10 @@ public class PanelDefinitionImpl
         panel.setPosition( position );
         final PanelDefinition existingChild = getChild( position );
         if ( existingChild == null ) {
+
+            // parent wiring
+            ((PanelDefinitionImpl)panel).setParent(this);
+
             children.add( panel );
         } else {
             existingChild.appendChild( position,
@@ -151,6 +173,10 @@ public class PanelDefinitionImpl
         if ( children.contains( panel ) ) {
             return;
         }
+
+         // parent wiring
+        ((PanelDefinitionImpl)panel).setParent(this);
+
         children.add( panel );
     }
 
@@ -170,6 +196,9 @@ public class PanelDefinitionImpl
         while ( itr.hasNext() ) {
             final PanelDefinition child = itr.next();
             if ( child.getPosition() == position ) {
+                 // parent wiring
+                ((PanelDefinitionImpl)child).setParent(null);
+
                 itr.remove();
             }
         }

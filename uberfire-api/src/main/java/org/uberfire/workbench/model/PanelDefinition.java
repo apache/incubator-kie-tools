@@ -72,6 +72,13 @@ public interface PanelDefinition {
             final PanelDefinition panel );
 
     /**
+     * Return the parent panel, or null if {@link #isRoot()}} returns true.
+     *
+     * @return  a parent panel definition or null if at the top of the hierarchy
+     */
+    public PanelDefinition getParent();
+
+    /**
      * Get the Panel's immediate child Panel at the given Position
      * @param position The child Panel's Position
      * @return The child Panel or null, if a child does not exist at the given

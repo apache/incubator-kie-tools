@@ -27,6 +27,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
@@ -120,9 +121,10 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     private void buildPerspective( final PanelDefinition panel ) {
         for ( PanelDefinition child : panel.getChildren() ) {
-            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
+            final PanelDefinitionImpl target = (PanelDefinitionImpl)panelManager.addWorkbenchPanel( panel,
                                                                            child,
                                                                            child.getPosition() );
+            target.setParent(panel);
             addChildren( target );
         }
     }

@@ -15,10 +15,6 @@
  */
 package org.uberfire.client.workbench;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
@@ -26,6 +22,10 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class PanelManagerImpl extends AbstractPanelManagerImpl {
@@ -62,11 +62,12 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
 
         PanelDefinition newPanel = null;
 
+        // TODO (hbraun): is the target panel always the perspective?
         WorkbenchPanelPresenter targetPanelPresenter = getWorkbenchPanelPresenter( targetPanel );
+
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
-            mapPanelDefinitionToPresenter.put( targetPanel,
-                    targetPanelPresenter );
+            mapPanelDefinitionToPresenter.put( targetPanel, targetPanelPresenter );
         }
 
         switch ( position ) {
@@ -82,11 +83,15 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
             case SOUTH:
             case EAST:
             case WEST:
+            case CENTER:
 
                 if ( !childPanel.isMinimized() ) {
-                    final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
-                    mapPanelDefinitionToPresenter.put( childPanel,
-                            childPanelPresenter );
+
+                    WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
+                    // TODO (hbraun): Why is cached? doesn't seem to be reused ...
+                    mapPanelDefinitionToPresenter.put( childPanel, childPanelPresenter );
+
+                    // TODO (hbraun): why no remove callback before the addPanel invocation?
 
                     targetPanelPresenter.addPanel( childPanel,
                             childPanelPresenter.getPanelView(),
@@ -96,7 +101,7 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
                 break;
 
             default:
-                throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
+                throw new IllegalArgumentException( "Unhandled Position '"+position+"': Expect subsequent errors." );
         }
 
         onPanelFocus( newPanel );

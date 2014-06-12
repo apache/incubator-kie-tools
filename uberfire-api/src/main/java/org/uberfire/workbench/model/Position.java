@@ -28,6 +28,7 @@ public enum Position {
     SOUTH, //South internal edge of a Parent panel
     EAST, //East internal edge of a Parent panel
     WEST, //West internal edge of a Parent panel
+    CENTER, //Center of a Parent panel
     SELF, //Add to the Parent panel
     ROOT //Add to the Workbench root
 

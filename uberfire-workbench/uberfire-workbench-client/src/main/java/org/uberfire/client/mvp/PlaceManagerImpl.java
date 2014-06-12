@@ -501,6 +501,7 @@ implements PlaceManager {
         if ( _panel != null ) {
             panel = _panel;
         } else {
+            // TODO (hbraun): If no panel given (i.e. when using token driven nav), this falls back to the root panel definition
             panel = addWorkbenchPanelTo( position );
         }
 

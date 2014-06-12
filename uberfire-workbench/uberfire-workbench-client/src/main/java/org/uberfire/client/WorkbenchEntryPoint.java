@@ -22,7 +22,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
@@ -52,17 +51,17 @@ public class WorkbenchEntryPoint {
 
     private SessionInfo sessionInfo = null;
 
-    private final SimplePanel appWidget = new SimplePanel();
+    //private final SimplePanel appWidget = new SimplePanel();
 
     @PostConstruct
     public void init() {
-        appWidget.add( workbench );
+        //appWidget.add( workbench.getLayoutRoot() );
     }
 
     @AfterInitialization
     private void startApp() {
         loadStyles();
-        RootLayoutPanel.get().add( appWidget );
+        RootLayoutPanel.get().add( workbench.getLayoutRoot() );
 
         ( (SessionInfoImpl) sessionInfo ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
     }
