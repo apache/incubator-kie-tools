@@ -112,6 +112,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
             configUpdates = new CheckConfigurationUpdates( fs.newWatchService() );
+            final ConfigServiceWatchServiceExecutor configServiceWatchServiceExecutor = getWatchServiceExecutor();
             executorService.execute( new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
@@ -120,7 +121,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
                 @Override
                 public void run() {
-                    configUpdates.execute( getWatchServiceExecutor() );
+                    configUpdates.execute( configServiceWatchServiceExecutor );
                 }
             } );
         }
@@ -345,7 +346,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
     protected ConfigServiceWatchServiceExecutor getWatchServiceExecutor() {
         if ( executor == null ) {
-            ConfigServiceWatchServiceExecutorImpl _executor = null;
+            ConfigServiceWatchServiceExecutor _executor = null;
             try {
                 _executor = InitialContext.doLookup( "java:module/ConfigServiceWatchServiceExecutorImpl" );
             } catch ( final Exception ignored ) {
@@ -353,7 +354,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
             if ( _executor == null ) {
                 _executor = new ConfigServiceWatchServiceExecutorImpl();
-                _executor.setConfig( systemRepository, ioService, repoChangedEvent, orgUnitChangedEvent, changedEvent );
+                ((ConfigServiceWatchServiceExecutorImpl)_executor).setConfig( systemRepository, ioService, repoChangedEvent, orgUnitChangedEvent, changedEvent );
             }
             executor = _executor;
         }

@@ -62,6 +62,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
         if ( !started ) {
             this.started = true;
             for ( final AsyncWatchService watchThread : watchThreads ) {
+                final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
                 executorService.execute( new DescriptiveRunnable() {
                     @Override
                     public String getDescription() {
@@ -70,7 +71,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
                     @Override
                     public void run() {
-                        watchThread.execute( getWatchServiceExecutor() );
+                        watchThread.execute( watchServiceExecutor );
                     }
                 } );
             }
@@ -150,7 +151,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
     protected IOWatchServiceExecutor getWatchServiceExecutor() {
         if ( executor == null ) {
-            IOWatchServiceExecutorImpl _executor = null;
+            IOWatchServiceExecutor _executor = null;
             try {
                 _executor = InitialContext.doLookup( "java:module/IOWatchServiceExecutorImpl" );
             } catch ( final Exception ignored ) {
@@ -158,7 +159,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
             if ( _executor == null ) {
                 _executor = new IOWatchServiceExecutorImpl();
-                _executor.setEvents( resourceBatchChanges, resourceUpdatedEvent, resourceRenamedEvent, resourceDeletedEvent, resourceAddedEvent );
+                ((IOWatchServiceExecutorImpl)_executor).setEvents( resourceBatchChanges, resourceUpdatedEvent, resourceRenamedEvent, resourceDeletedEvent, resourceAddedEvent );
             }
             executor = _executor;
         }
