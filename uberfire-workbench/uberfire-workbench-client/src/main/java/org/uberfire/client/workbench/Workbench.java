@@ -31,6 +31,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -206,7 +207,7 @@ public class Workbench {
     void startIfNotBlocked() {
         System.out.println(startupBlockers.size() + " workbench startup blockers remain.");
         if ( startupBlockers.isEmpty() ) {
-            bootstrap();
+            // TODO (hbraun): the init order is somewhat messed up ...
         }
     }
 
@@ -224,7 +225,7 @@ public class Workbench {
         }
     }
 
-    private <T extends OrderableIsWidget> List<T> setupMarginWidgets( Class<T> marginType ) {
+    private <T extends OrderableIsWidget> void setupMarginWidgets( Class<T> marginType ) {
         final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
         final List<T> instances = new ArrayList<T>();
         for ( final IOCBeanDef<T> headerBean : headerBeans ) {
@@ -250,7 +251,9 @@ public class Workbench {
             }
         } );
 
-        return instances;
+        for(T margin : instances) {
+            layout.addMargin(marginType, margin.asWidget());
+        }
     }
 
     private void bootstrap() {
@@ -260,8 +263,10 @@ public class Workbench {
 
         appReady.fire( new ApplicationReadyEvent() );
 
-        panelManager.setHeaderContents( setupMarginWidgets( Header.class ) );
-        panelManager.setFooterContents( setupMarginWidgets( Footer.class ) );
+        setupMarginWidgets( Header.class );
+        setupMarginWidgets( Footer.class );
+
+        RootLayoutPanel.get().add(layout.getRoot());
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if ( !isStandaloneMode ) {

@@ -3,7 +3,6 @@ package org.uberfire.client.workbench;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.event.Event;
@@ -119,7 +118,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         return this.rootPanelDef;
     }
 
-    @Override
+   /* @Override
     public void setHeaderContents( List<Header> headers ) {
         final WorkbenchLayout workbenchLayout = layoutSelection.get();
         for ( Header h : headers ) {
@@ -133,7 +132,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         for ( Footer f : footers ) {
             workbenchLayout.addMargin( Footer.class, f );
         }
-    }
+    }  */
 
     @Override
     public void addWorkbenchPart( final PlaceRequest place,

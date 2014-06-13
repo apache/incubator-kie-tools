@@ -95,10 +95,4 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
         return newPanel;
     }
 
-    @Override
-    public void setWorkbenchSize( int width,
-                                  int height ) {
-        headerFooterContainerPanel.setPixelSize( width, height );
-    }
-
 }

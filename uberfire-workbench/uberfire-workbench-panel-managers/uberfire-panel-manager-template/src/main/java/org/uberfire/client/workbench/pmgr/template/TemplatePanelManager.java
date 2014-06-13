@@ -69,9 +69,4 @@ public class TemplatePanelManager extends AbstractPanelManagerImpl {
         return targetPanelPresenter;
     }
 
-    @Override
-    public void setWorkbenchSize( int width,
-                                  int height ) {
-    }
-
 }

@@ -95,7 +95,7 @@ public interface PanelManager {
      * 
      * @param headers the list of headers in top-to-bottom stacking order. Never null, but can be empty.
      */
-    void setHeaderContents( List<Header> headers );
+    //void setHeaderContents( List<Header> headers );
 
     /**
      * Sets the given widgets as the contents of the footer area, replacing any existing widgets that were already in
@@ -105,7 +105,7 @@ public interface PanelManager {
      * 
      * @param footer the list of footer in top-to-bottom stacking order. Never null, but can be empty.
      */
-    void setFooterContents( List<Footer> footers );
+    //void setFooterContents( List<Footer> footers );
 
     /**
      * Notifies the PanelManager that the space available to the UberFire workbench has changed. The PanelManager should
@@ -119,6 +119,6 @@ public interface PanelManager {
      *            the height in pixels that the entire workbench should take up (includes space used by headers and
      *            footers).
      */
-    void setWorkbenchSize( int width, int height );
+    //void setWorkbenchSize( int width, int height );
 
 }
