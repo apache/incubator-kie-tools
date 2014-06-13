@@ -6,17 +6,14 @@ import javax.inject.Named;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
-import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardCopyOption;
 
 //import org.kie.workbench.io.IOService;
@@ -51,6 +48,11 @@ public class TestScenarioMigrater extends BaseAssetMigrater {
         }
 
         String content = jcrAssetItem.getContent();
+
+        //At this point whe have the Scenario sources in the old format
+        //Translate auto generated xml tags by XStream to the new class names after refactoring.
+        //I want to be sure that I'm only refactoring xml elements.
+        content = TestScenarioXMLElementMigrater.migrate( content );
 
         String sourceContentWithPackage = packageImportHelper.assertPackageNameXML( content, path );
         sourceContentWithPackage = packageImportHelper.assertPackageImportXML( sourceContentWithPackage, path );
