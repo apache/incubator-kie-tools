@@ -5,6 +5,7 @@
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.UberfireMarkdownWidget"/>
   <inherits name="org.uberfire.properties.editor.PropertiesEditorClient"/>
+  <inherits name="org.uberfire.user.management.UserManagementClient"/>
   <inherits name="org.uberfire.UberfireNSWEManager"/>
 
   <!-- Specify the application specific style sheet. -->
@@ -20,5 +21,11 @@
   <extend-property name="locale" values="ja_JP"/>
   <extend-property name="locale" values="pt_BR"/>
   <extend-property name="locale" values="zh_CN"/>
+
+  <!-- SuperDevMode -->
+  <add-linker name="xsiframe"/>
+  <set-configuration-property name="devModeRedirectEnabled" value="true"/>
+  <set-property name="compiler.useSourceMaps" value="true"/>
+  <set-configuration-property name='xsiframe.failIfScriptTag' value='false'/>
 
 </module>

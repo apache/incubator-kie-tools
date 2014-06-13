@@ -49,6 +49,7 @@ public class TestAppSetup {
         final LuceneConfig config = new LuceneConfigBuilder().withInMemoryMetaModelStore().useDirectoryBasedIndex().useInMemoryDirectory().build();
         ioService = new IOServiceIndexedImpl( watchService,
                                               config.getIndexEngine(),
+                                              config.getIndexers(),
                                               DublinCoreView.class,
                                               VersionAttributeView.class );
 

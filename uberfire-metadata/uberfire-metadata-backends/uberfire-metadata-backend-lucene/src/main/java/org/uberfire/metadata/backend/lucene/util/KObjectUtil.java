@@ -16,7 +16,12 @@
 
 package org.uberfire.metadata.backend.lucene.util;
 
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexableField;
 import org.uberfire.metadata.model.KObject;
 import org.uberfire.metadata.model.KProperty;
 import org.uberfire.metadata.model.schema.MetaType;
@@ -86,13 +91,33 @@ public final class KObjectUtil {
 
             @Override
             public Iterable<KProperty<?>> getProperties() {
-//                for ( final IndexableField indexableField : document ) {
-//                    if ( !KEY_FIELDS.contains( indexableField.name() ) ) {
-//                        indexableField.stringValue();
-//                    }
-//                }
+                final List<KProperty<?>> kProperties = new ArrayList<KProperty<?>>();
+                for ( final IndexableField indexableField : document ) {
+                    if ( isExtension( indexableField.name() ) ) {
+                        kProperties.add( new KProperty<Object>() {
+                            @Override
+                            public String getName() {
+                                return indexableField.name();
+                            }
 
-                return null;
+                            @Override
+                            public Object getValue() {
+                                return indexableField.stringValue();
+                            }
+
+                            @Override
+                            public boolean isSearchable() {
+                                return true;
+                            }
+                        } );
+                    }
+                }
+
+                return kProperties;
+            }
+
+            private boolean isExtension( final String name ) {
+                return !( name.equals( "id" ) || name.equals( "type" ) || name.equals( "cluster.id" ) || name.equals( "segment.id" ) || name.equals( "key" ) );
             }
         };
     }

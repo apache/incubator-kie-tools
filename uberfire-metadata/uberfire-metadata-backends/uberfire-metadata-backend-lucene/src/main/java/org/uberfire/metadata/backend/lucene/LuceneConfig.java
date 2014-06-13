@@ -16,6 +16,8 @@
 
 package org.uberfire.metadata.backend.lucene;
 
+import java.util.Set;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.uberfire.metadata.MetadataConfig;
 import org.uberfire.metadata.backend.lucene.fields.FieldFactory;
@@ -23,6 +25,8 @@ import org.uberfire.metadata.backend.lucene.index.LuceneIndexEngine;
 import org.uberfire.metadata.backend.lucene.index.LuceneIndexFactory;
 import org.uberfire.metadata.backend.lucene.index.LuceneIndexManager;
 import org.uberfire.metadata.backend.lucene.search.LuceneSearchIndex;
+import org.uberfire.metadata.engine.IndexManager;
+import org.uberfire.metadata.engine.Indexer;
 import org.uberfire.metadata.engine.MetaIndexEngine;
 import org.uberfire.metadata.engine.MetaModelStore;
 import org.uberfire.metadata.search.SearchIndex;
@@ -35,17 +39,23 @@ public class LuceneConfig implements MetadataConfig {
     private final Analyzer analyzer;
     private final LuceneSearchIndex searchIndex;
     private final LuceneIndexEngine indexEngine;
+    private final Set<Indexer> indexers;
 
     public LuceneConfig( final MetaModelStore metaModelStore,
                          final FieldFactory fieldFactory,
                          final LuceneIndexFactory indexFactory,
+                         final Set<Indexer> indexers,
                          final Analyzer analyzer ) {
         this.metaModelStore = metaModelStore;
         this.fieldFactory = fieldFactory;
         this.indexManager = new LuceneIndexManager( indexFactory );
         this.analyzer = analyzer;
-        this.searchIndex = new LuceneSearchIndex( indexManager, this.analyzer );
-        this.indexEngine = new LuceneIndexEngine( this.fieldFactory, this.metaModelStore, indexManager );
+        this.searchIndex = new LuceneSearchIndex( this.indexManager,
+                                                  this.analyzer );
+        this.indexEngine = new LuceneIndexEngine( this.fieldFactory,
+                                                  this.metaModelStore,
+                                                  this.indexManager );
+        this.indexers = indexers;
     }
 
     @Override
@@ -58,12 +68,19 @@ public class LuceneConfig implements MetadataConfig {
         return indexEngine;
     }
 
-    public LuceneIndexManager getIndexManager() {
+    @Override
+    public IndexManager getIndexManager() {
         return indexManager;
     }
 
+    @Override
     public MetaModelStore getMetaModelStore() {
         return metaModelStore;
+    }
+
+    @Override
+    public Set<Indexer> getIndexers() {
+        return indexers;
     }
 
     @Override
