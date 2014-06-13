@@ -1,12 +1,12 @@
 package org.uberfire.client.mvp;
 
+import static org.junit.Assert.*;
+
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.mvp.PlaceRequest;
-
-import static org.junit.Assert.*;
 
 public class PlaceRequestHistoryMapperImplTest {
 

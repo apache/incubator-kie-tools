@@ -50,7 +50,6 @@ implements WorkbenchPanelView<P> {
 
         panelSupport.remove( this, parent );
 
-        //Release DnD DropController
         dndManager.unregisterDropController( this );
     }
 

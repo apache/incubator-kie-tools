@@ -15,6 +15,10 @@
  */
 package org.uberfire.client.workbench.widgets.dnd;
 
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.Position;
+
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.DropController;
@@ -32,16 +36,14 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.workbench.model.Position;
 
 /**
  * A pop-up "compass" widget that appears centralised on it's parent Drop Target
  * and permits drop events on the compass points.
  */
 public class CompassWidget extends PopupPanel
-        implements
-        DropController {
+implements
+DropController {
 
     private static CompassWidget instance;
 
@@ -55,7 +57,7 @@ public class CompassWidget extends PopupPanel
 
     private final FlexTable container = new FlexTable();
 
-    private Position dropTargetPosition = Position.NONE;
+    private CompassPosition dropTargetPosition = CompassPosition.NONE;
 
     public static CompassWidget getInstance() {
         if ( instance == null ) {
@@ -133,17 +135,17 @@ public class CompassWidget extends PopupPanel
                                                           null );
         final WidgetArea centreWidgetArea = new WidgetArea( centreWidget,
                                                             null );
-        Position p = Position.NONE;
+        CompassPosition p = CompassPosition.NONE;
         if ( northWidgetArea.intersects( l ) ) {
-            p = Position.NORTH;
+            p = CompassPosition.NORTH;
         } else if ( southWidgetArea.intersects( l ) ) {
-            p = Position.SOUTH;
+            p = CompassPosition.SOUTH;
         } else if ( eastWidgetArea.intersects( l ) ) {
-            p = Position.EAST;
+            p = CompassPosition.EAST;
         } else if ( westWidgetArea.intersects( l ) ) {
-            p = Position.WEST;
+            p = CompassPosition.WEST;
         } else if ( centreWidgetArea.intersects( l ) ) {
-            p = Position.SELF;
+            p = CompassPosition.SELF;
         }
         if ( p != dropTargetPosition ) {
             dropTargetPosition = p;
@@ -163,7 +165,7 @@ public class CompassWidget extends PopupPanel
 
     @Override
     public void onDrop( DragContext context ) {
-        this.dropTargetPosition = Position.NONE;
+        this.dropTargetPosition = CompassPosition.NONE;
         hideDropTarget();
     }
 
@@ -207,7 +209,7 @@ public class CompassWidget extends PopupPanel
     }
 
     private void showDropTarget( final DragContext context,
-                                 final Position p ) {
+                                 final CompassPosition p ) {
         int x = 0;
         int y = 0;
         int width = 0;
@@ -288,7 +290,7 @@ public class CompassWidget extends PopupPanel
     private void hideDropTarget() {
         dropTargetHighlight.getStyle().setVisibility( Visibility.HIDDEN );
         dropTargetHighlight.getStyle().setDisplay( Display.NONE );
-        dropTargetPosition = Position.NONE;
+        dropTargetPosition = CompassPosition.NONE;
     }
 
 }

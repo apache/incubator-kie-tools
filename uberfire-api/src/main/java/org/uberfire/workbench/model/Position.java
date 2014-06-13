@@ -18,18 +18,11 @@ package org.uberfire.workbench.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Positions to which a WorkbenchPanel can be added to the Workbench
+ * Tells a PanelManager implementation where to place a part within a panel. Each PanelManager has its own layout
+ * system, and implements its own unique set of Position objects (for example, the North-South-East-West panel manager
+ * uses compass directions, and the Templated panel manager uses element names).
+ * <p>
+ * All implementations of this interface must be marked as {@link Portable}.
  */
-@Portable
-public enum Position {
-
-    NONE, //Don't add anywhere
-    NORTH, //North internal edge of a Parent panel
-    SOUTH, //South internal edge of a Parent panel
-    EAST, //East internal edge of a Parent panel
-    WEST, //West internal edge of a Parent panel
-    CENTER, //Center of a Parent panel
-    SELF, //Add to the Parent panel
-    ROOT //Add to the Workbench root
-
+public interface Position {
 }

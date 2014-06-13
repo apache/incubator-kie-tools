@@ -8,7 +8,10 @@ import java.util.Collections;
 
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,6 +34,8 @@ public class WorkbenchStartupTest {
     @Mock WorkbenchDragAndDropManager dndManager;
     @Mock PanelManager panelManager;
     @Mock StubAppReadyEventSource appReadyEvent;
+    @Mock User identity;
+    @Mock(extraInterfaces=ClientMessageBus.class) ClientMessageBusImpl bus;
 
     @Test
     public void shouldNotStartWhenBlocked() throws Exception {

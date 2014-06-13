@@ -159,7 +159,7 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
                         int size;
                         if ( reverse ) {
                             size = getTargetPosition() + getTargetSize()
-                                   - getEventPosition( event ) - offset;
+                                    - getEventPosition( event ) - offset;
                         } else {
                             size = getEventPosition( event ) - getTargetPosition() - offset;
                         }
@@ -232,6 +232,7 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
             // mouse events before layout/paint occurs, we'll only update once.
             if ( layoutCommand == null ) {
                 layoutCommand = new Command() {
+                    @Override
                     public void execute() {
                         layoutCommand = null;
                         forceLayout();
@@ -328,7 +329,7 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
             // through the glassElem. If the SplitPanel contains an iframe, the
             // iframe will capture the event and the slider will stop moving.
             glassElem.getStyle().setProperty( "background",
-                                              "white" );
+                    "white" );
             glassElem.getStyle().setOpacity( 0.0 );
         }
     }

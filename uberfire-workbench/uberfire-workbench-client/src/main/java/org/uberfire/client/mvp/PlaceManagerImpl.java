@@ -43,7 +43,6 @@ import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.SavePlaceEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -672,18 +671,6 @@ implements PlaceManager {
         }
         if ( activity instanceof WorkbenchActivity ) {
             ( (WorkbenchActivity) activity ).onLostFocus();
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void onSavePlace( @Observes SavePlaceEvent event ) {
-        final Activity activity = getActivity( event.getPlace() );
-        if ( activity == null ) {
-            return;
-        }
-        if ( activity instanceof WorkbenchEditorActivity ) {
-            final WorkbenchEditorActivity editor = (WorkbenchEditorActivity) activity;
-            editor.onSave();
         }
     }
 

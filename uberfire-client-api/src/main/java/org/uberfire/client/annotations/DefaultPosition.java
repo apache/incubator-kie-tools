@@ -21,21 +21,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.uberfire.workbench.model.Position;
-
-import static org.uberfire.workbench.model.Position.ROOT;
-
 /**
- * Default position for WorkbenchParts added to the Workbench. Methods marked
- * with this annotation should take zero arguments and return
- * {@code org.drools.guvnor.client.workbench.Position} indicating the
- * WorkbenchPart's default position.
+ * Default position for WorkbenchParts added to the Workbench. Methods marked with this annotation should take zero
+ * arguments and return a {@code Position} indicating the WorkbenchPart's default position.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 public @interface DefaultPosition {
-
-    Position getPosition() default ROOT;
 
 }

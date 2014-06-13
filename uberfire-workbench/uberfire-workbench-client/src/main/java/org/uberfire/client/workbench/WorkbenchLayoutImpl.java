@@ -1,5 +1,11 @@
 package org.uberfire.client.workbench;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
+
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
@@ -9,15 +15,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import static org.uberfire.workbench.model.PanelType.ROOT_STATIC;
 
 /**
  * The default layout implementation.
@@ -30,7 +27,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     private final FlowPanel headers = new FlowPanel();
     private final FlowPanel footers = new FlowPanel();
-    private final FlowPanel footer = new FlowPanel();
     private final SimplePanel workbench = new SimplePanel();
     private final FlowPanel container = new FlowPanel();
 
@@ -45,7 +41,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     private AbsolutePanel workbenchContainer;
 
-    private Composite rootWidget;
+    private final Composite rootWidget;
 
     public WorkbenchLayoutImpl()
     {
@@ -81,6 +77,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         return rootWidget;
     }
 
+    @Override
     public HasWidgets getPerspectiveContainer() {
         return workbench;
     }
@@ -100,13 +97,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         // clear reset
         workbench.clear();
         dndManager.unregisterDropControllers();
-
-        // connection between workbench layout and panel manager
-        final PanelDefinition root = new PanelDefinitionImpl( ROOT_STATIC );
-        panelManager.setRoot( root );
-
-        // set default top perspective widget
-        workbench.setWidget(panelManager.getPanelView(root));
 
     }
 

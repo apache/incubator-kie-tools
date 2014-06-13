@@ -1,0 +1,152 @@
+/*
+ * Copyright 2012 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.uberfire.client.workbench.pmgr.nswe.panels.impl;
+
+import javax.enterprise.context.Dependent;
+
+import org.uberfire.client.workbench.panels.SplitPanel;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.widgets.split.WorkbenchSplitLayoutPanel;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.PanelDefinition;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+/**
+ * A split panel to contain WorkbenchPanels split vertically.
+ */
+@Dependent
+public class VerticalSplitterPanel extends ResizeComposite
+implements
+SplitPanel {
+
+    WorkbenchSplitLayoutPanel slp = new WorkbenchSplitLayoutPanel();
+    SimpleLayoutPanel northWidgetContainer = new SimpleLayoutPanel();
+    SimpleLayoutPanel southWidgetContainer = new SimpleLayoutPanel();
+
+    public VerticalSplitterPanel() {
+        initWidget( getSlp() );
+    }
+
+    @Override
+    public void setup( final WorkbenchPanelView northWidget,
+                       final WorkbenchPanelView southWidget,
+                       final CompassPosition position,
+                       final Integer preferredSize,
+                       final Integer preferredMinSize ) {
+
+        final int size = assertSize( preferredSize );
+        final int minSize = assertMinimumSize( preferredMinSize );
+
+        switch ( position ) {
+            case NORTH:
+                int northChildSize = getChildSize( northWidget.getPresenter().getDefinition() );
+                getSlp().addNorth( northWidgetContainer,
+                                   size + northChildSize );
+                getSlp().add( southWidgetContainer );
+                break;
+            case SOUTH:
+                int southChildSize = getChildSize( southWidget.getPresenter().getDefinition() );
+                getSlp().addSouth( southWidgetContainer,
+                                   size + southChildSize );
+                getSlp().add( northWidgetContainer );
+                break;
+            default:
+                throw new IllegalArgumentException( "position must be either NORTH or SOUTH" );
+        }
+        getSlp().setWidgetMinSize( northWidgetContainer,
+                                   minSize );
+        getSlp().setWidgetMinSize( southWidgetContainer,
+                                   minSize );
+
+        northWidgetContainer.setWidget( northWidget );
+        southWidgetContainer.setWidget( southWidget );
+        scheduleResize( getSlp() );
+    }
+
+    WorkbenchSplitLayoutPanel getSlp() {
+        return slp;
+    }
+
+    @Override
+    public void clear() {
+        getSlp().clear();
+    }
+
+    @Override
+    public Widget getWidget( CompassPosition position ) {
+        switch ( position ) {
+            case NORTH:
+                return this.northWidgetContainer.getWidget();
+            case SOUTH:
+                return this.southWidgetContainer.getWidget();
+            default:
+                throw new IllegalArgumentException( "position must be either NORTH or SOUTH" );
+        }
+    }
+
+    @Override
+    public void onResize() {
+        //It is possible that the SplitterPanel is removed from the DOM before the resize is called
+        if ( isAttached() ) {
+            final Widget parent = getParent();
+            setPixelSize( parent.getOffsetWidth(),
+                          parent.getOffsetHeight() );
+            super.onResize();
+        }
+    }
+
+    private int assertSize( final Integer size ) {
+        return ( size == null ? DEFAULT_SIZE : size );
+    }
+
+    private int assertMinimumSize( final Integer minSize ) {
+        return ( minSize == null ? DEFAULT_MIN_SIZE : minSize );
+    }
+
+    int getChildSize( final PanelDefinition panel ) {
+        int childSize = 0;
+        final PanelDefinition northPanel = panel.getChild( CompassPosition.NORTH );
+        final PanelDefinition southPanel = panel.getChild( CompassPosition.SOUTH );
+        if ( northPanel != null ) {
+            childSize = childSize + assertSize( northPanel.getHeight() ) + getChildSize( northPanel );
+        }
+        if ( southPanel != null ) {
+            childSize = childSize + assertSize( southPanel.getHeight() ) + getChildSize( southPanel );
+        }
+        return childSize;
+    }
+
+    private void scheduleResize( final Widget widget ) {
+        if ( widget instanceof RequiresResize ) {
+            final RequiresResize requiresResize = (RequiresResize) widget;
+            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+
+                @Override
+                public void execute() {
+                    requiresResize.onResize();
+                }
+
+            } );
+        }
+    }
+
+}

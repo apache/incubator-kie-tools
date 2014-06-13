@@ -1,10 +1,17 @@
 package org.uberfire.client.workbench;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -17,11 +24,11 @@ import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.RestorePlaceEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.SelectablePanels;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -29,16 +36,8 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Base class for implementations of PanelManager. This class relies on ErraiIOC field injection, so all subclasses must
@@ -47,35 +46,39 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Inject
-    Event<PlaceGainFocusEvent> placeGainFocusEvent;
+    protected Event<PlaceGainFocusEvent> placeGainFocusEvent;
 
     @Inject
-    Event<PlaceLostFocusEvent> placeLostFocusEvent;
+    protected Event<PlaceLostFocusEvent> placeLostFocusEvent;
 
     @Inject
-    Event<PanelFocusEvent> panelFocusEvent;
+    protected Event<PanelFocusEvent> panelFocusEvent;
 
     @Inject
-    Event<SelectPlaceEvent> selectPlaceEvent;
+    protected Event<SelectPlaceEvent> selectPlaceEvent;
 
     @Inject
-    WorkbenchStatusBarPresenter statusBar;
+    protected WorkbenchStatusBarPresenter statusBar;
 
     @Inject
-    SyncBeanManager iocManager;
+    protected SyncBeanManager iocManager;
 
     @Inject
-    Instance<PlaceManager> placeManager;
+    protected Instance<PlaceManager> placeManager;
 
-    PanelDefinition root = null;
+    /**
+     * Description of the current perspective's root panel.
+     * TODO: this should always be the same as <tt>perspective.getRoot()</tt>. Tracking it separately probably does more harm than good!
+     */
+    protected PanelDefinition rootPanelDef = null;
 
-    PerspectiveDefinition perspective;
+    protected PerspectiveDefinition perspective;
 
-    Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPartPresenter>();
+    protected final Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
-    Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
+    protected final Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
 
-    PartDefinition activePart = null;
+    protected PartDefinition activePart = null;
 
     @Inject
     LayoutSelection layoutSelection;
@@ -86,26 +89,26 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     }
 
     @Override
-    public void setPerspective( final PerspectiveDefinition perspective ) {
-        final PanelDefinition newRoot = perspective.getRoot();
+    public void setPerspective( final PerspectiveDefinition newPerspectiveDef ) {
 
-        final WorkbenchPanelPresenter oldPresenter = mapPanelDefinitionToPresenter.remove( root );
-        getBeanFactory().destroy( root );
+        final WorkbenchPanelPresenter oldRootPanelPresenter = mapPanelDefinitionToPresenter.remove( rootPanelDef );
 
-        this.root = newRoot;
-        this.perspective = perspective;
-        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter( newRoot );
-        if ( newPresenter == null ) {
-            newPresenter = getBeanFactory().newWorkbenchPanel( newRoot );
-            mapPanelDefinitionToPresenter.put( newRoot, newPresenter );
-        }
+        //TODO oldRootPanelPresenter.dispose() (or onClose() or onRemove()), UNLESS this can be done by a DOM event hook in the view
+        //         - cleanup listeners; take impl from existing removePanel() method but leave out the remove-from-parent bit
 
-        if ( oldPresenter != null ) {
-            oldPresenter.removePanel();
-        }
-
-        HasWidgets perspectiveContainer = layoutSelection.get().getPerspectiveContainer();
+        final HasWidgets perspectiveContainer = layoutSelection.get().getPerspectiveContainer();
         perspectiveContainer.clear();
+        getBeanFactory().destroy( rootPanelDef );
+
+        final PanelDefinition newRootPanelDef = newPerspectiveDef.getRoot();
+        this.rootPanelDef = newRootPanelDef;
+        this.perspective = newPerspectiveDef;
+        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter( newRootPanelDef );
+        if ( newPresenter == null ) {
+            newPresenter = getBeanFactory().newWorkbenchPanel( newRootPanelDef );
+            mapPanelDefinitionToPresenter.put( newRootPanelDef, newPresenter );
+        }
+
         perspectiveContainer.add(newPresenter.getPanelView().asWidget());
     }
 
@@ -113,29 +116,23 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Override
     public PanelDefinition getRoot() {
-        return this.root;
+        return this.rootPanelDef;
     }
 
     @Override
-    public void setRoot( final PanelDefinition panel ) {
-        if ( !panel.isRoot() ) {
-            throw new IllegalArgumentException( "Panel is not a root panel." );
+    public void setHeaderContents( List<Header> headers ) {
+        final WorkbenchLayout workbenchLayout = layoutSelection.get();
+        for ( Header h : headers ) {
+            workbenchLayout.addMargin( Header.class, h );
         }
+    }
 
-        if ( root == null ) {
-            this.root = panel;
-        } else {
-            throw new IllegalArgumentException( "Root has already been set. Unable to set root." );
+    @Override
+    public void setFooterContents( List<Footer> footers ) {
+        final WorkbenchLayout workbenchLayout = layoutSelection.get();
+        for ( Footer f : footers ) {
+            workbenchLayout.addMargin( Footer.class, f );
         }
-
-        WorkbenchPanelPresenter panelPresenter = getWorkbenchPanelPresenter( panel );
-        if ( panelPresenter == null ) {
-            panelPresenter = getBeanFactory().newWorkbenchPanel( panel );
-            mapPanelDefinitionToPresenter.put( panel,
-                                               panelPresenter );
-        }
-
-        onPanelFocus( panel );
     }
 
     @Override
@@ -183,26 +180,8 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         //Select newly inserted part
         selectPlaceEvent.fire( new SelectPlaceEvent( place ) );
     }
-    @Override
-    public PerspectiveActivity getDefaultPerspectiveActivity() {
-        PerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans( PerspectiveActivity.class );
-        final Iterator<IOCBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
 
-        while ( perspectivesIterator.hasNext() ) {
-            final IOCBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
-            final PerspectiveActivity instance = perspective.getInstance();
-            if ( instance.isDefault() ) {
-                defaultPerspective = instance;
-                break;
-            } else {
-                iocManager.destroyBean( instance );
-            }
-        }
-        return defaultPerspective;
-    }
-
-    WorkbenchPanelPresenter getWorkbenchPanelPresenter( PanelDefinition panel ) {
+    protected WorkbenchPanelPresenter getWorkbenchPanelPresenter( PanelDefinition panel ) {
         return mapPanelDefinitionToPresenter.get( panel );
     }
 
@@ -348,9 +327,9 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         if ( !mapPanelDefinitionToPresenter.containsKey( panelToRestore ) ) {
             //TODO {manstis} Position needs to be looked up from model - will need "outer" panel feature :(
             PanelDefinition targetPanel = findTargetPanel( panelToRestore,
-                                                           root );
+                                                           rootPanelDef );
             if ( targetPanel == null ) {
-                targetPanel = root;
+                targetPanel = rootPanelDef;
             }
             addWorkbenchPanel( targetPanel,
                                panelToRestore,
@@ -368,10 +347,10 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     private PanelDefinition findTargetPanel( final PanelDefinition panelToFind,
                                              final PanelDefinition panelToSearch ) {
-        final PanelDefinition northChild = panelToSearch.getChild( Position.NORTH );
-        final PanelDefinition southChild = panelToSearch.getChild( Position.SOUTH );
-        final PanelDefinition eastChild = panelToSearch.getChild( Position.EAST );
-        final PanelDefinition westChild = panelToSearch.getChild( Position.WEST );
+        final PanelDefinition northChild = panelToSearch.getChild( CompassPosition.NORTH );
+        final PanelDefinition southChild = panelToSearch.getChild( CompassPosition.SOUTH );
+        final PanelDefinition eastChild = panelToSearch.getChild( CompassPosition.EAST );
+        final PanelDefinition westChild = panelToSearch.getChild( CompassPosition.WEST );
         PanelDefinition targetPanel = null;
         if ( northChild != null ) {
             if ( northChild.equals( panelToFind ) ) {
@@ -457,28 +436,22 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
             presenterToRemove.removePanel();
             getBeanFactory().destroy( presenterToRemove );
             removePanel( presenterToRemove.getDefinition(),
-                         root );
+                         rootPanelDef );
         }
-    }
-
-
-    @Override
-    public WorkbenchPanelView getPanelView( final PanelDefinition panel ) {
-        return getWorkbenchPanelPresenter( panel ).getPanelView();
     }
 
     private void removePanel( final PanelDefinition panelToRemove,
                               final PanelDefinition panelToSearch ) {
-        final PanelDefinition northChild = panelToSearch.getChild( Position.NORTH );
-        final PanelDefinition southChild = panelToSearch.getChild( Position.SOUTH );
-        final PanelDefinition eastChild = panelToSearch.getChild( Position.EAST );
-        final PanelDefinition westChild = panelToSearch.getChild( Position.WEST );
+        final PanelDefinition northChild = panelToSearch.getChild( CompassPosition.NORTH );
+        final PanelDefinition southChild = panelToSearch.getChild( CompassPosition.SOUTH );
+        final PanelDefinition eastChild = panelToSearch.getChild( CompassPosition.EAST );
+        final PanelDefinition westChild = panelToSearch.getChild( CompassPosition.WEST );
         if ( northChild != null ) {
             if ( northChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( northChild );
                 removePanel( panelToRemove,
                              panelToSearch,
-                             Position.NORTH );
+                             CompassPosition.NORTH );
             } else {
                 removePanel( panelToRemove,
                              northChild );
@@ -489,7 +462,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                 mapPanelDefinitionToPresenter.remove( southChild );
                 removePanel( panelToRemove,
                              panelToSearch,
-                             Position.SOUTH );
+                             CompassPosition.SOUTH );
             } else {
                 removePanel( panelToRemove,
                              southChild );
@@ -500,7 +473,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                 mapPanelDefinitionToPresenter.remove( eastChild );
                 removePanel( panelToRemove,
                              panelToSearch,
-                             Position.EAST );
+                             CompassPosition.EAST );
             } else {
                 removePanel( panelToRemove,
                              eastChild );
@@ -511,7 +484,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                 mapPanelDefinitionToPresenter.remove( westChild );
                 removePanel( panelToRemove,
                              panelToSearch,
-                             Position.WEST );
+                             CompassPosition.WEST );
             } else {
                 removePanel( panelToRemove,
                              westChild );
@@ -525,17 +498,17 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
         panelToSearch.removeChild( position );
 
-        final PanelDefinition northOrphan = panelToRemove.getChild( Position.NORTH );
-        final PanelDefinition southOrphan = panelToRemove.getChild( Position.SOUTH );
-        final PanelDefinition eastOrphan = panelToRemove.getChild( Position.EAST );
-        final PanelDefinition westOrphan = panelToRemove.getChild( Position.WEST );
-        panelToSearch.appendChild( Position.NORTH,
+        final PanelDefinition northOrphan = panelToRemove.getChild( CompassPosition.NORTH );
+        final PanelDefinition southOrphan = panelToRemove.getChild( CompassPosition.SOUTH );
+        final PanelDefinition eastOrphan = panelToRemove.getChild( CompassPosition.EAST );
+        final PanelDefinition westOrphan = panelToRemove.getChild( CompassPosition.WEST );
+        panelToSearch.appendChild( CompassPosition.NORTH,
                                    northOrphan );
-        panelToSearch.appendChild( Position.SOUTH,
+        panelToSearch.appendChild( CompassPosition.SOUTH,
                                    southOrphan );
-        panelToSearch.appendChild( Position.EAST,
+        panelToSearch.appendChild( CompassPosition.EAST,
                                    eastOrphan );
-        panelToSearch.appendChild( Position.WEST,
+        panelToSearch.appendChild( CompassPosition.WEST,
                                    westOrphan );
     }
 

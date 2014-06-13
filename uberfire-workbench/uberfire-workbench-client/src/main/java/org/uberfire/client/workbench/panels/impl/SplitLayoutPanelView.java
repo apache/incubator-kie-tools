@@ -15,21 +15,23 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A workbench perspective view that builds on stock GWT {@link com.google.gwt.user.client.ui.SplitLayoutPanel}'s.
@@ -41,9 +43,9 @@ import javax.inject.Named;
 @Named("SplitLayoutPanelView")
 public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanelPresenter> {
 
-    private SplitLayoutPanel layout;
-    private LayoutPanel centerPanel;
-    private LayoutPanel westPanel;
+    private final SplitLayoutPanel layout;
+    private final LayoutPanel centerPanel;
+    private final LayoutPanel westPanel;
     private SplitLayoutPanelPresenter presenter;
     private Pair<PanelDefinition, Widget> activePanel;
 
@@ -68,13 +70,13 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
 
         System.out.println("Adding '"+view.getPresenter().getDefinition().getPanelType()+"'to instance: "+this);
 
-        if(Position.WEST.equals(position))
+        if(CompassPosition.WEST.equals(position))
         {
             Widget widget = view.asWidget();
             widget.addStyleName("split-west"); // HAL specific
             westPanel.add(widget);
         }
-        else if(Position.CENTER.equals(position))
+        else if(CompassPosition.CENTER.equals(position))
         {
 
             // identify active panel

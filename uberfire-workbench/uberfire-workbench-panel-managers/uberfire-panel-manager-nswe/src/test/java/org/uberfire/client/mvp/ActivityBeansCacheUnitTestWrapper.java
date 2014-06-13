@@ -1,5 +1,7 @@
 package org.uberfire.client.mvp;
 
+import static org.mockito.Mockito.*;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,8 +14,6 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCDependentBean;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.commons.data.Pair;
-
-import static org.mockito.Mockito.*;
 
 @IsSplashScreen
 public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {

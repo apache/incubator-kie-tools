@@ -1,8 +1,9 @@
 package org.uberfire.client.workbench.widgets.dnd;
 
-import com.allen_sauer.gwt.dnd.client.DragContext;
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,13 +11,15 @@ import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.allen_sauer.gwt.dnd.client.DragContext;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CompassDropControllerTest {
@@ -73,7 +76,7 @@ public class CompassDropControllerTest {
 
     @Test
     public void onDropNoEffect() {
-        compassDropController.mockDropTargetPosition(Position.SELF);
+        compassDropController.mockDropTargetPosition( CompassPosition.SELF );
 
         compassDropController.mockSamePositionDrag(view);
 
@@ -87,7 +90,7 @@ public class CompassDropControllerTest {
 
     @Test
     public void onDropHappens() {
-        compassDropController.mockDropTargetPosition(Position.WEST);
+        compassDropController.mockDropTargetPosition( CompassPosition.WEST );
 
         compassDropController.mockSamePositionDrag(view);
 

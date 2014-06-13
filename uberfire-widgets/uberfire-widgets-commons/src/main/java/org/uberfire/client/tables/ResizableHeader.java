@@ -22,7 +22,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 public class ResizableHeader<T> extends Header<String> {
 
     private Column<T, ?> column = null;
-    private AbstractCellTable<T> cellTable;
+    private final AbstractCellTable<T> cellTable;
     private String title = "";
     private static final int width = 20;
 
@@ -59,10 +59,10 @@ public class ResizableHeader<T> extends Header<String> {
 
     class ColumnResizeHelper<E> implements NativePreviewHandler {
 
-        private HandlerRegistration handler;
-        private AbstractCellTable<E> table;
-        private Column<E, ?> col;
-        private Element el;
+        private final HandlerRegistration handler;
+        private final AbstractCellTable<E> table;
+        private final Column<E, ?> col;
+        private final Element el;
         private boolean mousedown;
         private Element measuringElement;
 

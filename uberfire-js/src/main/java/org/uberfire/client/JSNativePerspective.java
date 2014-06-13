@@ -13,12 +13,12 @@ import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
@@ -219,7 +219,7 @@ public class JSNativePerspective {
 
                 buildPanels( newPanel, activePanelDef.getChildren() );
 
-                panel.insertChild( Position.valueOf( activePanelDef.getPosition().toUpperCase() ), newPanel );
+                panel.insertChild( CompassPosition.valueOf( activePanelDef.getPosition().toUpperCase() ), newPanel );
             }
         }
     }

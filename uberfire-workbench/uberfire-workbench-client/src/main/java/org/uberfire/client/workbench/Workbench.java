@@ -15,34 +15,8 @@
  */
 package org.uberfire.client.workbench;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.model.PerspectiveDefinition;
+import static java.util.Collections.*;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -51,12 +25,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.sort;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.events.ApplicationReadyEvent;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.rpc.impl.SessionInfoImpl;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 
 /**
- * Responsible for bootstrapping the client-side Workbench user interface. Normally this happens automatically with no
- * need for assistance or interference from the application. Thus, applications don't usually need to do anything with
- * the Workbench class directly.
+ * Responsible for bootstrapping the client-side Workbench user interface by coordinating calls to the PanelManager and
+ * PlaceManager. Normally this happens automatically with no need for assistance or interference from the application.
+ * Thus, applications don't usually need to do anything with the Workbench class directly.
  * 
  * <h2>Delaying Workbench Startup</h2>
  * 
@@ -65,9 +71,9 @@ import static java.util.Collections.sort;
  * response data from the server doesn't want UberFire to start initializing its widgets until that server response has
  * come in.
  * <p>
- * To delay startup, add a <i>Startup Blocker</i> before Errai starts calling {@link AfterInitialization} methods.
- * The best place to do this is in the {@link PostConstruct} method of an {@link EntryPoint} bean. You would then
- * remove the startup blocker from within the callback from the server:
+ * To delay startup, add a <i>Startup Blocker</i> before Errai starts calling {@link AfterInitialization} methods. The
+ * best place to do this is in the {@link PostConstruct} method of an {@link EntryPoint} bean. You would then remove the
+ * startup blocker from within the callback from the server:
  * 
  * <pre>
  *   {@code @EntryPoint}
@@ -95,7 +101,7 @@ import static java.util.Collections.sort;
  *   }
  * </pre>
  */
-@ApplicationScoped
+@EntryPoint
 public class Workbench {
 
     /**
@@ -109,8 +115,10 @@ public class Workbench {
     @Inject
     private Event<ApplicationReadyEvent> appReady;
 
-    // ------------------------
-    // core services
+    // TODO: move this to PanelManager?
+    private boolean isStandaloneMode = false;
+
+    private final Set<String> headersToKeep = new HashSet<String>();
 
     @Inject
     private SyncBeanManager iocManager;
@@ -124,9 +132,6 @@ public class Workbench {
     @Inject
     private VFSServiceProxy vfsService;
 
-    // ------------------------
-    // Layout handling
-
     @Inject
     LayoutSelection layoutSelection;
 
@@ -135,11 +140,13 @@ public class Workbench {
     @Inject
     private PanelManager panelManager;
 
-    // ------------------------
+    @Inject
+    private User identity;
 
+    @Inject
+    private ClientMessageBus bus;
 
-    private boolean isStandaloneMode = false;
-    private final Set<String> headersToKeep = new HashSet<String>();
+    private SessionInfo sessionInfo = null;
 
     private final WorkbenchCloseHandler workbenchCloseHandler = GWT.create( WorkbenchCloseHandler.class );
 
@@ -204,9 +211,9 @@ public class Workbench {
     }
 
     @PostConstruct
-    public void setup() {
-
+    private void earlyInit() {
         layout = layoutSelection.get();
+        WorkbenchResources.INSTANCE.CSS().ensureInjected();
 
         isStandaloneMode = Window.Location.getParameterMap().containsKey( "standalone" );
 
@@ -217,11 +224,11 @@ public class Workbench {
         }
     }
 
-    private <T> void setupMarginWidgets( Class<T> marginType ) {
+    private <T extends OrderableIsWidget> List<T> setupMarginWidgets( Class<T> marginType ) {
         final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
-        final List<OrderableIsWidget> instances = new ArrayList<OrderableIsWidget>();
+        final List<T> instances = new ArrayList<T>();
         for ( final IOCBeanDef<T> headerBean : headerBeans ) {
-            OrderableIsWidget instance = (OrderableIsWidget)headerBean.getInstance();
+            T instance = headerBean.getInstance();
 
             // for regular mode (not standalone) we add every header and footer widget;
             // for standalone mode, we only add the ones requested in the URL
@@ -243,43 +250,18 @@ public class Workbench {
             }
         } );
 
-        FlowPanel marginContainer = new FlowPanel();
-
-        for ( final OrderableIsWidget widget : instances ) {
-            layout.addMargin( marginType, widget.asWidget() );
-        }
-
-    }
-
-    public IsWidget getLayoutRoot() {
-        return layout.getRoot();
+        return instances;
     }
 
     private void bootstrap() {
         System.out.println("Workbench starting...");
+
+        ( (SessionInfoImpl) currentSession() ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
+
         appReady.fire( new ApplicationReadyEvent() );
 
-        if(!isStandaloneMode) {
-            setupMarginWidgets(Header.class);
-            setupMarginWidgets(Footer.class);
-        }
-
-        // bootstrap the actual layout
-
-        layout.onBootstrap();
-
-
-        //Size environment - Defer so Widgets have been rendered and hence sizes available
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                final int width = Window.getClientWidth();
-                final int height = Window.getClientHeight();
-                layout.resizeTo(width, height);
-            }
-
-        } );
+        panelManager.setHeaderContents( setupMarginWidgets( Header.class ) );
+        panelManager.setFooterContents( setupMarginWidgets( Footer.class ) );
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if ( !isStandaloneMode ) {
@@ -291,7 +273,7 @@ public class Workbench {
             handleStandaloneMode( Window.Location.getParameterMap() );
         }
 
-        //Save Workbench state when Window is closed
+        // Save Workbench state when Window is closed
         Window.addWindowClosingHandler( new ClosingHandler() {
 
             @Override
@@ -301,7 +283,7 @@ public class Workbench {
 
         } );
 
-        //Resizing the Window should resize everything
+        // Resizing the Window should resize everything
         Window.addResizeHandler( new ResizeHandler() {
             @Override
             public void onResize( ResizeEvent event ) {
@@ -309,6 +291,7 @@ public class Workbench {
             }
         } );
 
+        // Defer the initial resize call until widgets are rendered and sizes are available
         Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
@@ -318,6 +301,7 @@ public class Workbench {
 
     }
 
+    // TODO add tests for standalone startup vs. full startup
     private void handleStandaloneMode( final Map<String, List<String>> parameters ) {
         if ( parameters.containsKey( "perspective" ) && !parameters.get( "perspective" ).isEmpty() ) {
             placeManager.goTo( new DefaultPlaceRequest( parameters.get( "perspective" ).get( 0 ) ) );
@@ -350,4 +334,14 @@ public class Workbench {
         }
         return defaultPerspective;
     }
+
+    @Produces
+    @ApplicationScoped
+    private SessionInfo currentSession() {
+        if ( sessionInfo == null ) {
+            sessionInfo = new SessionInfoImpl( identity );
+        }
+        return sessionInfo;
+    }
+
 }

@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
@@ -35,7 +36,7 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity impleme
 
     @Override
     public Position getDefaultPosition() {
-        return Position.ROOT;
+        return CompassPosition.ROOT;
     }
 
     @Override
