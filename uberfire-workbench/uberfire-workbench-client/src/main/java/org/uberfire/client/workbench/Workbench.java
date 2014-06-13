@@ -31,7 +31,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -59,6 +58,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
  * Responsible for bootstrapping the client-side Workbench user interface by coordinating calls to the PanelManager and
@@ -225,7 +225,7 @@ public class Workbench {
         }
     }
 
-    private <T extends OrderableIsWidget> void setupMarginWidgets( Class<T> marginType ) {
+    private <T extends OrderableIsWidget> List<T> discoverMarginWidgets( Class<T> marginType ) {
         final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
         final List<T> instances = new ArrayList<T>();
         for ( final IOCBeanDef<T> headerBean : headerBeans ) {
@@ -251,14 +251,10 @@ public class Workbench {
             }
         } );
 
-        for(T margin : instances) {
-            layout.addMargin(marginType, margin.asWidget());
-        }
+        return instances;
     }
 
     private void bootstrap() {
-
-        RootLayoutPanel.get().add(layout.getRoot());
 
         System.out.println("Workbench starting...");
 
@@ -266,10 +262,11 @@ public class Workbench {
 
         appReady.fire( new ApplicationReadyEvent() );
 
-        setupMarginWidgets( Header.class );
-        setupMarginWidgets( Footer.class );
+        layout.setHeaderContents( discoverMarginWidgets( Header.class ) );
+        layout.setFooterContents( discoverMarginWidgets( Footer.class ) );
 
         layout.onBootstrap();
+        RootLayoutPanel.get().add(layout.getRoot());
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if ( !isStandaloneMode ) {

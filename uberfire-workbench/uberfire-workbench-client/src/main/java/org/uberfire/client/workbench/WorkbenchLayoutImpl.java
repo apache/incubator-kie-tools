@@ -1,20 +1,22 @@
 package org.uberfire.client.workbench;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
+import org.uberfire.workbench.model.PerspectiveDefinition;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
 /**
  * The default layout implementation.
@@ -25,109 +27,99 @@ import com.google.gwt.user.client.ui.Widget;
 @ApplicationScoped
 public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
-    private final FlowPanel headers = new FlowPanel();
-    private final FlowPanel footers = new FlowPanel();
-    private final SimplePanel workbench = new SimplePanel();
-    private final FlowPanel container = new FlowPanel();
+    /**
+     * Top-level widget of the whole workbench layout. This panel contains the nested container panels for headers,
+     * footers, and the current perspective. During a normal startup of UberFire, this panel would be added directly to
+     * the RootLayoutPanel.
+     */
+    @Inject // using @Inject here because a real HeaderPanel can't be constructed in a GwtMockito test
+    private HeaderPanel root;
+
+    /**
+     * The panel within which the current perspective's root view resides. This panel lasts the lifetime of the app; it's
+     * cleared and repopulated with the new perspective's root view each time
+     * {@link #setPerspective(PerspectiveDefinition)} gets called.
+     */
+    private final Panel perspectiveRootContainer = new SimpleLayoutPanel();
+
+    /**
+     * The panel within which the current perspective's header widgets reside. This panel lasts the lifetime of the app;
+     * it's cleared and repopulated with the new perspective's root view each time
+     * {@link #setHeaderContents(java.util.List)} gets called.
+     */
+    private final Panel headerPanel = new FlowPanel();
+
+    /**
+     * The panel within which the current perspective's footer widgets reside. This panel lasts the lifetime of the app;
+     * it's cleared and repopulated with the new perspective's root view each time
+     * {@link #setFooterContents(java.util.List)} gets called. The actual panel that's used for this is specified by the
+     * concrete subclass's constructor.
+     */
+    private final Panel footerPanel = new FlowPanel();
 
     @Inject
     private WorkbenchDragAndDropManager dndManager;
 
+    /**
+     * We read the drag boundary panel out of this, and sandwich it between the root panel and the perspective container panel.
+     */
     @Inject
     private WorkbenchPickupDragController dragController;
 
     @Inject
     private PanelManager panelManager;
 
-    private AbsolutePanel workbenchContainer;
-
-    private final Composite rootWidget;
-
-    public WorkbenchLayoutImpl()
-    {
-        // the top level workbench widget
-        rootWidget = new Composite() {
-
-            {{
-                initWidget(container);
-            }}
-
-        };
-
-    }
-
-    @Override
-    public <T> void addMargin(Class<T> marginType, IsWidget widget) {
-        if(Header.class == marginType)
-        {
-            headers.add(widget);
-        }
-        else if (Footer.class == marginType)
-        {
-            footers.add(widget);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unsupported margin type: "+ marginType);
-        }
-    }
-
     @Override
     public IsWidget getRoot() {
-        return rootWidget;
+        return root;
     }
 
     @Override
     public HasWidgets getPerspectiveContainer() {
-        return workbench;
+        return perspectiveRootContainer;
+    }
+
+    @Override
+    public void setHeaderContents( List<Header> headers ) {
+        headerPanel.clear();
+        for ( Header h : headers ) {
+            headerPanel.add( h );
+        }
+    }
+
+    @Override
+    public void setFooterContents( List<Footer> footers ) {
+        footerPanel.clear();
+        for ( Footer f : footers ) {
+            footerPanel.add( f );
+        }
     }
 
     @Override
     public void onBootstrap() {
-
-        container.add(headers);
-
-        // drag and drop boundary
-        workbenchContainer = dragController.getBoundaryPanel();
-        workbenchContainer.add(workbench);
-        container.add(workbenchContainer);
-
-        container.add(footers);
-
-        // clear reset
-        workbench.clear();
         dndManager.unregisterDropControllers();
 
+        AbsolutePanel dragBoundary = dragController.getBoundaryPanel();
+        dragBoundary.add( perspectiveRootContainer );
+
+        root.setHeaderWidget( headerPanel );
+        root.setFooterWidget( footerPanel );
+        root.setContentWidget( dragBoundary );
     }
 
     @Override
     public void onResize() {
-        final int width = Window.getClientWidth();
-        final int height = Window.getClientHeight();
-        doResizeWorkbenchContainer( width, height );
+        resizeTo( Window.getClientWidth(), Window.getClientHeight() );
     }
 
     @Override
     public void resizeTo(int width, int height) {
-        doResizeWorkbenchContainer( width, height );
+        root.setPixelSize( width, height );
+
+        int leftoverHeight = height - headerPanel.getOffsetHeight() - footerPanel.getOffsetHeight();
+
+        dragController.getBoundaryPanel().setPixelSize( width, leftoverHeight );
+        perspectiveRootContainer.setPixelSize( width, leftoverHeight );
     }
 
-    private void doResizeWorkbenchContainer( final int width,
-                                             final int height ) {
-        final int headersHeight = headers.asWidget().getOffsetHeight();
-        final int footersHeight = footers.asWidget().getOffsetHeight();
-        final int availableHeight;
-
-        availableHeight = height - headersHeight - footersHeight;
-
-        workbenchContainer.setPixelSize(width, availableHeight);
-        workbench.setPixelSize( width, availableHeight );
-
-        final Widget w = workbench.getWidget();
-        if ( w != null ) {
-            if ( w instanceof RequiresResize ) {
-                ( (RequiresResize) w ).onResize();
-            }
-        }
-    }
 }

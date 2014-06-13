@@ -36,6 +36,7 @@ public class WorkbenchStartupTest {
     @Mock StubAppReadyEventSource appReadyEvent;
     @Mock User identity;
     @Mock(extraInterfaces=ClientMessageBus.class) ClientMessageBusImpl bus;
+    @Mock WorkbenchLayout layout;
 
     @Test
     public void shouldNotStartWhenBlocked() throws Exception {

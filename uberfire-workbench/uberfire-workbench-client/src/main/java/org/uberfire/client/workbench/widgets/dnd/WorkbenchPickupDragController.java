@@ -18,6 +18,12 @@ package org.uberfire.client.workbench.widgets.dnd;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
+
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
@@ -26,11 +32,6 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.resources.WorkbenchResources;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PartDefinition;
 
 /**
  * A Drag Controller for the Workbench.
@@ -101,7 +102,7 @@ public class WorkbenchPickupDragController extends PickupDragController {
     protected Widget newDragProxy( DragContext context ) {
         AbsolutePanel container = new AbsolutePanel();
         container.getElement().getStyle().setProperty( "overflow",
-                                                       "visible" );
+                "visible" );
         container.getElement().getStyle().setOpacity( 0.75 );
         container.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
