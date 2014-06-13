@@ -17,6 +17,7 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.FilterOutputStream;
@@ -769,7 +770,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         final JGitPathImpl gPath = toPathImpl( path );
 
         if ( exists( path ) ) {
-            if ( !( options != null && options.contains( TRUNCATE_EXISTING ) ) ) {
+            if ( !shouldCreateOrOpenAByteChannel( options ) ) {
                 throw new FileAlreadyExistsException( path.toString() );
             }
         }
@@ -781,38 +782,58 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         }
 
         try {
-            final File file = File.createTempFile( "gitz", "woot" );
-
-            return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( file, "rw" ).getChannel() ) {
-                @Override
-                public void close() throws java.io.IOException {
-                    super.close();
-
-                    File tempDot = null;
-                    final boolean hasDotContent;
-                    if ( options != null && options.contains( new DotFileOption() ) ) {
-                        deleteIfExists( dot( path ), extractCommentedOption( options ) );
-                        tempDot = File.createTempFile( "meta", "dot" );
-                        hasDotContent = buildDotFile( path, new FileOutputStream( tempDot ), attrs );
-                    } else {
-                        hasDotContent = false;
-                    }
-
-                    final File dotfile = tempDot;
-
-                    commit( gPath, buildCommitInfo( null, options ), new DefaultCommitContent( new HashMap<String, File>() {{
-                        put( gPath.getPath(), file );
-                        if ( hasDotContent ) {
-                            put( toPathImpl( dot( gPath ) ).getPath(), dotfile );
-                        }
-                    }} ) );
-                }
-            };
+            if ( options.contains( READ ) ) {
+                return openAByteChannel( path );
+            } else {
+                return createANewByteChannel( path, options, gPath, attrs );
+            }
         } catch ( java.io.IOException e ) {
             throw new IOException( e );
         } finally {
             ( (AbstractPath) path ).clearCache();
         }
+    }
+
+    private SeekableByteChannel createANewByteChannel( final Path path,
+                                                       final Set<? extends OpenOption> options,
+                                                       final JGitPathImpl gPath,
+                                                       final FileAttribute<?>[] attrs ) throws java.io.IOException {
+        final File file = File.createTempFile( "gitz", "woot" );
+
+        return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( file, "rw" ).getChannel() ) {
+            @Override
+            public void close() throws java.io.IOException {
+                super.close();
+
+                File tempDot = null;
+                final boolean hasDotContent;
+                if ( options != null && options.contains( new DotFileOption() ) ) {
+                    deleteIfExists( dot( path ), extractCommentedOption( options ) );
+                    tempDot = File.createTempFile( "meta", "dot" );
+                    hasDotContent = buildDotFile( path, new FileOutputStream( tempDot ), attrs );
+                } else {
+                    hasDotContent = false;
+                }
+
+                final File dotfile = tempDot;
+
+                commit( gPath, buildCommitInfo( null, options ), new DefaultCommitContent( new HashMap<String, File>() {{
+                    put( gPath.getPath(), file );
+                    if ( hasDotContent ) {
+                        put( toPathImpl( dot( gPath ) ).getPath(), dotfile );
+                    }
+                }} ) );
+            }
+
+        };
+    }
+
+    private SeekableByteChannelFileBasedImpl openAByteChannel( Path path ) throws FileNotFoundException {
+        return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( path.toFile(), "r" ).getChannel() );
+    }
+
+    private boolean shouldCreateOrOpenAByteChannel( Set<? extends OpenOption> options ) {
+        return ( options != null && ( options.contains( TRUNCATE_EXISTING ) || options.contains( READ ) ) );
     }
 
     protected boolean exists( final Path path ) {

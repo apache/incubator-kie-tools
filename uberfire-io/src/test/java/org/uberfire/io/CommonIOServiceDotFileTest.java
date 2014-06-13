@@ -38,6 +38,7 @@ import org.uberfire.java.nio.channels.SeekableByteChannel;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
@@ -430,6 +431,24 @@ public abstract class CommonIOServiceDotFileTest {
     }
 
     @Test
+    public void testReadNewByteChannel() throws IOException {
+        final Path file = getFilePath();
+        ioService().deleteIfExists( file );
+        assertFalse( ioService().exists( file ) );
+        String content = "sample content";
+        ioService.write( file, content );
+        assertTrue( ioService().exists( file ) );
+
+        final SeekableByteChannel sbc = ioService().newByteChannel( file, StandardOpenOption.READ );
+        String readContent = readSbc( sbc );
+
+        assertEquals( content, readContent );
+
+        ioService().delete( file );
+
+    }
+
+    @Test
     public void testNewByteChannel() throws IOException {
         final Path file = getFilePath();
 
@@ -558,6 +577,22 @@ public abstract class CommonIOServiceDotFileTest {
         tempFiles.add( temp );
 
         return temp;
+    }
+
+    private String readSbc( SeekableByteChannel sbc ) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate( 100 );
+        StringBuilder content = new StringBuilder();
+        byteBuffer.clear();
+        try {
+            while ( ( sbc.read( byteBuffer ) ) > 0 ) {
+                byteBuffer.flip();
+                content.append( new String( byteBuffer.array(),0, byteBuffer.remaining()) );
+                byteBuffer.compact();
+            }
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        return content.toString();
     }
 
     private static interface MyAttrsView extends BasicFileAttributeView {
