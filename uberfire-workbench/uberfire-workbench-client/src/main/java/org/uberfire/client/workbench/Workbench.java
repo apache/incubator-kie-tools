@@ -257,6 +257,9 @@ public class Workbench {
     }
 
     private void bootstrap() {
+
+        RootLayoutPanel.get().add(layout.getRoot());
+
         System.out.println("Workbench starting...");
 
         ( (SessionInfoImpl) currentSession() ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
@@ -266,7 +269,7 @@ public class Workbench {
         setupMarginWidgets( Header.class );
         setupMarginWidgets( Footer.class );
 
-        RootLayoutPanel.get().add(layout.getRoot());
+        layout.onBootstrap();
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if ( !isStandaloneMode ) {

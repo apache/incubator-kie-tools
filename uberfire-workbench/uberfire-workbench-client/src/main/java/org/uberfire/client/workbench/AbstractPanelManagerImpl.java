@@ -90,24 +90,21 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     @Override
     public void setPerspective( final PerspectiveDefinition newPerspectiveDef ) {
 
-        final WorkbenchPanelPresenter oldRootPanelPresenter = mapPanelDefinitionToPresenter.remove( rootPanelDef );
-
         //TODO oldRootPanelPresenter.dispose() (or onClose() or onRemove()), UNLESS this can be done by a DOM event hook in the view
         //         - cleanup listeners; take impl from existing removePanel() method but leave out the remove-from-parent bit
 
-        final HasWidgets perspectiveContainer = layoutSelection.get().getPerspectiveContainer();
+        HasWidgets perspectiveContainer = layoutSelection.get().getPerspectiveContainer();
         perspectiveContainer.clear();
         getBeanFactory().destroy( rootPanelDef );
 
         final PanelDefinition newRootPanelDef = newPerspectiveDef.getRoot();
         this.rootPanelDef = newRootPanelDef;
         this.perspective = newPerspectiveDef;
-        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter( newRootPanelDef );
+        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter(newRootPanelDef);
         if ( newPresenter == null ) {
             newPresenter = getBeanFactory().newWorkbenchPanel( newRootPanelDef );
             mapPanelDefinitionToPresenter.put( newRootPanelDef, newPresenter );
         }
-
         perspectiveContainer.add(newPresenter.getPanelView().asWidget());
     }
 
@@ -190,8 +187,8 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         final PanelDefinitionImpl childPanel = new PanelDefinitionImpl( targetPanel.getDefaultChildPanelType() );
         childPanel.setParent(targetPanel);
         return addWorkbenchPanel( targetPanel,
-                                  childPanel,
-                                  position );
+                childPanel,
+                position );
     }
 
     @Override
@@ -209,8 +206,8 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         childPanel.setMinHeight( minHeight );
         childPanel.setMinWidth( minWidth );
         return addWorkbenchPanel( targetPanel,
-                                  childPanel,
-                                  position );
+                childPanel,
+                position );
     }
 
     @Override
@@ -326,22 +323,22 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         if ( !mapPanelDefinitionToPresenter.containsKey( panelToRestore ) ) {
             //TODO {manstis} Position needs to be looked up from model - will need "outer" panel feature :(
             PanelDefinition targetPanel = findTargetPanel( panelToRestore,
-                                                           rootPanelDef );
+                    rootPanelDef );
             if ( targetPanel == null ) {
                 targetPanel = rootPanelDef;
             }
             addWorkbenchPanel( targetPanel,
-                               panelToRestore,
-                               panelToRestore.getPosition() );
+                    panelToRestore,
+                    panelToRestore.getPosition() );
         }
 
         //Restore part
         final WorkbenchPartPresenter presenter = mapPartDefinitionToPresenter.get( partToRestore );
         addWorkbenchPart( partToRestore.getPlace(),
-                          partToRestore,
-                          panelToRestore,
-                          presenter.getMenus(),
-                          new UIPart( presenter.getTitle(), presenter.getTitleDecoration(), presenter.getPartView() ) );
+                partToRestore,
+                panelToRestore,
+                presenter.getMenus(),
+                new UIPart( presenter.getTitle(), presenter.getTitleDecoration(), presenter.getPartView() ) );
     }
 
     private PanelDefinition findTargetPanel( final PanelDefinition panelToFind,
@@ -356,7 +353,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                 return panelToSearch;
             } else {
                 targetPanel = findTargetPanel( panelToFind,
-                                               northChild );
+                        northChild );
             }
         }
         if ( southChild != null ) {
@@ -364,7 +361,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                 return panelToSearch;
             } else {
                 targetPanel = findTargetPanel( panelToFind,
-                                               southChild );
+                        southChild );
             }
         }
         if ( eastChild != null ) {
@@ -372,7 +369,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                 return panelToSearch;
             } else {
                 targetPanel = findTargetPanel( panelToFind,
-                                               eastChild );
+                        eastChild );
             }
         }
         if ( westChild != null ) {
@@ -380,7 +377,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                 return panelToSearch;
             } else {
                 targetPanel = findTargetPanel( panelToFind,
-                                               westChild );
+                        westChild );
             }
         }
         return targetPanel;
@@ -435,7 +432,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
             presenterToRemove.removePanel();
             getBeanFactory().destroy( presenterToRemove );
             removePanel( presenterToRemove.getDefinition(),
-                         rootPanelDef );
+                    rootPanelDef );
         }
     }
 
@@ -449,44 +446,44 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
             if ( northChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( northChild );
                 removePanel( panelToRemove,
-                             panelToSearch,
-                             CompassPosition.NORTH );
+                        panelToSearch,
+                        CompassPosition.NORTH );
             } else {
                 removePanel( panelToRemove,
-                             northChild );
+                        northChild );
             }
         }
         if ( southChild != null ) {
             if ( southChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( southChild );
                 removePanel( panelToRemove,
-                             panelToSearch,
-                             CompassPosition.SOUTH );
+                        panelToSearch,
+                        CompassPosition.SOUTH );
             } else {
                 removePanel( panelToRemove,
-                             southChild );
+                        southChild );
             }
         }
         if ( eastChild != null ) {
             if ( eastChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( eastChild );
                 removePanel( panelToRemove,
-                             panelToSearch,
-                             CompassPosition.EAST );
+                        panelToSearch,
+                        CompassPosition.EAST );
             } else {
                 removePanel( panelToRemove,
-                             eastChild );
+                        eastChild );
             }
         }
         if ( westChild != null ) {
             if ( westChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( westChild );
                 removePanel( panelToRemove,
-                             panelToSearch,
-                             CompassPosition.WEST );
+                        panelToSearch,
+                        CompassPosition.WEST );
             } else {
                 removePanel( panelToRemove,
-                             westChild );
+                        westChild );
             }
         }
     }
@@ -502,13 +499,13 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         final PanelDefinition eastOrphan = panelToRemove.getChild( CompassPosition.EAST );
         final PanelDefinition westOrphan = panelToRemove.getChild( CompassPosition.WEST );
         panelToSearch.appendChild( CompassPosition.NORTH,
-                                   northOrphan );
+                northOrphan );
         panelToSearch.appendChild( CompassPosition.SOUTH,
-                                   southOrphan );
+                southOrphan );
         panelToSearch.appendChild( CompassPosition.EAST,
-                                   eastOrphan );
+                eastOrphan );
         panelToSearch.appendChild( CompassPosition.WEST,
-                                   westOrphan );
+                westOrphan );
     }
 
 
