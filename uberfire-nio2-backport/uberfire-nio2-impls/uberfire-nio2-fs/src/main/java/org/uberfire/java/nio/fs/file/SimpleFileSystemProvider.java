@@ -208,13 +208,13 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         final File file = checkNotNull( "path", path ).toFile();
 
         if ( file.exists() ) {
-            if ( !shouldCreateOrOpenAByteChannel(options) ) {
+            if ( !shouldCreateOrOpenAByteChannel( options ) ) {
                 throw new FileAlreadyExistsException( path.toString() );
             }
         }
 
         try {
-            if ( options.contains( READ ) ) {
+            if ( options != null && options.contains( READ ) ) {
                 return openAByteChannel( path );
             } else {
                 return createANewByteChannel( file );
@@ -237,7 +237,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( path.toFile(), "r" ).getChannel() );
     }
 
-    private boolean shouldCreateOrOpenAByteChannel(final Set<? extends OpenOption> options) {
+    private boolean shouldCreateOrOpenAByteChannel( final Set<? extends OpenOption> options ) {
         return ( options != null && ( options.contains( TRUNCATE_EXISTING ) || options.contains( READ ) ) );
     }
 

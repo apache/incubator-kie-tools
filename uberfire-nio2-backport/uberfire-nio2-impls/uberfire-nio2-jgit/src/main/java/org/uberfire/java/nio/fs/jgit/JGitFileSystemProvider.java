@@ -782,7 +782,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         }
 
         try {
-            if ( options.contains( READ ) ) {
+            if ( options != null && options.contains( READ ) ) {
                 return openAByteChannel( path );
             } else {
                 return createANewByteChannel( path, options, gPath, attrs );
