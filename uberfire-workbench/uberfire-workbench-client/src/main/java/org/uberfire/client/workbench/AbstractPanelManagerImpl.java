@@ -115,22 +115,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         return this.rootPanelDef;
     }
 
-   /* @Override
-    public void setHeaderContents( List<Header> headers ) {
-        final WorkbenchLayout workbenchLayout = layoutSelection.get();
-        for ( Header h : headers ) {
-            workbenchLayout.addMargin( Header.class, h );
-        }
-    }
-
-    @Override
-    public void setFooterContents( List<Footer> footers ) {
-        final WorkbenchLayout workbenchLayout = layoutSelection.get();
-        for ( Footer f : footers ) {
-            workbenchLayout.addMargin( Footer.class, f );
-        }
-    }  */
-
     @Override
     public void addWorkbenchPart( final PlaceRequest place,
                                   final PartDefinition part,

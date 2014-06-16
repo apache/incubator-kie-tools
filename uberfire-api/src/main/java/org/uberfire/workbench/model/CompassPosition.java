@@ -30,5 +30,5 @@ public enum CompassPosition implements Position {
     WEST, //West internal edge of a Parent panel
     SELF, //Add to the Parent panel
     ROOT, //Add to the Workbench root
-    CENTER
+    CENTER // Add to the panel center
 }

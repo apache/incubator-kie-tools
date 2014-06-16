@@ -19,12 +19,10 @@ public interface PanelManager {
 
     /**
      * Returns the description of the currently-active perspective.
-     * 
-     * @param perspective
-     *            description of the current perspective. Will be null until the first call to
-     *            {@link #setPerspective(PerspectiveDefinition)}, which is typically done by the {@link PlaceManager}
-     *            shortly after the {@link ApplicationReadyEvent} is fired. After this, the returned value will never
-     *            revert to null.
+     * Will be null until the first call to
+     * {@link #setPerspective(PerspectiveDefinition)}, which is typically done by the {@link PlaceManager}
+     * shortly after the {@link ApplicationReadyEvent} is fired. After this, the returned value will never
+     * revert to null.
      */
     PerspectiveDefinition getPerspective();
 

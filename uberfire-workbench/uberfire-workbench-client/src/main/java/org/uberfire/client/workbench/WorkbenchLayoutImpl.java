@@ -38,7 +38,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     /**
      * The panel within which the current perspective's root view resides. This panel lasts the lifetime of the app; it's
      * cleared and repopulated with the new perspective's root view each time
-     * {@link #setPerspective(PerspectiveDefinition)} gets called.
+     * {@link org.uberfire.client.workbench.PanelManager#setPerspective(PerspectiveDefinition)} gets called.
      */
     private final Panel perspectiveRootContainer = new SimpleLayoutPanel();
 
