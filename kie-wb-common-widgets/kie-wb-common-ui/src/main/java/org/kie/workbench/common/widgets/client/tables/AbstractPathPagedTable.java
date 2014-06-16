@@ -121,7 +121,7 @@ public abstract class AbstractPathPagedTable<T extends AbstractPathPageRow> exte
                 dataGrid.refresh();
             }
         } );
-        dataGrid.addButton( refreshButton );
+        dataGrid.getToolbar().add( refreshButton );
 
         final Button openSelectedButton = new Button( CommonConstants.INSTANCE.AbstractTableOpenSelected() );
         openSelectedButton.addClickHandler( new ClickHandler() {
@@ -133,7 +133,7 @@ public abstract class AbstractPathPagedTable<T extends AbstractPathPageRow> exte
                 }
             }
         } );
-        dataGrid.addButton( openSelectedButton );
+        dataGrid.getToolbar().add( openSelectedButton );
 
         initWidget( dataGrid );
     }
