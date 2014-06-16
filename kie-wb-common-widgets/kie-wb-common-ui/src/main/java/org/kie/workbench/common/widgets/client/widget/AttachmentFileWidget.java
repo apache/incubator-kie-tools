@@ -19,12 +19,14 @@
 package org.kie.workbench.common.widgets.client.widget;
 
 import com.github.gwtbootstrap.client.ui.Form;
+import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
@@ -86,6 +88,13 @@ public class AttachmentFileWidget extends Composite {
         up.setName( FileManagerFields.UPLOAD_FIELD_NAME_ATTACH );
         form.setEncoding( FormPanel.ENCODING_MULTIPART );
         form.setMethod( FormPanel.METHOD_POST );
+
+        //See https://code.google.com/p/google-web-toolkit/issues/detail?id=4682
+        FormElement.as( form.getElement() ).setAcceptCharset( "UTF-8" );
+        final Hidden field = new Hidden();
+        field.setName( "utf8char" );
+        field.setValue( "\u8482" );
+        form.add( field );
 
         form.addSubmitHandler( new Form.SubmitHandler() {
             @Override
