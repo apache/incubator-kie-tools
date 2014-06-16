@@ -1846,7 +1846,11 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                 oldHeadsOfPendingDiffs.put( path.getFileSystem(), new HashMap<String, NotificationModel>() );
             }
 
-            oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName() ) );
+            if ( batchCommitInfo != null ) {
+                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, batchCommitInfo.getSessionId(), batchCommitInfo.getName() ) );
+            } else {
+                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName() ) );
+            }
         }
 
         if ( state == FileSystemState.BATCH && !hadCommitOnBatchState ) {
