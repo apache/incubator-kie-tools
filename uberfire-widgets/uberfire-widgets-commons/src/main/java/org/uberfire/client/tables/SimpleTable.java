@@ -27,11 +27,14 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.CellPreviewEvent.Handler;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
@@ -39,6 +42,7 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
+import org.uberfire.client.resources.CommonResources;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
@@ -46,8 +50,7 @@ import com.google.gwt.view.client.SelectionModel;
  */
 public class SimpleTable<T>
         extends Composite
-        implements HasData<T>,
-                   RequiresResize {
+        implements HasData<T> {
 
     interface Binder
             extends
@@ -64,7 +67,7 @@ public class SimpleTable<T>
     public DataGrid<T> dataGrid;
 
     @UiField
-    public HorizontalPanel buttonContainer;
+    public HorizontalPanel toolbarContainer;
 
     private String emptyTableCaption;
 
@@ -76,14 +79,22 @@ public class SimpleTable<T>
     }
 
     public SimpleTable( final ProvidesKey<T> providesKey ) {
-        this( Integer.MAX_VALUE,
-              providesKey );
+        dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
+                                    providesKey );
+        setupGridTable();
     }
 
-    public SimpleTable( final int pageSize,
-                        final ProvidesKey<T> providesKey ) {
-        dataGrid = new DataGrid<T>( pageSize,
+    public SimpleTable( final ProvidesKey<T> providesKey,
+                        final ColumnSortEvent.Handler columnSortHandler ) {
+        dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
                                     providesKey );
+        dataGrid.addColumnSortHandler( columnSortHandler );
+        setupGridTable();
+    }
+
+    public SimpleTable( final ColumnSortEvent.Handler columnSortHandler ) {
+        dataGrid = new DataGrid<T>();
+        dataGrid.addColumnSortHandler( columnSortHandler );
         setupGridTable();
     }
 
@@ -94,6 +105,8 @@ public class SimpleTable<T>
         dataGrid.setSkipRowHoverStyleUpdate( false );
         dataGrid.setWidth( "100%" );
         dataGrid.setHeight( "300px" );
+        dataGrid.addStyleName( CommonResources.INSTANCE.CSS().dataGrid() );
+
         setEmptyTableWidget();
 
         columnPicker = new ColumnPicker<T>( dataGrid );
@@ -128,66 +141,81 @@ public class SimpleTable<T>
                                               true );
     }
 
+    @Override
     public HandlerRegistration addCellPreviewHandler( final Handler<T> handler ) {
         return dataGrid.addCellPreviewHandler( handler );
     }
 
+    @Override
     public HandlerRegistration addRangeChangeHandler( final RangeChangeEvent.Handler handler ) {
         return dataGrid.addRangeChangeHandler( handler );
     }
 
+    @Override
     public HandlerRegistration addRowCountChangeHandler( final RowCountChangeEvent.Handler handler ) {
         return dataGrid.addRowCountChangeHandler( handler );
     }
 
+    @Override
     public int getRowCount() {
         return dataGrid.getRowCount();
     }
 
+    @Override
     public Range getVisibleRange() {
         return dataGrid.getVisibleRange();
     }
 
+    @Override
     public boolean isRowCountExact() {
         return dataGrid.isRowCountExact();
     }
 
+    @Override
     public void setRowCount( final int count ) {
         dataGrid.setRowCount( count );
     }
 
+    @Override
     public void setRowCount( final int count,
                              final boolean isExact ) {
         dataGrid.setRowCount( count,
                               isExact );
     }
 
+    @Override
     public void setVisibleRange( final int start,
                                  final int length ) {
         dataGrid.setVisibleRange( start,
                                   length );
     }
 
+    @Override
     public void setVisibleRange( final Range range ) {
         dataGrid.setVisibleRange( range );
     }
 
+    @Override
     public SelectionModel<? super T> getSelectionModel() {
         return dataGrid.getSelectionModel();
     }
 
+    @Override
     public T getVisibleItem( final int indexOnPage ) {
         return dataGrid.getVisibleItem( indexOnPage );
     }
 
+    @Override
     public int getVisibleItemCount() {
         return dataGrid.getVisibleItemCount();
     }
 
+    @Override
     public Iterable<T> getVisibleItems() {
         return dataGrid.getVisibleItems();
     }
 
+    @Override
     public void setRowData( final int start,
                             final List<? extends T> values ) {
         dataGrid.setRowData( start,
@@ -198,10 +226,18 @@ public class SimpleTable<T>
         dataGrid.setRowData( values );
     }
 
+    @Override
     public void setSelectionModel( final SelectionModel<? super T> selectionModel ) {
         dataGrid.setSelectionModel( selectionModel );
     }
 
+    public void setSelectionModel( final SelectionModel<? super T> selectionModel,
+                                   final CellPreviewEvent.Handler<T> selectionEventManager ) {
+        dataGrid.setSelectionModel( selectionModel,
+                                    selectionEventManager );
+    }
+
+    @Override
     public void setVisibleRangeAndClearData( final Range range,
                                              final boolean forceRangeChangeEvent ) {
         dataGrid.setVisibleRangeAndClearData( range,
@@ -210,6 +246,14 @@ public class SimpleTable<T>
 
     public void addColumn( final Column<T, ?> column,
                            final String caption ) {
+        addColumn( column,
+                   caption,
+                   true );
+    }
+
+    public void addColumn( final Column<T, ?> column,
+                           final String caption,
+                           final boolean visible ) {
         final Header header = new ResizableMovableHeader<T>( caption,
                                                              dataGrid,
                                                              columnPicker,
@@ -219,17 +263,7 @@ public class SimpleTable<T>
                 return dataGrid.getOffsetHeight();
             }
         };
-        columnPicker.addColumn( column,
-                                header,
-                                true );
-    }
-
-    public void addColumn( final Column<T, ?> column,
-                           final String caption,
-                           final boolean visible ) {
-        final Header header = new ResizableHeader<T>( caption,
-                                                      dataGrid,
-                                                      column );
+        column.setDataStoreName( caption );
         columnPicker.addColumn( column,
                                 header,
                                 visible );
@@ -241,26 +275,6 @@ public class SimpleTable<T>
         dataGrid.setColumnWidth( column,
                                  width,
                                  unit );
-    }
-
-    @Override
-    public void onResize() {
-        final Widget parent = getParent();
-        if ( parent == null ) {
-            return;
-        }
-        final int width = parent.getOffsetWidth();
-        final int height = parent.getOffsetHeight();
-        if ( width < 0 ) {
-            return;
-        }
-        if ( height < 0 ) {
-            return;
-        }
-        if ( height - 32 >= 0 ) {
-//            dataGrid.setPixelSize( width,
-//                                   height - 32 );
-        }
     }
 
     @Override
@@ -285,8 +299,12 @@ public class SimpleTable<T>
         dataGrid.setWidth( width );
     }
 
-    public void addButton( final Button button ) {
-        buttonContainer.add( button );
+    public ColumnSortList getColumnSortList() {
+        return dataGrid.getColumnSortList();
+    }
+
+    public HasWidgets getToolbar() {
+        return toolbarContainer;
     }
 
 }

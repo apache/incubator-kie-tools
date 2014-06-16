@@ -21,7 +21,7 @@
 
   <ui:style>
     .dataGridContainer {
-      margin: 20px;
+      margin: 10px;
     }
 
     .horizontalContainer {
@@ -30,7 +30,7 @@
   </ui:style>
 
   <g:FlowPanel addStyleNames="{style.dataGridContainer}">
-    <g:HorizontalPanel ui:field="buttonContainer" addStyleNames="{style.horizontalContainer}">
+    <g:HorizontalPanel ui:field="toolbarContainer" addStyleNames="{style.horizontalContainer}">
       <b:Button ui:field="columnPickerButton" toggle="true" icon="LIST_UL"/>
     </g:HorizontalPanel>
     <g:SimplePanel>

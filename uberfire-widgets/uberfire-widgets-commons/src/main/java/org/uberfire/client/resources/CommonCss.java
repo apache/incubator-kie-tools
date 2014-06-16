@@ -87,4 +87,7 @@ public interface CommonCss
     @ClassName("titleTextCellDescription")
     String titleTextCellDescription();
 
+    @ClassName("dataGrid")
+    String dataGrid();
+
 }

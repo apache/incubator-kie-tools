@@ -136,3 +136,9 @@
     font-size: smaller;
     font-style: italic;
 }
+
+.dataGrid td div {
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}

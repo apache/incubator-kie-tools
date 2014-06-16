@@ -20,6 +20,7 @@ import com.github.gwtbootstrap.client.ui.SimplePager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
@@ -44,28 +45,41 @@ public class PagedTable<T>
     @UiField
     public SimplePager pager;
 
-    /**
-     * Constructor
-     * @param pageSize
-     */
     public PagedTable( final int pageSize ) {
+        super();
         this.pageSize = pageSize;
-        pager.setDisplay( dataGrid );
-        pager.setPageSize( pageSize );
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
+        this.pager.setPageSize( pageSize );
     }
 
-    /**
-     * Constructor
-     * @param pageSize
-     * @param providesKey
-     */
     public PagedTable( final int pageSize,
                        final ProvidesKey<T> providesKey ) {
-        super( pageSize,
-               providesKey );
+        super( providesKey );
         this.pageSize = pageSize;
-        pager.setDisplay( dataGrid );
-        pager.setPageSize( pageSize );
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
+        this.pager.setPageSize( pageSize );
+    }
+
+    public PagedTable( final int pageSize,
+                       final ProvidesKey<T> providesKey,
+                       final ColumnSortEvent.Handler columnSortHandler ) {
+        super( providesKey,
+               columnSortHandler );
+        this.pageSize = pageSize;
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
+        this.pager.setPageSize( pageSize );
+    }
+
+    public PagedTable( final int pageSize,
+                       final ColumnSortEvent.Handler columnSortHandler ) {
+        super( columnSortHandler );
+        this.dataGrid.setPageSize( pageSize );
+        this.pageSize = pageSize;
+        this.pager.setDisplay( dataGrid );
+        this.pager.setPageSize( pageSize );
     }
 
     protected Widget makeWidget() {
@@ -87,26 +101,6 @@ public class PagedTable<T>
 
     public int getPageStart() {
         return this.pager.getPageStart();
-    }
-
-    @Override
-    public void onResize() {
-        final Widget parent = getParent();
-        if ( parent == null ) {
-            return;
-        }
-        final int width = parent.getOffsetWidth();
-        final int height = parent.getOffsetHeight();
-        if ( width < 0 ) {
-            return;
-        }
-        if ( height < 0 ) {
-            return;
-        }
-        if ( height - 64 >= 0 ) {
-//            dataGrid.setPixelSize( width,
-//                                   height - 64 );
-        }
     }
 
 }
