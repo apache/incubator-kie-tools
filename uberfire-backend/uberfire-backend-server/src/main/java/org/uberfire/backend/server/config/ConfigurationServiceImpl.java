@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -86,6 +87,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
     private CheckConfigurationUpdates configUpdates = null;
 
+    private WatchService watchService = null;
     private FileSystem fs;
 
     @PostConstruct
@@ -111,7 +113,8 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
         // enable monitor by default
         if ( System.getProperty( MONITOR_DISABLED ) == null ) {
-            configUpdates = new CheckConfigurationUpdates( fs.newWatchService() );
+            watchService = fs.newWatchService();
+            configUpdates = new CheckConfigurationUpdates( watchService );
             final ConfigServiceWatchServiceExecutor configServiceWatchServiceExecutor = getWatchServiceExecutor();
             executorService.execute( new DescriptiveRunnable() {
                 @Override
@@ -132,7 +135,25 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         if ( configUpdates != null ) {
             configUpdates.deactivate();
         }
-        executorService.shutdownNow();
+        if ( watchService != null ) {
+            watchService.close();
+        }
+        executorService.shutdown(); // Disable new tasks from being submitted
+        try {
+            // Wait a while for existing tasks to terminate
+            if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                executorService.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                    System.err.println( "Pool did not terminate" );
+                }
+            }
+        } catch ( InterruptedException ie ) {
+            // (Re-)Cancel if current thread also interrupted
+            executorService.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
     }
 
     @Override
@@ -354,7 +375,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
             if ( _executor == null ) {
                 _executor = new ConfigServiceWatchServiceExecutorImpl();
-                ((ConfigServiceWatchServiceExecutorImpl)_executor).setConfig( systemRepository, ioService, repoChangedEvent, orgUnitChangedEvent, changedEvent );
+                ( (ConfigServiceWatchServiceExecutorImpl) _executor ).setConfig( systemRepository, ioService, repoChangedEvent, orgUnitChangedEvent, changedEvent );
             }
             executor = _executor;
         }

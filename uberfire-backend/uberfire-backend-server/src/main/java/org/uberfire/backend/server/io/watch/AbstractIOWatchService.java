@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -85,7 +86,22 @@ public abstract class AbstractIOWatchService implements IOWatchService,
         for ( final WatchService watchService : watchServices ) {
             watchService.close();
         }
-        executorService.shutdown();
+        executorService.shutdown(); // Disable new tasks from being submitted
+        try {
+            // Wait a while for existing tasks to terminate
+            if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                executorService.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                    System.err.println( "Pool did not terminate" );
+                }
+            }
+        } catch ( InterruptedException ie ) {
+            // (Re-)Cancel if current thread also interrupted
+            executorService.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
     }
 
     @Override
@@ -159,7 +175,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
             if ( _executor == null ) {
                 _executor = new IOWatchServiceExecutorImpl();
-                ((IOWatchServiceExecutorImpl)_executor).setEvents( resourceBatchChanges, resourceUpdatedEvent, resourceRenamedEvent, resourceDeletedEvent, resourceAddedEvent );
+                ( (IOWatchServiceExecutorImpl) _executor ).setEvents( resourceBatchChanges, resourceUpdatedEvent, resourceRenamedEvent, resourceDeletedEvent, resourceAddedEvent );
             }
             executor = _executor;
         }

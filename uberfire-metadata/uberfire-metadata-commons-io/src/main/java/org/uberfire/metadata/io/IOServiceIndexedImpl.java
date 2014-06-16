@@ -64,9 +64,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private final BatchIndex batchIndex;
 
     private final Class<? extends FileAttributeView>[] views;
-    private final ThreadGroup threadGroup = new ThreadGroup( "IOServiceIndexing" );
     private final List<FileSystem> watchedList = new ArrayList<FileSystem>();
     private final Set<Indexer> additionalIndexers;
+    private final List<WatchService> watchServices = new ArrayList<WatchService>();
 
     public IOServiceIndexedImpl( final MetaIndexEngine indexEngine,
                                  final Set<Indexer> additionalIndexers,
@@ -215,12 +215,21 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         }
     }
 
+    @Override
+    public void dispose() {
+        for ( final WatchService watchService : watchServices ) {
+            watchService.close();
+        }
+        super.dispose();
+    }
+
     private void setupWatchService( final FileSystem fs ) {
         if ( watchedList.contains( fs ) ) {
             return;
         }
-        watchedList.add( fs );
         final WatchService ws = fs.newWatchService();
+        watchedList.add( fs );
+        watchServices.add( ws );
 
         SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
             @Override
@@ -231,9 +240,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             @Override
             public void run() {
                 while ( !isDisposed && !ws.isClose() ) {
-                    final WatchKey wk = ws.take();
-                    if ( wk == null ) {
-                        continue;
+                    final WatchKey wk;
+                    try {
+                        wk = ws.take();
+                    } catch ( final Exception ex ) {
+                        break;
                     }
 
                     final List<WatchEvent<?>> events = wk.pollEvents();
@@ -306,7 +317,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                         }
                     }
                 }
-                ws.close();
             }
         } );
     }
