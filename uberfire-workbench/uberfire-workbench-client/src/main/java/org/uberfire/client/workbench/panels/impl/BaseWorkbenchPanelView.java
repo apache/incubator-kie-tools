@@ -4,7 +4,6 @@ import javax.inject.Inject;
 
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.panels.SplitPanel;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelSupport;
@@ -55,17 +54,6 @@ implements WorkbenchPanelView<P> {
     @Override
     public P getPresenter() {
         return this.presenter;
-    }
-
-    protected void resizeParent( final Widget widget ) {
-        if ( widget instanceof SplitPanel ) {
-            scheduleResize( (RequiresResize) widget );
-            return;
-        } else if ( widget.getParent() != null && widget.getParent() instanceof RequiresResize ) {
-            resizeParent( widget.getParent() );
-        } else if ( widget instanceof RequiresResize ) {
-            scheduleResize( (RequiresResize) widget );
-        }
     }
 
     protected void scheduleResize( final RequiresResize widget ) {

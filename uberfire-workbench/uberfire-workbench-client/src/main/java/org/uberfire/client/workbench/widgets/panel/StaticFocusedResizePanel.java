@@ -1,5 +1,8 @@
 package org.uberfire.client.workbench.widgets.panel;
 
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.workbench.model.PartDefinition;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -9,15 +12,13 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.ResizeComposite;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.workbench.model.PartDefinition;
 
 public class StaticFocusedResizePanel
-        extends ResizeComposite
-        implements HasSelectionHandlers<PartDefinition>,
-                   HasFocusHandlers {
+extends ResizeComposite
+implements HasSelectionHandlers<PartDefinition>,
+HasFocusHandlers {
 
-    private RequiresResizeFocusPanel container = new RequiresResizeFocusPanel();
+    private final RequiresResizeFocusPanel container = new RequiresResizeFocusPanel();
 
     private PartDefinition partDefinition;
 
@@ -59,20 +60,6 @@ public class StaticFocusedResizePanel
     @Override
     public HandlerRegistration addFocusHandler( FocusHandler handler ) {
         return container.addFocusHandler( handler );
-    }
-
-    public void onResize() {
-        if ( isAttached() ) {
-            final int width = getParent().getOffsetWidth();
-            final int height = getParent().getOffsetHeight();
-            setPixelSize( width, height );
-
-            container.setPixelSize( width, height );
-            if ( container.getWidget() != null ) {
-                container.getWidget().setPixelSize( width, height );
-            }
-        }
-        super.onResize();
     }
 
     public WorkbenchPartPresenter.View getPartView() {

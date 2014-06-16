@@ -103,17 +103,6 @@ SplitPanel {
         }
     }
 
-    @Override
-    public void onResize() {
-        //It is possible that the SplitterPanel is removed from the DOM before the resize is called
-        if ( isAttached() ) {
-            final Widget parent = getParent();
-            setPixelSize( parent.getOffsetWidth(),
-                          parent.getOffsetHeight() );
-            super.onResize();
-        }
-    }
-
     private int assertSize( final Integer size ) {
         return ( size == null ? DEFAULT_SIZE : size );
     }

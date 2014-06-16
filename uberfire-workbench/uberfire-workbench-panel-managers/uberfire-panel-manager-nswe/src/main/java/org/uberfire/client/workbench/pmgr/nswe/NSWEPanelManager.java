@@ -25,6 +25,8 @@ import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -110,6 +112,13 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
         headerFooterContainerPanel.setHeaderWidget( headerPanel );
         headerFooterContainerPanel.setFooterWidget( footerPanel );
         headerFooterContainerPanel.setContentWidget( perspectiveRootContainer );
+
+        Style contentPanelStyle = perspectiveRootContainer.getElement().getStyle();
+        contentPanelStyle.setPosition( com.google.gwt.dom.client.Style.Position.ABSOLUTE );
+        contentPanelStyle.setTop( 0, Unit.PX );
+        contentPanelStyle.setBottom( 0, Unit.PX );
+        contentPanelStyle.setLeft( 0, Unit.PX );
+        contentPanelStyle.setRight( 0, Unit.PX );
     }
 
 }

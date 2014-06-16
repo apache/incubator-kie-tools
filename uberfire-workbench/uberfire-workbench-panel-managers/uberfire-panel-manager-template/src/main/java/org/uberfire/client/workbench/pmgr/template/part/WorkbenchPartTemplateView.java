@@ -4,6 +4,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.client.workbench.Workbench;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.uibinder.client.UiField;
@@ -11,14 +14,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 
-import org.uberfire.client.workbench.Workbench;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-
 @Dependent
 @Named("WorkbenchPartTemplateView")
 public class WorkbenchPartTemplateView
-        extends Composite
-        implements WorkbenchPartPresenter.View {
+extends Composite
+implements WorkbenchPartPresenter.View {
 
     private WorkbenchPartPresenter presenter;
 

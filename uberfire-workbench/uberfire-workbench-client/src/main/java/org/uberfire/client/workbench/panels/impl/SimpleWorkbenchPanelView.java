@@ -31,6 +31,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -56,6 +57,12 @@ extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
         initWidget( container );
     }
 
+    // override is for unit test: super.getWidget() returns a new mock every time
+    @Override
+    public Widget getWidget() {
+        return container;
+    }
+
     private void setupListBarDragAndDrop() {
         listBar.setDndManager( dndManager );
         listBar.setup( false, false );
@@ -75,10 +82,7 @@ extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
                 panelManager.onPanelFocus( presenter.getDefinition() );
             }
         } );
-        setListBarOverFlow();
-    }
 
-    void setListBarOverFlow() {
         listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
     }
 
@@ -130,25 +134,11 @@ extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
     @Override
     public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null ) {
-            final int width = parent.getOffsetWidth();
-            final int height = parent.getOffsetHeight();
-            if ( width == 0 && height == 0 ) {
-                resizeParent( parent );
-                return;
-            }
+        presenter.onResize( getOffsetWidth(), getOffsetHeight() );
 
-            setPixelSize( width, height );
-            presenter.onResize( width, height );
-
-            listBar.onResize();
-
-            resizeSuper();
+        // this will always be true in real life, but during GwtMockito tests it is not
+        if ( getWidget() instanceof RequiresResize ) {
+            super.onResize();
         }
-    }
-
-    void resizeSuper() {
-        super.onResize();
     }
 }

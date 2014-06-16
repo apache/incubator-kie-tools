@@ -20,14 +20,13 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A Workbench panel part.
  */
 public class WorkbenchPartView
-        extends SimpleLayoutPanel
-        implements WorkbenchPartPresenter.View {
+extends SimpleLayoutPanel
+implements WorkbenchPartPresenter.View {
 
     private WorkbenchPartPresenter presenter;
 
@@ -57,13 +56,4 @@ public class WorkbenchPartView
         setWidget( sp );
     }
 
-    @Override
-    public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null ) {
-            sp.setPixelSize( parent.getOffsetWidth(),
-                             parent.getOffsetHeight() );
-        }
-        super.onResize();
-    }
 }

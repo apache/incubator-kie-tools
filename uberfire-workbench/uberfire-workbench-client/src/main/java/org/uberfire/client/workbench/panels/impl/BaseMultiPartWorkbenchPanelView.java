@@ -11,8 +11,8 @@ import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
 import org.uberfire.workbench.model.PartDefinition;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 public abstract class BaseMultiPartWorkbenchPanelView<P extends AbstractMultiPartWorkbenchPanelPresenter>
 extends BaseWorkbenchPanelView<P> {
@@ -27,6 +27,11 @@ extends BaseWorkbenchPanelView<P> {
     private void setupDragAndDrop() {
         widget = setupWidget();
         widget.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
+        container.getElement().getStyle().setPosition( Style.Position.ABSOLUTE );
+        container.getElement().getStyle().setTop( 0, Unit.PX );
+        container.getElement().getStyle().setBottom( 0, Unit.PX );
+        container.getElement().getStyle().setLeft( 0, Unit.PX );
+        container.getElement().getStyle().setRight( 0, Unit.PX );
         container.add( contextWidget );
         container.add( widget );
         initWidget( container );
@@ -98,18 +103,8 @@ extends BaseWorkbenchPanelView<P> {
 
     @Override
     public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null && parent.isAttached() ) {
-            final int width = parent.getOffsetWidth();
-            final int height = parent.getOffsetHeight();
-            if ( width == 0 && height == 0 ) {
-                resizeParent( parent );
-                return;
-            }
-
-            presenter.onResize( width, height );
-            widget.onResize();
-        }
+        presenter.onResize( getOffsetWidth(), getOffsetHeight() );
+        super.onResize();
     }
 
 }

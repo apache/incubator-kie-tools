@@ -65,11 +65,11 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -77,11 +77,11 @@ import com.google.gwt.user.client.ui.Widget;
  * The Menu Bar widget
  */
 public class ListBarWidget
-extends Composite implements MultiPartWidget {
+extends ResizeComposite implements MultiPartWidget {
 
     interface ListBarWidgetBinder
     extends
-    UiBinder<FocusPanel, ListBarWidget> {
+    UiBinder<ResizeFocusPanel, ListBarWidget> {
 
     }
 
@@ -398,41 +398,28 @@ extends Composite implements MultiPartWidget {
 
     @Override
     public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null && parent.isAttached() ) {
-            final int width;
-            final int height;
-            if ( parent.getParent() != null ) {
-                if ( parent.getParent().getParent() != null ) {
-                    width = parent.getParent().getParent().getOffsetWidth();
-                    height = parent.getParent().getParent().getOffsetHeight();
-                } else {
-                    width = parent.getParent().getOffsetWidth();
-                    height = parent.getParent().getOffsetHeight();
-                }
-            } else {
-                width = parent.getOffsetWidth();
-                height = parent.getOffsetHeight();
-            }
+        super.onResize();
 
-            if ( width == 0 && height == 0 ) {
-                return;
-            }
+        // TODO none of this may be necessary.
+        // also, this might work better if content and header were LayoutPanels
 
-            content.setPixelSize( width, height );
-            header.setWidth( width + "px" );
+        int width = getOffsetWidth();
+        int height = getOffsetHeight();
 
-            for ( int i = 0; i < content.getWidgetCount(); i++ ) {
-                final Widget widget = content.getWidget( i );
-                ( (FlowPanel) widget ).getWidget( 0 ).setPixelSize( width, height - getHeaderHeight() );
-                if ( ( (FlowPanel) widget ).getWidget( 0 ) instanceof RequiresResize ) {
-                    ( (RequiresResize) ( (FlowPanel) widget ).getWidget( 0 ) ).onResize();
-                }
-            }
+        content.setPixelSize( width, height );
+        header.setWidth( width + "px" );
 
-            if ( customList != null ) {
-                customList.onResize();
+        for ( int i = 0; i < content.getWidgetCount(); i++ ) {
+            final FlowPanel container = (FlowPanel) content.getWidget( i );
+            final Widget containedWidget = container.getWidget( 0 );
+            containedWidget.setPixelSize( width, height - getHeaderHeight() );
+            if ( containedWidget instanceof RequiresResize ) {
+                ( (RequiresResize) containedWidget ).onResize();
             }
+        }
+
+        if ( customList != null ) {
+            customList.onResize();
         }
     }
 
@@ -539,9 +526,9 @@ extends Composite implements MultiPartWidget {
         return null;
     }
 
-    class CustomList extends Composite implements RequiresResize {
+    class CustomList extends ResizeComposite {
 
-        final FlowPanel panel = new FlowPanel();
+        final ResizeFlowPanel panel = new ResizeFlowPanel();
 
         CustomList() {
             initWidget( panel );
@@ -574,6 +561,7 @@ extends Composite implements MultiPartWidget {
 
         @Override
         public void onResize() {
+            System.out.println( getClass().getName() + ": onResize(). content.getOffsetWidth() = " + content.getOffsetWidth() );
             int width = content.getOffsetWidth() - 10;
             if ( width > 0 ) {
                 setWidth( width + "px" );

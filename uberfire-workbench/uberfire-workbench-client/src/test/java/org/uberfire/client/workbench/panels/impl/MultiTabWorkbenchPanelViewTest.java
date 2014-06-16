@@ -1,15 +1,19 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.client.workbench.widgets.tab.UberTabPanel;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.*;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Element;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MultiTabWorkbenchPanelViewTest {
@@ -22,10 +26,16 @@ public class MultiTabWorkbenchPanelViewTest {
     @Before
     public void setup() {
         view = new MultiTabWorkbenchPanelView(){
+            @Override
             UberTabPanel getUberTabPanel() {
                 return uberTabPanel;
             }
         };
+
+        Element uberTabPanelElement = mock( Element.class );
+        Style uberTabPanelElementStyle = mock( Style.class );
+        when( uberTabPanel.getElement() ).thenReturn( uberTabPanelElement );
+        when( uberTabPanelElement.getStyle() ).thenReturn( uberTabPanelElementStyle );
     }
 
     @Test

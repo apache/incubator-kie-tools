@@ -10,6 +10,7 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
@@ -19,7 +20,10 @@ import com.github.gwtbootstrap.client.ui.Tab;
 import com.github.gwtbootstrap.client.ui.TabLink;
 import com.github.gwtbootstrap.client.ui.TabPane;
 import com.github.gwtbootstrap.client.ui.TabPanel;
+import com.github.gwtbootstrap.client.ui.TabPanel.ShowEvent;
+import com.github.gwtbootstrap.client.ui.TabPanel.ShownEvent;
 import com.github.gwtbootstrap.client.ui.constants.Constants;
+import com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -30,19 +34,38 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
 public class UberTabPanel
-extends Composite
+extends ResizeComposite
 implements MultiPartWidget,
 ClickHandler {
 
+
+    static class ResizeTabPanel extends TabPanel implements RequiresResize, ProvidesResize {
+
+        public ResizeTabPanel( Tabs tabPosition ) {
+            super( tabPosition );
+        }
+
+        @Override
+        public void onResize() {
+            for ( Widget child : getChildren() ) {
+                if ( child instanceof RequiresResize ) {
+                    ((RequiresResize) child).onResize();
+                }
+            }
+        }
+
+    }
+
     private static final int MARGIN = 20;
 
-    TabPanel tabPanel;
+    ResizeTabPanel tabPanel;
 
     private WorkbenchPanelPresenter presenter;
     WorkbenchDragAndDropManager dndManager;
@@ -71,8 +94,13 @@ ClickHandler {
         final TabLink tab = partTabIndex.get( id );
         if ( tab != null ) {
             int index = getTabs().getWidgetIndex( tab );
-            tabPanel.selectTab( index );
-            return true;
+
+            // TODO: during perspective startup, the view widgets aren't yet filled in according to the PanelDefinitions
+            // we should solve that instead of skipping this call
+            if ( index >= 0 ) {
+                tabPanel.selectTab( index );
+                return true;
+            }
         }
         return false;
     }
@@ -147,30 +175,28 @@ ClickHandler {
     }
 
     public UberTabPanel() {
-        tabPanel = new TabPanel( ABOVE ) {{
-
-            addShownHandler( new ShownEvent.Handler() {
-                @Override
-                public void onShow( final ShownEvent e ) {
-                    if ( e.getRelatedTarget() != null ) {
-                        BeforeSelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( e.getRelatedTarget() ).getPresenter().getDefinition() );
-                    }
+        tabPanel = new ResizeTabPanel( ABOVE );
+        tabPanel.addShownHandler( new ShownEvent.Handler() {
+            @Override
+            public void onShow( final ShownEvent e ) {
+                onResize();
+                if ( e.getRelatedTarget() != null ) {
+                    BeforeSelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( e.getRelatedTarget() ).getPresenter().getDefinition() );
                 }
-            } );
+            }
+        } );
 
-            addShowHandler( new ShowEvent.Handler() {
-                @Override
-                public void onShow( final ShowEvent e ) {
-                    if ( e.getTarget() == null ) {
-                        return;
-                    }
-                    scheduleResize( e.getTarget().getTabPane().getWidget( 0 ) );
-                    SelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( e.getTarget() ).getPresenter().getDefinition() );
+        tabPanel.addShowHandler( new ShowEvent.Handler() {
+            @Override
+            public void onShow( final ShowEvent e ) {
+                if ( e.getTarget() == null ) {
+                    return;
                 }
-            } );
+                SelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( e.getTarget() ).getPresenter().getDefinition() );
+            }
+        } );
 
-            addDomHandler( UberTabPanel.this, ClickEvent.getType() );
-        }};
+        tabPanel.addDomHandler( UberTabPanel.this, ClickEvent.getType() );
 
         initWidget( tabPanel );
     }
@@ -216,7 +242,6 @@ ClickHandler {
     boolean isFirstWidget() {
         return getTabs().getWidgetCount() == 1;
     }
-
     private void scheduleResize() {
         if ( alreadyScheduled ) {
             return;
@@ -231,16 +256,15 @@ ClickHandler {
         } );
     }
 
-    private void scheduleResize( final Widget widget ) {
-        if ( getParent() != null ) {
-            if ( widget instanceof RequiresResize ) {
-                Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
-                    @Override
-                    public void execute() {
-                        ( (RequiresResize) widget ).onResize();
-                    }
-                } );
-            }
+    /**
+     * The GwtBootstrap TabPanel doesn't support the RequiresResize/ProvidesResize contract, and UberTabPanel fills in
+     * the gap. This helper method allows us to call onResize() on the widgets that need it.
+     * 
+     * @param widget the widget that has just been resized
+     */
+    private void resizeIfNeeded( final Widget widget ) {
+        if ( isAttached() && widget instanceof RequiresResize ) {
+            ( (RequiresResize) widget ).onResize();
         }
     }
 
@@ -255,7 +279,7 @@ ClickHandler {
 
         tab.add( view.asWidget() );
 
-        scheduleResize( view.asWidget() );
+        resizeIfNeeded( view.asWidget() );
 
         tabIndex.put( view, tab.asTabLink() );
         tabInvertedIndex.put( tab.asTabLink(), view );
@@ -308,9 +332,9 @@ ClickHandler {
         tabInvertedIndex.remove( tabLink );
 
         return createTab( view,
-                tabLink.isActive(),
-                content.getOffsetWidth(),
-                content.getOffsetHeight() );
+                          tabLink.isActive(),
+                          content.getOffsetWidth(),
+                          content.getOffsetHeight() );
     }
 
     DropdownTab cloneDropdown( final DropdownTab original,
@@ -408,41 +432,31 @@ ClickHandler {
 
     @Override
     public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null ) {
-            final int width;
-            final int height;
-            if ( parent.getParent() != null ) {
-                if ( parent.getParent().getParent() != null ) {
-                    width = parent.getParent().getParent().getOffsetWidth();
-                    height = parent.getParent().getParent().getOffsetHeight();
-                } else {
-                    width = parent.getParent().getOffsetWidth();
-                    height = parent.getParent().getOffsetHeight();
-                }
-            } else {
-                width = parent.getOffsetWidth();
-                height = parent.getOffsetHeight();
-            }
+        final int width = getOffsetWidth();
+        final int height = getOffsetHeight();
 
+        System.out.println(getClass().getName() + " resizing to " + width + "x" + height);
+
+        int selectedTab = tabPanel.getSelectedTab();
+        System.out.println("  Tab " + selectedTab + " is selected");
+        if ( selectedTab >= 0 ) {
             final ComplexPanel content = getTabContent();
-            for ( int i = 0; i < content.getWidgetCount(); i++ ) {
-                final Widget widget = content.getWidget( i );
-                ( (TabPane) widget ).getWidget( 0 ).setPixelSize( width, height - getTabHeight() );
-                scheduleResize( ( (TabPane) widget ).getWidget( 0 ) );
-            }
+            final TabPane tabPane = (TabPane) content.getWidget( selectedTab );
+            Widget tabPaneContent = tabPane.getWidget( 0 );
+            tabPaneContent.setPixelSize( width, height - getTabHeight() );
+            resizeIfNeeded(tabPaneContent);
+        }
 
-            final ComplexPanel tabs = getTabs();
-            if ( tabs != null && tabs.getWidgetCount() > 0 ) {
-                final Widget firstTabItem = tabs.getWidget( 0 );
-                final Widget lastTabItem = getLastTab();
-                if ( tabs.getWidgetCount() > 1 &&
-                        ( width < getTabBarWidth() || tabs.getOffsetHeight() > firstTabItem.getOffsetHeight() ) ) {
-                    shrinkTabBar();
-                } else if ( lastTabItem instanceof DropdownTab
-                        && ( getTabBarWidth() + getLastTab().getOffsetWidth() ) < width ) {
-                    expandTabBar();
-                }
+        final ComplexPanel tabs = getTabs();
+        if ( tabs != null && tabs.getWidgetCount() > 0 ) {
+            final Widget firstTabItem = tabs.getWidget( 0 );
+            final Widget lastTabItem = getLastTab();
+            if ( tabs.getWidgetCount() > 1 &&
+                    ( width < getTabBarWidth() || tabs.getOffsetHeight() > firstTabItem.getOffsetHeight() ) ) {
+                shrinkTabBar();
+            } else if ( lastTabItem instanceof DropdownTab
+                    && ( getTabBarWidth() + getLastTab().getOffsetWidth() ) < width ) {
+                expandTabBar();
             }
         }
     }
@@ -536,7 +550,12 @@ ClickHandler {
                     final List<Tab> tabs = ( (DropdownTab) _widget ).getTabList();
                     for ( final Tab activeTab : tabs ) {
                         if ( activeTab.isActive() ) {
-                            SelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( activeTab ).getPresenter().getDefinition() );
+                            View view = tabInvertedIndex.get( activeTab );
+                            if ( view != null ) {
+                                SelectionEvent.fire( UberTabPanel.this, view.getPresenter().getDefinition() );
+                            } else {
+                                System.out.println("Warning: missing view for " + activeTab + " in tabInvertedIndex");
+                            }
                             break;
                         }
                     }

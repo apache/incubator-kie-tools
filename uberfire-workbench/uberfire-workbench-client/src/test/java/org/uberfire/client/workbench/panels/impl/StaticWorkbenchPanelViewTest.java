@@ -7,86 +7,81 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class StaticWorkbenchPanelViewTest {
 
-    private StaticWorkbenchPanelViewUnitTestWrapper view;
+    @InjectMocks
+    private StaticWorkbenchPanelView view;
 
-    private StaticWorkbenchPanelPresenter presenter;
+    // Not a @Mock or @GwtMock because we want to test the view.init() method
+    private final StaticWorkbenchPanelPresenter presenter = mock( StaticWorkbenchPanelPresenter.class );
 
-    @GwtMock
+    @Mock
     private PanelManager panelManager;
-    @GwtMock
+
+    @Mock
     private PlaceManager placeManager;
+
+    @Mock
+    private StaticFocusedResizePanel panel;
 
     @Before
     public void setup() {
-        view = new StaticWorkbenchPanelViewUnitTestWrapper();
-        presenter = new StaticWorkbenchPanelPresenter( view, panelManager, null, null ){
-            @Override
-            public void onResize( final int width,
-                                  final int height ) {
-
-            }
-        };
-        view.setupMocks( presenter, placeManager );
-
-
+        view.postConstruct();
+        view.init( presenter );
     }
 
     @Test
     public void addPresenterOnInit() {
-        view.init( presenter );
         assertEquals( presenter, view.getPresenter() );
-    }
-
-    @Test
-    public void checkEventsOnInstantiating() {
-        //events add
-        //verify( view.getPanel() ).addFocusHandler(any(FocusHandler.class ));
-        //verify( view.getPanel() ).addSelectionHandler( any( SelectionHandler.class ) );
-
-        assertTrue(view.initWidgetCalled);
-
     }
 
     @Test
     public void verifyClearDelegation() {
         view.clear();
-        verify( view.getPanel() ).clear();
+        verify( panel ).clear();
     }
 
     @Test
     public void addPartToPanelWhenPartViewIsNull() {
 
-        view.mockPanelGetPartView( null );
-
         WorkbenchPartPresenter.View viewWbPartPresenter = mock( WorkbenchPartPresenter.View.class );
         view.addPart( viewWbPartPresenter );
 
-        verify( view.getPanel() ).setPart( viewWbPartPresenter );
+        verify( panel ).setPart( viewWbPartPresenter );
     }
 
     @Test
-    public void addPart() {
-        WorkbenchPartPresenter.View viewWbPartPresenter = mock( WorkbenchPartPresenter.View.class );
-        view.mockPanelGetPartView( viewWbPartPresenter );
+    public void addPartShouldCloseCurrentPlaceWhenReplacingExistingPart() {
+        WorkbenchPartPresenter mockPresenter = mock( WorkbenchPartPresenter.class );
+        WorkbenchPartPresenter.View mockPartView = mock( WorkbenchPartPresenter.View.class );
+        PartDefinition mockPartDefinition = new PartDefinitionImpl( new DefaultPlaceRequest( "mockPlace" ) );
 
-        view.addPart( viewWbPartPresenter );
+        when( panel.getPartView() ).thenReturn( mockPartView );
+        when( mockPartView.getPresenter() ).thenReturn( mockPresenter );
+        when( mockPresenter.getDefinition() ).thenReturn( mockPartDefinition );
 
-        verify( placeManager ).tryClosePlace( any( PlaceRequest.class ), any(Command.class) );
+        view.addPart( mockPartView );
+
+        ArgumentCaptor<Command> afterCloseCallback = ArgumentCaptor.forClass( Command.class );
+        verify( placeManager ).tryClosePlace( refEq( mockPartDefinition.getPlace() ), afterCloseCallback.capture() );
+
+        afterCloseCallback.getValue().execute();
+        verify( panel ).setPart( mockPartView );
     }
 
     @Test
@@ -104,7 +99,7 @@ public class StaticWorkbenchPanelViewTest {
         boolean removed = view.removePart( mockPartDefinition );
 
         assertTrue( removed );
-        verify( view.getPanel() ).clear();
+        verify( panel ).clear();
     }
 
     @Test
@@ -129,7 +124,7 @@ public class StaticWorkbenchPanelViewTest {
         boolean removed = view.removePart( mockPartDefinition2 );
 
         assertFalse( removed );
-        verify( view.getPanel(), never() ).clear();
+        verify( panel, never() ).clear();
     }
 
     @Test
@@ -137,15 +132,11 @@ public class StaticWorkbenchPanelViewTest {
         final int width = 42;
         final int height = 10;
 
-        view.mockWidget(width, height);
+        view.setPixelSize( width, height );
 
         view.onResize();
 
-        verify( view.getPanel() ).setPixelSize( width, height );
-
-        assertTrue( view.resizeSuperCalled );
-
-        assertTrue( view.setPixelSizeCalledRightParameters );
+        verify( panel ).onResize();
     }
 
 

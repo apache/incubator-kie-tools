@@ -70,7 +70,4 @@ public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPane
         } );
     }
 
-    @Override
-    public void onResize() {
-    }
 }

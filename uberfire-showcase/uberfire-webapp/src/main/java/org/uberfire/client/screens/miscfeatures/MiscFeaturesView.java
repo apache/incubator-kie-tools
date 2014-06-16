@@ -16,9 +16,15 @@
 
 package org.uberfire.client.screens.miscfeatures;
 
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.*;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,23 +35,18 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
-
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.*;
 
 /**
  * A stand-alone (i.e. devoid of Workbench dependencies) View
  */
 public class MiscFeaturesView extends Composite
-        implements
-        RequiresResize,
-        MiscFeaturesPresenter.View {
+implements
+RequiresResize,
+MiscFeaturesPresenter.View {
 
     interface ViewBinder
-            extends
-            UiBinder<Widget, MiscFeaturesView> {
+    extends
+    UiBinder<Widget, MiscFeaturesView> {
 
     }
 

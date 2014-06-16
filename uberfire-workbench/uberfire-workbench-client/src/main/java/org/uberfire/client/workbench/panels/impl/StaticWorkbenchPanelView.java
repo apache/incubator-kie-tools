@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
@@ -46,9 +47,11 @@ extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
     @Inject
     PlaceManager placeManager;
 
-    StaticFocusedResizePanel panel = new StaticFocusedResizePanel();
+    @Inject
+    StaticFocusedResizePanel panel;
 
-    public StaticWorkbenchPanelView() {
+    @PostConstruct
+    void postConstruct() {
 
         panel.addFocusHandler( new FocusHandler() {
             @Override
@@ -69,6 +72,12 @@ extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
         initWidget( panel );
     }
 
+    // override is for unit test: super.getWidget() returns a new mock every time
+    @Override
+    public Widget getWidget() {
+        return panel;
+    }
+
     @Override
     public void init( final StaticWorkbenchPanelPresenter presenter ) {
         this.presenter = presenter;
@@ -87,7 +96,7 @@ extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
         if ( panel.getPartView() != null ) {
-            placeManager.tryClosePlace( getPlaceOfPartView(), new Command() {
+            placeManager.tryClosePlace( getCurrentPartDefinition().getPlace(), new Command() {
                 @Override
                 public void execute() {
                     panel.setPart( view );
@@ -96,10 +105,6 @@ extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
         } else {
             panel.setPart( view );
         }
-    }
-
-    PlaceRequest getPlaceOfPartView() {
-        return getCurrentPartDefinition().getPlace();
     }
 
     @Override
@@ -144,18 +149,7 @@ extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
 
     @Override
     public void onResize() {
-        final Widget parent = getParent();
-        if ( parent != null ) {
-            final int width = parent.getOffsetWidth();
-            final int height = parent.getOffsetHeight();
-            setPixelSize( width, height );
-            presenter.onResize( width, height );
-            panel.setPixelSize( width, height );
-            resizeSuper();
-        }
-    }
-
-    void resizeSuper() {
+        presenter.onResize( getOffsetWidth(), getOffsetHeight() );
         super.onResize();
     }
 
