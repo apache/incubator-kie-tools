@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.google.gwt.core.client.GWT;
@@ -28,7 +29,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.KModuleModel;
 import org.guvnor.common.services.project.model.POM;

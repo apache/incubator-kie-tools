@@ -17,10 +17,10 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.List;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import org.guvnor.common.services.project.model.ListenerModel;
 
 public class ListenersPanel
