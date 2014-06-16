@@ -101,7 +101,7 @@ public class CustomDropdown extends Dropdown {
                     return;
                 }
 
-                if ( getAbsoluteLeft() < 180 ) {
+                if ( getAbsoluteLeft() < 220 ) {
                     setRightDropdown( false );
                 } else {
                     setRightDropdown( true );
