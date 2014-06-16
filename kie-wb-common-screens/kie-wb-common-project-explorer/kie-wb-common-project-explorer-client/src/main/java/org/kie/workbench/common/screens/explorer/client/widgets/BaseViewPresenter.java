@@ -667,7 +667,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             return;
         }
 
-        refresh( false );
+        doInitialiseViewForActiveContext( activeOrganizationalUnit,
+                                          activeRepository,
+                                          activeProject,
+                                          pkg,
+                                          null,
+                                          false );
     }
 
     // Refresh when a Resource has been added, if it exists in the active package
