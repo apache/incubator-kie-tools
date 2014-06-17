@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.TextCell;
@@ -27,7 +26,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ResizeComposite;
 import org.kie.workbench.common.screens.messageconsole.client.console.resources.MessageConsoleResources;
 import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
@@ -102,21 +100,21 @@ public class MessageConsoleViewImpl extends Composite implements MessageConsoleV
     }
 
     private void addFileNameColumn() {
-        Column<MessageConsoleServiceRow, String> column = new Column<MessageConsoleServiceRow, String>( new ClickableTextCell() ) {
+        Column<MessageConsoleServiceRow, HyperLinkCell.HyperLink> column = new Column<MessageConsoleServiceRow, HyperLinkCell.HyperLink>( new HyperLinkCell() ) {
             @Override
-            public String getValue( MessageConsoleServiceRow row ) {
+            public HyperLinkCell.HyperLink getValue( MessageConsoleServiceRow row ) {
                 if ( row.getMessagePath() != null ) {
-                    return row.getMessagePath().getFileName();
+                    return HyperLinkCell.HyperLink.newLink( row.getMessagePath().getFileName() );
                 } else {
-                    return "-";
+                    return HyperLinkCell.HyperLink.newText( "-" );
                 }
             }
         };
-        column.setFieldUpdater( new FieldUpdater<MessageConsoleServiceRow, String>() {
+        column.setFieldUpdater( new FieldUpdater<MessageConsoleServiceRow, HyperLinkCell.HyperLink>() {
             @Override
-            public void update( int index,
-                                MessageConsoleServiceRow row,
-                                String value ) {
+            public void update( final int index,
+                                final MessageConsoleServiceRow row,
+                                final HyperLinkCell.HyperLink value ) {
                 if ( row.getMessagePath() != null ) {
                     placeManager.goTo( row.getMessagePath() );
                 }
