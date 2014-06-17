@@ -244,7 +244,9 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void calculateReadOnly() {
         if ( this.pattern.getFactPattern() != null ) {
-            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() );
+
+            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized(this.pattern.getFactPattern().getFactType());
+
             this.readOnly = !this.isFactTypeKnown;
         }
     }

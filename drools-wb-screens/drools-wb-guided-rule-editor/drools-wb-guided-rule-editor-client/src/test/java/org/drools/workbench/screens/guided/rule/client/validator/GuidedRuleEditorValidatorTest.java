@@ -7,6 +7,7 @@ import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
@@ -466,4 +467,19 @@ public class GuidedRuleEditorValidatorTest {
         assertFalse( validator.isValid() );
     }
 
+    @Test
+    public void testMissingValueInFromCollect() throws Exception {
+        FactPattern pattern = new FactPattern( "Person" );
+        pattern.setBoundName("person");
+
+        FromCompositeFactPattern fromCompositeFactPattern = new FromCollectCompositeFactPattern();
+        fromCompositeFactPattern.setFactPattern( pattern );
+        model.lhs = new IPattern[]{ fromCompositeFactPattern };
+
+        assertFalse( validator.isValid() );
+        assertEquals( 1, validator.getErrors().size() );
+        assertEquals( MISSING_FACT_PATTERN, validator.getErrors().get( 0 ) );
+
+        verify( constants ).AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
+    }
 }

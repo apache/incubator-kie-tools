@@ -310,6 +310,19 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     @Override
     protected void calculateReadOnly() {
+
+        String factType = this.pattern.getFactPattern().getFactType();
+
+        // We allow the use of Set, List or Collection, even when they are not added as imports
+        // Because of this, we also need to add them as known fact types
+        if (factType.equals("java.util.Set")
+                || factType.equals("java.util.List")
+                || factType.equals("java.util.Collection")) {
+            this.isFactTypeKnown = true;
+        } else {
+            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized(factType);
+        }
+
         if ( this.pattern.getFactPattern() != null ) {
             this.readOnly = !( this.getExtraLeftSidePatternFactTypes().containsValue( this.pattern.getFactPattern().getFactType() )
                     || this.getModeller().getDataModelOracle().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() ) );
