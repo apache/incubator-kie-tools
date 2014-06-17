@@ -139,6 +139,9 @@ public class ActivityManagerImpl implements ActivityManager {
         final Set<T> activities = new HashSet<T>( activityBeans.size() );
 
         for ( final IOCBeanDef<T> activityBean : activityBeans ) {
+            if ( activityBean == null ) {
+                continue;
+            }
             final T instance = activityBean.getInstance();
             if ( authzManager.authorize( instance, identity ) ) {
                 activities.add( instance );
