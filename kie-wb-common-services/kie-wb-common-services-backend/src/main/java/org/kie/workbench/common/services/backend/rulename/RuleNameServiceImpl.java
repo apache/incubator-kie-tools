@@ -254,18 +254,25 @@ public class RuleNameServiceImpl
         );
     }
 
-    public Set<String> getRuleNames( final Project project,
-                                     final String packageName ) {
-        RuleNamesByPackageMap map = ruleNames.get( project );
-        if ( map == null ) {
-            return new HashSet<String>();
+    public Set<String> getRuleNames(Project project, String packageName) {
+        RuleNamesByPackageMap map = ruleNames.get(project);
+        if (map == null) {
+            if (project.getRootPath() == null) {
+                return new HashSet<String>();
+            }
+            visitPaths(Files.newDirectoryStream(Paths.convert(project.getRootPath())));
+            map = ruleNames.get(project);
+            if (map == null) {
+                return new HashSet<String>();
+            }
+
         }
 
-        Set<String> result = map.get( packageName );
-        if ( result == null ) {
+        Set<String> result = map.get(packageName);
+        if (result == null) {
             return new HashSet<String>();
         } else {
-            return new HashSet<String>( result );
+            return new HashSet<String>(result);
         }
     }
 
