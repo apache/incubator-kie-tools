@@ -20,7 +20,6 @@ import com.github.gwtbootstrap.client.ui.SimplePager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
@@ -58,26 +57,6 @@ public class PagedTable<T>
         super( providesKey );
         this.pageSize = pageSize;
         this.dataGrid.setPageSize( pageSize );
-        this.pager.setDisplay( dataGrid );
-        this.pager.setPageSize( pageSize );
-    }
-
-    public PagedTable( final int pageSize,
-                       final ProvidesKey<T> providesKey,
-                       final ColumnSortEvent.Handler columnSortHandler ) {
-        super( providesKey,
-               columnSortHandler );
-        this.pageSize = pageSize;
-        this.dataGrid.setPageSize( pageSize );
-        this.pager.setDisplay( dataGrid );
-        this.pager.setPageSize( pageSize );
-    }
-
-    public PagedTable( final int pageSize,
-                       final ColumnSortEvent.Handler columnSortHandler ) {
-        super( columnSortHandler );
-        this.dataGrid.setPageSize( pageSize );
-        this.pageSize = pageSize;
         this.pager.setDisplay( dataGrid );
         this.pager.setPageSize( pageSize );
     }

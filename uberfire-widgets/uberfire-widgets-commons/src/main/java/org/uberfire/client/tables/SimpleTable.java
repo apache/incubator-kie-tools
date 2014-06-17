@@ -84,20 +84,6 @@ public class SimpleTable<T>
         setupGridTable();
     }
 
-    public SimpleTable( final ProvidesKey<T> providesKey,
-                        final ColumnSortEvent.Handler columnSortHandler ) {
-        dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
-                                    providesKey );
-        dataGrid.addColumnSortHandler( columnSortHandler );
-        setupGridTable();
-    }
-
-    public SimpleTable( final ColumnSortEvent.Handler columnSortHandler ) {
-        dataGrid = new DataGrid<T>();
-        dataGrid.addColumnSortHandler( columnSortHandler );
-        setupGridTable();
-    }
-
     private void setupGridTable() {
         dataGrid.setStriped( true );
         dataGrid.setBordered( true );
@@ -154,6 +140,14 @@ public class SimpleTable<T>
     @Override
     public HandlerRegistration addRowCountChangeHandler( final RowCountChangeEvent.Handler handler ) {
         return dataGrid.addRowCountChangeHandler( handler );
+    }
+
+    /**
+     * Link a column sort handler to the table
+     * @param handler
+     */
+    public HandlerRegistration addColumnSortHandler( final ColumnSortEvent.Handler handler ) {
+        return this.dataGrid.addColumnSortHandler( handler );
     }
 
     @Override
