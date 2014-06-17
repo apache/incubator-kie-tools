@@ -18,8 +18,6 @@ package org.uberfire.backend.vfs;
 
 public interface Path extends Comparable<Path> {
 
-    FileSystem getFileSystem();
-
     String getFileName();
 
     String toURI();

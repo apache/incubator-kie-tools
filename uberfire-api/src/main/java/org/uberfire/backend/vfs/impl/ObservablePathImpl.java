@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.uberfire.backend.vfs.FileSystem;
+import org.uberfire.backend.vfs.IsVersioned;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
@@ -28,7 +28,8 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @Portable
 @Dependent
 @Alternative
-public class ObservablePathImpl implements ObservablePath {
+public class ObservablePathImpl implements ObservablePath,
+                                           IsVersioned {
 
     private Path path;
     private Path original;
@@ -60,11 +61,6 @@ public class ObservablePathImpl implements ObservablePath {
     }
 
     @Override
-    public FileSystem getFileSystem() {
-        return path.getFileSystem();
-    }
-
-    @Override
     public String getFileName() {
         return path.getFileName();
     }
@@ -92,6 +88,11 @@ public class ObservablePathImpl implements ObservablePath {
     @Override
     public String toURI() {
         return path.toURI();
+    }
+
+    @Override
+    public boolean hasVersionSupport() {
+        return path instanceof IsVersioned && ( (IsVersioned) path ).hasVersionSupport();
     }
 
     @Override

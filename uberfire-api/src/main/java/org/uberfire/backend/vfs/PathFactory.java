@@ -25,63 +25,79 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public final class PathFactory {
 
+    public static String VERSION_PROPERTY = "hasVersionSupport";
+
     private PathFactory() {
     }
 
-    public static Path newPath( final FileSystem fs,
-                                final String fileName,
+    public static Path newPath( final String fileName,
                                 final String uri ) {
-        return new PathImpl( checkNotNull( "fs", fs ), checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ) );
+        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ) );
     }
 
-    public static Path newPath( final FileSystem fs,
-                                final String fileName,
+    public static Path newPathBasedOn( final String fileName,
+                                       final String uri,
+                                       final Path path ) {
+        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), checkNotNull( "path", path ) );
+    }
+
+    public static Path newPath( final String fileName,
                                 final String uri,
                                 final Map<String, Object> attrs ) {
-        return new PathImpl( checkNotNull( "fs", fs ), checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), attrs );
+        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), attrs );
     }
 
     @Portable
-    public static class PathImpl implements Path {
+    public static class PathImpl implements Path,
+                                            IsVersioned {
 
-        private FileSystem fs = null;
         private String uri = null;
         private String fileName = null;
         private HashMap<String, Object> attributes = null;
+        private boolean hasVersionSupport = false;
 
         public PathImpl() {
         }
 
-        private PathImpl( final FileSystem fs,
-                          final String fileName,
+        private PathImpl( final String fileName,
                           final String uri ) {
-            this( fs, fileName, uri, null );
+            this( fileName, uri, (Map<String, Object>) null );
         }
 
-        private PathImpl( final FileSystem fs,
-                          final String fileName,
+        private PathImpl( final String fileName,
                           final String uri,
                           final Map<String, Object> attrs ) {
-            this.fs = fs;
             this.fileName = fileName;
             this.uri = uri;
             if ( attrs == null ) {
                 this.attributes = new HashMap<String, Object>();
             } else {
-                this.attributes = new HashMap<String, Object>( attrs );
+                if ( attrs.containsKey( VERSION_PROPERTY ) ) {
+                    hasVersionSupport = (Boolean) attrs.remove( VERSION_PROPERTY );
+                }
+                if ( attrs.size() > 0 ) {
+                    this.attributes = new HashMap<String, Object>( attrs );
+                } else {
+                    this.attributes = new HashMap<String, Object>();
+                }
             }
         }
 
-        @Override
-        public FileSystem getFileSystem() {
-            return fs;
+        private PathImpl( final String fileName,
+                          final String uri,
+                          final Path path ) {
+            this.fileName = fileName;
+            this.uri = uri;
+            if ( path instanceof PathImpl ) {
+                this.hasVersionSupport = ( (PathImpl) path ).hasVersionSupport;
+            }
         }
 
         @Override
         public String getFileName() {
             return fileName;
         }
-        
+
         @Override
         public String toURI() {
             return uri;
@@ -108,6 +124,11 @@ public final class PathFactory {
             final Path path = (Path) o;
 
             return uri.equals( path.toURI() );
+        }
+
+        @Override
+        public boolean hasVersionSupport() {
+            return hasVersionSupport;
         }
 
         @Override

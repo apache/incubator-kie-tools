@@ -4,9 +4,12 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.uberfire.backend.vfs.IsVersioned;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
+
+import static org.uberfire.util.URIUtil.*;
 
 /**
  *
@@ -14,13 +17,15 @@ import org.uberfire.mvp.PlaceRequest;
 @Portable
 public class PathPlaceRequest extends DefaultPlaceRequest {
 
+    public static String NULL = "[null]";
+
     private ObservablePath path;
 
     public PathPlaceRequest() {
     }
 
     public PathPlaceRequest( final Path path ) {
-        super( path.toURI() );
+        super( NULL );
         this.path = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( path );
     }
 
@@ -49,13 +54,18 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
 
     @Override
     public String getFullIdentifier() {
-        StringBuilder fullIdentifier = new StringBuilder();
-        fullIdentifier.append( this.getIdentifier() );
+        final StringBuilder fullIdentifier = new StringBuilder();
+        if ( getIdentifier() != null ) {
+            fullIdentifier.append( this.getIdentifier() );
+        } else {
+            fullIdentifier.append( NULL );
+        }
 
-        if ( !this.getIdentifier().equals( path.toURI() ) ) {
-            fullIdentifier.append( "?" ).append( "path_uri" ).append( "=" ).append( path.toURI() );
-        } else if ( this.getParameterNames().size() > 0 ) {
-            fullIdentifier.append( "?" );
+        fullIdentifier.append( "?" ).append( "path_uri" ).append( "=" ).append( encode( path.toURI() ) ).append( "&" )
+                .append( "file_name" ).append( "=" ).append( encode( path.getFileName() ) ).append( "&" );
+
+        if ( path instanceof IsVersioned ) {
+            fullIdentifier.append( "has_version_support" ).append( "=" ).append( ( (IsVersioned) path ).hasVersionSupport() ).append( "&" );
         }
 
         for ( String name : this.getParameterNames() ) {

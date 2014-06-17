@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.http.client.URL;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 public class PlaceRequestHistoryMapperImpl
         implements
@@ -30,11 +32,23 @@ public class PlaceRequestHistoryMapperImpl
 
     @Override
     public PlaceRequest getPlaceRequest( String fullIdentifier ) {
-        String identifier = fullIdentifier.indexOf( "?" ) != -1 ? fullIdentifier.substring( 0, fullIdentifier.indexOf( "?" ) ) : fullIdentifier;
-        String query = fullIdentifier.indexOf( "?" ) != -1 ? fullIdentifier.substring( fullIdentifier.indexOf( "?" ) + 1 ) : "";
-        Map<String, String> parameters = getParameters( query );
+        final String identifier = fullIdentifier.contains( "?" ) ? fullIdentifier.substring( 0, fullIdentifier.indexOf( "?" ) ) : fullIdentifier;
+        final String query = fullIdentifier.contains( "?" ) ? fullIdentifier.substring( fullIdentifier.indexOf( "?" ) + 1 ) : "";
+        final Map<String, String> parameters = getParameters( query );
 
-        PlaceRequest placeRequest = new DefaultPlaceRequest( identifier );
+        final PlaceRequest placeRequest;
+        if ( parameters.containsKey( "path_uri" ) ) {
+            if ( parameters.containsKey( "has_version_support" ) ) {
+                placeRequest = new PathPlaceRequest( PathFactory.newPath( parameters.remove( "file_name" ), parameters.remove( "path_uri" ), new HashMap<String, Object>() {{
+                    put( PathFactory.VERSION_PROPERTY, Boolean.valueOf( parameters.remove( "has_version_support" ) ) );
+                }} ), identifier );
+            } else {
+                placeRequest = new PathPlaceRequest( PathFactory.newPath( parameters.remove( "file_name" ), parameters.remove( "path_uri" ) ), identifier );
+            }
+        } else {
+            placeRequest = new DefaultPlaceRequest( identifier );
+        }
+
         for ( String parameterName : parameters.keySet() ) {
             placeRequest.addParameter( parameterName, parameters.get( parameterName ) );
         }
@@ -43,10 +57,10 @@ public class PlaceRequestHistoryMapperImpl
     }
 
     private Map<String, String> getParameters( String query ) {
-        Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<String, String>();
 
         if ( query != null && !"".equalsIgnoreCase( query ) ) {
-            List<String> parts = Arrays.asList( query.split( "&" ) );
+            final List<String> parts = Arrays.asList( query.split( "&" ) );
             for ( String part : parts ) {
                 int index = part.indexOf( '=' );
                 String name = null;
@@ -55,13 +69,11 @@ public class PlaceRequestHistoryMapperImpl
                     name = part;
                     value = "";
                 } else {
-                    name = part.substring( 0,
-                                           index );
+                    name = part.substring( 0, index );
                     value = index < part.length() ? part.substring( index + 1 ) : "";
-                    value = this.urlDecode( value );
+                    value = urlDecode( value );
                 }
-                parameters.put( urlDecode( name ),
-                                value );
+                parameters.put( urlDecode( name ), value );
             }
         }
 

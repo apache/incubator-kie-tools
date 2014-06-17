@@ -31,21 +31,21 @@ public class PathTest {
     @Test
     public void generalState() {
         {
-            final Path path = newPath( fs, "resource", "scheme://path/to/some/resource" );
+            final Path path = newPath( "resource", "scheme://path/to/some/resource" );
             assertThat( path.equals( path ) ).isTrue();
-            assertThat( path.equals( newPath( fs, "resource", "scheme://path/to/some/resource" ) ) ).isTrue();
-            assertThat( path.hashCode() ).isEqualTo( newPath( fs, "resource", "scheme://path/to/some/resource" ).hashCode() );
+            assertThat( path.equals( newPath( "resource", "scheme://path/to/some/resource" ) ) ).isTrue();
+            assertThat( path.hashCode() ).isEqualTo( newPath( "resource", "scheme://path/to/some/resource" ).hashCode() );
             assertThat( path.hashCode() ).isEqualTo( path.hashCode() );
         }
 
         {
-            final Path path = newPath( fs, "resource", "scheme://different/path/to/some/resource" );
-            assertThat( path.equals( newPath( fs, "resource", "scheme://path/to/some/resource" ) ) ).isFalse();
-            assertThat( path.hashCode() ).isNotEqualTo( newPath( fs, "resource", "scheme://path/to/some/resource" ).hashCode() );
+            final Path path = newPath( "resource", "scheme://different/path/to/some/resource" );
+            assertThat( path.equals( newPath( "resource", "scheme://path/to/some/resource" ) ) ).isFalse();
+            assertThat( path.hashCode() ).isNotEqualTo( newPath( "resource", "scheme://path/to/some/resource" ).hashCode() );
         }
 
         {
-            final Path path = newPath( fs, "resource", "scheme://different/path/to/some/resource" );
+            final Path path = newPath( "resource", "scheme://different/path/to/some/resource" );
             assertThat( path.equals( "something" ) ).isFalse();
             assertThat( path.equals( null ) ).isFalse();
         }
@@ -54,10 +54,10 @@ public class PathTest {
     @Test
     public void checkNPE() {
         final Map<Path, String> hashMap = new HashMap<Path, String>();
-        final Path path = newPath( fs, "defaultPackage", "default://guvnor-jcr2vfs-migration/defaultPackage/" );
+        final Path path = newPath( "defaultPackage", "default://guvnor-jcr2vfs-migration/defaultPackage/" );
         hashMap.put( path, "content" );
         assertThat( hashMap.get( path ) ).isEqualTo( "content" );
 
-        assertThat( hashMap.get( newPath( fs, "defaultPackage", "default://guvnor-jcr2vfs-migration/defaultPackage/" ) ) ).isEqualTo( "content" );
+        assertThat( hashMap.get( newPath( "defaultPackage", "default://guvnor-jcr2vfs-migration/defaultPackage/" ) ) ).isEqualTo( "content" );
     }
 }

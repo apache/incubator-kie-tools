@@ -28,7 +28,6 @@ import org.uberfire.backend.server.config.ConfigType;
 import org.uberfire.backend.server.config.ConfigurationFactory;
 import org.uberfire.backend.server.config.ConfigurationService;
 import org.uberfire.backend.server.config.SystemRepositoryChangedEvent;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -108,14 +107,13 @@ public class RepositoryServiceImpl implements RepositoryService {
             return null;
         }
 
-        final org.uberfire.backend.vfs.FileSystem fsystem = Paths.convert( fs );
         for ( final Repository repository : configuredRepositories.values() ) {
-            if ( repository.getRoot().getFileSystem().equals( fsystem ) ) {
+            if ( convert( repository.getRoot() ).getFileSystem().equals( fs ) ) {
                 return repository;
             }
         }
 
-        if ( systemRepository.getRoot().getFileSystem().equals( fsystem ) ) {
+        if ( convert( systemRepository.getRoot() ).getFileSystem().equals( fs ) ) {
             return systemRepository;
         }
 
@@ -160,7 +158,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
 
         if ( !env.containsKey( BRANCH ) ) {
-            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( BRANCH, env.get(BRANCH) ) );
+            repositoryConfig.addConfigItem( configurationFactory.newConfigItem( BRANCH, env.get( BRANCH ) ) );
         }
         for ( final Map.Entry<String, Object> entry : env.entrySet() ) {
             if ( entry.getKey().startsWith( "crypt:" ) ) {
@@ -271,18 +269,19 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public Repository updateRepository( Repository repository, Map<String, Object> config ) {
+    public Repository updateRepository( Repository repository,
+                                        Map<String, Object> config ) {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig( repository.getAlias() );
 
-        if ( thisRepositoryConfig != null && config != null) {
+        if ( thisRepositoryConfig != null && config != null ) {
 
-            for (Map.Entry<String, Object> entry : config.entrySet()) {
+            for ( Map.Entry<String, Object> entry : config.entrySet() ) {
 
-                ConfigItem configItem = thisRepositoryConfig.getConfigItem(entry.getKey());
-                if (configItem == null) {
-                    thisRepositoryConfig.addConfigItem(configurationFactory.newConfigItem(entry.getKey(), entry.getValue()));
+                ConfigItem configItem = thisRepositoryConfig.getConfigItem( entry.getKey() );
+                if ( configItem == null ) {
+                    thisRepositoryConfig.addConfigItem( configurationFactory.newConfigItem( entry.getKey(), entry.getValue() ) );
                 } else {
-                    configItem.setValue(entry.getValue());
+                    configItem.setValue( entry.getValue() );
                 }
             }
 
@@ -309,7 +308,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             }
         }
 
-        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( Paths.convert( repo.getRoot() ), VersionAttributeView.class );
+        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( convert( repo.getRoot() ), VersionAttributeView.class );
         final List<VersionRecord> records = versionAttributeView.readAttributes().history().records();
         Collections.reverse( records );
 
@@ -330,7 +329,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                                                      final int startIndex ) {
         final Repository repo = getRepository( alias );
 
-        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( Paths.convert( repo.getRoot() ), VersionAttributeView.class );
+        final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( convert( repo.getRoot() ), VersionAttributeView.class );
 
         final List<VersionRecord> records = versionAttributeView.readAttributes().history().records();
 
@@ -354,7 +353,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         return result;
     }
 
-    public void updateRegisteredRepositories(@Observes @org.uberfire.backend.server.config.Repository SystemRepositoryChangedEvent changedEvent) {
+    public void updateRegisteredRepositories( @Observes @org.uberfire.backend.server.config.Repository SystemRepositoryChangedEvent changedEvent ) {
         configuredRepositories.clear();
         loadRepositories();
     }

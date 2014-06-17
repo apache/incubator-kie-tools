@@ -41,7 +41,7 @@ public final class FileSystemFactory {
             this.rootDirectories = new ArrayList<Path>( roots.size() );
 
             for ( final Map.Entry<String, String> entry : roots.entrySet() ) {
-                this.rootDirectories.add( newPath( this, entry.getValue(), entry.getKey() ) );
+                this.rootDirectories.add( newPath( entry.getValue(), entry.getKey() ) );
             }
             this.supportedViews = new HashSet<String>( checkNotNull( "supportedViews", supportedViews ) );
         }
