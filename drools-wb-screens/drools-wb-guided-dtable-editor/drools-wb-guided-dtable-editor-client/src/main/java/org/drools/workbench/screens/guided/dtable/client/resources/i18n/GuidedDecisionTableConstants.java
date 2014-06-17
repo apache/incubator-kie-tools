@@ -102,6 +102,8 @@ public interface GuidedDecisionTableConstants
 
     String FactType();
 
+    String FieldType();
+
     String Binding();
 
     String PleaseEnterANameForFact();

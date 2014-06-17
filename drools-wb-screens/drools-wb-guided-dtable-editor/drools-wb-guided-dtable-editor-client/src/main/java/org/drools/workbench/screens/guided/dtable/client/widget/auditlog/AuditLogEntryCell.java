@@ -50,15 +50,19 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
         this.format = format;
     }
 
-    public AuditLogEntryCell( final DateTimeFormat format, String labelClass, String valueClass ) {
-        this.helper = new AuditLogEntryCellHelper( format, labelClass, valueClass );
+    public AuditLogEntryCell( final DateTimeFormat format,
+                              final String labelClass,
+                              final String valueClass ) {
+        this.helper = new AuditLogEntryCellHelper( format,
+                                                   labelClass,
+                                                   valueClass );
         this.format = format;
     }
 
     @Override
-    public void render( Context context,
-                        AuditLogEntry value,
-                        SafeHtmlBuilder sb ) {
+    public void render( final Context context,
+                        final AuditLogEntry value,
+                        final SafeHtmlBuilder sb ) {
         if ( value == null ) {
             return;
         }
@@ -66,7 +70,7 @@ public class AuditLogEntryCell extends AbstractCell<AuditLogEntry> {
         //Audit Log entry type and date
         final String eventTypeDisplayText = AuditLogEntryCellHelper.getEventTypeDisplayText( value.getGenericType() );
         final String whenWhoDisplayText = GuidedDecisionTableConstants.INSTANCE.AuditLogEntryOn1( format.format( value.getDateOfEntry() ),
-                                                                               value.getUserName() );
+                                                                                                  value.getUserName() );
         sb.append( TEMPLATE.entrySummary( eventTypeDisplayText,
                                           whenWhoDisplayText ) );
 

@@ -25,22 +25,23 @@ import org.guvnor.common.services.shared.config.ApplicationPreferences;
  */
 public class AuditLogEntrySummaryColumn extends Column<AuditLogEntry, AuditLogEntry> {
 
-    private static final String DATE_TIME_FORMAT = ApplicationPreferences.getDroolsDateTimeFormat();
+    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
-    private static final DateTimeFormat format = DateTimeFormat.getFormat( DATE_TIME_FORMAT );
+    private static final DateTimeFormat format = DateTimeFormat.getFormat( DATE_FORMAT );
 
-    public AuditLogEntrySummaryColumn(String labelClass, String valueClass) {
-        super( new AuditLogEntryCell( format, labelClass, valueClass ) );
+    public AuditLogEntrySummaryColumn( final String labelClass,
+                                       final String valueClass ) {
+        super( new AuditLogEntryCell( format,
+                                      labelClass,
+                                      valueClass ) );
     }
 
     public AuditLogEntrySummaryColumn() {
         super( new AuditLogEntryCell( format ) );
     }
 
-
-
     @Override
-    public AuditLogEntry getValue( AuditLogEntry object ) {
+    public AuditLogEntry getValue( final AuditLogEntry object ) {
         return object;
     }
 

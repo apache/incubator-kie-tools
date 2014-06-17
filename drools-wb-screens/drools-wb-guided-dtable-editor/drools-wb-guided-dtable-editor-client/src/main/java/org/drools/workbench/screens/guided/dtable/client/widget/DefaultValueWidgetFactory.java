@@ -48,16 +48,17 @@ public class DefaultValueWidgetFactory {
 
     /**
      * BZ-996932: Default value changed event handler interface.
-     *
+     * <p/>
      * Widgets using DefaultValueWidget should listen to value changed event by implementing this custom GWT Event Handler.
      */
     interface DefaultValueChangedEventHandler {
-        void onDefaultValueChanged(DefaultValueChangedEvent event);
+
+        void onDefaultValueChanged( DefaultValueChangedEvent event );
     }
 
     /**
      * BZ-996932: Default value changed event definition.
-     *
+     * <p/>
      * When default value is changed this event if fired to notified handlers.
      */
     static class DefaultValueChangedEvent {
@@ -65,7 +66,8 @@ public class DefaultValueWidgetFactory {
         private final DTCellValue52 defaultValue;
         private final DTCellValue52 oldDefaultValue;
 
-        public DefaultValueChangedEvent(DTCellValue52 defaultValue, DTCellValue52 oldDefaultValue) {
+        public DefaultValueChangedEvent( DTCellValue52 defaultValue,
+                                         DTCellValue52 oldDefaultValue ) {
             this.defaultValue = defaultValue;
             this.oldDefaultValue = oldDefaultValue;
         }
@@ -82,8 +84,8 @@ public class DefaultValueWidgetFactory {
 
     // BZ-996932: Added value change notifications.
     public static Widget getDefaultValueWidget( final AttributeCol52 ac,
-                                        final boolean isReadOnly,
-                                        final DefaultValueChangedEventHandler defaultValueChangedEventHandler ) {
+                                                final boolean isReadOnly,
+                                                final DefaultValueChangedEventHandler defaultValueChangedEventHandler ) {
         Widget editor = null;
         final String attributeName = ac.getAttribute();
         if ( attributeName.equals( RuleAttributeWidget.RULEFLOW_GROUP_ATTR )
@@ -104,7 +106,7 @@ public class DefaultValueWidgetFactory {
                     public void onValueChange( ValueChangeEvent<String> event ) {
                         DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                         defaultValue.setStringValue( tb.getValue() );
-                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
+                        defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue, clonedDefaultValue ) );
                     }
 
                 } );
@@ -133,7 +135,7 @@ public class DefaultValueWidgetFactory {
                             defaultValue.setNumericValue( 0 );
                             tb.setValue( "0" );
                         } finally {
-                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
+                            defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue, clonedDefaultValue ) );
                         }
                     }
 
@@ -163,7 +165,7 @@ public class DefaultValueWidgetFactory {
                             defaultValue.setNumericValue( 0L );
                             tb.setValue( "0" );
                         } finally {
-                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
+                            defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue, clonedDefaultValue ) );
                         }
                     }
 
@@ -196,7 +198,7 @@ public class DefaultValueWidgetFactory {
                 public void onClick( ClickEvent event ) {
                     DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                     defaultValue.setBooleanValue( cb.getValue() );
-                    defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
+                    defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue, clonedDefaultValue ) );
                 }
             } );
             editor = cb;
@@ -223,7 +225,7 @@ public class DefaultValueWidgetFactory {
                     public void onValueChange( ValueChangeEvent<Date> event ) {
                         DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
                         defaultValue.setDateValue( event.getValue() );
-                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue, clonedDefaultValue));
+                        defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue, clonedDefaultValue ) );
                     }
 
                 } );
@@ -247,9 +249,9 @@ public class DefaultValueWidgetFactory {
                         if ( selectedIndex < 0 ) {
                             return;
                         }
-                        DTCellValue52 newValue = new DTCellValue52( lb.getValue( selectedIndex ) );
-                        ac.setDefaultValue( newValue );
-                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(newValue, defaultValue));
+                        DTCellValue52 clonedDefaultValue = defaultValue.cloneDefaultValueCell();
+                        defaultValue.setStringValue( lb.getValue( selectedIndex ) );
+                        defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue, clonedDefaultValue ) );
                     }
                 } );
             }
@@ -273,7 +275,7 @@ public class DefaultValueWidgetFactory {
     private static void assertIntegerDefaultValue( final DTCellValue52 dcv ) {
         if ( dcv.getNumericValue() == null ) {
             try {
-                dcv.setNumericValue( Integer.valueOf ( dcv.getStringValue() ) );
+                dcv.setNumericValue( Integer.valueOf( dcv.getStringValue() ) );
             } catch ( NumberFormatException nfe ) {
                 dcv.setNumericValue( 0 );
             }
