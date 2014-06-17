@@ -1,6 +1,7 @@
 package org.uberfire.backend.server.config.watch;
 
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -15,7 +16,8 @@ import org.uberfire.java.nio.file.WatchKey;
 
 import static javax.ejb.TransactionAttributeType.*;
 
-@Stateless
+@Singleton
+@Startup
 @TransactionAttribute(NOT_SUPPORTED)
 public class ConfigServiceWatchServiceExecutorImpl implements ConfigServiceWatchServiceExecutor {
 

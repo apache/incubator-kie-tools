@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -37,7 +38,8 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import static javax.ejb.TransactionAttributeType.*;
 import static org.uberfire.backend.server.util.Paths.*;
 
-@Stateless
+@Singleton
+@Startup
 @TransactionAttribute(NOT_SUPPORTED)
 public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
 
