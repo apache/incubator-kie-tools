@@ -269,7 +269,11 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      */
     @Override
     public boolean isFactTypeRecognized( final String factType ) {
-        return filteredModelFields.containsKey( factType );
+        if(filteredModelFields.containsKey( factType ) || factNameToFQCNHandleRegistry.map.containsValue(factType)){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

@@ -77,7 +77,6 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
 
     @Override
     public void onAddImport( final Import importType ) {
-        //resourceImports.getImports().add( importType );
         dmo.filter();
 
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)

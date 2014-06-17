@@ -159,6 +159,13 @@ public class AsyncPackageDataModelOracleImplTest {
     }
 
     @Test
+    public void testIsFactTypeRecognized(){
+
+        assertTrue(oracle.isFactTypeRecognized("org.Address"));
+
+    }
+
+    @Test
     public void testName() throws Exception {
         assertEquals("org.test.Person", oracle.getFQCNByFactName("Person"));
         assertEquals("Person", oracle.getFieldClassName("Person", "this"));
