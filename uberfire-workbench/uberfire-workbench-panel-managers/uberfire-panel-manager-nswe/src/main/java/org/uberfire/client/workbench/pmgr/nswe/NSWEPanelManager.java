@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.AbstractPanelManagerImpl;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
@@ -40,6 +41,9 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
 
     @Inject
     private HeaderPanel headerFooterContainerPanel;
+
+    @Inject
+    private WorkbenchPickupDragController dragController;
 
     public NSWEPanelManager() {
         super( new SimpleLayoutPanel(), new FlowPanel(), new FlowPanel() );
@@ -111,14 +115,21 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
         rootPanel.add( headerFooterContainerPanel );
         headerFooterContainerPanel.setHeaderWidget( headerPanel );
         headerFooterContainerPanel.setFooterWidget( footerPanel );
-        headerFooterContainerPanel.setContentWidget( perspectiveRootContainer );
+        headerFooterContainerPanel.setContentWidget( dragController.getBoundaryPanel() );
+
+        dragController.getBoundaryPanel().add( perspectiveRootContainer );
+        setToFillParent( dragController.getBoundaryPanel().getElement().getStyle() );
 
         Style contentPanelStyle = perspectiveRootContainer.getElement().getStyle();
-        contentPanelStyle.setPosition( com.google.gwt.dom.client.Style.Position.ABSOLUTE );
-        contentPanelStyle.setTop( 0, Unit.PX );
-        contentPanelStyle.setBottom( 0, Unit.PX );
-        contentPanelStyle.setLeft( 0, Unit.PX );
-        contentPanelStyle.setRight( 0, Unit.PX );
+        setToFillParent( contentPanelStyle );
+    }
+
+    private void setToFillParent( Style style ) {
+        style.setPosition( com.google.gwt.dom.client.Style.Position.ABSOLUTE );
+        style.setTop( 0, Unit.PX );
+        style.setBottom( 0, Unit.PX );
+        style.setLeft( 0, Unit.PX );
+        style.setRight( 0, Unit.PX );
     }
 
 }
