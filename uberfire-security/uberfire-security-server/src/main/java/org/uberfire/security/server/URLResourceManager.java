@@ -19,11 +19,13 @@ package org.uberfire.security.server;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
@@ -33,7 +35,7 @@ import org.uberfire.security.server.util.AntPathMatcher;
 import org.yaml.snakeyaml.Yaml;
 
 import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.security.server.SecurityConstants.*;
 
@@ -52,7 +54,7 @@ public class URLResourceManager implements ResourceManager {
     private String configFile = URL_FILTER_CONFIG_YAML;
 
     private final Resources resources;
-    private final Set<String> excludeCache = new HashSet<String>();
+    private final Set<String> excludeCache = Collections.newSetFromMap( new ConcurrentHashMap<String, Boolean>() );
 
     public URLResourceManager( final String configFile ) {
         if ( configFile != null && !configFile.isEmpty() ) {
