@@ -156,6 +156,22 @@ public class RuleNameResolverTest {
     }
 
     @Test
+    public void testSimpleWithRuleFlowGroup() throws Exception {
+        RuleNameResolver resolver = new RuleNameResolver(
+                "package org.test2\n" +
+                        "rule test\n" +
+                        "ruleflow-group \"do not include me\"\n" +
+                        "when\n" +
+                        "then\n" +
+                        "end" );
+        Set<String> ruleNames = resolver.getRuleNames();
+
+        assertEquals( "org.test2", resolver.getPackageName() );
+        assertEquals( 1, ruleNames.size() );
+        assertTrue( ruleNames.contains( "test" ) );
+    }
+
+    @Test
     public void testResolvePackageName1() throws Exception {
         RuleNameResolver resolver = new RuleNameResolver( "package org.test;\n" );
 
