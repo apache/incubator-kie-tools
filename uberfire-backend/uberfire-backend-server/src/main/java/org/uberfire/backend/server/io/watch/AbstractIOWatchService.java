@@ -145,6 +145,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
         };
 
         if ( started ) {
+            final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
             executorService.execute( new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
@@ -153,7 +154,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
                 @Override
                 public void run() {
-                    asyncWatchService.execute( getWatchServiceExecutor() );
+                    asyncWatchService.execute( watchServiceExecutor );
                 }
             } );
         } else {
