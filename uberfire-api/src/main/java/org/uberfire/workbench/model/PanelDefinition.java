@@ -19,7 +19,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A Panel in the Workbench.
+ * Describes a physical region within a Workbench Perspective. Panels have a set physical size that they occupy, which
+ * is divided up between any panel decorations (a tab bar or dropdown list is common), one or more Parts (generally
+ * Editors or Screens), one of which can be visible at a time, and also child Panel Definitions, all of which are
+ * visible simultaneously.
  */
 public interface PanelDefinition {
 
@@ -69,7 +72,7 @@ public interface PanelDefinition {
      * @param panel The child Panel
      */
     public void appendChild(
-            final PanelDefinition panel );
+                            final PanelDefinition panel );
 
     /**
      * Get the Panel's immediate child Panel at the given Position

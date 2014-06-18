@@ -447,6 +447,14 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         }
     }
 
+    /**
+     * Destroys the presenter bean associated with the given part, removes the part definition from the panel definition
+     * that contains it, removes the part from the actual parent panel presenter, and removes the panel presenter which
+     * contained the part if it becomes empty in the process (unless it is the root panel: the root panel is not removed
+     * even when empty).
+     * 
+     * @param part the definition of the workbench part (screen or editor) to remove from the layout.
+     */
     private void removePart( final PartDefinition part ) {
         getBeanFactory().destroy( mapPartDefinitionToPresenter.get( part ) );
         mapPartDefinitionToPresenter.remove( part );
@@ -473,6 +481,15 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         }
     }
 
+    /**
+     * Splices out the given panel from the panel tree, grafting all children of the removed parent onto the removed
+     * panel's parent.
+     * 
+     * @param panelToRemove
+     *            the panel to remove (children will be preserved).
+     * @param panelToSearch
+     *            the panel that contains the panel to remove.
+     */
     private void removePanel( final PanelDefinition panelToRemove,
                               final PanelDefinition panelToSearch ) {
         final PanelDefinition northChild = panelToSearch.getChild( CompassPosition.NORTH );
@@ -525,6 +542,10 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         }
     }
 
+    /**
+     * Subroutine of {@link #removePanel(PanelDefinition, PanelDefinition)} which does the physical grafting of the
+     * orphaned child panels onto their grandparents.
+     */
     private void removePanel( final PanelDefinition panelToRemove,
                               final PanelDefinition panelToSearch,
                               final Position position ) {
