@@ -19,16 +19,22 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionInsertFactColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionSetFieldColumnDetails;
+import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionWorkItemColumnDetails;
+import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionWorkItemInsertFactColumnDetails;
+import org.drools.workbench.models.guided.dtable.shared.auditlog.ActionWorkItemSetFieldColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.AttributeColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ColumnDetails;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.ConditionColumnDetails;
@@ -44,6 +50,9 @@ import org.drools.workbench.models.guided.dtable.shared.auditlog.MetadataColumnD
 import org.drools.workbench.models.guided.dtable.shared.auditlog.UpdateColumnAuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -71,7 +80,17 @@ public class AuditLogEntryCellHelper {
         @Template("<div>{0}</div>")
         SafeHtml commentHeader( String header );
 
-        @Template("<div>{0}</div><table><tr><td><div class=\"{5}\">{1}</div></td><td><div class=\"{6}\">{2}</div></td></tr><tr><td><div class=\"{5}\">{3}</div></td><td><div class=\"{6}\">{4}</div></td></tr></table>")
+        @Template("<tr><td><div class=\"{2}\">{0}</div></td><td><div class=\"{3}\">{1}</div></td></tr>")
+        SafeHtml commentRow( String rowLabel,
+                             String rowValue,
+                             String labelClass,
+                             String valueClass );
+
+        @Template("<div>{0}</div>" +
+                          "<table>" +
+                          "<tr><td><div class=\"{5}\">{1}</div></td><td><div class=\"{6}\">{2}</div></td></tr>" +
+                          "<tr><td><div class=\"{5}\">{3}</div></td><td><div class=\"{6}\">{4}</div></td></tr>" +
+                          "</table>")
         SafeHtml commentHeader2Details( String header,
                                         String row1Label,
                                         String row1Value,
@@ -80,7 +99,12 @@ public class AuditLogEntryCellHelper {
                                         String labelClass,
                                         String valueClass );
 
-        @Template("<div>{0}</div><table><tr><td><div class=\"{7}\">{1}</div></td><td><div class=\"{8}\">{2}</div></td></tr><tr><td><div class=\"{7}\">{3}</div></td><td><div class=\"{8}\">{4}</div></td></tr><tr><td><div class=\"{7}\">{5}</div></td><td><div class=\"{8}\">{6}</div></td></tr></table>")
+        @Template("<div>{0}</div>" +
+                          "<table>" +
+                          "<tr><td><div class=\"{7}\">{1}</div></td><td><div class=\"{8}\">{2}</div></td></tr>" +
+                          "<tr><td><div class=\"{7}\">{3}</div></td><td><div class=\"{8}\">{4}</div></td></tr>" +
+                          "<tr><td><div class=\"{7}\">{5}</div></td><td><div class=\"{8}\">{6}</div></td></tr>" +
+                          "</table>")
         SafeHtml commentHeader3Details( String header,
                                         String row1Label,
                                         String row1Value,
@@ -88,6 +112,25 @@ public class AuditLogEntryCellHelper {
                                         String row2Value,
                                         String row3Label,
                                         String row3Value,
+                                        String labelClass,
+                                        String valueClass );
+
+        @Template("<div>{0}</div>" +
+                          "<table>" +
+                          "<tr><td><div class=\"{9}\">{1}</div></td><td><div class=\"{10}\">{2}</div></td></tr>" +
+                          "<tr><td><div class=\"{9}\">{3}</div></td><td><div class=\"{10}\">{4}</div></td></tr>" +
+                          "<tr><td><div class=\"{9}\">{5}</div></td><td><div class=\"{10}\">{6}</div></td></tr>" +
+                          "<tr><td><div class=\"{9}\">{7}</div></td><td><div class=\"{10}\">{8}</div></td></tr>" +
+                          "</table>")
+        SafeHtml commentHeader4Details( String header,
+                                        String row1Label,
+                                        String row1Value,
+                                        String row2Label,
+                                        String row2Value,
+                                        String row3Label,
+                                        String row3Value,
+                                        String row4Label,
+                                        String row4Value,
                                         String labelClass,
                                         String valueClass );
 
@@ -218,6 +261,15 @@ public class AuditLogEntryCellHelper {
         } else if ( details instanceof LimitedEntryActionSetFieldColumnDetails ) {
             buildColumnDetailsInsert( (LimitedEntryActionSetFieldColumnDetails) details,
                                       sb );
+        } else if ( details instanceof ActionWorkItemColumnDetails ) {
+            buildColumnDetailsInsert( (ActionWorkItemColumnDetails) details,
+                                      sb );
+        } else if ( details instanceof ActionWorkItemInsertFactColumnDetails ) {
+            buildColumnDetailsInsert( (ActionWorkItemInsertFactColumnDetails) details,
+                                      sb );
+        } else if ( details instanceof ActionWorkItemSetFieldColumnDetails ) {
+            buildColumnDetailsInsert( (ActionWorkItemSetFieldColumnDetails) details,
+                                      sb );
         } else {
             sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogInsertColumn0( details.getColumnHeader() ) ) );
         }
@@ -305,6 +357,55 @@ public class AuditLogEntryCellHelper {
                                                    valueClass ) );
     }
 
+    private void buildColumnDetailsInsert( final ActionWorkItemColumnDetails details,
+                                           final SafeHtmlBuilder sb ) {
+        sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogInsertWorkItemExecuteColumn0( details.getColumnHeader() ) ) );
+        if ( details.getParameters().size() > 0 ) {
+            sb.append( SafeHtmlUtils.fromTrustedString( "<table>" ) );
+            sb.append( TEMPLATE.commentRow( nil( GuidedDecisionTableConstants.INSTANCE.WorkItemNameColon() ),
+                                            nil( details.getName() ),
+                                            labelClass,
+                                            valueClass ) );
+            for ( Map.Entry<String, PortableParameterDefinition> e : details.getParameters().entrySet() ) {
+                sb.append( TEMPLATE.commentRow( new StringBuilder( nil( e.getKey() ) ).append( GuidedDecisionTableConstants.COLON ).toString(),
+                                                nil( e.getValue() ),
+                                                labelClass,
+                                                valueClass ) );
+            }
+            sb.append( SafeHtmlUtils.fromTrustedString( "</table>" ) );
+        }
+    }
+
+    private void buildColumnDetailsInsert( final ActionWorkItemInsertFactColumnDetails details,
+                                           final SafeHtmlBuilder sb ) {
+        sb.append( TEMPLATE.commentHeader4Details( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogInsertWorkItemInsertFactColumn0( details.getColumnHeader() ),
+                                                   new StringBuilder( GuidedDecisionTableConstants.INSTANCE.FactType() ).append( GuidedDecisionTableConstants.COLON ).toString(),
+                                                   nil( details.getFactType() ),
+                                                   new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
+                                                   nil( details.getFactField() ),
+                                                   new StringBuilder( GuidedDecisionTableConstants.INSTANCE.WorkItemNameColon() ).toString(),
+                                                   nil( details.getWorkItemName() ),
+                                                   new StringBuilder( GuidedDecisionTableConstants.INSTANCE.WorkItemParameterNameColon() ).toString(),
+                                                   nil( details.getWorkItemResultParameterName() ),
+                                                   labelClass,
+                                                   valueClass ) );
+    }
+
+    private void buildColumnDetailsInsert( final ActionWorkItemSetFieldColumnDetails details,
+                                           final SafeHtmlBuilder sb ) {
+        sb.append( TEMPLATE.commentHeader4Details( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogInsertWorkItemSetFieldColumn0( details.getColumnHeader() ),
+                                                   new StringBuilder( GuidedDecisionTableConstants.INSTANCE.BoundVariable() ).append( GuidedDecisionTableConstants.COLON ).toString(),
+                                                   nil( details.getBoundName() ),
+                                                   new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
+                                                   nil( details.getFactField() ),
+                                                   new StringBuilder( GuidedDecisionTableConstants.INSTANCE.WorkItemNameColon() ).toString(),
+                                                   nil( details.getWorkItemName() ),
+                                                   new StringBuilder( GuidedDecisionTableConstants.INSTANCE.WorkItemParameterNameColon() ).toString(),
+                                                   nil( details.getWorkItemResultParameterName() ),
+                                                   labelClass,
+                                                   valueClass ) );
+    }
+
     private void buildColumnDetailsUpdate( final ColumnDetails details,
                                            final ColumnDetails originalDetails,
                                            final List<BaseColumnFieldDiff> diffs,
@@ -347,6 +448,21 @@ public class AuditLogEntryCellHelper {
         } else if ( ( details instanceof MetadataColumnDetails ) && ( originalDetails instanceof MetadataColumnDetails ) ) {
             buildColumnDetailsUpdate( (MetadataColumnDetails) details,
                                       (MetadataColumnDetails) originalDetails,
+                                      diffs,
+                                      sb );
+        } else if ( ( details instanceof ActionWorkItemColumnDetails ) && ( originalDetails instanceof ActionWorkItemColumnDetails ) ) {
+            buildColumnDetailsUpdate( (ActionWorkItemColumnDetails) details,
+                                      (ActionWorkItemColumnDetails) originalDetails,
+                                      diffs,
+                                      sb );
+        } else if ( ( details instanceof ActionWorkItemInsertFactColumnDetails ) && ( originalDetails instanceof ActionWorkItemInsertFactColumnDetails ) ) {
+            buildColumnDetailsUpdate( (ActionWorkItemInsertFactColumnDetails) details,
+                                      (ActionWorkItemInsertFactColumnDetails) originalDetails,
+                                      diffs,
+                                      sb );
+        } else if ( ( details instanceof ActionWorkItemSetFieldColumnDetails ) && ( originalDetails instanceof ActionWorkItemSetFieldColumnDetails ) ) {
+            buildColumnDetailsUpdate( (ActionWorkItemSetFieldColumnDetails) details,
+                                      (ActionWorkItemSetFieldColumnDetails) originalDetails,
                                       diffs,
                                       sb );
         } else {
@@ -867,21 +983,204 @@ public class AuditLogEntryCellHelper {
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
-                }
-                if ( changedFieldName.equals( MetadataCol52.FIELD_METADATA ) ) {
+                } else if ( changedFieldName.equals( MetadataCol52.FIELD_METADATA ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.Metadata1(),
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
+                } else if ( changedFieldName.equals( MetadataCol52.FIELD_HEADER ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.ColumnHeader(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( MetadataCol52.FIELD_HIDE_COLUMN ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
                 }
+            }
+        }
+
+        if ( sbFields != null ) {
+            sb.append( TEMPLATE.updatedFields( sbFields.toSafeHtml(),
+                                               labelClass ) );
+        }
+    }
+
+    private void buildColumnDetailsUpdate( final ActionWorkItemColumnDetails details,
+                                           final ActionWorkItemColumnDetails originalDetails,
+                                           final List<BaseColumnFieldDiff> diffs,
+                                           final SafeHtmlBuilder sb ) {
+        sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction( details.getColumnHeader() ) ) );
+
+        SafeHtmlBuilder sbFields = null;
+        // Show changed fields too.
+        if ( diffs != null && !diffs.isEmpty() ) {
+            sbFields = new SafeHtmlBuilder();
+            for ( BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                if ( changedFieldName.equals( DTColumnConfig52.FIELD_HEADER ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.ColumnHeader(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( DTColumnConfig52.FIELD_HIDE_COLUMN ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemCol52.FIELD_WORKITEM_DEFINITION_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemName(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemCol52.FIELD_WORKITEM_DEFINITION_DISPLAY_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemDisplayName(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemCol52.FIELD_WORKITEM_DEFINITION_PARAMETER_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterName(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemCol52.FIELD_WORKITEM_DEFINITION_PARAMETER_VALUE ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterValue(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                }
+            }
+        }
+
+        if ( sbFields != null ) {
+            sb.append( TEMPLATE.updatedFields( sbFields.toSafeHtml(),
+                                               labelClass ) );
+        }
+    }
+
+    private void buildColumnDetailsUpdate( final ActionWorkItemInsertFactColumnDetails details,
+                                           final ActionWorkItemInsertFactColumnDetails originalDetails,
+                                           final List<BaseColumnFieldDiff> diffs,
+                                           final SafeHtmlBuilder sb ) {
+        sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction( details.getColumnHeader() ) ) );
+
+        SafeHtmlBuilder sbFields = null;
+        // Show changed fields too.
+        if ( diffs != null && !diffs.isEmpty() ) {
+            sbFields = new SafeHtmlBuilder();
+            for ( BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
                 if ( changedFieldName.equals( MetadataCol52.FIELD_HEADER ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.ColumnHeader(),
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
-                }
-                if ( changedFieldName.equals( MetadataCol52.FIELD_HIDE_COLUMN ) ) {
+                } else if ( changedFieldName.equals( MetadataCol52.FIELD_HIDE_COLUMN ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionInsertFactCol52.FIELD_BOUND_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.Binding(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionInsertFactCol52.FIELD_FACT_TYPE ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.FactType(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionInsertFactCol52.FIELD_FACT_FIELD ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.Field(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionInsertFactCol52.FIELD_IS_INSERT_LOGICAL ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.LogicallyInsert(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemInsertFactCol52.FIELD_WORK_ITEM_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemName(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemInsertFactCol52.FIELD_WORK_ITEM_RESULT_PARAM_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterName(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemInsertFactCol52.FIELD_PARAMETER_CLASSNAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterClassName(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                }
+            }
+        }
+
+        if ( sbFields != null ) {
+            sb.append( TEMPLATE.updatedFields( sbFields.toSafeHtml(),
+                                               labelClass ) );
+        }
+    }
+
+    private void buildColumnDetailsUpdate( final ActionWorkItemSetFieldColumnDetails details,
+                                           final ActionWorkItemSetFieldColumnDetails originalDetails,
+                                           final List<BaseColumnFieldDiff> diffs,
+                                           final SafeHtmlBuilder sb ) {
+        sb.append( TEMPLATE.commentHeader( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogUpdateAction( details.getColumnHeader() ) ) );
+
+        SafeHtmlBuilder sbFields = null;
+        // Show changed fields too.
+        if ( diffs != null && !diffs.isEmpty() ) {
+            sbFields = new SafeHtmlBuilder();
+            for ( BaseColumnFieldDiff diff : diffs ) {
+                String changedFieldName = diff.getFieldName();
+                if ( changedFieldName.equals( MetadataCol52.FIELD_HEADER ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.ColumnHeader(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( MetadataCol52.FIELD_HIDE_COLUMN ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionSetFieldCol52.FIELD_BOUND_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.Binding(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionSetFieldCol52.FIELD_FACT_FIELD ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.Field(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionSetFieldCol52.FIELD_TYPE ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.FieldType(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionSetFieldCol52.FIELD_UPDATE ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.UpdateEngineWithChanges(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemSetFieldCol52.FIELD_WORK_ITEM_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemName(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemSetFieldCol52.FIELD_WORK_ITEM_RESULT_PARAM_NAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterName(),
+                                             diff.getOldValue(),
+                                             diff.getValue(),
+                                             sbFields );
+                } else if ( changedFieldName.equals( ActionWorkItemSetFieldCol52.FIELD_PARAMETER_CLASSNAME ) ) {
+                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterClassName(),
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
@@ -914,6 +1213,10 @@ public class AuditLogEntryCellHelper {
 
     private String nil( final String value ) {
         return value == null ? "" : value;
+    }
+
+    private String nil( final PortableParameterDefinition value ) {
+        return value == null ? "" : value.asString();
     }
 
     private String nilLimitedEntryValue( final DTCellValue52 value ) {

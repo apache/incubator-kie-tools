@@ -156,6 +156,8 @@ public interface GuidedDecisionTableConstants
 
     String WorkItemInputParameters();
 
+    String WorkItemParameterNameColon();
+
     String ColumnConfigurationWorkItemSetField();
 
     String ActionBRLFragmentConfiguration();
@@ -322,17 +324,33 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableAuditLogInsertColumn0( String header );
 
+    String DecisionTableAuditLogInsertWorkItemExecuteColumn0( String header );
+
+    String DecisionTableAuditLogInsertWorkItemInsertFactColumn0( String header );
+
+    String DecisionTableAuditLogInsertWorkItemSetFieldColumn0( String header );
+
+    String DecisionTableAuditLogWorkItemName();
+
+    String DecisionTableAuditLogWorkItemDisplayName();
+
+    String DecisionTableAuditLogWorkItemParameterName();
+
+    String DecisionTableAuditLogWorkItemParameterValue();
+
+    String DecisionTableAuditLogWorkItemParameterClassName();
+
     String DecisionTableAuditLogNoEntries();
 
     String Value();
 
     String BoundVariable();
 
-    String DecisionTableAuditLogUpdateCondition( String value);
+    String DecisionTableAuditLogUpdateCondition( String value );
 
-    String DecisionTableAuditLogUpdateAction( String value);
+    String DecisionTableAuditLogUpdateAction( String value );
 
-    String DecisionTableAuditLogUpdateColumn( String value);
+    String DecisionTableAuditLogUpdateColumn( String value );
 
     String DecisionTableAuditLogUpdateAttribute( String value );
 
