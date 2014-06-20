@@ -451,7 +451,6 @@ public class DataObjectFieldEditor extends Composite {
 
         if (getDataModel() != null) {
 
-
             if (getDataObject() != null && getObjectField() != null) {
                 currentFieldType = getObjectField().getClassName();
             }
@@ -459,9 +458,15 @@ public class DataObjectFieldEditor extends Composite {
             // First add all base types, ordered
             for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
                 if (!baseType.getValue().isPrimitive()) {
-                    typeSelector.addItem(baseType.getKey(), baseType.getValue().getClassName());
+
+                    String baseClassName = baseType.getValue().getClassName();
+                    String baseClassName_m = baseClassName + DataModelerUtils.MULTIPLE;
+                    String baseClassLabel = baseType.getKey();
+                    String baseClassLabel_m = baseClassLabel  + DataModelerUtils.MULTIPLE;
+
+                    typeSelector.addItem( baseClassLabel, baseClassName );
+                    typeSelector.addItem( baseClassLabel_m, baseClassName_m );
                 }
-                // TODO add multiple types for base types?
             }
 
             // collect all model types, ordered

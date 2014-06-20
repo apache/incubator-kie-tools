@@ -403,9 +403,15 @@ public class DataObjectBrowser extends Composite {
             // First add all base types, ordered
             for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
                 if (!baseType.getValue().isPrimitive()) {
-                    newPropertyType.addItem(baseType.getKey(), baseType.getValue().getClassName());
+
+                    String baseClassName = baseType.getValue().getClassName();
+                    String baseClassName_m = baseClassName + DataModelerUtils.MULTIPLE;
+                    String baseClassLabel = baseType.getKey();
+                    String baseClassLabel_m = baseClassLabel  + DataModelerUtils.MULTIPLE;
+
+                    newPropertyType.addItem( baseClassLabel, baseClassName );
+                    newPropertyType.addItem( baseClassLabel_m, baseClassName_m );
                 }
-                // TODO add multiple types for base types?
             }
 
             // Second add all model types, ordered
@@ -594,9 +600,14 @@ public class DataObjectBrowser extends Composite {
 
     private String propertyTypeDisplay(ObjectPropertyTO property) {
         String displayName = property.getClassName();
-        if (property.isBaseType()) return DataModelerUtils.extractClassName(displayName);
-        String label = getContext().getHelper().getObjectLabelByClassName(displayName);
-        if (label != null && !"".equals(label)) displayName = label;
+
+        if (property.isBaseType()) {
+            displayName =  DataModelerUtils.extractClassName(displayName);
+        } else {
+            String label = getContext().getHelper().getObjectLabelByClassName(displayName);
+            if (label != null && !"".equals(label)) displayName = label;
+        }
+
         if (property.isMultiple()) {
             displayName += DataModelerUtils.MULTIPLE;
         }
