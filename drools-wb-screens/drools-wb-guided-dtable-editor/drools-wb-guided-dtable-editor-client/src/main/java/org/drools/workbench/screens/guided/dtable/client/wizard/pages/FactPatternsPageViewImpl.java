@@ -386,6 +386,7 @@ public class FactPatternsPageViewImpl extends Composite
                 allPatternsRemoved = false;
             } else {
                 chosenPatterns.remove( pattern );
+                chosenPatternSelections.remove( pattern );
 
                 //Raise an Event so ActionSetFieldPage can synchronise Patterns
                 presenter.signalRemovalOfPattern( pattern );
@@ -395,7 +396,6 @@ public class FactPatternsPageViewImpl extends Composite
             Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeletePatterns() );
         }
 
-        chosenPatternSelections.clear();
         setChosenPatterns( chosenPatterns );
         presenter.setConditionPatterns( chosenPatterns );
         presenter.stateChanged();
@@ -404,8 +404,17 @@ public class FactPatternsPageViewImpl extends Composite
         txtBinding.setEnabled( false );
         txtEntryPoint.setText( "" );
         txtEntryPoint.setEnabled( false );
-        btnRemove.setEnabled( false );
+        btnRemove.setEnabled( isAPatternSelected() );
         patternDefinition.setVisible( false );
+    }
+
+    private boolean isAPatternSelected() {
+        for ( Pattern52 pattern : chosenPatterns ) {
+            if ( chosenPatternWidget.getSelectionModel().isSelected( pattern ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
