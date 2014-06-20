@@ -15,7 +15,11 @@
  */
 package org.uberfire.client.mvp;
 
-
+/**
+ * Provides the application-defined behaviour and application-defined view associated with a particular PlaceRequest.
+ * <p>
+ * See also {@link WorkbenchEditorActivity}, which is like a WorkbenchScreenActivity specifically for editing a file.
+ */
 public interface WorkbenchScreenActivity extends WorkbenchActivity {
 
 }

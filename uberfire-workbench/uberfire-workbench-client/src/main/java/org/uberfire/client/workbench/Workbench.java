@@ -43,14 +43,11 @@ import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.workbench.model.PerspectiveDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -129,16 +126,7 @@ public class Workbench {
     private SyncBeanManager iocManager;
 
     @Inject
-    private WorkbenchDragAndDropManager dndManager;
-
-    @Inject
     private PlaceManager placeManager;
-
-    @Inject
-    private WorkbenchPickupDragController dragController;
-
-    @Inject
-    private WorkbenchServicesProxy wbServices;
 
     @Inject
     private VFSServiceProxy vfsService;
@@ -151,17 +139,17 @@ public class Workbench {
 
     private SessionInfo sessionInfo = null;
 
+    /**
+     * This indirection exists so we can ignore spurious WindowCloseEvents in IE10.
+     * In all other cases, the {@link WorkbenchCloseHandler} simply executes whatever command we pass it.
+     */
     private final WorkbenchCloseHandler workbenchCloseHandler = GWT.create( WorkbenchCloseHandler.class );
 
     private final Command workbenchCloseCommand = new Command() {
         @Override
         public void execute() {
-            final PerspectiveDefinition perspective = panelManager.getPerspective();
-            if ( perspective != null ) {
-                wbServices.save( perspective );
-            }
+            placeManager.closeAllPlaces(); // would be preferable to close current perspective, which should be recursive
         }
-
     };
 
     /**
@@ -274,7 +262,7 @@ public class Workbench {
             handleStandaloneMode( Window.Location.getParameterMap() );
         }
 
-        // Save Workbench state when Window is closed
+        // Ensure orderly shutdown when Window is closed (eg. saves workbench state)
         Window.addWindowClosingHandler( new ClosingHandler() {
 
             @Override

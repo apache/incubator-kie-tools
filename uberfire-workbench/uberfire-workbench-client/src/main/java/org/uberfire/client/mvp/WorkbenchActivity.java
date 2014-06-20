@@ -21,6 +21,13 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
+/**
+ * WorkbenchActivity and its subinterfaces define the interface between UberFire framework behaviour and application-defined behaviour.
+ * 
+ * In the model-view-presenter (MVP) sense, an Activity is essentially an application-provided Presenter: it has a view (its widget)
+ * and it defines a set of operations that can affect that view.
+ * 
+ */
 public interface WorkbenchActivity extends ContextSensitiveActivity {
 
     boolean onMayClose();

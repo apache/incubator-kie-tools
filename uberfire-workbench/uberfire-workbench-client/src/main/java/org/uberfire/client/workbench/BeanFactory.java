@@ -15,7 +15,6 @@
  */
 package org.uberfire.client.workbench;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -23,6 +22,8 @@ import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.Menus;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * A Factory definition to create new instances of managed beans.
@@ -38,6 +39,14 @@ public interface BeanFactory {
 
     public CompassDropController newDropController( final WorkbenchPanelView view );
 
+    /**
+     * Destroys the entire graph of beans that were created and returned via a call to any of the <tt>newXXX()</tt>
+     * methods in this class. For example, passing a {@link WorkbenchPartPresenter} instance in will result in the destruction of that presenter, its view, and all other dependent
+     * 
+     * @param o
+     *            a bean which was returned from one of the <tt>newXXX()</tt> methods in this class and which has not
+     *            been destroyed yet.
+     */
     public void destroy( final Object o );
 
 }

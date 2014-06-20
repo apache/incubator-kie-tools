@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Set;
-
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -45,6 +43,8 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     @Inject
     private WorkbenchServicesProxy wbServices;
 
+    private PerspectiveDefinition perspectiveDef;
+
     public AbstractWorkbenchPerspectiveActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
@@ -56,7 +56,41 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     @Override
     public void onOpen() {
-        loadState();
+        super.onOpen();
+        if ( perspectiveDef != null ) {
+            throw new IllegalStateException( "This perspective activity is already open" );
+        }
+
+        //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
+        final PerspectiveDefinition perspective = getPerspective();
+
+        if ( perspective.isTransient() ) {
+            //Transient Perspectives are not saved and hence cannot be loaded
+            initialisePerspective( perspective );
+
+        } else {
+
+            wbServices.loadPerspective( perspective.getName(), new ParameterizedCommand<PerspectiveDefinition>() {
+                @Override
+                public void execute( final PerspectiveDefinition response ) {
+                    if ( response == null ) {
+                        initialisePerspective( perspective );
+                    } else {
+                        initialisePerspective( response );
+                    }
+                }
+            } );
+        }
+    }
+
+    @Override
+    public void onClose() {
+        if ( !perspectiveDef.isTransient() ) {
+            wbServices.save( perspectiveDef );
+        }
+
+        perspectiveDef = null;
+        super.onClose();
     }
 
     @Override
@@ -80,63 +114,30 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
         return null;
     }
 
-    //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
-    private void loadState() {
-
-        final PerspectiveDefinition perspective = getPerspective();
-
-        if ( perspective.isTransient() ) {
-            //Transient Perspectives are not saved and hence cannot be loaded
-            initialisePerspective( perspective );
-
-        } else {
-
-            wbServices.loadPerspective( perspective.getName(), new ParameterizedCommand<PerspectiveDefinition>() {
-                @Override
-                public void execute( final PerspectiveDefinition response ) {
-                    if ( response == null ) {
-                        initialisePerspective( perspective );
-                    } else {
-                        initialisePerspective( response );
-                    }
-                }
-            } );
-        }
-    }
-
     //Initialise Workbench state to that of the provided perspective
     private void initialisePerspective( final PerspectiveDefinition perspective ) {
+        this.perspectiveDef = perspective;
 
-        panelManager.setPerspective( perspective ); // TODO move this to PlaceManager
-
-        Set<PartDefinition> parts = panelManager.getRoot().getParts();
-        for ( PartDefinition part : parts ) {
-            final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
-            part.setPlace( place );
-            placeManager.goTo( part, panelManager.getRoot() );
-        }
-        buildPerspective( panelManager.getRoot() );
+        panelManager.setPerspective( perspective );
+        setupPanelRecursively( panelManager.getRoot() );
     }
 
-    private void buildPerspective( final PanelDefinition panel ) {
-        for ( PanelDefinition child : panel.getChildren() ) {
-            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
-                                                                           child,
-                                                                           child.getPosition() );
-            addChildren( target );
-        }
-    }
-
-    private void addChildren( final PanelDefinition panel ) {
-        Set<PartDefinition> parts = panel.getParts();
-        for ( PartDefinition part : parts ) {
+    private void setupPanelRecursively( final PanelDefinition panel ) {
+        for ( PartDefinition part : panel.getParts() ) {
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
             part.setPlace( place );
             placeManager.goTo( part, panel );
         }
-        buildPerspective( panel );
+
+        for ( PanelDefinition child : panel.getChildren() ) {
+            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
+                                                                           child,
+                                                                           child.getPosition() );
+            setupPanelRecursively( target );
+        }
     }
 
+    // TODO (UF-88) when PlaceRequest is an immutable value type, cloning will no longer be a sensible operation
     private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest _place ) {
         return _place.clone();
     }

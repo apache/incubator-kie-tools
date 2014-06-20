@@ -46,6 +46,7 @@ public interface PlaceRequest {
     PlaceRequest addParameter( final String name,
                                final String value );
 
+    // TODO (UF-88) when PlaceRequest is an immutable value type, cloning will no longer be a sensible operation
     PlaceRequest clone();
 
     /**

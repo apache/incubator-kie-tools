@@ -640,6 +640,7 @@ implements PlaceManager {
         }
 
         workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
+        panelManager.removePanelForPlace( place );
         existingWorkbenchActivities.remove( place );
         visibleWorkbenchParts.remove( place );
 

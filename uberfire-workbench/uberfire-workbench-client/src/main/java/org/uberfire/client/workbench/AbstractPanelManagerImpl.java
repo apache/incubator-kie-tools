@@ -15,7 +15,6 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.DropPlaceEvent;
 import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 import org.uberfire.client.workbench.events.PanelFocusEvent;
@@ -135,14 +134,10 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
             arrangePanelsInDOM();
         }
 
-
         final WorkbenchPanelPresenter oldRootPanelPresenter = mapPanelDefinitionToPresenter.remove( rootPanelDef );
 
-        //TODO oldRootPanelPresenter.dispose() (or onClose() or onRemove()), UNLESS this can be done by a DOM event hook in the view
-        //         - cleanup listeners; take impl from existing removePanel() method but leave out the remove-from-parent bit
-
         perspectiveRootContainer.clear();
-        getBeanFactory().destroy( rootPanelDef );
+        getBeanFactory().destroy( oldRootPanelPresenter );
 
         final PanelDefinition newRootPanelDef = newPerspectiveDef.getRoot();
         this.rootPanelDef = newRootPanelDef;
@@ -234,6 +229,10 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         return mapPanelDefinitionToPresenter.get( panel );
     }
 
+    /**
+     * Calls the abstract {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)} method supplied by the
+     * subclass. The child panel argument is an empty PanelDefinition of the target panel's default child type.
+     */
     @Override
     public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
                                               final Position position ) {
@@ -243,6 +242,11 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                                   position );
     }
 
+    /**
+     * Calls the abstract {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)} method supplied by the
+     * subclass. The child panel argument is an empty PanelDefinition of the target panel's default child type, and its
+     * size and minimum sizes have been initialized to the given amounts.
+     */
     @Override
     public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
                                               final Position position,
@@ -298,14 +302,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                     onPanelFocus( e.getKey() );
                 }
             }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void onClosePlaceEvent( @Observes ClosePlaceEvent event ) {
-        final PartDefinition part = getPartForPlace( event.getPlace() );
-        if ( part != null ) {
-            removePart( part );
         }
     }
 
@@ -420,7 +416,12 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         return targetPanel;
     }
 
-    private PartDefinition getPartForPlace( final PlaceRequest place ) {
+    /**
+     * Returns the first live (associated with an active presenter) PartDefinition whose place matches the given one.
+     * 
+     * @return the definition for the live part servicing the given place, or null if no such part can be found.
+     */
+    protected PartDefinition getPartForPlace( final PlaceRequest place ) {
         for ( PartDefinition part : mapPartDefinitionToPresenter.keySet() ) {
             if ( part.getPlace().equals( place ) ) {
                 return part;
@@ -452,10 +453,15 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
      * that contains it, removes the part from the actual parent panel presenter, and removes the panel presenter which
      * contained the part if it becomes empty in the process (unless it is the root panel: the root panel is not removed
      * even when empty).
+     * <p>
+     * Children in the NORTH, SOUTH, EAST, or WEST Positions of the removed panel are reconnected to the layout by
+     * appending them to the same Position within the removed panel's parent. Children in other Positions within the
+     * removed panel will not be reconnected, but they will be properly disposed.
      * 
-     * @param part the definition of the workbench part (screen or editor) to remove from the layout.
+     * @param part
+     *            the definition of the workbench part (screen or editor) to remove from the layout.
      */
-    private void removePart( final PartDefinition part ) {
+    protected void removePart( final PartDefinition part ) {
         getBeanFactory().destroy( mapPartDefinitionToPresenter.get( part ) );
         mapPartDefinitionToPresenter.remove( part );
 
@@ -482,8 +488,12 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     }
 
     /**
-     * Splices out the given panel from the panel tree, grafting all children of the removed parent onto the removed
-     * panel's parent.
+     * Splices out the given panel from the panel tree, preserving all children in the NORTH, SOUTH, EAST, or WEST
+     * Positions of the removed panel by appending them to the same Position within the removed panel's parent. Children
+     * in other Positions within the removed panel will be removed along with that panel.
+     * <p>
+     * TODO: this method should make some effort to check that the parent panel actually supports the NORTH, SOUTH,
+     * EAST, WEST positions before attempting to reparent the orphaned children.
      * 
      * @param panelToRemove
      *            the panel to remove (children will be preserved).

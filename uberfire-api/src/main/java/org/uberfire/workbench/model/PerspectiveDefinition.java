@@ -16,9 +16,13 @@
 package org.uberfire.workbench.model;
 
 /**
- * Meta-data defining a Perspective. A Perspective is a set of Panels and Parts
- * arranged within the Workbench. One Workbench contains multiple Panels, each
- * Panel contains multiple Parts. Each Part contains one PlaceRequest.
+ * Meta-data defining a Perspective. A Perspective is a set of Panels and Parts arranged within the Workbench. The
+ * Workbench has exactly one active Perspective at a time. The Perspective contains multiple Panels. Each Panel contains
+ * multiple Parts, one of which can be visible at a time. Panels can also contain child panels which are all visible at
+ * the same time are are physically located within the bounds of the parent panel. Each Part is associated with one
+ * PlaceRequest.
+ * <p>
+ * Implementations of this interface must be marked with Errai's {@code @Portable} annotation.
  */
 public interface PerspectiveDefinition {
 
