@@ -42,7 +42,7 @@ public class PagedTable<T>
     private AsyncDataProvider<T> dataProvider;
 
     @UiField
-    public SimplePager pager;
+    public UberfireSimplePager pager;
 
     public PagedTable( final int pageSize ) {
         super();
@@ -50,6 +50,7 @@ public class PagedTable<T>
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
         this.pager.setPageSize( pageSize );
+        
     }
 
     public PagedTable( final int pageSize,
