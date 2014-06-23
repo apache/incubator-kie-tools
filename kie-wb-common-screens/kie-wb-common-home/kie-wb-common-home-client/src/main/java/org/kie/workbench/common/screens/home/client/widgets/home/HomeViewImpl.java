@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.home.client.widgets.home;
 
+import java.util.Iterator;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -41,8 +42,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
-
-import java.util.Iterator;
 
 public class HomeViewImpl extends Composite
         implements
@@ -106,28 +105,39 @@ public class HomeViewImpl extends Composite
         for ( Section section : model.getSections() ) {
             if ( authzManager.authorize( section,
                                          identity ) ) {
-                final VerticalSectionWidget vs = new VerticalSectionWidget();
-                vs.setHeaderText( section.getHeading() );
-                for ( SectionEntry sectionEntry : section.getEntries() ) {
-                    if (authzManager.authorize(sectionEntry, identity)) {
-                        vs.add( makeSectionEntry( sectionEntry.getCaption(),
-                                                  sectionEntry.getOnClickCommand() ) );
+                if ( doesSectionContainAuthorizedEntries( section ) ) {
+                    final VerticalSectionWidget vs = new VerticalSectionWidget();
+                    vs.setHeaderText( section.getHeading() );
+                    for ( SectionEntry sectionEntry : section.getEntries() ) {
+                        if ( authzManager.authorize( sectionEntry, identity ) ) {
+                            vs.add( makeSectionEntry( sectionEntry.getCaption(),
+                                                      sectionEntry.getOnClickCommand() ) );
+                        }
                     }
+                    vs.addStyleName( "well" );
+                    this.columns.add( vs );
                 }
-                vs.addStyleName("well");
-                this.columns.add( vs );
             }
         }
 
         int cols = columns.getWidgetCount();
-        int colSize = (cols > 0 ? (1170 / cols) : 1170);
+        int colSize = ( cols > 0 ? ( 1170 / cols ) : 1170 );
 
         int index = 0;
-        for (Iterator<Widget> it = columns.iterator(); it.hasNext();) {
+        for ( Iterator<Widget> it = columns.iterator(); it.hasNext(); ) {
             Widget widget = it.next();
-            widget.setWidth((index < cols -1 ? colSize - 4 : colSize) + "px");
-            index ++;
+            widget.setWidth( ( index < cols - 1 ? colSize - 4 : colSize ) + "px" );
+            index++;
         }
+    }
+
+    private boolean doesSectionContainAuthorizedEntries( final Section section ) {
+        for ( SectionEntry sectionEntry : section.getEntries() ) {
+            if ( authzManager.authorize( sectionEntry, identity ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private CarouselEntryWidget makeCarouselEntry( final String heading,
