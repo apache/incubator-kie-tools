@@ -23,13 +23,12 @@ import org.uberfire.client.callbacks.Callback;
 /**
  * Things a Wizard needs to implement
  */
-public interface Wizard<T extends WizardContext> {
+public interface Wizard {
 
     /**
-     * Provide a title
-     * @return
+     * Start the Wizard
      */
-    String getTitle();
+    void start();
 
     /**
      * Provide a list of pages
@@ -43,6 +42,18 @@ public interface Wizard<T extends WizardContext> {
      * @return
      */
     Widget getPageWidget( int pageNumber );
+
+    /**
+     * A page has been selected from the UI
+     * @param pageNumber
+     */
+    void pageSelected( final int pageNumber );
+
+    /**
+     * Provide a title
+     * @return
+     */
+    String getTitle();
 
     /**
      * The preferred height of the page
@@ -69,5 +80,10 @@ public interface Wizard<T extends WizardContext> {
      * The Wizard has been completed
      */
     void complete();
+
+    /**
+     * The Wizard has been closed
+     */
+    void close();
 
 }

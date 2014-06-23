@@ -16,8 +16,8 @@
 
 package org.uberfire.client.wizards;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -29,16 +29,13 @@ import org.uberfire.client.callbacks.Callback;
  * titles, buttons to navigate the Wizard pages and a mechanism to display
  * different pages of the Wizard.
  */
-@ApplicationScoped
-public class WizardPresenter implements
-                             WizardView.Presenter {
+public abstract class AbstractWizard implements
+                                     Wizard {
 
     @Inject
     //The generic view
     private WizardView view;
-
-    //The specific "page factory" for a particular Wizard
-    private Wizard<? extends WizardContext> wizard;
+    private boolean isStarted = false;
 
     @PostConstruct
     public void setup() {
@@ -47,16 +44,23 @@ public class WizardPresenter implements
 
     //Update the status of each belonging to this Wizard
     public void onStatusChange( final @Observes WizardPageStatusChangeEvent event ) {
-        //It is possible that this event is raised by the Wizard implementation before the start method has been called
-        if ( wizard == null ) {
+        //Ignore events until the Wizard has been started
+        if ( !isStarted ) {
             return;
         }
+        //Ensure event belongs to this Wizard
+        final List<WizardPage> wps = getPages();
+        if ( !wps.contains( event.getPage() ) ) {
+            return;
+        }
+
         checkPagesState();
     }
 
     private void checkPagesState() {
-        for ( WizardPage wp : wizard.getPages() ) {
-            final int index = wizard.getPages().indexOf( wp );
+        final List<WizardPage> wps = getPages();
+        for ( WizardPage wp : wps ) {
+            final int index = wps.indexOf( wp );
             wp.isComplete( new Callback<Boolean>() {
                 @Override
                 public void callback( final Boolean result ) {
@@ -67,7 +71,7 @@ public class WizardPresenter implements
         }
 
         //Update the status of this Wizard
-        wizard.isComplete( new Callback<Boolean>() {
+        isComplete( new Callback<Boolean>() {
             @Override
             public void callback( final Boolean result ) {
                 view.setCompletionStatus( Boolean.TRUE.equals( result ) );
@@ -77,24 +81,23 @@ public class WizardPresenter implements
     }
 
     public void onPageSelected( final @Observes WizardPageSelectedEvent event ) {
-        //It is possible that this event is raised by the Wizard implementation before the start method has been called
-        if ( wizard == null ) {
+        //Ignore events until the Wizard has been started
+        if ( !isStarted ) {
             return;
         }
         final WizardPage page = event.getSelectedPage();
-        final int index = wizard.getPages().indexOf( page );
+        final int index = getPages().indexOf( page );
         view.selectPage( index );
     }
 
-    public void start( final Wizard<? extends WizardContext> wizard ) {
-
-        this.wizard = wizard;
-
+    @Override
+    public void start() {
         //Go, Go gadget Wizard!
-        view.setTitle( wizard.getTitle() );
-        view.setPreferredHeight( wizard.getPreferredHeight() );
-        view.setPreferredWidth( wizard.getPreferredWidth() );
-        view.setPageTitles( wizard.getPages() );
+        isStarted = true;
+        view.setTitle( getTitle() );
+        view.setPreferredHeight( getPreferredHeight() );
+        view.setPreferredWidth( getPreferredWidth() );
+        view.setPageTitles( getPages() );
 
         //Ensure Wizard's generic Cancel/Finish buttons are set correctly
         checkPagesState();
@@ -103,16 +106,19 @@ public class WizardPresenter implements
         view.show();
     }
 
+    @Override
     public void pageSelected( final int pageNumber ) {
-        final Widget w = wizard.getPageWidget( pageNumber );
+        final Widget w = getPageWidget( pageNumber );
         view.setBodyWidget( w );
     }
 
-    public void complete() {
-        wizard.complete();
+    @Override
+    public void close() {
+        view.hide();
     }
 
-    public void hide() {
+    @Override
+    public void complete() {
         view.hide();
     }
 

@@ -18,7 +18,7 @@ package org.uberfire.client.wizards;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -38,7 +38,7 @@ import org.uberfire.client.common.Popup;
 /**
  * The generic Wizard view implementation
  */
-@ApplicationScoped
+@Dependent
 public class WizardViewImpl extends Popup
         implements
         WizardView {
@@ -73,7 +73,7 @@ public class WizardViewImpl extends Popup
     private int pageNumber;
     private int pageNumberTotal;
 
-    private WizardView.Presenter presenter;
+    private AbstractWizard presenter;
 
     interface WizardActivityViewImplBinder
             extends
@@ -88,7 +88,7 @@ public class WizardViewImpl extends Popup
     }
 
     @Override
-    public void init( final WizardPresenter presenter ) {
+    public void init( final AbstractWizard presenter ) {
         this.presenter = presenter;
     }
 
@@ -127,7 +127,7 @@ public class WizardViewImpl extends Popup
 
     @UiHandler(value = "btnCancel")
     public void btnCancelClick( final ClickEvent event ) {
-        this.hide();
+        presenter.close();
     }
 
     @UiHandler(value = "btnFinish")

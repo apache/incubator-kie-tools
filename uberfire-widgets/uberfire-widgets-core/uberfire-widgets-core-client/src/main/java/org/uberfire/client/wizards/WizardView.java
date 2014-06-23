@@ -26,27 +26,7 @@ import org.uberfire.client.mvp.UberView;
  */
 public interface WizardView
         extends
-        UberView<WizardPresenter> {
-
-    interface Presenter {
-
-        /**
-         * A page has been selected from the UI
-         * @param pageNumber
-         */
-        void pageSelected( int pageNumber );
-
-        /**
-         * The Wizard has been finished
-         */
-        void complete();
-
-        /**
-         * Hide the Wizard
-         */
-        void hide();
-
-    }
+        UberView<AbstractWizard> {
 
     /**
      * Show the Wizard
@@ -57,51 +37,51 @@ public interface WizardView
      * The title for the Wizard
      * @param title
      */
-    void setTitle( String title );
+    void setTitle( final String title );
 
     /**
      * The individual page titles
      * @param pages
      */
-    void setPageTitles( List<WizardPage> pages );
+    void setPageTitles( final List<WizardPage> pages );
 
     /**
      * Select a page
      * @param page
      */
-    void selectPage( int page );
+    void selectPage( final int page );
 
     /**
      * Set the Widget to display in the body panel of the generic Wizard
      * @param w
      */
-    void setBodyWidget( Widget w );
+    void setBodyWidget( final Widget w );
 
     /**
      * Set the body panel preferred height
      * @param height
      */
-    void setPreferredHeight( int height );
+    void setPreferredHeight( final int height );
 
     /**
      * Set the body panel preferred width
      * @param width
      */
-    void setPreferredWidth( int width );
+    void setPreferredWidth( final int width );
 
     /**
      * The state (completed, not completed) of a page has changed.
      * @param pageIndex
      * @param isComplete
      */
-    void setPageCompletionState( int pageIndex,
-                                 boolean isComplete );
+    void setPageCompletionState( final int pageIndex,
+                                 final boolean isComplete );
 
     /**
      * The state (completed, not completed) of the whole Wizard has changed
      * @param isComplete
      */
-    void setCompletionStatus( boolean isComplete );
+    void setCompletionStatus( final boolean isComplete );
 
     /**
      * Hide the Wizard
