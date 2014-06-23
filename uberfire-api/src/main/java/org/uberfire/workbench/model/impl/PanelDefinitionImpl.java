@@ -143,8 +143,7 @@ PanelDefinition {
     }
 
     @Override
-    public void appendChild(
-                            final PanelDefinition panel ) {
+    public void appendChild( final PanelDefinition panel ) {
 
         if ( panel == null ) {
             return;

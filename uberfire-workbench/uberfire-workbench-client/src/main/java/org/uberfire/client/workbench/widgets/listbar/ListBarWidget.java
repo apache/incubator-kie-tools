@@ -561,7 +561,6 @@ extends ResizeComposite implements MultiPartWidget {
 
         @Override
         public void onResize() {
-            System.out.println( getClass().getName() + ": onResize(). content.getOffsetWidth() = " + content.getOffsetWidth() );
             int width = content.getOffsetWidth() - 10;
             if ( width > 0 ) {
                 setWidth( width + "px" );

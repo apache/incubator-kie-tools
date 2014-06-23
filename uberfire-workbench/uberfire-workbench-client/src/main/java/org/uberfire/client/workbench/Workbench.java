@@ -114,7 +114,6 @@ public class Workbench {
     @Inject
     private Event<ApplicationReadyEvent> appReady;
 
-    // TODO: move this to PanelManager?
     private boolean isStandaloneMode = false;
 
     private final Set<String> headersToKeep = new HashSet<String>();

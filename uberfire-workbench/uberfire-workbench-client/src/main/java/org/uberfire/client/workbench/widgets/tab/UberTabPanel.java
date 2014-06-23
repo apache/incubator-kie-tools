@@ -40,11 +40,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class UberTabPanel
-extends ResizeComposite
-implements MultiPartWidget,
-ClickHandler {
-
+public class UberTabPanel extends ResizeComposite implements MultiPartWidget, ClickHandler {
 
     static class ResizeTabPanel extends TabPanel implements RequiresResize, ProvidesResize {
 
@@ -95,8 +91,8 @@ ClickHandler {
         if ( tab != null ) {
             int index = getTabs().getWidgetIndex( tab );
 
-            // TODO: during perspective startup, the view widgets aren't yet filled in according to the PanelDefinitions
-            // we should solve that instead of skipping this call
+            // TODO (UF-118): during perspective startup, the view widgets aren't yet filled in according to the PanelDefinitions
+            // we should solve that instead of skipping this call on missing parts
             if ( index >= 0 ) {
                 tabPanel.selectTab( index );
                 return true;
@@ -435,10 +431,7 @@ ClickHandler {
         final int width = getOffsetWidth();
         final int height = getOffsetHeight();
 
-        System.out.println(getClass().getName() + " resizing to " + width + "x" + height);
-
         int selectedTab = tabPanel.getSelectedTab();
-        System.out.println("  Tab " + selectedTab + " is selected");
         if ( selectedTab >= 0 ) {
             final ComplexPanel content = getTabContent();
             final TabPane tabPane = (TabPane) content.getWidget( selectedTab );

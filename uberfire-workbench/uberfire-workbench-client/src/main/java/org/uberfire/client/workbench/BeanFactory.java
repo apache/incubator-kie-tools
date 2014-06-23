@@ -41,7 +41,8 @@ public interface BeanFactory {
 
     /**
      * Destroys the entire graph of beans that were created and returned via a call to any of the <tt>newXXX()</tt>
-     * methods in this class. For example, passing a {@link WorkbenchPartPresenter} instance in will result in the destruction of that presenter, its view, and all other dependent
+     * methods in this class. For example, passing a {@link WorkbenchPartPresenter} instance in will result in the
+     * destruction of that presenter, its view, and all other dependent beans injected into that graph of objects.
      * 
      * @param o
      *            a bean which was returned from one of the <tt>newXXX()</tt> methods in this class and which has not

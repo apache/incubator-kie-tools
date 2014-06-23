@@ -1,8 +1,10 @@
 package org.uberfire.client.mvp;
 
+import static java.util.Collections.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.junit.Test;
@@ -22,11 +24,7 @@ public class AbstractSplashScreenActivityTest extends BasePanelManagerTest {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
         final AbstractSplashScreenActivity activity = mock( AbstractSplashScreenActivity.class );
-        HashSet<Activity> activities = new HashSet<Activity>( 1 ) {{
-            add( activity );
-        }};
-
-        when( activityManager.getActivities( somewhere ) ).thenReturn( activities );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) activity ) );
 
         placeManager = new PlaceManagerImplUnitTestWrapper( activity, panelManager );
 
@@ -47,10 +45,8 @@ public class AbstractSplashScreenActivityTest extends BasePanelManagerTest {
 
         final AbstractWorkbenchPerspectiveActivity perspectiveActivity = mock( AbstractWorkbenchPerspectiveActivity.class );
 
-        HashSet<Activity> activities = new HashSet<Activity>( 1 ) {{
-            add( perspectiveActivity );
-            add( splashScreenActivity );
-        }};
+        HashSet<Activity> activities = new HashSet<Activity>( Arrays.asList( perspectiveActivity,
+                                                                             splashScreenActivity ));
 
         when( activityManager.getActivities( somewhere ) ).thenReturn( activities );
 

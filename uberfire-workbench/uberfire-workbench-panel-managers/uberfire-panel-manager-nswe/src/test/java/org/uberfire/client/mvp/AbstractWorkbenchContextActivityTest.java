@@ -1,9 +1,8 @@
 package org.uberfire.client.mvp;
 
+import static java.util.Collections.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
-
-import java.util.HashSet;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,11 +21,7 @@ public class AbstractWorkbenchContextActivityTest extends BasePanelManagerTest {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
         final AbstractWorkbenchContextActivity activity = mock( AbstractWorkbenchContextActivity.class );
-        HashSet<Activity> activities = new HashSet<Activity>( 1 ) {{
-            add( activity );
-        }};
-
-        when( activityManager.getActivities( somewhere ) ).thenReturn( activities );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) activity ) );
 
         placeManager = new PlaceManagerImplUnitTestWrapper( activity, panelManager );
 
