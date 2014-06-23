@@ -43,24 +43,24 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class PerspectiveProcessor extends AbstractProcessor {
 
-    private static final Logger                logger            = LoggerFactory.getLogger( PerspectiveProcessor.class );
+    private static final Logger logger = LoggerFactory.getLogger( PerspectiveProcessor.class );
 
     private final PerspectiveActivityGenerator activityGenerator = new PerspectiveActivityGenerator();
 
-    private GenerationCompleteCallback         callback          = null;
+    private GenerationCompleteCallback callback = null;
 
     public PerspectiveProcessor() {
     }
 
     //Constructor for tests only, to prevent code being written to file. The generated code will be sent to the call-back
-    PerspectiveProcessor(final GenerationCompleteCallback callback) {
+    PerspectiveProcessor( final GenerationCompleteCallback callback ) {
         this.callback = callback;
         logger.info( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
     }
 
     @Override
-    public boolean process(Set< ? extends TypeElement> annotations,
-                           RoundEnvironment roundEnv) {
+    public boolean process( Set<? extends TypeElement> annotations,
+                            RoundEnvironment roundEnv ) {
         //We don't have any post-processing
         if ( roundEnv.processingOver() ) {
             return false;
@@ -114,9 +114,9 @@ public class PerspectiveProcessor extends AbstractProcessor {
     }
 
     //Write generated code to javac's Filer
-    private void writeCode(final String packageName,
-                           final String className,
-                           final StringBuffer code) {
+    private void writeCode( final String packageName,
+                            final String className,
+                            final StringBuffer code ) {
         try {
             JavaFileObject jfo = processingEnv.getFiler().createSourceFile( packageName + "." + className );
             Writer w = jfo.openWriter();

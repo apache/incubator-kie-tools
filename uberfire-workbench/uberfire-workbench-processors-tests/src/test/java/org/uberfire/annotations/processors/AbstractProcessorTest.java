@@ -69,11 +69,11 @@ public abstract class AbstractProcessorTest {
     /**
      * Compile a unit of source code with the specified annotation processor
      * @param annotationProcessor
-     * @param compilationUnit
+     * @param compilationUnits
      * @return
      */
     public List<Diagnostic<? extends JavaFileObject>> compile( final Processor annotationProcessor,
-                                                               final String compilationUnit ) {
+                                                               final String... compilationUnits ) {
 
         final DiagnosticCollector<JavaFileObject> diagnosticListener = new DiagnosticCollector<JavaFileObject>();
 
@@ -84,9 +84,9 @@ public abstract class AbstractProcessorTest {
                                                                                          null,
                                                                                          null );
 
-            //Convert compilation unit to file path and add to items to compile
-            final String path = this.getClass().getResource( "/" + compilationUnit + SOURCE_FILETYPE ).getPath();
-            final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects( path );
+            String[] convertedCompilationUnits = convertCompilationUnitToFilePaths( compilationUnits );
+            final Iterable<? extends JavaFileObject> compilationUnitsJavaObjects =
+                    fileManager.getJavaFileObjects( convertedCompilationUnits );
 
             //Compile with provide annotation processor
             final CompilationTask task = compiler.getTask( null,
@@ -94,10 +94,9 @@ public abstract class AbstractProcessorTest {
                                                            diagnosticListener,
                                                            null,
                                                            null,
-                                                           compilationUnits );
+                                                           compilationUnitsJavaObjects );
             task.setProcessors( Arrays.asList( annotationProcessor ) );
             task.call();
-
             fileManager.close();
 
         } catch ( IOException ioe ) {
@@ -105,6 +104,14 @@ public abstract class AbstractProcessorTest {
         }
 
         return diagnosticListener.getDiagnostics();
+    }
+
+    private String[] convertCompilationUnitToFilePaths( String[] compilationUnits ) {
+        List<String> convertedCompilationUnits = new ArrayList<String>();
+        for ( String compilationUnit : compilationUnits ) {
+            convertedCompilationUnits.add( this.getClass().getResource( "/" + compilationUnit + SOURCE_FILETYPE ).getPath() );
+        }
+        return convertedCompilationUnits.toArray( new String[ convertedCompilationUnits.size() ] );
     }
 
     /**

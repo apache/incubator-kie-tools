@@ -18,7 +18,9 @@ package org.uberfire.annotations.processors;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -40,6 +42,8 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger( PerspectiveActivityGenerator.class );
 
+    private Map<String, String> context = new HashMap<String, String>();
+
     public StringBuffer generate( final String packageName,
                                   final PackageElement packageElement,
                                   final String className,
@@ -52,6 +56,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
         String identifier = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( classElement );
         boolean isDefault = ClientAPIModule.getWbPerspectiveScreenIsDefaultValueOnClass( classElement );
+
         boolean isTemplate = ClientAPIModule.getWbPerspectiveScreenIsATemplate( classElement );
 
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
@@ -100,6 +105,10 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         //Validate getPerspectiveMethodName
         if ( getPerspectiveMethodName == null && !isTemplate ) {
             throw new GenerationException( "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition.", packageName + "." + className );
+        }
+
+        if ( isDefault ) {
+            warningIfMoreThanOneDefaultPerspective( processingEnvironment, identifier );
         }
 
         //Setup data for template sub-system
@@ -162,6 +171,27 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         logger.debug( "Successfully generated code for [" + className + "]" );
 
         return sw.getBuffer();
+    }
+
+    private void warningIfMoreThanOneDefaultPerspective( ProcessingEnvironment processingEnvironment,
+                                                         String perspectiveName ) {
+        String defaultPerspectivesName = "defaultPerspectivesName";
+        String defaultPerspectives = context.get( defaultPerspectivesName );
+        if ( defaultPerspectives != null ) {
+            defaultPerspectives = defaultPerspectives + ", " + perspectiveName;
+            generateMoreThanOneDefaultPerspectiveWarning( processingEnvironment, defaultPerspectives );
+            context.put( defaultPerspectivesName, defaultPerspectives );
+        } else {
+            context.put( defaultPerspectivesName, perspectiveName );
+        }
+    }
+
+    private void generateMoreThanOneDefaultPerspectiveWarning( ProcessingEnvironment processingEnvironment,
+                                                               String defaultPerspectives ) {
+        final String msg = "There is more than one default WorkbenchPerspective ("+defaultPerspectives+") - @WorkbenchPerspective(isDefault = true). One of them will take precedence.";
+        processingEnvironment.getMessager().printMessage( Kind.WARNING,
+                                                          msg );
+        logger.warn( msg );
     }
 
     private static void setupTemplateElements( Map<String, Object> root,
