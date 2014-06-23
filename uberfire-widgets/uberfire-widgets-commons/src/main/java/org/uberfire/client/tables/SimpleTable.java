@@ -293,6 +293,10 @@ public class SimpleTable<T>
         dataGrid.setWidth( width );
     }
 
+    public void setColumnPickerVisible( boolean visible ) {
+        toolbarContainer.setVisible(visible);
+    }
+
     public ColumnSortList getColumnSortList() {
         return dataGrid.getColumnSortList();
     }
