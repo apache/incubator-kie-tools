@@ -50,11 +50,6 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
-    public void onStartup( PlaceRequest place ) {
-        super.onStartup( place );
-    }
-
-    @Override
     public void onOpen() {
         super.onOpen();
         if ( perspectiveDef != null ) {
@@ -85,6 +80,10 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
 
     @Override
     public void onClose() {
+        if ( perspectiveDef == null ) {
+            throw new IllegalStateException( "This activity is not open" );
+        }
+
         if ( !perspectiveDef.isTransient() ) {
             wbServices.save( perspectiveDef );
         }

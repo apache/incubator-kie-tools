@@ -30,33 +30,62 @@ public abstract class AbstractActivity implements Activity {
 
     protected PlaceRequest place;
 
+    private boolean open = false;
+
     public AbstractActivity( final PlaceManager placeManager ) {
         this.placeManager = placeManager;
     }
 
+    /**
+     * Tracks start/shutdown lifecycle. Subclasses should always call <tt>super.onStartup()</tt> in methods that
+     * override this one.
+     */
     @Override
     public void onStartup( PlaceRequest place ) {
         this.place = checkNotNull( "place", place );
     }
 
+    /**
+     * Tracks open/closed lifecycle. Subclasses should always call <tt>super.onOpen()</tt> in methods that override this
+     * one.
+     */
     @Override
     public void onOpen() {
         if ( this.place == null ) {
             throw new IllegalStateException( "Activity has not been started" );
         }
+        if ( open ) {
+            throw new IllegalStateException( "Activity already open" );
+        }
+        open = true;
         placeManager.executeOnOpenCallback( this.place );
     }
 
-    /** Does nothing. */
+    /**
+     * Tracks open/closed lifecycle. Subclasses should always call <tt>super.onClose()</tt> in methods that override
+     * this one.
+     */
     @Override
     public void onClose() {
-        // Do nothing.
+        if ( !open ) {
+            throw new IllegalStateException( "Activity not open" );
+        }
+        open = false;
     }
 
-    /** Does nothing. */
+    /**
+     * Tracks start/shutdown lifecycle. Subclasses should always call <tt>super.onShutdown()</tt> in methods that
+     * override this one.
+     */
     @Override
     public void onShutdown() {
-        // Do nothing.
+        if ( this.place == null ) {
+            throw new IllegalStateException( "Activity has not been started" );
+        }
+        if ( open ) {
+            throw new IllegalStateException( "Activity is open" );
+        }
+        this.place = null;
     }
 
     @Override
