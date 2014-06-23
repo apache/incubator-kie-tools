@@ -14,49 +14,41 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.socialscreen.client;
+package org.kie.workbench.common.screens.socialscreen.client.discussion;
 
-import javax.inject.Inject;
-
-import com.github.gwtbootstrap.client.ui.TabPanel;
-import com.github.gwtbootstrap.client.ui.resources.Bootstrap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.socialscreen.client.discussion.DiscussionWidgetPresenter;
-import org.uberfire.client.markdown.Markdown;
 
-public class SocialScreenViewImpl
+public class DiscussionWidgetViewImpl
         extends Composite
-        implements SocialScreenView {
+        implements DiscussionWidgetView {
 
     interface Binder
             extends
-            UiBinder<Widget, SocialScreenViewImpl> {
+            UiBinder<Widget, DiscussionWidgetViewImpl> {
 
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
 
-    @UiField(provided = true)
-    TabPanel tabPanel = new TabPanel(Bootstrap.Tabs.ABOVE);
-
     @UiField
-    Markdown descriptionArea;
+    VerticalPanel lines;
 
-    @UiField(provided = true)
-    DiscussionWidgetPresenter discussionArea;
-
-    @Inject
-    public SocialScreenViewImpl(DiscussionWidgetPresenter discussionArea) {
-        this.discussionArea = discussionArea;
+    public DiscussionWidgetViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void setDescription(String description) {
-        descriptionArea.setContent(description);
+    public Widget asWidget() {
+        return lines;
+    }
+
+    @Override
+    public void addRow(CommentLine line) {
+        lines.add(line);
     }
 }

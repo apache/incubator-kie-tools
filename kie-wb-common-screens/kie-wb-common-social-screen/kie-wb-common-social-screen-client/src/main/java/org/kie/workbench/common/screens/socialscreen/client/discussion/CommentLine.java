@@ -14,13 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.socialscreen.client;
+package org.kie.workbench.common.screens.socialscreen.client.discussion;
 
+import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 
-public interface SocialScreenView
-        extends IsWidget {
+public class CommentLine
+        implements IsWidget {
 
-    void setDescription(String description);
+    private DiscussionRecord record;
 
+    public CommentLine(DiscussionRecord record) {
+        this.record = record;
+    }
+
+    public DiscussionRecord getRecord() {
+        return record;
+    }
+
+    @Override
+    public Widget asWidget() {
+        return new Label(record.getTimestamp() + " - " + record.getAuthor() + " - " + record.getNote());
+    }
 }
