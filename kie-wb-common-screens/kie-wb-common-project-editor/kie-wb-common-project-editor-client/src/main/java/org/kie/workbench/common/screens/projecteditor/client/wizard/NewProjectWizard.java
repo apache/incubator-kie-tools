@@ -23,15 +23,12 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.wizards.Wizard;
+import org.uberfire.client.wizards.AbstractWizard;
 import org.uberfire.client.wizards.WizardPage;
-import org.uberfire.client.wizards.WizardPresenter;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-public class NewProjectWizard
-        implements Wizard<NewProjectWizardContext> {
+public class NewProjectWizard extends AbstractWizard {
 
     @Inject
     private PlaceManager placeManager;
@@ -41,9 +38,6 @@ public class NewProjectWizard
 
     @Inject
     private Event<NewProjectEvent> newProjectEvent;
-
-    @Inject
-    private WizardPresenter presenter;
 
     @Inject
     private GAVWizardPage gavWizardPage;
@@ -99,9 +93,26 @@ public class NewProjectWizard
         gavWizardPage.isComplete( callback );
     }
 
+    public void setContent( final String projectName ) {
+        //Initially use an empty POM. The real POM is set asynchronously
+        pom = new POM();
+        gavWizardPage.setPom( pom );
+
+        // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
+        // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
+        // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
+        // hence package names, it is sanitized in the ProjectService.newProject() method.
+        pom = new POM();
+        pom.setName( projectName );
+        pom.getGav().setArtifactId( projectName );
+        pom.getGav().setVersion( "1.0" );
+        gavWizardPage.setPom( pom );
+    }
+
     @Override
     public void complete() {
-        presenter.hide();
+        super.complete();
+
         final String url = GWT.getModuleBaseURL();
         final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
@@ -124,19 +135,4 @@ public class NewProjectWizard
         };
     }
 
-    public void setProjectName( final String projectName ) {
-        //Initially use an empty POM. The real POM is set asynchronously
-        pom = new POM();
-        gavWizardPage.setPom( pom );
-
-        // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
-        // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
-        // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
-        // hence package names, it is sanitized in the ProjectService.newProject() method.
-        pom = new POM();
-        pom.setName( projectName );
-        pom.getGav().setArtifactId( projectName );
-        pom.getGav().setVersion( "1.0" );
-        gavWizardPage.setPom( pom );
-    }
 }

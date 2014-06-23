@@ -7,7 +7,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
@@ -119,11 +118,6 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     }
 
     protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
-        return getSuccessCallback( presenter, null );
-    }
-
-    protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter,
-                                                       final Command postSaveCommand ) {
         return new RemoteCallback<Path>() {
 
             @Override
@@ -131,15 +125,8 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
                 busyIndicatorView.hideBusyIndicator();
                 presenter.complete();
                 notifySuccess();
-                executePostSaveCommand();
                 final PlaceRequest place = new PathPlaceRequest( path );
                 placeManager.goTo( place );
-            }
-
-            private void executePostSaveCommand() {
-                if ( postSaveCommand != null ) {
-                    postSaveCommand.execute();
-                }
             }
 
         };

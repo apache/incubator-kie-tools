@@ -23,7 +23,6 @@ import org.kie.workbench.common.widgets.client.handlers.PathLabel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.common.popups.errors.ErrorPopup;
-import org.uberfire.client.wizards.WizardPresenter;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
@@ -40,12 +39,6 @@ public class NewProjectHandler
     private final PathLabel pathLabel = new PathLabel();
 
     @Inject
-    private NewProjectWizard wizard;
-
-    @Inject
-    private WizardPresenter wizardPresenter;
-
-    @Inject
     private Caller<ValidationService> validationService;
 
     @Inject
@@ -54,6 +47,9 @@ public class NewProjectHandler
 
     @Inject
     private ProjectContext context;
+
+    @Inject
+    private NewProjectWizard wizard;
 
     @PostConstruct
     private void setupExtensions() {
@@ -88,8 +84,8 @@ public class NewProjectHandler
                         final String projectName,
                         final NewResourcePresenter presenter ) {
         if ( context.getActiveRepository() != null ) {
-            wizard.setProjectName( projectName );
-            wizardPresenter.start( wizard );
+            wizard.setContent( projectName );
+            wizard.start();
             presenter.complete();
 
         } else {
