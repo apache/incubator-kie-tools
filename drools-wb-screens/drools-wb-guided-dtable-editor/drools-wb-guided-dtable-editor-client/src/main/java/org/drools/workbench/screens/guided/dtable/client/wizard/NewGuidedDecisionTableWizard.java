@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Command;
@@ -43,14 +44,14 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.SummaryPag
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.wizards.Wizard;
+import org.uberfire.client.wizards.AbstractWizard;
 import org.uberfire.client.wizards.WizardPage;
-import org.uberfire.client.wizards.WizardPresenter;
 
 /**
  * Wizard for creating a Guided Decision Table
  */
-public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTableAssetWizardContext> {
+@Dependent
+public class NewGuidedDecisionTableWizard extends AbstractWizard {
 
     @Inject
     private SummaryPage summaryPage;
@@ -73,12 +74,10 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
     @Inject
     private ActionInsertFactFieldsPage actionInsertFactFieldsPage;
 
-    @Inject
-    private WizardPresenter presenter;
-
     private final List<WizardPage> pages = new ArrayList<WizardPage>();
 
-    private NewGuidedDecisionTableAssetWizardContext context;
+    private Path contextPath;
+
     private GuidedDecisionTable52 model;
     private AsyncPackageDataModelOracle oracle;
     private NewGuidedDecisionTableHandler handler;
@@ -94,12 +93,14 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
         pages.add( columnExpansionPage );
     }
 
-    public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
+    public void setContent( final Path contextPath,
+                            final String baseFileName,
+                            final GuidedDecisionTable52.TableFormat tableFormat,
                             final AsyncPackageDataModelOracle oracle,
                             final NewGuidedDecisionTableHandler handler ) {
-        this.context = context;
         this.model = new GuidedDecisionTable52();
-        this.model.setTableFormat( context.getTableFormat() );
+        this.model.setTableFormat( tableFormat );
+        this.contextPath = contextPath;
         this.oracle = oracle;
         this.handler = handler;
 
@@ -107,7 +108,9 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
 
         for ( WizardPage page : pages ) {
             final AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) page;
-            dtp.setContent( context,
+            dtp.setContent( contextPath,
+                            baseFileName,
+                            tableFormat,
                             oracle,
                             model,
                             validator );
@@ -198,19 +201,14 @@ public class NewGuidedDecisionTableWizard implements Wizard<NewGuidedDecisionTab
 
         //Save it!
         final String baseFileName = summaryPage.getBaseFileName();
-        final Path contextPath = context.getContextPath();
+        final Path contextPath = this.contextPath;
         model.setTableName( baseFileName );
-        handler.save( baseFileName,
-                      contextPath,
-                      model,
-                      new Command() {
 
-                          @Override
-                          public void execute() {
-                              presenter.hide();
-                          }
+        super.complete();
 
-                      } );
+        handler.save( contextPath,
+                      baseFileName,
+                      model );
     }
 
 }

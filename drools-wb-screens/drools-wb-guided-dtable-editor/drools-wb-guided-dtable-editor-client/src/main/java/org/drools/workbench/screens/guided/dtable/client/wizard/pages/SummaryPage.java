@@ -20,7 +20,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
@@ -59,9 +58,9 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
     @Override
     public void initialise() {
         view.init( this );
-        view.setBaseFileName( context.getBaseFileName() );
-        view.setContextPath( context.getContextPath() );
-        view.setTableFormat( ( (NewGuidedDecisionTableAssetWizardContext) context ).getTableFormat() );
+        view.setBaseFileName( baseFileName );
+        view.setContextPath( contextPath );
+        view.setTableFormat( tableFormat );
         content.setWidget( view );
         stateChanged();
     }

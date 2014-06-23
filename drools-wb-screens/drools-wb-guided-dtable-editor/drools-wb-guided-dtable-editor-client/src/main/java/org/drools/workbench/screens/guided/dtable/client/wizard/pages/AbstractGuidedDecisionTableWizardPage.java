@@ -18,12 +18,11 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
-import org.drools.workbench.screens.guided.dtable.client.wizard.NewAssetWizardContext;
-import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.wizards.WizardPage;
 
 /**
@@ -37,7 +36,6 @@ public abstract class AbstractGuidedDecisionTableWizardPage
 
     protected final SimplePanel content = new SimplePanel();
 
-    protected NewAssetWizardContext context;
     protected GuidedDecisionTable52 model;
     protected Validator validator;
 
@@ -45,16 +43,24 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected AsyncPackageDataModelOracle oracle;
     protected DTCellValueUtilities cellUtils;
 
+    protected Path contextPath;
+    protected String baseFileName;
+    protected GuidedDecisionTable52.TableFormat tableFormat;
+
     @Override
     public Widget asWidget() {
         return content;
     }
 
-    public void setContent( final NewGuidedDecisionTableAssetWizardContext context,
+    public void setContent( final Path contextPath,
+                            final String baseFileName,
+                            final GuidedDecisionTable52.TableFormat tableFormat,
                             final AsyncPackageDataModelOracle oracle,
                             final GuidedDecisionTable52 model,
                             final Validator validator ) {
-        this.context = context;
+        this.contextPath = contextPath;
+        this.baseFileName = baseFileName;
+        this.tableFormat = tableFormat;
         this.oracle = oracle;
         this.model = model;
         this.validator = validator;

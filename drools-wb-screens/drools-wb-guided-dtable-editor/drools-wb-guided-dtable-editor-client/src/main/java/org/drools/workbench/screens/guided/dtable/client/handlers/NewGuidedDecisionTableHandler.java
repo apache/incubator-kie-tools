@@ -4,14 +4,12 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
-import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizard;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.model.Package;
@@ -27,7 +25,6 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.wizards.WizardPresenter;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -50,16 +47,13 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     private GuidedDecisionTableOptions options;
 
     @Inject
-    private WizardPresenter wizardPresenter;
-
-    @Inject
-    private NewGuidedDecisionTableWizard wizard;
-
-    @Inject
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
     private AsyncPackageDataModelOracleFactory oracleFactory;
+
+    @Inject
+    private NewGuidedDecisionTableWizard wizard;
 
     private AsyncPackageDataModelOracle oracle;
 
@@ -92,30 +86,29 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                         final NewResourcePresenter presenter ) {
         this.newResourcePresenter = presenter;
         if ( !options.isUsingWizard() ) {
-            createEmptyDecisionTable( baseFileName,
-                                      pkg.getPackageMainResourcesPath(),
+            createEmptyDecisionTable( pkg.getPackageMainResourcesPath(),
+                                      baseFileName,
                                       options.getTableFormat() );
         } else {
-            createDecisionTableWithWizard( baseFileName,
-                                           pkg.getPackageMainResourcesPath(),
+            createDecisionTableWithWizard( pkg.getPackageMainResourcesPath(),
+                                           baseFileName,
                                            options.getTableFormat() );
         }
     }
 
-    private void createEmptyDecisionTable( final String baseFileName,
-                                           final Path contextPath,
+    private void createEmptyDecisionTable( final Path contextPath,
+                                           final String baseFileName,
                                            final GuidedDecisionTable52.TableFormat tableFormat ) {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
         model.setTableFormat( tableFormat );
         model.setTableName( baseFileName );
-        save( baseFileName,
-              contextPath,
-              model,
-              null );
+        save( contextPath,
+              baseFileName,
+              model );
     }
 
-    private void createDecisionTableWithWizard( final String baseFileName,
-                                                final Path contextPath,
+    private void createDecisionTableWithWizard( final Path contextPath,
+                                                final String baseFileName,
                                                 final GuidedDecisionTable52.TableFormat tableFormat ) {
         service.call( new RemoteCallback<PackageDataModelOracleBaselinePayload>() {
 
@@ -124,25 +117,22 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                 newResourcePresenter.complete();
                 oracle = oracleFactory.makeAsyncPackageDataModelOracle( contextPath,
                                                                         dataModel );
-                final NewGuidedDecisionTableAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( baseFileName,
-                                                                                                                       contextPath,
-                                                                                                                       tableFormat );
-                wizard.setContent( context,
+                wizard.setContent( contextPath,
+                                   baseFileName,
+                                   tableFormat,
                                    oracle,
                                    NewGuidedDecisionTableHandler.this );
-                wizardPresenter.start( wizard );
+                wizard.start();
             }
         } ).loadDataModel( contextPath );
     }
 
-    public void save( final String baseFileName,
-                      final Path contextPath,
-                      final GuidedDecisionTable52 model,
-                      final Command postSaveCommand ) {
+    public void save( final Path contextPath,
+                      final String baseFileName,
+                      final GuidedDecisionTable52 model ) {
         oracleFactory.destroy( oracle );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-        service.call( getSuccessCallback( newResourcePresenter,
-                                          postSaveCommand ),
+        service.call( getSuccessCallback( newResourcePresenter ),
                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
                                                                                               buildFileName( baseFileName,
                                                                                                              resourceType ),
