@@ -17,7 +17,6 @@ import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.resources.NavigatorResources;
 import org.uberfire.client.tree.Tree;
@@ -233,11 +232,6 @@ public class TreeNavigator extends Composite implements Navigator {
 
     private boolean isHidden( final FolderItem folderItem ) {
         return hiddenTypeDef.accept( new Path() {
-            @Override
-            public FileSystem getFileSystem() {
-                return null;
-            }
-
             @Override
             public String getFileName() {
                 return folderItem.getFileName();

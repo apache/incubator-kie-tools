@@ -58,7 +58,7 @@ public class PathLabel extends Paragraph {
     private Path stripFileName( final Path path ) {
         String uri = path.toURI();
         uri = uri.replace( path.getFileName(), "" );
-        return PathFactory.newPath( path.getFileSystem(), path.getFileName(), uri );
+        return PathFactory.newPathBasedOn( path.getFileName(), uri, path );
     }
 
 }

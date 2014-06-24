@@ -18,18 +18,19 @@ package org.kie.workbench.common.widgets.client.popups.file;
 
 import org.uberfire.backend.vfs.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.backend.vfs.PathSupport.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public class SaveOperationService {
 
-    public void save(final Path path,
-                     final CommandWithCommitMessage saveCommand) {
-        checkNotNull("command", saveCommand);
+    public void save( final Path path,
+                      final CommandWithCommitMessage saveCommand ) {
+        checkNotNull( "command", saveCommand );
 
-        if (path.getFileSystem().supportedFileAttributeViews().contains("version")) {
-            new SavePopup(saveCommand).show();
+        if ( isVersioned( path ) ) {
+            new SavePopup( saveCommand ).show();
         } else {
-            saveCommand.execute("");
+            saveCommand.execute( "" );
         }
     }
 

@@ -137,10 +137,9 @@ public class VersionBrowser extends Composite {
         open.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                final Path path = PathFactory.newPath( metadata.getPath().getFileSystem(), metadata.getPath().getFileName(), history.getValue( history.getSelectedIndex() ) );
+                final Path path = PathFactory.newPathBasedOn( metadata.getPath().getFileName(), history.getValue( history.getSelectedIndex() ), metadata.getPath() );
                 final Map<String, String> parameters = new HashMap<String, String>();
-                parameters.put( "version",
-                                String.valueOf( history.getItemCount() - history.getSelectedIndex() ) );
+                parameters.put( "version", String.valueOf( history.getItemCount() - history.getSelectedIndex() ) );
                 placeManager().goTo( new ReadOnlyPathPlaceRequest( path,
                                                                    parameters ) );
             }
