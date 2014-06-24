@@ -257,7 +257,7 @@ public class RuleNameServiceImpl
     public Set<String> getRuleNames(Project project, String packageName) {
         RuleNamesByPackageMap map = ruleNames.get(project);
         if (map == null) {
-            if (project.getRootPath() == null) {
+            if (project == null || project.getRootPath() == null) {
                 return new HashSet<String>();
             }
             visitPaths(Files.newDirectoryStream(Paths.convert(project.getRootPath())));
