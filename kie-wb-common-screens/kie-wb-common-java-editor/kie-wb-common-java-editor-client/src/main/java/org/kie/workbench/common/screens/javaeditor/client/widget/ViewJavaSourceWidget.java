@@ -49,12 +49,12 @@ public class ViewJavaSourceWidget extends Composite {
 
             table.setHTML( i,
                     0,
-                    "<span style='color:grey;'>"
+                    "<span style='font-family:monospace; color:grey;'>"
                             + ( i + 1 )
                             + ".</span>" );
             table.setHTML( i,
                     1,
-                    "<span style='color:green;' >|</span>" );
+                    "<span style='font-family:monospace; color:green;' >|</span>" );
             table.setHTML( i,
                     2,
                     addSyntaxHighlights( escaped, inSideBlockComment || lineComment )
@@ -88,7 +88,7 @@ public class ViewJavaSourceWidget extends Composite {
     private String addSyntaxHighlights( String text, boolean isComment ) {
 
         if ( isComment ) {
-            text = "<span style='color:green'>"
+            text = "<span style='font-family:monospace; color:green'>"
                     + text
                     + "</span>";
         } else {
@@ -110,7 +110,7 @@ public class ViewJavaSourceWidget extends Composite {
 
             for ( String keyword : kws ) {
                 final String match = "\\b" + keyword + "\\b";
-                text = text.replaceAll( match, "<span style='color:red;'>"
+                text = text.replaceAll( match, "<span style='font-family:monospace; color:red;'>"
                                                 + keyword
                                                 + "</span>" );
             }
@@ -135,7 +135,7 @@ public class ViewJavaSourceWidget extends Composite {
             String oldString = text.substring( stringStart,
                     stringEnd + 1 );
 
-            String newString = "<span style='color:green;'>"
+            String newString = "<span style='font-family:monospace; color:green;'>"
                     + oldString
                     + "</span>";
 
