@@ -342,22 +342,17 @@ public class UberfireSimplePager extends AbstractPager {
     // page
     @Override
     public void setPageStart( int index ) {
-        if ( getDisplay() != null ) {
-            Range range = getDisplay().getVisibleRange();
-            int displayPageSize = getPageSize();
-            if ( isRangeLimited()
-                    && getDisplay().isRowCountExact() ) {
-                displayPageSize = Math.min( getPageSize(),
-                                            getDisplay().getRowCount()
-                                                    - index );
-            }
-            index = Math.max( 0,
-                              index );
-            if ( index != range.getStart() ) {
-                getDisplay().setVisibleRange( index,
-                                              displayPageSize );
-            }
-        }
+        if (getDisplay() != null) {
+          Range range = getDisplay().getVisibleRange();
+          int displayPageSize = range.getLength();
+          if (!isRangeLimited() && getDisplay().isRowCountExact()) {
+            index = Math.min(index, getDisplay().getRowCount() - displayPageSize);
+          }
+          index = Math.max(0, index);
+          if (index != range.getStart()) {
+            getDisplay().setVisibleRange(index, displayPageSize);
+          }
+        }  
     }
 
     /**

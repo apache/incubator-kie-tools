@@ -17,7 +17,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:uf="urn:import:org.uberfire.client.tables">
 
   <ui:style>
     .dataGridContainer {
@@ -36,7 +37,7 @@
     <g:SimplePanel>
       <b:DataGrid ui:field="dataGrid" addStyleNames="table table-bordered table-striped table-hover"/>
     </g:SimplePanel>
-    <b:SimplePager location="RIGHT" ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.horizontalContainer}"/>
+    <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.horizontalContainer}"/>
   </g:FlowPanel>
 
 </ui:UiBinder>
