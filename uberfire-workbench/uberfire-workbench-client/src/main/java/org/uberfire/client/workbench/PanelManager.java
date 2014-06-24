@@ -99,15 +99,16 @@ public interface PanelManager {
                                        final Position position );
 
     /**
-     * Removes the given panel from the workbench layout, preserving child panels by reparenting them to the removed
-     * panel's parent. Application code should not call this method directly; it is called by PlaceManager as part of
-     * the overall procedure in closing a place.
+     * Removes the part associated with the given PlaceRequest from the panel that contains it. If this operation
+     * removes the last part from the panel, and the panel is not the root panel, it will be removed from the workbench
+     * layout. Child panels are preserved by reparenting them to the removed panel's parent. Application code should not
+     * call this method directly; it is called by PlaceManager as part of the overall procedure in closing a place.
      * 
      * @param toRemove
      *            the place that is closing. Must not be null.
-     * @return true if the associated panel was found and removed; false if no matching panel could be found.
+     * @return true if the associated part was found and removed; false if no matching part could be found.
      */
-    boolean removePanelForPlace( final PlaceRequest toRemove );
+    boolean removePartForPlace( final PlaceRequest toRemove );
 
     void onPartFocus( final PartDefinition part );
 

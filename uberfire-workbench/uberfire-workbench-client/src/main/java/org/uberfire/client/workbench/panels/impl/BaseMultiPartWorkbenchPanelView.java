@@ -26,7 +26,6 @@ extends BaseWorkbenchPanelView<P> {
 
     @PostConstruct
     private void setupDragAndDrop() {
-        new Exception("New " + getClass() + " " + System.identityHashCode( this )).printStackTrace();
         widget = setupWidget();
         widget.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
         container.getElement().getStyle().setPosition( Style.Position.ABSOLUTE );
@@ -42,7 +41,6 @@ extends BaseWorkbenchPanelView<P> {
 
     @PreDestroy
     private void tearDownDragAndDrop() {
-        new Exception("Destroying " + getClass() + " " + System.identityHashCode( this )).printStackTrace();
         dndManager.unregisterDropController( this );
     }
 

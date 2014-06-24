@@ -212,31 +212,65 @@ public class PlaceManagerTest {
     }
 
     @Test
+    public void testNormalCloseExistingScreenActivity() throws Exception {
+        when( kansasActivity.onMayClose() ).thenReturn( true );
+
+        placeManager.closePlace( kansas );
+
+        verify( workbenchPartBeforeCloseEvent ).fire( refEq( new BeforeClosePlaceEvent( kansas, false, true ) ) );
+        verify( workbenchPartCloseEvent ).fire( refEq( new ClosePlaceEvent( kansas ) ) );
+        verify( kansasActivity ).onMayClose();
+        verify( kansasActivity ).onClose();
+        verify( kansasActivity, never() ).onShutdown();
+        verify( activityManager ).destroyActivity( kansasActivity );
+        verify( panelManager ).removePartForPlace( kansas );
+
+        assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( kansas ));
+        assertNull( placeManager.getActivity( kansas ) );
+        assertFalse( placeManager.getActivePlaceRequests().contains( kansas ) );
+    }
+
+    @Test
+    public void testCanceledCloseExistingScreenActivity() throws Exception {
+        when( kansasActivity.onMayClose() ).thenReturn( false );
+
+        placeManager.closePlace( kansas );
+
+        verify( workbenchPartBeforeCloseEvent ).fire( refEq( new BeforeClosePlaceEvent( kansas, false, true ) ) );
+        verify( workbenchPartCloseEvent, never() ).fire( refEq( new ClosePlaceEvent( kansas ) ) );
+        verify( kansasActivity ).onMayClose();
+        verify( kansasActivity, never() ).onClose();
+        verify( kansasActivity, never() ).onShutdown();
+        verify( activityManager, never() ).destroyActivity( kansasActivity );
+        verify( panelManager, never() ).removePartForPlace( kansas );
+
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( kansas ));
+        assertSame( kansasActivity, placeManager.getActivity( kansas ) );
+        assertTrue( placeManager.getActivePlaceRequests().contains( kansas ) );
+    }
+
+    @Test
     public void testForceCloseExistingScreenActivity() throws Exception {
         placeManager.forceClosePlace( kansas );
 
         verify( workbenchPartBeforeCloseEvent ).fire( refEq( new BeforeClosePlaceEvent( kansas, true, true ) ) );
         verify( workbenchPartCloseEvent ).fire( refEq( new ClosePlaceEvent( kansas ) ) );
+        verify( kansasActivity, never() ).onMayClose();
         verify( kansasActivity ).onClose();
         verify( kansasActivity, never() ).onShutdown();
         verify( activityManager ).destroyActivity( kansasActivity );
+        verify( panelManager ).removePartForPlace( kansas );
 
         assertEquals( PlaceStatus.CLOSE, placeManager.getStatus( kansas ));
         assertNull( placeManager.getActivity( kansas ) );
         assertFalse( placeManager.getActivePlaceRequests().contains( kansas ) );
-
-        // TODO test closing a splash screen, including the side effect
     }
-
-
-
-
-
 
 
     // TODO test going to splash screens, including this special side effect
     // activityManager.getSplashScreenInterceptor( place ); // need separate test for splash screens!
 
+    // TODO test closing a splash screen, including the side effect of removing it from the activeSplashScreens map
 
     // TODO test going to popup screens
 

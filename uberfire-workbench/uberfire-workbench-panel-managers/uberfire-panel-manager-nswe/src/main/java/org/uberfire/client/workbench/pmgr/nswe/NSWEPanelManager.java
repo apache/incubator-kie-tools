@@ -105,7 +105,7 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
     }
 
     @Override
-    public boolean removePanelForPlace( PlaceRequest toRemove ) {
+    public boolean removePartForPlace( PlaceRequest toRemove ) {
         final PartDefinition removedPart = getPartForPlace( toRemove );
         if ( removedPart != null ) {
             removePart( removedPart );
