@@ -43,13 +43,6 @@ public class KSessionsPanel
 
         view.setPresenter(this);
     }
-//
-//    @Override
-//    protected KSessionModel createNew(String name) {
-//        KSessionModel kSessionModel = new KSessionModel();
-//        kSessionModel.setName(name);
-//        return kSessionModel;
-//    }
 
     public void makeReadOnly() {
         view.makeReadOnly();

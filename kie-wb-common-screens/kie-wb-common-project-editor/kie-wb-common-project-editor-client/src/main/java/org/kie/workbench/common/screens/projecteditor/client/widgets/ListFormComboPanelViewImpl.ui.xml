@@ -41,7 +41,7 @@
           <ui:text from="{i18n.MakeDefault}"/>
         </bootstrap:Button>
       </bootstrap:ButtonGroup>
-      <bootstrap:ListBox ui:field="list" visibleItemCount="15" width="280px"/>
+      <bootstrap:ListBox ui:field="list" visibleItemCount="15" width="300px"/>
     </bootstrap:Column>
     <bootstrap:Column size="2">
       <gwt:SimplePanel ui:field="kSessionForm"/>

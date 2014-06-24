@@ -35,6 +35,10 @@
       padding-left: 20px;
     }
 
+    .mostLightLeftPadding {
+      padding-left: 10px;
+    }
+
     .grey {
       padding-left: 20px;
       color: #808080;
@@ -79,7 +83,7 @@
     <bootstrap:Heading size="4">
       <ui:text from="{i18n.KnowledgeSessions}"/>
     </bootstrap:Heading>
-    <gwt:FlowPanel styleName='{style.lightLeftPadding}'>
+    <gwt:FlowPanel styleName='{style.mostLightLeftPadding}'>
       <editor:KSessionsPanel ui:field="statefulSessionsPanel"/>
     </gwt:FlowPanel>
   </bootstrap:Container>

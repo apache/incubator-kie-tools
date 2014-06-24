@@ -252,7 +252,7 @@ public class KSessionsPanelViewImpl
         dataGrid.addColumn( column,
                             CommonConstants.INSTANCE.Edit() );
         dataGrid.setColumnWidth( column,
-                                 80,
+                                 45,
                                  Style.Unit.PX );
     }
 
@@ -281,7 +281,7 @@ public class KSessionsPanelViewImpl
         dataGrid.addColumn( column,
                             CommonConstants.INSTANCE.Delete() );
         dataGrid.setColumnWidth( column,
-                                 80,
+                                 60,
                                  Style.Unit.PX );
     }
 
