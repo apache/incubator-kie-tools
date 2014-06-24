@@ -17,17 +17,15 @@ package org.uberfire.backend.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.backend.server.io.SystemFS;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
-
-import static org.uberfire.io.FileSystemType.Bootstrap.*;
 
 @ApplicationScoped
 public class UserServicesBackendImpl {
@@ -36,17 +34,9 @@ public class UserServicesBackendImpl {
     @Named("configIO")
     private IOService ioService;
 
-    private FileSystem bootstrapRoot = null;
-
-    private FileSystem getBootstrapRoot() {
-        if ( bootstrapRoot == null ) {
-            final Iterator<FileSystem> fsIterator = ioService.getFileSystems( BOOTSTRAP_INSTANCE ).iterator();
-            if ( fsIterator.hasNext() ) {
-                this.bootstrapRoot = fsIterator.next();
-            }
-        }
-        return bootstrapRoot;
-    }
+    @Inject
+    @SystemFS
+    private FileSystem fileSystem;
 
     public Path buildPath( final String _userName,
                            final String serviceType,
@@ -55,9 +45,9 @@ public class UserServicesBackendImpl {
         final String resultUserName = TextUtil.normalizeUserName( _userName );
 
         if ( relativePath != null && !"".equals( relativePath ) ) {
-            return getBootstrapRoot().getPath( resultUserName + "-uf-user", serviceType, relativePath );
+            return fileSystem.getPath( resultUserName + "-uf-user", serviceType, relativePath );
         } else {
-            return getBootstrapRoot().getPath( resultUserName + "-uf-user", serviceType );
+            return fileSystem.getPath( resultUserName + "-uf-user", serviceType );
         }
     }
 
@@ -65,7 +55,7 @@ public class UserServicesBackendImpl {
                                              final String relativePath ) {
         final Collection<Path> result = new ArrayList<Path>();
 
-        for ( final Path path : getBootstrapRoot().getRootDirectories() ) {
+        for ( final Path path : fileSystem.getRootDirectories() ) {
             final Path _path;
             if ( relativePath != null && !"".equals( relativePath ) ) {
                 _path = path.resolve( serviceType ).resolve( relativePath );

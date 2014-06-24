@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -33,7 +34,6 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.markdown.Markdown;
 import org.uberfire.workbench.model.Position;
 
 @Dependent
@@ -54,7 +54,7 @@ public class TodoListScreen
     private Caller<VFSService> vfsServices;
 
     @UiField
-    protected Markdown markdown;
+    protected TextArea markdown;
 
     @PostConstruct
     public void init() {
@@ -67,9 +67,9 @@ public class TodoListScreen
                     @Override
                     public void callback( final String response ) {
                         if ( response == null ) {
-                            markdown.setContent( "<p>-- empty --</p>" );
+                            markdown.setText( "<p>-- empty --</p>" );
                         } else {
-                            markdown.setContent( response );
+                            markdown.setText( response );
                         }
                     }
                 } ).readAllString( o );

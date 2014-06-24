@@ -650,10 +650,8 @@
     <module>uberfire-security</module>
     <module>uberfire-nio2-backport</module>
     <module>uberfire-io</module>
-    <module>uberfire-metadata</module>
     <module>uberfire-server</module>
     <module>uberfire-backend</module>
-    <module>uberfire-widgets</module>
     <module>uberfire-js</module>
     <module>uberfire-workbench</module>
     <module>uberfire-packaging</module>

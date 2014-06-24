@@ -243,11 +243,6 @@
         <version>${version.javax.enterprise.cdi}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-javaee-all</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
       <!-- Errai AS -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
@@ -309,6 +304,16 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-common</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-ui</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-data-binding</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
       <dependency>

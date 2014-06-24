@@ -73,10 +73,6 @@ public class ShowcaseEntryPoint {
     private List<String> menuItemsToRemove = new ArrayList<String>() {{
         add( "IFrameScreen" );
         add( "IPInfoGadget" );
-        add( "MarkdownLiveEditor" );
-        add( "MarkdownLiveViewer" );
-        add( "RepositoriesEditor" );
-        add( "RepositoryEditor" );
         add( "SportsNewsGadget" );
         add( "StockQuotesGadget" );
         add( "WeatherGadget" );

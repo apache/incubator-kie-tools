@@ -36,10 +36,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-panel-manager-template</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-javaee-all</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>

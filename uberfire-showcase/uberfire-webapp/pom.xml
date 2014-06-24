@@ -44,28 +44,8 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widget-markdown</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-properties-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-properties-editor-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-metadata-commons-io</artifactId>
     </dependency>
 
     <dependency>
@@ -172,7 +152,7 @@
           <strict>true</strict>
           <runTarget>org.uberfire.UberfireShowcase/Uberfire.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
-          <soyc>false</soyc>
+          <!--<soyc>false</soyc>-->
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
         </configuration>

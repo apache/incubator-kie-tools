@@ -1,8 +1,5 @@
 package org.uberfire.security.impl;
 
-import static java.util.Collections.unmodifiableMap;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,9 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.uberfire.commons.services.cdi.Veto;
 import org.uberfire.security.Identity;
 import org.uberfire.security.Role;
 
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
+@Veto
 public class IdentityImpl implements Identity,
                                      Serializable {
 
@@ -111,7 +113,7 @@ public class IdentityImpl implements Identity,
 
     @Override
     public String toString() {
-      return "IdentityImpl [roles=" + roles + ", name=" + name + ", properties=" + properties + "]";
+        return "IdentityImpl [roles=" + roles + ", name=" + name + ", properties=" + properties + "]";
     }
 
 }

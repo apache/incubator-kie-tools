@@ -31,7 +31,6 @@ import org.uberfire.commons.message.AsyncCallback;
 import org.uberfire.commons.message.MessageHandler;
 import org.uberfire.commons.message.MessageHandlerResolver;
 import org.uberfire.commons.message.MessageType;
-import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOClusteredService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceIdentifiable;
@@ -54,14 +53,9 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Option;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
-import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.security.SecurityAware;
-import org.uberfire.security.auth.AuthenticationManager;
-import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
@@ -250,11 +244,6 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public Iterable<FileSystem> getFileSystems( final FileSystemType type ) {
-        return service.getFileSystems( type );
-    }
-
-    @Override
     public FileSystem getFileSystem( final URI uri ) throws IllegalArgumentException, FileSystemNotFoundException, ProviderNotFoundException, SecurityException {
         return service.getFileSystem( uri );
     }
@@ -296,49 +285,6 @@ public class IOServiceClusterImpl implements IOClusteredService {
                 }} );
             }
         } ) );
-    }
-
-    @Override
-    public FileSystem newFileSystem( final URI uri,
-                                     final Map<String, ?> env,
-                                     final FileSystemType type ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
-        return new LockExecuteNotifySyncReleaseTemplate<FileSystem>() {
-
-            @Override
-            public MessageType getMessageType() {
-                return NEW_FS;
-            }
-
-            @Override
-            public String getServiceId() {
-                return service.getId();
-            }
-
-            @Override
-            public Map<String, String> buildContent() {
-                return new HashMap<String, String>() {{
-                    put( "uri", uri.toString() );
-                    put( "type", type.toString() );
-                    for ( final Map.Entry<String, ?> entry : env.entrySet() ) {
-                        put( entry.getKey(), entry.getValue().toString() );
-                    }
-                }};
-            }
-
-            @Override
-            public int timeOut() {
-                return TIMEOUT;
-            }
-        }.execute( clusterService, new FutureTask<FileSystem>( new Callable<FileSystem>() {
-            @Override
-            public FileSystem call() throws Exception {
-                return service.newFileSystem( uri, new HashMap<String, Object>( env ) {{
-                    put( "clusterService", clusterService );
-                }}, type );
-
-            }
-        } ) );
-
     }
 
     @Override
@@ -850,24 +796,6 @@ public class IOServiceClusterImpl implements IOClusteredService {
         };
     }
 
-    @Override
-    public void setAuthenticationManager( final AuthenticationManager authenticationManager ) {
-        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
-            if ( fileSystemProvider instanceof SecurityAware ) {
-                ( (SecurityAware) fileSystemProvider ).setAuthenticationManager( authenticationManager );
-            }
-        }
-    }
-
-    @Override
-    public void setAuthorizationManager( final AuthorizationManager authorizationManager ) {
-        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
-            if ( fileSystemProvider instanceof SecurityAware ) {
-                ( (SecurityAware) fileSystemProvider ).setAuthorizationManager( authorizationManager );
-            }
-        }
-    }
-
     class NewFileSystemMessageHandler implements MessageHandler {
 
         @Override
@@ -875,7 +803,6 @@ public class IOServiceClusterImpl implements IOClusteredService {
                                                                      final Map<String, String> content ) {
             if ( NEW_FS.equals( type ) ) {
                 final String _uri = content.get( "uri" );
-                final String fsType = content.get( "type" );
                 final Map<String, String> env = new HashMap<String, String>();
 
                 for ( final Map.Entry<String, String> entry : content.entrySet() ) {
@@ -886,19 +813,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
                 final URI uri = URI.create( _uri );
                 final FileSystem fs;
-                if ( fsType != null ) {
-                    fs = service.newFileSystem( uri, env, new FileSystemType() {
-                        public String toString() {
-                            return fsType;
-                        }
-
-                        public int hashCode() {
-                            return fsType.hashCode();
-                        }
-                    } );
-                } else {
-                    fs = service.newFileSystem( uri, env );
-                }
+                fs = service.newFileSystem( uri, env );
 
                 newFileSystemListener.execute( fs, uri.getScheme(), ( (FileSystemId) fs ).id(), env );
             }

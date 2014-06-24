@@ -26,9 +26,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.lock.LockService;
 import org.uberfire.commons.lock.impl.ThreadLockServiceImpl;
-import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
@@ -60,15 +57,9 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.StandardOpenOption;
-import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.security.SecurityAware;
-import org.uberfire.security.auth.AuthenticationManager;
-import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.java.nio.file.StandardOpenOption.*;
 
 public abstract class AbstractIOService implements IOServiceIdentifiable {
@@ -80,21 +71,10 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     private static final Set<StandardOpenOption> CREATE_NEW_FILE_OPTIONS = EnumSet.of( CREATE_NEW, WRITE );
 
     protected static final Charset UTF_8 = Charset.forName( "UTF-8" );
-    public static final FileSystemType DEFAULT_FS_TYPE = new FileSystemType() {
-        @Override
-        public String toString() {
-            return "DEFAULT";
-        }
-
-        @Override
-        public int hashCode() {
-            return toString().hashCode();
-        }
-    };
 
     protected final LockService lockService;
     protected final IOWatchService ioWatchService;
-    protected final Map<FileSystemType, List<FileSystem>> fileSystems = new HashMap<FileSystemType, List<FileSystem>>();
+    protected final Set<FileSystem> fileSystems = new HashSet<FileSystem>();
 
     protected NewFileSystemListener newFileSystemListener = null;
     protected boolean isDisposed = false;
@@ -145,7 +125,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         lockService.lock();
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
-            final Path path = fileSystems.values().iterator().next().get( 0 ).getRootDirectories().iterator().next();
+            final Path path = fileSystems.iterator().next().getRootDirectories().iterator().next();
             setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
             if ( options != null && options.length == 1 ) {
                 setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, options[ 0 ] );
@@ -158,21 +138,21 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         lockService.unlock();
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
-            final Path path = fileSystems.values().iterator().next().get( 0 ).getRootDirectories().iterator().next();
+            final Path path = fileSystems.iterator().next().getRootDirectories().iterator().next();
             setAttribute( path, FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
         }
     }
 
-    private void cleanupClosedFileSystems() {
-        for ( final Map.Entry<FileSystemType, List<FileSystem>> fileSystemTypeListEntry : fileSystems.entrySet() ) {
-            final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
-            for ( final FileSystem fileSystem : fileSystemTypeListEntry.getValue() ) {
-                if ( !fileSystem.isOpen() ) {
-                    removeList.add( fileSystem );
-                }
+    private synchronized void cleanupClosedFileSystems() {
+
+        final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
+        for ( final FileSystem fileSystem : fileSystems ) {
+            if ( !fileSystem.isOpen() ) {
+                removeList.add( fileSystem );
             }
-            fileSystemTypeListEntry.getValue().removeAll( removeList );
         }
+
+        fileSystems.removeAll( removeList );
     }
 
     @Override
@@ -189,56 +169,13 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
 
     @Override
     public Iterable<FileSystem> getFileSystems() {
-        return new Iterable<FileSystem>() {
-            @Override
-            public Iterator<FileSystem> iterator() {
-                return new Iterator<FileSystem>() {
-                    final Iterator<List<FileSystem>> fsIterator = fileSystems.values().iterator();
-                    Iterator<FileSystem> currentIter;
-
-                    @Override
-                    public boolean hasNext() {
-                        if ( currentIter == null ) {
-                            if ( fsIterator.hasNext() ) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        }
-
-                        if ( !currentIter.hasNext() ) {
-                            currentIter = null;
-                            return fsIterator.hasNext();
-                        }
-                        return true;
-                    }
-
-                    @Override
-                    public FileSystem next() {
-                        if ( currentIter == null ) {
-                            currentIter = fsIterator.next().iterator();
-                        }
-                        return currentIter.next();
-                    }
-
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                };
-            }
-        };
-    }
-
-    @Override
-    public List<FileSystem> getFileSystems( final FileSystemType type ) {
-        return fileSystems.get( type );
+        return fileSystems;
     }
 
     @Override
     public FileSystem getFileSystem( final URI uri ) {
         try {
-            return registerFS( FileSystems.getFileSystem( uri ), DEFAULT_FS_TYPE );
+            return registerFS( FileSystems.getFileSystem( uri ) );
         } catch ( final Exception ex ) {
             logger.warn( "Failed to register filesystem " + uri + " with DEFAULT_FS_TYPE. Returning null.", ex );
             return null;
@@ -248,20 +185,11 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     @Override
     public FileSystem newFileSystem( final URI uri,
                                      final Map<String, ?> env ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
-        return newFileSystem( uri, env, DEFAULT_FS_TYPE );
-    }
-
-    @Override
-    public FileSystem newFileSystem( final URI uri,
-                                     final Map<String, ?> env,
-                                     final FileSystemType type )
-            throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException,
-            IOException, SecurityException {
         try {
             final FileSystem fs = FileSystems.newFileSystem( uri, env );
-            return registerFS( fs, type );
+            return registerFS( fs );
         } catch ( final FileSystemAlreadyExistsException ex ) {
-            registerFS( FileSystems.getFileSystem( uri ), type );
+            registerFS( FileSystems.getFileSystem( uri ) );
             throw ex;
         }
     }
@@ -271,9 +199,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         this.newFileSystemListener = listener;
     }
 
-    private FileSystem registerFS( final FileSystem fs,
-                                   final FileSystemType type ) {
-        checkNotNull( "type", type );
+    private FileSystem registerFS( final FileSystem fs ) {
         if ( fs == null ) {
             return fs;
         }
@@ -283,12 +209,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         }
 
         synchronized ( this ) {
-            List<FileSystem> fsList = fileSystems.get( type );
-            if ( fsList == null ) {
-                fsList = new ArrayList<FileSystem>();
-                fileSystems.put( type, fsList );
-            }
-            fsList.add( fs );
+            fileSystems.add( fs );
         }
         return fs;
     }
@@ -665,23 +586,5 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     @Override
     public String getId() {
         return id;
-    }
-
-    @Override
-    public void setAuthenticationManager( final AuthenticationManager authenticationManager ) {
-        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
-            if ( fileSystemProvider instanceof SecurityAware ) {
-                ( (SecurityAware) fileSystemProvider ).setAuthenticationManager( authenticationManager );
-            }
-        }
-    }
-
-    @Override
-    public void setAuthorizationManager( final AuthorizationManager authorizationManager ) {
-        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
-            if ( fileSystemProvider instanceof SecurityAware ) {
-                ( (SecurityAware) fileSystemProvider ).setAuthorizationManager( authorizationManager );
-            }
-        }
     }
 }

@@ -18,8 +18,8 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
 import static org.uberfire.commons.data.Pair.*;
-import static org.uberfire.io.attribute.DublinCoreAttributesUtil.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.io.attribute.DublinCoreAttributesUtil.*;
 
 /**
  *

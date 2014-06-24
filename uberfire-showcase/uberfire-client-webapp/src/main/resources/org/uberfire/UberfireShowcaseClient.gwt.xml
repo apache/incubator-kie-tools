@@ -22,6 +22,5 @@
   <inherits name="org.jboss.errai.common.ErraiCommon" />
   <inherits name="org.jboss.errai.bus.ErraiBus" />
   <inherits name="org.jboss.errai.ioc.Container" />
-  <inherits name="org.jboss.errai.enterprise.Jaxrs" />
 
 </module>

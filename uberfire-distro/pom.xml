@@ -82,21 +82,6 @@
       <artifactId>uberfire-backend-server</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-core-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widget-markdown</artifactId>
-    </dependency>
-
     <!-- UberFire Showcase WARS -->
     <dependency>
       <groupId>org.uberfire</groupId>

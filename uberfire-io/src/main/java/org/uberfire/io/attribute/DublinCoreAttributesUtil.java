@@ -19,8 +19,8 @@ package org.uberfire.io.attribute;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.uberfire.io.attribute.DublinCoreView.*;
 import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.io.attribute.DublinCoreView.*;
 
 /**
  *
