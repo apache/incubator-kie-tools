@@ -459,6 +459,24 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertNotNull( result.getExpectedCode() );
     }
 
+    @Test
+    public void testWorkbenchPerspectivesOnStartMultipleMethods() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest20";
+
+        final Result result = new Result();
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
+
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ), pathCompilationUnit );
+        assertFailedCompilation( diagnostics );
+        assertCompilationError( diagnostics, "Found multiple @OnStartup methods. Each class can declare at most one." );
+        assertNull( result.getActualCode() );
+    }
+
     private void printDiagnostics( List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
         for ( Diagnostic diagnostic : diagnostics ) {
             System.out.println( diagnostic );
