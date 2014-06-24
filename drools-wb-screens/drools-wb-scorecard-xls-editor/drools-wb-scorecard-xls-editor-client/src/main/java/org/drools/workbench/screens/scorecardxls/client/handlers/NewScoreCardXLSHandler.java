@@ -80,9 +80,9 @@ public class NewScoreCardXLSHandler extends DefaultNewResourceHandler {
         final Path path = pkg.getPackageMainResourcesPath();
         final String fileName = buildFileName( baseFileName,
                                                resourceType );
-        final Path newPath = PathFactory.newPath( path.getFileSystem(),
-                                                  fileName,
-                                                  URL.encode( path.toURI() + "/" + fileName ) );
+        final Path newPath = PathFactory.newPathBasedOn( fileName,
+                                                         URL.encode( path.toURI() + "/" + fileName ),
+                                                         path );
         uploadWidget.submit( path,
                              fileName,
                              URLHelper.getServletUrl(),

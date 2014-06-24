@@ -57,11 +57,7 @@ public class MigrationPathManager {
     }
 
     public Path generatePathForModule( String jcrModuleName ) {
-        final org.uberfire.java.nio.file.Path modulePath = getFileSystem().getPath( "/" + escapePathEntry( jcrModuleName ) );
-
-        final Path path = PathFactory.newPath( Paths.convert( modulePath.getFileSystem() ), modulePath.getFileName().toString(), modulePath.toUri().toString() );
-
-        return path;
+        return Paths.convert( getFileSystem().getPath( "/" + escapePathEntry( jcrModuleName ) ) );
     }
 
     public Path generatePathForAsset( Module jcrModule,
@@ -79,9 +75,7 @@ public class MigrationPathManager {
             assetPath = modulePath.resolve( "src/main/resources/" +dotToSlash(jcrModule.getName())+"/"+ jcrAsset.getName() + "." + jcrAsset.getFormat() );
         }
 
-        final Path path = PathFactory.newPath( Paths.convert( assetPath.getFileSystem() ), assetPath.getFileName().toString(), assetPath.toUri().toString() );
-
-        return path;
+        return Paths.convert( assetPath );
     }
 
     public Path generatePathForGlobal( Module jcrModule ) {
@@ -89,10 +83,7 @@ public class MigrationPathManager {
 
         org.uberfire.java.nio.file.Path assetPath = modulePath.resolve( "src/main/resources/" +dotToSlash(jcrModule.getName())+"/"+ "globals.gdrl" );
 
-        final Path path = PathFactory.newPath( Paths.convert( assetPath.getFileSystem() ), assetPath.getFileName().toString(),
-                                               assetPath.toUri().toString() );
-
-        return path;
+        return Paths.convert( assetPath );
     }
 
     public Path generatePathForAsset( Module jcrModule,
@@ -114,9 +105,7 @@ public class MigrationPathManager {
             assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash(jcrModule.getName())+"/"+ jcrAssetItem.getName() + "." + jcrAssetItem.getFormat() );
         }
 
-        final Path path = PathFactory.newPath( Paths.convert( assetPath.getFileSystem() ), assetPath.getFileName().toString(), assetPath.toUri().toString() );
-
-        return path;
+        return Paths.convert( assetPath );
     }
 
     public Path generatePathForAsset( Module jcrModule,
