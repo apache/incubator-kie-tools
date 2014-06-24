@@ -123,7 +123,7 @@ public class SplashScreenActivityGenerator extends AbstractGenerator {
 
         //Validate onStartup0ParameterMethodName and onStartup1ParameterMethodName
         if ( onStartup0ParameterMethodName != null && onStartup1ParameterMethodName != null ) {
-            final String msg = "The WorkbenchSplashScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence.";
+            final String msg = "Found multiple @OnStartup methods. Each class can declare at most one.";
             throw new GenerationException( msg );
         }
 

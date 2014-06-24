@@ -149,7 +149,7 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         } ), pathCompilationUnit );
         assertFailedCompilation( diagnostics );
         assertCompilationError( diagnostics,
-                                "The WorkbenchSplashScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
+                                "Found multiple @OnStartup methods. Each class can declare at most one." );
         assertNull( result.getActualCode() );
     }
 }

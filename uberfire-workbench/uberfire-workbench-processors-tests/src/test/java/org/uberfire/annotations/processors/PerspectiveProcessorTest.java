@@ -473,7 +473,7 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
             }
         } ), pathCompilationUnit );
         assertFailedCompilation( diagnostics );
-        assertCompilationError( diagnostics, "The WorkbenchPerspective has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
+        assertCompilationError( diagnostics, "Found multiple @OnStartup methods. Each class can declare at most one." );
         assertNull( result.getActualCode() );
     }
 
