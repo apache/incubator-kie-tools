@@ -56,7 +56,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
         final String onStartup0ParameterMethodName = GeneratorUtils.getOnStartupZeroParameterMethodName( classElement,
                                                                                                          processingEnvironment );
         final String onStartup1ParameterMethodName = GeneratorUtils.getOnStartPlaceRequestParameterMethodName( classElement,
-                                                                                                             processingEnvironment );
+                                                                                                               processingEnvironment );
         final String onMayCloseMethodName = GeneratorUtils.getOnMayCloseMethodName( classElement,
                                                                                     processingEnvironment );
         final String onCloseMethodName = GeneratorUtils.getOnCloseMethodName( classElement,
@@ -64,7 +64,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
         final String onShutdownMethodName = GeneratorUtils.getOnShutdownMethodName( classElement,
                                                                                     processingEnvironment );
         final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName( classElement,
-                                                                              processingEnvironment );
+                                                                            processingEnvironment );
         final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
                                                                              processingEnvironment );
         final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName( classElement,
@@ -113,9 +113,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
         //Validate onStartup0ParameterMethodName and onStartup1ParameterMethodName
         if ( onStartup0ParameterMethodName != null && onStartup1ParameterMethodName != null ) {
             final String msg = "The WorkbenchPopup has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence.";
-            processingEnvironment.getMessager().printMessage( Kind.WARNING,
-                                                              msg );
-            logger.warn( msg );
+            throw new GenerationException( msg );
         }
 
         //Validate getTitleMethodName and getTitleWidgetMethodName

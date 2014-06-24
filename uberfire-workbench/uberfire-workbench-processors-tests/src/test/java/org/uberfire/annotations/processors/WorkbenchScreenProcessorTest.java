@@ -284,10 +284,8 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
     @Test
     public void testWorkbenchScreenOnStartMultipleMethods() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest13";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest13.expected";
 
         final Result result = new Result();
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
 
@@ -297,13 +295,10 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
             }
         } ),
                                                                                 pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertCompilationWarning( diagnostics,
-                                  "The WorkbenchScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertFailedCompilation( diagnostics );
+        assertCompilationError( diagnostics,
+                                "The WorkbenchScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
+        assertNull( result.getActualCode() );
     }
 
     @Test
@@ -403,11 +398,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
 
-                                                                                    @Override
-                                                                                    public void generationComplete( final String code ) {
-                                                                                        result.setActualCode( code );
-                                                                                    }
-                                                                                } ),
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -426,11 +421,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
 
-                                                                                    @Override
-                                                                                    public void generationComplete( final String code ) {
-                                                                                        result.setActualCode( code );
-                                                                                    }
-                                                                                } ),
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -449,11 +444,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
 
-                                                                                    @Override
-                                                                                    public void generationComplete( final String code ) {
-                                                                                        result.setActualCode( code );
-                                                                                    }
-                                                                                } ),
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -472,11 +467,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
 
-                                                                                    @Override
-                                                                                    public void generationComplete( final String code ) {
-                                                                                        result.setActualCode( code );
-                                                                                    }
-                                                                                } ),
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -495,11 +490,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
 
-                                                                                    @Override
-                                                                                    public void generationComplete( final String code ) {
-                                                                                        result.setActualCode( code );
-                                                                                    }
-                                                                                } ),
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -518,11 +513,11 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchScreenProcessor( new GenerationCompleteCallback() {
 
-                                                                                    @Override
-                                                                                    public void generationComplete( final String code ) {
-                                                                                        result.setActualCode( code );
-                                                                                    }
-                                                                                } ),
+            @Override
+            public void generationComplete( final String code ) {
+                result.setActualCode( code );
+            }
+        } ),
                                                                                 pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );

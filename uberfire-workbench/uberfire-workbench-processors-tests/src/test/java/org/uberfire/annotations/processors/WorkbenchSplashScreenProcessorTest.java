@@ -133,4 +133,23 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         assertEquals( result.getActualCode(),
                       result.getExpectedCode() );
     }
+
+    @Test
+    public void testWorkbenchSplashScreenOnStartMultipleMethods() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchSplashScreenTest7";
+
+        final Result result = new Result();
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchSplashScreenProcessor( new GenerationCompleteCallback() {
+
+            @Override
+            public void generationComplete( String code ) {
+                result.setActualCode( code );
+            }
+        } ), pathCompilationUnit );
+        assertFailedCompilation( diagnostics );
+        assertCompilationError( diagnostics,
+                                "The WorkbenchSplashScreen has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
+        assertNull( result.getActualCode() );
+    }
 }

@@ -204,10 +204,8 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
     @Test
     public void testWorkbenchPopupOnStartMultipleMethods() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest9";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest9.expected";
 
         final Result result = new Result();
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchPopupProcessor( new GenerationCompleteCallback() {
 
@@ -217,13 +215,10 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
             }
         } ),
                                                                                 pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertCompilationWarning( diagnostics,
-                                  "The WorkbenchPopup has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertFailedCompilation( diagnostics );
+        assertCompilationError( diagnostics,
+                                "The WorkbenchPopup has methods for both @OnStartup() and @OnStartup(Place). Method @OnStartup(Place) will take precedence." );
+        assertNull( result.getActualCode() );
     }
 
     @Test
