@@ -32,6 +32,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-social-screen-client</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-config-resource-widget</artifactId>
     </dependency>
