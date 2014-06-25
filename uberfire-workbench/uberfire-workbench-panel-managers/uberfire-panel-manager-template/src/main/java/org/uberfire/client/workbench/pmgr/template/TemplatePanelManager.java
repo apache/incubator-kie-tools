@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.AbstractPanelManagerImpl;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
@@ -48,7 +49,7 @@ public class TemplatePanelManager extends AbstractPanelManagerImpl {
                                               final PanelDefinition childPanel,
                                               final Position position ) {
 
-        WorkbenchPanelPresenter targetPanelPresenter = createTargetPanelPresenter( targetPanel );
+        WorkbenchPanelPresenter targetPanelPresenter = getOrCreateTargetPanelPresenter( targetPanel );
 
         final WorkbenchPanelPresenter childPanelPresenter = createChildPresenter( childPanel );
 
@@ -60,6 +61,11 @@ public class TemplatePanelManager extends AbstractPanelManagerImpl {
         return childPanel;
     }
 
+    @Override
+    public boolean removePartForPlace( PlaceRequest toRemove ) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
     private WorkbenchPanelPresenter createChildPresenter( PanelDefinition childPanel ) {
         final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
         mapPanelDefinitionToPresenter.put( childPanel,
@@ -67,7 +73,7 @@ public class TemplatePanelManager extends AbstractPanelManagerImpl {
         return childPanelPresenter;
     }
 
-    private WorkbenchPanelPresenter createTargetPanelPresenter( PanelDefinition targetPanel ) {
+    private WorkbenchPanelPresenter getOrCreateTargetPanelPresenter( PanelDefinition targetPanel ) {
         WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
