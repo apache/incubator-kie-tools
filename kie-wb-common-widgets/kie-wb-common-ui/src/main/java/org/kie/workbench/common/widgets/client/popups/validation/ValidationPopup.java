@@ -66,13 +66,16 @@ public class ValidationPopup extends Modal {
             }
         } ) );
 
-        table.addColumn( new ValidationMessageLevelColumn() {
+        final ValidationMessageLevelColumn validationMessageLevelColumn = new ValidationMessageLevelColumn() {
 
             @Override
             public ValidationMessage.Level getValue( final ValidationMessage msg ) {
                 return msg.getLevel();
             }
-        } );
+        };
+        table.addColumn( validationMessageLevelColumn );
+        table.setColumnWidth( validationMessageLevelColumn,
+                              "32px" );
         table.addColumn( new TextColumn<ValidationMessage>() {
 
             @Override
