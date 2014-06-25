@@ -18,41 +18,31 @@ package org.kie.workbench.common.screens.socialscreen.client;
 
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.TabPanel;
-import com.github.gwtbootstrap.client.ui.resources.Bootstrap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.socialscreen.client.discussion.DiscussionWidgetPresenter;
-import org.uberfire.client.markdown.Markdown;
 
-public class SocialScreenViewImpl
+public class AssetScreenViewImpl
         extends Composite
-        implements SocialScreenView {
+        implements AssetScreenView {
 
     interface Binder
             extends
-            UiBinder<Widget, SocialScreenViewImpl> {
+            UiBinder<Widget, AssetScreenViewImpl> {
 
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField(provided = true)
-    TabPanel tabPanel = new TabPanel(Bootstrap.Tabs.ABOVE);
-
-    @UiField(provided = true)
     DiscussionWidgetPresenter discussionArea;
 
     @Inject
-    public SocialScreenViewImpl(DiscussionWidgetPresenter discussionArea) {
-        this.discussionArea = discussionArea;
+    public AssetScreenViewImpl(DiscussionWidgetPresenter discussionWidgetPresenter) {
+        this.discussionArea = discussionWidgetPresenter;
         initWidget(uiBinder.createAndBindUi(this));
-    }
-
-    @Override
-    public void setDescription(String description) {
     }
 }

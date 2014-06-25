@@ -19,7 +19,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-    >
+             xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
@@ -27,6 +27,8 @@
   <gwt:HTMLPanel>
 
     <gwt:VerticalPanel ui:field="lines"/>
+    <bootstrap:TextArea ui:field="textBox" />
+    <gwt:Label text="gggdgdfgdf" />
 
   </gwt:HTMLPanel>
 

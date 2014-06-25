@@ -41,11 +41,11 @@ public class DiscussionWidgetPresenterTest {
         manager = new SocialScreenManagerMock();
     }
 
-//    @Test
-//    public void testPresenterSet() throws Exception {
-//        new DiscussionWidgetPresenterTest();
-//
-//    }
+    @Test
+    public void testPresenterSet() throws Exception {
+        DiscussionWidgetPresenter presenter = new DiscussionWidgetPresenter(view, identity, manager);
+        verify(view).setPresenter(presenter);
+    }
 
     @Test
     public void testInit() throws Exception {

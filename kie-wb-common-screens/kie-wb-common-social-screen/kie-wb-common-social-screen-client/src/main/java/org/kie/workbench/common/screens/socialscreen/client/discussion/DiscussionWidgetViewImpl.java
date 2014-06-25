@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.screens.socialscreen.client.discussion;
 
+import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,6 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class DiscussionWidgetViewImpl
         extends Composite
         implements DiscussionWidgetView {
+
+    private Presenter presenter;
 
     interface Binder
             extends
@@ -38,8 +44,16 @@ public class DiscussionWidgetViewImpl
     @UiField
     VerticalPanel lines;
 
+    @UiField
+    TextArea textBox;
+
     public DiscussionWidgetViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -50,5 +64,12 @@ public class DiscussionWidgetViewImpl
     @Override
     public void addRow(CommentLine line) {
         lines.add(line);
+    }
+
+    @UiHandler("textBox")
+    public void onCommentBoxEnter(final KeyUpEvent event) {
+        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+            presenter.onAddComment(textBox.getText());
+        }
     }
 }

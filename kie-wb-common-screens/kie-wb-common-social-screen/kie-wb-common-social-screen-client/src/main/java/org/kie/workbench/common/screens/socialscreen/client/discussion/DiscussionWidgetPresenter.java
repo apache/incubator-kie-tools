@@ -40,6 +40,8 @@ public class DiscussionWidgetPresenter
         this.view = view;
         this.identity = identity;
 
+        view.setPresenter(this);
+
         manager.getMetaData(new Callback<Metadata>() {
             @Override
             public void callback(Metadata metadata) {

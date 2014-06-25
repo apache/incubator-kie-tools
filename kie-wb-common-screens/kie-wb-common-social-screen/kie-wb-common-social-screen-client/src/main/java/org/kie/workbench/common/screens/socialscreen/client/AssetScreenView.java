@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.socialscreen.client.discussion;
+package org.kie.workbench.common.screens.socialscreen.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
-public interface DiscussionWidgetView
-        extends IsWidget {
-
-    interface Presenter {
-
-        void onAddComment(String comment);
-
-    }
-
-    void setPresenter(Presenter presenter);
-
-    void addRow(CommentLine line);
+public interface AssetScreenView {
 
 }
