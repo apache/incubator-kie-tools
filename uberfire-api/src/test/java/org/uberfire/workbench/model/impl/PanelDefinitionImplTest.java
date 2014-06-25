@@ -37,7 +37,8 @@ public class PanelDefinitionImplTest {
         assertTrue( panelDefinition.getParts().contains( part ) );
         otherPanel.addPart( part );
         assertTrue( otherPanel.getParts().contains( part ) );
-        assertEquals(otherPanel,part.getParentPanel());
+        assertEquals( otherPanel, part.getParentPanel() );
+        assertFalse( panelDefinition.getParts().contains( part ) );
     }
 
     @Test

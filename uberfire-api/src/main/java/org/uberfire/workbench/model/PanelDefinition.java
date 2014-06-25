@@ -30,6 +30,12 @@ public interface PanelDefinition {
     public void addPart( final PartDefinition part );
 
     /**
+     * Remove a Part from the Panel
+     * @param part The Part to be removed
+     */
+    public void removePart( final PartDefinition part );
+
+    /**
      * Get the Parts contained in the Panel
      * @return The parts
      */
