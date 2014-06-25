@@ -84,8 +84,32 @@ public class PanelDefinitionImpl
 
     @Override
     public void addPart( final PartDefinition part ) {
-        part.setParentPanel( this );
-        this.parts.add( part );
+        PanelDefinition oldPartParent = part.getParentPanel();
+        if ( partHasAValidParent( part, oldPartParent ) && !isMe( oldPartParent ) ) {
+            throw new IllegalArgumentException("The part is still attached to another panel.");
+        } else {
+            addPart( part, oldPartParent );
+        }
+
+    }
+
+    private void addPart( PartDefinition part,
+                          PanelDefinition oldPartParent ) {
+        if ( !this.parts.contains( part ) ) {
+            this.parts.add( part );
+        }
+        if ( !isMe( oldPartParent ) ) {
+            part.setParentPanel( this );
+        }
+    }
+
+    private boolean isMe( PanelDefinition oldPartParent ) {
+        return oldPartParent != null && oldPartParent.equals( this );
+    }
+
+    private boolean partHasAValidParent( PartDefinition part,
+                                         PanelDefinition oldPartParent ) {
+        return oldPartParent != null && oldPartParent.getParts().contains( part );
     }
 
     @Override

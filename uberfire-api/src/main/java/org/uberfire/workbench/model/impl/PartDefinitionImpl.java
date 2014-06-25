@@ -15,14 +15,14 @@
  */
 package org.uberfire.workbench.model.impl;
 
-import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
+
+import static org.uberfire.workbench.model.ContextDisplayMode.*;
 
 /**
  * Default implementation of PartDefinition
@@ -76,7 +76,22 @@ public class PartDefinitionImpl
      */
     @Override
     public void setParentPanel( final PanelDefinition parentPanel ) {
+        if ( !validateParentDefinition( parentPanel ) ) {
+            throw new IllegalStateException("Invalid Parent Panel Attribution to a Part");
+        }
         this.parentPanel = parentPanel;
+    }
+
+    private boolean validateParentDefinition( PanelDefinition parentPanel ) {
+        return !oldParentStillContainsMe() && newParentPanelContainsThisPart( parentPanel );
+    }
+
+    private boolean oldParentStillContainsMe() {
+        return this.parentPanel != null && this.parentPanel.getParts().contains( this );
+    }
+
+    private boolean newParentPanelContainsThisPart( PanelDefinition parentPanel ) {
+        return parentPanel.getParts().contains( this );
     }
 
     @Override
@@ -114,7 +129,6 @@ public class PartDefinitionImpl
         this.contextDisplayMode = contextDisplayMode;
     }
 
-
     @Override
     public int hashCode() {
         return this.place.hashCode();
@@ -139,7 +153,7 @@ public class PartDefinitionImpl
 
     @Override
     public String toString() {
-      return "PartDefinitionImpl [place=" + place + "]";
+        return "PartDefinitionImpl [place=" + place + "]";
     }
 
 }
