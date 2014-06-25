@@ -46,6 +46,7 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.StandardOpenOption;
@@ -67,6 +68,8 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
     private static final Logger log = LoggerFactory.getLogger( DecisionTableXLSServiceImpl.class );
 
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
+
+    private static final DRLFileFilter FILTER_DRL = new DRLFileFilter();
 
     @Inject
     @Named("ioStrategy")
@@ -133,15 +136,15 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
 
         try {
 
-            File tempFile = File.createTempFile("testxls", null);
-            FileOutputStream tempFOS = new FileOutputStream(tempFile);
+            File tempFile = File.createTempFile( "testxls", null );
+            FileOutputStream tempFOS = new FileOutputStream( tempFile );
             IOUtils.copy( content, tempFOS );
             tempFOS.flush();
             tempFOS.close();
 
             //Validate the xls
             try {
-                Workbook workbook = WorkbookFactory.create( new FileInputStream(tempFile) );
+                Workbook workbook = WorkbookFactory.create( new FileInputStream( tempFile ) );
             } catch ( InvalidFormatException e ) {
                 throw new DecisionTableParseException( "DecisionTableParseException: An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
                                                        e );
@@ -150,23 +153,22 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                                                        e );
             } catch ( Throwable e ) {
                 throw new DecisionTableParseException( "DecisionTableParseException: " + e.getMessage(),
-                        e );
+                                                       e );
             }
- 
+
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
             ioService.createFile( nioPath );
             final OutputStream outputStream = ioService.newOutputStream( nioPath,
                                                                          makeCommentedOption( sessionId,
                                                                                               comment ) );
-            IOUtils.copy( new FileInputStream(tempFile),
+            IOUtils.copy( new FileInputStream( tempFile ),
                           outputStream );
             outputStream.flush();
             outputStream.close();
 
-            
             //Read Path to ensure attributes have been set
             final Path newPath = Paths.convert( nioPath );
-            
+
             return newPath;
         } catch ( Exception e ) {
             log.error( e.getMessage(),
@@ -284,6 +286,7 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                                                                       StandardOpenOption.READ );
             return genericValidator.validate( path,
                                               inputStream,
+                                              FILTER_DRL,
                                               FILTER_JAVA );
 
         } catch ( Exception e ) {
