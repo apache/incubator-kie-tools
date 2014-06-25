@@ -13,14 +13,14 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
+import org.guvnor.structure.client.resources.NavigatorResources;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.resources.NavigatorResources;
-import org.uberfire.client.tree.Tree;
-import org.uberfire.client.tree.TreeItem;
+import org.kie.uberfire.client.tree.Tree;
+import org.kie.uberfire.client.tree.TreeItem;
 import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;

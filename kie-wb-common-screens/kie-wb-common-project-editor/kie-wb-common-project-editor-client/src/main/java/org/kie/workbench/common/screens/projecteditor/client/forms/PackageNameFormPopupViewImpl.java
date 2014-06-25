@@ -12,8 +12,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.Popup;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.Popup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class PackageNameFormPopupViewImpl
         extends Popup

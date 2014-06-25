@@ -55,9 +55,9 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.engine.Indexer;
-import org.uberfire.metadata.model.KObject;
-import org.uberfire.metadata.model.KObjectKey;
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 
 /**
  * The following information is being indexed for java files.

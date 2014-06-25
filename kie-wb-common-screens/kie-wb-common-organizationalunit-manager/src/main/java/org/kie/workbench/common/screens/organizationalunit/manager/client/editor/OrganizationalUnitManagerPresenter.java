@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.screens.organizationalunit.manager.client.editor;
 
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 
 public interface OrganizationalUnitManagerPresenter {
 

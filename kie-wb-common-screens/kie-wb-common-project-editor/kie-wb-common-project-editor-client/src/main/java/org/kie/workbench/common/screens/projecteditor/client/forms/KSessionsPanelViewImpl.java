@@ -44,8 +44,8 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.ClickableIma
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
-import org.uberfire.client.tables.SimpleTable;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.tables.SimpleTable;
 
 public class KSessionsPanelViewImpl
         extends Composite

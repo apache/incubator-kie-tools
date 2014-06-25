@@ -9,9 +9,9 @@ import org.kie.workbench.common.widgets.configresource.client.resources.i18n.Imp
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.MultiPageEditorView;
-import org.uberfire.client.common.Page;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.MultiPageEditorView;
+import org.kie.uberfire.client.common.Page;
 
 public class ProjectImportsScreenViewImpl
         extends MultiPageEditorView

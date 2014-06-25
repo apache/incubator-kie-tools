@@ -53,7 +53,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.common.YesNoCancelPopup;
+import org.kie.uberfire.client.common.YesNoCancelPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnStartup;
@@ -64,7 +64,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.client.common.ConcurrentChangePopup.*;
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
@@ -376,20 +376,20 @@ public class ProjectScreenPresenter
 
     private YesNoCancelPopup createYesNoCancelPopup() {
         return YesNoCancelPopup.newYesNoCancelPopup(
-                org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Information(),
+                org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Information(),
                 ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
                 getYesCommand(),
-                org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.YES(),
+                org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.YES(),
                 ButtonType.SUCCESS,
                 IconType.THUMBS_UP,
 
                 getNoCommand(),
-                org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.NO(),
+                org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.NO(),
                 ButtonType.DANGER,
                 IconType.THUMBS_DOWN,
 
                 getCancelCommand(),
-                org.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
+                org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
                 ButtonType.PRIMARY,
                 IconType.SIGNOUT
                                                    );

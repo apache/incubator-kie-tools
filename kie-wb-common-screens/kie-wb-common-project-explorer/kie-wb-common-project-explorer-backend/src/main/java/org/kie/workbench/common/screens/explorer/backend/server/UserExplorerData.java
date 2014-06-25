@@ -7,9 +7,9 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.data.Triple;
 

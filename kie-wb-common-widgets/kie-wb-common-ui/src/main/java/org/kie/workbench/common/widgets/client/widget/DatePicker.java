@@ -25,8 +25,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.ValueChanged;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.ValueChanged;
 
 abstract class DatePicker extends DirtyableComposite {
 

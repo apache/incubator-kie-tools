@@ -20,14 +20,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewWidget;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewWidget;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 
 /**
  * The Explorer's view implementation

@@ -37,8 +37,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-metadata-backend-lucene</artifactId>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-metadata-backend-lucene</artifactId>
     </dependency>
 
     <dependency>
@@ -80,8 +80,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-metadata-commons-io</artifactId>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-metadata-commons-io</artifactId>
       <scope>test</scope>
     </dependency>
 

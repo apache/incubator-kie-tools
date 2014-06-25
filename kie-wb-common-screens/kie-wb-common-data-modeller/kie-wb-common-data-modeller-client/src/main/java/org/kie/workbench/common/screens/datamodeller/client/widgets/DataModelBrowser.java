@@ -62,8 +62,7 @@ import org.kie.workbench.common.screens.datamodeller.client.validation.Validator
 import org.kie.workbench.common.screens.datamodeller.events.*;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 

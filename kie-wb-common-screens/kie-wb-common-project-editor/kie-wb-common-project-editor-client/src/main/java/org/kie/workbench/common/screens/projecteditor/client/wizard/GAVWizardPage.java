@@ -15,8 +15,8 @@ import org.kie.workbench.common.screens.projecteditor.client.forms.VersionChange
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.wizards.WizardPage;
-import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
+import org.kie.uberfire.client.wizards.WizardPage;
+import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 public class GAVWizardPage
         implements WizardPage {

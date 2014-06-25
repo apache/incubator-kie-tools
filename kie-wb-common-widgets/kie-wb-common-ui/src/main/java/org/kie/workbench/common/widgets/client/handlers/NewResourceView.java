@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
-import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 @ApplicationScoped
 public class NewResourceView extends Modal implements NewResourcePresenter.View {

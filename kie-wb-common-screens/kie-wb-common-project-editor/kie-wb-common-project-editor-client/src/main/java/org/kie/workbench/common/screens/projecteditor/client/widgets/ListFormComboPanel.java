@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.HasListFormComboPanelProperties;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
 
 public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperties>
         implements IsWidget, ListFormComboPanelView.Presenter {

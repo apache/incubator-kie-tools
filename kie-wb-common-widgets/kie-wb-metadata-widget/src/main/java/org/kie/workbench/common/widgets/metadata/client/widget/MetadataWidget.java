@@ -38,10 +38,10 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.uberfire.client.common.DecoratedDisclosurePanel;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.FormStyleLayout;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.FormStyleLayout;
+import org.kie.uberfire.client.common.SmallLabel;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;

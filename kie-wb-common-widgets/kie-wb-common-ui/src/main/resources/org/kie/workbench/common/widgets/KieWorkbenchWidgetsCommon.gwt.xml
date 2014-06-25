@@ -31,4 +31,6 @@
 
   <inherits name="org.uberfire.UberfireClientAll"/>
 
+  <inherits name='org.kie.uberfire.KIEUberfireWidgetsCommons'/>
+
 </module>

@@ -29,6 +29,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
+import org.kie.uberfire.metadata.io.KObjectUtil;
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.JavaTypeIndexTerm;
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.valueterms.ValueJavaTypeIndexTerm;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
@@ -39,8 +40,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.QueryB
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.metadata.engine.Index;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.engine.Index;
 
 import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.assertEquals;
@@ -62,7 +63,7 @@ public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefiniti
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
             final IndexSearcher searcher = ( ( LuceneIndex ) index ).nrtSearcher();

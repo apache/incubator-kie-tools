@@ -23,8 +23,8 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.wizards.AbstractWizard;
-import org.uberfire.client.wizards.WizardPage;
+import org.kie.uberfire.client.wizards.AbstractWizard;
+import org.kie.uberfire.client.wizards.WizardPage;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent

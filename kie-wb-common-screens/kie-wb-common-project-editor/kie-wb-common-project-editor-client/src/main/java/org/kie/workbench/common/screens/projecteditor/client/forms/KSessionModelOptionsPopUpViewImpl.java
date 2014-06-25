@@ -30,8 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
-import org.uberfire.client.common.Popup;
+import org.kie.uberfire.client.common.Popup;
 
 public class KSessionModelOptionsPopUpViewImpl
         extends Popup

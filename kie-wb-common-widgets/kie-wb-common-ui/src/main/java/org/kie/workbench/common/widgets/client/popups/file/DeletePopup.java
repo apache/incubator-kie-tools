@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.FormStylePopup;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 

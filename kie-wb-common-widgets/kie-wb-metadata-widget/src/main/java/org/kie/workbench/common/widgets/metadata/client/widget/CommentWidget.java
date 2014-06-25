@@ -23,8 +23,8 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.widget.DecoratedTextArea;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.uberfire.client.common.DecoratedDisclosurePanel;
-import org.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
+import org.kie.uberfire.client.common.DirtyableComposite;
 
 public class CommentWidget
         extends DirtyableComposite {

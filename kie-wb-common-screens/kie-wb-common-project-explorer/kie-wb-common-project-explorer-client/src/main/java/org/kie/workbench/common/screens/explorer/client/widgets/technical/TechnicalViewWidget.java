@@ -27,6 +27,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
@@ -34,9 +36,7 @@ import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Naviga
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 
 /**
  * Technical View implementation

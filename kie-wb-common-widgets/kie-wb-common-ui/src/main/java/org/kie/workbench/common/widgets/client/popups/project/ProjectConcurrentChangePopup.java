@@ -19,8 +19,8 @@ package org.kie.workbench.common.widgets.client.popups.project;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.kie.workbench.common.widgets.client.resources.i18n.ProjectConcurrentChangePopupConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.AbstractConcurrentChangePopup;
-import org.uberfire.client.resources.i18n.CommonConstants;
+import org.kie.uberfire.client.common.AbstractConcurrentChangePopup;
+import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.Identity;
 

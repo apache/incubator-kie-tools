@@ -38,9 +38,9 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.services.security.AppRoles;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.uberfire.client.common.DecoratedDisclosurePanel;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.SmallLabel;
 import org.uberfire.security.Identity;
 
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.*;

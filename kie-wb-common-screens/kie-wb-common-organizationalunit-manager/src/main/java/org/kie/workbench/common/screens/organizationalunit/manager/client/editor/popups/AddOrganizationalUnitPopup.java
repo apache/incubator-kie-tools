@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithPayload;
-import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class AddOrganizationalUnitPopup extends Modal {
 

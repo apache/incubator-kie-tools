@@ -26,10 +26,10 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SegmentedPath;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.model.KObject;
-import org.uberfire.metadata.model.KObjectKey;
-import org.uberfire.metadata.model.KProperty;
-import org.uberfire.metadata.model.schema.MetaType;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
+import org.kie.uberfire.metadata.model.KProperty;
+import org.kie.uberfire.metadata.model.schema.MetaType;
 
 import static org.apache.commons.codec.binary.Base64.*;
 

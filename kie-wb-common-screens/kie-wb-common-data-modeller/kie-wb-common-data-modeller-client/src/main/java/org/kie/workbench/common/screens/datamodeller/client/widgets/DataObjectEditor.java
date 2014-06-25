@@ -59,7 +59,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class DataObjectEditor extends Composite {
 

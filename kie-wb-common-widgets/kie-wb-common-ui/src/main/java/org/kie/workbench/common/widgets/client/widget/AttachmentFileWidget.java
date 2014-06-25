@@ -33,7 +33,7 @@ import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.guvnor.common.services.shared.file.upload.FileOperation;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.FileUpload;
+import org.kie.uberfire.client.common.FileUpload;
 
 /**
  * This wraps a file uploader utility

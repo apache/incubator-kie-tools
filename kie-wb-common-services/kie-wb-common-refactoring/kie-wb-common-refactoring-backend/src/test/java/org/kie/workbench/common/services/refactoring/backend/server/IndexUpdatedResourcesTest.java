@@ -28,9 +28,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
+import org.kie.uberfire.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.metadata.engine.Index;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.engine.Index;
 
 import static org.junit.Assert.*;
 
@@ -55,7 +56,7 @@ public class IndexUpdatedResourcesTest extends BaseIndexingTest {
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
             final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();

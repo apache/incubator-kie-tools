@@ -41,7 +41,7 @@ import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionT
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
-import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class NewDataObjectPopup extends Modal {

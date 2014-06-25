@@ -6,13 +6,13 @@ import java.util.Set;
 
 import com.google.gwt.user.client.ui.HasVisibility;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
 
 public interface View extends HasBusyIndicator,
                               HasVisibility {

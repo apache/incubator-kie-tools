@@ -19,10 +19,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 
 /**
  * The Organizational Unit Manager View implementation

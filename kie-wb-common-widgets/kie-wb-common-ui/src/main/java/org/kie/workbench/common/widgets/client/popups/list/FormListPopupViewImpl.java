@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.commons.data.Pair;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.Popup;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.Popup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class FormListPopupViewImpl
         extends Popup

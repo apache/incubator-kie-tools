@@ -21,7 +21,7 @@ import java.util.Map;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
-import org.uberfire.client.common.MultiPageEditor;
+import org.kie.uberfire.client.common.MultiPageEditor;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.mvp.Command;

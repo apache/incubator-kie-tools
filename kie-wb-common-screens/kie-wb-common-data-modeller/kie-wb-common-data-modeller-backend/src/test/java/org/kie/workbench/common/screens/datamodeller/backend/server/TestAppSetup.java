@@ -16,25 +16,18 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import java.util.HashSet;
-import java.util.Map;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.guvnor.common.services.project.service.KModuleService;
 import org.guvnor.m2repo.service.M2RepoService;
-import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.uberfire.backend.server.config.ConfigurationService;
+import org.guvnor.structure.server.config.ConfigurationService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
-import org.uberfire.metadata.engine.Indexer;
-import org.uberfire.metadata.io.IOServiceIndexedImpl;
+import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.mockito.Mockito.*;

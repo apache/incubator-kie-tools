@@ -36,11 +36,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
-import org.uberfire.metadata.engine.Indexer;
-import org.uberfire.metadata.io.IOServiceIndexedImpl;
-import org.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.kie.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.io.IOServiceIndexedImpl;
+import org.kie.uberfire.metadata.model.KObject;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.junit.Assert.*;

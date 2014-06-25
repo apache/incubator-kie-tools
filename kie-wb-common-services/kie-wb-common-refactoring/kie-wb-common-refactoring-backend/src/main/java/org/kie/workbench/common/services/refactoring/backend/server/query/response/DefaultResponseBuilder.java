@@ -28,7 +28,7 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObject;
 import org.uberfire.paging.PageResponse;
 
 @ApplicationScoped

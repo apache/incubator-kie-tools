@@ -30,7 +30,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
-import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class AddImportPopup extends Modal {
 

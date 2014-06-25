@@ -24,9 +24,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.kie.workbench.common.screens.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class EditOrganizationalUnitPopup extends Modal {
 

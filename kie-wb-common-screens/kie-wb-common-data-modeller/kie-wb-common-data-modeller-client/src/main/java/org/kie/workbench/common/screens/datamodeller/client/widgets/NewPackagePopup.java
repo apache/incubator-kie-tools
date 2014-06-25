@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.uberfire.client.common.Popup;
+import org.kie.uberfire.client.common.Popup;
 import org.uberfire.mvp.Command;
 
 import javax.inject.Inject;

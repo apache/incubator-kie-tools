@@ -16,15 +16,15 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.client.resources.NavigatorResources;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.client.resources.NavigatorResources;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 

@@ -94,8 +94,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-metadata-commons-io</artifactId>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-metadata-commons-io</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -109,6 +109,12 @@
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-backend</artifactId>
       <scope>test</scope>
     </dependency>
 

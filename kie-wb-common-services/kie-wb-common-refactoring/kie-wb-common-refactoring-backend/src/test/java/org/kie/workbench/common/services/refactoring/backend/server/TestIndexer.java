@@ -16,7 +16,7 @@
 package org.kie.workbench.common.services.refactoring.backend.server;
 
 import org.uberfire.io.IOService;
-import org.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.engine.Indexer;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public interface TestIndexer<T extends ResourceTypeDefinition> extends Indexer {

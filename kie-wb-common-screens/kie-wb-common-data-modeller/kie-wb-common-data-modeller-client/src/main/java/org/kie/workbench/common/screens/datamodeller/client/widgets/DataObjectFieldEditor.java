@@ -58,7 +58,7 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelec
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.*;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class DataObjectFieldEditor extends Composite {
 

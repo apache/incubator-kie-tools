@@ -43,7 +43,7 @@ import org.kie.workbench.common.widgets.metadata.client.resources.Images;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.common.ClickableLabel;
+import org.kie.uberfire.client.common.ClickableLabel;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.java.nio.base.version.VersionRecord;
 

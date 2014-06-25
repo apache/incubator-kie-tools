@@ -9,10 +9,10 @@ import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
+import org.guvnor.structure.client.resources.NavigatorResources;
 import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.uberfire.client.common.UberBreadcrumbs;
-import org.uberfire.client.resources.NavigatorResources;
+import org.kie.uberfire.client.common.UberBreadcrumbs;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class NavigatorBreadcrumbs extends Composite {

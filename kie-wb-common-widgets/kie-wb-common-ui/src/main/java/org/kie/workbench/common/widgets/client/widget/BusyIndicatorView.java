@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 
 public class BusyIndicatorView implements HasBusyIndicator {
 

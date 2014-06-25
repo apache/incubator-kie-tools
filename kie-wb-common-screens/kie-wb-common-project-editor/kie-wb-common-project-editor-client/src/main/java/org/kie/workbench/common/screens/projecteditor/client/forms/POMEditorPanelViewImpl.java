@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.GAV;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class POMEditorPanelViewImpl

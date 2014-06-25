@@ -118,9 +118,15 @@
     </dependency>
 
     <dependency>
-          <groupId>org.jboss.spec.javax.servlet</groupId>
-          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-          <scope>test</scope>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-backend</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

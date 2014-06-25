@@ -17,9 +17,9 @@ package org.kie.workbench.common.screens.organizationalunit.manager.client.edito
 
 import java.util.Collection;
 
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
 import org.uberfire.client.mvp.UberView;
 
 public interface OrganizationalUnitManagerView extends UberView<OrganizationalUnitManagerPresenter>,

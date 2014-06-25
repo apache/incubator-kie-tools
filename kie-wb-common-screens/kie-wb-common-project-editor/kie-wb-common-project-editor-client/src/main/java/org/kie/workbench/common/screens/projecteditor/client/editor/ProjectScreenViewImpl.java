@@ -40,8 +40,8 @@ import org.kie.workbench.common.screens.projecteditor.client.forms.POMEditorPane
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 @ApplicationScoped
 public class ProjectScreenViewImpl

@@ -15,19 +15,19 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
-import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOSearchService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.search.DateRange;
+import org.kie.uberfire.metadata.search.DateRange;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 

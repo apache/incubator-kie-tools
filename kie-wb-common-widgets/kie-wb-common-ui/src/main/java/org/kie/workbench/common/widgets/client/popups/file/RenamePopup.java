@@ -28,7 +28,7 @@ import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.FormStylePopup;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;

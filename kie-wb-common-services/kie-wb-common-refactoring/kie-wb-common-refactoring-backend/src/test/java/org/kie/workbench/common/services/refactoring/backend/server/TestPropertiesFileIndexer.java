@@ -27,8 +27,8 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.model.KObject;
-import org.uberfire.metadata.model.KObjectKey;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 
 /**
  * Test indexer that simply loads Properties from the file

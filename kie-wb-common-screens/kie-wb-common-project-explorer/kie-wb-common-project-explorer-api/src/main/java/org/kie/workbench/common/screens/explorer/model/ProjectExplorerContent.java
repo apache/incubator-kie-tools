@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
 
 @Portable
 public class ProjectExplorerContent {

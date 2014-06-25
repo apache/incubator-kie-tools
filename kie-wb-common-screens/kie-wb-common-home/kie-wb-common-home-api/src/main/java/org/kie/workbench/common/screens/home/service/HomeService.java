@@ -2,8 +2,8 @@ package org.kie.workbench.common.screens.home.service;
 
 import java.util.Collection;
 
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
 
 /**
  * Handy things the Home Page needs

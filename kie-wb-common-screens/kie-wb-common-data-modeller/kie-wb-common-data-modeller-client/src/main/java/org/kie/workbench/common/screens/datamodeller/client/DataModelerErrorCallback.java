@@ -19,8 +19,8 @@ package org.kie.workbench.common.screens.datamodeller.client;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class DataModelerErrorCallback implements ErrorCallback<Message> {
     

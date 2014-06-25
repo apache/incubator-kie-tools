@@ -27,9 +27,9 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import org.kie.workbench.common.screens.messageconsole.client.console.resources.MessageConsoleResources;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.tables.SimpleTable;
+import org.kie.uberfire.client.tables.SimpleTable;
 
 @ApplicationScoped
 public class MessageConsoleViewImpl extends Composite implements MessageConsoleView {

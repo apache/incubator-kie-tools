@@ -25,10 +25,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.metadata.client.resources.Images;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * This is a viewer/selector for categories.

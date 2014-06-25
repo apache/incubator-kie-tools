@@ -20,12 +20,12 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.repositories.Repository;
 
 /**
  * Service definition for Explorer editor
