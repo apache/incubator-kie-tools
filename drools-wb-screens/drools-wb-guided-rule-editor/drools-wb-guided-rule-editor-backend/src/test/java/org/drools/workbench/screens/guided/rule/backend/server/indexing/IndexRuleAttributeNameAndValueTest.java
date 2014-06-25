@@ -30,14 +30,15 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.junit.Test;
+import org.kie.uberfire.metadata.io.KObjectUtil;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeValueIndexTerm;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.metadata.engine.Index;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.engine.Index;
 
 import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
@@ -59,7 +60,7 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<GuidedR
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
             final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();

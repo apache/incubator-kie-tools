@@ -32,7 +32,7 @@ import org.drools.workbench.screens.drltext.client.widget.DSLSentenceBrowserWidg
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
 import org.drools.workbench.screens.drltext.client.widget.RuleContentWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 
 public class DRLEditorViewImpl
         extends Composite

@@ -34,7 +34,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.FormStylePopup;
 
 /**
  * A popup to define the parameters of an Action to retract a Fact

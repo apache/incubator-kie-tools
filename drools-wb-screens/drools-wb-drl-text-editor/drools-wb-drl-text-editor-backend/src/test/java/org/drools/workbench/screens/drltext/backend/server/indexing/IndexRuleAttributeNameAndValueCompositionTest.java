@@ -37,10 +37,10 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttri
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeValueIndexTerm;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.metadata.backend.lucene.util.KObjectUtil;
-import org.uberfire.metadata.engine.Index;
-import org.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
+import org.kie.uberfire.metadata.engine.Index;
+import org.kie.uberfire.metadata.model.KObject;
 
 import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
@@ -62,7 +62,7 @@ public class IndexRuleAttributeNameAndValueCompositionTest extends BaseIndexingT
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get( org.kie.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         //DRL defining a RuleFlow-Group named myRuleFlowGroup. This should match drl5.drl
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"

@@ -22,7 +22,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
@@ -44,8 +43,8 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.SummaryPag
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.wizards.AbstractWizard;
-import org.uberfire.client.wizards.WizardPage;
+import org.kie.uberfire.client.wizards.AbstractWizard;
+import org.kie.uberfire.client.wizards.WizardPage;
 
 /**
  * Wizard for creating a Guided Decision Table

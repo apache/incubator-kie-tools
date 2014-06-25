@@ -48,10 +48,10 @@ import org.drools.workbench.screens.guided.dtable.client.resources.images.Guided
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.ImageButton;
-import org.uberfire.client.common.InfoPopup;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.ImageButton;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * A popup to define an Action to set a field on an existing Fact to the value

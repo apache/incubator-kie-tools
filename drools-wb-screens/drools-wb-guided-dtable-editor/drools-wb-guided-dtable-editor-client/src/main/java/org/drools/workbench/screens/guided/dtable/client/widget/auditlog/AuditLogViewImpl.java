@@ -47,7 +47,7 @@ import org.drools.workbench.models.datamodel.auditlog.AuditLog;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.workbench.common.services.security.AppRoles;
-import org.uberfire.client.common.popups.footers.ModalFooterOKButton;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
 import org.uberfire.security.Identity;
 
 /**

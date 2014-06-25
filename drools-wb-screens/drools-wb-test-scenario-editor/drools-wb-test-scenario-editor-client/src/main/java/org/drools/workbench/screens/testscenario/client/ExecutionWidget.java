@@ -32,8 +32,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
-import org.uberfire.client.common.SmallLabel;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 public class ExecutionWidget extends Composite {
 

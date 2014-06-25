@@ -36,9 +36,9 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardOpenOption;
-import org.uberfire.metadata.engine.Indexer;
-import org.uberfire.metadata.model.KObject;
-import org.uberfire.metadata.model.KObjectKey;
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 
 @ApplicationScoped
 public class DecisionTableXLSFileIndexer implements Indexer {

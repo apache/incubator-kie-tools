@@ -29,7 +29,7 @@ import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
-import org.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
 
 /**
  * Free form DRL line widget

@@ -29,12 +29,11 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.InfoPopup;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
 
 public class TypeChoiceFormPopup
         extends FormStylePopup

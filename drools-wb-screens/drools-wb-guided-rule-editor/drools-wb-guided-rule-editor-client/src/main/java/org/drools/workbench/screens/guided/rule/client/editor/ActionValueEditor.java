@@ -51,16 +51,15 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.DropDownValueChanged;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.InfoPopup;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DropDownValueChanged;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * This provides for editing of fields in the RHS of a rule.

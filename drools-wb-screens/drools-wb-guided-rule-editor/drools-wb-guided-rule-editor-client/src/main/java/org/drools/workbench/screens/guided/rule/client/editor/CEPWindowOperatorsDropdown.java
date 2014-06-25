@@ -35,7 +35,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEdito
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
+import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 /**
  * Drop-down Widget for Operators including supplementary controls for CEP

@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.guvnor.common.services.project.model.Dependency;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class BulkRunTestScenarioEditorViewImpl

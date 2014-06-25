@@ -39,14 +39,13 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.resources.ItemImages;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.uberfire.client.common.DirtyableHorizontalPane;
-import org.uberfire.client.common.FormStyleLayout;
-import org.uberfire.client.common.InfoPopup;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DirtyableHorizontalPane;
+import org.kie.uberfire.client.common.FormStyleLayout;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * Displays a list of rule options (attributes).

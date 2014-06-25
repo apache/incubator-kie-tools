@@ -40,7 +40,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.Dup
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.PatternRemovedEvent;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
+import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
  * A page for the guided Decision Table Wizard to define Actions setting fields

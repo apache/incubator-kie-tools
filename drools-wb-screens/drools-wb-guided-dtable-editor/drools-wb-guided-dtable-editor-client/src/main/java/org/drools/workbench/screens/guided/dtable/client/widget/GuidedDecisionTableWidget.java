@@ -64,13 +64,13 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.AddButton;
-import org.uberfire.client.common.DecoratedDisclosurePanel;
-import org.uberfire.client.common.DirtyableHorizontalPane;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.ImageButton;
-import org.uberfire.client.common.PrettyFormLayout;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.AddButton;
+import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
+import org.kie.uberfire.client.common.DirtyableHorizontalPane;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.ImageButton;
+import org.kie.uberfire.client.common.PrettyFormLayout;
+import org.kie.uberfire.client.common.SmallLabel;
 import org.uberfire.security.Identity;
 
 /**

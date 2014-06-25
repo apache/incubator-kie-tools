@@ -52,9 +52,9 @@ import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSucces
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.MultiPageEditor;
-import org.uberfire.client.common.Page;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.MultiPageEditor;
+import org.kie.uberfire.client.common.Page;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent

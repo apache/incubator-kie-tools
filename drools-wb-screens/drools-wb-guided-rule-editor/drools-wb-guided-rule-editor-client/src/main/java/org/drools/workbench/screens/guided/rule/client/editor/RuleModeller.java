@@ -42,19 +42,18 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeEvent;
 import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeHandler;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
-import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.kie.workbench.common.services.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.ClickableLabel;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.DirtyableHorizontalPane;
-import org.uberfire.client.common.DirtyableVerticalPane;
-import org.uberfire.client.common.SmallLabel;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.ClickableLabel;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.DirtyableHorizontalPane;
+import org.kie.uberfire.client.common.DirtyableVerticalPane;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 /**
  * This is the parent widget that contains the model based rule builder.

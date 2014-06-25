@@ -40,7 +40,9 @@ import javax.ws.rs.core.Variant;
 
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.resteasy.annotations.GZIP;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.kie.workbench.common.services.rest.RestOperationException;
 import org.kie.workbench.common.services.shared.rest.AddRepositoryToOrganizationalUnitRequest;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
@@ -63,9 +65,6 @@ import org.kie.workbench.common.services.shared.rest.RepositoryResponse;
 import org.kie.workbench.common.services.shared.rest.TestProjectRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.repositories.RepositoryService;
 import org.uberfire.io.IOService;
 
 /**
@@ -158,9 +157,9 @@ public class ProjectResource {
     public Collection<RepositoryResponse> getRepositories() {
         logger.debug( "-----getRepositories--- " );
 
-        Collection<org.uberfire.backend.repositories.Repository> repos = repositoryService.getRepositories();
+        Collection<org.guvnor.structure.repositories.Repository> repos = repositoryService.getRepositories();
         List<RepositoryResponse> result = new ArrayList<RepositoryResponse>();
-        for ( org.uberfire.backend.repositories.Repository r : repos ) {
+        for ( org.guvnor.structure.repositories.Repository r : repos ) {
             RepositoryResponse repo = new RepositoryResponse();
             repo.setGitURL( r.getUri() );
             repo.setName( r.getAlias() );
@@ -174,7 +173,7 @@ public class ProjectResource {
     @Path("/repositories/{repositoryName}")
     public RepositoryResponse getRepository(@PathParam("repositoryName") String repositoryName ) {
         logger.debug( "-----getRepository---, repository name: {}",  repositoryName);
-        org.uberfire.backend.repositories.Repository origRepo = checkRepositoryExistence(repositoryName);
+        org.guvnor.structure.repositories.Repository origRepo = checkRepositoryExistence(repositoryName);
         
         RepositoryResponse repo = new RepositoryResponse();
         repo.setGitURL( origRepo.getUri() );
@@ -379,11 +378,11 @@ public class ProjectResource {
     @Path("/organizationalunits")
     public Collection<OrganizationalUnit> getOrganizationalUnits() {
         logger.debug( "-----getOrganizationalUnits--- " );
-        Collection<org.uberfire.backend.organizationalunit.OrganizationalUnit> origOrgUnits
+        Collection<org.guvnor.structure.organizationalunit.OrganizationalUnit> origOrgUnits
                 = organizationalUnitService.getOrganizationalUnits();
 
         List<OrganizationalUnit> organizationalUnits = new ArrayList<OrganizationalUnit>();
-        for ( org.uberfire.backend.organizationalunit.OrganizationalUnit ou : origOrgUnits ) {
+        for ( org.guvnor.structure.organizationalunit.OrganizationalUnit ou : origOrgUnits ) {
             OrganizationalUnit orgUnit = new OrganizationalUnit();
             orgUnit.setName( ou.getName() );
             orgUnit.setOwner( ou.getOwner() );
@@ -403,7 +402,7 @@ public class ProjectResource {
     @Path("/organizationalunits/{organizationalUnitName}")
     public OrganizationalUnit getOrganizationalUnit(@PathParam("organizationalUnitName") String organizationalUnitName) { 
         logger.debug( "-----getOrganizationalUnit ---, OrganizationalUnit name: {}", organizationalUnitName );
-        org.uberfire.backend.organizationalunit.OrganizationalUnit origOrgUnit
+        org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
             = checkOrganizationalUnitExistence(organizationalUnitName);
         
         OrganizationalUnit orgUnit = new OrganizationalUnit();
@@ -506,16 +505,16 @@ public class ProjectResource {
         return createAcceptedStatusResponse(jobRequest);
     }
     
-    private org.uberfire.backend.repositories.Repository checkRepositoryExistence(String repoName) { 
-        org.uberfire.backend.repositories.Repository repo = repositoryService.getRepository(repoName);
+    private org.guvnor.structure.repositories.Repository checkRepositoryExistence(String repoName) { 
+        org.guvnor.structure.repositories.Repository repo = repositoryService.getRepository(repoName);
         if( repo == null ) { 
             throw RestOperationException.notFound("Repository " + repoName + " does not exist.");
         }
         return repo;
     }
     
-    private org.uberfire.backend.organizationalunit.OrganizationalUnit checkOrganizationalUnitExistence(String orgUnitName) { 
-        org.uberfire.backend.organizationalunit.OrganizationalUnit origOrgUnit
+    private org.guvnor.structure.organizationalunit.OrganizationalUnit checkOrganizationalUnitExistence(String orgUnitName) { 
+        org.guvnor.structure.organizationalunit.OrganizationalUnit origOrgUnit
             = organizationalUnitService.getOrganizationalUnit(orgUnitName);
         
         if( origOrgUnit == null ) { 

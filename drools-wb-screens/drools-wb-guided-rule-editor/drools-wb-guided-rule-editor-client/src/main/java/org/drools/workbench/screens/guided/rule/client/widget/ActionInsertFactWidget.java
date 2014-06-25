@@ -46,10 +46,10 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.common.ClickableLabel;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.ClickableLabel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * This is used when asserting a new fact into working memory.

@@ -29,7 +29,7 @@ import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
-import org.uberfire.client.common.ImageButton;
+import org.kie.uberfire.client.common.ImageButton;
 
 public class VerifyFactsPanel extends VerticalPanel {
 

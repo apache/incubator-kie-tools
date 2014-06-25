@@ -56,8 +56,8 @@ import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.Guide
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.common.DecoratedDisclosurePanel;
-import org.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
 
 public class GuidedScoreCardEditor extends Composite {
 

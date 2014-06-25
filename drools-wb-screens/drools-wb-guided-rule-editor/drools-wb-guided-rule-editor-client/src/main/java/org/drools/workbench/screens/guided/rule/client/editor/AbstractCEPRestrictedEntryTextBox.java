@@ -15,13 +15,11 @@
  */
 package org.drools.workbench.screens.guided.rule.client.editor;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
+import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 /**
  * A TextBox to handle restricted entry specific to CEP parameters

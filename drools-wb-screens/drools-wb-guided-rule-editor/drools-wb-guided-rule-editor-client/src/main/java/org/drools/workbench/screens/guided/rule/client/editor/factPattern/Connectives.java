@@ -40,7 +40,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.SmallLabel;
 
 public class Connectives {
 

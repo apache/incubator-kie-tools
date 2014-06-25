@@ -31,9 +31,9 @@ import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.DropDownValueChanged;
-import org.uberfire.client.common.IDirtyable;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.DropDownValueChanged;
+import org.kie.uberfire.client.common.IDirtyable;
 
 /**
  * A drop down for enumerated values

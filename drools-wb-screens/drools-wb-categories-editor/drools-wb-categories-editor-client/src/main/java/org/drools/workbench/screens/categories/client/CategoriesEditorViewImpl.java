@@ -35,10 +35,10 @@ import org.drools.workbench.screens.categories.client.widget.CategoryTreeEditorW
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.PrettyFormLayout;
-import org.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.PrettyFormLayout;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 
 /**
  *

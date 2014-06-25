@@ -50,12 +50,12 @@ import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.DropDownValueChanged;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.InfoPopup;
-import org.uberfire.client.common.SmallLabel;
-import org.uberfire.client.common.ValueChanged;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DropDownValueChanged;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.ValueChanged;
 
 /**
  * Constraint editor for the VerifyField of the expect part

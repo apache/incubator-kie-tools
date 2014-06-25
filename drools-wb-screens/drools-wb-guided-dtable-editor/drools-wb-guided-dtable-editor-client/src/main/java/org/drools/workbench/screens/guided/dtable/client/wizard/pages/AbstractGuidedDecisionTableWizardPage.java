@@ -23,7 +23,7 @@ import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTab
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.wizards.WizardPage;
+import org.kie.uberfire.client.wizards.WizardPage;
 
 /**
  * Base page for the guided Decision Table Wizard

@@ -7,14 +7,11 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
@@ -30,11 +27,11 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.ImageButton;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.ImageButton;
+import org.kie.uberfire.client.common.SmallLabel;
 
 public class CallMethodWidget extends DirtyableComposite {
 

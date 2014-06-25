@@ -36,7 +36,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.Con
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.DuplicatePatternsEvent;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
+import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
  * A page for the guided Decision Table Wizard to define Fact Pattern

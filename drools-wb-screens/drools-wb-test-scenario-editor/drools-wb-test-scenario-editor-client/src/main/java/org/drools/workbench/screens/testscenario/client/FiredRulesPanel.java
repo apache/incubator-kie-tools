@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.SmallLabel;
 
 public class FiredRulesPanel extends HorizontalPanel {
 

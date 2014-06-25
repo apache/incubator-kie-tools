@@ -102,6 +102,11 @@
       <artifactId>lucene-core</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-backend</artifactId>
+    </dependency>
+
     <!-- VFS Guvnor (Drools Workbench) dependencies -->
     <dependency>
       <groupId>org.uberfire</groupId>

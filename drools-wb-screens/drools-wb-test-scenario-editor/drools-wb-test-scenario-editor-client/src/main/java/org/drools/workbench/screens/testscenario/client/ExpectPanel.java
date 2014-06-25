@@ -26,8 +26,8 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.ImageButton;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.ImageButton;
+import org.kie.uberfire.client.common.SmallLabel;
 
 public class ExpectPanel extends HorizontalPanel {
 

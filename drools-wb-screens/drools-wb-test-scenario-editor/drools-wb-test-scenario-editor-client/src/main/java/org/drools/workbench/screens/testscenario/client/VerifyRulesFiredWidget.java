@@ -40,8 +40,8 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.SmallLabel;
 
 public class VerifyRulesFiredWidget extends Composite {
 

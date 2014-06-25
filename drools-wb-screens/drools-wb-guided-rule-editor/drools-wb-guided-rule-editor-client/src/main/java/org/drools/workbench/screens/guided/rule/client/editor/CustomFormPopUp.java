@@ -27,9 +27,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
-import org.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.FormStylePopup;
 
 public class CustomFormPopUp extends FormStylePopup {
 

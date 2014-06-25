@@ -31,7 +31,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.events.Pat
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
+import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
  * A page for the guided Decision Table Wizard to define Fact Patterns

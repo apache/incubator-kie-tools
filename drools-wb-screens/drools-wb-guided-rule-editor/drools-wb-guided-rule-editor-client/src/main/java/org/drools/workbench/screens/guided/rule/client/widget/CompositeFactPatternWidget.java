@@ -36,16 +36,15 @@ import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.uberfire.client.common.ClickableLabel;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.DirtyableHorizontalPane;
-import org.uberfire.client.common.DirtyableVerticalPane;
-import org.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.ClickableLabel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.DirtyableHorizontalPane;
+import org.kie.uberfire.client.common.DirtyableVerticalPane;
+import org.kie.uberfire.client.common.FormStylePopup;
 
 /**
  * This represents a top level CE, like an OR, NOT, EXIST etc... Contains a list

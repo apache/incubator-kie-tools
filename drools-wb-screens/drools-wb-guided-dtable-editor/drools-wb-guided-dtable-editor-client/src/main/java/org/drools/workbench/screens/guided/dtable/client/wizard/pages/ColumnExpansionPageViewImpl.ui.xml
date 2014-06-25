@@ -20,7 +20,7 @@
   xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants" />
-  <ui:with field="ufImages" type="org.uberfire.client.resources.CommonImages" />
+  <ui:with field="ufImages" type="org.kie.uberfire.client.resources.CommonImages" />
   <ui:with field="images" type="org.kie.workbench.common.widgets.client.resources.CommonImages" />
   <ui:with field="res" type="org.kie.workbench.common.widgets.client.resources.WizardResources" />
 

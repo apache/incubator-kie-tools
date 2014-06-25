@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.client.common.FormStyleLayout;
-import org.uberfire.client.common.Popup;
+import org.kie.uberfire.client.common.FormStyleLayout;
+import org.kie.uberfire.client.common.Popup;
 
 /**
  * Base class for Pop-ups used by RuleModeller

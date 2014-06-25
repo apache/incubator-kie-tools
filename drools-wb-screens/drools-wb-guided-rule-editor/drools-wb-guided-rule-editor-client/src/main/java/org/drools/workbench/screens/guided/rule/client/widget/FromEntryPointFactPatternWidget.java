@@ -27,10 +27,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
-import org.uberfire.client.common.ClickableLabel;
-import org.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.ClickableLabel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
 
 public class FromEntryPointFactPatternWidget extends FromCompositeFactPatternWidget {
 

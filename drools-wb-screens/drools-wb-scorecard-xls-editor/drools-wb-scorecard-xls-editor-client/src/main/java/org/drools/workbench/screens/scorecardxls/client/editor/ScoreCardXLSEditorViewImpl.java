@@ -38,11 +38,11 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.FormStyleLayout;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.FormStyleLayout;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.uberfire.client.common.ConcurrentChangePopup.*;
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 public class ScoreCardXLSEditorViewImpl
         extends Composite

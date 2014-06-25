@@ -45,7 +45,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.kie.workbench.common.widgets.client.workitems.WorkItemParametersWidget;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.FormStylePopup;
 
 /**
  * A popup to define an Action to execute a Work Item

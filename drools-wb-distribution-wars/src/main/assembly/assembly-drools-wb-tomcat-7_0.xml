@@ -39,13 +39,14 @@
           <!-- UF client related -->
           <exclude>WEB-INF/lib/uberfire-js-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-client-api-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-widget-markdown-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-widgets-core-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-uberfire-widget-markdown-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-uberfire-widgets-core-client-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
           <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-widgets-commons-*.jar</exclude>
+          <exclude>WEB-INF/lib/kie-uberfire-widgets-commons-*.jar</exclude>
 
           <!-- Guvnor client related -->
+          <exclude>WEB-INF/lib/guvnor-structure-client-*.jar</exclude>
           <exclude>WEB-INF/lib/guvnor-inbox-client-*.jar</exclude>
           <exclude>WEB-INF/lib/guvnor-m2repo-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/guvnor-workingset-client-*.jar</exclude>

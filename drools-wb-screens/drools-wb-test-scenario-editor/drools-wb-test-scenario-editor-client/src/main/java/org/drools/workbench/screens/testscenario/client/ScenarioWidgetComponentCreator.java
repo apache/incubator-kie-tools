@@ -43,8 +43,8 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.DirtyableFlexTable;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.SmallLabel;
 
 public class ScenarioWidgetComponentCreator {
 

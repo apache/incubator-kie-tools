@@ -28,7 +28,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.model.Global;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 
 /**
  * The Globals Editor View implementation

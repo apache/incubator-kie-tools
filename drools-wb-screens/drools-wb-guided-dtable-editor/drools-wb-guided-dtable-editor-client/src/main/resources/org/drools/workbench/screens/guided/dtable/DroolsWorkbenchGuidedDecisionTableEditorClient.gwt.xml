@@ -34,6 +34,8 @@
   <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetAPI"/>
   <inherits name="org.kie.workbench.common.services.security.KieWorkbenchCommonSecurity"/>
 
+  <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>
+
   <source path="client"/>
 
 </module>

@@ -4,9 +4,13 @@
 <module>
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
-  <inherits name="org.uberfire.UberfireNSWEManager" />
+  <inherits name="org.uberfire.UberfireNSWEManager"/>
+
+  <!-- Uberfire Extensions - Core Widgets -->
+  <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>
 
   <!-- Guvnor dependencies -->
+  <inherits name='org.guvnor.structure.GuvnorStructureClient'/>
   <inherits name="org.guvnor.inbox.GuvnorInboxClient"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
   <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
@@ -51,7 +55,7 @@
   <inherits name="org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projectimportsscreen.KieWorkbenchCommonProjectImportsScreenClient"/>
-  <inherits name="org.kie.workbench.common.screens.messageconsole.KieWorkbenchMessageConsoleClient" />
+  <inherits name="org.kie.workbench.common.screens.messageconsole.KieWorkbenchMessageConsoleClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>

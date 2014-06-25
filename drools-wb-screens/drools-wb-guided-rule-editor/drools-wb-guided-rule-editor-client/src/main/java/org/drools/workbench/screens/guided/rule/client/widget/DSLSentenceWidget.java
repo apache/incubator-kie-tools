@@ -42,17 +42,16 @@ import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
 import org.drools.workbench.screens.guided.rule.client.editor.CustomFormPopUp;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.DatePickerLabel;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.DropDownValueChanged;
-import org.uberfire.client.common.SmallLabel;
-import org.uberfire.client.common.ValueChanged;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DropDownValueChanged;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.ValueChanged;
 
 /**
  * This displays a widget to edit a DSL sentence.

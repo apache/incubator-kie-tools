@@ -36,17 +36,17 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.kie.workbench.common.services.shared.rest.BuildConfig;
 import org.kie.workbench.common.services.shared.rest.JobResult;
 import org.kie.workbench.common.services.shared.rest.JobStatus;
 import org.kie.workbench.common.services.shared.rest.RepositoryRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.organizationalunit.OrganizationalUnit;
-import org.uberfire.backend.organizationalunit.OrganizationalUnitService;
-import org.uberfire.backend.organizationalunit.impl.OrganizationalUnitImpl;
-import org.uberfire.backend.repositories.RepositoryService;
-import org.uberfire.backend.repositories.impl.git.GitRepository;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -109,7 +109,7 @@ public class JobRequestHelper {
             }
             env.put( "init", true );
 
-            org.uberfire.backend.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( scheme, repository.getName(), env );
+            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( scheme, repository.getName(), env );
             if ( newlyCreatedRepo != null ) {
                 result.setStatus( JobStatus.SUCCESS );
                 result.setResult( "Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri() );
@@ -134,7 +134,7 @@ public class JobRequestHelper {
             }
             env.put( "origin", repository.getGitURL() );
 
-            org.uberfire.backend.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( scheme, repository.getName(), env );
+            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository( scheme, repository.getName(), env );
             if ( newlyCreatedRepo != null ) {
                 result.setStatus( JobStatus.SUCCESS );
                 result.setResult( "Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri() );
@@ -196,7 +196,7 @@ public class JobRequestHelper {
         }
     }
 
-    private org.uberfire.backend.repositories.Repository makeRepository( final Path repositoryRoot ) {
+    private org.guvnor.structure.repositories.Repository makeRepository( final Path repositoryRoot ) {
         return new GitRepository() {
             @Override
             public Path getRoot() {
@@ -405,7 +405,7 @@ public class JobRequestHelper {
         }
 
         OrganizationalUnit organizationalUnit = null;
-        List<org.uberfire.backend.repositories.Repository> repositories = new ArrayList<org.uberfire.backend.repositories.Repository>();
+        List<org.guvnor.structure.repositories.Repository> repositories = new ArrayList<org.guvnor.structure.repositories.Repository>();
         if ( repositoryNameList != null && repositoryNameList.size() > 0 ) {
             for ( String repoName : repositoryNameList ) {
                 org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath( repoName );
@@ -503,7 +503,7 @@ public class JobRequestHelper {
     }
 
     private org.uberfire.java.nio.file.Path getRepositoryRootPath( final String repositoryName ) {
-        org.uberfire.backend.repositories.Repository repo = repositoryService.getRepository( repositoryName );
+        org.guvnor.structure.repositories.Repository repo = repositoryService.getRepository( repositoryName );
         if ( repo == null ) {
             return null;
         }

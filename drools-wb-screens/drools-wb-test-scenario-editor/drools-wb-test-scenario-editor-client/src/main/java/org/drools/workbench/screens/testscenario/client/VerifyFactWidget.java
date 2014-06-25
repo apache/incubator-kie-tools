@@ -44,9 +44,9 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.SmallLabel;
-import org.uberfire.client.common.ValueChanged;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.ValueChanged;
 
 public class VerifyFactWidget extends Composite {
 

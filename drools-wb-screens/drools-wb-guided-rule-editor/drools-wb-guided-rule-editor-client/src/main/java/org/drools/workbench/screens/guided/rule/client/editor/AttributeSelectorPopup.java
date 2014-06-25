@@ -31,11 +31,10 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.uberfire.client.common.DirtyableHorizontalPane;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.DirtyableHorizontalPane;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.InfoPopup;
 
 public class AttributeSelectorPopup extends FormStylePopup {
 

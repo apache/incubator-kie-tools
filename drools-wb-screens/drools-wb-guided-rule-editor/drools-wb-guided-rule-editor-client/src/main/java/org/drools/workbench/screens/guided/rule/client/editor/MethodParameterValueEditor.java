@@ -47,11 +47,11 @@ import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.common.DirtyableComposite;
-import org.uberfire.client.common.DropDownValueChanged;
-import org.uberfire.client.common.FormStylePopup;
-import org.uberfire.client.common.InfoPopup;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DropDownValueChanged;
+import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * This provides for editing of fields in the RHS of a rule.

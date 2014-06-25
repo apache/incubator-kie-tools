@@ -24,11 +24,10 @@ import javax.inject.Inject;
 
 import org.drools.core.process.core.WorkDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
-import org.guvnor.common.services.backend.file.FileExtensionFilter;
-import org.uberfire.backend.server.config.ConfigGroup;
-import org.uberfire.backend.server.config.ConfigItem;
-import org.uberfire.backend.server.config.ConfigType;
-import org.uberfire.backend.server.config.ConfigurationService;
+import org.guvnor.structure.server.config.ConfigGroup;
+import org.guvnor.structure.server.config.ConfigItem;
+import org.guvnor.structure.server.config.ConfigType;
+import org.guvnor.structure.server.config.ConfigurationService;
 
 /**
  * Class to load Work Definitions from configuration

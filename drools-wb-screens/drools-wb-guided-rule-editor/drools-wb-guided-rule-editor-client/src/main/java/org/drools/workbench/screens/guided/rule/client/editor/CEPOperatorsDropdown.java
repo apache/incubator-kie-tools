@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.guided.rule.client.editor;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,10 +37,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.commons.backend.rule.SharedConstants;
 import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
-import org.uberfire.client.common.AbstractRestrictedEntryTextBox;
+import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
 
 /**
  * Drop-down Widget for Operators including supplementary controls for CEP

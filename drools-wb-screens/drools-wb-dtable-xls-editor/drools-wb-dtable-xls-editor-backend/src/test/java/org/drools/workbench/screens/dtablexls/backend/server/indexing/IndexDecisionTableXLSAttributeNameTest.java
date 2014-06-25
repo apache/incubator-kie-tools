@@ -39,10 +39,10 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.QueryB
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.metadata.backend.lucene.util.KObjectUtil;
-import org.uberfire.metadata.engine.Index;
-import org.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
+import org.kie.uberfire.metadata.engine.Index;
+import org.kie.uberfire.metadata.model.KObject;
 
 import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
@@ -64,7 +64,7 @@ public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<Dec
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get( org.kie.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
             final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();

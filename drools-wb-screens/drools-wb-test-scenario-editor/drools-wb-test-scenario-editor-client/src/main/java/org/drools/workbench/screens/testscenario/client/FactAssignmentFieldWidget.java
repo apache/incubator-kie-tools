@@ -24,7 +24,7 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonsResources;
-import org.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
 
 public class FactAssignmentFieldWidget implements IsWidget {
 

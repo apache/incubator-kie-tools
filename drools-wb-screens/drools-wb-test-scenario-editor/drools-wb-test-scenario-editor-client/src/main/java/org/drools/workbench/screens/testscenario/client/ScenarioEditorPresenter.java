@@ -58,7 +58,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.uberfire.client.common.ConcurrentChangePopup.*;
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 @WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = { TestScenarioResourceType.class })
 public class ScenarioEditorPresenter {

@@ -41,7 +41,7 @@ import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.wizards.WizardPageStatusChangeEvent;
+import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
 
 /**
  * A page for the guided Decision Table Wizard to define new Facts and fields.

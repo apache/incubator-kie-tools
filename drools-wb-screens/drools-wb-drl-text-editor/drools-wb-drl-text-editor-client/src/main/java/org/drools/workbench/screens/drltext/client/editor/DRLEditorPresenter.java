@@ -55,8 +55,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.common.MultiPageEditor;
-import org.uberfire.client.common.Page;
+import org.kie.uberfire.client.common.MultiPageEditor;
+import org.kie.uberfire.client.common.Page;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.IsDirty;
@@ -71,7 +71,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.uberfire.client.common.ConcurrentChangePopup.*;
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 /**
  * This is the default rule editor widget (just text editor based).

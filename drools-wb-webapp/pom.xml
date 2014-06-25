@@ -87,6 +87,16 @@
     <!-- Guvnor -->
     <dependency>
       <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-services-api</artifactId>
     </dependency>
 
@@ -423,11 +433,22 @@
       <artifactId>drools-wb-workitems-editor-backend</artifactId>
     </dependency>
 
+    <!-- UberFire Extension -->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-metadata-commons-io</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-metadata-backend-lucene</artifactId>
+    </dependency>
+
     <!-- UberFire -->
-  <dependency>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-all</artifactId>
-  </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-all</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -538,6 +559,8 @@
           <compileSourcesArtifacts>
 
             <!-- Guvnor -->
+            <compileSourcesArtifact>org.guvnor:guvnor-structure-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-structure-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-inbox-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-inbox-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
@@ -618,8 +641,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>

@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResources;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.ResizableTextArea;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.ResizableTextArea;
 
 /**
  * The view for the Domain Specific Language editor

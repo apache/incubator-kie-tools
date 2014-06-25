@@ -30,8 +30,8 @@ import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.client.editor.DRLEditorPresenter;
 import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
-import org.uberfire.client.common.ClickableLabel;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.ClickableLabel;
+import org.kie.uberfire.client.common.SmallLabel;
 import org.uberfire.client.mvp.UberView;
 
 public class DSLSentenceBrowserWidget

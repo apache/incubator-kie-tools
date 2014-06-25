@@ -23,7 +23,7 @@ import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DirtyableComposite;
 
 /**
  * Constraint editor for the FieldData in the Given Section

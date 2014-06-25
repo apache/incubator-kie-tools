@@ -41,8 +41,8 @@ import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefault
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.common.BusyPopup;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.SmallLabel;
 
 public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 

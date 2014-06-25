@@ -21,7 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 
@@ -29,15 +28,6 @@ import org.uberfire.io.impl.IOServiceDotFileImpl;
 public class IOServiceFactory {
 
     private final IOService ioService = new IOServiceDotFileImpl();
-
-    public static enum Migration implements FileSystemType {
-
-        MIGRATION_INSTANCE;
-
-        public String toString() {
-            return "MIGRATION";
-        }
-    }
 
     @PreDestroy
     public void onShutdown() {

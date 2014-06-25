@@ -29,7 +29,7 @@ import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionEd
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementSelectedListener;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementsBrowser;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.BusyPopup;
 
 public class WorkItemsEditorViewImpl
         extends Composite

@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
-import org.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * This is used when you want to retract a fact. It will provide a list of bound
