@@ -30,12 +30,14 @@ public class PanelDefinitionImplTest {
         assertTrue( panelDefinition.getParts().contains( part ) );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void addPartToADifferentPanelShouldFireExceptionTest() throws Exception {
+    @Test
+    public void addPartToADifferentPanelChangePanel() throws Exception {
         assertFalse( panelDefinition.getParts().contains( part ) );
         panelDefinition.addPart( part );
         assertTrue( panelDefinition.getParts().contains( part ) );
         otherPanel.addPart( part );
+        assertTrue( otherPanel.getParts().contains( part ) );
+        assertEquals(otherPanel,part.getParentPanel());
     }
 
     @Test

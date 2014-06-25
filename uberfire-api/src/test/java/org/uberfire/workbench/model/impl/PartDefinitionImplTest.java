@@ -33,12 +33,10 @@ public class PartDefinitionImplTest {
         part.setParentPanel( anotherParent );
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void defineParentPanelWithOldParentWithoutPart() throws Exception {
         parent = createParentMock();
-        //parent has part
         part.setParentPanel( parent );
-        //parent lost part
         when( parent.getParts() ).thenReturn( new HashSet<PartDefinition>() );
         PanelDefinitionImpl anotherParent = createParentMock();
         part.setParentPanel( anotherParent );

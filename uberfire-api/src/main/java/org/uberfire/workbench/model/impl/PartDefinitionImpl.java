@@ -76,22 +76,37 @@ public class PartDefinitionImpl
      */
     @Override
     public void setParentPanel( final PanelDefinition parentPanel ) {
-        if ( !validateParentDefinition( parentPanel ) ) {
-            throw new IllegalStateException("Invalid Parent Panel Attribution to a Part");
+        if ( !validParentDefinition( parentPanel ) ) {
+            throw new IllegalStateException( "Invalid Parent Panel Attribution to a Part" );
         }
         this.parentPanel = parentPanel;
     }
 
-    private boolean validateParentDefinition( PanelDefinition parentPanel ) {
-        return !oldParentStillContainsMe() && newParentPanelContainsThisPart( parentPanel );
+    private boolean validParentDefinition( PanelDefinition parentPanel ) {
+        return validateNullParent( parentPanel ) && validateNotNullParent( parentPanel );
     }
 
-    private boolean oldParentStillContainsMe() {
-        return this.parentPanel != null && this.parentPanel.getParts().contains( this );
+    private boolean validateNotNullParent( PanelDefinition parentPanel ) {
+        if ( parentPanel != null ) {
+            if ( this.getParentPanel() == null ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        ;
+        return true;
     }
 
-    private boolean newParentPanelContainsThisPart( PanelDefinition parentPanel ) {
-        return parentPanel.getParts().contains( this );
+    private boolean validateNullParent( PanelDefinition parentPanel ) {
+        if ( parentPanel == null ) {
+            if ( this.getParentPanel() != null ) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+        return true;
     }
 
     @Override
