@@ -24,9 +24,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-/**
- * @author Heiko Braun
- */
 @Dependent
 public class LayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<LayoutPanelPresenter> {
 

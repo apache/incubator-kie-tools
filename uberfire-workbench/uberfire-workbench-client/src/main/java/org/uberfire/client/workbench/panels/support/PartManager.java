@@ -8,10 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Heiko Braun
- * @date 11/06/14
- */
 @ApplicationScoped
 public class PartManager {
 

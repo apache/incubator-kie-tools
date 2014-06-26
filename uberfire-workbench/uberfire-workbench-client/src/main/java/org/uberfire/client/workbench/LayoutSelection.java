@@ -9,8 +9,10 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 
 /**
- * @author Heiko Braun
- * @date 06/06/14
+ * Used to discover alternative {@link org.uberfire.client.workbench.WorkbenchLayout}'s.
+ * If no alternatives can be found, the default {@link org.uberfire.client.workbench.WorkbenchLayoutImpl} is used.
+ * If several implementations are found the first one will be chosen.
+ *
  */
 @ApplicationScoped
 public class LayoutSelection {
@@ -34,7 +36,6 @@ public class LayoutSelection {
         if(beanDefs.size()>0)
         {
             IOCBeanDef<WorkbenchLayout> alt = beanDefs.iterator().next();
-            System.out.println("Using alternative workbench layout: "+alt.getBeanClass().getName());
             layout = alt.getInstance();
         }
         else

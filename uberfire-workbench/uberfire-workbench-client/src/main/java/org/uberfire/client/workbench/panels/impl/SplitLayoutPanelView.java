@@ -37,7 +37,6 @@ import com.google.gwt.user.client.ui.Widget;
  * A workbench perspective view that builds on stock GWT {@link com.google.gwt.user.client.ui.SplitLayoutPanel}'s.
  * It supports CENTER and WEST positions.
  *
- * @author Heiko Braun
  */
 @Dependent
 @Named("SplitLayoutPanelView")

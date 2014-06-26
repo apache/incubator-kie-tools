@@ -8,8 +8,6 @@ import org.uberfire.workbench.model.PanelDefinition;
  * This allows panels that support multiple parts to react to place changes and toggle the proper DOM structures.
  *
  * @see org.uberfire.client.workbench.AbstractPanelManagerImpl#onSelectPlaceEvent(org.uberfire.client.workbench.events.SelectPlaceEvent)
- * @author Heiko Braun
- * @date 11/06/14
  */
 public interface SelectablePanels {
     void onSelect(PanelDefinition panel);

@@ -6,8 +6,9 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * @author Heiko Braun
- * @date 05/06/14
+ * Used by the workbench to construct the outer most DOM structure (header, footer and perspective container).
+ * Uberfire provides a default {@link org.uberfire.client.workbench.WorkbenchLayoutImpl} that can be replaced
+ * through the mechanism described in {@link org.uberfire.client.workbench.LayoutSelection}.
  */
 public interface WorkbenchLayout {
 
@@ -16,7 +17,7 @@ public interface WorkbenchLayout {
      * the header area. Each widget is meant to fill the width of the page, and the widgets are meant to stack on top of
      * each other with the first one in the list being highest up on the page. Headers should remain in place even when
      * the perspective switches.
-     * 
+     *
      * @param headers the list of headers in top-to-bottom stacking order. Never null, but can be empty.
      */
     void setHeaderContents( List<Header> headers );
@@ -26,7 +27,7 @@ public interface WorkbenchLayout {
      * the footer area. Each widget is meant to fill the width of the page, and the widgets are meant to stack on top of
      * each other with the first one in the list being highest up on the page. Footers should remain in place even when
      * the perspective switches.
-     * 
+     *
      * @param footers the list of footer in top-to-bottom stacking order. Never null, but can be empty.
      */
     void setFooterContents( List<Footer> footers );

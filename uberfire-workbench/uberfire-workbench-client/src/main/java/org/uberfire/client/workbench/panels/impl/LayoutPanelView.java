@@ -34,8 +34,6 @@ import java.util.Set;
 
 /**
  * A simple {@link LayoutPanel} presenter. Can be used for both perspectives and panels.
- *
- * @author Heiko Braun
  */
 @Dependent
 @Named("LayoutPanelView")

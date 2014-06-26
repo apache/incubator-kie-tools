@@ -28,9 +28,6 @@ import org.uberfire.client.workbench.panels.support.SelectablePanels;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
-/**
- * @author Heiko Braun
- */
 @Dependent
 public class SplitLayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<SplitLayoutPanelPresenter> implements SelectablePanels {
 

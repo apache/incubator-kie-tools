@@ -20,9 +20,6 @@ import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
 /**
  * The default layout implementation.
- *
- * @author Heiko Braun
- * @date 05/06/14
  */
 @ApplicationScoped
 public class WorkbenchLayoutImpl implements WorkbenchLayout {
