@@ -59,22 +59,19 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
 
     @Override
     public void addPanel(PanelDefinition panel, WorkbenchPanelView view, Position position) {
-
         // invoked when this presenter manages a perspective itself (is root)
-        System.out.println("Adding '"+view.getPresenter().getDefinition().getPanelType()+"'to instance: "+this);
         layout.add(view);
     }
 
     @Override
     public void removePanel() {
-        System.out.println("removePanel called on "+ this);
+
     }
 
     // ------------------------
 
     @Override
     public Widget asWidget() {
-        System.out.println("asWidget called on "+ this);
         return layout;
     }
 
@@ -100,14 +97,12 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     public void addPart( final WorkbenchPartPresenter.View view ) {
         // invoked when this presenter panels within perspectives (not root)
         PartDefinition part = view.getPresenter().getDefinition();
-        System.out.println("Adding part '"+ part.getPlace().getIdentifier()+"' through instance: "+this);
         if(!partManager.hasPart(part))
             partManager.registerPart(part, view.getWrappedWidget().asWidget());
     }
 
     @Override
     public boolean removePart( final PartDefinition part ) {
-        System.out.println("Remove part '"+part.getPlace().getIdentifier()+"' through instance: "+this);
         partManager.removePart(part);
         layout.clear(); // only supports a single part
         return true;
@@ -115,8 +110,6 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
 
     @Override
     public boolean selectPart( final PartDefinition part ) {
-
-        System.out.println("Select '"+part.getPlace().getIdentifier()+"' of instance: "+this);
         layout.clear(); // TODO (hbraun): Is this necessary?
         layout.add(partManager.selectPart(part));
         return true;
@@ -126,8 +119,6 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
 
     @Override
     public void setFocus( boolean hasFocus ) {
-        if(hasFocus)
-            System.out.println("panel focus on instance "+ this);
     }
 
     @Override

@@ -34,9 +34,8 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A workbench perspective view that builds on stock GWT {@link com.google.gwt.user.client.ui.SplitLayoutPanel}'s.
- * It supports CENTER and WEST positions.
- *
+ * Corresponding view to {@link SplitLayoutPanelPresenter}. Only supports panels, not parts.
+ * Enforces lifecycle callbacks on center parts.
  */
 @Dependent
 @Named("SplitLayoutPanelView")
@@ -66,8 +65,6 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
 
     @Override
     public void addPanel(PanelDefinition panel, WorkbenchPanelView view, Position position) {
-
-        System.out.println("Adding '"+view.getPresenter().getDefinition().getPanelType()+"'to instance: "+this);
 
         if(CompassPosition.WEST.equals(position))
         {
@@ -101,14 +98,13 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
 
     @Override
     public void removePanel() {
-        System.out.println("removePanel called on "+ this);
+
     }
 
     // -------------------------
 
     @Override
     public Widget asWidget() {
-        System.out.println("asWidget called on "+ this);
         return layout;
     }
 
@@ -149,8 +145,7 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
 
     @Override
     public void setFocus( boolean hasFocus ) {
-        if(hasFocus)
-            System.out.println("panel focus on instance "+ this);
+
     }
 
     @Override
