@@ -26,6 +26,7 @@ import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 
 @ApplicationScoped
@@ -53,9 +54,22 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
     }
 
     @Override
-    protected BeanFactory getBeanFactory(){
+    protected BeanFactory getBeanFactory() {
         return factory;
-    };
+    }
+
+    @Override
+    public void setPerspective( final PerspectiveDefinition perspective ) {
+        if ( isATemplatePerspective( perspective ) ) {
+            super.setPerspective( perspective );
+        } else {
+            throw new NotATemplatePerspectiveException();
+        }
+    }
+
+    private boolean isATemplatePerspective( PerspectiveDefinition perspective ) {
+        return perspective instanceof TemplatePerspectiveDefinitionImpl;
+    }
 
     @Override
     public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
@@ -91,4 +105,7 @@ public class PanelManagerImpl extends AbstractPanelManagerImpl {
         return targetPanelPresenter;
     }
 
+    public class NotATemplatePerspectiveException extends RuntimeException {
+
+    }
 }

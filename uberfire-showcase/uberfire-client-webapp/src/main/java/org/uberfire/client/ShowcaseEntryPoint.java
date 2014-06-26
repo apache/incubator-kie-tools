@@ -38,6 +38,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.client.mvp.AbstractTemplateWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -179,7 +180,7 @@ public class ShowcaseEntryPoint {
     private List<PerspectiveActivity> getPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<PerspectiveActivity> activities = activityManager.getActivities( PerspectiveActivity.class );
+        final Set<AbstractTemplateWorkbenchPerspectiveActivity> activities = activityManager.getActivities( AbstractTemplateWorkbenchPerspectiveActivity.class );
 
         //Sort Perspective Providers so they're always in the same sequence!
         List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>( activities );
