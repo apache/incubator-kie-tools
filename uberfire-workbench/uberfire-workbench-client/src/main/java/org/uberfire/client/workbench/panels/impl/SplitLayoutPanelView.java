@@ -104,10 +104,6 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
         System.out.println("removePanel called on "+ this);
     }
 
-    public void selectPanel(PanelDefinition panelDefinition) {
-        // noop
-    }
-
     // -------------------------
 
     @Override
