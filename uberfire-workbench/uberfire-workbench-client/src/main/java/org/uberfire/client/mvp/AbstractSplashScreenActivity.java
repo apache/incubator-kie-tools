@@ -69,7 +69,6 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     }
 
     public void init() {
-        System.out.println("AbstractSplashScreenActivity.init()");
         if ( !splashFilter.displayNextTime() ) {
             return;
         }
@@ -97,8 +96,6 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
 
     @Override
     public void forceShow() {
-        System.out.println("AbstractSplashScreenActivity.forceShow()");
-
         final IsWidget widget = getWidget();
 
         splash.setContent( widget, getBodyHeight() );
