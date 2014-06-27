@@ -495,6 +495,12 @@
       </dependency>
 
       <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${version.com.google.gwt}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.allen-sauer.gwt.dnd</groupId>
         <artifactId>gwt-dnd</artifactId>
         <version>${version.com.allen-sauer.gwt.dnd}</version>

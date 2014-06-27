@@ -23,9 +23,9 @@
   <extend-property name="locale" values="zh_CN"/>
 
   <!-- SuperDevMode -->
-  <add-linker name="xsiframe"/>
-  <set-configuration-property name="devModeRedirectEnabled" value="true"/>
-  <set-property name="compiler.useSourceMaps" value="true"/>
-  <set-configuration-property name='xsiframe.failIfScriptTag' value='false'/>
+  <!--<add-linker name="xsiframe"/>-->
+  <!--<set-configuration-property name="devModeRedirectEnabled" value="true"/>-->
+  <!--<set-property name="compiler.useSourceMaps" value="true"/>-->
+  <!--<set-configuration-property name='xsiframe.failIfScriptTag' value='false'/>-->
 
 </module>

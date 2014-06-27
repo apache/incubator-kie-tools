@@ -47,6 +47,10 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     private PartitionManager partitionManager;
 
+    public UserManagementServiceImpl(){
+
+    }
+    
     @Inject
     public UserManagementServiceImpl( final PartitionManager partitionManager ) {
         this.partitionManager = PortablePreconditions.checkNotNull( "partitionManager",
