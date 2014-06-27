@@ -122,13 +122,16 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     private void setupPanelRecursively( final PanelDefinition panel ) {
+        System.out.println("Setting up " + panel);
         for ( PartDefinition part : panel.getParts() ) {
+            System.out.println("  -> part " + part);
             final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
             part.setPlace( place );
             placeManager.goTo( part, panel );
         }
 
         for ( PanelDefinition child : panel.getChildren() ) {
+            System.out.println("  -> child " + child);
             final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
                                                                            child,
                                                                            child.getPosition() );

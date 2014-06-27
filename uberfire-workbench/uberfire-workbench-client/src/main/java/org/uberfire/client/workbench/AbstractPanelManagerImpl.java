@@ -197,6 +197,11 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                                   final String contextId ) {
         checkNotNull( "panel", panel );
 
+        final WorkbenchPanelPresenter panelPresenter = getWorkbenchPanelPresenter( panel );
+        if ( panelPresenter == null ) {
+            throw new IllegalArgumentException( "Target panel is not part of the layout" );
+        }
+
         WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
         if ( partPresenter == null ) {
             partPresenter = getBeanFactory().newWorkbenchPart( menus, uiPart.getTitle(), uiPart.getTitleDecoration(), part );
@@ -208,11 +213,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         if ( part.isMinimized() ) {
             statusBar.addMinimizedPlace( part.getPlace() );
         } else {
-            final WorkbenchPanelPresenter panelPresenter = getWorkbenchPanelPresenter( panel );
-            if ( panelPresenter == null ) {
-                throw new IllegalArgumentException( "Unable to add Part to Panel. Panel has not been created." );
-            }
-
             panelPresenter.addPart( partPresenter.getPartView(), contextId );
         }
 
