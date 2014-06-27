@@ -28,6 +28,12 @@ public enum PanelType {
      */
     ROOT_STATIC,
 
+    // TODO (hbraun) needs javadoc
+    ROOT_SPLIT_LAYOUT,
+
+    // TODO (hbraun) needs javadoc
+    ROOT_LAYOUT_PANEL,
+
     /**
      * A panel with a title bar. Can contain one part at a time. The part's view fills the entire space not used up by
      * the title bar. Adding a new part replaces the existing part. Does not support drag-and-drop rearrangement of
@@ -61,6 +67,9 @@ public enum PanelType {
      * part replaces the existing part. Does not support drag-and-drop rearrangement of parts.
      */
     STATIC,
+
+    // TODO (hbraun) needs javadoc
+    LAYOUT_PANEL,
 
     /**
      * Special panel type that must be used only with the <tt>uberfire-panel-manager-template</tt> module. Supports

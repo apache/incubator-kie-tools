@@ -24,8 +24,10 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SplitLayoutPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -86,9 +88,16 @@ public class DefaultBeanFactory
             case STATIC:
                 panel = iocManager.lookupBean( StaticWorkbenchPanelPresenter.class ).getInstance();
                 break;
+            case ROOT_SPLIT_LAYOUT:
+                panel = iocManager.lookupBean( SplitLayoutPanelPresenter.class ).getInstance();
+                break;
+            case LAYOUT_PANEL:
+            case ROOT_LAYOUT_PANEL:
+                panel = iocManager.lookupBean( LayoutPanelPresenter.class ).getInstance();
+                break;
 
             default:
-                throw new IllegalArgumentException( "Unhandled PanelType. Expect subsequent errors." );
+                throw new IllegalArgumentException( "Unhandled PanelType '"+definition.getPanelType()+"': Expect subsequent errors." );
         }
 
         panel.setDefinition( definition );

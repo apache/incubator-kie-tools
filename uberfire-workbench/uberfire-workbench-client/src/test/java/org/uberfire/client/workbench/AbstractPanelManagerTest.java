@@ -11,6 +11,7 @@ import javax.enterprise.event.Event;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.UIPart;
@@ -19,6 +20,7 @@ import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
@@ -38,9 +40,8 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -53,6 +54,7 @@ public class AbstractPanelManagerTest {
     @Mock StubPanelFocusEvent panelFocusEvent;
     @Mock WorkbenchStatusBarPresenter statusBar;
     @Mock SimpleWorkbenchPanelPresenter workbenchPanelPresenter;
+    @Mock(answer=Answers.RETURNS_DEEP_STUBS) LayoutSelection layoutSelection;
 
     @InjectMocks
     TestingPanelManagerImpl panelManager;
@@ -69,17 +71,20 @@ public class AbstractPanelManagerTest {
     private PerspectiveDefinition testPerspectiveDef;
 
     /**
-     * This is the Panel Presenter returned by the mock BeanFactory when asked for <tt>newWorkbenchPanel( testPerspectiveDef.getRoot() ))</tt>.
+     * This is the Panel Presenter returned by the mock BeanFactory when asked for <tt>newWorkbenchPanel( testPerspectiveDef.getRoot() ) )</tt>.
      */
     private WorkbenchPanelPresenter testPerspectiveRootPanelPresenter;
 
     @Before
     public void setup() {
+        when( layoutSelection.get().getPerspectiveContainer() ).thenReturn( mock( HasWidgets.class ) );
+
         testPerspectiveDef = new PerspectiveDefinitionImpl( PanelType.ROOT_SIMPLE );
         testPerspectiveRootPanelPresenter = mock( WorkbenchPanelPresenter.class );
 
         when( beanFactory.newWorkbenchPanel( testPerspectiveDef.getRoot() )).thenReturn( testPerspectiveRootPanelPresenter );
         when( testPerspectiveRootPanelPresenter.getDefinition() ).thenReturn( testPerspectiveDef.getRoot() );
+        when( testPerspectiveRootPanelPresenter.getPanelView() ).thenReturn( mock( WorkbenchPanelView.class ) );
 
         partPresenter = mock( WorkbenchPartPresenter.class);
         when( beanFactory.newWorkbenchPart( any( Menus.class ),
@@ -269,12 +274,6 @@ public class AbstractPanelManagerTest {
 
         private BeanFactory beanFactory;
 
-        TestingPanelManagerImpl() {
-            super( (Panel) GWT.create( Panel.class ),
-                   (Panel) GWT.create( Panel.class ),
-                   (Panel) GWT.create( Panel.class ) );
-        }
-
         Multimap<PanelDefinition, PanelDefinition> panelHierarchy = ArrayListMultimap.create();
         PanelDefinition rootPanel = new PanelDefinitionImpl();
 
@@ -304,19 +303,6 @@ public class AbstractPanelManagerTest {
         @Override
         protected BeanFactory getBeanFactory() {
             return beanFactory;
-        }
-
-        // TODO remove the following 2 methods after WorkbenchLayout merge from Heiko
-
-        @Override
-        public void setWorkbenchSize( int width,
-                                      int height ) {
-            throw new UnsupportedOperationException( "Not implemented." );
-        }
-
-        @Override
-        protected void arrangePanelsInDOM() {
-            // no op
         }
     };
 

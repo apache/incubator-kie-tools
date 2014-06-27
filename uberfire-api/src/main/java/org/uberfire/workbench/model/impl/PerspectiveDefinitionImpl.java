@@ -49,7 +49,7 @@ public class PerspectiveDefinitionImpl
     public PerspectiveDefinitionImpl( final PanelType type ) {
         checkNotNull( "type", type );
         if ( !isRoot( type ) ) {
-            throw new IllegalArgumentException( "Panel type must named '" + name + "' should be not null!" );
+            throw new IllegalArgumentException( "Perspective requires a 'ROOT' panel type, but got '" + type.name() + "' instead!" );
         }
 
         this.root = new PanelDefinitionImpl( type );

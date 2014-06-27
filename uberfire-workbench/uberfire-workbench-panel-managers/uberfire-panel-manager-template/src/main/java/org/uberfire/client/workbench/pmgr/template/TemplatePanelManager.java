@@ -25,19 +25,11 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-
 @ApplicationScoped
 public class TemplatePanelManager extends AbstractPanelManagerImpl {
 
     @Inject
     private DefaultBeanFactory factory;
-
-    public TemplatePanelManager() {
-        super( new SimplePanel(), new FlowPanel(), new FlowPanel() );
-    }
 
     @Override
     protected BeanFactory getBeanFactory(){
@@ -81,23 +73,6 @@ public class TemplatePanelManager extends AbstractPanelManagerImpl {
                                                targetPanelPresenter );
         }
         return targetPanelPresenter;
-    }
-
-    @Override
-    public void setWorkbenchSize( int width,
-                                  int height ) {
-        headerPanel.setWidth( width + "px" );
-        footerPanel.setWidth( width + "px" );
-        perspectiveRootContainer.setWidth( width + "px" );
-        int leftoverHeight = height - headerPanel.getOffsetHeight() - footerPanel.getOffsetHeight();
-        perspectiveRootContainer.setHeight( leftoverHeight + "px" );
-    }
-
-    @Override
-    protected void arrangePanelsInDOM() {
-        RootLayoutPanel.get().add( headerPanel );
-        RootLayoutPanel.get().add( perspectiveRootContainer );
-        RootLayoutPanel.get().add( footerPanel );
     }
 
 }

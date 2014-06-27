@@ -44,6 +44,7 @@ implements WorkbenchPanelView<P> {
 
     @Override
     public void removePanel() {
+        // TODO (hbraun): This is a REAL MESS!
         final Widget parent = this.asWidget().getParent().getParent().getParent();
 
         panelSupport.remove( this, parent );

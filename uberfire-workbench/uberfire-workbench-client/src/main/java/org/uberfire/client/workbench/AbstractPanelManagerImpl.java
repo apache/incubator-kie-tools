@@ -3,7 +3,6 @@ package org.uberfire.client.workbench;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.event.Event;
@@ -34,8 +33,8 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Base class for implementations of PanelManager. This class relies on ErraiIOC field injection, so all subclasses must
@@ -78,50 +77,8 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     protected PartDefinition activePart = null;
 
-    /**
-     * The panel within which the current perspective's root view resides. This panel lasts the lifetime of the app; it's
-     * cleared and repopulated with the new perspective's root view each time
-     * {@link #setPerspective(PerspectiveDefinition)} gets called. The actual panel that's used for this is specified by
-     * the concrete subclass's constructor.
-     */
-    protected final Panel perspectiveRootContainer;
-
-    /**
-     * The panel within which the current perspective's header widgets reside. This panel lasts the lifetime of the app;
-     * it's cleared and repopulated with the new perspective's root view each time
-     * {@link #setHeaderContents(java.util.List)} gets called. The actual panel that's used for this is specified by the
-     * concrete subclass's constructor.
-     */
-    protected final Panel headerPanel;
-
-    /**
-     * The panel within which the current perspective's footer widgets reside. This panel lasts the lifetime of the app;
-     * it's cleared and repopulated with the new perspective's root view each time
-     * {@link #setFooterContents(java.util.List)} gets called. The actual panel that's used for this is specified by the
-     * concrete subclass's constructor.
-     */
-    protected final Panel footerPanel;
-
-    /**
-     * Constructor for subclasses. Allows specifying which Panel the perspective portion of the workbench layout lives
-     * in.
-     * 
-     * @param perspectiveRootContainer
-     *            Container for (direct parent of) the current perspective's root panel view. Subclasses can pass in any
-     *            Panel they like, as long as it supports the {@link Panel#clear()} and {@link Panel#add(IsWidget)}
-     *            methods.
-     * @param headerPanel
-     *            Subclasses can pass in any Panel they like, as long as it supports the {@link Panel#clear()} and
-     *            {@link Panel#add(IsWidget)} methods.
-     * @param footerPanel
-     *            Subclasses can pass in any Panel they like, as long as it supports the {@link Panel#clear()} and
-     *            {@link Panel#add(IsWidget)} methods.
-     */
-    protected AbstractPanelManagerImpl( Panel perspectiveRootContainer, Panel headerPanel, Panel footerPanel ) {
-        this.perspectiveRootContainer = perspectiveRootContainer;
-        this.headerPanel = headerPanel;
-        this.footerPanel = footerPanel;
-    }
+    @Inject
+    LayoutSelection layoutSelection;
 
     @Override
     public PerspectiveDefinition getPerspective() {
@@ -130,53 +87,30 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Override
     public void setPerspective( final PerspectiveDefinition newPerspectiveDef ) {
-        if ( this.perspective == null ) {
-            arrangePanelsInDOM();
-        }
 
         final WorkbenchPanelPresenter oldRootPanelPresenter = mapPanelDefinitionToPresenter.remove( rootPanelDef );
 
-        perspectiveRootContainer.clear();
+        HasWidgets perspectiveContainer = layoutSelection.get().getPerspectiveContainer();
+        perspectiveContainer.clear();
+
         getBeanFactory().destroy( oldRootPanelPresenter );
 
         final PanelDefinition newRootPanelDef = newPerspectiveDef.getRoot();
         this.rootPanelDef = newRootPanelDef;
         this.perspective = newPerspectiveDef;
-        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter( newRootPanelDef );
+        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter(newRootPanelDef);
         if ( newPresenter == null ) {
             newPresenter = getBeanFactory().newWorkbenchPanel( newRootPanelDef );
             mapPanelDefinitionToPresenter.put( newRootPanelDef, newPresenter );
         }
-        perspectiveRootContainer.add( newPresenter.getPanelView() );
+        perspectiveContainer.add( newPresenter.getPanelView().asWidget() );
     }
 
     protected abstract BeanFactory getBeanFactory();
 
-    /**
-     * Adds the header, footer, and perspective root panels to the DOM. This method is called once only, and the call
-     * comes as a side effect to the first call to {@link #setPerspective(PerspectiveDefinition)}.
-     */
-    protected abstract void arrangePanelsInDOM();
-
     @Override
     public PanelDefinition getRoot() {
         return this.rootPanelDef;
-    }
-
-    @Override
-    public void setHeaderContents( List<Header> headers ) {
-        headerPanel.clear();
-        for ( Header h : headers ) {
-            headerPanel.add( h );
-        }
-    }
-
-    @Override
-    public void setFooterContents( List<Footer> footers ) {
-        footerPanel.clear();
-        for ( Footer f : footers ) {
-            footerPanel.add( f );
-        }
     }
 
     @Override
@@ -236,7 +170,8 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     @Override
     public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
                                               final Position position ) {
-        final PanelDefinition childPanel = new PanelDefinitionImpl( targetPanel.getDefaultChildPanelType() );
+        final PanelDefinitionImpl childPanel = new PanelDefinitionImpl( targetPanel.getDefaultChildPanelType() );
+        childPanel.setParent(targetPanel);
         return addWorkbenchPanel( targetPanel,
                                   childPanel,
                                   position );
@@ -254,7 +189,9 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                                               final Integer width,
                                               final Integer minHeight,
                                               final Integer minWidth ) {
-        final PanelDefinition childPanel = new PanelDefinitionImpl( targetPanel.getDefaultChildPanelType() );
+        final PanelDefinitionImpl childPanel = new PanelDefinitionImpl( targetPanel.getDefaultChildPanelType() );
+        childPanel.setParent(targetPanel);
+
         childPanel.setHeight( height );
         childPanel.setWidth( width );
         childPanel.setMinHeight( minHeight );
@@ -295,11 +232,14 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     @SuppressWarnings("unused")
     private void onSelectPlaceEvent( @Observes SelectPlaceEvent event ) {
         final PlaceRequest place = event.getPlace();
+
+        // TODO (hbraun): PanelDefinition is not distinct (missing hashcode)
         for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
-            for ( PartDefinition part : e.getValue().getDefinition().getParts() ) {
-                if ( part.getPlace().equals( place ) ) {
-                    e.getValue().selectPart( part );
-                    onPanelFocus( e.getKey() );
+            WorkbenchPanelPresenter panelPresenter = e.getValue();
+            for (PartDefinition part : panelPresenter.getDefinition().getParts()) {
+                if (part.getPlace().equals(place)) {
+                    panelPresenter.selectPart(part);
+                    onPanelFocus(e.getKey());
                 }
             }
         }

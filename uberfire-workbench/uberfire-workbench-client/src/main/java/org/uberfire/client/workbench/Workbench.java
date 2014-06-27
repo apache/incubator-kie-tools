@@ -57,6 +57,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
  * Responsible for bootstrapping the client-side Workbench user interface by coordinating calls to the PanelManager and
@@ -119,9 +120,6 @@ public class Workbench {
     private final Set<String> headersToKeep = new HashSet<String>();
 
     @Inject
-    private PanelManager panelManager;
-
-    @Inject
     private SyncBeanManager iocManager;
 
     @Inject
@@ -129,6 +127,11 @@ public class Workbench {
 
     @Inject
     private VFSServiceProxy vfsService;
+
+    @Inject
+    LayoutSelection layoutSelection;
+
+    private WorkbenchLayout layout;
 
     @Inject
     private User identity;
@@ -150,6 +153,7 @@ public class Workbench {
             placeManager.closeAllPlaces(); // would be preferable to close current perspective, which should be recursive
         }
     };
+
 
     /**
      * Requests that the workbench does not attempt to create any UI parts until the given responsible party has
@@ -195,12 +199,13 @@ public class Workbench {
     void startIfNotBlocked() {
         System.out.println(startupBlockers.size() + " workbench startup blockers remain.");
         if ( startupBlockers.isEmpty() ) {
-            bootstrap();
+            // TODO (hbraun): the init order is somewhat messed up ...
         }
     }
 
     @PostConstruct
     private void earlyInit() {
+        layout = layoutSelection.get();
         WorkbenchResources.INSTANCE.CSS().ensureInjected();
 
         isStandaloneMode = Window.Location.getParameterMap().containsKey( "standalone" );
@@ -212,7 +217,7 @@ public class Workbench {
         }
     }
 
-    private <T extends OrderableIsWidget> List<T> setupMarginWidgets( Class<T> marginType ) {
+    private <T extends OrderableIsWidget> List<T> discoverMarginWidgets( Class<T> marginType ) {
         final Collection<IOCBeanDef<T>> headerBeans = iocManager.lookupBeans( marginType );
         final List<T> instances = new ArrayList<T>();
         for ( final IOCBeanDef<T> headerBean : headerBeans ) {
@@ -242,14 +247,18 @@ public class Workbench {
     }
 
     private void bootstrap() {
+
         System.out.println("Workbench starting...");
 
         ( (SessionInfoImpl) currentSession() ).setId( ( (ClientMessageBusImpl) bus ).getSessionId() );
 
         appReady.fire( new ApplicationReadyEvent() );
 
-        panelManager.setHeaderContents( setupMarginWidgets( Header.class ) );
-        panelManager.setFooterContents( setupMarginWidgets( Footer.class ) );
+        layout.setHeaderContents( discoverMarginWidgets( Header.class ) );
+        layout.setFooterContents( discoverMarginWidgets( Footer.class ) );
+
+        layout.onBootstrap();
+        RootLayoutPanel.get().add(layout.getRoot());
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if ( !isStandaloneMode ) {
@@ -275,8 +284,7 @@ public class Workbench {
         Window.addResizeHandler( new ResizeHandler() {
             @Override
             public void onResize( ResizeEvent event ) {
-                panelManager.setWorkbenchSize( event.getWidth(),
-                                               event.getHeight() );
+                layout.resizeTo(event.getWidth(), event.getHeight());
             }
         } );
 
@@ -284,11 +292,10 @@ public class Workbench {
         Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                final int width = Window.getClientWidth();
-                final int height = Window.getClientHeight();
-                panelManager.setWorkbenchSize( width, height );
+                layout.onResize();
             }
         } );
+
     }
 
     // TODO add tests for standalone startup vs. full startup
@@ -312,7 +319,7 @@ public class Workbench {
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
-        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans( PerspectiveActivity.class );
+        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = iocManager.lookupBeans(PerspectiveActivity.class);
 
         for ( final IOCBeanDef<PerspectiveActivity> perspective : perspectives ) {
             final PerspectiveActivity instance = perspective.getInstance();

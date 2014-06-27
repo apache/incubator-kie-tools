@@ -21,35 +21,17 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.AbstractPanelManagerImpl;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HeaderPanel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-
 @ApplicationScoped
 public class NSWEPanelManager extends AbstractPanelManagerImpl {
 
     @Inject
     private NSWEExtendedBeanFactory factory;
-
-    @Inject
-    private HeaderPanel headerFooterContainerPanel;
-
-    @Inject
-    private WorkbenchPickupDragController dragController;
-
-    public NSWEPanelManager() {
-        super( new SimpleLayoutPanel(), new FlowPanel(), new FlowPanel() );
-    }
 
     @Override
     protected BeanFactory getBeanFactory(){
@@ -64,6 +46,7 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
         PanelDefinition newPanel = null;
 
         WorkbenchPanelPresenter targetPanelPresenter = getWorkbenchPanelPresenter( targetPanel );
+
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );
             mapPanelDefinitionToPresenter.put( targetPanel,
@@ -83,12 +66,15 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
             case SOUTH:
             case EAST:
             case WEST:
+            case CENTER:
 
                 if ( !childPanel.isMinimized() ) {
+
                     final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
                     mapPanelDefinitionToPresenter.put( childPanel,
                                                        childPanelPresenter );
 
+                    // TODO (hbraun): why no remove callback before the addPanel invocation?
                     targetPanelPresenter.addPanel( childPanel,
                                                    childPanelPresenter.getPanelView(),
                                                    position );
@@ -97,7 +83,7 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
                 break;
 
             default:
-                throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
+                throw new IllegalArgumentException( "Unhandled Position '"+position+"': Expect subsequent errors." );
         }
 
         onPanelFocus( newPanel );
@@ -112,36 +98,6 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void setWorkbenchSize( int width,
-                                  int height ) {
-        headerFooterContainerPanel.setPixelSize( width, height );
-        perspectiveRootContainer.setPixelSize( width, height - headerPanel.getOffsetHeight() - footerPanel.getOffsetHeight() );
-    }
-
-    @Override
-    protected void arrangePanelsInDOM() {
-        RootLayoutPanel rootPanel = RootLayoutPanel.get();
-        rootPanel.add( headerFooterContainerPanel );
-        headerFooterContainerPanel.setHeaderWidget( headerPanel );
-        headerFooterContainerPanel.setFooterWidget( footerPanel );
-        headerFooterContainerPanel.setContentWidget( dragController.getBoundaryPanel() );
-
-        dragController.getBoundaryPanel().add( perspectiveRootContainer );
-        setToFillParent( dragController.getBoundaryPanel().getElement().getStyle() );
-
-        Style contentPanelStyle = perspectiveRootContainer.getElement().getStyle();
-        setToFillParent( contentPanelStyle );
-    }
-
-    private void setToFillParent( Style style ) {
-        style.setPosition( com.google.gwt.dom.client.Style.Position.ABSOLUTE );
-        style.setTop( 0, Unit.PX );
-        style.setBottom( 0, Unit.PX );
-        style.setLeft( 0, Unit.PX );
-        style.setRight( 0, Unit.PX );
     }
 
 }
