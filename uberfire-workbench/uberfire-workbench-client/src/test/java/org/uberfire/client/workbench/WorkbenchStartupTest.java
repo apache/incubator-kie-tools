@@ -12,6 +12,7 @@ import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -38,11 +39,14 @@ public class WorkbenchStartupTest {
     @Mock(extraInterfaces=ClientMessageBus.class) ClientMessageBusImpl bus;
     @Mock WorkbenchLayout layout;
 
-    @Test
-    public void shouldNotStartWhenBlocked() throws Exception {
+    @Before
+    public void setup() {
         when( bm.lookupBeans( any(Class.class) ) ).thenReturn( Collections.emptyList() );
         when( dragController.getBoundaryPanel() ).thenReturn( new AbsolutePanel() );
+    }
 
+    @Test
+    public void shouldNotStartWhenBlocked() throws Exception {
         verify( appReadyEvent, never() ).fire( any(ApplicationReadyEvent.class) );
         workbench.addStartupBlocker( WorkbenchStartupTest.class );
         workbench.startIfNotBlocked();
@@ -51,14 +55,16 @@ public class WorkbenchStartupTest {
 
     @Test
     public void shouldStartWhenUnblocked() throws Exception {
-        when( bm.lookupBeans( any(Class.class) ) ).thenReturn( Collections.emptyList() );
-        when( dragController.getBoundaryPanel() ).thenReturn( new AbsolutePanel() );
-
         workbench.addStartupBlocker( WorkbenchStartupTest.class );
         workbench.removeStartupBlocker( WorkbenchStartupTest.class );
         verify( appReadyEvent, times( 1 ) ).fire( any(ApplicationReadyEvent.class) );
     }
 
+    @Test
+    public void shouldStartOnAfterInitIfNeverBlocked() throws Exception {
+        workbench.startIfNotBlocked();
+        verify( appReadyEvent, times( 1 ) ).fire( any(ApplicationReadyEvent.class) );
+    }
 
     /**
      * Mockito failed to produce a valid mock for a raw {@code Event<ApplicationReadyEvent>} due to classloader issues.

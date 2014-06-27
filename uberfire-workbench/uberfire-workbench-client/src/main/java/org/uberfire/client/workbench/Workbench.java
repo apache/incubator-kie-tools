@@ -188,10 +188,7 @@ public class Workbench {
         } else {
             System.out.println( responsibleParty.getName() + " tried to unblock startup, but it wasn't blocking to begin with!");
         }
-
-        if ( startupBlockers.isEmpty() ) {
-            bootstrap();
-        }
+        startIfNotBlocked();
     }
 
     // package-private so tests can call in
@@ -199,7 +196,7 @@ public class Workbench {
     void startIfNotBlocked() {
         System.out.println(startupBlockers.size() + " workbench startup blockers remain.");
         if ( startupBlockers.isEmpty() ) {
-            // TODO (hbraun): the init order is somewhat messed up ...
+            bootstrap();
         }
     }
 
