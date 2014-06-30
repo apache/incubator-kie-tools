@@ -8,11 +8,10 @@
     <version>6.2.0-SNAPSHOT</version>
   </parent>
 
-
   <artifactId>kie-uberfire-social-activities</artifactId>
   <packaging>pom</packaging>
 
-  <name>Uberfire Properties Editor Widget</name>
+  <name>KIE Uberfire Properties Editor Widget</name>
 
   <modules>
     <module>kie-uberfire-social-activities-api</module>

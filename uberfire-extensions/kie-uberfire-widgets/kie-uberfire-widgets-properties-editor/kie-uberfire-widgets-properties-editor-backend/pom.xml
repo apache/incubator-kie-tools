@@ -11,8 +11,8 @@
   <artifactId>kie-uberfire-widgets-properties-editor-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Uberfire Properties Editor Widget Backend</name>
-  <description>Uberfire Properties Editor Widget Backend</description>
+  <name>KIE Uberfire Properties Editor Widget Backend</name>
+  <description>KIE Uberfire Properties Editor Widget Backend</description>
 
   <dependencies>
     <dependency>

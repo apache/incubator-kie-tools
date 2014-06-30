@@ -30,7 +30,7 @@
   <packaging>jar</packaging>
 
   <name>KIE Uberfire Metadata API</name>
-  <description>Uberfire Metadata API</description>
+  <description>KIE Uberfire Metadata API</description>
 
   <dependencies>
     <dependency>

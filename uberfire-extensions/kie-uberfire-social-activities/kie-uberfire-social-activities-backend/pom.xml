@@ -11,8 +11,8 @@
   <artifactId>kie-uberfire-social-activities-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Uberfire Social Activities Backend</name>
-  <description>Uberfire Social Activities Backend</description>
+  <name>KIE Uberfire Social Activities Backend</name>
+  <description>KIE Uberfire Social Activities Backend</description>
 
   <dependencies>
     <dependency>

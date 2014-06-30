@@ -11,8 +11,8 @@
 
   <artifactId>kie-uberfire-social-activities-client</artifactId>
 
-  <name>Uberfire Social Activities Client</name>
-  <description>Uberfire Social Activities Client</description>
+  <name>KIE Uberfire Social Activities Client</name>
+  <description>KIE Uberfire Social Activities Client</description>
 
   <dependencies>
     <!-- Project Dependencies -->

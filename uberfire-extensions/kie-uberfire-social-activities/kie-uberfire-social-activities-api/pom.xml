@@ -11,8 +11,8 @@
 
   <artifactId>kie-uberfire-social-activities-api</artifactId>
 
-  <name>Uberfire Social Activities API</name>
-  <description>Uberfire Social Activities API</description>
+  <name>KIE Uberfire Social Activities API</name>
+  <description>KIE Uberfire Social Activities API</description>
 
   <dependencies>
     <dependency>

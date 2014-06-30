@@ -11,8 +11,8 @@
 
   <artifactId>kie-uberfire-widgets-properties-editor-client</artifactId>
 
-  <name>Uberfire Properties Editor Widget Client</name>
-  <description>Uberfire Properties Editor Widget Client</description>
+  <name>KIE Uberfire Properties Editor Widget Client</name>
+  <description>KIE Uberfire Properties Editor Widget Client</description>
 
   <dependencies>
     <!-- Project Dependencies -->
