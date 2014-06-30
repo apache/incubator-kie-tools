@@ -41,11 +41,6 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWor
     }
 
     @Override
-    public void clear() {
-        widget.clear();
-    }
-
-    @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
         widget.addPart( view );
     }

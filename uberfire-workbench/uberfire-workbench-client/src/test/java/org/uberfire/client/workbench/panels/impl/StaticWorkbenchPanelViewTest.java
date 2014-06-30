@@ -58,12 +58,6 @@ public class StaticWorkbenchPanelViewTest {
     }
 
     @Test
-    public void verifyClearDelegation() {
-        view.clear();
-        verify( view.getPanel() ).clear();
-    }
-
-    @Test
     public void addPartToPanelWhenPartViewIsNull() {
 
         view.mockPanelGetPartView( null );
