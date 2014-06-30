@@ -32,7 +32,7 @@ import org.uberfire.workbench.model.PartDefinition;
 @Dependent
 @Named("MultiListWorkbenchPanelView")
 public class MultiListWorkbenchPanelView
-        extends BaseMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
+        extends AbstractMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
 
     @Inject
     protected ListBarWidget listBar;

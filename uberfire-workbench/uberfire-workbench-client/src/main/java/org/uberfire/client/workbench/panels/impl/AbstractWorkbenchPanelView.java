@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
-public abstract class BaseWorkbenchPanelView<P extends WorkbenchPanelPresenter>
+public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresenter>
 extends ResizeComposite
 implements WorkbenchPanelView<P> {
 

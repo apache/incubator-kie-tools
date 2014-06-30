@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 @Dependent
 @Named("SimpleWorkbenchPanelView")
 public class SimpleWorkbenchPanelView
-extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
+extends AbstractWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
     @Inject
     protected ListBarWidget listBar;

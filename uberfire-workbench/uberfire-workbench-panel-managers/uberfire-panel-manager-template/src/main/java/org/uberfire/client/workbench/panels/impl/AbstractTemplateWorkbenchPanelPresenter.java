@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractTemplateWorkbenchPanelPresenter<P extends AbstractTemplateWorkbenchPanelPresenter<P>> extends AbstractWorkbenchPanelPresenter<P> {
 
-    protected AbstractTemplateWorkbenchPanelPresenter( final BaseWorkbenchTemplatePanelView<P> view,
+    protected AbstractTemplateWorkbenchPanelPresenter( final AbstractWorkbenchTemplatePanelView<P> view,
                                                        final PanelManager panelManager,
                                                        final Event<MaximizePlaceEvent> maximizePanelEvent,
                                                        final Event<MinimizePlaceEvent> minimizePanelEvent ) {

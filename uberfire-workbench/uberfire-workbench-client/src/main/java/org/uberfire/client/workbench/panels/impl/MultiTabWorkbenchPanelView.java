@@ -31,7 +31,7 @@ import org.uberfire.workbench.model.PartDefinition;
 @Dependent
 @Named("MultiTabWorkbenchPanelView")
 public class MultiTabWorkbenchPanelView
-        extends BaseMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
+        extends AbstractMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
 
     @Override
     protected MultiPartWidget setupWidget() {
