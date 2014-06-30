@@ -19,12 +19,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.PartDefinition;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -47,23 +44,8 @@ public class MultiListWorkbenchPanelView
                 }
             } );
         }
-
-        //When a tab is selected ensure content is resized and set focus
-        listBar.addSelectionHandler( new SelectionHandler<PartDefinition>() {
-            @Override
-            public void onSelection( final SelectionEvent<PartDefinition> event ) {
-                presenter.onPartLostFocus();
-                presenter.onPartFocus( event.getSelectedItem() );
-            }
-        } );
-
-        listBar.addOnFocusHandler( new Command() {
-            @Override
-            public void execute() {
-                panelManager.onPanelFocus( presenter.getDefinition() );
-            }
-        } );
-
+        addOnFocusHandler( listBar );
+        addSelectionHandler( listBar );
         return listBar;
     }
 }
