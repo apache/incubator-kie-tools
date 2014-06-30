@@ -37,7 +37,6 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWor
         this.presenter = presenter;
         widget.setPresenter( presenter );
         widget.setDndManager( dndManager );
-        setupContext( null );
     }
 
     @Override
@@ -54,32 +53,12 @@ public abstract class BaseMultiPartWorkbenchPanelView<P extends BaseMultiPartWor
 
     @Override
     public void selectPart( final PartDefinition part ) {
-        setupContext( part );
         widget.selectPart( part );
-    }
-
-    private void setupContext( final PartDefinition part ) {
-        final ContextActivity context = presenter.resolveContext( part );
-        if ( context != null ) {
-            final UIPart contextUiPart = new UIPart( context.getTitle(), context.getTitleDecoration(), context.getWidget() );
-            if ( contextWidget.getUiPart() == null ) {
-                context.onAttach( presenter.getDefinition() );
-                contextWidget.setUiPart( contextUiPart );
-            } else if ( !contextUiPart.getWidget().equals( contextWidget.getUiPart().getWidget() ) ) {
-                context.onAttach( presenter.getDefinition() );
-                contextWidget.setUiPart( contextUiPart );
-            }
-        } else {
-            contextWidget.setUiPart( null );
-        }
     }
 
     @Override
     public void removePart( final PartDefinition part ) {
         widget.remove( part );
-        if ( widget.getPartsSize() == 0 ) {
-            setupContext( null );
-        }
     }
 
     @Override
