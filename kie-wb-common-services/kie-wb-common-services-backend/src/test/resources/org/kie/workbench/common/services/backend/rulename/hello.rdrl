@@ -1,6 +1,0 @@
-package org.test
-
-rule hello
-  when
-  then
-end

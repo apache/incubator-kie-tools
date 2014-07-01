@@ -19,7 +19,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQ
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesQuery;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
@@ -34,10 +34,10 @@ import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class FindRulesQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
+public class FindRulesByProjectQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     private Set<NamedQuery> queries = new HashSet<NamedQuery>() {{
-        add( new FindRulesQuery() {
+        add( new FindRulesByProjectQuery() {
             @Override
             public ResponseBuilder getResponseBuilder() {
                 return new DefaultResponseBuilder( ioService() );
@@ -46,7 +46,7 @@ public class FindRulesQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDr
     }};
 
     @Test
-    public void testFindRulesQueryInvalidIndexTerms() throws IOException, InterruptedException {
+    public void testQueryInvalidIndexTerms() throws IOException, InterruptedException {
         final Instance<NamedQuery> namedQueriesProducer = mock( Instance.class );
         when( namedQueriesProducer.iterator() ).thenReturn( queries.iterator() );
 
@@ -59,15 +59,11 @@ public class FindRulesQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDr
         final String drl1 = loadText( "drl1.drl" );
         ioService().write( path1,
                            drl1 );
-        final Path path2 = basePath.resolve( "drl2.drl" );
-        final String drl2 = loadText( "drl2.drl" );
-        ioService().write( path2,
-                           drl2 );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesQuery",
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
                                                                                new HashSet<ValueIndexTerm>(),
                                                                                0,
                                                                                -1 );
@@ -81,7 +77,7 @@ public class FindRulesQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDr
         }
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesQuery",
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
                                                                                new HashSet<ValueIndexTerm>() {{
                                                                                    add( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) );
                                                                                }},
@@ -97,7 +93,7 @@ public class FindRulesQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDr
         }
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesQuery",
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
                                                                                new HashSet<ValueIndexTerm>() {{
                                                                                    add( new ValueRuleIndexTerm( "myRule" ) );
                                                                                    add( new ValueTypeIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant" ) );

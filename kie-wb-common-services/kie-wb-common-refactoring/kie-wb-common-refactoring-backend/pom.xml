@@ -66,6 +66,11 @@
       <artifactId>drools-workbench-models-commons</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.uberfire</groupId>

@@ -1,0 +1,7 @@
+import org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant;
+
+rule "myRule3"
+when
+  Applicant( age == 0 )
+then
+end;

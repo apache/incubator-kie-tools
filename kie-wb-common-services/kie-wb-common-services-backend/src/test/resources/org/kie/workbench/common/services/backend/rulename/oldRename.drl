@@ -1,6 +1,0 @@
-package org.rename
-
-rule "old rename"
-  when
-  then
-end

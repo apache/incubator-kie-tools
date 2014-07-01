@@ -22,7 +22,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -33,7 +32,6 @@ import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 
-@Ignore
 @RunWith(Arquillian.class)
 public class ProjectDataModelConcurrencyTest {
 
@@ -46,6 +44,7 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.kie.workbench.common.services.datamodel.backend.server.cache" )
                 .addPackage( "org.guvnor.m2repo.backend.server" )
                 .addPackage( "org.guvnor.m2repo.backend.server.helpers" )
+                .addPackage( "org.guvnor.structure.backend.config" )
                 .addPackage( "org.guvnor.common.services.project.service" )
                 .addPackage( "org.guvnor.common.services.project.backend.server" )
                 .addPackage( "org.guvnor.common.services.builder" )
@@ -58,15 +57,17 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.guvnor.common.services.shared.rulenames" )
                 .addPackage( "javax.servlet" )
                 .addPackage( "javax.servlet.http" )
+                .addPackage( "org.guvnor.structure.repositories" )
+                .addPackage( "org.guvnor.structure.repositories.impl.git" )
+                .addPackage( "org.guvnor.structure.backend.repositories" )
+                .addPackage( "org.guvnor.structure.backend.repositories.git" )
+                .addPackage( "org.guvnor.structure.organizationalunit" )
+                .addPackage( "org.guvnor.structure.organizationalunit.impl" )
+                .addPackage( "org.guvnor.structure.backend.organizationalunit" )
                 .addPackage( "org.uberfire.commons.cluster" )
                 .addPackage( "org.uberfire.backend.server.util" )
                 .addPackage( "org.uberfire.backend.server.config" )
-                .addPackage( "org.uberfire.backend.organizationalunit" )
-                .addPackage( "org.uberfire.backend.repositories" )
-                .addPackage( "org.uberfire.backend.repositories.impl.git" )
                 .addPackage( "org.uberfire.backend.server.io" )
-                .addPackage( "org.uberfire.backend.server.organizationalunit" )
-                .addPackage( "org.uberfire.backend.server.repositories" )
                 .addPackage( "org.uberfire.backend.server.cluster" )
                 .addAsManifestResource( "META-INF/beans.xml",
                                         ArchivePaths.create( "beans.xml" ) );

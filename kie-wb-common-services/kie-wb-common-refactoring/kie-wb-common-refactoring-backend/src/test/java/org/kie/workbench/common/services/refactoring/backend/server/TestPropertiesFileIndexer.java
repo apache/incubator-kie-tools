@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.data.Pair;
@@ -36,9 +37,11 @@ import org.kie.uberfire.metadata.model.KObjectKey;
 @ApplicationScoped
 public class TestPropertiesFileIndexer implements TestIndexer<TestPropertiesFileTypeDefinition> {
 
+    private IOService ioService;
+
     private TestPropertiesFileTypeDefinition type;
 
-    private IOService ioService;
+    private ProjectService projectService;
 
     @Override
     public void setIOService( final IOService ioService ) {
@@ -48,6 +51,11 @@ public class TestPropertiesFileIndexer implements TestIndexer<TestPropertiesFile
     @Override
     public void setResourceTypeDefinition( final TestPropertiesFileTypeDefinition type ) {
         this.type = type;
+    }
+
+    @Override
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override

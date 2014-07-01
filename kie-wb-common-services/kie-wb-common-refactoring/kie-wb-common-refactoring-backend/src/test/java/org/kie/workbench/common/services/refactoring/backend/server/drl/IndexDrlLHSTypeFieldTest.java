@@ -48,11 +48,6 @@ public class IndexDrlLHSTypeFieldTest extends BaseIndexingTest<TestDrlFileTypeDe
 
     @Test
     public void testIndexDrlLHSTypeField() throws IOException, InterruptedException {
-        //Don't ask, but we need to write a single file first in order for indexing to work
-        final Path basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-        ioService().write( basePath.resolve( "dummy" ),
-                           "<none>" );
-
         //Add test files
         final Path path1 = basePath.resolve( "drl1.drl" );
         final String drl1 = loadText( "drl1.drl" );

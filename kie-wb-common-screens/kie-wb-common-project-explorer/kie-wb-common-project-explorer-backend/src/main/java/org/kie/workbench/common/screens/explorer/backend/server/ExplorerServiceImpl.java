@@ -38,6 +38,7 @@ import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.CopyHelper;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
+import org.guvnor.common.services.backend.file.LinkedRegularFileFilter;
 import org.guvnor.common.services.backend.file.RenameHelper;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
@@ -84,6 +85,7 @@ public class ExplorerServiceImpl
     private static final Logger LOGGER = LoggerFactory.getLogger( ExplorerServiceImpl.class );
 
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
+    private LinkedRegularFileFilter regularFileFilter = new LinkedRegularFileFilter( dotFileFilter );
 
     @Inject
     @Named("ioStrategy")
@@ -591,15 +593,13 @@ public class ExplorerServiceImpl
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
         if ( Files.exists( nioPackagePath ) ) {
             final DirectoryStream<org.uberfire.java.nio.file.Path> nioPaths = ioService.newDirectoryStream( nioPackagePath,
-                                                                                                            dotFileFilter );
+                                                                                                            regularFileFilter );
             for ( org.uberfire.java.nio.file.Path nioPath : nioPaths ) {
-                if ( Files.isRegularFile( nioPath ) ) {
-                    final org.uberfire.backend.vfs.Path path = Paths.convert( nioPath );
-                    final FolderItem folderItem = new FolderItem( path,
-                                                                  path.getFileName(),
-                                                                  FolderItemType.FILE );
-                    folderItems.add( folderItem );
-                }
+                final org.uberfire.backend.vfs.Path path = Paths.convert( nioPath );
+                final FolderItem folderItem = new FolderItem( path,
+                                                              path.getFileName(),
+                                                              FolderItemType.FILE );
+                folderItems.add( folderItem );
             }
         }
 

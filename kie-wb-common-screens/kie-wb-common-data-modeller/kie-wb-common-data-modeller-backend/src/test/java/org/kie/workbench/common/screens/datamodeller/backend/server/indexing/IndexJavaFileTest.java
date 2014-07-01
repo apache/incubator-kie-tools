@@ -29,6 +29,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.engine.Index;
 import org.kie.uberfire.metadata.io.KObjectUtil;
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.JavaTypeIndexTerm;
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.valueterms.ValueJavaTypeIndexTerm;
@@ -38,55 +40,49 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.QueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
-import org.uberfire.java.nio.file.Path;
 import org.uberfire.commons.data.Pair;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.engine.Index;
+import org.uberfire.java.nio.file.Path;
 
 import static org.apache.lucene.util.Version.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefinition> {
 
     @Test
     public void testIndexJavaFiles() throws IOException, InterruptedException {
-        //Don't ask, but we need to write a single file first in order for indexing to work
-        final Path basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-        ioService().write( basePath.resolve( "dummy" ),
-                "<none>" );
-
         //Add test files
         final Path path = basePath.resolve( "Pojo1.java" );
         final String drl = loadText( "Pojo1.java" );
         ioService().write( path,
-                drl );
+                           drl );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         {
-            final IndexSearcher searcher = ( ( LuceneIndex ) index ).nrtSearcher();
+            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
             final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                    true );
+                                                                                true );
             final Query query = new QueryBuilder().addTerm( new ValueJavaTypeIndexTerm( JavaTypeIndexTerm.JAVA_TYPE.CLASS ) ).build();
 
             searcher.search( query,
-                    collector );
+                             collector );
             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
             assertEquals( 1,
-                    hits.length );
+                          hits.length );
 
             List<Pair<String, String>> expectedValues = initExpectedValues();
 
             assertContains( expectedValues, searcher.doc( hits[ 0 ].doc ) );
 
-            ( ( LuceneIndex ) index ).nrtRelease( searcher );
+            ( (LuceneIndex) index ).nrtRelease( searcher );
         }
     }
 
-    private void assertContains( List<Pair<String, String>> expectedValues, Document doc ) {
+    private void assertContains( List<Pair<String, String>> expectedValues,
+                                 Document doc ) {
 
         List<Pair<String, String>> returnedValues = new ArrayList<Pair<String, String>>();
         for ( IndexableField field : doc.getFields() ) {
@@ -104,7 +100,8 @@ public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefiniti
         }
     }
 
-    private List<Pair<String, String>> initFieldExpectedValues( String fieldName, String className ) {
+    private List<Pair<String, String>> initFieldExpectedValues( String fieldName,
+                                                                String className ) {
         List<Pair<String, String>> expectedValues = new ArrayList<Pair<String, String>>();
         expectedValues.add( new Pair<String, String>( "field_name", fieldName ) );
         expectedValues.add( new Pair<String, String>( "field_type:" + fieldName, className ) );
@@ -194,7 +191,7 @@ public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefiniti
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
-                    new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+                 new RuleAttributeNameAnalyzer( LUCENE_40 ) );
         }};
     }
 

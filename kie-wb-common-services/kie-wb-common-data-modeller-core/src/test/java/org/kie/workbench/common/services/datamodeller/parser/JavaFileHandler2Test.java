@@ -16,14 +16,13 @@
 
 package org.kie.workbench.common.services.datamodeller.parser;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ClassDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
 import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class JavaFileHandler2Test extends JavaFileHandlerBaseTest {
 

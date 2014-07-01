@@ -31,6 +31,9 @@ import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,14 +47,22 @@ import org.kie.uberfire.metadata.model.KObject;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> {
+
+    public static final String TEST_PROJECT_ROOT = "/a/mock/project/root";
+
+    public static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
 
     private IOService ioService = null;
     private static LuceneConfig config;
     private static final List<File> tempFiles = new ArrayList<File>();
     private int seed = new Random( 10L ).nextInt();
     private boolean created = false;
+
+    protected Path basePath;
 
     @Before
     public void setup() throws IOException {
@@ -67,7 +78,15 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> {
             try {
                 ioService().newFileSystem( newRepo,
                                            new HashMap<String, Object>() );
+
+                //Don't ask, but we need to write a single file first in order for indexing to work
+                basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
+                ioService().write( basePath.resolve( "dummy" ),
+                                   "<none>" );
+
             } catch ( final Exception ex ) {
+                ex.fillInStackTrace();
+                System.out.println( ex.getMessage() );
             } finally {
                 created = true;
             }
@@ -149,13 +168,31 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> {
                     .useInMemoryDirectory()
                     .build();
 
-            //Mock CDI injection and setup
             ioService = new IOServiceIndexedImpl( config.getIndexEngine(),
                                                   config.getIndexers() );
+
+            //Mock CDI injection and setup
             indexer.setIOService( ioService );
             indexer.setResourceTypeDefinition( getResourceTypeDefinition() );
+            indexer.setProjectService( getProjectService() );
         }
         return ioService;
+    }
+
+    protected ProjectService getProjectService() {
+        final org.uberfire.backend.vfs.Path mockRoot = mock( org.uberfire.backend.vfs.Path.class );
+        when( mockRoot.toURI() ).thenReturn( TEST_PROJECT_ROOT );
+
+        final Project mockProject = mock( Project.class );
+        when( mockProject.getRootPath() ).thenReturn( mockRoot );
+
+        final org.guvnor.common.services.project.model.Package mockPackage = mock( Package.class );
+        when( mockPackage.getPackageName() ).thenReturn( TEST_PACKAGE_NAME );
+
+        final ProjectService mockProjectService = mock( ProjectService.class );
+        when( mockProjectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( mockProject );
+        when( mockProjectService.resolvePackage( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( mockPackage );
+        return mockProjectService;
     }
 
     protected void assertContains( final List<KObject> results,

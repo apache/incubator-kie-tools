@@ -1,9 +1,7 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -13,7 +11,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;

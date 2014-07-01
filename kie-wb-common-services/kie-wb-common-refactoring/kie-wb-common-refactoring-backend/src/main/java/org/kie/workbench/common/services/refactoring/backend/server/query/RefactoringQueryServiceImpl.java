@@ -54,7 +54,7 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
     private LuceneConfig config;
     private Set<NamedQuery> namedQueries = new HashSet<NamedQuery>();
-    private PageResponse<RefactoringPageRow> emptyResponse = null;
+    private PageResponse<RefactoringPageRow> emptyResponse;
 
     public RefactoringQueryServiceImpl() {
         //Make proxyable
@@ -73,7 +73,7 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
     }
 
     @PostConstruct
-    private void init() {
+    public void init() {
         emptyResponse = new PageResponse<RefactoringPageRow>();
         emptyResponse.setPageRowList( Collections.<RefactoringPageRow>emptyList() );
         emptyResponse.setStartRowIndex( 0 );

@@ -19,15 +19,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.refactoring.model.index.IndexElementsGenerator;
+import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 public class DefaultIndexBuilder {
 
+    private Project project;
+    private Package pkg;
+
     private Set<IndexElementsGenerator> generators = new HashSet<IndexElementsGenerator>();
 
-    public DefaultIndexBuilder() {
+    public DefaultIndexBuilder( final Project project,
+                                final Package pkg ) {
+        this.project = PortablePreconditions.checkNotNull( "project",
+                                                           project );
+        this.pkg = PortablePreconditions.checkNotNull( "pkg",
+                                                       pkg );
     }
 
     public DefaultIndexBuilder addGenerator( final IndexElementsGenerator generator ) {
@@ -41,6 +53,14 @@ public class DefaultIndexBuilder {
         for ( IndexElementsGenerator generator : generators ) {
             addIndexElements( indexElements,
                               generator );
+        }
+        if ( project != null && project.getRootPath() != null ) {
+            indexElements.add( new Pair<String, String>( ProjectRootPathIndexTerm.TERM,
+                                                         project.getRootPath().toURI() ) );
+        }
+        if ( pkg != null ) {
+            indexElements.add( new Pair<String, String>( PackageNameIndexTerm.TERM,
+                                                         pkg.getPackageName() ) );
         }
         return indexElements;
     }

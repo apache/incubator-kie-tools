@@ -1,4 +1,4 @@
-package org.kie.workbench.common.services.refactoring.backend.server.query.findruleattributes;
+package org.kie.workbench.common.services.refactoring.backend.server.query.findrules;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,14 +18,12 @@ import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlF
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
-import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRuleAttributesQuery;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePackageNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.uberfire.java.nio.file.Path;
@@ -35,15 +33,10 @@ import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class FindRuleAttributesQueryValidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
+public class FindRulesByProjectQueryValidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     private Set<NamedQuery> queries = new HashSet<NamedQuery>() {{
-        add( new FindRuleAttributesQuery() {
-            @Override
-            public ResponseBuilder getResponseBuilder() {
-                return new DefaultResponseBuilder( ioService() );
-            }
-        } );
+        add( new FindRulesByProjectQuery() );
     }};
 
     @Test
@@ -72,23 +65,26 @@ public class FindRuleAttributesQueryValidIndexTermsTest extends BaseIndexingTest
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRuleAttributesQuery",
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) );
-                                                                                   add( new ValueRuleAttributeValueIndexTerm( "myRuleFlowGroup" ) );
+                                                                                   add( new ValueProjectRootPathIndexTerm( "*" ) );
+                                                                                   add( new ValuePackageNameIndexTerm( "*" ) );
                                                                                }},
+                                                                               true,
                                                                                0,
                                                                                10 );
 
             try {
                 final PageResponse<RefactoringPageRow> response = service.query( request );
                 assertNotNull( response );
-                assertEquals( 2,
+                assertEquals( 3,
                               response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
-                                        path1 );
+                                        "myRule" );
                 assertResponseContains( response.getPageRowList(),
-                                        path2 );
+                                        "myRule2" );
+                assertResponseContains( response.getPageRowList(),
+                                        "myRule3" );
 
             } catch ( IllegalArgumentException e ) {
                 fail();
@@ -96,27 +92,68 @@ public class FindRuleAttributesQueryValidIndexTermsTest extends BaseIndexingTest
         }
 
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRuleAttributesQuery",
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
                                                                                new HashSet<ValueIndexTerm>() {{
-                                                                                   add( new ValueRuleAttributeIndexTerm( "ruleflow-group" ) );
-                                                                                   add( new ValueRuleAttributeValueIndexTerm( "*" ) );
+                                                                                   add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
+                                                                                   add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
                                                                                }},
-                                                                               true,
+                                                                               false,
                                                                                0,
                                                                                10 );
 
             try {
-                final Set<String> ruleFlowGroups = new HashSet<String>();
                 final PageResponse<RefactoringPageRow> response = service.query( request );
                 assertNotNull( response );
                 assertEquals( 3,
                               response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
-                                        path1 );
+                                        "myRule" );
                 assertResponseContains( response.getPageRowList(),
-                                        path2 );
+                                        "myRule2" );
                 assertResponseContains( response.getPageRowList(),
-                                        path3 );
+                                        "myRule3" );
+
+            } catch ( IllegalArgumentException e ) {
+                fail();
+            }
+        }
+
+        {
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
+                                                                               new HashSet<ValueIndexTerm>() {{
+                                                                                   add( new ValueProjectRootPathIndexTerm( BaseIndexingTest.TEST_PROJECT_ROOT ) );
+                                                                                   add( new ValuePackageNameIndexTerm( "non-existent-package-name" ) );
+                                                                               }},
+                                                                               false,
+                                                                               0,
+                                                                               10 );
+
+            try {
+                final PageResponse<RefactoringPageRow> response = service.query( request );
+                assertNotNull( response );
+                assertEquals( 0,
+                              response.getPageRowList().size() );
+
+            } catch ( IllegalArgumentException e ) {
+                fail();
+            }
+        }
+
+        {
+            final RefactoringPageRequest request = new RefactoringPageRequest( "FindRulesByProjectQuery",
+                                                                               new HashSet<ValueIndexTerm>() {{
+                                                                                   add( new ValueProjectRootPathIndexTerm( "non-existent-project-root" ) );
+                                                                                   add( new ValuePackageNameIndexTerm( BaseIndexingTest.TEST_PACKAGE_NAME ) );
+                                                                               }},
+                                                                               false,
+                                                                               0,
+                                                                               10 );
+
+            try {
+                final PageResponse<RefactoringPageRow> response = service.query( request );
+                assertNotNull( response );
+                assertEquals( 0,
+                              response.getPageRowList().size() );
 
             } catch ( IllegalArgumentException e ) {
                 fail();
@@ -151,15 +188,14 @@ public class FindRuleAttributesQueryValidIndexTermsTest extends BaseIndexingTest
     }
 
     private void assertResponseContains( final List<RefactoringPageRow> rows,
-                                         final Path path ) {
+                                         final String ruleName ) {
         for ( RefactoringPageRow row : rows ) {
-            final String rowFileName = ( (org.uberfire.backend.vfs.Path) row.getValue() ).getFileName();
-            final String fileName = path.getFileName().toString();
-            if ( rowFileName.endsWith( fileName ) ) {
+            final String rowRuleName = ( (String) row.getValue() );
+            if ( rowRuleName.equals( ruleName ) ) {
                 return;
             }
         }
-        fail( "Response does not contain expected Path '" + path.toUri().toString() + "'." );
+        fail( "Response does not contain expected Rule Name '" + ruleName + "'." );
     }
 
 }

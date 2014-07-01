@@ -68,11 +68,6 @@ public class JavaTypeQueryValidIndexTermsTest extends BaseIndexingTest<JavaResou
         final RefactoringQueryService service = new RefactoringQueryServiceImpl( getConfig(),
                                                                                  namedQueriesProducer );
 
-        //Don't ask, but we need to write a single file first in order for indexing to work
-        final Path basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-        ioService().write( basePath.resolve( "dummy" ),
-                           "<none>" );
-
         //Add test files
         final Path path1 = basePath.resolve( "Pojo1.java" );
         final String javaFile1 = loadText( "../Pojo1.java" );
@@ -89,8 +84,8 @@ public class JavaTypeQueryValidIndexTermsTest extends BaseIndexingTest<JavaResou
 
         {
 
-            HashSet<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>(  );
-            queryTerms.add( new ValueJavaTypeIndexTerm( JavaTypeIndexTerm.JAVA_TYPE.CLASS) );
+            HashSet<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>();
+            queryTerms.add( new ValueJavaTypeIndexTerm( JavaTypeIndexTerm.JAVA_TYPE.CLASS ) );
 
             final RefactoringPageRequest request = new RefactoringPageRequest( "FindJavaTypeQuery",
                                                                                queryTerms,
@@ -104,7 +99,6 @@ public class JavaTypeQueryValidIndexTermsTest extends BaseIndexingTest<JavaResou
                               response.getPageRowList().size() );
                 assertResponseContains( response.getPageRowList(),
                                         path1 );
-
 
             } catch ( IllegalArgumentException e ) {
                 fail();

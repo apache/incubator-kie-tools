@@ -9,6 +9,7 @@ import javax.enterprise.inject.Instance;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.junit.Test;
+import org.kie.uberfire.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileIndexer;
@@ -16,16 +17,16 @@ import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlF
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
-import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindTypeFieldsQuery;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
 
@@ -49,13 +50,9 @@ public class FindFieldTypesQueryInvalidIndexTermsTest extends BaseIndexingTest<T
         final Instance<NamedQuery> namedQueriesProducer = mock( Instance.class );
         when( namedQueriesProducer.iterator() ).thenReturn( queries.iterator() );
 
-        final RefactoringQueryService service = new RefactoringQueryServiceImpl( getConfig(),
-                                                                                 namedQueriesProducer );
-
-        //Don't ask, but we need to write a single file first in order for indexing to work
-        final Path basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-        ioService().write( basePath.resolve( "dummy" ),
-                           "<none>" );
+        final RefactoringQueryServiceImpl service = new RefactoringQueryServiceImpl( getConfig(),
+                                                                                     namedQueriesProducer );
+        service.init();
 
         //Add test files
         final Path path1 = basePath.resolve( "drl1.drl" );
@@ -128,6 +125,8 @@ public class FindFieldTypesQueryInvalidIndexTermsTest extends BaseIndexingTest<T
         return new HashMap<String, Analyzer>() {{
             put( RuleAttributeIndexTerm.TERM,
                  new RuleAttributeNameAnalyzer( LUCENE_40 ) );
+            put( ProjectRootPathIndexTerm.TERM,
+                 new FilenameAnalyzer( LUCENE_40 ) );
         }};
     }
 

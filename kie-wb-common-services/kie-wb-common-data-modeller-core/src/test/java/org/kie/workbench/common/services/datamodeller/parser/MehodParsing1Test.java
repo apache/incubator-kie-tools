@@ -16,18 +16,27 @@
 
 package org.kie.workbench.common.services.datamodeller.parser;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.workbench.common.services.datamodeller.parser.descr.*;
-import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ClassOrInterfaceTypeDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.DimensionDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ElementDescriptor;
+import org.kie.workbench.common.services.datamodeller.parser.descr.EllipsisParameterDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.IdentifierDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.JavaTokenDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.MethodDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ModifierDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ModifierListDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.NormalParameterDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.ParameterListDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.PrimitiveTypeDescr;
+import org.kie.workbench.common.services.datamodeller.parser.descr.TypeDescr;
+import org.kie.workbench.common.services.datamodeller.parser.util.ParserUtil;
+
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.services.datamodeller.parser.ParserAssert.assertEqualsFieldDeclaration;
-import static org.kie.workbench.common.services.datamodeller.parser.ParserAssert.assertEqualsMethodDeclaration;
-import static org.kie.workbench.common.services.datamodeller.parser.ParserAssert.assertEqualsParameterList;
+import static org.kie.workbench.common.services.datamodeller.parser.ParserAssert.*;
 
 public class MehodParsing1Test extends JavaParserBaseTest {
 

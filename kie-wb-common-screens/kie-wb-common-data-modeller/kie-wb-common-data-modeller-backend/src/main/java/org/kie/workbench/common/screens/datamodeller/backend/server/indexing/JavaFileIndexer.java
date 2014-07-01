@@ -24,6 +24,7 @@ import javax.inject.Named;
 
 import org.drools.core.base.ClassTypeResolver;
 import org.guvnor.common.services.builder.LRUBuilderCache;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.forge.roaster.Roaster;
@@ -98,11 +99,11 @@ public class JavaFileIndexer implements Indexer {
     protected JavaResourceTypeDefinition javaResourceTypeDefinition;
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     protected IOService ioService;
 
     @Inject
-    private ProjectService projectService;
+    protected ProjectService projectService;
 
     @Inject
     private LRUBuilderCache builderCache;
@@ -125,9 +126,17 @@ public class JavaFileIndexer implements Indexer {
                 return null;
             }
 
+            final Package pkg = getPackage( path );
+
+            if ( pkg == null ) {
+                logger.error( "Unable to index: " + path.toUri().toString() + ", package could not be calculated." );
+                return null;
+            }
+
             JavaTypeIndexTerm.JAVA_TYPE javaTypeKind = null;
             String javaTypeName;
-            DefaultIndexBuilder builder = new DefaultIndexBuilder();
+            DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
+                                                                   pkg );
 
             org.jboss.forge.roaster.model.JavaType<?> javaType = Roaster.parse( javaSource );
             if ( javaType.getSyntaxErrors() == null || javaType.getSyntaxErrors().isEmpty() ) {
@@ -142,27 +151,29 @@ public class JavaFileIndexer implements Indexer {
                 } else {
                     javaTypeKind = JavaTypeIndexTerm.JAVA_TYPE.CLASS;
                     //complete class fields processing.
-                    addJavaTypeTerms( ( JavaClassSource ) javaType, builder, getProjectClassLoader( project ) );
+                    addJavaTypeTerms( (JavaClassSource) javaType, builder, getProjectClassLoader( project ) );
                 }
 
                 builder.addGenerator( new JavaType( new ValueJavaTypeIndexTerm( javaTypeKind ) ) );
                 builder.addGenerator( new JavaTypeName( new ValueJavaTypeNameIndexTerm( javaTypeName ) ) );
 
                 index = KObjectUtil.toKObject( path,
-                        builder.build() );
+                                               builder.build() );
 
             }
 
         } catch ( Exception e ) {
             //Unexpected parsing or processing error
             logger.error( "Unable to index '" + path.toUri().toString() + "'.",
-                    e.getMessage() );
+                          e.getMessage() );
         }
 
         return index;
     }
 
-    private void addJavaTypeTerms( JavaClassSource javaClassSource, DefaultIndexBuilder builder, ClassLoader classLoader ) {
+    private void addJavaTypeTerms( JavaClassSource javaClassSource,
+                                   DefaultIndexBuilder builder,
+                                   ClassLoader classLoader ) {
 
         ClassTypeResolver classTypeResolver = DriverUtils.getInstance().createClassTypeResolver( javaClassSource, classLoader );
         DriverUtils driverUtils = DriverUtils.getInstance();
@@ -210,7 +221,7 @@ public class JavaFileIndexer implements Indexer {
                         } else {
                             //if this point was reached, we know it's a Collection.
                             // Managed type check was done previous.
-                            Type elementsType = ( ( List<Type> ) fieldType.getTypeArguments() ).get( 0 );
+                            Type elementsType = ( (List<Type>) fieldType.getTypeArguments() ).get( 0 );
                             fieldClassName = classTypeResolver.getFullTypeName( elementsType.getName() );
                         }
 
@@ -233,8 +244,12 @@ public class JavaFileIndexer implements Indexer {
         return KObjectUtil.toKObjectKey( path );
     }
 
-    protected Project getProject( Path path ) {
+    protected Project getProject( final Path path ) {
         return projectService.resolveProject( Paths.convert( path ) );
+    }
+
+    protected Package getPackage( final Path path ) {
+        return projectService.resolvePackage( Paths.convert( path ) );
     }
 
     protected ClassLoader getProjectClassLoader( Project project ) {
