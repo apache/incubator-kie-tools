@@ -21,12 +21,13 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.screens.socialscreen.client.AssetScreenView;
+import org.kie.workbench.common.screens.socialscreen.client.OverviewScreenView;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 public interface GuidedRuleEditorView
-        extends AssetScreenView,
+        extends
         HasBusyIndicator,
         IsWidget {
 

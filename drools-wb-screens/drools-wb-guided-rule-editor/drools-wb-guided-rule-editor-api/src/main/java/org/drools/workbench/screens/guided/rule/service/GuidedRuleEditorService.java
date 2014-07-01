@@ -26,7 +26,9 @@ import org.guvnor.common.services.shared.file.SupportsRename;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.workbench.common.screens.socialscreen.model.Overview;
 import org.kie.workbench.common.services.shared.source.ViewSourceService;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
@@ -43,4 +45,5 @@ public interface GuidedRuleEditorService
 
     GuidedEditorContent loadContent( final Path path );
 
+    Overview loadOverview(ObservablePath path);
 }

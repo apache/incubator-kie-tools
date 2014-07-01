@@ -44,6 +44,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.screens.socialscreen.model.Overview;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -64,7 +66,8 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
+public class GuidedRuleEditorServiceImpl
+        implements GuidedRuleEditorService {
 
     //Filters to include *all* applicable resources
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
@@ -206,6 +209,26 @@ public class GuidedRuleEditorServiceImpl implements GuidedRuleEditorService {
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public Overview<RuleModel> loadOverview(ObservablePath path) {
+
+        Overview<RuleModel> overview = new Overview<RuleModel>();
+
+        overview.setModel(load(path));
+
+        overview.setMetadata(metadataService.getMetadata(path));
+
+        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
+
+        if (sourceServices.hasServiceFor(convertedPath)) {
+            overview.setPreview(sourceServices.getServiceFor(convertedPath).getSource(convertedPath));
+        }
+
+        overview.setProjectName(projectService.resolveProject(path).getProjectName());
+
+        return overview;
     }
 
     @Override

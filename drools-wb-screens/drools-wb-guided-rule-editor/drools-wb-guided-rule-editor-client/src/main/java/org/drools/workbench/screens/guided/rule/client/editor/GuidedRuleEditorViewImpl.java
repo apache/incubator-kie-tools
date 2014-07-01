@@ -17,19 +17,17 @@
 package org.drools.workbench.screens.guided.rule.client.editor;
 
 import java.util.Collection;
-
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.socialscreen.client.AssetScreenViewImpl;
-import org.kie.workbench.common.screens.socialscreen.client.discussion.DiscussionWidgetPresenter;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -37,7 +35,7 @@ import org.uberfire.backend.vfs.Path;
 import org.kie.uberfire.client.common.BusyPopup;
 
 public class GuidedRuleEditorViewImpl
-        extends AssetScreenViewImpl
+        extends Composite
         implements GuidedRuleEditorView {
 
     private final EventBus localBus = new SimpleEventBus();
@@ -45,11 +43,10 @@ public class GuidedRuleEditorViewImpl
     private RuleModeller modeller = null;
 
     @Inject
-    public GuidedRuleEditorViewImpl(DiscussionWidgetPresenter discussionWidgetPresenter) {
-        super(discussionWidgetPresenter);
+    public GuidedRuleEditorViewImpl() {
 
         panel.setWidth("100%");
-//        initWidget( panel );
+        initWidget(panel);
     }
 
     @Override
