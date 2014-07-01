@@ -190,15 +190,15 @@ public class BatchTest {
         ioService.endBatch();
         assertFileSystemState( FileSystemState.NORMAL );
     }
-//
-//    @Test
-//    public void allFSShouldBeOnSameState() throws IOException, InterruptedException {
-//        assertAllFileSystemState( FileSystemState.NORMAL );
-//        ioService.startBatch();
-//        assertAllFileSystemState( FileSystemState.BATCH );
-//        ioService.endBatch();
-//        assertAllFileSystemState( FileSystemState.NORMAL );
-//    }
+
+    @Test
+    public void allFSShouldBeOnSameState() throws IOException, InterruptedException {
+        assertAllFileSystemState( FileSystemState.NORMAL );
+        ioService.startBatch();
+        assertAllFileSystemState( FileSystemState.BATCH );
+        ioService.endBatch();
+        assertAllFileSystemState( FileSystemState.NORMAL );
+    }
 
     private void assertAllFileSystemState( FileSystemState state ) {
         for ( FileSystem fs : ioService.getFileSystems() ) {
