@@ -43,6 +43,7 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.kie.workbench.common.services.datamodel.backend.server" )
                 .addPackage( "org.kie.workbench.common.services.datamodel.backend.server.cache" )
                 .addPackage( "org.guvnor.m2repo.backend.server" )
+                .addPackage( "org.guvnor.m2repo.backend.server.helpers" )
                 .addPackage( "org.guvnor.common.services.project.service" )
                 .addPackage( "org.guvnor.common.services.project.backend.server" )
                 .addPackage( "org.guvnor.common.services.builder" )
