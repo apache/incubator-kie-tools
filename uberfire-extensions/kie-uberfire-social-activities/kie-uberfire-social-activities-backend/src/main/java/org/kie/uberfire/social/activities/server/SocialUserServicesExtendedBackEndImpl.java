@@ -7,7 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.backend.server.io.SystemFS;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.file.FileSystem;
@@ -21,7 +20,7 @@ public class SocialUserServicesExtendedBackEndImpl {
     private IOService ioService;
 
     @Inject
-    @SystemFS
+    @Named("systemFS")
     private FileSystem fileSystem;
 
     public List<String> getAllBranches() {
