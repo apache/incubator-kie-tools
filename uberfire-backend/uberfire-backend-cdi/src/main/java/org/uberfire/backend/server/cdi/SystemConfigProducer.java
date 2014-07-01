@@ -30,7 +30,6 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.io.SystemFS;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
@@ -38,17 +37,9 @@ import org.uberfire.commons.services.cdi.Veto;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
-import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
-import org.uberfire.java.nio.file.InvalidPathException;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.PathMatcher;
-import org.uberfire.java.nio.file.PatternSyntaxException;
-import org.uberfire.java.nio.file.WatchService;
-import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
-import org.uberfire.java.nio.file.spi.FileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 
 public class SystemConfigProducer implements Extension {
 
@@ -131,8 +122,7 @@ public class SystemConfigProducer implements Extension {
     void afterBeanDiscovery( @Observes final AfterBeanDiscovery abd,
                              final BeanManager bm ) {
 
-        final boolean systemFSNotExists = bm.getBeans( FileSystem.class, new AnnotationLiteral<SystemFS>() {
-        } ).isEmpty();
+        final boolean systemFSNotExists = bm.getBeans( "systemFS" ).isEmpty();
 
         if ( systemFSNotExists ) {
             buildSystemFS( abd, bm );
@@ -148,13 +138,13 @@ public class SystemConfigProducer implements Extension {
 
     private void buildSystemFS( final AfterBeanDiscovery abd,
                                 final BeanManager bm ) {
-        final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget( bm.createAnnotatedType( DummyFileSystem.class ) );
+        final InjectionTarget<JGitFileSystem> it = bm.createInjectionTarget( bm.createAnnotatedType( JGitFileSystem.class ) );
 
-        abd.addBean( new Bean<FileSystem>() {
+        abd.addBean( new Bean<JGitFileSystem>() {
 
             @Override
             public Class<?> getBeanClass() {
-                return FileSystem.class;
+                return JGitFileSystem.class;
             }
 
             @Override
@@ -175,8 +165,6 @@ public class SystemConfigProducer implements Extension {
                     } );
                     add( new AnnotationLiteral<Any>() {
                     } );
-                    add( new AnnotationLiteral<SystemFS>() {
-                    } );
                 }};
             }
 
@@ -193,6 +181,7 @@ public class SystemConfigProducer implements Extension {
             @Override
             public Set<Type> getTypes() {
                 return new HashSet<Type>() {{
+                    add( JGitFileSystem.class );
                     add( FileSystem.class );
                     add( Object.class );
                 }};
@@ -209,27 +198,27 @@ public class SystemConfigProducer implements Extension {
             }
 
             @Override
-            public FileSystem create( CreationalContext<FileSystem> ctx ) {
+            public JGitFileSystem create( CreationalContext<JGitFileSystem> ctx ) {
                 final Bean<IOService> bean = (Bean<IOService>) bm.getBeans( "configIO" ).iterator().next();
                 final CreationalContext<IOService> _ctx = bm.createCreationalContext( bean );
                 final IOService ioService = (IOService) bm.getReference( bean, IOService.class, _ctx );
 
-                FileSystem systemFS;
+                JGitFileSystem systemFS;
                 try {
-                    systemFS = ioService.newFileSystem( URI.create( "git://system" ),
-                                                        new HashMap<String, Object>() {{
-                                                            put( "init", Boolean.TRUE );
-                                                        }} );
+                    systemFS = (JGitFileSystem) ioService.newFileSystem( URI.create( "git://system" ),
+                                                                         new HashMap<String, Object>() {{
+                                                                             put( "init", Boolean.TRUE );
+                                                                         }} );
                 } catch ( FileSystemAlreadyExistsException e ) {
-                    systemFS = ioService.getFileSystem( URI.create( "git://system" ) );
+                    systemFS = (JGitFileSystem) ioService.getFileSystem( URI.create( "git://system" ) );
                 }
 
                 return systemFS;
             }
 
             @Override
-            public void destroy( final FileSystem instance,
-                                 final CreationalContext<FileSystem> ctx ) {
+            public void destroy( final JGitFileSystem instance,
+                                 final CreationalContext<JGitFileSystem> ctx ) {
                 try {
                     instance.dispose();
                 } catch ( final Exception ex ) {
@@ -305,10 +294,6 @@ public class SystemConfigProducer implements Extension {
             @Override
             public IOService create( CreationalContext<IOService> ctx ) {
 
-//                final Bean<IOWatchServiceNonDotImpl> watchServiceBean = (Bean<IOWatchServiceNonDotImpl>) bm.getBeans( IOWatchServiceNonDotImpl.class ).iterator().next();
-//                final CreationalContext<IOWatchServiceNonDotImpl> _wsctx = bm.createCreationalContext( watchServiceBean );
-//                final IOWatchServiceNonDotImpl watchService = (IOWatchServiceNonDotImpl) bm.getReference( watchServiceBean, IOWatchServiceNonDotImpl.class, _wsctx );
-
                 final Bean<ClusterServiceFactory> clusterFactoryBean = (Bean<ClusterServiceFactory>) bm.getBeans( "clusterServiceFactory" ).iterator().next();
                 final CreationalContext<ClusterServiceFactory> _ctx = bm.createCreationalContext( clusterFactoryBean );
                 final ClusterServiceFactory clusterServiceFactory = (ClusterServiceFactory) bm.getReference( clusterFactoryBean, ClusterServiceFactory.class, _ctx );
@@ -331,75 +316,6 @@ public class SystemConfigProducer implements Extension {
                 ctx.release();
             }
         } );
-    }
-
-    public static class DummyFileSystem implements FileSystem {
-
-        @Override
-        public FileSystemProvider provider() {
-            return null;
-        }
-
-        @Override
-        public boolean isOpen() {
-            return false;
-        }
-
-        @Override
-        public boolean isReadOnly() {
-            return false;
-        }
-
-        @Override
-        public String getSeparator() {
-            return null;
-        }
-
-        @Override
-        public Iterable<Path> getRootDirectories() {
-            return null;
-        }
-
-        @Override
-        public Iterable<FileStore> getFileStores() {
-            return null;
-        }
-
-        @Override
-        public Set<String> supportedFileAttributeViews() {
-            return null;
-        }
-
-        @Override
-        public Path getPath( String first,
-                             String... more ) throws InvalidPathException {
-            return null;
-        }
-
-        @Override
-        public PathMatcher getPathMatcher( String syntaxAndPattern ) throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
-            return null;
-        }
-
-        @Override
-        public UserPrincipalLookupService getUserPrincipalLookupService() throws UnsupportedOperationException {
-            return null;
-        }
-
-        @Override
-        public WatchService newWatchService() throws UnsupportedOperationException, IOException {
-            return null;
-        }
-
-        @Override
-        public void close() throws IOException {
-
-        }
-
-        @Override
-        public void dispose() {
-
-        }
     }
 
     public class NamedLiteral extends AnnotationLiteral<Named> implements Named {

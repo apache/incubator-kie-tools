@@ -21,7 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.backend.server.io.SystemFS;
 import org.uberfire.backend.server.util.TextUtil;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -35,7 +34,7 @@ public class UserServicesBackendImpl {
     private IOService ioService;
 
     @Inject
-    @SystemFS
+    @Named("systemFS")
     private FileSystem fileSystem;
 
     public Path buildPath( final String _userName,
