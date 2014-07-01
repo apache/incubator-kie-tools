@@ -12,11 +12,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static org.junit.Assert.*;
 
@@ -34,12 +37,17 @@ public class BatchTest {
         final URI newRepo = URI.create( "git://amend-repo-test" );
 
         ioService.newFileSystem( newRepo, new HashMap<String, Object>() );
+        Path init = ioService.get( URI.create( "git://amend-repo-test/init.file" ) );
+        ioService.write( init, "setupFS!");
 
         final URI newRepo2 = URI.create( "git://check-amend-repo-test" );
+
 
         ioService.newFileSystem( newRepo2, new HashMap<String, Object>() {{
             put( "init", "true" );
         }} );
+        init = ioService.get( URI.create( "git://check-amend-repo-test/init.file" ) );
+        ioService.write( init, "setupFS!");
     }
 
     @AfterClass
@@ -172,4 +180,21 @@ public class BatchTest {
             assertEquals( 2, v3.readAttributes().history().records().size() );
         }
     }
+
+    @Test
+    public void testFSBatchState() throws IOException, InterruptedException {
+        assertFileSystemState( FileSystemState.NORMAL );
+        ioService.startBatch();
+        assertFileSystemState( FileSystemState.BATCH );
+        ioService.endBatch();
+        assertFileSystemState( FileSystemState.NORMAL );
+    }
+
+    private void assertFileSystemState( FileSystemState state ) {
+        FileSystem fs = ioService.getFileSystems().iterator().next();
+        JGitFileSystemProvider provider = (JGitFileSystemProvider) fs.provider();
+        assertEquals( state, provider.getFileSystemState() );
+
+    }
+
 }

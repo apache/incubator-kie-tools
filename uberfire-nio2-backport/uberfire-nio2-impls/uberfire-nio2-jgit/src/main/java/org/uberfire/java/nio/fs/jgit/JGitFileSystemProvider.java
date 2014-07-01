@@ -1974,4 +1974,8 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             fs.publishEvents( root, events );
         }
     }
+
+    public FileSystemState getFileSystemState(){
+        return state;
+    }
 }
