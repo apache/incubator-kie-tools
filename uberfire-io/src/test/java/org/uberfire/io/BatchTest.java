@@ -38,16 +38,15 @@ public class BatchTest {
 
         ioService.newFileSystem( newRepo, new HashMap<String, Object>() );
         Path init = ioService.get( URI.create( "git://amend-repo-test/init.file" ) );
-        ioService.write( init, "setupFS!");
+        ioService.write( init, "setupFS!" );
 
         final URI newRepo2 = URI.create( "git://check-amend-repo-test" );
-
 
         ioService.newFileSystem( newRepo2, new HashMap<String, Object>() {{
             put( "init", "true" );
         }} );
         init = ioService.get( URI.create( "git://check-amend-repo-test/init.file" ) );
-        ioService.write( init, "setupFS!");
+        ioService.write( init, "setupFS!" );
     }
 
     @AfterClass
@@ -62,6 +61,7 @@ public class BatchTest {
     public void testBatch() throws IOException, InterruptedException {
         final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
         final WatchService ws = init.getFileSystem().newWatchService();
+
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
         ioService.write( init, "init 2!", new CommentedOption( "User Tester", "message2" ) );
         {
@@ -95,7 +95,8 @@ public class BatchTest {
         final Path path = ioService.get( URI.create( "git://amend-repo-test/mybatch" + new Random( 10L ).nextInt() + ".txt" ) );
         final Path path2 = ioService.get( URI.create( "git://amend-repo-test/mybatch2" + new Random( 10L ).nextInt() + ".txt" ) );
         ioService.write( path, "ooooo!" );
-        assertNull( ws.poll() );
+        //init.file event
+        assertNotNull( ws.poll() );
         ioService.write( path, "ooooo wdfs fg sdf!" );
         assertNull( ws.poll() );
         ioService.write( path2, "ooooo222!" );
@@ -189,12 +190,27 @@ public class BatchTest {
         ioService.endBatch();
         assertFileSystemState( FileSystemState.NORMAL );
     }
+//
+//    @Test
+//    public void allFSShouldBeOnSameState() throws IOException, InterruptedException {
+//        assertAllFileSystemState( FileSystemState.NORMAL );
+//        ioService.startBatch();
+//        assertAllFileSystemState( FileSystemState.BATCH );
+//        ioService.endBatch();
+//        assertAllFileSystemState( FileSystemState.NORMAL );
+//    }
+
+    private void assertAllFileSystemState( FileSystemState state ) {
+        for ( FileSystem fs : ioService.getFileSystems() ) {
+            JGitFileSystemProvider provider = (JGitFileSystemProvider) fs.provider();
+            assertEquals( state, provider.getFileSystemState() );
+        }
+    }
 
     private void assertFileSystemState( FileSystemState state ) {
         FileSystem fs = ioService.getFileSystems().iterator().next();
         JGitFileSystemProvider provider = (JGitFileSystemProvider) fs.provider();
         assertEquals( state, provider.getFileSystemState() );
-
     }
 
 }
