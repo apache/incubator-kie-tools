@@ -19,39 +19,37 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:kie='urn:import:org.kie.workbench.common.screens.socialscreen.client.discussion'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+    >
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <gwt:HTMLPanel>
+  <ui:style>
+    .general {
+      width: 400px;
+      font-size: 10px;
+      padding: 5px 10px 5px 10px;
+    }
 
-    <div style="float:left">
-      <div>
-        <div>Type</div>
-        <div>Tags</div>
-        <div>Description</div>
-        <div>Used in projects</div>
-        <div>Last Modified</div>
-        <div>Created</div>
+    .comment {
+      font-size: 12px;
+    }
+  </ui:style>
+
+  <gwt:HTMLPanel addStyleNames='{style.general}'>
+
+    <div class='{style.comment}'>
+      <gwt:Label ui:field="comment"/>
+    </div>
+    <div style="clear:both;">
+      <div style="float:left">
+        <gwt:Label ui:field="author"/>
       </div>
-      <div></div>
+      <div style="float:right;">
+        <gwt:Label ui:field="date"/>
+      </div>
     </div>
-    <div style="float:left">
-      <bootstrap:TabPanel ui:field="tabPanel">
-        <bootstrap:Tab heading="Comments">
-          <gwt:SimplePanel>
-            <kie:DiscussionWidgetPresenter ui:field="discussionArea"/>
-          </gwt:SimplePanel>
-        </bootstrap:Tab>
-        <bootstrap:Tab heading="Usage and Statistics">
-          <bootstrap:Heading size="3">Chat</bootstrap:Heading>
-          <bootstrap:Paragraph>33333333333</bootstrap:Paragraph>
-        </bootstrap:Tab>
-      </bootstrap:TabPanel>
 
-    </div>
 
   </gwt:HTMLPanel>
 

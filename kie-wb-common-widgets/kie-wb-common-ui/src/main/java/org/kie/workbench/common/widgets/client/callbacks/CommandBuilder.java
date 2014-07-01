@@ -20,8 +20,10 @@ import java.util.Map;
 
 import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.uberfire.client.common.MultiPageEditor;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.mvp.Command;
@@ -43,6 +45,22 @@ public class CommandBuilder {
                                             command );
         commands.put( throwable,
                       command );
+        return this;
+    }
+
+
+    public CommandBuilder addNoSuchFileException( final HasBusyIndicator view,
+                                                  final Callback<IsWidget> callback) {
+        add( NoSuchFileException.class,
+                new Command() {
+
+                    @Override
+                    public void execute() {
+                        callback.callback(new NoSuchFileWidget());
+                        view.hideBusyIndicator();
+                    }
+                }
+        );
         return this;
     }
 

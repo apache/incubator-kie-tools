@@ -14,35 +14,43 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.socialscreen.client;
-
-import javax.inject.Inject;
+package org.kie.workbench.common.screens.socialscreen.client.discussion;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.socialscreen.client.discussion.DiscussionWidgetPresenter;
+import org.uberfire.java.nio.base.version.VersionRecord;
 
-public class AssetScreenViewImpl
-        extends Composite
-        implements AssetScreenView {
+public class CommitLabel
+        extends Composite {
 
     interface Binder
             extends
-            UiBinder<Widget, AssetScreenViewImpl> {
+            UiBinder<Widget, CommitLabel> {
 
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
 
-    @UiField(provided = true)
-    DiscussionWidgetPresenter discussionArea;
+    @UiField
+    Label author;
 
-    @Inject
-    public AssetScreenViewImpl(DiscussionWidgetPresenter discussionWidgetPresenter) {
-        this.discussionArea = discussionWidgetPresenter;
+    @UiField
+    Label date;
+
+    @UiField
+    Label comment;
+
+    public CommitLabel(VersionRecord versionRecord) {
         initWidget(uiBinder.createAndBindUi(this));
+
+        author.setText(versionRecord.author());
+        date.setText(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(versionRecord.date()));
+        comment.setText(versionRecord.comment());
     }
+
 }

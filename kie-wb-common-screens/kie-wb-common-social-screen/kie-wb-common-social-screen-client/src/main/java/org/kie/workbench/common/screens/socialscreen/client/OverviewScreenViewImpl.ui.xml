@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2014 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
+             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
+
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
+  <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
+
+
+  <ui:style>
+    .previewBox {
+      font-family: monospace;
+      font-size: 10px;
+      width: 500px;
+      background-color: #fffff0 !important;
+    }
+
+    .firstColumn {
+      float: left;
+      width: 120px;
+    }
+  </ui:style>
+
+  <gwt:HTMLPanel>
+
+    <div style="float:left">
+
+      <gwt:HTMLPanel>
+        <div>
+          <div>
+            <div class='{style.firstColumn}'>Type</div>
+            <div style="float:left;">
+              <gwt:Label ui:field="resourceType"/>
+            </div>
+            <div style="float:right;">
+              <bootstrap:Button text="Edit"/>
+            </div>
+          </div>
+          <div style="clear:both;">
+            <div class='{style.firstColumn}'>Description</div>
+            <div style="float:left;">
+              <bootstrap:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" width="380px" visibleLines="2"/>
+            </div>
+          </div>
+          <div style="clear:both;">
+            <div class='{style.firstColumn}'>Used in projects</div>
+            <div style="float:left;">
+              <gwt:Label ui:field="projects"/>
+            </div>
+          </div>
+          <div style="clear:both;">
+            <div class='{style.firstColumn}'>Last Modified</div>
+            <div style="float:left;">
+              <gwt:Label ui:field="lastModifiedLabel"/>
+            </div>
+          </div>
+          <div style="clear:both;">
+            <div class='{style.firstColumn}'>Created</div>
+            <div style="float:left;">
+              <gwt:Label ui:field="createdLabel"/>
+            </div>
+          </div>
+        </div>
+        <div>
+          <bootstrap:TextArea ui:field="filePreview" enabled="false" styleName='{style.previewBox}' visibleLines="15"/>
+        </div>
+      </gwt:HTMLPanel>
+
+    </div>
+    <div style="float:left">
+      <!--<bootstrap:TabPanel ui:field="tabPanel">-->
+      <!--<bootstrap:Tab heading="Comments" active="true">-->
+      <!--<gwt:SimplePanel>-->
+      <!--<kie:DiscussionWidgetPresenter ui:field="discussionArea"/>-->
+      <!--</gwt:SimplePanel>-->
+      <!--</bootstrap:Tab>-->
+      <!--<bootstrap:Tab heading="Usage and Statistics">-->
+      <!--<bootstrap:Heading size="3">Chat</bootstrap:Heading>-->
+      <!--<bootstrap:Paragraph>33333333333</bootstrap:Paragraph>-->
+      <!--</bootstrap:Tab>-->
+      <!--</bootstrap:TabPanel>-->
+
+    </div>
+
+  </gwt:HTMLPanel>
+
+</ui:UiBinder>

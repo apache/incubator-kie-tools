@@ -62,7 +62,7 @@ public class SocialScreenManager {
     }
 
     public void getMetaData(final Callback<Metadata> callback) {
-        checkNotNull("currentPath", currentPath);
+//        checkNotNull("currentPath", currentPath);
 
         if (currentMetaData == null) {
             loadMetaData(callback);
