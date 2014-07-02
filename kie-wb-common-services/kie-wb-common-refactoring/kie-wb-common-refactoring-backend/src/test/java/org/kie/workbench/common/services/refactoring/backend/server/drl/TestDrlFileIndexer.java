@@ -28,6 +28,8 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
@@ -37,8 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.model.KObjectKey;
 
 @ApplicationScoped
 public class TestDrlFileIndexer implements TestIndexer<TestDrlFileTypeDefinition> {
@@ -47,9 +47,9 @@ public class TestDrlFileIndexer implements TestIndexer<TestDrlFileTypeDefinition
 
     private IOService ioService;
 
-    private TestDrlFileTypeDefinition type;
-
     private ProjectService projectService;
+
+    private TestDrlFileTypeDefinition type;
 
     @Override
     public void setIOService( final IOService ioService ) {
@@ -57,13 +57,13 @@ public class TestDrlFileIndexer implements TestIndexer<TestDrlFileTypeDefinition
     }
 
     @Override
-    public void setResourceTypeDefinition( final TestDrlFileTypeDefinition type ) {
-        this.type = type;
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
+    public void setResourceTypeDefinition( final TestDrlFileTypeDefinition type ) {
+        this.type = type;
     }
 
     @Override

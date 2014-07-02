@@ -34,13 +34,13 @@ public class TestJavaFileIndexer extends JavaFileIndexer implements TestIndexer<
     }
 
     @Override
-    public void setResourceTypeDefinition( final JavaResourceTypeDefinition type ) {
-        this.javaResourceTypeDefinition = type;
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
+    public void setResourceTypeDefinition( final JavaResourceTypeDefinition type ) {
+        this.javaResourceTypeDefinition = type;
     }
 
     @Override

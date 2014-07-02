@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -37,13 +36,13 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.Path;
 import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.kie.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
-import org.kie.uberfire.metadata.engine.Indexer;
 import org.kie.uberfire.metadata.io.IOServiceIndexedImpl;
+import org.kie.uberfire.metadata.io.IndexersFactory;
 import org.kie.uberfire.metadata.model.KObject;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.junit.Assert.*;
@@ -156,25 +155,22 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> {
 
     protected IOService ioService() {
         if ( ioService == null ) {
-            final TestIndexer indexer = getIndexer();
             final Map<String, Analyzer> analyzers = getAnalyzers();
             config = new LuceneConfigBuilder()
                     .withInMemoryMetaModelStore()
-                    .usingIndexers( new HashSet<Indexer>() {{
-                        add( indexer );
-                    }} )
                     .usingAnalyzers( analyzers )
                     .useDirectoryBasedIndex()
                     .useInMemoryDirectory()
                     .build();
 
-            ioService = new IOServiceIndexedImpl( config.getIndexEngine(),
-                                                  config.getIndexers() );
+            ioService = new IOServiceIndexedImpl( config.getIndexEngine() );
+            final TestIndexer indexer = getIndexer();
+            IndexersFactory.addIndexer( indexer );
 
             //Mock CDI injection and setup
             indexer.setIOService( ioService );
-            indexer.setResourceTypeDefinition( getResourceTypeDefinition() );
             indexer.setProjectService( getProjectService() );
+            indexer.setResourceTypeDefinition( getResourceTypeDefinition() );
         }
         return ioService;
     }

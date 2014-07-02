@@ -23,12 +23,10 @@ import java.util.HashSet;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
@@ -47,10 +45,6 @@ public class RuleNameServiceImpl
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    @Named("luceneConfig")
-    private LuceneConfig config;
 
     @Override
     public Collection<String> getRuleNames( final Path path,
