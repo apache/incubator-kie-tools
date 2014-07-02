@@ -107,19 +107,12 @@ public class GuidedRuleEditorOverviewPresenter
 
                 version = versionRecord.id();
 
-                if (isLatest(versionRecord.uri())) {
-                    isReadOnly = false;
-                } else {
-                    isReadOnly = true;
-                }
+                isReadOnly = !versionMenuBuilder.isLatest(versionRecord);
 
                 onStartup(wrap, place);
 
             }
 
-            private boolean isLatest(String uri) {
-                return overview.getMetadata().getVersion().get(0).uri().equals(uri);
-            }
         });
     }
 
