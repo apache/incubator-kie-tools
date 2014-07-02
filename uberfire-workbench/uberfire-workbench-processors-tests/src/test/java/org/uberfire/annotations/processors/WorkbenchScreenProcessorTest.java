@@ -354,4 +354,33 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertEquals( result.getActualCode(),
                 result.getExpectedCode() );
     }
+
+    @Test
+    public void testScreenWithOwningPerspective() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest21";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest21.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(), result.getExpectedCode() );
+    }
+
+    @Test
+    public void testScreenWithInvalidOwningPerspectiveRef() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest22";
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+
+        assertCompilationMessage( diagnostics, Kind.ERROR, 13, Diagnostic.NOPOS, "owningPerspective must be a class annotated with @WorkbenchPerspective" );
+        assertNull( result.getActualCode() );
+    }
+
 }

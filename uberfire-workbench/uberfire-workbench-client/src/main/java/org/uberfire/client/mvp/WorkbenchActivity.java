@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
@@ -23,11 +26,23 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * WorkbenchActivity and its subinterfaces define the interface between UberFire framework behaviour and application-defined behaviour.
- * 
- * In the model-view-presenter (MVP) sense, an Activity is essentially an application-provided Presenter: it has a view (its widget)
- * and it defines a set of operations that can affect that view.
- * 
+ * WorkbenchActivity and its subinterfaces define the interface between UberFire framework behaviour and
+ * application-defined behaviour.
+ * <p>
+ * In the model-view-presenter (MVP) sense, an Activity is essentially an application-provided Presenter: it has a view
+ * (its widget) and it defines a set of operations that can affect that view.
+ * <p>
+ * Applications can implement an Activity interface directly, they can subclass one of the abstract Activity
+ * implementations that come with the framework, or they may rely on UberFire's annotation processors to generate
+ * Activity implementations from annotated Java objects.
+ * <p>
+ * For example, to define a new Screen in an application, you can implement {@link WorkbenchScreenActivity}, extend
+ * {@link AbstractWorkbenchScreenActivity}, or annotate a class with {@link WorkbenchScreen} and follow the rules
+ * associated with that annotation.
+ * <p>
+ * Similarly for {@link WorkbenchEditorActivity}, {@link AbstractWorkbenchEditorActivity} and {@link WorkbenchEditor};
+ * {@link PerspectiveActivity}, {@link AbstractWorkbenchPerspectiveActivity}, and {@link WorkbenchPerspective}; and so
+ * on.
  */
 public interface WorkbenchActivity extends ContextSensitiveActivity {
 

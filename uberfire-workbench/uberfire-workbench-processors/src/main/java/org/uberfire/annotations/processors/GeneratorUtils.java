@@ -503,6 +503,39 @@ public class GeneratorUtils {
     }
 
     /**
+     * Returns the identifier (PlaceRequest ID) of the perspective that owns the given part.
+     *
+     * @param screenElement
+     *            a type annotated with either {@code @WorkbenchScreen} or {@code @WorkbenchEditor}. Not null.
+     * @param processingEnvironment
+     *            the current annotation processing environment.
+     * @return
+     * @throws GenerationException
+     *             if the owningPerspective parameter is present, but points to something other than a
+     *             {@code @WorkbenchPerspective} class.
+     */
+    public static String getOwningPerspectivePlaceRequest( TypeElement screenElement, ProcessingEnvironment processingEnvironment ) throws GenerationException {
+        AnnotationValue owningPerspectiveParam = ClientAPIModule.getWbScreenOwningPerspective( screenElement );
+        if ( owningPerspectiveParam == null ) {
+            return null;
+        }
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final TypeElement owningPerspectiveType = (TypeElement) typeUtils.asElement( (TypeMirror) owningPerspectiveParam.getValue() );
+        final String owningPerspectivePlace = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( owningPerspectiveType );
+        if ( owningPerspectivePlace.equals( "" ) ) {
+            Elements elementUtils = processingEnvironment.getElementUtils();
+            processingEnvironment.getMessager()
+                .printMessage( Kind.ERROR,
+                               "owningPerspective must be a class annotated with @WorkbenchPerspective.",
+                               screenElement,
+                               getAnnotation( elementUtils, screenElement, ClientAPIModule.workbenchScreen ),
+                               owningPerspectiveParam );
+            throw new GenerationException( "Invalid owningPerspective in @WorkbenchScreen annotation" );
+        }
+        return owningPerspectivePlace;
+    }
+
+    /**
      * Searches for an accessible method annotated with the given annotation. The method must be non-private,
      * non-static, take no arguments, and return void.
      * <p>

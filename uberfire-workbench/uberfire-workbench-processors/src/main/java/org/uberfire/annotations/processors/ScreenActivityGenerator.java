@@ -57,6 +57,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
         String identifier = ClientAPIModule.getWbScreenIdentifierValueOnClass( classElement );;
 
+        final String owningPlace = GeneratorUtils.getOwningPerspectivePlaceRequest( classElement, processingEnvironment );
+
         final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
 
         final ExecutableElement onStartupMethod = GeneratorUtils.getOnStartupMethodForNonEditors( classElement, processingEnvironment );
@@ -115,6 +117,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
             messager.printMessage( Kind.NOTE, "Class name: " + className );
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "Owning Perspective PlaceRequest: " + owningPlace );
             messager.printMessage( Kind.NOTE, "getContextIdMethodName: " + getContextIdMethodName );
             messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
@@ -158,6 +161,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
+        root.put( "owningPlace",
+                  owningPlace );
         root.put( "getContextIdMethodName",
                   getContextIdMethodName );
         root.put( "realClassName",

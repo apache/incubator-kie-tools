@@ -11,7 +11,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 import org.uberfire.annotations.processors.GeneratorUtils;
-import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
  * A collection of type names in the UberFire Client API module.
@@ -21,6 +20,7 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
 public class ClientAPIModule {
 
     public static final String IDENTIFIER = "identifier";
+    public static final String OWNING_PERSPECTIVE = "owningPerspective";
     public static final String IS_DEFAULT = "isDefault";
     public static final String IS_TEMPLATE = "isTemplate";
     public static final String VALUE = "value";
@@ -133,54 +133,71 @@ public class ClientAPIModule {
         return workbenchPanel;
     }
 
-    private static String getAnnotationIdentifierValueOnClass( TypeElement o,
-                                                               String className,
-                                                               String annotationName ) throws GenerationException {
-        try {
-            String identifierValue = "";
-            for ( final AnnotationMirror am : o.getAnnotationMirrors() ) {
+    /**
+     * Returns the value of the String-valued Annotation parameter on the given type, ignoring any default value that
+     * exists on the annotation. Returns an empty string if the type lacks the given annotation, or if the annotation
+     * lacks the given parameter.
+     */
+    private static String getAnnotationStringParam( TypeElement target,
+                                                               String annotationClassName,
+                                                               String annotationParamName ) {
+        AnnotationValue paramValue = getAnnotationParamValue( target, annotationClassName, annotationParamName );
+        if ( paramValue == null ) {
+            return "";
+        }
+        return paramValue.getValue().toString();
+    }
 
-                if ( className.equals( am.getAnnotationType().toString() ) ) {
-                    for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet() ) {
-                        if ( annotationName.equals( entry.getKey().getSimpleName().toString() ) ) {
-                            AnnotationValue value = entry.getValue();
-                            identifierValue = value.getValue().toString();
-                        }
+    /**
+     * Returns the value associated with the given parameter of the given annotation on the given class element,
+     * ignoring any default value that exists on the annotation. Returns null if the type lacks the given annotation, or
+     * if the annotation lacks the given parameter.
+     */
+    private static AnnotationValue getAnnotationParamValue( TypeElement target,
+                                                            String annotationClassName,
+                                                            String annotationName ) {
+        for ( final AnnotationMirror am : target.getAnnotationMirrors() ) {
+            if ( annotationClassName.equals( am.getAnnotationType().toString() ) ) {
+                for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet() ) {
+                    if ( annotationName.equals( entry.getKey().getSimpleName().toString() ) ) {
+                        return entry.getValue();
                     }
                 }
             }
-            return identifierValue;
-        } catch ( Exception e ) {
-            throw new GenerationException( e.getMessage(), e.getCause() );
         }
+        return null;
     }
 
-    public static Boolean getWbPerspectiveScreenIsDefaultValueOnClass( TypeElement classElement ) throws GenerationException {
-        String bool = ( getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective, IS_DEFAULT ) );
+    public static Boolean getWbPerspectiveScreenIsDefaultValueOnClass( TypeElement classElement ) {
+        String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_DEFAULT ) );
         return Boolean.valueOf( bool );
     }
 
-    public static String getWbPerspectiveScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchPerspective, IDENTIFIER );
+    public static String getWbPerspectiveScreenIdentifierValueOnClass( TypeElement classElement ) {
+        return getAnnotationStringParam( classElement, workbenchPerspective, IDENTIFIER );
     }
 
-    public static String getWbPopupScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchPopup, IDENTIFIER );
+    public static String getWbPopupScreenIdentifierValueOnClass( TypeElement classElement ) {
+        return getAnnotationStringParam( classElement, workbenchPopup, IDENTIFIER );
     }
 
-    public static String getWbSplashScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchSplashScreen, IDENTIFIER );
+    public static String getWbSplashScreenIdentifierValueOnClass( TypeElement classElement ) {
+        return getAnnotationStringParam( classElement, workbenchSplashScreen, IDENTIFIER );
     }
 
-    public static String getWbScreenIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchScreen, IDENTIFIER );
+    public static String getWbScreenIdentifierValueOnClass( TypeElement classElement ) {
+        return getAnnotationStringParam( classElement, workbenchScreen, IDENTIFIER );
     }
 
-    public static String getWbContextIdentifierValueOnClass( TypeElement classElement ) throws GenerationException {
-        return getAnnotationIdentifierValueOnClass( classElement, workbenchContext, IDENTIFIER );
+    public static AnnotationValue getWbScreenOwningPerspective( TypeElement classElement ) {
+        return getAnnotationParamValue( classElement, workbenchScreen, OWNING_PERSPECTIVE );
     }
 
-    public static boolean getWbPerspectiveScreenIsATemplate( Elements elementUtils, TypeElement classElement ) throws GenerationException {
+    public static String getWbContextIdentifierValueOnClass( TypeElement classElement ) {
+        return getAnnotationStringParam( classElement, workbenchContext, IDENTIFIER );
+    }
+
+    public static boolean getWbPerspectiveScreenIsATemplate( Elements elementUtils, TypeElement classElement ) {
         List<? extends Element> enclosedElements = classElement.getEnclosedElements();
         for ( Element element: enclosedElements ) {
             if (isATemplate( elementUtils, element )) {
@@ -189,7 +206,6 @@ public class ClientAPIModule {
         }
         return false;
     }
-
 
     public static boolean isATemplate( Elements elementUtils, Element element ) {
         if ( GeneratorUtils.getAnnotation( elementUtils, element, workbenchParts ) != null) return true;
