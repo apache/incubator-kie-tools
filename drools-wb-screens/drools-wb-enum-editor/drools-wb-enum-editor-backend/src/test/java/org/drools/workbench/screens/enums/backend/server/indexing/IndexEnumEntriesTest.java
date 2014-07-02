@@ -29,6 +29,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
 import org.junit.Test;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
+import org.kie.uberfire.metadata.engine.Index;
+import org.kie.uberfire.metadata.model.KObject;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
@@ -37,10 +41,6 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttri
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
-import org.kie.uberfire.metadata.engine.Index;
-import org.kie.uberfire.metadata.model.KObject;
 
 import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
@@ -49,11 +49,6 @@ public class IndexEnumEntriesTest extends BaseIndexingTest<EnumResourceTypeDefin
 
     @Test
     public void testIndexEnumEntries() throws IOException, InterruptedException {
-        //Don't ask, but we need to write a single file first in order for indexing to work
-        final Path basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-        ioService().write( basePath.resolve( "dummy" ),
-                           "<none>" );
-
         //Add test files
         final Path path1 = basePath.resolve( "enum1.enumeration" );
         final String dsl1 = loadText( "enum1.enumeration" );

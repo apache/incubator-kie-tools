@@ -23,7 +23,11 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.type.TestScenarioResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
@@ -32,9 +36,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.model.KObjectKey;
 
 @ApplicationScoped
 public class TestScenarioFileIndexer implements Indexer {
@@ -46,13 +47,13 @@ public class TestScenarioFileIndexer implements Indexer {
     protected IOService ioService;
 
     @Inject
-    private ProjectService projectService;
-
-    @Inject
     private DataModelService dataModelService;
 
     @Inject
     protected TestScenarioResourceTypeDefinition type;
+
+    @Inject
+    protected ProjectService projectService;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -68,7 +69,11 @@ public class TestScenarioFileIndexer implements Indexer {
             final Scenario model = ScenarioXMLPersistence.getInstance().unmarshal( content );
 
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder( );
+            final Project project = projectService.resolveProject( Paths.convert( path ) );
+            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
+                                                                         pkg );
             final TestScenarioIndexVisitor visitor = new TestScenarioIndexVisitor( dmo,
                                                                                    builder,
                                                                                    model );

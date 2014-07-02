@@ -22,6 +22,11 @@ import javax.inject.Named;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.slf4j.Logger;
@@ -29,9 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.model.KObjectKey;
 
 @ApplicationScoped
 public class GuidedDecisionTableFileIndexer implements Indexer {
@@ -44,6 +46,9 @@ public class GuidedDecisionTableFileIndexer implements Indexer {
 
     @Inject
     protected GuidedDTableResourceTypeDefinition type;
+
+    @Inject
+    protected ProjectService projectService;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -58,7 +63,11 @@ public class GuidedDecisionTableFileIndexer implements Indexer {
             final String content = ioService.readAllString( path );
             final GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( content );
 
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder();
+            final Project project = projectService.resolveProject( Paths.convert( path ) );
+            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
+                                                                         pkg );
             final GuidedDecisionTableModelIndexVisitor visitor = new GuidedDecisionTableModelIndexVisitor( builder,
                                                                                                            model );
             visitor.visit();

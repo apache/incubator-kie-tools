@@ -21,7 +21,11 @@ import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
@@ -31,9 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.model.KObjectKey;
 
 @ApplicationScoped
 public class EnumFileIndexer implements Indexer {
@@ -45,13 +46,13 @@ public class EnumFileIndexer implements Indexer {
     protected IOService ioService;
 
     @Inject
-    private ProjectService projectService;
-
-    @Inject
     private DataModelService dataModelService;
 
     @Inject
     protected EnumResourceTypeDefinition type;
+
+    @Inject
+    protected ProjectService projectService;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -75,7 +76,11 @@ public class EnumFileIndexer implements Indexer {
 
             final String packageName = getPackageName( path );
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder();
+            final Project project = projectService.resolveProject( Paths.convert( path ) );
+            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
+                                                                         pkg );
             final EnumIndexVisitor visitor = new EnumIndexVisitor( dmo,
                                                                    builder,
                                                                    enumLoader,

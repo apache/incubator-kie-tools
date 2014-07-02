@@ -32,6 +32,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
 import org.junit.Test;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
+import org.kie.uberfire.metadata.engine.Index;
+import org.kie.uberfire.metadata.model.KObject;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
@@ -39,10 +43,6 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.QueryB
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
-import org.kie.uberfire.metadata.engine.Index;
-import org.kie.uberfire.metadata.model.KObject;
 
 import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
@@ -51,11 +51,6 @@ public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<Dec
 
     @Test
     public void testIndexDecisionTableXLSAttributeName() throws IOException, InterruptedException {
-        //Don't ask, but we need to write a single file first in order for indexing to work
-        final Path basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-        ioService().write( basePath.resolve( "dummy" ),
-                           "<none>" );
-
         //Add test files
         final Path path1 = loadXLSFile( basePath,
                                         "dtable1.xls" );

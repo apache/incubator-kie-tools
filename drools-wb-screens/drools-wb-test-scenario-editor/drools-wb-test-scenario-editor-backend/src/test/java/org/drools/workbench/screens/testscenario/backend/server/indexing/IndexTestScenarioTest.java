@@ -32,6 +32,10 @@ import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersist
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.type.TestScenarioResourceTypeDefinition;
 import org.junit.Test;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
+import org.kie.uberfire.metadata.engine.Index;
+import org.kie.uberfire.metadata.model.KObject;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
@@ -40,10 +44,6 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttri
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
-import org.kie.uberfire.metadata.engine.Index;
-import org.kie.uberfire.metadata.model.KObject;
 
 import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
@@ -52,11 +52,6 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
 
     @Test
     public void testIndexTestScenario() throws IOException, InterruptedException {
-        //Don't ask, but we need to write a single file first in order for indexing to work
-        final Path basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-        ioService().write( basePath.resolve( "dummy" ),
-                           "<none>" );
-
         //Add test files
         final Path path1 = basePath.resolve( "scenario1.scenario" );
         final Scenario model1 = TestScenarioFactory.makeTestScenarioWithVerifyFact( "org.drools.workbench.screens.testscenario.backend.server.indexing",

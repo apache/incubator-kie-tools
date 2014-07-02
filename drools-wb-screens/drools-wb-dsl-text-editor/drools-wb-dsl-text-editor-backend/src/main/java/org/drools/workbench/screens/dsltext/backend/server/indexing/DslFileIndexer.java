@@ -28,7 +28,11 @@ import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
@@ -40,9 +44,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.model.KObjectKey;
 
 @ApplicationScoped
 public class DslFileIndexer implements Indexer {
@@ -57,10 +58,10 @@ public class DslFileIndexer implements Indexer {
     private DataModelService dataModelService;
 
     @Inject
-    private ProjectService projectService;
+    protected DSLResourceTypeDefinition dslType;
 
     @Inject
-    protected DSLResourceTypeDefinition dslType;
+    protected ProjectService projectService;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -101,8 +102,12 @@ public class DslFileIndexer implements Indexer {
                     return index;
                 }
 
+                final Project project = projectService.resolveProject( Paths.convert( path ) );
+                final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+
                 //Don't include rules created to parse DSL
-                final DefaultIndexBuilder builder = new DefaultIndexBuilder() {
+                final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
+                                                                             pkg ) {
                     @Override
                     public DefaultIndexBuilder addGenerator( final IndexElementsGenerator generator ) {
                         if ( generator instanceof Rule ) {

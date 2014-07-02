@@ -30,6 +30,8 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.junit.Test;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.engine.Index;
 import org.kie.uberfire.metadata.io.KObjectUtil;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -37,8 +39,6 @@ import org.kie.workbench.common.services.refactoring.backend.server.indexing.Rul
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeValueIndexTerm;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.engine.Index;
 
 import static org.apache.lucene.util.Version.*;
 import static org.junit.Assert.*;
@@ -47,11 +47,6 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<GuidedR
 
     @Test
     public void testIndexDrlRuleAttributeNameAndValues() throws IOException, InterruptedException {
-        //Don't ask, but we need to write a single file first in order for indexing to work
-        final Path basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-        ioService().write( basePath.resolve( "dummy" ),
-                           "<none>" );
-
         //Add test files
         final Path path = basePath.resolve( "drl1.rdrl" );
         final String drl = loadText( "drl1.rdrl" );

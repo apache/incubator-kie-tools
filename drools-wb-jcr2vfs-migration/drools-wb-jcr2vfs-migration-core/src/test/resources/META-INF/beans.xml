@@ -1,0 +1,5 @@
+<beans>
+  <alternatives>
+    <class>org.drools.workbench.jcr2vfsmigration.TestAppSetup</class>
+  </alternatives>
+</beans>

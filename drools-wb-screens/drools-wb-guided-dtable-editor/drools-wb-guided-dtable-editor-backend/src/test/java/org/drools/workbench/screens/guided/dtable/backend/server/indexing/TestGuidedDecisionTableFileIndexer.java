@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.backend.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.uberfire.io.IOService;
 
@@ -35,6 +36,11 @@ public class TestGuidedDecisionTableFileIndexer extends GuidedDecisionTableFileI
     @Override
     public void setResourceTypeDefinition( final GuidedDTableResourceTypeDefinition type ) {
         this.type = type;
+    }
+
+    @Override
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
 }

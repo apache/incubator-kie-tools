@@ -25,6 +25,7 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.globals.backend.server.indexing.GlobalsFileIndexer;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
@@ -43,6 +44,11 @@ public class TestGlobalsFileIndexer extends GlobalsFileIndexer implements TestIn
     @Override
     public void setResourceTypeDefinition( final GlobalResourceTypeDefinition type ) {
         this.type = type;
+    }
+
+    @Override
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override

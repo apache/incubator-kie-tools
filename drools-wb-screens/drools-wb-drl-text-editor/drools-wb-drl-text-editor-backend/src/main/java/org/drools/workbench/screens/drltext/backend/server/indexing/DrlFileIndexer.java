@@ -23,6 +23,11 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.model.KObject;
+import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
@@ -32,9 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.model.KObjectKey;
 
 @ApplicationScoped
 public class DrlFileIndexer implements Indexer {
@@ -50,6 +52,9 @@ public class DrlFileIndexer implements Indexer {
 
     @Inject
     protected DRLResourceTypeDefinition drlType;
+
+    @Inject
+    protected ProjectService projectService;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -71,7 +76,11 @@ public class DrlFileIndexer implements Indexer {
             }
 
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
-            final DefaultIndexBuilder builder = new DefaultIndexBuilder();
+            final Project project = projectService.resolveProject( Paths.convert( path ) );
+            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+
+            final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
+                                                                         pkg );
             final PackageDescrIndexVisitor visitor = new PackageDescrIndexVisitor( dmo,
                                                                                    builder,
                                                                                    packageDescr );

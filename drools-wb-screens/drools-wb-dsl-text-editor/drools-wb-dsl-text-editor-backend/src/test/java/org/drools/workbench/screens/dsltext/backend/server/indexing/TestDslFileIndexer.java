@@ -24,6 +24,7 @@ import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
@@ -47,6 +48,11 @@ public class TestDslFileIndexer extends DslFileIndexer implements TestIndexer<DS
     @Override
     protected String getPackageName( final Path path ) {
         return "org.drools.workbench.screens.dsltext.backend.server.indexing.classes";
+    }
+
+    @Override
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
