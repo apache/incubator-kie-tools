@@ -36,6 +36,7 @@ import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -104,6 +105,22 @@ public class GuidedRuleEditorOverviewPresenterTest {
         verify(service).save(path, overview.getModel(), metadata, "Added a description");
 
         assertEquals(overview.getMetadata().getDescription(), "Hello");
+    }
+
+    @Test
+    public void testChangeVersion() throws Exception {
+
+        ObservablePath path = mock(ObservablePath.class);
+        PlaceRequest place = mock(PlaceRequest.class);
+        editor.onStartup(path, place);
+
+        ArgumentCaptor<Callback> callbackArgumentCaptor = ArgumentCaptor.forClass(Callback.class);
+        verify(versionMenuBuilder).addVersionSelectionCallback(callbackArgumentCaptor.capture());
+
+        callbackArgumentCaptor.getValue().callback("v1");
+
+
+//        service.loadOverview()
     }
 
     private class GuidedRuleEditorServiceCallerMock implements Caller<GuidedRuleEditorService> {

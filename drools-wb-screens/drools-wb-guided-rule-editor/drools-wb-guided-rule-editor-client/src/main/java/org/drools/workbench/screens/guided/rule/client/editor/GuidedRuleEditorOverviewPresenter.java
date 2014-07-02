@@ -25,8 +25,10 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
+import org.guvnor.common.services.shared.version.VersionService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.socialscreen.client.OverviewScreenPresenter;
 import org.kie.workbench.common.screens.socialscreen.client.OverviewScreenView;
 import org.kie.workbench.common.screens.socialscreen.client.discussion.VersionMenuBuilder;
@@ -38,12 +40,14 @@ import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMess
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -71,6 +75,9 @@ public class GuidedRuleEditorOverviewPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
+    @Inject
+    private Caller<VersionService> versionService;
+
     private Menus menus;
     private VersionMenuBuilder versionMenuBuilder;
     private Overview<RuleModel> overview;
@@ -90,6 +97,30 @@ public class GuidedRuleEditorOverviewPresenter
         this.service = service;
         this.versionMenuBuilder = versionMenuBuilder;
         this.saveOperationService = saveOperationService;
+
+        versionMenuBuilder.addVersionSelectionCallback(new Callback<VersionRecord>() {
+            @Override
+            public void callback(VersionRecord versionRecord) {
+
+                ObservablePath wrap = IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(
+                        PathFactory.newPathBasedOn(path.getFileName(), versionRecord.uri(), path));
+
+                version = versionRecord.id();
+
+                if (isLatest(versionRecord.uri())) {
+                    isReadOnly = false;
+                } else {
+                    isReadOnly = true;
+                }
+
+                onStartup(wrap, place);
+
+            }
+
+            private boolean isLatest(String uri) {
+                return overview.getMetadata().getVersion().get(0).uri().equals(uri);
+            }
+        });
     }
 
     @OnStartup
