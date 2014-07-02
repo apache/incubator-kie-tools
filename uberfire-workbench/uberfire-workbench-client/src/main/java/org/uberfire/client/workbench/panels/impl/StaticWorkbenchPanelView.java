@@ -78,11 +78,6 @@ public class StaticWorkbenchPanelView
     }
 
     @Override
-    public void clear() {
-        panel.clear();
-    }
-
-    @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
         if ( panel.getPartView() != null ) {
             placeManager.tryClosePlace( getPlaceOfPartView(), new Command() {

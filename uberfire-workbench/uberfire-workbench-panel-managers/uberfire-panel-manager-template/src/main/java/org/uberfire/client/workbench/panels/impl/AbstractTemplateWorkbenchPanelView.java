@@ -21,12 +21,6 @@ public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPane
         return this.presenter;
     }
 
-
-    @Override
-    public void clear() {
-        panel.clear();
-    }
-
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
         panel.setPart( view );

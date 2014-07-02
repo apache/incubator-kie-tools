@@ -51,10 +51,6 @@ public class MockWorkbenchPanelView
     }
 
     @Override
-    public void clear() {
-    }
-
-    @Override
     public void addPart( final View view ) {
     }
 

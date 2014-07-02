@@ -33,8 +33,6 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter>
 
     P getPresenter();
 
-    void clear();
-
     void addPart( final WorkbenchPartPresenter.View view );
 
     void addPanel( final PanelDefinition panel,
