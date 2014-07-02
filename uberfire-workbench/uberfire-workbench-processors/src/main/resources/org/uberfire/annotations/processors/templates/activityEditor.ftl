@@ -165,6 +165,13 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     }
 
     </#if>
+    <#if owningPlace??>
+    @Override
+    public String getOwningPlace() {
+        return "${owningPlace}";
+    }
+
+    </#if>
     <#if getTitleWidgetMethodName??>
     @Override
     public IsWidget getTitleDecoration() {

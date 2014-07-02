@@ -117,7 +117,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
             messager.printMessage( Kind.NOTE, "Class name: " + className );
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
-            messager.printMessage( Kind.NOTE, "Owning Perspective PlaceRequest: " + owningPlace );
+            messager.printMessage( Kind.NOTE, "Owning Perspective Identifier: " + owningPlace );
             messager.printMessage( Kind.NOTE, "getContextIdMethodName: " + getContextIdMethodName );
             messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );

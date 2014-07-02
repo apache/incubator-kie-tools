@@ -16,6 +16,7 @@
 package org.uberfire.annotations.processors;
 
 import static java.util.Collections.*;
+import static org.uberfire.annotations.processors.facades.ClientAPIModule.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -505,7 +506,7 @@ public class GeneratorUtils {
     /**
      * Returns the identifier (PlaceRequest ID) of the perspective that owns the given part.
      *
-     * @param screenElement
+     * @param screenOrEditorClass
      *            a type annotated with either {@code @WorkbenchScreen} or {@code @WorkbenchEditor}. Not null.
      * @param processingEnvironment
      *            the current annotation processing environment.
@@ -514,23 +515,30 @@ public class GeneratorUtils {
      *             if the owningPerspective parameter is present, but points to something other than a
      *             {@code @WorkbenchPerspective} class.
      */
-    public static String getOwningPerspectivePlaceRequest( TypeElement screenElement, ProcessingEnvironment processingEnvironment ) throws GenerationException {
-        AnnotationValue owningPerspectiveParam = ClientAPIModule.getWbScreenOwningPerspective( screenElement );
-        if ( owningPerspectiveParam == null ) {
+    public static String getOwningPerspectivePlaceRequest( TypeElement screenOrEditorClass, ProcessingEnvironment processingEnvironment ) throws GenerationException {
+        Elements elementUtils = processingEnvironment.getElementUtils();
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+
+        AnnotationMirror screenOrEditorAnnotation = getAnnotation( elementUtils, screenOrEditorClass, workbenchScreen );
+        if ( screenOrEditorAnnotation == null ) {
+            screenOrEditorAnnotation = getAnnotation( elementUtils, screenOrEditorClass, workbenchEditor );
+        }
+
+        AnnotationValue owningPerspectiveParam = extractAnnotationPropertyValue( elementUtils, screenOrEditorAnnotation, OWNING_PERSPECTIVE );
+        final TypeElement owningPerspectiveType = (TypeElement) typeUtils.asElement( (TypeMirror) owningPerspectiveParam.getValue() );
+        if ( owningPerspectiveType == null ) {
             return null;
         }
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final TypeElement owningPerspectiveType = (TypeElement) typeUtils.asElement( (TypeMirror) owningPerspectiveParam.getValue() );
+
         final String owningPerspectivePlace = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( owningPerspectiveType );
         if ( owningPerspectivePlace.equals( "" ) ) {
-            Elements elementUtils = processingEnvironment.getElementUtils();
             processingEnvironment.getMessager()
                 .printMessage( Kind.ERROR,
                                "owningPerspective must be a class annotated with @WorkbenchPerspective.",
-                               screenElement,
-                               getAnnotation( elementUtils, screenElement, ClientAPIModule.workbenchScreen ),
+                               screenOrEditorClass,
+                               screenOrEditorAnnotation,
                                owningPerspectiveParam );
-            throw new GenerationException( "Invalid owningPerspective in @WorkbenchScreen annotation" );
+            return null;
         }
         return owningPerspectivePlace;
     }

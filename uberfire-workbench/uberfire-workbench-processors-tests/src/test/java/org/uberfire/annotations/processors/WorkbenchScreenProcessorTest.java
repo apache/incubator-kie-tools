@@ -380,7 +380,6 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                 pathCompilationUnit );
 
         assertCompilationMessage( diagnostics, Kind.ERROR, 13, Diagnostic.NOPOS, "owningPerspective must be a class annotated with @WorkbenchPerspective" );
-        assertNull( result.getActualCode() );
     }
 
 }

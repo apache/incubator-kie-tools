@@ -139,8 +139,8 @@ public class ClientAPIModule {
      * lacks the given parameter.
      */
     private static String getAnnotationStringParam( TypeElement target,
-                                                               String annotationClassName,
-                                                               String annotationParamName ) {
+                                                    String annotationClassName,
+                                                    String annotationParamName ) {
         AnnotationValue paramValue = getAnnotationParamValue( target, annotationClassName, annotationParamName );
         if ( paramValue == null ) {
             return "";
@@ -187,10 +187,6 @@ public class ClientAPIModule {
 
     public static String getWbScreenIdentifierValueOnClass( TypeElement classElement ) {
         return getAnnotationStringParam( classElement, workbenchScreen, IDENTIFIER );
-    }
-
-    public static AnnotationValue getWbScreenOwningPerspective( TypeElement classElement ) {
-        return getAnnotationParamValue( classElement, workbenchScreen, OWNING_PERSPECTIVE );
     }
 
     public static String getWbContextIdentifierValueOnClass( TypeElement classElement ) {

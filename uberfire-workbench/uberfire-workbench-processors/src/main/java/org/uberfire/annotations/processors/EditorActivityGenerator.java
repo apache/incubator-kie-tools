@@ -62,6 +62,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         final String annotationName = ClientAPIModule.getWorkbenchEditorClass();
 
+        final String owningPlace = GeneratorUtils.getOwningPerspectivePlaceRequest( classElement, processingEnvironment );
+
         String identifier = null;
         Integer priority = 0;
         Collection<String> associatedResources = null;
@@ -155,6 +157,7 @@ public class EditorActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Package name: " + packageName );
             messager.printMessage( Kind.NOTE, "Class name: " + className );
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
+            messager.printMessage( Kind.NOTE, "Owning Perspective Identifier: " + owningPlace );
             messager.printMessage( Kind.NOTE, "getContextIdMethodName: " + getContextIdMethodName );
             messager.printMessage( Kind.NOTE, "Priority: " + priority );
             messager.printMessage( Kind.NOTE, "Resource types: " + associatedResources );
@@ -202,6 +205,8 @@ public class EditorActivityGenerator extends AbstractGenerator {
                   className );
         root.put( "identifier",
                   identifier );
+        root.put( "owningPlace",
+                  owningPlace );
         root.put( "getContextIdMethodName",
                   getContextIdMethodName );
         root.put( "priority",
