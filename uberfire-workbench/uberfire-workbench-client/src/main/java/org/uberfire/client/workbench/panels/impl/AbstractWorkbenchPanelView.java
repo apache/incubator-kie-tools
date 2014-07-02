@@ -2,24 +2,29 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.SplitPanel;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelSupport;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
-
-public abstract class BaseWorkbenchPanelView<P extends WorkbenchPanelPresenter>
-extends ResizeComposite
-implements WorkbenchPanelView<P> {
+public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresenter>
+        extends ResizeComposite
+        implements WorkbenchPanelView<P> {
 
     @Inject
     private PanelSupport panelSupport;
@@ -74,6 +79,25 @@ implements WorkbenchPanelView<P> {
             @Override
             public void execute() {
                 widget.onResize();
+            }
+        } );
+    }
+
+    protected void addOnFocusHandler( MultiPartWidget widget ) {
+        widget.addOnFocusHandler( new Command() {
+            @Override
+            public void execute() {
+                panelManager.onPanelFocus( presenter.getDefinition() );
+            }
+        } );
+    }
+
+    protected void addSelectionHandler( HasSelectionHandlers widget ) {
+        widget.addSelectionHandler( new SelectionHandler<PartDefinition>() {
+            @Override
+            public void onSelection( final SelectionEvent<PartDefinition> event ) {
+                presenter.onPartLostFocus();
+                presenter.onPartFocus( event.getSelectedItem() );
             }
         } );
     }

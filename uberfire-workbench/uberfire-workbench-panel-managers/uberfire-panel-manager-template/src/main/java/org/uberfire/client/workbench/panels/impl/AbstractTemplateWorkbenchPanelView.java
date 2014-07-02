@@ -8,7 +8,7 @@ import org.uberfire.workbench.model.PartDefinition;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPanelPresenter> extends BaseWorkbenchTemplatePanelView<P> {
+public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPanelPresenter> extends AbstractWorkbenchTemplatePanelView<P> {
 
     SimplePanel panel = new SimplePanel();
 

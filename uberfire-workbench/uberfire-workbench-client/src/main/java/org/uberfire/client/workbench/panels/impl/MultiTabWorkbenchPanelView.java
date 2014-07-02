@@ -18,12 +18,8 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.widgets.tab.UberTabPanel;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.PartDefinition;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -31,38 +27,18 @@ import org.uberfire.workbench.model.PartDefinition;
 @Dependent
 @Named("MultiTabWorkbenchPanelView")
 public class MultiTabWorkbenchPanelView
-        extends BaseMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
+        extends AbstractMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
 
     @Override
     protected MultiPartWidget setupWidget() {
         final UberTabPanel tabPanel = getUberTabPanel();
 
-//        //Selecting a tab causes the previously selected tab to receive a Lost Focus event
-//        widget.addBeforeSelectionHandler( new BeforeSelectionHandler<PartDefinition>() {
-//            @Override
-//            public void onBeforeSelection( final BeforeSelectionEvent<PartDefinition> event ) {
-//
-//            }
-//        } );
-
-        //When a tab is selected ensure content is resized and set focus
-        tabPanel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
-            @Override
-            public void onSelection( SelectionEvent<PartDefinition> event ) {
-                presenter.onPartLostFocus();
-                presenter.onPartFocus( event.getSelectedItem() );
-            }
-        } );
-
-        tabPanel.addOnFocusHandler( new Command() {
-            @Override
-            public void execute() {
-                panelManager.onPanelFocus( presenter.getDefinition() );
-            }
-        } );
+        addOnFocusHandler( tabPanel );
+        addSelectionHandler( tabPanel );
 
         return tabPanel;
     }
+
     UberTabPanel getUberTabPanel() {
         return new UberTabPanel();
     }
