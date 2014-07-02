@@ -23,6 +23,7 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.engine.Indexer;
@@ -50,10 +51,10 @@ public class GuidedScoreCardFileIndexer implements Indexer {
     private DataModelService dataModelService;
 
     @Inject
-    protected GuidedScoreCardResourceTypeDefinition type;
+    protected ProjectService projectService;
 
     @Inject
-    protected ProjectService projectService;
+    protected GuidedScoreCardResourceTypeDefinition type;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -70,7 +71,7 @@ public class GuidedScoreCardFileIndexer implements Indexer {
 
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
             final Project project = projectService.resolveProject( Paths.convert( path ) );
-            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+            final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
             final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
                                                                          pkg );

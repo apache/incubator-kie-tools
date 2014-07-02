@@ -23,6 +23,7 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.engine.Indexer;
@@ -48,13 +49,13 @@ public class DrlFileIndexer implements Indexer {
     protected IOService ioService;
 
     @Inject
-    private DataModelService dataModelService;
-
-    @Inject
-    protected DRLResourceTypeDefinition drlType;
+    protected DataModelService dataModelService;
 
     @Inject
     protected ProjectService projectService;
+
+    @Inject
+    protected DRLResourceTypeDefinition drlType;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -77,7 +78,7 @@ public class DrlFileIndexer implements Indexer {
 
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
             final Project project = projectService.resolveProject( Paths.convert( path ) );
-            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+            final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
             final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
                                                                          pkg );

@@ -34,13 +34,13 @@ public class TestGuidedRuleTemplateFileIndexer extends GuidedRuleTemplateFileInd
     }
 
     @Override
-    public void setResourceTypeDefinition( final GuidedRuleTemplateResourceTypeDefinition type ) {
-        this.type = type;
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
+    public void setResourceTypeDefinition( final GuidedRuleTemplateResourceTypeDefinition type ) {
+        this.type = type;
     }
 
 }

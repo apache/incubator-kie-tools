@@ -33,6 +33,7 @@ import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.engine.Indexer;
@@ -64,13 +65,13 @@ public class GuidedRuleDslrFileIndexer implements Indexer {
     private DataModelService dataModelService;
 
     @Inject
+    protected ProjectService projectService;
+
+    @Inject
     private FileDiscoveryService fileDiscoveryService;
 
     @Inject
     private GuidedRuleDSLRResourceTypeDefinition dslrType;
-
-    @Inject
-    protected ProjectService projectService;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -95,7 +96,7 @@ public class GuidedRuleDslrFileIndexer implements Indexer {
 
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
             final Project project = projectService.resolveProject( Paths.convert( path ) );
-            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+            final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
             final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
                                                                          pkg );

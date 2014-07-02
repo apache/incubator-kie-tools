@@ -42,13 +42,13 @@ public class TestGlobalsFileIndexer extends GlobalsFileIndexer implements TestIn
     }
 
     @Override
-    public void setResourceTypeDefinition( final GlobalResourceTypeDefinition type ) {
-        this.type = type;
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
+    public void setResourceTypeDefinition( final GlobalResourceTypeDefinition type ) {
+        this.type = type;
     }
 
     @Override

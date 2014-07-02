@@ -41,13 +41,13 @@ public class TestGuidedRuleDrlFileIndexer extends GuidedRuleDrlFileIndexer imple
     }
 
     @Override
-    public void setResourceTypeDefinition( final GuidedRuleDRLResourceTypeDefinition type ) {
-        this.type = type;
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
+    public void setResourceTypeDefinition( final GuidedRuleDRLResourceTypeDefinition type ) {
+        this.type = type;
     }
 
     @Override

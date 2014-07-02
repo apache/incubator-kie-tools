@@ -41,13 +41,13 @@ public class TestDrlFileIndexer extends DrlFileIndexer implements TestIndexer<DR
     }
 
     @Override
-    public void setResourceTypeDefinition( final DRLResourceTypeDefinition type ) {
-        this.drlType = type;
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
+    public void setResourceTypeDefinition( final DRLResourceTypeDefinition type ) {
+        this.drlType = type;
     }
 
     @Override

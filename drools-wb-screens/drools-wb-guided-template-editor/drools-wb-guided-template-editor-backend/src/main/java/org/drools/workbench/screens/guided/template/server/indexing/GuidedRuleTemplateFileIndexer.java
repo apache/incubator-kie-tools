@@ -22,6 +22,7 @@ import javax.inject.Named;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.engine.Indexer;
@@ -45,10 +46,10 @@ public class GuidedRuleTemplateFileIndexer implements Indexer {
     protected IOService ioService;
 
     @Inject
-    protected GuidedRuleTemplateResourceTypeDefinition type;
+    protected ProjectService projectService;
 
     @Inject
-    protected ProjectService projectService;
+    protected GuidedRuleTemplateResourceTypeDefinition type;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -64,7 +65,7 @@ public class GuidedRuleTemplateFileIndexer implements Indexer {
             final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
 
             final Project project = projectService.resolveProject( Paths.convert( path ) );
-            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+            final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
             final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
                                                                          pkg );

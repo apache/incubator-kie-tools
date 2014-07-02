@@ -28,6 +28,7 @@ import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.engine.Indexer;
@@ -58,10 +59,10 @@ public class DslFileIndexer implements Indexer {
     private DataModelService dataModelService;
 
     @Inject
-    protected DSLResourceTypeDefinition dslType;
+    protected ProjectService projectService;
 
     @Inject
-    protected ProjectService projectService;
+    protected DSLResourceTypeDefinition dslType;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -103,7 +104,7 @@ public class DslFileIndexer implements Indexer {
                 }
 
                 final Project project = projectService.resolveProject( Paths.convert( path ) );
-                final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+                final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
                 //Don't include rules created to parse DSL
                 final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,

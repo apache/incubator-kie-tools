@@ -34,13 +34,13 @@ public class TestGuidedDecisionTableFileIndexer extends GuidedDecisionTableFileI
     }
 
     @Override
-    public void setResourceTypeDefinition( final GuidedDTableResourceTypeDefinition type ) {
-        this.type = type;
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
+    public void setResourceTypeDefinition( final GuidedDTableResourceTypeDefinition type ) {
+        this.type = type;
     }
 
 }

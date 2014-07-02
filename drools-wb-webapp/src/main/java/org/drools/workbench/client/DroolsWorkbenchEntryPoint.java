@@ -110,7 +110,7 @@ public class DroolsWorkbenchEntryPoint {
                 .newTopLevelMenu( AppConstants.INSTANCE.Perspectives() )
                 .withItems( getPerspectives() )
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.Logout())
+                .newTopLevelMenu( AppConstants.INSTANCE.Logout() )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {

@@ -41,6 +41,11 @@ public class TestDslFileIndexer extends DslFileIndexer implements TestIndexer<DS
     }
 
     @Override
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
+    }
+
+    @Override
     public void setResourceTypeDefinition( final DSLResourceTypeDefinition type ) {
         this.dslType = type;
     }
@@ -48,11 +53,6 @@ public class TestDslFileIndexer extends DslFileIndexer implements TestIndexer<DS
     @Override
     protected String getPackageName( final Path path ) {
         return "org.drools.workbench.screens.dsltext.backend.server.indexing.classes";
-    }
-
-    @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
     }
 
     @Override

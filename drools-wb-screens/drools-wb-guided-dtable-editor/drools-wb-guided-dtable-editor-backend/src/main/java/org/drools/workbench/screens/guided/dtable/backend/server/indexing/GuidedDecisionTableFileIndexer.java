@@ -22,6 +22,7 @@ import javax.inject.Named;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.engine.Indexer;
@@ -45,10 +46,10 @@ public class GuidedDecisionTableFileIndexer implements Indexer {
     protected IOService ioService;
 
     @Inject
-    protected GuidedDTableResourceTypeDefinition type;
+    protected ProjectService projectService;
 
     @Inject
-    protected ProjectService projectService;
+    protected GuidedDTableResourceTypeDefinition type;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -64,7 +65,7 @@ public class GuidedDecisionTableFileIndexer implements Indexer {
             final GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( content );
 
             final Project project = projectService.resolveProject( Paths.convert( path ) );
-            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+            final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
             final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
                                                                          pkg );

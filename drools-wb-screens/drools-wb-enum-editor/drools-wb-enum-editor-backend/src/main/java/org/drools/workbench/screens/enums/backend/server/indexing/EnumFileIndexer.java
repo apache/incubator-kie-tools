@@ -21,6 +21,7 @@ import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.engine.Indexer;
@@ -49,10 +50,10 @@ public class EnumFileIndexer implements Indexer {
     private DataModelService dataModelService;
 
     @Inject
-    protected EnumResourceTypeDefinition type;
+    protected ProjectService projectService;
 
     @Inject
-    protected ProjectService projectService;
+    protected EnumResourceTypeDefinition type;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -77,7 +78,7 @@ public class EnumFileIndexer implements Indexer {
             final String packageName = getPackageName( path );
             final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
             final Project project = projectService.resolveProject( Paths.convert( path ) );
-            final org.guvnor.common.services.project.model.Package pkg = projectService.resolvePackage( Paths.convert( path ) );
+            final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
             final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
                                                                          pkg );

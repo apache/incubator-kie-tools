@@ -41,13 +41,13 @@ public class TestTestScenarioFileIndexer extends TestScenarioFileIndexer impleme
     }
 
     @Override
-    public void setResourceTypeDefinition( final TestScenarioResourceTypeDefinition type ) {
-        this.type = type;
+    public void setProjectService( final ProjectService projectService ) {
+        this.projectService = projectService;
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
-        this.projectService = projectService;
+    public void setResourceTypeDefinition( final TestScenarioResourceTypeDefinition type ) {
+        this.type = type;
     }
 
     @Override
