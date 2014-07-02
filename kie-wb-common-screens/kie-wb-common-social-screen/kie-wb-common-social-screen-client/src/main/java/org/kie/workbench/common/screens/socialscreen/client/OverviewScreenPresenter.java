@@ -35,8 +35,6 @@ public abstract class OverviewScreenPresenter {
             final PlaceRequest place) {
         this.path = path;
         this.place = place;
-        this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
-        this.version = place.getParameter("version", null);
 
         loadContent();
     }

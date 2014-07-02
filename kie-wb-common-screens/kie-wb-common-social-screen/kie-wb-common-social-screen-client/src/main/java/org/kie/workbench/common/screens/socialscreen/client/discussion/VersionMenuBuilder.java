@@ -22,10 +22,13 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
@@ -42,6 +45,8 @@ public class VersionMenuBuilder {
     @Inject
     @New
     private FileMenuBuilder menuBuilder;
+    private Callback<VersionRecord> selectionCallback;
+    private List<VersionRecord> versions;
 
     public VersionMenuBuilder() {
         button.setRightDropdown(true);
@@ -99,14 +104,44 @@ public class VersionMenuBuilder {
     }
 
     public void setVersions(String version, List<VersionRecord> versions) {
-        int versionIndex = versions.size();
 
-        for (VersionRecord versionRecord : versions) {
-            button.add(new CommitLabel(versionRecord));
+        button.clear();
+
+        resolveVersions(versions);
+
+        fillMenu(version);
+    }
+
+    private void fillMenu(String version) {
+        int versionIndex = 1;
+
+        button.setText("Latest version");
+
+        for (final VersionRecord versionRecord : versions) {
+            final CommitLabel commitLabel = new CommitLabel(versionRecord);
+            commitLabel.addClickHandler(
+                    new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            if (selectionCallback != null) {
+                                selectionCallback.callback(versionRecord);
+                            }
+                        }
+                    });
+
+            button.add(commitLabel);
 
             if (versionRecord.id().equals(version) && versionIndex != versions.size()) {
                 button.setText("Version " + versionIndex);
             }
+
+            versionIndex++;
+        }
+    }
+
+    private void resolveVersions(List<VersionRecord> versions) {
+        if (this.versions == null || versions.size() > this.versions.size()) {
+            this.versions = versions;
         }
     }
 
@@ -115,15 +150,22 @@ public class VersionMenuBuilder {
     }
 
     public Menus buildBasic(Command command) {
-        return newSaveMenuItem()
+        Menus menus = newSaveMenuItem()
                 .respondsWith(command)
                 .endMenu()
                 .newTopLevelMenu(createVersionMenu())
                 .endMenu()
                 .build();
+
+        return menus;
     }
 
     public Menus buildRestoreMenu(ObservablePath path) {
         return menuBuilder.addRestoreVersion(path).build();
     }
+
+    public void addVersionSelectionCallback(Callback<VersionRecord> selectionCallback) {
+        this.selectionCallback = selectionCallback;
+    }
+
 }

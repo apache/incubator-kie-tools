@@ -27,7 +27,6 @@
   <inherits name='org.kie.workbench.common.screens.socialscreen.KieWorkbenchSocialScreenAPI'/>
 
   <inherits name="org.uberfire.UberfireClientAll"/>
-  <inherits name="org.uberfire.UberfireMarkdownWidget"/>
 
   <source path="client"/>
 

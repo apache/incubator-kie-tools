@@ -27,30 +27,38 @@
   <ui:style>
     .general {
       width: 400px;
+      height: 40px;
       font-size: 10px;
-      padding: 5px 10px 5px 10px;
+      padding: 3px 10px 3px 10px;
+      margin: 3px 3px 3px 3px;
+      background-color: #eeeeee;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 6px;
     }
 
     .comment {
+      height: 20px;
       font-size: 12px;
     }
   </ui:style>
 
-  <gwt:HTMLPanel addStyleNames='{style.general}'>
+  <gwt:FocusPanel ui:field="base">
 
-    <div class='{style.comment}'>
-      <gwt:Label ui:field="comment"/>
-    </div>
-    <div style="clear:both;">
-      <div style="float:left">
-        <gwt:Label ui:field="author"/>
+    <gwt:HTMLPanel addStyleNames='{style.general}'>
+      <div class='{style.comment}'>
+        <gwt:Label ui:field="comment"/>
       </div>
-      <div style="float:right;">
-        <gwt:Label ui:field="date"/>
+      <div style="clear:both;">
+        <div style="float:left">
+          <gwt:Label ui:field="author"/>
+        </div>
+        <div style="float:right;">
+          <gwt:Label ui:field="date"/>
+        </div>
       </div>
-    </div>
+    </gwt:HTMLPanel>
 
-
-  </gwt:HTMLPanel>
+  </gwt:FocusPanel>
 
 </ui:UiBinder>

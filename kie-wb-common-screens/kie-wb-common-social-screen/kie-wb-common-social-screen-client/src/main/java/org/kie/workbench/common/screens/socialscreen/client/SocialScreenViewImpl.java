@@ -26,7 +26,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.socialscreen.client.discussion.DiscussionWidgetPresenter;
-import org.uberfire.client.markdown.Markdown;
 
 public class SocialScreenViewImpl
         extends Composite

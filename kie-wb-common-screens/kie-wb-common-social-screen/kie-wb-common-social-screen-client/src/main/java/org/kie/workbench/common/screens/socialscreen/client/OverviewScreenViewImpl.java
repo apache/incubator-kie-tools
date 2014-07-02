@@ -30,8 +30,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.client.common.BusyPopup;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class OverviewScreenViewImpl
