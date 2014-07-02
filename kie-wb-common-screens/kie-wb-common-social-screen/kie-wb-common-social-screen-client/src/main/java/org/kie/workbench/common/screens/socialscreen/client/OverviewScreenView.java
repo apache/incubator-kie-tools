@@ -34,6 +34,8 @@ public interface OverviewScreenView
 
     void setPresenter(Presenter presenter);
 
+    void setReadOnly(boolean isReadOnly);
+
     void setPreview(String text);
 
     void setDescription(String description);

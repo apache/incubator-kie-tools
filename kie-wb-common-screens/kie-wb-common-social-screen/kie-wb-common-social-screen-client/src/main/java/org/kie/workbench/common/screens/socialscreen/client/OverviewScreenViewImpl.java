@@ -83,6 +83,11 @@ public class OverviewScreenViewImpl
     }
 
     @Override
+    public void setReadOnly(boolean isReadOnly) {
+        description.setEnabled(!isReadOnly);
+    }
+
+    @Override
     public void setPreview(String text) {
         filePreview.setText(text);
     }

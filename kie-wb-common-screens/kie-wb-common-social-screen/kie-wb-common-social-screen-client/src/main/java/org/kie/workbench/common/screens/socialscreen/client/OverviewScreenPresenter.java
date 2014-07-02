@@ -23,7 +23,7 @@ public abstract class OverviewScreenPresenter {
 
     protected ObservablePath path;
     protected PlaceRequest place;
-    protected boolean isReadOnly;
+    protected boolean isReadOnly = false;
     protected String version;
     protected OverviewScreenView view;
 
@@ -35,6 +35,8 @@ public abstract class OverviewScreenPresenter {
             final PlaceRequest place) {
         this.path = path;
         this.place = place;
+
+        view.setReadOnly(isReadOnly);
 
         loadContent();
     }

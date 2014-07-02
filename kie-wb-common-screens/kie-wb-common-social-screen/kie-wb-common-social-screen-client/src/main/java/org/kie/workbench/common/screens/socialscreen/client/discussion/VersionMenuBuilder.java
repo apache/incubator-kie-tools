@@ -168,4 +168,7 @@ public class VersionMenuBuilder {
         this.selectionCallback = selectionCallback;
     }
 
+    public boolean isLatest(VersionRecord versionRecord) {
+        return versions.get(versions.size() - 1).equals(versionRecord);
+    }
 }
