@@ -16,8 +16,6 @@
 
 package org.kie.uberfire.metadata.backend.lucene;
 
-import java.util.Set;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.kie.uberfire.metadata.MetadataConfig;
 import org.kie.uberfire.metadata.backend.lucene.fields.FieldFactory;
@@ -26,7 +24,6 @@ import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndexFactory;
 import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndexManager;
 import org.kie.uberfire.metadata.backend.lucene.search.LuceneSearchIndex;
 import org.kie.uberfire.metadata.engine.IndexManager;
-import org.kie.uberfire.metadata.engine.Indexer;
 import org.kie.uberfire.metadata.engine.MetaIndexEngine;
 import org.kie.uberfire.metadata.engine.MetaModelStore;
 import org.kie.uberfire.metadata.search.SearchIndex;
@@ -39,12 +36,10 @@ public class LuceneConfig implements MetadataConfig {
     private final Analyzer analyzer;
     private final LuceneSearchIndex searchIndex;
     private final LuceneIndexEngine indexEngine;
-    private final Set<Indexer> indexers;
 
     public LuceneConfig( final MetaModelStore metaModelStore,
                          final FieldFactory fieldFactory,
                          final LuceneIndexFactory indexFactory,
-                         final Set<Indexer> indexers,
                          final Analyzer analyzer ) {
         this.metaModelStore = metaModelStore;
         this.fieldFactory = fieldFactory;
@@ -55,7 +50,6 @@ public class LuceneConfig implements MetadataConfig {
         this.indexEngine = new LuceneIndexEngine( this.fieldFactory,
                                                   this.metaModelStore,
                                                   this.indexManager );
-        this.indexers = indexers;
     }
 
     @Override
@@ -76,11 +70,6 @@ public class LuceneConfig implements MetadataConfig {
     @Override
     public MetaModelStore getMetaModelStore() {
         return metaModelStore;
-    }
-
-    @Override
-    public Set<Indexer> getIndexers() {
-        return indexers;
     }
 
     @Override

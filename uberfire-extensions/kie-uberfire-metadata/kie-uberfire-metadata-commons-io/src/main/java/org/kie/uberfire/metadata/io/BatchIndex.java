@@ -16,9 +16,12 @@
 
 package org.kie.uberfire.metadata.io;
 
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.kie.uberfire.metadata.engine.Indexer;
+import org.kie.uberfire.metadata.engine.MetaIndexEngine;
+import org.kie.uberfire.metadata.model.KCluster;
+import org.kie.uberfire.metadata.model.KObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
@@ -33,10 +36,6 @@ import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.engine.MetaIndexEngine;
-import org.kie.uberfire.metadata.model.KCluster;
-import org.kie.uberfire.metadata.model.KObject;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.java.nio.file.Files.*;
@@ -49,19 +48,15 @@ public final class BatchIndex {
     private static final Logger LOG = LoggerFactory.getLogger( BatchIndex.class );
 
     private final MetaIndexEngine indexEngine;
-    private final Set<Indexer> additionalIndexers;
     private final IOService ioService;
     private final Class<? extends FileAttributeView>[] views;
     private final AtomicBoolean indexDisposed = new AtomicBoolean( false );
 
     public BatchIndex( final MetaIndexEngine indexEngine,
-                       final Set<Indexer> additionalIndexers,
                        final IOService ioService,
                        final Class<? extends FileAttributeView>... views ) {
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
-        this.additionalIndexers = checkNotNull( "additionalIndexers",
-                                                additionalIndexers );
         this.ioService = checkNotNull( "ioService",
                                        ioService );
         this.views = views;
@@ -69,7 +64,7 @@ public final class BatchIndex {
 
     public void runAsync( final FileSystem fs ) {
         if ( fs != null && fs.getRootDirectories().iterator().hasNext() ) {
-            SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+            SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return "FS BatchIndex [" + ( (FileSystemId) fs ).id() + "]";
@@ -105,7 +100,7 @@ public final class BatchIndex {
     }
 
     public void runAsync( final Path root ) {
-        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Path BatchIndex [" + root.toString() + "]";
@@ -160,7 +155,7 @@ public final class BatchIndex {
                                           }
 
                                           //Additional indexing
-                                          for ( Indexer indexer : additionalIndexers ) {
+                                          for ( Indexer indexer : IndexersFactory.getIndexers() ) {
                                               if ( indexer.supportsPath( file ) ) {
                                                   final KObject kObject = indexer.toKObject( file );
                                                   if ( kObject != null ) {

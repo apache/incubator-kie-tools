@@ -16,10 +16,7 @@
 
 package org.kie.uberfire.metadata;
 
-import java.util.Set;
-
 import org.kie.uberfire.metadata.engine.IndexManager;
-import org.kie.uberfire.metadata.engine.Indexer;
 import org.kie.uberfire.metadata.engine.MetaIndexEngine;
 import org.kie.uberfire.metadata.engine.MetaModelStore;
 import org.kie.uberfire.metadata.search.SearchIndex;
@@ -33,8 +30,6 @@ public interface MetadataConfig {
     IndexManager getIndexManager();
 
     MetaModelStore getMetaModelStore();
-
-    Set<Indexer> getIndexers();
 
     void dispose();
 

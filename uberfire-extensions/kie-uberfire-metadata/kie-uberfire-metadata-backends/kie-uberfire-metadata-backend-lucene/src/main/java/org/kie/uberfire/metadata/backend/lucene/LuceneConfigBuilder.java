@@ -16,10 +16,8 @@
 
 package org.kie.uberfire.metadata.backend.lucene;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
@@ -32,7 +30,6 @@ import org.kie.uberfire.metadata.backend.lucene.index.directory.DirectoryFactory
 import org.kie.uberfire.metadata.backend.lucene.index.directory.DirectoryType;
 import org.kie.uberfire.metadata.backend.lucene.metamodel.InMemoryMetaModelStore;
 import org.kie.uberfire.metadata.backend.lucene.metamodel.NullMetaModelStore;
-import org.kie.uberfire.metadata.engine.Indexer;
 import org.kie.uberfire.metadata.engine.MetaModelStore;
 
 import static org.apache.lucene.util.Version.*;
@@ -43,7 +40,6 @@ public final class LuceneConfigBuilder {
     private FieldFactory fieldFactory;
     private DirectoryType type;
     private Analyzer analyzer;
-    private Set<Indexer> indexers;
     private Map<String, Analyzer> analyzers;
 
     public LuceneConfigBuilder() {
@@ -61,11 +57,6 @@ public final class LuceneConfigBuilder {
 
     public LuceneConfigBuilder withDefaultFieldFactory() {
         this.fieldFactory = new SimpleFieldFactory();
-        return this;
-    }
-
-    public LuceneConfigBuilder usingIndexers( final Set<Indexer> indexers ) {
-        this.indexers = indexers;
         return this;
     }
 
@@ -114,15 +105,11 @@ public final class LuceneConfigBuilder {
         if ( analyzer == null ) {
             withDefaultAnalyzer();
         }
-        if ( indexers == null ) {
-            withDefaultIndexers();
-        }
 
         return new LuceneConfig( metaModelStore,
                                  fieldFactory,
                                  new DirectoryFactory( type,
                                                        analyzer ),
-                                 indexers,
                                  analyzer );
     }
 
@@ -141,10 +128,6 @@ public final class LuceneConfigBuilder {
                                                      new HashMap<String, Analyzer>() {{
                                                          putAll( analyzers );
                                                      }} );
-    }
-
-    public void withDefaultIndexers() {
-        this.indexers = Collections.emptySet();
     }
 
 }

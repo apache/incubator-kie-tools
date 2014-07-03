@@ -31,17 +31,16 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.uberfire.metadata.io.BatchIndex;
+import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.kie.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.engine.Index;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.engine.Index;
 
 import static org.junit.Assert.*;
 import static org.kie.uberfire.metadata.io.KObjectUtil.*;
@@ -190,7 +189,6 @@ public class BatchIndexTest {
         }
 
         new BatchIndex( config.getIndexEngine(),
-                        config.getIndexers(),
                         ioService(),
                         DublinCoreView.class ).run( ioService().get( "git://temp-repo-test/" ), new Runnable() {
             @Override

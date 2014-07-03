@@ -37,17 +37,16 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.uberfire.metadata.io.IOServiceIndexedImpl;
+import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.kie.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
+import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.kie.uberfire.metadata.engine.Index;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.engine.Index;
 
 import static org.junit.Assert.*;
 import static org.kie.uberfire.metadata.io.KObjectUtil.*;
@@ -64,7 +63,6 @@ public class IOServiceIndexedGitImplTest {
         if ( ioService == null ) {
             config = new LuceneConfigBuilder().withInMemoryMetaModelStore().useDirectoryBasedIndex().useInMemoryDirectory().build();
             ioService = new IOServiceIndexedImpl( config.getIndexEngine(),
-                                                  config.getIndexers(),
                                                   DublinCoreView.class,
                                                   VersionAttributeView.class );
         }
