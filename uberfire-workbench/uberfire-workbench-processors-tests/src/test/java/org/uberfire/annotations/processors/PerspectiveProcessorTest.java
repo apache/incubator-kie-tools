@@ -88,8 +88,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -105,8 +105,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -123,8 +123,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -141,8 +141,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -159,8 +159,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -177,8 +177,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -195,8 +195,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -213,8 +213,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -236,8 +236,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -259,8 +259,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -319,8 +319,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -342,8 +342,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -365,8 +365,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -388,8 +388,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     @Test
@@ -406,8 +406,8 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
     }
 
     private void printDiagnostics( List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
