@@ -26,6 +26,8 @@ import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.screens.messageconsole.events.UnpublishMessagesEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -116,6 +118,8 @@ public class DataModelerScreenPresenter {
     private DataModelerContext context;
 
     private boolean open = false;
+
+    private Map<String, DataModelTO.TOStatus> onSaveObjectsStatus = new HashMap<String, DataModelTO.TOStatus>( );
 
     @Inject
     private SessionInfo sessionInfo;
@@ -273,6 +277,7 @@ public class DataModelerScreenPresenter {
     private void saveAndChangeProject(boolean overwrite, final Project changeProject) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_saving() );
+        setOnSaveObjectsStatus();
 
         modelerService.call(
             new RemoteCallback<GenerationResult>() {
@@ -280,6 +285,8 @@ public class DataModelerScreenPresenter {
                 public void callback( GenerationResult result ) {
                     BusyPopup.close();
                     restoreModelStatus( result );
+                    cleanOnSaveObjectsStatus();
+
                     Boolean oldDirtyStatus = getContext().isDirty();
                     getContext().setDirty( false );
                     getContext().setLastDMOUpdate( null );
@@ -298,7 +305,23 @@ public class DataModelerScreenPresenter {
                     dataModelerEvent.fire(new DataModelSaved(null, getDataModel()));
 
                 }
-            }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel(getDataModel(), currentProject, overwrite);
+            },  new CleanOnSaveObjectsStatusRemoteCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(), currentProject, overwrite );
+    }
+
+    private void setOnSaveObjectsStatus() {
+        cleanOnSaveObjectsStatus();
+        if (getDataModel() != null) {
+            for (DataObjectTO dataObjectTO : getDataModel().getDataObjects()) {
+                onSaveObjectsStatus.put( dataObjectTO.getClassName(), dataObjectTO.getStatus() );
+            }
+            for (DataObjectTO dataObjectTO : getDataModel().getDeletedDataObjects()) {
+                onSaveObjectsStatus.put( dataObjectTO.getOriginalClassName(), dataObjectTO.getStatus() );
+            }
+        }
+    }
+
+    private void cleanOnSaveObjectsStatus() {
+        onSaveObjectsStatus.clear();
     }
 
     private void loadProjectDataModel( final Project project ) {
@@ -451,7 +474,7 @@ public class DataModelerScreenPresenter {
                     String className = DataModelerUtils.calculateExpectedClassName(currentProject.getRootPath(), resourceEvent.getPath());
                     if (className != null) {
                         DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName(className);
-                        if (dataObjectTO == null || dataObjectTO.isVolatile()) {
+                        if (dataObjectTO == null || (dataObjectTO.isVolatile() && !onSaveObjectsStatus.containsKey( className ) )) {
                             notifyChange = true;
                         }
                     }
@@ -466,7 +489,7 @@ public class DataModelerScreenPresenter {
                             notifyChange = true;
                         } else {
                             for (DataObjectTO deletedObject : getDataModel().getDeletedDataObjects()) {
-                                if (className.equals(deletedObject.getClassName())) {
+                                if (className.equals(deletedObject.getClassName()) && !onSaveObjectsStatus.containsKey( deletedObject.getClassName() )) {
                                     notifyChange = true;
                                     break;
                                 }
@@ -494,6 +517,22 @@ public class DataModelerScreenPresenter {
                     notifyExternalDMOChange(event);
                 }
             }
+        }
+    }
+
+    private class CleanOnSaveObjectsStatusRemoteCallback extends DataModelerErrorCallback {
+
+        public CleanOnSaveObjectsStatusRemoteCallback() {
+        }
+
+        public CleanOnSaveObjectsStatusRemoteCallback(String localMessage) {
+            super(localMessage);
+        }
+
+        @Override
+        public boolean error( final Message message, final Throwable throwable ) {
+            cleanOnSaveObjectsStatus();
+            return super.error( message, throwable );
         }
     }
 
