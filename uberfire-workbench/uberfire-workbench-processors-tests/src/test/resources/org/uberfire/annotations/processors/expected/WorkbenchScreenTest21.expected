@@ -29,6 +29,7 @@ import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -54,8 +55,8 @@ public class WorkbenchScreenTest21Activity extends AbstractWorkbenchScreenActivi
     }
 
     @Override
-    public String getOwningPlace() {
-        return "PerspectiveTest7";
+    public PlaceRequest getOwningPlace() {
+        return new DefaultPlaceRequest("PerspectiveTest7");
     }
 
     @Override

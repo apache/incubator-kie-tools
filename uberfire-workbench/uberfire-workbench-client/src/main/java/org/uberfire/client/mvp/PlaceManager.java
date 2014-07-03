@@ -62,6 +62,16 @@ public interface PlaceManager {
                final PlaceRequest place,
                final PanelDefinition panel );
 
+    /**
+     * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match
+     * by path, but see {@link ActivityManagerImpl#resolveExistingParts(PlaceRequest)} for a variant that does.
+     * (TODO: should this method care about paths? if not, should the other method be added to the interface?)
+     * 
+     * @param place
+     *            the PlaceRequest whose activity to search for
+     * @return the activity that currently exists in service of the given PlaceRequest's ID. Null if no current activity
+     *         handles the given PlaceRequest.
+     */
     Activity getActivity( final PlaceRequest place );
 
     PlaceStatus getStatus( final String id );

@@ -29,6 +29,7 @@ import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import org.uberfire.backend.vfs.ObservablePath;
 
@@ -57,8 +58,8 @@ public class WorkbenchEditorTest19Activity extends AbstractWorkbenchEditorActivi
     }
 
     @Override
-    public String getOwningPlace() {
-        return "PerspectiveTest7";
+    public PlaceRequest getOwningPlace() {
+        return new DefaultPlaceRequest("PerspectiveTest7");
     }
 
     @Override

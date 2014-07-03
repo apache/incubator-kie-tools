@@ -41,6 +41,9 @@ import org.uberfire.workbench.model.Position;
 
 </#if>
 import org.uberfire.mvp.PlaceRequest;
+<#if owningPlace??>
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+</#if>
 
 <#if getMenuBarMethodName??>
 import org.uberfire.workbench.model.menu.Menus;
@@ -167,8 +170,8 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     </#if>
     <#if owningPlace??>
     @Override
-    public String getOwningPlace() {
-        return "${owningPlace}";
+    public PlaceRequest getOwningPlace() {
+        return new DefaultPlaceRequest("${owningPlace}");
     }
 
     </#if>

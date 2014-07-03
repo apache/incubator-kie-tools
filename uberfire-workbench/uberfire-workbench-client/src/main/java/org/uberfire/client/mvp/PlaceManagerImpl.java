@@ -64,7 +64,7 @@ implements PlaceManager {
     /** The perspective that's currently open. Starts off null, but once the workbench has been bootstrapped, never goes null again. */
     private PerspectiveActivity currentPerspective;
 
-    /** Activities that are currently open in the current perspective. */
+    /** Activities that have been created by us but not destroyed (TODO: move this state tracking to ActivityManager). */
     private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
 
     /** Places that are currently open in the current perspective. */
@@ -230,8 +230,8 @@ implements PlaceManager {
     }
 
     /**
-     * Resolves the given place request into an Activity instance, if one can be found. This method is responsible
-     * for substituting special "not found" or "too many" place requests when the resolution doesn't work.
+     * Resolves the given place request into an Activity instance, if one can be found. If not, this method substitutes
+     * special "not found" or "too many" place requests when the resolution doesn't work.
      * <p>
      * The behaviour of this method is affected by the boolean-valued
      * {@code org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces} property in {@link UberFirePreferences}.
@@ -240,12 +240,15 @@ implements PlaceManager {
      *            A non-null place request that could have originated from within application code, from within the
      *            framework, or by parsing a hash fragment from a browser history event.
      * @return a non-null ResolvedRequest, where:
-     * <ul>
-     *  <li>the Activity value is either the unambiguous resolved Activity instance, or null if the activity was not resolvable;
-     *  <li>if there is an Activity value, the PlaceRequest represents that Activity; otherwise it is a substitute PlaceRequest
-     *      that should be navigated to recursively (ultimately by another call to this method). The PlaceRequest is never null.
-     *      TODO (UF-94) : make this simpler. with enough tests in place, we should experiment with doing the recursive lookup automatically.
-     * </ul>
+     *         <ul>
+     *         <li>the Activity value is either the unambiguous resolved Activity instance, or null if the activity was
+     *         not resolvable; in this case, the Activity has been added to the {@link #existingWorkbenchActivities} map.
+     *         <li>if there is an Activity value, the PlaceRequest represents that Activity; otherwise
+     *         it is a substitute PlaceRequest that should be navigated to recursively (ultimately by another call to
+     *         this method). The PlaceRequest is never null.
+     *         </ul>
+     *         TODO (UF-94) : make this simpler. with enough tests in place, we should experiment with doing the recursive
+     *         lookup automatically.
      */
     private ResolvedRequest resolveActivity( final PlaceRequest place ) {
 
@@ -274,7 +277,9 @@ implements PlaceManager {
             return new ResolvedRequest( null, multiplePlaces );
         }
 
-        return new ResolvedRequest( activities.iterator().next(), place );
+        Activity unambigousActivity = activities.iterator().next();
+        existingWorkbenchActivities.put( place, unambigousActivity );
+        return new ResolvedRequest( unambigousActivity, place );
     }
 
     private ResolvedRequest resolveExistingParts( final PlaceRequest place ) {
@@ -333,15 +338,6 @@ implements PlaceManager {
         return request;
     }
 
-    /**
-     * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match
-     * by path, but see {@link #resolveExistingParts(PlaceRequest)} for a variant that does.
-     * 
-     * @param place
-     *            the PlaceRequest whose activity to search for
-     * @return the activity that currently exists in service of the given PlaceRequest's ID. Null if no current activity
-     *         handles the given PlaceRequest.
-     */
     @Override
     public Activity getActivity( final PlaceRequest place ) {
         if ( place == null ) {
@@ -508,7 +504,6 @@ implements PlaceManager {
                                                  final PartDefinition part,
                                                  final PanelDefinition panel ) {
 
-        existingWorkbenchActivities.put( place, activity );
         visibleWorkbenchParts.put( place, part );
         updateHistory( place );
         checkPathDelete( place );
@@ -557,7 +552,6 @@ implements PlaceManager {
     private void launchPopupActivity( final PlaceRequest place,
                                       final PopupActivity activity ) {
         //Record new place\part\activity
-        existingWorkbenchActivities.put( place, activity );
         updateHistory( place );
         checkPathDelete( place );
 
@@ -584,9 +578,9 @@ implements PlaceManager {
                             splashScreen.onOpen();
                         }
                         fireNewSplashScreenActiveEvent();
+                        activity.onOpen();
                     } finally {
                         loadingPerspective.endLoading();
-                        activity.onOpen();
                     }
                 }
 

@@ -15,6 +15,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -314,8 +315,12 @@ public class PlaceManagerTest {
 
         // verify perspective changed to oz
         verify( perspectiveChangeEvent ).fire( refEq( new PerspectiveChange( ozPerspectiveDef, null, null ) ) );
-        verify( ozPerspectiveActivity ).onOpen();
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
+
+        // verify perspective opened before the activity that launches inside it
+        InOrder inOrder = inOrder( ozPerspectiveActivity, emeraldCityActivity );
+        inOrder.verify( ozPerspectiveActivity ).onOpen();
+        inOrder.verify( emeraldCityActivity ).onOpen();
 
         // and the workbench activity should have launched (after the perspective change)
         verifyActivityLaunchSideEffects( emeraldCityPlace, emeraldCityActivity );
@@ -349,6 +354,9 @@ public class PlaceManagerTest {
         // as of UberFire 0.4. this event only happens if the place is already visible.
         // it might be be better if the event was fired unconditionally. needs investigation.
         verify( selectWorkbenchPartEvent, never() ).fire( any( SelectPlaceEvent.class ) );
+
+        // we know the activity was created (or we wouldn't be here), but should verify that only happened one time
+        verify( activityManager, times( 1 ) ).getActivities( placeRequest );
 
         // contract between PlaceManager and PanelManager
         verify( panelManager ).addWorkbenchPanel( panelManager.getRoot(), null );
