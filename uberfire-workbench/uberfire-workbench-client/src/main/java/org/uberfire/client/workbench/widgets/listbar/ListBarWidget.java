@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -50,7 +51,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.UberFirePreferences;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
@@ -74,6 +77,7 @@ import static com.google.gwt.dom.client.Style.Display.*;
 /**
  * The Menu Bar widget
  */
+@Dependent
 public class ListBarWidget
         extends Composite implements MultiPartWidget {
 
@@ -185,7 +189,12 @@ public class ListBarWidget
     }
 
     boolean isPropertyListbarContextDisable() {
-        return UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) != null;
+        try {
+            final IOCBeanDef<ListbarPreferences> beanDef = IOC.getBeanManager().lookupBean( ListbarPreferences.class );
+            return beanDef == null || beanDef.getInstance().isContextEnabled();
+        } catch ( IOCResolutionException exception ) {
+        }
+        return true;
     }
 
     public void enableDnd() {
@@ -193,7 +202,7 @@ public class ListBarWidget
     }
 
     public void setExpanderCommand( final Command command ) {
-        if ( UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) == null ) {
+        if ( !isPropertyListbarContextDisable() ) {
             contextDisplay.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
