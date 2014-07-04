@@ -1,7 +1,10 @@
 package org.uberfire.commons.async;
 
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.ejb.Asynchronous;
@@ -23,6 +26,8 @@ public class SimpleAsyncExecutorService {
     private static SimpleAsyncExecutorService unmanagedInstance;
 
     private final AtomicBoolean hasAlreadyShutdown = new AtomicBoolean( false );
+
+    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
 
     public static synchronized SimpleAsyncExecutorService getDefaultInstance() {
         if ( instance == null ) {
@@ -71,7 +76,7 @@ public class SimpleAsyncExecutorService {
     @Asynchronous
     public void execute( final Runnable r ) {
         if ( executorService != null ) {
-            executorService.execute( r );
+            jobs.add( executorService.submit( r ) );
         } else {
             r.run();
         }
@@ -79,6 +84,12 @@ public class SimpleAsyncExecutorService {
 
     private void shutdown() {
         if ( !hasAlreadyShutdown.getAndSet( true ) && executorService != null ) {
+
+            for ( final Future<?> job : jobs ) {
+                if ( !job.isCancelled() && !job.isDone() ) {
+                    job.cancel( true );
+                }
+            }
 
             executorService.shutdown(); // Disable new tasks from being submitted
             try {

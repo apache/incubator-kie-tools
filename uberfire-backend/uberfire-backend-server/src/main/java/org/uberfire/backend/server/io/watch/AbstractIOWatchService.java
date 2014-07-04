@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
@@ -52,6 +54,8 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
     private IOWatchServiceExecutor executor = null;
 
+    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
+
     public AbstractIOWatchService() {
         final boolean autostart = Boolean.parseBoolean( System.getProperty( "org.uberfire.watcher.autostart", "true" ) );
         if ( autostart ) {
@@ -64,7 +68,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
             this.started = true;
             for ( final AsyncWatchService watchThread : watchThreads ) {
                 final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
-                executorService.execute( new DescriptiveRunnable() {
+                jobs.add( executorService.submit( new DescriptiveRunnable() {
                     @Override
                     public String getDescription() {
                         return watchThread.getDescription();
@@ -74,7 +78,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
                     public void run() {
                         watchThread.execute( watchServiceExecutor );
                     }
-                } );
+                } ) );
             }
             watchThreads.clear();
         }
@@ -85,6 +89,11 @@ public abstract class AbstractIOWatchService implements IOWatchService,
         isDisposed = true;
         for ( final WatchService watchService : watchServices ) {
             watchService.close();
+        }
+        for ( final Future<?> job : jobs ) {
+            if ( !job.isCancelled() && !job.isDone() ) {
+                job.cancel( true );
+            }
         }
         executorService.shutdown(); // Disable new tasks from being submitted
         try {
