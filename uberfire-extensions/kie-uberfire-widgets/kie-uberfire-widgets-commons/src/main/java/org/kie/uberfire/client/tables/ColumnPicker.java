@@ -34,13 +34,19 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.Map;
 
 public class ColumnPicker<T> {
 
     private final DataGrid<T> dataGrid;
     private final List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();
     private final PopupPanel popup = new PopupPanel( true );
-
+    private Map<String, String> params;
+    public ColumnPicker( DataGrid<T> dataGrid, Map<String, String>  params ) {
+        this.dataGrid = dataGrid;
+        this.params = params;
+    }
+    
     public ColumnPicker( DataGrid<T> dataGrid ) {
         this.dataGrid = dataGrid;
     }
@@ -54,8 +60,16 @@ public class ColumnPicker<T> {
     }
 
     private void addColumn( final ColumnMeta<T> columnMeta ) {
+        
+        if(params!=null){
+          String initColumns = params.get("initColumns");
+          
+          if(initColumns != null && !initColumns.contains(columnMeta.getHeader().getValue())){
+            columnMeta.setVisible(false);
+          }
+        }
         columnMetaList.add( columnMeta );
-        if ( columnMeta.isVisible() ) {
+        if ( columnMeta.isVisible()) {
             dataGrid.addColumn( columnMeta.getColumn(),
                                 columnMeta.getHeader() );
         }
@@ -92,24 +106,31 @@ public class ColumnPicker<T> {
     private void showColumnPickerPopup( final int left,
                                         final int top ) {
         VerticalPanel popupContent = new VerticalPanel();
+        String bannedColumns = "";
+        if(params != null){
+          bannedColumns = params.get("bannedColumns");  
+        }
         for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
-            final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
-            checkBox.setValue( columnMeta.isVisible() );
-            checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-                public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
-                    boolean visible = booleanValueChangeEvent.getValue();
-                    if ( visible ) {
-                        dataGrid.insertColumn( getVisibleColumnIndex( columnMeta ),
-                                               columnMeta.getColumn(),
-                                               columnMeta.getHeader() );
-                    } else {
-                        dataGrid.removeColumn( columnMeta.getColumn() );
-                    }
-                    columnMeta.setVisible( visible );
-                    adjustColumnWidths();
-                }
-            } );
-            popupContent.add( checkBox );
+          if(!bannedColumns.contains(columnMeta.getHeader().getValue())){
+              final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
+              
+              checkBox.setValue( columnMeta.isVisible() );
+              checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+                  public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
+                      boolean visible = booleanValueChangeEvent.getValue();
+                      if ( visible ) {
+                          dataGrid.insertColumn( getVisibleColumnIndex( columnMeta ),
+                                                 columnMeta.getColumn(),
+                                                 columnMeta.getHeader() );
+                      } else {
+                          dataGrid.removeColumn( columnMeta.getColumn() );
+                      }
+                      columnMeta.setVisible( visible );
+                      adjustColumnWidths();
+                  }
+              } );
+              popupContent.add( checkBox );
+          }
         }
         popup.setWidget( popupContent );
         popup.setPopupPosition( left,

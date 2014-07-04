@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
+import java.util.Map;
 
 /**
  * Widget that shows rows of paged data.
@@ -60,7 +61,24 @@ public class PagedTable<T>
         this.pager.setDisplay( dataGrid );
         this.pager.setPageSize( pageSize );
     }
-
+    
+     public PagedTable( final int pageSize,
+                       final ProvidesKey<T> providesKey, Map<String, String> params ) {
+        super( providesKey, params );
+        this.pageSize = pageSize;
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
+        this.pager.setPageSize( pageSize );
+    }
+     public PagedTable( final int pageSize,
+                        Map<String, String> params ) {
+        super( params );
+        this.pageSize = pageSize;
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
+        this.pager.setPageSize( pageSize );
+    }
+    
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
     }

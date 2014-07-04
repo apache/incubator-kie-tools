@@ -31,6 +31,8 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,6 +44,7 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
+import java.util.Map;
 import org.kie.uberfire.client.resources.CommonResources;
 
 /**
@@ -68,19 +71,39 @@ public class SimpleTable<T>
 
     @UiField
     public HorizontalPanel toolbarContainer;
+    @UiField
+    public FlowPanel rightToolbar;
+    @UiField
+    public FlowPanel leftToolbar;
+    @UiField
+    public FlowPanel centerToolbar;
 
     private String emptyTableCaption;
 
     private ColumnPicker<T> columnPicker;
+    
+    private Map<String, String> params;
 
     public SimpleTable() {
         dataGrid = new DataGrid<T>();
+        setupGridTable();
+    }
+    
+    public SimpleTable(Map<String, String> params) {
+        dataGrid = new DataGrid<T>();
+        
         setupGridTable();
     }
 
     public SimpleTable( final ProvidesKey<T> providesKey ) {
         dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
                                     providesKey );
+        setupGridTable();
+    }
+    public SimpleTable( final ProvidesKey<T> providesKey, Map<String, String> params) {
+        dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
+                                    providesKey );
+        this.params = params;
         setupGridTable();
     }
 
@@ -94,11 +117,13 @@ public class SimpleTable<T>
         dataGrid.addStyleName( CommonResources.INSTANCE.CSS().dataGrid() );
 
         setEmptyTableWidget();
-
-        columnPicker = new ColumnPicker<T>( dataGrid );
+        
+        columnPicker = new ColumnPicker<T>( dataGrid , params);
         columnPickerButton = columnPicker.createToggleButton();
 
         initWidget( makeWidget() );
+       
+        
     }
 
     protected Widget makeWidget() {
@@ -292,8 +317,8 @@ public class SimpleTable<T>
     public void setWidth( String width ) {
         dataGrid.setWidth( width );
     }
-
-    public void setColumnPickerVisible( boolean visible ) {
+ 
+    public void setToolBarVisible( boolean visible ) {
         toolbarContainer.setVisible(visible);
     }
 
@@ -304,5 +329,19 @@ public class SimpleTable<T>
     public HasWidgets getToolbar() {
         return toolbarContainer;
     }
+
+    public HasWidgets getRightToolbar() {
+      return rightToolbar;
+    }
+
+    public HasWidgets getLeftToolbar() {
+      return leftToolbar;
+    }
+
+    public HasWidgets getCenterToolbar() {
+      return centerToolbar;
+    }
+    
+    
 
 }
