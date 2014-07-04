@@ -175,7 +175,6 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     public static final int SCHEME_SIZE = ( SCHEME + "://" ).length();
     public static final int DEFAULT_SCHEME_SIZE = ( "default://" ).length();
 
-    private FileSystemState state = FileSystemState.NORMAL;
     private CommitInfo batchCommitInfo = null;
     private boolean hadCommitOnBatchState = false;
 
@@ -1635,14 +1634,14 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                 this.batchCommitInfo = buildCommitInfo( "Batch mode", (CommentedOption) value );
                 return;
             }
-            final boolean isOriginalStateBatch = state.equals( FileSystemState.BATCH );
-            try {
-                state = FileSystemState.valueOf( value.toString() );
-                FileSystemState.valueOf( value.toString() );
-            } catch ( final Exception ex ) {
-                state = FileSystemState.NORMAL;
-            }
-            if ( isOriginalStateBatch && state.equals( FileSystemState.NORMAL ) ) {
+            FileSystem fileSystem = path.getFileSystem();
+
+            final boolean isOriginalStateBatch = fileSystem.isOnBatch();
+
+            fileSystem.setState( value.toString() );
+            FileSystemState.valueOf( value.toString() );
+
+            if ( isOriginalStateBatch && !fileSystem.isOnBatch() ) {
                 this.batchCommitInfo = null;
                 notifyAllDiffs();
             }
@@ -1823,7 +1822,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
                          final CommitContent commitContent ) {
         final Git git = path.getFileSystem().gitRepo();
         final String branchName = path.getRefTree();
-        final boolean batchState = state == FileSystemState.BATCH;
+        final boolean batchState = path.getFileSystem().isOnBatch();
         final boolean amend = batchState && hadCommitOnBatchState;
 
         final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
@@ -1853,7 +1852,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
             }
         }
 
-        if ( state == FileSystemState.BATCH && !hadCommitOnBatchState ) {
+        if ( path.getFileSystem().isOnBatch()  && !hadCommitOnBatchState ) {
             hadCommitOnBatchState = hasCommit;
         }
     }
@@ -1975,7 +1974,4 @@ public class JGitFileSystemProvider implements FileSystemProvider,
         }
     }
 
-    public FileSystemState getFileSystemState(){
-        return state;
-    }
 }

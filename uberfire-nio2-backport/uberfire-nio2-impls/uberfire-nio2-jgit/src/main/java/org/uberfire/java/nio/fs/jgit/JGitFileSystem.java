@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
+import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
@@ -77,6 +78,7 @@ public class JGitFileSystem implements FileSystem,
     private final CredentialsProvider credential;
     private final Map<WatchService, Queue<WatchKey>> events = new ConcurrentHashMap<WatchService, Queue<WatchKey>>();
     private final Collection<WatchService> watchServices = new ArrayList<WatchService>();
+    private FileSystemState state = FileSystemState.NORMAL;
 
     JGitFileSystem( final JGitFileSystemProvider provider,
                     final Map<String, String> fullHostNames,
@@ -449,5 +451,19 @@ public class JGitFileSystem implements FileSystem,
     @Override
     public void dispose() {
         provider.onDisposeFileSystem( this );
+    }
+
+    @Override
+    public boolean isOnBatch() {
+        return state.equals( FileSystemState.BATCH );
+    }
+
+    @Override
+    public void setState( String state ) {
+        try {
+            this.state = FileSystemState.valueOf( state );
+        } catch ( final Exception ex ) {
+            this.state = FileSystemState.NORMAL;
+        }
     }
 }

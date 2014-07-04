@@ -38,6 +38,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
@@ -328,6 +329,8 @@ public class SystemConfigProducer implements Extension {
 
     public static class DummyFileSystem implements FileSystem {
 
+        private FileSystemState state = FileSystemState.NORMAL;
+
         @Override
         public FileSystemProvider provider() {
             return null;
@@ -382,6 +385,20 @@ public class SystemConfigProducer implements Extension {
         @Override
         public WatchService newWatchService() throws UnsupportedOperationException, IOException {
             return null;
+        }
+
+        @Override
+        public boolean isOnBatch() {
+            return state.equals( FileSystemState.BATCH );
+        }
+
+        @Override
+        public void setState( String state ) {
+            try {
+                this.state = FileSystemState.valueOf( state );
+            } catch ( final Exception ex ) {
+                this.state = FileSystemState.NORMAL;
+            }
         }
 
         @Override

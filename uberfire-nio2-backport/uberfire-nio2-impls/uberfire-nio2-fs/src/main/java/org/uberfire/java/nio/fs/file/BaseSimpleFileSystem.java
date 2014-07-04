@@ -24,6 +24,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
+import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.GeneralPathImpl;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.InvalidPathException;
@@ -42,6 +43,7 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     private final String defaultDirectory;
     private final Set<String> supportedFileAttributeViews;
     private final File[] roots;
+    private FileSystemState state = FileSystemState.NORMAL;
 
     BaseSimpleFileSystem( final FileSystemProvider provider,
                           final String path ) {
@@ -161,5 +163,18 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     @Override
     public String toString() {
         return "file://" + id();
+    }
+    @Override
+    public boolean isOnBatch() {
+        return state.equals( FileSystemState.BATCH );
+    }
+
+    @Override
+    public void setState( String state ) {
+        try {
+            this.state = FileSystemState.valueOf( state );
+        } catch ( final Exception ex ) {
+            this.state = FileSystemState.NORMAL;
+        }
     }
 }

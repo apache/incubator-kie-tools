@@ -75,7 +75,6 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     private boolean isDefault;
     private final OSType osType;
     private final File[] roots;
-    private FileSystemState state = FileSystemState.NORMAL;
 
     enum OSType {
         WINDOWS, UNIX_LIKE;
@@ -102,7 +101,6 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         } else {
             this.fileSystem = new SimpleUnixFileSystem( this, defaultPath );
         }
-        this.state = FileSystemState.NORMAL;
     }
 
     @Override
@@ -594,12 +592,8 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         checkNotEmpty( "attributes", attribute );
 
         if ( attribute.equals( FileSystemState.FILE_SYSTEM_STATE_ATTR ) ) {
-            try {
-                state = FileSystemState.valueOf( value.toString() );
-                FileSystemState.valueOf( value.toString() );
-            } catch ( final Exception ex ) {
-                state = FileSystemState.NORMAL;
-            }
+            FileSystem fs = path.getFileSystem();
+            fs.setState( value.toString() );
             return;
         }
 
