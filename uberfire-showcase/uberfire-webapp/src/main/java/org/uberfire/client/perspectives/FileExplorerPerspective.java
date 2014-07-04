@@ -15,13 +15,13 @@
  */
 package org.uberfire.client.perspectives;
 
+import static org.uberfire.workbench.model.PanelType.*;
+import static org.uberfire.workbench.model.toolbar.IconType.*;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -42,14 +42,15 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBar;
 import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
 
-import static org.uberfire.workbench.model.PanelType.*;
-import static org.uberfire.workbench.model.toolbar.IconType.*;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * A Perspective to show File Explorer
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "FileExplorerPerspective")
+@WorkbenchPerspective(identifier = "FileExplorerPerspective", isTransient = false)
 public class FileExplorerPerspective {
 
     @Inject
@@ -143,7 +144,7 @@ public class FileExplorerPerspective {
                 .respondsWith( newRepoCommand )
                 .endMenu()
                 .endMenus().
-                        endMenu()
+                endMenu()
                 .build();
     }
 }

@@ -15,7 +15,7 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.uberfire.annotations.processors.TemplateInformationHelper.*;
+import static org.uberfire.annotations.processors.TemplateInformationHelper.extractWbTemplatePerspectiveInformation;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -59,6 +59,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
         String identifier = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( classElement );
         boolean isDefault = ClientAPIModule.getWbPerspectiveScreenIsDefaultValueOnClass( classElement );
+        boolean isTransient = ClientAPIModule.getWbPerspectiveScreenIsTransientValueOnClass( classElement );
         boolean isTemplate = ClientAPIModule.getWbPerspectiveScreenIsATemplate( elementUtils, classElement );
 
         final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
@@ -98,6 +99,7 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Class name: " + className );
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
             messager.printMessage( Kind.NOTE, "isDefault: " + isDefault );
+            messager.printMessage( Kind.NOTE, "isTransient: " + isTransient );
             messager.printMessage( Kind.NOTE, "isTemplate: " + isTemplate );
             messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
@@ -126,7 +128,9 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   identifier );
         root.put( "isTemplate", isTemplate );
         root.put( "isDefault",
-                  isDefault );
+                isDefault );
+        root.put( "isTransient",
+                isTransient );
         root.put( "realClassName",
                   classElement.getSimpleName().toString() );
         root.put( "beanActivatorClass",

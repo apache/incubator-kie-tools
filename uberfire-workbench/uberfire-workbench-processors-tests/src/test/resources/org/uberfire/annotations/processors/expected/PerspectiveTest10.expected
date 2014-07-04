@@ -59,7 +59,7 @@ public class PerspectiveTest10Activity extends AbstractWorkbenchPerspectiveActiv
     }
 
     @Override
-    public PerspectiveDefinition getPerspective() {
+    public PerspectiveDefinition getDefaultPerspectiveLayout() {
         return realPresenter.getPerspective();
     }
 

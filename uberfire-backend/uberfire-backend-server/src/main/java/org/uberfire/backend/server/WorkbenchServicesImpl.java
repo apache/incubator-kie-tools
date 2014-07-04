@@ -49,19 +49,17 @@ WorkbenchServices {
 
     @Override
     public void save( final PerspectiveDefinition perspective ) {
-        if ( !perspective.isTransient() ) {
-            final String xml = xs.toXML( perspective );
-            final Path perspectivePath = userServices.buildPath( "perspectives",
-                    perspective.getName() + ".perspective" );
-            ioService.write( perspectivePath, xml );
-        }
+        final String xml = xs.toXML( perspective );
+        final Path perspectivePath = userServices.buildPath( "perspectives",
+                                                             perspective.getName() + ".perspective" );
+        ioService.write( perspectivePath, xml );
     }
 
     @Override
     public void save( SplashScreenFilter splashFilter ) {
         final String xml = xs.toXML( splashFilter );
         final Path splashFilterPath = userServices.buildPath( "splash",
-                splashFilter.getName() + ".filter" );
+                                                              splashFilter.getName() + ".filter" );
         ioService.write( splashFilterPath, xml );
 
     }
@@ -69,7 +67,7 @@ WorkbenchServices {
     @Override
     public PerspectiveDefinition loadPerspective( final String perspectiveName ) {
         final Path perspectivePath = userServices.buildPath( "perspectives",
-                perspectiveName + ".perspective" );
+                                                             perspectiveName + ".perspective" );
         if ( ioService.exists( perspectivePath ) ) {
             final String xml = ioService.readAllString( perspectivePath );
             return (PerspectiveDefinition) xs.fromXML( xml );
@@ -81,7 +79,7 @@ WorkbenchServices {
     @Override
     public SplashScreenFilter loadSplashScreenFilter( String filterName ) {
         final Path splashFilterPath = userServices.buildPath( "splash",
-                filterName + ".filter" );
+                                                              filterName + ".filter" );
 
         if ( ioService.exists( splashFilterPath ) ) {
             final String xml = ioService.readAllString( splashFilterPath );
@@ -120,11 +118,11 @@ WorkbenchServices {
             text.append( String.format( "%s=%s", key, properties.get( key ) ) );
         }
         ioService.write( getPathToDefaultEditors(),
-                text.toString() );
+                         text.toString() );
     }
 
     private Path getPathToDefaultEditors() {
         return userServices.buildPath( "defaultEditors",
-                null );
+                                       null );
     }
 }

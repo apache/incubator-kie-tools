@@ -1,13 +1,12 @@
 package org.uberfire.workbench.model;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
-
-
-import static org.junit.Assert.*;
 
 /**
  *  Test panel hierarchy constraints.
@@ -18,7 +17,6 @@ public class TestWorkbenchModel {
     @Test
     public void testPanelHierarchyInsert() {
         PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(PanelType.ROOT_SIMPLE);
-        perspective.setTransient(false);
         perspective.setName("perspective");
 
 
@@ -46,7 +44,6 @@ public class TestWorkbenchModel {
     @Test
     public void testPanelHierarchyAppend() {
         PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(PanelType.ROOT_SIMPLE);
-        perspective.setTransient(false);
         perspective.setName("perspective");
 
 

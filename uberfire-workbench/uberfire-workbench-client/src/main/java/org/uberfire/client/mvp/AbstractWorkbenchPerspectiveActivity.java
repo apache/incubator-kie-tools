@@ -15,15 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import javax.inject.Inject;
-
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.WorkbenchServicesProxy;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
@@ -34,66 +26,12 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
  */
 public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActivity implements PerspectiveActivity {
 
-    @Inject
-    private PanelManager panelManager;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private WorkbenchServicesProxy wbServices;
-
-    private PerspectiveDefinition perspectiveDef;
-
     public AbstractWorkbenchPerspectiveActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
 
     @Override
-    public void onOpen() {
-        super.onOpen();
-        if ( perspectiveDef != null ) {
-            throw new IllegalStateException( "This perspective activity is already open" );
-        }
-
-        //Load the persisted state of the Workbench or use the default Perspective definition if no saved state found
-        final PerspectiveDefinition perspective = getPerspective();
-
-        if ( perspective.isTransient() ) {
-            //Transient Perspectives are not saved and hence cannot be loaded
-            initialisePerspective( perspective );
-
-        } else {
-
-            wbServices.loadPerspective( perspective.getName(), new ParameterizedCommand<PerspectiveDefinition>() {
-                @Override
-                public void execute( final PerspectiveDefinition response ) {
-                    if ( response == null ) {
-                        initialisePerspective( perspective );
-                    } else {
-                        initialisePerspective( response );
-                    }
-                }
-            } );
-        }
-    }
-
-    @Override
-    public void onClose() {
-        if ( perspectiveDef == null ) {
-            throw new IllegalStateException( "This activity is not open" );
-        }
-
-        if ( !perspectiveDef.isTransient() ) {
-            wbServices.save( perspectiveDef );
-        }
-
-        perspectiveDef = null;
-        super.onClose();
-    }
-
-    @Override
-    public abstract PerspectiveDefinition getPerspective();
+    public abstract PerspectiveDefinition getDefaultPerspectiveLayout();
 
     @Override
     public abstract String getIdentifier();
@@ -104,6 +42,11 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
+    public boolean isTransient() {
+        return true;
+    }
+
+    @Override
     public Menus getMenus() {
         return null;
     }
@@ -111,36 +54,5 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     @Override
     public ToolBar getToolBar() {
         return null;
-    }
-
-    //Initialise Workbench state to that of the provided perspective
-    private void initialisePerspective( final PerspectiveDefinition perspective ) {
-        this.perspectiveDef = perspective;
-
-        panelManager.setPerspective( perspective );
-        setupPanelRecursively( panelManager.getRoot() );
-    }
-
-    private void setupPanelRecursively( final PanelDefinition panel ) {
-        new Exception("Setting up " + panel).printStackTrace();
-        for ( PartDefinition part : panel.getParts() ) {
-            System.out.println("  -> part " + part);
-            final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
-            part.setPlace( place );
-            placeManager.goTo( part, panel );
-        }
-
-        for ( PanelDefinition child : panel.getChildren() ) {
-            System.out.println("  -> child " + child);
-            final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
-                                                                           child,
-                                                                           child.getPosition() );
-            setupPanelRecursively( target );
-        }
-    }
-
-    // TODO (UF-88) when PlaceRequest is an immutable value type, cloning will no longer be a sensible operation
-    private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest _place ) {
-        return _place.clone();
     }
 }

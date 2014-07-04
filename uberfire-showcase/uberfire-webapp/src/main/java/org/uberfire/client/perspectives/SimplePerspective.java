@@ -32,7 +32,7 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  * A simple perspective with one tabbed panel.
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "SimplePerspective")
+@WorkbenchPerspective(identifier = "SimplePerspective", isTransient = false)
 public class SimplePerspective {
 
     @Perspective

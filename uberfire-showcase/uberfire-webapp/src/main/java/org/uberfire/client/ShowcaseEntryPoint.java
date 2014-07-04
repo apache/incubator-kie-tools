@@ -180,7 +180,7 @@ public class ShowcaseEntryPoint {
     private List<MenuItem> getPerspectives() {
         final List<MenuItem> perspectives = new ArrayList<MenuItem>();
         for ( final PerspectiveActivity perspective : getPerspectiveActivities() ) {
-            final String name = perspective.getPerspective().getName();
+            final String name = perspective.getDefaultPerspectiveLayout().getName();
             final Command cmd = new Command() {
 
                 @Override
@@ -227,7 +227,7 @@ public class ShowcaseEntryPoint {
             @Override
             public int compare( PerspectiveActivity o1,
                                 PerspectiveActivity o2 ) {
-                return o1.getPerspective().getName().compareTo( o2.getPerspective().getName() );
+                return o1.getDefaultPerspectiveLayout().getName().compareTo( o2.getDefaultPerspectiveLayout().getName() );
             }
 
         } );

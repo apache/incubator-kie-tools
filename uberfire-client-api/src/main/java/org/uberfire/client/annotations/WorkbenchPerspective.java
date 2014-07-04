@@ -21,6 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.uberfire.workbench.model.PerspectiveDefinition;
+
 /**
  * Classes annotated with this are considered Perspective providers.
  * <p>
@@ -45,4 +47,15 @@ public @interface WorkbenchPerspective {
 
     boolean isDefault() default false;
 
+    /**
+	 * If true (the default), every time this perspective is displayed, it
+	 * should start fresh with the {@link PerspectiveDefinition} returned by the
+	 * method annotated with {@code @Perspective}. If false, the framework will
+	 * store the structure of the perspective (panel arrangements and part
+	 * placement as modified by the user opening and closing tabs, dragging
+	 * parts around, and resizing split panels) on the server individually for
+	 * each user, and use that stored definition in preference to the one
+	 * returned by the {@code @Perspective} method.
+	 */
+    boolean isTransient() default true;
 }

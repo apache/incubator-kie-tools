@@ -20,8 +20,8 @@ import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +48,7 @@ PanelDefinition {
     private Integer minHeight = null;
     private Integer minWidth = null;
 
-    private final Set<PartDefinition> parts = new HashSet<PartDefinition>();
+    private final Set<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
 
     //Ideally this should be a Set but the order of insertion is important
     private final List<PanelDefinition> children = new ArrayList<PanelDefinition>();
@@ -174,7 +174,7 @@ PanelDefinition {
             return;
         }
 
-         // parent wiring
+        // parent wiring
         ((PanelDefinitionImpl)panel).setParent(this);
 
         children.add( panel );
@@ -196,7 +196,7 @@ PanelDefinition {
         while ( itr.hasNext() ) {
             final PanelDefinition child = itr.next();
             if ( child.getPosition() == position ) {
-                 // parent wiring
+                // parent wiring
                 ((PanelDefinitionImpl)child).setParent(null);
 
                 itr.remove();

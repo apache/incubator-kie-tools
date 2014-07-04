@@ -104,6 +104,13 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
     }
 
 </#if>
+<#if !isTransient>
+    @Override
+    public boolean isTransient() {
+        return false;
+    }
+
+</#if>
 <#if onStartup1ParameterMethodName??>
     @Override
     public void onStartup(final PlaceRequest place) {
@@ -145,7 +152,7 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
 </#if>
 <#if getPerspectiveMethodName??>
     @Override
-    public PerspectiveDefinition getPerspective() {
+    public PerspectiveDefinition getDefaultPerspectiveLayout() {
         return realPresenter.${getPerspectiveMethodName}();
     }
 
@@ -203,7 +210,7 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
     }
 
     @Perspective
-    public PerspectiveDefinition getPerspective() {
+    public PerspectiveDefinition getDefaultPerspectiveLayout() {
         <#if defaultPanel??>
         final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,"${defaultPanel.fieldName}", getClass().getName() );
         PanelDefinition panelDefinition = new TemplatePanelDefinitionImpl( this, PanelType.${defaultPanel.panelType} , "${defaultPanel.fieldName}"  );

@@ -15,13 +15,21 @@
  */
 package org.uberfire.client.mvp;
 
+import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
 public interface PerspectiveActivity extends ContextSensitiveActivity {
 
-    PerspectiveDefinition getPerspective();
+    /**
+     * Returns the layout (panels and their parts) that should be used if no persisted state is available.
+     * 
+     * @return the perspective layout to use when a previously saved one is not available.
+     * @see #isTransient()
+     * @see WorkbenchServicesProxy#loadPerspective(String, org.uberfire.mvp.ParameterizedCommand)
+     */
+    PerspectiveDefinition getDefaultPerspectiveLayout();
 
     String getIdentifier();
 
@@ -30,5 +38,15 @@ public interface PerspectiveActivity extends ContextSensitiveActivity {
     Menus getMenus();
 
     ToolBar getToolBar();
+
+    /**
+     * Tells whether this perspective's state (layout and size of panels, parts contained in each panel) should be saved
+     * per user or not.
+     * 
+     * @return false if this perspective's state should be saved and retrieved from the server; true if this perspective
+     *         should always start up in its default layout.
+     * @see WorkbenchServicesProxy#loadPerspective(String, org.uberfire.mvp.ParameterizedCommand)
+     */
+    boolean isTransient();
 
 }

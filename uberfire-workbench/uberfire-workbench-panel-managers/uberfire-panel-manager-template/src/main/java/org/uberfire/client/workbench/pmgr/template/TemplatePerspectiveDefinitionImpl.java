@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.pmgr.template;
 
+import static org.uberfire.workbench.model.ContextDisplayMode.*;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.TemplatePerspectiveActivity;
@@ -25,22 +27,18 @@ import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
-import static org.uberfire.workbench.model.ContextDisplayMode.*;
-
 /**
  * Implementation of TemplatePerspectiveDefinition
  */
 @Portable
 public class TemplatePerspectiveDefinitionImpl
-        implements
-        PerspectiveDefinition {
+implements
+PerspectiveDefinition {
 
     private transient PerspectiveActivity perspective;
     private String name;
 
-    private boolean isTransient = false;
-
-    private PanelDefinition root;
+    private final PanelDefinition root;
     private ContextDefinition contextDefinition;
     private ContextDisplayMode contextDisplayMode = SHOW;
 
@@ -54,16 +52,6 @@ public class TemplatePerspectiveDefinitionImpl
         this.perspective = perspective;
         this.root = new TemplatePanelDefinitionImpl( perspective, PanelType.TEMPLATE, fieldName );
         setName( name );
-    }
-
-    @Override
-    public boolean isTransient() {
-        return isTransient;
-    }
-
-    @Override
-    public void setTransient( boolean isTransient ) {
-        this.isTransient = isTransient;
     }
 
     @Override

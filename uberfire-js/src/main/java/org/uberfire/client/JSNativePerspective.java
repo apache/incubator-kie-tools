@@ -64,6 +64,13 @@ public class JSNativePerspective {
         return false;
     }-*/;
 
+    public native boolean isTransient()  /*-{
+        if ((typeof this.@org.uberfire.client.JSNativePerspective::obj.is_transient === "boolean")) {
+            return this.@org.uberfire.client.JSNativePerspective::obj.is_transient;
+        }
+        return true;
+    }-*/;
+
     private native String getPanelTypeAsString()  /*-{
         return this.@org.uberfire.client.JSNativePerspective::obj.panel_type;
     }-*/;
@@ -112,9 +119,6 @@ public class JSNativePerspective {
         perspectiveDefinition.setContextDisplayMode( getContextDisplayMode() );
 
         final JSPanelDefinition view = getView( obj );
-        final boolean isSerializable = getIsSerializable( obj );
-
-        perspectiveDefinition.setTransient( !isSerializable );
 
         final JsArray<JSPartDefinition> parts = view.getParts();
         final JsArray<JSPanelDefinition> panels = view.getChildren();
@@ -223,13 +227,6 @@ public class JSNativePerspective {
             }
         }
     }
-
-    private static native boolean getIsSerializable( final JavaScriptObject o ) /*-{
-        if ((typeof o["is_serializable"]) === "boolean") {
-            return o.is_serializable;
-        }
-        return false;
-    }-*/;
 
     private static native JSPanelDefinition getView( final JavaScriptObject o ) /*-{
         return o.view;

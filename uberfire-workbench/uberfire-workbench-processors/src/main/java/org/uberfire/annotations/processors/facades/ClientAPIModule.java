@@ -22,6 +22,7 @@ public class ClientAPIModule {
     public static final String IDENTIFIER = "identifier";
     public static final String OWNING_PERSPECTIVE = "owningPerspective";
     public static final String IS_DEFAULT = "isDefault";
+    public static final String IS_TRANSIENT = "isTransient";
     public static final String IS_TEMPLATE = "isTemplate";
     public static final String VALUE = "value";
 
@@ -170,6 +171,19 @@ public class ClientAPIModule {
 
     public static Boolean getWbPerspectiveScreenIsDefaultValueOnClass( TypeElement classElement ) {
         String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_DEFAULT ) );
+        return Boolean.valueOf( bool );
+    }
+
+    public static Boolean getWbPerspectiveScreenIsTransientValueOnClass( TypeElement classElement ) {
+        String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_TRANSIENT ) );
+
+        // XXX this is non-ideal because it restates the default of the isTransient property
+        // we should use the getAnnotationValueWithDefaults method in this entire class so
+        // we aren't redundantly declaring defaults here
+        if ( bool.isEmpty() ) {
+            return true;
+        }
+
         return Boolean.valueOf( bool );
     }
 

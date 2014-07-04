@@ -15,7 +15,9 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -396,6 +398,24 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
     public void testPerspectiveWithActivator() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest20";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest20.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getExpectedCode(),
+                      result.getActualCode() );
+    }
+
+    @Test
+    public void testNonTransientPerspective() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest21";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest21.expected";
 
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 

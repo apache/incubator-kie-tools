@@ -15,9 +15,9 @@
  */
 package org.uberfire.workbench.model.impl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
-import static org.uberfire.workbench.model.impl.PanelTypeHelper.isRoot;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.workbench.model.ContextDisplayMode.*;
+import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.workbench.model.ContextDefinition;
@@ -31,14 +31,12 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
  */
 @Portable
 public class PerspectiveDefinitionImpl
-        implements
-        PerspectiveDefinition {
+implements
+PerspectiveDefinition {
 
     private String name;
 
-    private boolean isTransient = false;
-
-    private PanelDefinition root;
+    private final PanelDefinition root;
     private ContextDefinition contextDefinition;
     private ContextDisplayMode contextDisplayMode = SHOW;
 
@@ -53,16 +51,6 @@ public class PerspectiveDefinitionImpl
         }
 
         this.root = new PanelDefinitionImpl( type );
-    }
-
-    @Override
-    public boolean isTransient() {
-        return isTransient;
-    }
-
-    @Override
-    public void setTransient( boolean isTransient ) {
-        this.isTransient = isTransient;
     }
 
     @Override
@@ -102,8 +90,8 @@ public class PerspectiveDefinitionImpl
 
     @Override
     public String toString() {
-      return "PerspectiveDefinitionImpl [name=" + name + ", contextDefinition=" + contextDefinition
-              + ", contextDisplayMode=" + contextDisplayMode + "]";
+        return "PerspectiveDefinitionImpl [name=" + name + ", contextDefinition=" + contextDefinition
+                + ", contextDisplayMode=" + contextDisplayMode + "]";
     }
 
 }

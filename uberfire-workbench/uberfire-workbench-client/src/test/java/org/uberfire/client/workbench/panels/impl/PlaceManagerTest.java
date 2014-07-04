@@ -18,24 +18,25 @@ import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceHistoryHandler;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceManagerImpl;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
-import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.Command;
@@ -53,14 +54,13 @@ public class PlaceManagerTest {
 
     @Mock Event<BeforeClosePlaceEvent> workbenchPartBeforeCloseEvent;
     @Mock Event<ClosePlaceEvent> workbenchPartCloseEvent;
-    @Mock Event<PerspectiveChange> perspectiveChangeEvent;
     @Mock Event<PlaceLostFocusEvent> workbenchPartLostFocusEvent;
     @Mock Event<NewSplashScreenActiveEvent> newSplashScreenActiveEvent;
     @Mock ActivityManager activityManager;
     @Mock PlaceHistoryHandler placeHistoryHandler;
     @Mock Event<SelectPlaceEvent> selectWorkbenchPartEvent;
     @Mock PanelManager panelManager;
-    @Mock WorkbenchServicesProxy wbServices;
+    @Mock PerspectiveManager perspectiveManager;
 
     /**
      * This is the thing we're testing. Weeee!
@@ -95,12 +95,20 @@ public class PlaceManagerTest {
                                                                         }
                                                                     }, null ) );
 
-
         // every test starts in Kansas, with no side effect interactions recorded
         when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
         placeManager.goTo( kansas, (PanelDefinition) null );
         resetInjectedMocks();
         reset( kansasActivity );
+
+        // arrange for the mock PerspectiveManager to invoke the doWhenFinished callback
+        doAnswer( new Answer<Void>(){
+            @Override
+            public Void answer( InvocationOnMock invocation ) throws Throwable {
+                Command callback = (Command) invocation.getArguments()[1];
+                callback.execute();
+                return null;
+            }} ).when( perspectiveManager ).switchToPerspective( any( PerspectiveActivity.class ), any( Command.class ) );
     }
 
     /**
@@ -111,14 +119,13 @@ public class PlaceManagerTest {
     private void resetInjectedMocks() {
         reset( workbenchPartBeforeCloseEvent );
         reset( workbenchPartCloseEvent );
-        reset( perspectiveChangeEvent );
         reset( workbenchPartLostFocusEvent );
         reset( newSplashScreenActiveEvent );
         reset( activityManager );
         reset( placeHistoryHandler );
         reset( selectWorkbenchPartEvent );
         reset( panelManager );
-        reset( wbServices );
+        reset( perspectiveManager );
     }
 
     @Test
@@ -281,19 +288,59 @@ public class PlaceManagerTest {
         PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
 
         when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
-        when( ozPerspectiveActivity.getPerspective() ).thenReturn( ozPerspectiveDef );
+        when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
 
         placeManager.goTo( ozPerspectivePlace );
 
         // verify perspective changed to oz
-        verify( perspectiveChangeEvent ).fire( refEq( new PerspectiveChange( ozPerspectiveDef, null, null ) ) );
+        verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( Command.class) );
         verify( ozPerspectiveActivity ).onOpen();
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
+        assertTrue( placeManager.getActivePlaceRequests().contains( ozPerspectivePlace ) );
+        assertEquals( ozPerspectiveActivity, placeManager.getActivity( ozPerspectivePlace ) );
+    }
 
-        // note to self (jfuerth): I'm planning to move the responsibility for bootstrapping a perspective
-        // from PerspectiveActivity.onOpen() to PlaceManager. When that happens, we'll need more assertions
-        // here about the interaction between PlaceManager and PanelManager when a perspective changes
+    @Test
+    public void testSwitchingPerspectives() throws Exception {
+        PerspectiveActivity ozPerspectiveActivity = mock( PerspectiveActivity.class );
+        PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest( "oz_perspective" );
+        PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
+
+        when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
+        when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
+        when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
+
+        // we'll pretend we started in kansas
+        PerspectiveActivity kansasPerspectiveActivity = mock( PerspectiveActivity.class );
+        when( perspectiveManager.getCurrentPerspective() ).thenReturn( kansasPerspectiveActivity );
+
+        placeManager.goTo( ozPerspectivePlace );
+
+        // verify proper shutdown of kansas
+        InOrder inOrder = inOrder( activityManager, kansasPerspectiveActivity );
+        inOrder.verify( kansasPerspectiveActivity ).onClose();
+        inOrder.verify( activityManager ).destroyActivity( kansasPerspectiveActivity );
+    }
+
+    @Test
+    public void testSwitchingFromPerspectiveToSelf() throws Exception {
+        PerspectiveActivity ozPerspectiveActivity = mock( PerspectiveActivity.class );
+        PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest( "oz_perspective" );
+        PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
+
+        when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
+        when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
+        when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
+
+        // we'll pretend we started in oz
+        when( perspectiveManager.getCurrentPerspective() ).thenReturn( ozPerspectiveActivity );
+
+        placeManager.goTo( ozPerspectivePlace );
+
+        // verify no side effects (should stay put)
+        verify( ozPerspectiveActivity, never() ).onOpen();
+        verify( perspectiveManager, never() ).switchToPerspective( any( PerspectiveActivity.class ), any( Command.class ) );
     }
 
     @Test
@@ -303,7 +350,7 @@ public class PlaceManagerTest {
         PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
 
         when( activityManager.getActivities( ozPerspectivePlace ) ).thenReturn( singleton( (Activity) ozPerspectiveActivity ) );
-        when( ozPerspectiveActivity.getPerspective() ).thenReturn( ozPerspectiveDef );
+        when( ozPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( ozPerspectiveDef );
         when( ozPerspectiveActivity.getPlace() ).thenReturn( ozPerspectivePlace );
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
@@ -314,7 +361,7 @@ public class PlaceManagerTest {
         placeManager.goTo( emeraldCityPlace, (PanelDefinition) null );
 
         // verify perspective changed to oz
-        verify( perspectiveChangeEvent ).fire( refEq( new PerspectiveChange( ozPerspectiveDef, null, null ) ) );
+        verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( Command.class) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
 
         // verify perspective opened before the activity that launches inside it

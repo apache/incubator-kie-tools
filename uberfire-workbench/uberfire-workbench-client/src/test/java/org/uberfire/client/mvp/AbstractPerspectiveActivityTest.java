@@ -48,7 +48,7 @@ public class AbstractPerspectiveActivityTest extends AbstractActivityTest {
         }
 
         @Override
-        public PerspectiveDefinition getPerspective() {
+        public PerspectiveDefinition getDefaultPerspectiveLayout() {
             return perspectiveDef;
         }
 

@@ -111,7 +111,7 @@ public class PerspectiveTest19Activity extends  AbstractTemplateWorkbenchPerspec
     }
 
     @Perspective
-    public PerspectiveDefinition getPerspective() {
+    public PerspectiveDefinition getDefaultPerspectiveLayout() {
         final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,"oneParameter", getClass().getName() );
         PanelDefinition panelDefinition = new TemplatePanelDefinitionImpl( this, PanelType.TEMPLATE , "oneParameter"  );
             Map properties = new HashMap<String,String>();

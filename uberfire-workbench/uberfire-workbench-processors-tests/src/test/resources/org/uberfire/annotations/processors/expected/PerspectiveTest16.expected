@@ -107,7 +107,7 @@ public class PerspectiveTest16Activity extends  AbstractTemplateWorkbenchPerspec
     }
 
     @Perspective
-    public PerspectiveDefinition getPerspective() {
+    public PerspectiveDefinition getDefaultPerspectiveLayout() {
         final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,null, getClass().getName() );
 
 

@@ -4,6 +4,11 @@ import org.uberfire.workbench.events.UberFireEvent;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 
+/**
+ * CDI event fired by the framework just after the
+ * @author jfuerth
+ *
+ */
 public class PerspectiveChange extends UberFireEvent {
 
     private final PerspectiveDefinition perspectiveDefinition;
@@ -32,8 +37,8 @@ public class PerspectiveChange extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "PerspectiveChange [perspectiveDefinition=" + perspectiveDefinition + ", menus=" + menus + ", identifier="
-              + identifier + "]";
+        return "PerspectiveChange [perspectiveDefinition=" + perspectiveDefinition + ", menus=" + menus + ", identifier="
+                + identifier + "]";
     }
 
 }

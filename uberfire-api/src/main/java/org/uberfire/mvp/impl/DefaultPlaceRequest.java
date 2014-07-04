@@ -160,7 +160,7 @@ PlaceRequest {
 
     @Override
     public String toString() {
-        return "DefaultPlaceRequest [identifier=" + identifier + ", parameters=" + parameters + "]";
+        return "PlaceRequest[\"" + identifier + "\" " + parameters + "]";
     }
 
 }
