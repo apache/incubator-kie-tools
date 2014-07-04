@@ -35,7 +35,7 @@
     <bootstrap:ButtonGroup styleName='{style.marginLeft}'>
       <bootstrap:Button text="Add" ui:field="addButton"/>
     </bootstrap:ButtonGroup>
-    <uf:SimpleTable ui:field="dataGrid" columnPickerVisible="false" height="200px" width="500px"/>
+    <uf:SimpleTable ui:field="dataGrid" toolBarVisible="false" height="200px" width="500px"/>
   </bootstrap:Container>
 
 </ui:UiBinder>
