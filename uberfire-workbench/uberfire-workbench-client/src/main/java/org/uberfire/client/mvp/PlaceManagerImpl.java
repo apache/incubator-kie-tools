@@ -299,7 +299,14 @@ public class PlaceManagerImpl
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
             notFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
 
-            return Pair.newPair( null, notFoundPopup );
+            if ( activityManager.containsActivity( notFoundPopup ) ) {
+                return Pair.newPair( null, notFoundPopup );
+            } else {
+                final PlaceRequest ufNotFoundPopup = new DefaultPlaceRequest( "uf.workbench.activity.notfound" );
+                ufNotFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
+                return Pair.newPair( null, ufNotFoundPopup );
+            }
+
         } else if ( activities.size() > 1 ) {
             final PlaceRequest multiplePlaces = new DefaultPlaceRequest( "workbench.activities.multiple" ).addParameter( "requestedPlaceIdentifier", null );
 
