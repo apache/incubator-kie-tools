@@ -473,7 +473,7 @@ implements PlaceManager {
                                                     final PanelDefinition _panel ) {
 
         if ( visibleWorkbenchParts.containsKey( place ) ) {
-            getSelectWorkbenchPartEvent().fire( new SelectPlaceEvent( place ) );
+            selectWorkbenchPartEvent.fire( new SelectPlaceEvent( place ) );
             return;
         }
 
@@ -483,19 +483,11 @@ implements PlaceManager {
             panel = _panel;
         } else {
             // TODO (hbraun): If no panel given (i.e. when using token driven nav), this falls back to the root panel definition
-            panel = addWorkbenchPanelTo( position );
+            panel = getPanelManager().addWorkbenchPanel( getPanelManager().getRoot(),
+                                                         position );
         }
 
         launchWorkbenchActivityInPanel( place, activity, part, panel );
-    }
-
-    Event<SelectPlaceEvent> getSelectWorkbenchPartEvent() {
-        return selectWorkbenchPartEvent;
-    }
-
-    PanelDefinition addWorkbenchPanelTo( Position position ) {
-        return getPanelManager().addWorkbenchPanel( getPanelManager().getRoot(),
-                                                    position );
     }
 
     private void launchWorkbenchActivityInPanel( final PlaceRequest place,
@@ -504,10 +496,10 @@ implements PlaceManager {
                                                  final PanelDefinition panel ) {
 
         visibleWorkbenchParts.put( place, part );
-        updateHistory( place );
+        getPlaceHistoryHandler().onPlaceChange( place );
         checkPathDelete( place );
 
-        final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
+        final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
 
         UIPart uiPart = new UIPart( activity.getTitle(), activity.getTitleDecoration(), activity.getWidget() );
 
@@ -519,7 +511,7 @@ implements PlaceManager {
                                             activity.contextId() );
         if ( splashScreen != null ) {
             activeSplashScreens.put( place.getIdentifier(), splashScreen );
-            fireNewSplashScreenActiveEvent();
+            newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
             splashScreen.onOpen();
         }
 
@@ -551,7 +543,7 @@ implements PlaceManager {
     private void launchPopupActivity( final PlaceRequest place,
                                       final PopupActivity activity ) {
         //Record new place\part\activity
-        updateHistory( place );
+        getPlaceHistoryHandler().onPlaceChange( place );
         checkPathDelete( place );
 
         activity.onOpen();
@@ -573,12 +565,12 @@ implements PlaceManager {
         if ( closeAllCurrentPanels() ) {
 
             activeSplashScreens.clear();
-            final SplashScreenActivity splashScreen = getSplashScreenInterceptor( place );
+            final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
             if ( splashScreen != null ) {
                 activeSplashScreens.put( place.getIdentifier(), splashScreen );
                 splashScreen.onOpen();
             }
-            fireNewSplashScreenActiveEvent();
+            newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
 
             Command closeOldActivityAndExecuteChainedCallback = new Command() {
                 @Override
@@ -594,22 +586,6 @@ implements PlaceManager {
             activity.onOpen();
             perspectiveManager.switchToPerspective( activity, closeOldActivityAndExecuteChainedCallback );
         }
-    }
-
-    /**
-     * Gets the splash screen for the given place from the ActivityManager.
-     * TODO: inline this method once the UnitTestWrapper thing is gone.
-     */
-    SplashScreenActivity getSplashScreenInterceptor( PlaceRequest place ) {
-        return activityManager.getSplashScreenInterceptor( place );
-    }
-
-    void fireNewSplashScreenActiveEvent() {
-        newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
-    }
-
-    public void updateHistory( PlaceRequest request ) {
-        getPlaceHistoryHandler().onPlaceChange( request );
     }
 
     private void closePlace( final PlaceRequest place, final boolean force ) {
