@@ -19,12 +19,12 @@ package org.kie.workbench.common.screens.socialscreen.client;
 import java.util.Date;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 public interface OverviewScreenView
         extends IsWidget, HasBusyIndicator {
-
 
     interface Presenter {
 
@@ -48,7 +48,7 @@ public interface OverviewScreenView
 
     void setCreated(String creator, Date dateCreated);
 
-    void showFileNotFound(IsWidget result);
+    void setMetadata(Metadata metadata, boolean isReadOnly);
 
     String getTitle(String fileName, String fileType);
 

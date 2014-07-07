@@ -18,10 +18,13 @@ package org.kie.workbench.common.widgets.client.menu;
 import org.kie.workbench.common.services.shared.validation.Validator;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
+import sun.font.LayoutPathImpl;
 
 public interface FileMenuBuilder {
+
 
     public enum MenuItems {
         SAVE, DELETE, RENAME, COPY, VALIDATE, RESTORE, CUSTOM
@@ -55,5 +58,7 @@ public interface FileMenuBuilder {
 
     FileMenuBuilder addCommand( final String caption,
                                 final Command command );
+
+    FileMenuBuilder addNewTopLevelMenu(final MenuItem menu);
 
 }

@@ -54,7 +54,7 @@ public class SocialScreenManager {
     public void onResourceOpenedEvent(@Observes ResourceOpenedEvent event) {
         currentPath = event.getPath();
         currentMetaData = null;
-        placeManager.goTo(new SocialScreenPlace());
+//        placeManager.goTo(new SocialScreenPlace());
     }
 
     public Path getCurrentPath() {

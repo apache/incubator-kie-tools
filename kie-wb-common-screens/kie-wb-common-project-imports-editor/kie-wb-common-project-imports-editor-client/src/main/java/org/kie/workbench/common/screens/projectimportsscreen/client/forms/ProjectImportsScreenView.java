@@ -26,6 +26,4 @@ public interface ProjectImportsScreenView extends HasBusyIndicator,
 
     void alertReadOnly();
 
-    boolean isMetadataAlreadyLoaded();
-
 }

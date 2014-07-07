@@ -27,11 +27,14 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.workbench.common.screens.socialscreen.client.discussion.DiscussionWidgetPresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class OverviewScreenViewImpl
@@ -47,9 +50,6 @@ public class OverviewScreenViewImpl
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
-
-//    @UiField(provided = true)
-//    DiscussionWidgetPresenter discussionArea;
 
     @UiField
     TextArea filePreview;
@@ -69,12 +69,25 @@ public class OverviewScreenViewImpl
     @UiField
     Label createdLabel;
 
+    @UiField(provided = true)
+    MetadataWidget metadata;
+
+    @UiField
+    TabPanel tabPanel;
+
+    @UiField(provided = true)
+    DiscussionWidgetPresenter discussionArea;
+
     @Inject
-    public OverviewScreenViewImpl(
-//            DiscussionWidgetPresenter discussionWidgetPresenter
-    ) {
-//        this.discussionArea = null;
+    public OverviewScreenViewImpl(MetadataWidget metadata, DiscussionWidgetPresenter discussionArea) {
+
+        this.metadata = metadata;
+
+        this.discussionArea = discussionArea;
+
         initWidget(uiBinder.createAndBindUi(this));
+
+        tabPanel.selectTab(0);
     }
 
     @Override
@@ -123,13 +136,14 @@ public class OverviewScreenViewImpl
     }
 
     @Override
-    public void showFileNotFound(IsWidget result) {
-
+    public String getTitle(String fileName, String fileType) {
+        return fileName + "- Business Rule";
     }
 
     @Override
-    public String getTitle(String fileName, String fileType) {
-        return fileName + "- Business Rule";
+    public void setMetadata(Metadata metadata, boolean isReadOnly) {
+        this.metadata.setContent(metadata, isReadOnly);
+        this.discussionArea.setContent(metadata);
     }
 
     @Override
@@ -156,4 +170,5 @@ public class OverviewScreenViewImpl
     public void showLoadingIndicator() {
         showBusyIndicator(CommonConstants.INSTANCE.Loading());
     }
+
 }

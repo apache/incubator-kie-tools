@@ -19,10 +19,13 @@ package org.kie.workbench.common.screens.socialscreen.client.resources.i18n;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
-public interface SocialScreenConstants
+public interface OverviewConstants
         extends
         Messages {
 
-    public static final SocialScreenConstants INSTANCE = GWT.create( SocialScreenConstants.class );
+    public static final OverviewConstants INSTANCE = GWT.create( OverviewConstants.class );
 
+    String UsedInProjects();
+
+    String Preview();
 }

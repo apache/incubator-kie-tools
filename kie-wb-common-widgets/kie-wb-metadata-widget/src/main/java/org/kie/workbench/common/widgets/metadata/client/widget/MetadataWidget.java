@@ -16,33 +16,21 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
 import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.FormStyleLayout;
+import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.HasBusyIndicator;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -51,313 +39,107 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
  * edits, but it does not load or save anything itself.
  */
 @Dependent
-public class MetadataWidget extends DirtyableComposite implements HasBusyIndicator {
+public class MetadataWidget
+        extends DirtyableComposite
+        implements HasBusyIndicator {
 
-    private ClientTypeRegistry clientTypeRegistry = null;
+    interface Binder
+            extends
+            UiBinder<Widget, MetadataWidget> {
+
+    }
+
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     private Metadata metadata = null;
     private boolean readOnly;
-    private VerticalPanel layout = new VerticalPanel();
 
-    private FormStyleLayout currentSection;
-    private String currentSectionName;
-
-    private List<DirtyableComposite> compositeList = new ArrayList<DirtyableComposite>();
-
-    private boolean isAlreadyLoaded = false;
+    @UiField Label title;
+    @UiField CategorySelectorWidget categories;
+    @UiField Label note;
+    @UiField Label uri;
+    @UiField TextBox subject;
+    @UiField TextBox type;
+    @UiField TextBox external;
+    @UiField TextBox source;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
     public MetadataWidget() {
-        layout.setWidth( "100%" );
-        initWidget( layout );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public boolean isAlreadyLoaded() {
-        return isAlreadyLoaded;
-    }
+    public void setContent(final Metadata metadata,
+            final boolean readOnly) {
+        this.metadata = checkNotNull("metadata", metadata);
+        this.readOnly = readOnly;
 
-    public void setContent( final Metadata metadata,
-                            final boolean readOnly ) {
-        if ( !isAlreadyLoaded ) {
-            this.metadata = checkNotNull( "metadata", metadata );
-            this.readOnly = readOnly;
-
-            layout.clear();
-
-            startSection( MetadataConstants.INSTANCE.Metadata() );
-            addHeader( metadata.getPath().getFileName() );
-
-            loadData();
-        }
-    }
-
-    private void addHeader( final String name ) {
-        final HorizontalPanel hp = new HorizontalPanel();
-        hp.add( new SmallLabel( "<b>" + name + "</b>" ) );
-        currentSection.addAttribute( MetadataConstants.INSTANCE.Title(), hp );
+        loadData();
     }
 
     private void loadData() {
-        addAttribute( MetadataConstants.INSTANCE.CategoriesMetaData(), categories() );
 
-        addAttribute( MetadataConstants.INSTANCE.LastModified(),
-                      readOnlyDate( metadata.getLastModified() ) );
-        addAttribute( MetadataConstants.INSTANCE.ModifiedByMetaData(),
-                      readOnlyText( metadata.getLastContributor() ) );
-        addAttribute( MetadataConstants.INSTANCE.NoteMetaData(),
-                      readOnlyText( metadata.getCheckinComment() ) );
+        categories.setContent(metadata, this.readOnly);
 
-        if ( !readOnly ) {
-            addAttribute( MetadataConstants.INSTANCE.CreatedOnMetaData(),
-                          readOnlyDate( metadata.getDateCreated() ) );
-        }
+        note.setText(metadata.getCheckinComment());
 
-        addAttribute( MetadataConstants.INSTANCE.CreatedByMetaData(),
-                      readOnlyText( metadata.getCreator() ) );
+        uri.setText(metadata.getPath().toURI());
 
-        addAttribute( MetadataConstants.INSTANCE.FormatMetaData(),
-                      readOnlyText( getClientTypeRegistry().resolve( metadata.getPath() ).getShortName() ) );
-        addAttribute( "URI:",
-                      readOnlyText( metadata.getPath().toURI() ) );
+        subject.setText(metadata.getSubject());
+        subject.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                metadata.setSubject(subject.getText());
+                dirtyflag = true;
+            }
+        });
 
-        endSection( false );
+        type.setText(metadata.getType());
+        type.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                metadata.setType(type.getText());
+                dirtyflag = true;
+            }
+        });
 
-        startSection( MetadataConstants.INSTANCE.OtherMetaData() );
+        external.setText(metadata.getExternalRelation());
+        external.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                metadata.setExternalRelation(external.getText());
+                dirtyflag = true;
+            }
+        });
 
-        addAttribute( MetadataConstants.INSTANCE.SubjectMetaData(),
-                      editableText( new FieldBinding() {
-                          public String getValue() {
-                              return metadata.getSubject();
-                          }
+        source.setText(metadata.getExternalSource());
+        source.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                metadata.setExternalSource(source.getText());
+                dirtyflag = true;
+            }
+        });
 
-                          public void setValue( final String val ) {
-                              makeDirty();
-                              metadata.setSubject( val );
-                          }
-                      }, MetadataConstants.INSTANCE.AShortDescriptionOfTheSubjectMatter() )
-                    );
-
-        addAttribute( MetadataConstants.INSTANCE.TypeMetaData(),
-                      editableText( new FieldBinding() {
-                          public String getValue() {
-                              return metadata.getType();
-                          }
-
-                          public void setValue( final String val ) {
-                              makeDirty();
-                              metadata.setType( val );
-                          }
-
-                      }, MetadataConstants.INSTANCE.TypeTip() )
-                    );
-
-        addAttribute( MetadataConstants.INSTANCE.ExternalLinkMetaData(),
-                      editableText( new FieldBinding() {
-                          public String getValue() {
-                              return metadata.getExternalRelation();
-                          }
-
-                          public void setValue( final String val ) {
-                              makeDirty();
-                              metadata.setExternalRelation( val );
-                          }
-
-                      }, MetadataConstants.INSTANCE.ExternalLinkTip() )
-                    );
-
-        addAttribute( MetadataConstants.INSTANCE.SourceMetaData(),
-                      editableText( new FieldBinding() {
-                          public String getValue() {
-                              return metadata.getExternalSource();
-                          }
-
-                          public void setValue( final String val ) {
-                              makeDirty();
-                              metadata.setExternalSource( val );
-                          }
-
-                      }, MetadataConstants.INSTANCE.SourceMetaDataTip() )
-                    );
-
-        endSection( true );
-
-        if ( !readOnly ) {
-            startSection( MetadataConstants.INSTANCE.VersionHistory() );
-            addRow( new VersionBrowser( metadata ) );
-            endSection( true );
-        }
-
-        layout.add( commentWidget() );
-
-        layout.add( discussionWidget() );
-
-        isAlreadyLoaded = true;
-    }
-
-    private Widget commentWidget() {
-        final CommentWidget widget = new CommentWidget( metadata, readOnly );
-        compositeList.add( widget );
-
-        return widget;
-    }
-
-    private Widget discussionWidget() {
-        final DiscussionWidget widget = new DiscussionWidget( metadata, readOnly );
-        compositeList.add( widget );
-
-        return widget;
-    }
-
-    private void addRow( Widget widget ) {
-        this.currentSection.addRow( widget );
-    }
-
-    private void addAttribute( final String string,
-                               final Widget widget ) {
-        this.currentSection.addAttribute( string, widget );
-    }
-
-    private void endSection( final boolean collapsed ) {
-        final DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( currentSectionName );
-        advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setOpen( !collapsed );
-        advancedDisclosure.setContent( this.currentSection );
-        layout.add( advancedDisclosure );
-    }
-
-    private void startSection( final String name ) {
-        currentSection = new FormStyleLayout();
-        currentSection.setWidth( "95%" );
-        currentSectionName = name;
-    }
-
-    private Widget readOnlyDate( final Date date ) {
-        if ( date == null ) {
-            return null;
-        } else {
-            return new SmallLabel( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( date ) );
-        }
-    }
-
-    private Label readOnlyText( final String text ) {
-        SmallLabel lbl = new SmallLabel( text );
-        lbl.setWidth( "100%" );
-        return lbl;
-    }
-
-    private Widget categories() {
-        return new CategorySelectorWidget( metadata, this.readOnly );
     }
 
     public boolean isDirty() {
-        for ( final DirtyableComposite widget : compositeList ) {
-            if ( widget.isDirty() ) {
-                return true;
-            }
-        }
-
         return dirtyflag;
     }
 
     public void resetDirty() {
-        for ( final DirtyableComposite widget : compositeList ) {
-            widget.resetDirty();
-        }
         this.dirtyflag = false;
     }
 
-    /**
-     * This binds a field, and returns a check box editor for it.
-     * @param bind Interface to bind to.
-     * @param toolTip tool tip.
-     * @return
-     */
-    private Widget editableBoolean( final FieldBooleanBinding bind,
-                                    final String toolTip ) {
-        if ( !readOnly ) {
-            final CheckBox box = new CheckBox();
-            box.setTitle( toolTip );
-            box.setValue( bind.getValue() );
-            box.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent w ) {
-                    boolean b = box.getValue();
-                    bind.setValue( b );
-                }
-            } );
-            return box;
-        } else {
-            final CheckBox box = new CheckBox();
-
-            box.setValue( bind.getValue() );
-            box.setEnabled( false );
-
-            return box;
-        }
-    }
-
-    /**
-     * This binds a field, and returns a TextBox editor for it.
-     * @param bind Interface to bind to.
-     * @param toolTip tool tip.
-     * @return
-     */
-    private Widget editableText( final FieldBinding bind,
-                                 String toolTip ) {
-        if ( !readOnly ) {
-            final TextBox tbox = new TextBox();
-            tbox.setTitle( toolTip );
-            tbox.setText( bind.getValue() );
-            tbox.setVisibleLength( 10 );
-            tbox.addChangeHandler( new ChangeHandler() {
-                public void onChange( final ChangeEvent event ) {
-                    bind.setValue( tbox.getText() );
-                }
-            } );
-            return tbox;
-        } else {
-            return new Label( bind.getValue() );
-        }
-    }
-
-    /**
-     * used to bind fields in the meta data DTO to the form
-     */
-    static interface FieldBinding {
-
-        void setValue( String val );
-
-        String getValue();
-    }
-
-    /**
-     * used to bind fields in the meta data DTO to the form
-     */
-    static interface FieldBooleanBinding {
-
-        void setValue( boolean val );
-
-        boolean getValue();
-    }
-
-    /**
-     * Return the data if it is to be saved.
-     */
+    @Deprecated
     public Metadata getContent() {
         return metadata;
     }
 
-    public ClientTypeRegistry getClientTypeRegistry() {
-        if ( this.clientTypeRegistry == null ) {
-            clientTypeRegistry = IOC.getBeanManager().lookupBean( ClientTypeRegistry.class ).getInstance();
-        }
-        return clientTypeRegistry;
-    }
-
     @Override
-    public void showBusyIndicator( final String message ) {
-        busyIndicatorView.showBusyIndicator( message );
+    public void showBusyIndicator(final String message) {
+        busyIndicatorView.showBusyIndicator(message);
     }
 
     @Override

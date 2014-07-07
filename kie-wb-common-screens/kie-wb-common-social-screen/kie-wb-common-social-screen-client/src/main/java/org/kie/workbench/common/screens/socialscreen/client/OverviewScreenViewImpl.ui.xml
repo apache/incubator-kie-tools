@@ -19,17 +19,23 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
+             xmlns:metadata='urn:import:org.kie.workbench.common.widgets.metadata.client.widget'
+             xmlns:discussion='urn:import:org.kie.workbench.common.screens.socialscreen.client.discussion'
              xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
-  <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.socialscreen.client.resources.i18n.OverviewConstants"/>
 
+  <ui:with field="i18nMetadata" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>
 
   <ui:style>
+    .base {
+      padding: 10px 10px 10px 10px;
+    }
+
     .previewBox {
       font-family: monospace;
       font-size: 10px;
-      width: 500px;
+      width: 600px;
       background-color: #fffff0 !important;
     }
 
@@ -37,67 +43,74 @@
       float: left;
       width: 120px;
     }
+
+    .discussion {
+      height: 600px;
+      border-left: solid black 1px;
+    }
   </ui:style>
 
-  <gwt:HTMLPanel>
-
+  <gwt:HTMLPanel styleName='{style.base}'>
     <div style="float:left">
 
-      <gwt:HTMLPanel>
-        <div>
-          <div>
-            <div class='{style.firstColumn}'>Type</div>
-            <div style="float:left;">
-              <gwt:Label ui:field="resourceType"/>
-            </div>
-            <div style="float:right;">
-              <bootstrap:Button text="Edit"/>
-            </div>
-          </div>
-          <div style="clear:both;">
-            <div class='{style.firstColumn}'>Description</div>
-            <div style="float:left;">
-              <bootstrap:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" width="380px" visibleLines="2"/>
-            </div>
-          </div>
-          <div style="clear:both;">
-            <div class='{style.firstColumn}'>Used in projects</div>
-            <div style="float:left;">
-              <gwt:Label ui:field="projects"/>
-            </div>
-          </div>
-          <div style="clear:both;">
-            <div class='{style.firstColumn}'>Last Modified</div>
-            <div style="float:left;">
-              <gwt:Label ui:field="lastModifiedLabel"/>
-            </div>
-          </div>
-          <div style="clear:both;">
-            <div class='{style.firstColumn}'>Created</div>
-            <div style="float:left;">
-              <gwt:Label ui:field="createdLabel"/>
-            </div>
-          </div>
+      <div>
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18nMetadata.TypeMetaData}'/>
         </div>
-        <div>
-          <bootstrap:TextArea ui:field="filePreview" enabled="false" styleName='{style.previewBox}' visibleLines="15"/>
+        <div style="float:left;">
+          <gwt:Label ui:field="resourceType"/>
         </div>
-      </gwt:HTMLPanel>
-
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18nMetadata.Description}'/>
+        </div>
+        <div style="float:left;">
+          <bootstrap:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" width="380px" visibleLines="2"/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.UsedInProjects}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:Label ui:field="projects"/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18nMetadata.LastModified}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:Label ui:field="lastModifiedLabel"/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18nMetadata.CreatedOnMetaData}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:Label ui:field="createdLabel"/>
+        </div>
+      </div>
     </div>
-    <div style="float:left">
-      <!--<bootstrap:TabPanel ui:field="tabPanel">-->
-      <!--<bootstrap:Tab heading="Comments" active="true">-->
-      <!--<gwt:SimplePanel>-->
-      <!--<kie:DiscussionWidgetPresenter ui:field="discussionArea"/>-->
-      <!--</gwt:SimplePanel>-->
-      <!--</bootstrap:Tab>-->
-      <!--<bootstrap:Tab heading="Usage and Statistics">-->
-      <!--<bootstrap:Heading size="3">Chat</bootstrap:Heading>-->
-      <!--<bootstrap:Paragraph>33333333333</bootstrap:Paragraph>-->
-      <!--</bootstrap:Tab>-->
-      <!--</bootstrap:TabPanel>-->
+    <div style="clear:both;">
+      <gwt:TabPanel ui:field="tabPanel">
+        <gwt:Tab text='{i18n.Preview}'>
+          <gwt:FlowPanel>
+            <bootstrap:TextArea ui:field="filePreview" enabled="false" styleName='{style.previewBox}' visibleLines="15"/>
+          </gwt:FlowPanel>
+        </gwt:Tab>
+        <gwt:Tab text='{i18nMetadata.Metadata}'>
+          <gwt:FlowPanel>
+            <metadata:MetadataWidget ui:field="metadata" width="600px"/>
+          </gwt:FlowPanel>
+        </gwt:Tab>
+      </gwt:TabPanel>
+    </div>
 
+    <div class='{style.discussion}' style="float:left">
+      <discussion:DiscussionWidgetPresenter ui:field="discussionArea"/>
     </div>
 
   </gwt:HTMLPanel>

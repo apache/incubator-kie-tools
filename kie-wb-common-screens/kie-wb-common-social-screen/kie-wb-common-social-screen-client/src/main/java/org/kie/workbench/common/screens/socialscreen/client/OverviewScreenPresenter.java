@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.screens.socialscreen.client;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.mvp.PlaceRequest;
 
-public abstract class OverviewScreenPresenter {
+public abstract class OverviewScreenPresenter
+        implements IsWidget {
 
     protected ObservablePath path;
     protected PlaceRequest place;
@@ -31,16 +33,5 @@ public abstract class OverviewScreenPresenter {
         this.view = view;
     }
 
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
-        this.path = path;
-        this.place = place;
-
-        view.setReadOnly(isReadOnly);
-
-        loadContent();
-    }
-
-    protected abstract void loadContent();
 
 }

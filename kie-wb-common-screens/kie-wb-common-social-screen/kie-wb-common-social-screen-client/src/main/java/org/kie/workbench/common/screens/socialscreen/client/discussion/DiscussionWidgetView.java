@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface DiscussionWidgetView
         extends IsWidget {
 
+
     interface Presenter {
 
         void onAddComment(String comment);
@@ -30,5 +31,7 @@ public interface DiscussionWidgetView
     void setPresenter(Presenter presenter);
 
     void addRow(CommentLine line);
+
+    void clearCommentBox();
 
 }

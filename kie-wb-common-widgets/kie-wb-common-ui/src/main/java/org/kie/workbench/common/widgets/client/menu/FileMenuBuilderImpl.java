@@ -85,6 +85,7 @@ public class FileMenuBuilderImpl
     private Command validateCommand = null;
     private Command restoreCommand = null;
     private List<Pair<String, Command>> otherCommands = new ArrayList<Pair<String, Command>>();
+    private List<MenuItem> topLevelMenus = new ArrayList<MenuItem>();
 
     @Override
     public FileMenuBuilder addSave( final Command command ) {
@@ -340,6 +341,10 @@ public class FileMenuBuilderImpl
             menuItems.put( item, item );
         }
 
+        for (MenuItem menuItem : topLevelMenus) {
+            menuItems.put(menuItem, menuItem);
+        }
+
         return new Menus() {
 
             @Override
@@ -358,4 +363,9 @@ public class FileMenuBuilderImpl
         };
     }
 
+    @Override
+    public FileMenuBuilder addNewTopLevelMenu(MenuItem menu) {
+        topLevelMenus.add(menu);
+        return this;
+    }
 }

@@ -57,13 +57,13 @@ public class DiscussionWidgetViewImpl
     }
 
     @Override
-    public Widget asWidget() {
-        return lines;
+    public void addRow(CommentLine line) {
+        lines.add(line);
     }
 
     @Override
-    public void addRow(CommentLine line) {
-        lines.add(line);
+    public void clearCommentBox() {
+        textBox.setText("");
     }
 
     @UiHandler("textBox")
@@ -72,4 +72,5 @@ public class DiscussionWidgetViewImpl
             presenter.onAddComment(textBox.getText());
         }
     }
+
 }

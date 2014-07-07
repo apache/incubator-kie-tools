@@ -27,18 +27,15 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
-import org.uberfire.workbench.model.menu.Menus;
 
-public class VersionMenuBuilder {
+public class VersionRecordManager {
 
     private DropdownButton button = new DropdownButton("Latest version");
 
@@ -48,12 +45,12 @@ public class VersionMenuBuilder {
     private Callback<VersionRecord> selectionCallback;
     private List<VersionRecord> versions;
 
-    public VersionMenuBuilder() {
+    public VersionRecordManager() {
         button.setRightDropdown(true);
         button.getTriggerWidget().addStyleName("btn-mini");
     }
 
-    private MenuItem createVersionMenu() {
+    public MenuItem buildMenu() {
         MenuCustom<Widget> version = new MenuCustom<Widget>() {
 
             @Override public Widget build() {
@@ -149,21 +146,6 @@ public class VersionMenuBuilder {
         return MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Save());
     }
 
-    public Menus buildBasic(Command command) {
-        Menus menus = newSaveMenuItem()
-                .respondsWith(command)
-                .endMenu()
-                .newTopLevelMenu(createVersionMenu())
-                .endMenu()
-                .build();
-
-        return menus;
-    }
-
-    public Menus buildRestoreMenu(ObservablePath path) {
-        return menuBuilder.addRestoreVersion(path).build();
-    }
-
     public void addVersionSelectionCallback(Callback<VersionRecord> selectionCallback) {
         this.selectionCallback = selectionCallback;
     }
@@ -171,4 +153,5 @@ public class VersionMenuBuilder {
     public boolean isLatest(VersionRecord versionRecord) {
         return versions.get(versions.size() - 1).equals(versionRecord);
     }
+
 }

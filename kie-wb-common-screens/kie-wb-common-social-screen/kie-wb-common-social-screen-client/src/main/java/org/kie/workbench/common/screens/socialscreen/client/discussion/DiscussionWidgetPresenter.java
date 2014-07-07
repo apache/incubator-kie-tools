@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.screens.socialscreen.client.SocialScreenManager;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.security.Identity;
 
 public class DiscussionWidgetPresenter
@@ -42,16 +41,12 @@ public class DiscussionWidgetPresenter
 
         view.setPresenter(this);
 
-        manager.getMetaData(new Callback<Metadata>() {
-            @Override
-            public void callback(Metadata metadata) {
-                if (metadata != null) {
-                    for (DiscussionRecord record : metadata.getDiscussion()) {
-                        view.addRow(new CommentLine(record));
-                    }
-                }
-            }
-        });
+    }
+
+    public void setContent(Metadata metadata) {
+        for (DiscussionRecord record : metadata.getDiscussion()) {
+            view.addRow(new CommentLine(record));
+        }
     }
 
     @Override
@@ -62,5 +57,6 @@ public class DiscussionWidgetPresenter
     @Override
     public void onAddComment(String comment) {
         view.addRow(new CommentLine(new DiscussionRecord(1, identity.getName(), comment)));
+        view.clearCommentBox();
     }
 }

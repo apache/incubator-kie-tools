@@ -98,4 +98,5 @@ public interface MetadataConstants extends
                                      final String lastModifiedDate,
                                      final String lastModifiedComment );
 
+    String URI();
 }

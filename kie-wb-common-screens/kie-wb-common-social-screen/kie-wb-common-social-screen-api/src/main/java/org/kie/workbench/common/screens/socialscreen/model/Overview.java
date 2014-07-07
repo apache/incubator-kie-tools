@@ -20,12 +20,11 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class Overview<T> {
+public class Overview {
 
     private String preview;
     private Metadata metadata;
     private String projectName;
-    private T model;
 
     public String getPreview() {
         return preview;
@@ -51,11 +50,4 @@ public class Overview<T> {
         this.metadata = metadata;
     }
 
-    public T getModel() {
-        return model;
-    }
-
-    public void setModel(T model) {
-        this.model = model;
-    }
 }

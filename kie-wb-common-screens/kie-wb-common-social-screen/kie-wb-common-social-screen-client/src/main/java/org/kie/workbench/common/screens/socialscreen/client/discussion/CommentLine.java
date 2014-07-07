@@ -16,26 +16,51 @@
 
 package org.kie.workbench.common.screens.socialscreen.client.discussion;
 
-import com.github.gwtbootstrap.client.ui.Label;
+import java.util.Date;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 
 public class CommentLine
+        extends Composite
         implements IsWidget {
 
-    private DiscussionRecord record;
+    interface Binder
+            extends
+            UiBinder<Widget, CommentLine> {
+
+    }
+
+    private static Binder uiBinder = GWT.create(Binder.class);
+
+    @UiField
+    FocusPanel base;
+
+    @UiField
+    Label author;
+
+    @UiField
+    Label date;
+
+    @UiField
+    Label comment;
 
     public CommentLine(DiscussionRecord record) {
-        this.record = record;
-    }
+        initWidget(uiBinder.createAndBindUi(this));
 
-    public DiscussionRecord getRecord() {
-        return record;
-    }
-
-    @Override
-    public Widget asWidget() {
-        return new Label(record.getTimestamp() + " - " + record.getAuthor() + " - " + record.getNote());
+        this.author.setText(record.getAuthor() + ":");
+        this.comment.setText("\"" + record.getNote() + "\"");
+        this.date.setText(
+                DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(
+//                                new Date(record.getTimestamp())
+                        new Date()));
     }
 }

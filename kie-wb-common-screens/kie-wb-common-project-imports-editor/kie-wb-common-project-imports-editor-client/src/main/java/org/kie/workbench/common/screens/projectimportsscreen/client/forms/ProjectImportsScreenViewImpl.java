@@ -46,8 +46,8 @@ public class ProjectImportsScreenViewImpl
             }
         } );
 
-        addPage( new Page( metadataWidget,
-                           MetadataConstants.INSTANCE.Metadata() ) {
+        addPage(new Page(metadataWidget,
+                MetadataConstants.INSTANCE.Metadata()) {
             @Override
             public void onFocus() {
                 presenter.onShowMetadata();
@@ -56,18 +56,13 @@ public class ProjectImportsScreenViewImpl
             @Override
             public void onLostFocus() {
             }
-        } );
+        });
     }
 
     @Override
     public void setMetadata( final Metadata metadata ) {
         metadataWidget.setContent( metadata,
                                    false );
-    }
-
-    @Override
-    public Metadata getMetadata() {
-        return metadataWidget.getContent();
     }
 
     @Override
@@ -81,8 +76,8 @@ public class ProjectImportsScreenViewImpl
     }
 
     @Override
-    public boolean isMetadataAlreadyLoaded() {
-        return metadataWidget.isAlreadyLoaded();
+    public Metadata getMetadata() {
+        return metadataWidget.getContent();
     }
 
     @Override

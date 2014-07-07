@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2014 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:widget='urn:import:org.kie.workbench.common.widgets.metadata.client.widget'
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+
+  <ui:with field="i18n" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>
+
+  <ui:style>
+
+    .firstColumn {
+      float: left;
+      width: 120px;
+    }
+  </ui:style>
+
+  <gwt:HTMLPanel>
+    <div>
+      <div>
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.Title}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:Label ui:field="title"/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.CategoriesMetaData}'/>
+        </div>
+        <div style="float:left;">
+          <widget:CategorySelectorWidget ui:field="categories"/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.NoteMetaData}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:Label ui:field="note"/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.URI}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:Label ui:field="uri"/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.SubjectMetaData}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:TextBox ui:field="subject" title='{i18n.AShortDescriptionOfTheSubjectMatter}'/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.TypeMetaData}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:TextBox ui:field="type" title='{i18n.TypeTip}'/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.ExternalLinkMetaData}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:TextBox ui:field="external" title='{i18n.ExternalLinkTip}'/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.SourceMetaData}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:TextBox ui:field="source" title='{i18n.SourceMetaDataTip}'/>
+        </div>
+      </div>
+    </div>
+
+
+  </gwt:HTMLPanel>
+
+</ui:UiBinder>

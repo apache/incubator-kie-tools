@@ -49,8 +49,12 @@ public class CategorySelectorWidget
      * @param d The meta data.
      * @param readOnly If it is to be non editable.
      */
-    public CategorySelectorWidget( final Metadata d,
-                                   final boolean readOnly ) {
+    public CategorySelectorWidget( ) {
+
+        initWidget( layout );
+    }
+
+    public void setContent(Metadata d, boolean readOnly) {
         this.data = d;
 
         list = new FlexTable();
@@ -62,8 +66,6 @@ public class CategorySelectorWidget
         if ( !readOnly ) {
             doActions();
         }
-
-        initWidget( layout );
     }
 
     private void doActions() {
