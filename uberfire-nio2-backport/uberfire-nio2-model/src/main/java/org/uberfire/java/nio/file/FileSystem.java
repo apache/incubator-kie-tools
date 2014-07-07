@@ -50,7 +50,4 @@ public interface FileSystem extends Closeable,
 
     WatchService newWatchService() throws UnsupportedOperationException, IOException;
 
-    boolean isOnBatch();
-
-    void setState( String state );
 }

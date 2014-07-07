@@ -35,7 +35,6 @@ import org.apache.commons.io.FileUtils;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
 import org.uberfire.java.nio.base.ExtendedAttributeView;
-import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.GeneralPathImpl;
 import org.uberfire.java.nio.base.SeekableByteChannelFileBasedImpl;
 import org.uberfire.java.nio.channels.AsynchronousFileChannel;
@@ -590,12 +589,6 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
             throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         checkNotNull( "path", path );
         checkNotEmpty( "attributes", attribute );
-
-        if ( attribute.equals( FileSystemState.FILE_SYSTEM_STATE_ATTR ) ) {
-            FileSystem fs = path.getFileSystem();
-            fs.setState( value.toString() );
-            return;
-        }
 
         final String[] s = split( attribute );
         if ( s[ 0 ].length() == 0 ) {

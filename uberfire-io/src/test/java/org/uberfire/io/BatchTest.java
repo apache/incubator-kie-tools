@@ -18,6 +18,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 
 import static org.junit.Assert.*;
 
@@ -26,7 +27,9 @@ public class BatchTest {
     final static IOService ioService = new IOServiceDotFileImpl();
     private static File path = null;
     static FileSystem fs1;
+    static JGitFileSystem fs1Batch;
     static FileSystem fs2;
+    static JGitFileSystem fs2Batch;
 
     @BeforeClass
     public static void setup() throws IOException {
@@ -37,6 +40,7 @@ public class BatchTest {
         final URI newRepo = URI.create( "git://amend-repo-test" );
 
         fs1 = ioService.newFileSystem( newRepo, new HashMap<String, Object>() );
+        fs1Batch = (JGitFileSystem) fs1;
         Path init = ioService.get( URI.create( "git://amend-repo-test/init.file" ) );
         ioService.write( init, "setupFS!" );
 
@@ -45,6 +49,7 @@ public class BatchTest {
         fs2 = ioService.newFileSystem( newRepo2, new HashMap<String, Object>() {{
             put( "init", "true" );
         }} );
+        fs2Batch = (JGitFileSystem) fs2;
         init = ioService.get( URI.create( "git://check-amend-repo-test/init.file" ) );
         ioService.write( init, "setupFS!" );
     }
@@ -187,11 +192,11 @@ public class BatchTest {
         final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
 
-        assertFalse( fs1.isOnBatch() );
+        assertFalse( fs1Batch.isOnBatch() );
         ioService.startBatch( fs1 );
-        assertTrue( fs1.isOnBatch() );
+        assertTrue( fs1Batch.isOnBatch() );
         ioService.endBatch( fs1 );
-        assertFalse( fs1.isOnBatch() );
+        assertFalse( fs1Batch.isOnBatch() );
     }
 
     @Test
@@ -202,14 +207,14 @@ public class BatchTest {
         init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
 
-        assertFalse( fs1.isOnBatch() );
-        assertFalse( fs2.isOnBatch() );
+        assertFalse( fs1Batch.isOnBatch() );
+        assertFalse( fs2Batch.isOnBatch() );
         ioService.startBatch( fs1 );
-        assertTrue( fs1.isOnBatch() );
-        assertFalse( fs2.isOnBatch() );
+        assertTrue( fs1Batch.isOnBatch() );
+        assertFalse( fs2Batch.isOnBatch() );
         ioService.endBatch( fs1 );
-        assertFalse( fs1.isOnBatch() );
-        assertFalse( fs2.isOnBatch() );
+        assertFalse( fs1Batch.isOnBatch() );
+        assertFalse( fs2Batch.isOnBatch() );
     }
 
     @Test
@@ -222,8 +227,8 @@ public class BatchTest {
 
         ioService.startBatch( fs1 );
         ioService.startBatch( fs2 );
-        assertTrue( fs1.isOnBatch() );
-        assertTrue( fs2.isOnBatch() );
+        assertTrue( fs1Batch.isOnBatch() );
+        assertTrue( fs2Batch.isOnBatch() );
         ioService.endBatch( fs1 );
         ioService.endBatch( fs2 );
     }

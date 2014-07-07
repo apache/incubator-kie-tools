@@ -388,20 +388,6 @@ public class SystemConfigProducer implements Extension {
         }
 
         @Override
-        public boolean isOnBatch() {
-            return state.equals( FileSystemState.BATCH );
-        }
-
-        @Override
-        public void setState( String state ) {
-            try {
-                this.state = FileSystemState.valueOf( state );
-            } catch ( final Exception ex ) {
-                this.state = FileSystemState.NORMAL;
-            }
-        }
-
-        @Override
         public void close() throws IOException {
 
         }
