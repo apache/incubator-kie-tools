@@ -29,7 +29,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.socialscreen.client.OverviewScreenView;
-import org.kie.workbench.common.screens.socialscreen.client.discussion.VersionMenuBuilder;
+import org.kie.workbench.common.screens.socialscreen.client.discussion.VersionRecordManager;
 import org.kie.workbench.common.screens.socialscreen.model.Overview;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -51,28 +51,26 @@ public class GuidedRuleEditorOverviewPresenterTest {
     private GuidedRuleEditorOverviewPresenter editor;
 
     private GuidedRuleEditorService service = spy(new GuidedRuleEditorServiceMock());
-    private Overview<RuleModel> overview;
+    private Overview overview;
     private SaveOperationService saveOperationService;
 
     private RemoteCallback<?> callback;
-    private VersionMenuBuilder versionMenuBuilder;
+    private VersionRecordManager versionRecordManager;
 
     @Before
     public void setUp() throws Exception {
         ClientTypeRegistry clientTypeRegistry = mock(ClientTypeRegistry.class);
         view = mock(OverviewScreenView.class);
-        versionMenuBuilder = mock(VersionMenuBuilder.class);
+        versionRecordManager = mock(VersionRecordManager.class);
 
         saveOperationService = mock(SaveOperationService.class);
         editor = new GuidedRuleEditorOverviewPresenter(
                 clientTypeRegistry,
-                new GuidedRuleEditorServiceCallerMock(),
-                versionMenuBuilder,
-                saveOperationService,
+                versionRecordManager,
                 view);
         presenter = editor;
 
-        overview = new Overview<RuleModel>();
+        overview = new Overview();
     }
 
     @Test
@@ -88,21 +86,21 @@ public class GuidedRuleEditorOverviewPresenterTest {
 
         ObservablePath path = mock(ObservablePath.class);
         PlaceRequest place = mock(PlaceRequest.class);
-        editor.onStartup(path, place);
+//        editor.setContent(path, place);
 
         presenter.onDescriptionEdited("Hello");
 
         ArgumentCaptor<CommandWithCommitMessage> commandWithCommitMessageArgumentCaptor = ArgumentCaptor.forClass(CommandWithCommitMessage.class);
 
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
-        verify(versionMenuBuilder).buildBasic(commandArgumentCaptor.capture());
+//        verify(versionMenuBuilder).buildMenu(commandArgumentCaptor.capture());
         commandArgumentCaptor.getValue().execute();
 
         verify(saveOperationService).save(eq(path), commandWithCommitMessageArgumentCaptor.capture());
 
         commandWithCommitMessageArgumentCaptor.getValue().execute("Added a description");
 
-        verify(service).save(path, overview.getModel(), metadata, "Added a description");
+//        verify(service).save(path, overview.getModel(), metadata, "Added a description");
 
         assertEquals(overview.getMetadata().getDescription(), "Hello");
     }
@@ -112,15 +110,14 @@ public class GuidedRuleEditorOverviewPresenterTest {
 
         ObservablePath path = mock(ObservablePath.class);
         PlaceRequest place = mock(PlaceRequest.class);
-        editor.onStartup(path, place);
+//        editor.setContent(path, place);
 
         ArgumentCaptor<Callback> callbackArgumentCaptor = ArgumentCaptor.forClass(Callback.class);
-        verify(versionMenuBuilder).addVersionSelectionCallback(callbackArgumentCaptor.capture());
+        verify(versionRecordManager).addVersionSelectionCallback(callbackArgumentCaptor.capture());
 
         callbackArgumentCaptor.getValue().callback("v1");
 
 
-//        service.loadOverview()
     }
 
     private class GuidedRuleEditorServiceCallerMock implements Caller<GuidedRuleEditorService> {
@@ -148,11 +145,6 @@ public class GuidedRuleEditorOverviewPresenterTest {
 
         @Override public GuidedEditorContent loadContent(Path path) {
 
-            return null;
-        }
-
-        @Override public Overview loadOverview(ObservablePath path) {
-            ((RemoteCallback) callback).callback(overview);
             return null;
         }
 

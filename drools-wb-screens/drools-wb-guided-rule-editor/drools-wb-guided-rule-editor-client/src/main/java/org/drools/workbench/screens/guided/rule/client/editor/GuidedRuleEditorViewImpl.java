@@ -75,7 +75,7 @@ public class GuidedRuleEditorViewImpl
 
     @Override
     public String getTitle(String fileName) {
-        return GuidedRuleEditorResources.CONSTANTS.GuidedRuleEditorTitle() + " [" + fileName + "]";
+        return fileName +" - "+  GuidedRuleEditorResources.CONSTANTS.GuidedRuleEditorTitle();
     }
 
     @Override

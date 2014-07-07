@@ -228,12 +228,10 @@ public class DSLEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                        if ( !metadataWidget.isAlreadyLoaded() ) {
                             metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
                             metadataService.call( new MetadataSuccessCallback( metadataWidget,
                                                                                isReadOnly ),
                                                   new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
-                        }
                     }
 
                     @Override

@@ -32,7 +32,7 @@ import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResour
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
@@ -42,6 +42,10 @@ import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.uberfire.client.common.MultiPageEditor;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.workbench.common.screens.socialscreen.client.discussion.VersionRecordManager;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
@@ -57,18 +61,20 @@ import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileName
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.workbench.common.widgets.viewsource.client.callbacks.ViewSourceSuccessCallback;
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -84,7 +90,7 @@ import org.uberfire.workbench.type.FileNameUtil;
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 @Dependent
-//@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = { GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class }, priority = 102)
+@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = {GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class}, priority = 102)
 public class GuidedRuleEditorPresenter {
 
     @Inject
@@ -92,6 +98,9 @@ public class GuidedRuleEditorPresenter {
 
     @Inject
     private GuidedRuleEditorView view;
+
+    @Inject
+    private GuidedRuleEditorOverviewPresenter overview;
 
     @Inject
     private ViewSourceView viewSource;
@@ -115,9 +124,6 @@ public class GuidedRuleEditorPresenter {
     private PlaceManager placeManager;
 
     @Inject
-    private Caller<MetadataService> metadataService;
-
-    @Inject
     private GuidedRuleDRLResourceType resourceTypeDRL;
 
     @Inject
@@ -135,10 +141,11 @@ public class GuidedRuleEditorPresenter {
     @Inject
     @New
     private FileMenuBuilder menuBuilder;
-    private Menus menus;
 
     @Inject
-    private MetadataWidget metadataWidget;
+    private VersionRecordManager versionRecordManager;
+
+    private Menus menus;
 
     @Inject
     private Caller<ProjectService> projectService;
@@ -152,6 +159,7 @@ public class GuidedRuleEditorPresenter {
 
     private RuleModel model;
     private AsyncPackageDataModelOracle oracle;
+    private Metadata metadata;
 
     @OnStartup
     public void onStartup(final ObservablePath path,
@@ -162,12 +170,34 @@ public class GuidedRuleEditorPresenter {
         this.version = place.getParameter("version", null);
         this.isDSLEnabled = resourceTypeDSL.accept(path);
 
+        versionRecordManager.addVersionSelectionCallback(
+                new Callback<VersionRecord>() {
+                    @Override
+                    public void callback(VersionRecord versionRecord) {
+                        GuidedRuleEditorPresenter.this.path = IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(
+                                PathFactory.newPathBasedOn(path.getFileName(), versionRecord.uri(), path));
+
+                        version = versionRecord.id();
+
+                        isReadOnly = !versionRecordManager.isLatest(versionRecord);
+
+                        loadContent();
+                    }
+                });
+
+        addFileChangeListeners();
+
+        makeMenuBar();
+
+        loadContent();
+    }
+
+    private void addFileChangeListeners() {
         this.path.onRename(new Command() {
             @Override
             public void execute() {
                 //Effectively the same as reload() but don't reset concurrentUpdateSessionInfo
                 changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
-                view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
                 loadContent();
             }
         });
@@ -220,18 +250,11 @@ public class GuidedRuleEditorPresenter {
                 ).show();
             }
         });
-
-        makeMenuBar();
-
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-
-        loadContent();
     }
 
     private void reload() {
         concurrentUpdateSessionInfo = null;
         changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         loadContent();
     }
 
@@ -243,6 +266,8 @@ public class GuidedRuleEditorPresenter {
     }
 
     private void loadContent() {
+        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+
         service.call(getModelSuccessCallback(),
                 new CommandDrivenErrorCallback(view,
                         new CommandBuilder().addNoSuchFileException(view,
@@ -261,53 +286,26 @@ public class GuidedRuleEditorPresenter {
                     return;
                 }
 
+                versionRecordManager.setVersions(version, content.getOverview().getMetadata().getVersion());
+
                 multiPage.clear();
+                multiPage.addWidget(overview,
+                        CommonConstants.INSTANCE.Overview());
+
                 multiPage.addWidget(view,
                         CommonConstants.INSTANCE.EditTabTitle());
-
-                multiPage.addPage(new Page(viewSource,
-                        CommonConstants.INSTANCE.SourceTabTitle()) {
-                    @Override
-                    public void onFocus() {
-                        viewSource.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-                        service.call(new ViewSourceSuccessCallback(viewSource),
-                                new HasBusyIndicatorDefaultErrorCallback(viewSource)).toSource(path, view.getContent());
-                    }
-
-                    @Override
-                    public void onLostFocus() {
-                        viewSource.clear();
-                    }
-                });
 
                 multiPage.addWidget(importsWidget,
                         CommonConstants.INSTANCE.ConfigTabTitle());
 
-                multiPage.addPage(new Page(metadataWidget,
-                        CommonConstants.INSTANCE.MetadataTabTitle()) {
-                    @Override
-                    public void onFocus() {
-                        if (!metadataWidget.isAlreadyLoaded()) {
-                            metadataWidget.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-                            metadataService.call(new MetadataSuccessCallback(metadataWidget,
-                                    isReadOnly),
-                                    new HasBusyIndicatorDefaultErrorCallback(metadataWidget)
-                            ).getMetadata(path);
-                        }
-                    }
-
-                    @Override
-                    public void onLostFocus() {
-                        //Nothing to do
-                    }
-                });
-
-                model = content.getModel();
+                GuidedRuleEditorPresenter.this.model = content.getModel();
+                GuidedRuleEditorPresenter.this.metadata = content.getOverview().getMetadata();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
                 oracle = oracleFactory.makeAsyncPackageDataModelOracle(path,
                         model,
                         dataModel);
 
+                overview.setContent(path, content.getOverview());
                 view.setContent(path,
                         model,
                         oracle,
@@ -340,6 +338,7 @@ public class GuidedRuleEditorPresenter {
                             fileNameValidator)
                     .addDelete(path)
                     .addValidate(onValidate())
+                    .addNewTopLevelMenu(versionRecordManager.buildMenu())
                     .build();
         }
     }
@@ -424,7 +423,7 @@ public class GuidedRuleEditorPresenter {
                             service.call(getSaveSuccessCallback(),
                                     new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
                                     view.getContent(),
-                                    metadataWidget.getContent(),
+                                    metadata,
                                     commitMessage);
 
                         }
@@ -444,7 +443,6 @@ public class GuidedRuleEditorPresenter {
             public void callback(final Path path) {
                 view.setNotDirty();
                 view.hideBusyIndicator();
-                metadataWidget.resetDirty();
                 notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
             }
         };
@@ -452,7 +450,7 @@ public class GuidedRuleEditorPresenter {
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty() || metadataWidget.isDirty();
+        return view.isDirty();
     }
 
     @OnClose
@@ -471,20 +469,17 @@ public class GuidedRuleEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = "";
+
+        return view.getTitle(
+                FileNameUtil.removeExtension(path, getResourceType()));
+    }
+
+    private ClientResourceType getResourceType() {
         if (resourceTypeDRL.accept(path)) {
-            fileName = FileNameUtil.removeExtension(path,
-                    resourceTypeDRL);
-        } else if (resourceTypeDSL.accept(path)) {
-            fileName = FileNameUtil.removeExtension(path,
-                    resourceTypeDSL);
+            return resourceTypeDRL;
+        } else {
+            return resourceTypeDRL;
         }
-
-        if (version != null) {
-            fileName = fileName + " v" + version;
-        }
-
-        return view.getTitle(fileName);
     }
 
     @WorkbenchPartView

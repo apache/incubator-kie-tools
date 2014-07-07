@@ -45,5 +45,4 @@ public interface GuidedRuleEditorService
 
     GuidedEditorContent loadContent( final Path path );
 
-    Overview loadOverview(ObservablePath path);
 }

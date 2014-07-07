@@ -514,6 +514,29 @@ a.serviceTab:active {
     color: #000000;
 }
 
+.gwt-TabPanelBottom {
+    border-style: none;
+}
+
+.gwt-TabBar {
+    background-color: white;
+}
+
+.gwt-TabBar .gwt-TabBarItem {
+    color: #0066cc;
+    background-color: white;
+}
+
+.gwt-TabBar .gwt-TabBarItem-selected {
+    color: #555555;
+    border-bottom: solid #555555 1px;
+    font-weight: normal;
+}
+
+.gwt-TabBar .gwt-TabBarItem-wrapper {
+    background-color: white;
+}
+
 /** Overridden GWT styles 
 .gwt-Frame {
     border: 0;

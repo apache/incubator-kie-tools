@@ -204,6 +204,7 @@ public class GuidedRuleEditorServiceImpl
                                                                sessionInfo ) );
 
             return new GuidedEditorContent( model,
+                                            loadOverview(path),
                                             dataModel );
 
         } catch ( Exception e ) {
@@ -211,12 +212,9 @@ public class GuidedRuleEditorServiceImpl
         }
     }
 
-    @Override
-    public Overview<RuleModel> loadOverview(ObservablePath path) {
+    private Overview loadOverview(Path path) {
 
-        Overview<RuleModel> overview = new Overview<RuleModel>();
-
-        overview.setModel(load(path));
+        Overview overview = new Overview();
 
         overview.setMetadata(metadataService.getMetadata(path));
 

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.rule.model;
 
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.screens.socialscreen.model.Overview;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -25,15 +26,21 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class GuidedEditorContent {
 
     private RuleModel model;
+
+    private Overview overview;
+
     private PackageDataModelOracleBaselinePayload dataModel;
 
     public GuidedEditorContent() {
     }
 
     public GuidedEditorContent( final RuleModel model,
+                                final Overview overview,
                                 final PackageDataModelOracleBaselinePayload dataModel ) {
         this.model = PortablePreconditions.checkNotNull( "model",
                                                          model );
+        this.overview = PortablePreconditions.checkNotNull( "overview",
+                                                         overview );
         this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
                                                              dataModel );
     }
@@ -46,4 +53,7 @@ public class GuidedEditorContent {
         return dataModel;
     }
 
+    public Overview getOverview() {
+        return overview;
+    }
 }
