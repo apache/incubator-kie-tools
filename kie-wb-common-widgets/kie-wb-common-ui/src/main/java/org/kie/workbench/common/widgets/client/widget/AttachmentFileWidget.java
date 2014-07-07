@@ -31,9 +31,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.guvnor.common.services.shared.file.upload.FileManagerFields;
 import org.guvnor.common.services.shared.file.upload.FileOperation;
+import org.kie.uberfire.client.common.FileUpload;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.FileUpload;
 
 /**
  * This wraps a file uploader utility
@@ -134,13 +134,13 @@ public class AttachmentFileWidget extends Composite {
                 } else {
                     executeCallback( errorCallback );
                     if ( event.getResults().contains( "org.uberfire.java.nio.file.FileAlreadyExistsException" ) ) {
-                        Window.alert( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( fieldFileName.getText() ) );
+                        Window.alert( org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( fieldFileName.getText() ) );
                         //ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( fieldFileName.getText() ) );
                     } else if ( event.getResults().contains( "DecisionTableParseException" ) ) {
                         Window.alert( CommonConstants.INSTANCE.UploadGenericError() );
                         //ErrorPopup.showMessage( CommonConstants.INSTANCE.UploadGenericError() );
                     } else {
-                        Window.alert( CommonConstants.INSTANCE.ExceptionGeneric0( event.getResults() ) );
+                        Window.alert( org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.ExceptionGeneric0( event.getResults() ) );
                         //ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( event.getResults() ) );
                     }
                 }

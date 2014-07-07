@@ -24,7 +24,7 @@ import org.guvnor.common.services.project.model.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.uberfire.client.common.HasBusyIndicator;
 
 public interface ProjectScreenView
         extends HasBusyIndicator,

@@ -184,18 +184,6 @@ public interface CommonConstants
 
     String UploadSuccess();
 
-    String ExceptionInvalidPath();
-
-    String ExceptionFileAlreadyExists0( final String uri );
-
-    String ExceptionPackageAlreadyExists0( final String packageName );
-
-    String ExceptionNoSuchFile0( final String uri );
-
-    String ExceptionSecurity0( final String uri );
-
-    String ExceptionGeneric0( final String message );
-
     String InvalidFileName0( final String fileName );
 
     String NewName();

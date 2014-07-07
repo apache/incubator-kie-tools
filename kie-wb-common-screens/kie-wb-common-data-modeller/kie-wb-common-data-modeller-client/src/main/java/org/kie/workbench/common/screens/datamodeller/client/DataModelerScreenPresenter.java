@@ -16,6 +16,15 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -26,15 +35,21 @@ import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.kie.workbench.common.screens.messageconsole.events.UnpublishMessagesEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.YesNoCancelPopup;
+import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.NewDataObjectPopup;
-import org.kie.workbench.common.screens.datamodeller.events.*;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelReload;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelSaved;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -46,27 +61,24 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.YesNoCancelPopup;
 import org.uberfire.client.mvp.UberView;
-import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.workbench.events.*;
+import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.*;
-
-import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentChange;
-import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentUpdate;
+import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.*;
 
 //@Dependent
 @WorkbenchScreen(identifier = "dataModelerScreen")
@@ -267,7 +279,7 @@ public class DataModelerScreenPresenter {
      * This attribute is used in cases where the project model was concurrently modified during edition and we want
      * to force a rewriting.
      *
-     * @param overwrite. true, ensures that what you see in the UI will be the model after generation. This attribute
+     * @param overwrite true, ensures that what you see in the UI will be the model after generation. This attribute
      *                   is set to true in when we want to force a model rewriting. false, indicates that we'll proceed
      *                   as in the normal sequence when the DMO wasn't concurrently modified.
      *

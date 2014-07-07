@@ -1,6 +1,6 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.uberfire.client.common.HasBusyIndicator;
 
 public interface PomEditorScreenView
         extends HasBusyIndicator {

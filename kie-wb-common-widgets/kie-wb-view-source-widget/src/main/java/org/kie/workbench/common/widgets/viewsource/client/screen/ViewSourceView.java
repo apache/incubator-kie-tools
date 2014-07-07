@@ -17,7 +17,7 @@
 package org.kie.workbench.common.widgets.viewsource.client.screen;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.uberfire.client.common.HasBusyIndicator;
 
 public interface ViewSourceView extends HasBusyIndicator,
                                         IsWidget {

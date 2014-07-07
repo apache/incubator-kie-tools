@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.uberfire.client.mvp.UberView;
 
 public interface OrganizationalUnitManagerView extends UberView<OrganizationalUnitManagerPresenter>,

@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.screens.javaeditor.client.editor;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.kie.workbench.common.screens.javaeditor.client.widget.ViewJavaSourceWidget;
-import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.Composite;
+import org.kie.uberfire.client.common.BusyIndicatorView;
+import org.kie.workbench.common.screens.javaeditor.client.widget.ViewJavaSourceWidget;
 
 public class JavaSourceViewImpl extends Composite
                                 implements JavaSourceView {
