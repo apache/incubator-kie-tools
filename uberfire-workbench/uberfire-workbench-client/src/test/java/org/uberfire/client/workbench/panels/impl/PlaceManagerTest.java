@@ -24,6 +24,10 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
+import org.uberfire.client.mvp.AbstractPopupActivity;
+import org.uberfire.client.mvp.AbstractSplashScreenActivity;
+import org.uberfire.client.mvp.AbstractWorkbenchContextActivity;
+import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -32,6 +36,7 @@ import org.uberfire.client.mvp.PlaceHistoryHandler;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceManagerImpl;
 import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
@@ -343,6 +348,10 @@ public class PlaceManagerTest {
         verify( perspectiveManager, never() ).switchToPerspective( any( PerspectiveActivity.class ), any( Command.class ) );
     }
 
+    /**
+     * This test verifies that when launching a screen which is "owned by" a perspective other than the current one, the
+     * PlaceManager first switches to the owning perspective and then launches the requested screen.
+     */
     @Test
     public void testLaunchingActivityTiedToDifferentPerspective() throws Exception {
         PerspectiveActivity ozPerspectiveActivity = mock( PerspectiveActivity.class );
@@ -373,30 +382,107 @@ public class PlaceManagerTest {
         verifyActivityLaunchSideEffects( emeraldCityPlace, emeraldCityActivity );
     }
 
-    // TODO test going to splash screens, including this special side effect
-    // activityManager.getSplashScreenInterceptor( place ); // need separate test for splash screens!
+    @Test
+    public void testPerspectiveLaunchWithSplashScreen() throws Exception {
+        final PlaceRequest perspectivePlace = new DefaultPlaceRequest( "Somewhere" );
+        final AbstractWorkbenchPerspectiveActivity perspectiveActivity = mock( AbstractWorkbenchPerspectiveActivity.class );
+        when( activityManager.getActivities( perspectivePlace ) ).thenReturn( singleton( (Activity) perspectiveActivity ) );
 
-    // TODO test closing a splash screen, including the side effect of removing it from the activeSplashScreens map
+        final AbstractSplashScreenActivity splashScreenActivity = mock( AbstractSplashScreenActivity.class );
+        when( activityManager.getSplashScreenInterceptor( perspectivePlace ) ).thenReturn( splashScreenActivity );
 
-    // TODO test going to popup screens
+        placeManager.goTo( perspectivePlace );
+
+        // splash screen should be open and registered as an active splash screen
+        verify( splashScreenActivity, never() ).onStartup( any( PlaceRequest.class ) );
+
+        InOrder inOrder = inOrder( splashScreenActivity, newSplashScreenActiveEvent );
+        inOrder.verify( splashScreenActivity ).onOpen();
+        inOrder.verify( newSplashScreenActiveEvent ).fire( any( NewSplashScreenActiveEvent.class) );
+
+        assertTrue( placeManager.getActiveSplashScreens().contains( splashScreenActivity ) );
+
+        // perspective should be open, and should be the activity registered for its own place
+        verify( perspectiveActivity, never() ).onStartup( any( PlaceRequest.class ) );
+        verify( perspectiveActivity ).onOpen();
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( perspectivePlace ) );
+        assertSame( perspectiveActivity, placeManager.getActivity( perspectivePlace ) );
+    }
+
+    // TODO (UF-123) test explicitly closing a splash screen (ensure the activity bean is closed and destroyed)
+
+    /**
+     * Ensures that splash screens can't be launched on their own (they should only launch as a side effect of launching
+     * a place that they intercept). This test came from the original test suite, and may not be all that relevant
+     * anymore: it assumes that the ActivityManager might resolve a PlaceRequest to a SplashScreenActivity, and this is
+     * currently not in the ActivityManager contract.
+     */
+    @Test
+    public void testSplashScreenActivityShouldNotLaunchOnItsOwn() throws Exception {
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
+
+        final AbstractSplashScreenActivity splashScreenActivity = mock( AbstractSplashScreenActivity.class );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) splashScreenActivity ) );
+
+        placeManager.goTo( somewhere );
+
+        verify( splashScreenActivity, never() ).onStartup( eq( somewhere ) );
+        verify( splashScreenActivity, never() ).onOpen();
+        verify( newSplashScreenActiveEvent, never() ).fire( any( NewSplashScreenActiveEvent.class) );
+        assertFalse( placeManager.getActiveSplashScreens().contains( splashScreenActivity ) );
+    }
+
+    /**
+     * Ensures that context activities can't be launched on their own (they should only launch as a side effect of launching
+     * a place that they relate to). This test was moved here from the original test suite.
+     */
+    @Test
+    public void testContextActivityShouldNotLaunchOnItsOwn() throws Exception {
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
+
+        final AbstractWorkbenchContextActivity activity = mock( AbstractWorkbenchContextActivity.class );
+        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) activity ) );
+
+        placeManager.goTo( somewhere );
+
+        verify( activity , never()).onStartup( eq( somewhere ) );
+        verify( activity , never()).onOpen();
+    }
+
+    @Test
+    public void testPopUpLaunch() throws Exception {
+
+        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
+        final AbstractPopupActivity activity = mock( AbstractPopupActivity.class );
+
+        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) activity ) );
+
+        placeManager.goTo( somewhere );
+
+        verify( activity, never() ).onStartup( any( PlaceRequest.class ) );
+        verify( activity, times( 1 ) ).onOpen();
+        verify( placeHistoryHandler, times( 1 ) ).onPlaceChange( somewhere );
+
+        // TODO this test was moved here from the old test suite. it may not verify all required side effects of launching a popup.
+    }
 
     // TODO test going to an unresolvable/unknown place
 
-    // TODO test going to a place with a specific target panel
+    // TODO test going to a place with a specific target panel (part of the PerspectiveManager/PlaceManager contract)
 
     // TODO test closing all panels when there are a variety of different types of panels open
 
     // TODO compare/contrast closeAllPlaces with closeAllCurrentPanels (former is public API; latter is called before launching a new perspective)
 
     /**
-     * Verifies that all the expected side effects of an activity launch have happened.
+     * Verifies that all the expected side effects of a screen or editor activity launch have happened.
      * 
      * @param placeRequest
      *            The place request that was passed to some variant of PlaceManager.goTo().
      * @param activity
      *            <b>A Mockito mock<b> of the activity that was resolved for <tt>placeRequest</tt>.
      */
-    private void verifyActivityLaunchSideEffects(PlaceRequest placeRequest, WorkbenchScreenActivity activity) {
+    private void verifyActivityLaunchSideEffects(PlaceRequest placeRequest, WorkbenchActivity activity) {
 
         // as of UberFire 0.4. this event only happens if the place is already visible.
         // it might be be better if the event was fired unconditionally. needs investigation.
@@ -406,7 +492,8 @@ public class PlaceManagerTest {
         verify( activityManager, times( 1 ) ).getActivities( placeRequest );
 
         // contract between PlaceManager and PanelManager
-        verify( panelManager ).addWorkbenchPanel( panelManager.getRoot(), null );
+        PanelDefinition rootPanel = panelManager.getRoot();
+        verify( panelManager ).addWorkbenchPanel( rootPanel, null );
 
         // contract between PlaceManager and PlaceHistoryHandler
         verify( placeHistoryHandler ).onPlaceChange( placeRequest );
@@ -419,7 +506,7 @@ public class PlaceManagerTest {
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( placeRequest ) );
 
         // contract between PlaceManager and Activity
-        verify( activity, never() ).onStartup( any( PlaceRequest.class ) ); // this is ActivityManager's job now
+        verify( activity, never() ).onStartup( any( PlaceRequest.class ) ); // this is ActivityManager's job
         verify( activity, times( 1 ) ).onOpen();
     }
 
