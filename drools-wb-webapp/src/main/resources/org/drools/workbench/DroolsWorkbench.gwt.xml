@@ -18,13 +18,13 @@
   <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetAPI"/>
   <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetClient"/>
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>
+  <inherits name='org.guvnor.organizationalunit.manager.GuvnorOrganizationalUnitManager'/>
 
   <!--Common Screens -->
   <inherits name="org.kie.workbench.common.screens.home.KieWorkbenchHomeClient"/>
   <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
   <inherits name="org.kie.workbench.common.screens.search.KieWorkbenchSearchScreenClient"/>
   <inherits name="org.kie.workbench.common.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
-  <inherits name='org.kie.workbench.common.screens.organizationalunit.manager.KieWorkbenchOrganizationalUnitManager'/>
   <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorClient"/>
 
   <!-- Common Services -->

@@ -51,6 +51,7 @@
           <exclude>WEB-INF/lib/guvnor-m2repo-editor-client-*.jar</exclude>
           <exclude>WEB-INF/lib/guvnor-workingset-client-*.jar</exclude>
           <exclude>WEB-INF/lib/guvnor-message-console-client-*.jar</exclude>
+          <exclude>WEB-INF/lib/guvnor-organizationalunit-manager-*.jar</exclude>
 
           <!-- Kie Workbench client related-->
           <exclude>WEB-INF/lib/kie-wb-common-ui-*.jar</exclude>
@@ -60,7 +61,6 @@
           <exclude>WEB-INF/lib/kie-wb-common-project-imports-editor-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-common-search-screen-client-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-common-home-client-*.jar</exclude>
-          <exclude>WEB-INF/lib/kie-wb-common-organizationalunit-manager-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-config-resource-widget-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-decorated-grid-widget-*.jar</exclude>
           <exclude>WEB-INF/lib/kie-wb-metadata-widget-*.jar</exclude>
