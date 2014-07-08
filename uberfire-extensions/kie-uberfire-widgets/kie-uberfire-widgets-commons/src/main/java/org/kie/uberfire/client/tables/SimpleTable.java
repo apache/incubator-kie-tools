@@ -167,6 +167,9 @@ public class SimpleTable<T>
         return dataGrid.addRowCountChangeHandler( handler );
     }
 
+    public int getColumnIndex(Column<T, ?> column) {
+      return dataGrid.getColumnIndex(column);
+    }
     /**
      * Link a column sort handler to the table
      * @param handler
