@@ -19,6 +19,7 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -48,6 +49,7 @@ public class ActivityManagerLifecycleTest {
     @Before
     public void setup() {
         kansas = new DefaultPlaceRequest( "kansas" );
+        when( kansasActivity.getPlace() ).thenReturn( kansas );
 
         IOCBeanDef<Activity> kansasIocBean = makeDependentBean( Activity.class, kansasActivity );
         when( activityBeansCache.getActivity( "kansas" ) ).thenReturn( kansasIocBean );
@@ -190,9 +192,42 @@ public class ActivityManagerLifecycleTest {
         verify( iocManager, never() ).destroyBean( expectedSplashScreenActivity );
     }
 
+    @Test
+    public void shouldNotAttemptToDestroyRuntimeRegisteredSingletonActivities() throws Exception {
+        abstract class MyPerspectiveActivity implements PerspectiveActivity {};
+        final String myPerspectiveId = "myPerspectiveId";
+        final MyPerspectiveActivity activity = mock( MyPerspectiveActivity.class );
+        when( activity.getIdentifier() ).thenReturn( myPerspectiveId );
+        when( activity.getPlace() ).thenReturn( new DefaultPlaceRequest( myPerspectiveId ) );
+
+        // note that we're telling the bean manager this bean is of concrete type PerspectiveActivity.
+        // this mirrors what the JavaScript runtime plugin API does.
+        IOCBeanDef<PerspectiveActivity> perspectiveActivityBean = makeSingletonBean( PerspectiveActivity.class, activity, myPerspectiveId );
+
+        when( activityBeansCache.getActivity( myPerspectiveId ) ).thenReturn( (IOCBeanDef) perspectiveActivityBean );
+
+        Activity retrievedActivity = activityManager.getActivity( Activity.class, new DefaultPlaceRequest( myPerspectiveId ) );
+        activityManager.destroyActivity( retrievedActivity );
+
+        // we mustn't call getPlace() after onShutdown because onShutdown sets place to null!
+        InOrder inOrder = inOrder( activityBeansCache, activity );
+        inOrder.verify( activity ).getPlace();
+        inOrder.verify( activity ).onShutdown();
+
+        // a call like this would fail for activities registered via the JavaScript API, because the
+        // actual activity class of JSWorkbenchPerspectiveActivity is not an IOC bean type.
+        // the lookup has to happen instead via the ActivityBeansCache, which is mocked & verified above.
+        verify( iocManager, never() ).lookupBean( activity.getClass() );
+
+        // and it's a singleton, so we should not try to destroy it.
+        verify( iocManager, never() ).destroyBean( activity );
+    }
+
     private SplashScreenActivity makeSplashScreenThatIntercepts( PlaceRequest place ) {
+        String splashActivityName = place.getIdentifier() + "!Splash";
         SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
         when( splashScreenActivity.intercept( place ) ).thenReturn( true );
+        when( splashScreenActivity.getPlace() ).thenReturn( new DefaultPlaceRequest( splashActivityName ) );
         makeSingletonBean( SplashScreenActivity.class, splashScreenActivity );
         return splashScreenActivity;
     }
@@ -216,13 +251,19 @@ public class ActivityManagerLifecycleTest {
         return beanDef;
     }
 
-    @SuppressWarnings("unchecked")
+    /** Makes a singleton bean whose name is type.getSimpleName(). */
     private <T> IOCBeanDef<T> makeSingletonBean(final Class<T> type, final T beanInstance) {
+        return makeSingletonBean( type, beanInstance, type.getSimpleName() );
+    }
+
+    /** Makes a singleton bean with the given name. */
+    @SuppressWarnings("unchecked")
+    private <T> IOCBeanDef<T> makeSingletonBean(final Class<T> type, final T beanInstance, String name) {
         IOCBeanDef<T> beanDef = IOCSingletonBean.newBean( iocManager,
                                                           type,
                                                           beanInstance.getClass(),
                                                           null,
-                                                          type.getSimpleName(),
+                                                          name,
                                                           true,
                                                           new BeanProvider<T>() {
             @Override

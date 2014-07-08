@@ -106,13 +106,30 @@ public class ActivityManagerImpl implements ActivityManager {
     @Override
     public void destroyActivity( final Activity activity ) {
         if ( startedActivities.remove( activity ) != null ) {
+            boolean isDependentScope = getBeanScope( activity ) == Dependent.class;
             activity.onShutdown();
-            if ( iocManager.lookupBean( activity.getClass() ).getScope() == Dependent.class ) {
+            if ( isDependentScope ) {
                 iocManager.destroyBean( activity );
             }
         } else {
             throw new IllegalStateException( "Activity " + activity + " is not currently in the started state" );
         }
+    }
+
+    /**
+     * Returns the scope of the given activity bean, first by checking with the activity cache (the only way to look up
+     * the BeanDef for a runtime plugin activity) and then falling back on the Errai bean manager. Beans that are not
+     * started (or were started but have been shut down) will cause an NPE.
+     * 
+     * @param startedActivity
+     *            an activity that is in the <i>started</i> or <i>open</i> state.
+     */
+    private Class<?> getBeanScope( Activity startedActivity ) {
+        IOCBeanDef<?> beanDef = activityBeansCache.getActivity( startedActivity.getPlace().getIdentifier() );
+        if ( beanDef == null ) {
+            beanDef = iocManager.lookupBean( startedActivity.getClass() );
+        }
+        return beanDef.getScope();
     }
 
     private <T extends Activity> Set<T> secure( final Collection<IOCBeanDef<T>> activityBeans ) {
