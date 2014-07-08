@@ -1,35 +1,29 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
-import org.uberfire.client.workbench.widgets.tab.UberTabPanel;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.*;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MultiListWorkbenchPanelViewTest {
 
-    private MultiListWorkbenchPanelViewUnitTestWrapper view;
+    @Mock ListBarWidget listBar;
+    @Mock MultiListWorkbenchPanelPresenter presenter;
 
-    @GwtMock
-    private ListBarWidget listBar;
-
-    @GwtMock
-    private MultiListWorkbenchPanelPresenter presenter;
-
-    @GwtMock
-    private UberTabPanel uberTabPanel;
+    @InjectMocks MultiListWorkbenchPanelView view;
 
     @Before
     public void setup() {
-        view = new MultiListWorkbenchPanelViewUnitTestWrapper();
-        view.setupMocks( listBar, presenter );
     }
 
     @Test
@@ -38,7 +32,11 @@ public class MultiListWorkbenchPanelViewTest {
 
         verify( listBar ).addSelectionHandler( any(SelectionHandler.class) );
         verify( listBar ).addOnFocusHandler( any(Command.class) );
-
     }
 
+    @Test
+    public void shouldPropagateOnResize() {
+        view.onResize();
+        verify( listBar, times( 1 ) ).onResize();
+    }
 }

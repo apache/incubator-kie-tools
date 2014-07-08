@@ -5,6 +5,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -37,7 +38,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
      * cleared and repopulated with the new perspective's root view each time
      * {@link org.uberfire.client.workbench.PanelManager#setPerspective(PerspectiveDefinition)} gets called.
      */
-    private final Panel perspectiveRootContainer = new SimpleLayoutPanel();
+    private final SimpleLayoutPanel perspectiveRootContainer = new SimpleLayoutPanel();
 
     /**
      * The panel within which the current perspective's header widgets reside. This panel lasts the lifetime of the app;
@@ -98,6 +99,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
         AbsolutePanel dragBoundary = dragController.getBoundaryPanel();
         dragBoundary.add( perspectiveRootContainer );
+        Layouts.setToFillParent( perspectiveRootContainer );
 
         root.setHeaderWidget( headerPanel );
         root.setFooterWidget( footerPanel );
@@ -114,9 +116,11 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         root.setPixelSize( width, height );
 
         int leftoverHeight = height - headerPanel.getOffsetHeight() - footerPanel.getOffsetHeight();
-
         dragController.getBoundaryPanel().setPixelSize( width, leftoverHeight );
-        perspectiveRootContainer.setPixelSize( width, leftoverHeight );
+
+        // The dragBoundary can't be a LayoutPanel, so it doesn't support ProvidesResize/RequiresResize.
+        // We start the cascade of onResize() calls at its immediate child.
+        perspectiveRootContainer.onResize();
     }
 
 }

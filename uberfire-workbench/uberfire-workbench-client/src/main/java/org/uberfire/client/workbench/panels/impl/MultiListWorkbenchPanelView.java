@@ -19,12 +19,13 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
+
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -32,7 +33,7 @@ import org.uberfire.workbench.model.PartDefinition;
 @Dependent
 @Named("MultiListWorkbenchPanelView")
 public class MultiListWorkbenchPanelView
-        extends BaseMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
+extends BaseMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
 
     @Inject
     protected ListBarWidget listBar;
@@ -65,5 +66,14 @@ public class MultiListWorkbenchPanelView
         } );
 
         return listBar;
+    }
+
+    @Override
+    public void onResize() {
+        int width = getOffsetWidth();
+        int height = getOffsetHeight();
+        listBar.setPixelSize( width, height );
+        listBar.onResize();
+        super.onResize();
     }
 }

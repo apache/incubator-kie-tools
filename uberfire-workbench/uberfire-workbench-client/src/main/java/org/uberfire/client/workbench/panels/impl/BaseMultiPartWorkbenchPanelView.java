@@ -14,6 +14,7 @@ import org.uberfire.workbench.model.PartDefinition;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 public abstract class BaseMultiPartWorkbenchPanelView<P extends AbstractMultiPartWorkbenchPanelPresenter>
 extends BaseWorkbenchPanelView<P> {
@@ -113,4 +114,10 @@ extends BaseWorkbenchPanelView<P> {
         super.onResize();
     }
 
+    @Override
+    protected Widget getWidget() {
+        // overridden for the benefit of GwtMockito tests. does the same thing as the inherited method would do.
+        // (during GwtMockito unit tests, the inherited method returns a generic mock Widget, not the one given to initWidget())
+        return container;
+    }
 }

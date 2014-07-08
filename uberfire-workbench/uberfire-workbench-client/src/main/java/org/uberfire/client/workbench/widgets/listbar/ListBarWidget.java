@@ -129,7 +129,7 @@ extends ResizeComposite implements MultiPartWidget {
     @UiField
     FlowPanel menuArea;
 
-    CustomList customList = null;
+    PartChooserList partChooserList = null;
 
     WorkbenchPanelPresenter presenter;
 
@@ -226,8 +226,8 @@ extends ResizeComposite implements MultiPartWidget {
         partContentView.clear();
         partTitle.clear();
         currentPart = null;
-        if ( customList != null ) {
-            customList.clear();
+        if ( partChooserList != null ) {
+            partChooserList.clear();
         }
     }
 
@@ -326,8 +326,8 @@ extends ResizeComposite implements MultiPartWidget {
         if ( isMultiPart ) {
             dropdownCaret.setRightDropdown( true );
             dropdownCaret.clear();
-            customList = new CustomList();
-            dropdownCaret.add( customList );
+            partChooserList = new PartChooserList();
+            dropdownCaret.add( partChooserList );
         } else {
             dropdownCaretContainer.setVisible( false );
         }
@@ -406,9 +406,10 @@ extends ResizeComposite implements MultiPartWidget {
         int width = getOffsetWidth();
         int height = getOffsetHeight();
 
-        content.setPixelSize( width, height );
+        content.setPixelSize( width, height - getHeaderHeight() );
         header.setWidth( width + "px" );
 
+        // FIXME only need to do this for the one visible part .. need to call onResize() when switching parts anyway
         for ( int i = 0; i < content.getWidgetCount(); i++ ) {
             final FlowPanel container = (FlowPanel) content.getWidget( i );
             final Widget containedWidget = container.getWidget( 0 );
@@ -417,9 +418,8 @@ extends ResizeComposite implements MultiPartWidget {
                 ( (RequiresResize) containedWidget ).onResize();
             }
         }
-
-        if ( customList != null ) {
-            customList.onResize();
+        if ( partChooserList != null ) {
+            partChooserList.onResize();
         }
     }
 
@@ -526,21 +526,20 @@ extends ResizeComposite implements MultiPartWidget {
         return null;
     }
 
-    class CustomList extends ResizeComposite {
+    /**
+     * This is the list that appears when you click the down-arrow button in the header (dropdownCaret). It lists all
+     * the available parts. Clicking on a list item selects its associated part, making it visible, and hiding all other
+     * parts.
+     */
+    class PartChooserList extends ResizeComposite {
 
         final ResizeFlowPanel panel = new ResizeFlowPanel();
 
-        CustomList() {
+        PartChooserList() {
             initWidget( panel );
             if ( currentPart != null ) {
                 final String ctitle = ( (WorkbenchPartPresenter.View) partContentView.get( currentPart.getK1() ).getWidget( 0 ) ).getPresenter().getTitle();
-                panel.add( new NavLink( ctitle ) {{
-                    addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( final ClickEvent event ) {
-                        }
-                    } );
-                }} );
+                panel.add( new NavLink( ctitle ) );
 
                 for ( final PartDefinition part : parts ) {
                     final String title = ( (WorkbenchPartPresenter.View) partContentView.get( part ).getWidget( 0 ) ).getPresenter().getTitle();
@@ -549,8 +548,6 @@ extends ResizeComposite implements MultiPartWidget {
                             @Override
                             public void onClick( final ClickEvent event ) {
                                 selectPart( part );
-                                //                                presenter.selectPart( part );
-                                //                                SelectionEvent.fire( ListBarWidget.this, part );
                             }
                         } );
                     }} );

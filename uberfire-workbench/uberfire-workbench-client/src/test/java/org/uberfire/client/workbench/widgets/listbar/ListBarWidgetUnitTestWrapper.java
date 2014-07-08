@@ -57,7 +57,7 @@ public class ListBarWidgetUnitTestWrapper extends ListBarWidget {
     }
 
     boolean isCustomListNull(){
-        return customList==null;
+        return partChooserList==null;
     }
 
 }
