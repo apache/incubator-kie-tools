@@ -155,6 +155,21 @@
       <artifactId>guvnor-project-builder</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-message-console-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-message-console-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-message-console-client</artifactId>
+    </dependency>
+
     <!-- Common -->
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
@@ -274,21 +289,6 @@
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-default-editor-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-message-console-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-message-console-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-message-console-client</artifactId>
     </dependency>
 
     <!-- Drools Workbench REST -->
@@ -569,6 +569,8 @@
             <compileSourcesArtifact>org.guvnor:guvnor-workingset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-services-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-project-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-message-console-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-message-console-client</compileSourcesArtifact>
 
             <!-- Common dependencies -->
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-editor-api</compileSourcesArtifact>
@@ -595,8 +597,6 @@
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-refactoring-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-java-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-java-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-message-console-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-message-console-client</compileSourcesArtifact>
 
             <!-- Models for drools-wb -->
             <compileSourcesArtifact>org.drools:drools-workbench-models-commons</compileSourcesArtifact>

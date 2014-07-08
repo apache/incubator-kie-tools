@@ -1,7 +1,7 @@
 package org.drools.workbench.screens.enums.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.uberfire.client.common.HasBusyIndicator;
 
 /**
  * Enum Editor View definition

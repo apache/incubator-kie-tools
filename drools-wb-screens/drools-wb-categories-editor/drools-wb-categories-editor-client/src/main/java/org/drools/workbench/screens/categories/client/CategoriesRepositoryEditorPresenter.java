@@ -25,7 +25,7 @@ import org.drools.workbench.screens.categories.client.resources.i18n.Constants;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.CategoriesModelContent;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;

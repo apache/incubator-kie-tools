@@ -41,20 +41,20 @@ import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorServi
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.uberfire.client.common.BusyIndicatorView;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.MultiPageEditor;
+import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
-import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.Page;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent

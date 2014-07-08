@@ -14,10 +14,10 @@ import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSR
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.guvnor.common.services.project.model.Package;
+import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
-import org.kie.workbench.common.widgets.client.widget.BusyIndicatorView;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;

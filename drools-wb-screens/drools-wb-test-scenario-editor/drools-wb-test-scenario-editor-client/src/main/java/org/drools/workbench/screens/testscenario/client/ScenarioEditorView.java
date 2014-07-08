@@ -4,10 +4,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
 import org.uberfire.backend.vfs.Path;
 
 public interface ScenarioEditorView

@@ -3,7 +3,7 @@ package org.drools.workbench.screens.drltext.client.editor;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
+import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.uberfire.client.mvp.UberView;
 
 public interface DRLEditorView extends HasBusyIndicator,

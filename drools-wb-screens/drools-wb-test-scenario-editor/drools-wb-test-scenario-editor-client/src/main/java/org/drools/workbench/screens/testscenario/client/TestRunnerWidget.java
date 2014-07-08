@@ -37,12 +37,12 @@ import org.drools.workbench.screens.testscenario.client.resources.images.AuditEv
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.resources.CommonImages;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.uberfire.backend.vfs.Path;
+import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
+import org.uberfire.backend.vfs.Path;
 
 public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 

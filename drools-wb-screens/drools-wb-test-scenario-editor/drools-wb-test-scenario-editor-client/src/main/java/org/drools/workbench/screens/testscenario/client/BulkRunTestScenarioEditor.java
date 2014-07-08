@@ -23,12 +23,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.widgets.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-import org.uberfire.backend.vfs.Path;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.uberfire.backend.vfs.Path;
 
 public class BulkRunTestScenarioEditor
         implements IsWidget,

@@ -17,6 +17,7 @@
   <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
   <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetAPI"/>
   <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetClient"/>
+  <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>
 
   <!--Common Screens -->
   <inherits name="org.kie.workbench.common.screens.home.KieWorkbenchHomeClient"/>
@@ -55,7 +56,6 @@
   <inherits name="org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projectimportsscreen.KieWorkbenchCommonProjectImportsScreenClient"/>
-  <inherits name="org.kie.workbench.common.screens.messageconsole.KieWorkbenchMessageConsoleClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>

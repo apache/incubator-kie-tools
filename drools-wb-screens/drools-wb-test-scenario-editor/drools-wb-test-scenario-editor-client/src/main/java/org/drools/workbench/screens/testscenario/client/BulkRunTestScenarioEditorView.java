@@ -20,17 +20,18 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Dependency;
-import org.kie.workbench.common.widgets.client.widget.HasBusyIndicator;
-
+import org.kie.uberfire.client.common.HasBusyIndicator;
 
 public interface BulkRunTestScenarioEditorView extends HasBusyIndicator,
-                                            IsWidget {
+                                                       IsWidget {
+
     interface Presenter {
+
         void onRunAllButton();
     }
-    
-    void setPresenter(Presenter presenter);
-    
+
+    void setPresenter( Presenter presenter );
+
     String getTitleWidget();
 
     void setTitleText( String titleText );
