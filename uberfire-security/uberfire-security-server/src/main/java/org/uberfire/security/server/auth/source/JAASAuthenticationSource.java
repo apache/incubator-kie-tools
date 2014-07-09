@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -22,8 +23,10 @@ import org.uberfire.security.auth.AuthenticationSource;
 import org.uberfire.security.auth.Credential;
 import org.uberfire.security.auth.Principal;
 import org.uberfire.security.auth.RoleProvider;
+import org.uberfire.security.auth.RolesMode;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.impl.auth.UsernamePasswordCredential;
+import org.uberfire.security.server.auth.source.adapter.RolesAdapter;
 
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.security.server.SecurityConstants.*;
@@ -37,22 +40,30 @@ public class JAASAuthenticationSource implements AuthenticationSource,
 
     private String domain = "ApplicationRealm";
 
+    private RolesMode mode = RolesMode.ROLE;
+
+    private ServiceLoader<RolesAdapter> rolesAdapterServiceLoader = ServiceLoader.load( RolesAdapter.class );
+
     @Override
-    public void initialize( Map<String, ?> options ) {
+    public void initialize( final Map<String, ?> options ) {
         if ( options.containsKey( AUTH_DOMAIN_KEY ) ) {
             domain = (String) options.get( AUTH_DOMAIN_KEY );
         }
         if ( options.containsKey( ROLES_IN_CONTEXT_KEY ) ) {
             rolePrincipleName = (String) options.get( ROLES_IN_CONTEXT_KEY );
         }
+        try {
+            if ( options.containsKey( ROLE_MODE_KEY ) ) {
+                mode = RolesMode.valueOf( (String) options.get( ROLE_MODE_KEY ) );
+            }
+        } catch ( final Exception ignore ) {
+            mode = RolesMode.GROUP;
+        }
     }
 
     @Override
     public boolean supportsCredential( final Credential credential ) {
-        if ( credential == null ) {
-            return false;
-        }
-        return credential instanceof UsernamePasswordCredential;
+        return credential != null && credential instanceof UsernamePasswordCredential;
     }
 
     @Override
@@ -66,35 +77,38 @@ public class JAASAuthenticationSource implements AuthenticationSource,
             subjects.set( loginContext.getSubject() );
 
             return true;
-        } catch ( final Exception ex ) {
+        } catch ( final Exception ignored ) {
         }
 
         return false;
     }
 
     @Override
-    public List<Role> loadRoles( final Principal principal ) {
-        List<Role> roles = null;
+    public List<Role> loadRoles( final Principal principal,
+                                 final SecurityContext securityContext ) {
+        final List<Role> roles = new ArrayList<Role>();
         try {
-            Subject subject = subjects.get();
+            final Subject subject = subjects.get();
 
             if ( subject != null ) {
-                Set<java.security.Principal> principals = subject.getPrincipals();
+                final Set<java.security.Principal> principals = subject.getPrincipals();
 
                 if ( principals != null ) {
-                    roles = new ArrayList<Role>();
                     for ( java.security.Principal p : principals ) {
                         if ( p instanceof Group && rolePrincipleName.equalsIgnoreCase( p.getName() ) ) {
-                            Enumeration<? extends java.security.Principal> groups = ( (Group) p ).members();
-
+                            final Enumeration<? extends java.security.Principal> groups = ( (Group) p ).members();
                             while ( groups.hasMoreElements() ) {
                                 final java.security.Principal groupPrincipal = groups.nextElement();
                                 roles.add( new RoleImpl( groupPrincipal.getName() ) );
                             }
                             break;
-
                         }
+                    }
+                }
 
+                if ( rolesAdapterServiceLoader != null && rolesAdapterServiceLoader.iterator().hasNext() ) {
+                    for ( final RolesAdapter rolesAdapter : rolesAdapterServiceLoader ) {
+                        rolesAdapter.getRoles( principal, securityContext, mode );
                     }
                 }
             }
@@ -125,7 +139,7 @@ public class JAASAuthenticationSource implements AuthenticationSource,
                     try {
                         final Method method = callback.getClass().getMethod( "setObject", Object.class );
                         method.invoke( callback, credential.getPassword().toString() );
-                    } catch ( Exception e ) {
+                    } catch ( final Exception ignored ) {
                     }
                 }
             }

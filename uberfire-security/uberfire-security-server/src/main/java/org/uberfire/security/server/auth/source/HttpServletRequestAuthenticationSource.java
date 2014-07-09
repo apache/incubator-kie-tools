@@ -1,7 +1,6 @@
 package org.uberfire.security.server.auth.source;
 
 import javax.security.auth.Subject;
-import javax.security.jacc.PolicyContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,15 +23,16 @@ public class HttpServletRequestAuthenticationSource extends JACCAuthenticationSo
     }
 
     @Override
-    public boolean authenticate( final Credential credential, final SecurityContext securityContext ) {
+    public boolean authenticate( final Credential credential,
+                                 final SecurityContext securityContext ) {
         try {
             final UserNameCredential userNameCredential = checkInstanceOf( "credential", credential, UserNameCredential.class );
-            final HttpServletRequest request = ((HttpSecurityContext) securityContext).getRequest();
+            final HttpServletRequest request = ( (HttpSecurityContext) securityContext ).getRequest();
 
-            if (request.getUserPrincipal() != null) {
+            if ( request.getUserPrincipal() != null ) {
                 return true;
             }
-            Subject subject =  getSubjectFromContainer();
+            Subject subject = getSubjectFromContainer();
             if ( subject != null ) {
                 return super.authenticate( credential, securityContext );
             }
@@ -41,9 +41,9 @@ public class HttpServletRequestAuthenticationSource extends JACCAuthenticationSo
 
                 try {
                     request.login( userNameCredential.getUserName(), ( (UsernamePasswordCredential) userNameCredential ).getPassword().toString() );
-		    if (subject == null) {
-			return true;
-		    }
+                    if ( subject == null ) {
+                        return true;
+                    }
                 } catch ( final ServletException ex ) {
                     return false;
                 }
@@ -53,6 +53,5 @@ public class HttpServletRequestAuthenticationSource extends JACCAuthenticationSo
             return false;
         }
     }
-
 
 }

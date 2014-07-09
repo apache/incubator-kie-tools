@@ -1,9 +1,9 @@
 package org.uberfire.security.server.auth.impl;
 
 import java.util.HashMap;
-
 import javax.enterprise.inject.Alternative;
 
+import org.uberfire.security.auth.RolesMode;
 import org.uberfire.security.auth.SubjectPropertiesProvider;
 import org.uberfire.security.server.auth.BasicUserPassAuthenticationScheme;
 import org.uberfire.security.server.auth.source.JAASAuthenticationSource;
@@ -18,11 +18,17 @@ public class JAASAuthenticationManager extends SimpleUserPassAuthenticationManag
     }
 
     public JAASAuthenticationManager( final String realm ) {
-        this( null, realm );
+        this( null, realm, null );
+    }
+
+    public JAASAuthenticationManager( final String realm,
+                                      final RolesMode mode ) {
+        this( null, realm, mode );
     }
 
     public JAASAuthenticationManager( final SubjectPropertiesProvider propertiesProvider,
-                                      final String realm ) {
+                                      final String realm,
+                                      final RolesMode mode ) {
         super( new JAASAuthenticationSource(),
                new BasicUserPassAuthenticationScheme(),
                null,
@@ -30,6 +36,9 @@ public class JAASAuthenticationManager extends SimpleUserPassAuthenticationManag
                new HashMap<String, String>() {{
                    if ( realm != null ) {
                        put( AUTH_DOMAIN_KEY, realm );
+                   }
+                   if ( mode != null ) {
+                       put( ROLE_MODE_KEY, mode.toString() );
                    }
                }} );
     }

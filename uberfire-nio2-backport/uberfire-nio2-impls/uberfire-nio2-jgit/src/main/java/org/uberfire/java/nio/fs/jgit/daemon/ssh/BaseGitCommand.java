@@ -99,7 +99,7 @@ public abstract class BaseGitCommand implements Command,
     }
 
     public void start( final Environment env ) throws IOException {
-        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Git Command [" + getClass().getName() + "]";

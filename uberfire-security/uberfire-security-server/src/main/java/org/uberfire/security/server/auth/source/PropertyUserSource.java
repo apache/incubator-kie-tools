@@ -102,7 +102,8 @@ public class PropertyUserSource implements AuthenticationSource,
     }
 
     @Override
-    public boolean authenticate( final Credential credential, final SecurityContext securityContext ) {
+    public boolean authenticate( final Credential credential,
+                                 final SecurityContext securityContext ) {
         final UsernamePasswordCredential usernamePasswd = checkInstanceOf( "credential", credential, UsernamePasswordCredential.class );
 
         final Object pass = credentials.get( usernamePasswd.getUserName() );
@@ -113,7 +114,8 @@ public class PropertyUserSource implements AuthenticationSource,
     }
 
     @Override
-    public List<Role> loadRoles( final Principal principal ) {
+    public List<Role> loadRoles( final Principal principal,
+                                 final SecurityContext securityContext ) {
         return roles.get( principal.getName() );
     }
 }

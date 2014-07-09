@@ -20,11 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.uberfire.security.Role;
+import org.uberfire.security.SecurityContext;
 
 public interface RoleProvider {
 
-    void initialize(final Map<String, ?> options);
+    void initialize( final Map<String, ?> options );
 
-    List<Role> loadRoles(final Principal principal);
+    List<Role> loadRoles( final Principal principal,
+                          final SecurityContext securityContext );
 
 }

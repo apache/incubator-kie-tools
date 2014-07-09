@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.inject.Alternative;
 
 import org.uberfire.security.Role;
@@ -29,16 +28,27 @@ import static org.uberfire.security.auth.AuthenticationStatus.*;
 @Alternative
 public class SimpleUserPassAuthenticationManager implements AuthenticationManager {
 
-    private final AuthenticationScheme scheme;
-    private final RoleProvider roleProvider;
-    private final SubjectPropertiesProvider propertiesProvider;
-    private final DefaultAuthenticationProvider authProvider;
+    private AuthenticationScheme scheme;
+    private RoleProvider roleProvider;
+    private SubjectPropertiesProvider propertiesProvider;
+    private DefaultAuthenticationProvider authProvider;
+
+    public SimpleUserPassAuthenticationManager() {
+    }
 
     public SimpleUserPassAuthenticationManager( final AuthenticationSource source,
                                                 final AuthenticationScheme scheme,
                                                 final RoleProvider roleProvider,
                                                 final SubjectPropertiesProvider propertiesProvider,
                                                 final Map<String, String> options ) {
+        setup( source, scheme, roleProvider, propertiesProvider, options );
+    }
+
+    public void setup( final AuthenticationSource source,
+                       final AuthenticationScheme scheme,
+                       final RoleProvider roleProvider,
+                       final SubjectPropertiesProvider propertiesProvider,
+                       final Map<String, String> options ) {
         this.scheme = scheme;
         if ( roleProvider != null ) {
             this.roleProvider = roleProvider;
@@ -80,7 +90,7 @@ public class SimpleUserPassAuthenticationManager implements AuthenticationManage
         final List<Role> roles = new ArrayList<Role>();
 
         if ( roleProvider != null ) {
-            roles.addAll( roleProvider.loadRoles( principal ) );
+            roles.addAll( roleProvider.loadRoles( principal, context ) );
         }
 
         final Map<String, String> properties = new HashMap<String, String>() {{
