@@ -18,8 +18,8 @@ package org.kie.workbench.common.widgets.client.widget;
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 /**
  * A TextBox to handle numeric BigDecimal values
