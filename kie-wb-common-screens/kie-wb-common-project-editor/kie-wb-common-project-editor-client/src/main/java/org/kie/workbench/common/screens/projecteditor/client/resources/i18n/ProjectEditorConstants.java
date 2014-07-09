@@ -256,4 +256,6 @@ public interface ProjectEditorConstants
 
     String EnterAVersion();
 
+    String ExceptionPackageAlreadyExists0( final String packageName );
+
 }

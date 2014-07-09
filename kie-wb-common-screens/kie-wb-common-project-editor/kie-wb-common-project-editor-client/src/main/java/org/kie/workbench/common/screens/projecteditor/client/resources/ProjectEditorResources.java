@@ -28,7 +28,7 @@ public interface ProjectEditorResources
 
     public ProjectEditorResources INSTANCE = GWT.create(ProjectEditorResources.class);
 
-    ProjectEditorConstants CONSTANTS = GWT.create(ProjectEditorConstants.class);
+    public ProjectEditorConstants CONSTANTS = GWT.create(ProjectEditorConstants.class);
 
     @Source("css/ProjectEditor.css")
     public ProjectEditorCss mainCss();
