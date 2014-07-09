@@ -1,13 +1,14 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.client.workbench.PanelManager;
 
-import static org.junit.Assert.*;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SimpleWorkbenchPanelPresenterTest {
@@ -22,7 +23,7 @@ public class SimpleWorkbenchPanelPresenterTest {
     @Before
     public void setup() {
         view = new SimpleWorkbenchPanelView();
-        presenter = new SimpleWorkbenchPanelPresenter( view, panelManager, null,null);
+        presenter = new SimpleWorkbenchPanelPresenter( view, panelManager, null );
     }
 
     @Test

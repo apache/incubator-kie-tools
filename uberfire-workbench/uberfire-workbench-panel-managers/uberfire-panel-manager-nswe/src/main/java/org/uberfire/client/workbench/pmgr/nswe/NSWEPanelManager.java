@@ -68,17 +68,14 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
             case WEST:
             case CENTER:
 
-                if ( !childPanel.isMinimized() ) {
+                final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
+                mapPanelDefinitionToPresenter.put( childPanel,
+                                                   childPanelPresenter );
 
-                    final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
-                    mapPanelDefinitionToPresenter.put( childPanel,
-                                                       childPanelPresenter );
-
-                    // TODO (hbraun): why no remove callback before the addPanel invocation?
-                    targetPanelPresenter.addPanel( childPanel,
-                                                   childPanelPresenter.getPanelView(),
-                                                   position );
-                }
+                // TODO (hbraun): why no remove callback before the addPanel invocation?
+                targetPanelPresenter.addPanel( childPanel,
+                                               childPanelPresenter.getPanelView(),
+                                               position );
                 newPanel = childPanel;
                 break;
 

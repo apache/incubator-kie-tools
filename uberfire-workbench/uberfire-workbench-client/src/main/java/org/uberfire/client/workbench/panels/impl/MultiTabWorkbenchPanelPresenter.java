@@ -23,7 +23,6 @@ import javax.inject.Named;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 
 @Dependent
@@ -33,9 +32,8 @@ public class MultiTabWorkbenchPanelPresenter extends AbstractMultiPartWorkbenchP
     public MultiTabWorkbenchPanelPresenter( @Named("MultiTabWorkbenchPanelView") final WorkbenchPanelView<MultiTabWorkbenchPanelPresenter> view,
                                             final ActivityManager activityManager,
                                             final PanelManager panelManager,
-                                            final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                            final Event<MinimizePlaceEvent> minimizePanelEvent ) {
-        super( view, activityManager, panelManager, maximizePanelEvent, minimizePanelEvent );
+                                            final Event<MaximizePlaceEvent> maximizePanelEvent ) {
+        super( view, activityManager, panelManager, maximizePanelEvent );
     }
 
     @Override

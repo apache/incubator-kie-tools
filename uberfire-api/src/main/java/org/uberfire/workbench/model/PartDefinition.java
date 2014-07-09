@@ -32,20 +32,6 @@ public interface PartDefinition {
     PanelDefinition getParentPanel();
     void setParentPanel( final PanelDefinition parentPanel );
 
-    void setMinimized( final boolean isMinimized );
-
-    /**
-     * Has the Part been collapsed to a minimal size.
-     * @return true If minimized
-     */
-    boolean isMinimized();
-
-    /**
-     * Has the Part been expanded to a maximum size.
-     * @return true If maximized
-     */
-    boolean isMaximized();
-
     void setContextDefinition( final ContextDefinition contextDefinition );
 
     ContextDefinition getContextDefinition();

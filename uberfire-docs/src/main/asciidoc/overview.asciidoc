@@ -872,9 +872,6 @@ Part of the drag and drop support. Signals a Part has been dragged to and droppe
 ** MaximizePlaceEvent
 +
 Signals a Part has been "maximized" to consume the whole Workbench client region (Note: Work in progress). Raised by Uberfire.
-** MinimizePlaceEvent
-+
-Signals a Part has been "minimized" to a status bar within the Workbench (Note: Work in progress). Raised by Uberfire.
 ** NewPerspectiveEvent
 +
 Signal that a new `Perspective` was registered during runtime. Raised by Uberfire (related to `uberfire-js` module).
@@ -899,9 +896,6 @@ Signal an Editor can have it's state saved. Raised by developers using Uberfire 
 ** SelectPlaceEvent
 +
 Signal a Place has been selected. Raised by Uberfire.
-** RestorePlaceEvent
-+
-Signal a Place has been restored from "minimized" state (Note: Work in progress). Raised by Uberfire.
 
 
 UberFire Security Concepts
@@ -916,16 +910,7 @@ and they are all available to both client- and server-side code.
 ** `@Deny`
 ** `@Roles({})`
 * Authenticated Storage
-* Authentication Manager
-* Authentication Provider
-* Authentication Result
-* Authentication Scheme
-* Authentication Source
-* Authentication Status
-* Credential
-* Principal
 * Role
-* Subject Properties
 * Authorization Manager
 * Decision Managers:
 ** Resource Decision Manager
@@ -934,31 +919,14 @@ and they are all available to both client- and server-side code.
 * Runtime Resource
 * Voting Strategy
 * Crypt Provider
-* Identity
 * Resource
 * Resource Manager
 * Security Context
 * Security Manager
-* Subject
 
 There is an `uberfire-security-client` module, but it's just
 "plumbing:" it doesn't expose any concepts that are used directly in
 application code.
-
-These concepts are expressed in the `uberfire-security-server`
-package, which contains a variety of server-side implementations of
-the UberFire Security API types:
-
-* Authentication Managers: HTTP (servlets)
-* Authentication Schemes: Form, HttpBasic, JACC, "Remember Me" Cookie
-* Authenticated Storage: Cookie Storage, Http Session Storage
-* Authentication Providers: Default, "Remember Me" Cookie
-* Authentication Sources: Database (JDBC), JACC, users.properties file
-* Security Interceptors: Role-based, Trait-based
-* Crypt Providers: Default
-* Security Contexts: HTTP (servlets)
-* Security Managers: HTTP (servlets)
-* Voting Strategies: Affirmative, Consensus, Unanimous
 
 Plus some new concepts:
 

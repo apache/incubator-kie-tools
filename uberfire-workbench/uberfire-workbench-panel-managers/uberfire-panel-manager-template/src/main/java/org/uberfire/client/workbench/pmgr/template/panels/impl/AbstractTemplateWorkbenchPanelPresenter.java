@@ -19,7 +19,6 @@ import javax.enterprise.event.Event;
 
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.pmgr.template.TemplatePanelDefinitionImpl;
@@ -35,9 +34,8 @@ public abstract class AbstractTemplateWorkbenchPanelPresenter<P extends Abstract
 
     protected AbstractTemplateWorkbenchPanelPresenter( final BaseWorkbenchTemplatePanelView<P> view,
                                                        final PanelManager panelManager,
-                                                       final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                                       final Event<MinimizePlaceEvent> minimizePanelEvent ) {
-        super( view, panelManager, maximizePanelEvent, minimizePanelEvent );
+                                                       final Event<MaximizePlaceEvent> maximizePanelEvent ) {
+        super( view, panelManager, maximizePanelEvent );
     }
 
 

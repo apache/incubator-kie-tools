@@ -13,7 +13,6 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
@@ -41,7 +40,6 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenterTest {
     @Mock protected ActivityManager mockActivityManager;
     @Mock protected PanelManager mockPanelManager;
     @Mock protected Event<MaximizePlaceEvent> maximizePanelEvent;
-    @Mock protected Event<MinimizePlaceEvent> minimizePanelEvent;
     @Mock protected View mockPartView;
     @Mock protected WorkbenchPartPresenter mockPartPresenter;
     @Mock protected ContextActivity perspectiveContextActivity;

@@ -20,7 +20,7 @@ public class TemplateWorkbenchPanelPresenterTest {
         when( view.asWidget() ).thenReturn( widget );
         PanelManager panelManager = mock( PanelManager.class );
 
-        TemplateWorkbenchPanelPresenter template = new TemplateWorkbenchPanelPresenter( view, panelManager, null, null );
+        TemplateWorkbenchPanelPresenter template = new TemplateWorkbenchPanelPresenter( view, panelManager, null );
         TemplatePanelDefinitionImpl panel = mock( TemplatePanelDefinitionImpl.class );
         template.addPanel( panel, view, null );
         verify( panel ).setPerspective( widget );

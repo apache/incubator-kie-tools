@@ -15,24 +15,22 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
-import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.events.MinimizePlaceEvent;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 
 @Dependent
 public class LayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<LayoutPanelPresenter> {
 
     @Inject
     public LayoutPanelPresenter(@Named("LayoutPanelView") final LayoutPanelView view,
-                                              final PanelManager panelManager,
-                                              final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                              final Event<MinimizePlaceEvent> minimizePanelEvent) {
-        super( view, panelManager, maximizePanelEvent, minimizePanelEvent );
+                                final PanelManager panelManager,
+                                final Event<MaximizePlaceEvent> maximizePanelEvent ) {
+        super( view, panelManager, maximizePanelEvent );
     }
 
     @Override

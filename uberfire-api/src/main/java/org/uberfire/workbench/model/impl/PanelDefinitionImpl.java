@@ -270,19 +270,6 @@ PanelDefinition {
     }
 
     @Override
-    public boolean isMinimized() {
-        if ( getParts().size() == 0 ) {
-            return false;
-        }
-        for ( PartDefinition part : getParts() ) {
-            if ( !part.isMinimized() ) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public boolean isMaximized() {
         return false;
     }

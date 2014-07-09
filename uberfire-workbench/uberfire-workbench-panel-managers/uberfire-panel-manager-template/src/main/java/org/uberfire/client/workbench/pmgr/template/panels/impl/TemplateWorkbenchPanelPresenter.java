@@ -9,7 +9,6 @@ import javax.inject.Named;
 
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 
 @Dependent
 public class TemplateWorkbenchPanelPresenter extends AbstractTemplateWorkbenchPanelPresenter<TemplateWorkbenchPanelPresenter> {
@@ -17,9 +16,8 @@ public class TemplateWorkbenchPanelPresenter extends AbstractTemplateWorkbenchPa
     @Inject
     public TemplateWorkbenchPanelPresenter( @Named("TemplateWorkbenchPanelView") final TemplateWorkbenchPanelView view,
                                             final PanelManager panelManager,
-                                            final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                            final Event<MinimizePlaceEvent> minimizePanelEvent ) {
-        super( view, panelManager, maximizePanelEvent, minimizePanelEvent );
+                                            final Event<MaximizePlaceEvent> maximizePanelEvent ) {
+        super( view, panelManager, maximizePanelEvent );
     }
 
     @Override

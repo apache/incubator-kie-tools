@@ -15,15 +15,12 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.events.DropPlaceEvent;
-import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 import org.uberfire.client.workbench.events.PanelFocusEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.RestorePlaceEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -53,9 +50,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Inject
     protected Event<SelectPlaceEvent> selectPlaceEvent;
-
-    @Inject
-    protected WorkbenchStatusBarPresenter statusBar;
 
     @Inject
     protected SyncBeanManager iocManager;
@@ -144,11 +138,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
             mapPartDefinitionToPresenter.put( part, partPresenter );
         }
 
-        if ( part.isMinimized() ) {
-            statusBar.addMinimizedPlace( part.getPlace() );
-        } else {
-            panelPresenter.addPart( partPresenter.getPartView(), contextId );
-        }
+        panelPresenter.addPart( partPresenter.getPartView(), contextId );
 
         //The model for a Perspective is already fully populated. Don't go adding duplicates.
         if ( !panel.getParts().contains( part ) ) {
@@ -251,109 +241,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         if ( part != null ) {
             removePart( part );
         }
-    }
-
-    @SuppressWarnings("unused")
-    private void onMinimizePlaceEvent( @Observes MinimizePlaceEvent event ) {
-        final PlaceRequest placeToMinimize = event.getPlace();
-        final PartDefinition partToMinimize = getPartForPlace( placeToMinimize );
-
-        WorkbenchPanelPresenter presenterToMinimize = null;
-
-        for ( Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet() ) {
-            final PanelDefinition definition = e.getKey();
-            final WorkbenchPanelPresenter presenter = e.getValue();
-            if ( presenter.getDefinition().getParts().contains( partToMinimize ) ) {
-                partToMinimize.setMinimized( true );
-                presenter.removePart( partToMinimize );
-                if ( presenter.getDefinition().isMinimized() ) {
-                    presenterToMinimize = presenter;
-                }
-                break;
-            }
-        }
-        if ( presenterToMinimize != null ) {
-            presenterToMinimize.removePanel();
-            getBeanFactory().destroy( presenterToMinimize );
-            mapPanelDefinitionToPresenter.remove( presenterToMinimize.getDefinition() );
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void onRestorePlaceEvent( @Observes RestorePlaceEvent event ) {
-        final PlaceRequest place = event.getPlace();
-        final PartDefinition partToRestore = getPartForPlace( place );
-        final PanelDefinition panelToRestore = partToRestore.getParentPanel();
-
-        final Integer height = panelToRestore.getHeight();
-        final Integer width = panelToRestore.getWidth();
-        final Integer minHeight = panelToRestore.getMinHeight();
-        final Integer minWidth = panelToRestore.getMinWidth();
-
-        partToRestore.setMinimized( false );
-
-        //Restore containing panel
-        if ( !mapPanelDefinitionToPresenter.containsKey( panelToRestore ) ) {
-            //TODO {manstis} Position needs to be looked up from model - will need "outer" panel feature :(
-            PanelDefinition targetPanel = findTargetPanel( panelToRestore,
-                                                           rootPanelDef );
-            if ( targetPanel == null ) {
-                targetPanel = rootPanelDef;
-            }
-            addWorkbenchPanel( targetPanel,
-                               panelToRestore,
-                               panelToRestore.getPosition() );
-        }
-
-        //Restore part
-        final WorkbenchPartPresenter presenter = mapPartDefinitionToPresenter.get( partToRestore );
-        addWorkbenchPart( partToRestore.getPlace(),
-                          partToRestore,
-                          panelToRestore,
-                          presenter.getMenus(),
-                          new UIPart( presenter.getTitle(), presenter.getTitleDecoration(), presenter.getPartView() ) );
-    }
-
-    private PanelDefinition findTargetPanel( final PanelDefinition panelToFind,
-                                             final PanelDefinition panelToSearch ) {
-        final PanelDefinition northChild = panelToSearch.getChild( CompassPosition.NORTH );
-        final PanelDefinition southChild = panelToSearch.getChild( CompassPosition.SOUTH );
-        final PanelDefinition eastChild = panelToSearch.getChild( CompassPosition.EAST );
-        final PanelDefinition westChild = panelToSearch.getChild( CompassPosition.WEST );
-        PanelDefinition targetPanel = null;
-        if ( northChild != null ) {
-            if ( northChild.equals( panelToFind ) ) {
-                return panelToSearch;
-            } else {
-                targetPanel = findTargetPanel( panelToFind,
-                                               northChild );
-            }
-        }
-        if ( southChild != null ) {
-            if ( southChild.equals( panelToFind ) ) {
-                return panelToSearch;
-            } else {
-                targetPanel = findTargetPanel( panelToFind,
-                                               southChild );
-            }
-        }
-        if ( eastChild != null ) {
-            if ( eastChild.equals( panelToFind ) ) {
-                return panelToSearch;
-            } else {
-                targetPanel = findTargetPanel( panelToFind,
-                                               eastChild );
-            }
-        }
-        if ( westChild != null ) {
-            if ( westChild.equals( panelToFind ) ) {
-                return panelToSearch;
-            } else {
-                targetPanel = findTargetPanel( panelToFind,
-                                               westChild );
-            }
-        }
-        return targetPanel;
     }
 
     /**

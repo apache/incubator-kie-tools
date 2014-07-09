@@ -20,7 +20,6 @@ import javax.enterprise.event.Event;
 
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.events.MinimizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -42,16 +41,13 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     protected final PanelManager panelManager;
     private PanelDefinition definition;
     private final Event<MaximizePlaceEvent> maximizePanelEvent;
-    private final Event<MinimizePlaceEvent> minimizePanelEvent;
 
     public AbstractWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
                                             final PanelManager panelManager,
-                                            final Event<MaximizePlaceEvent> maximizePanelEvent,
-                                            final Event<MinimizePlaceEvent> minimizePanelEvent ) {
+                                            final Event<MaximizePlaceEvent> maximizePanelEvent ) {
         this.view = view;
         this.panelManager = panelManager;
         this.maximizePanelEvent = maximizePanelEvent;
-        this.minimizePanelEvent = minimizePanelEvent;
     }
 
     /**
@@ -161,15 +157,6 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
         if ( !getDefinition().isRoot() ) {
             for ( final PartDefinition part : getDefinition().getParts() ) {
                 maximizePanelEvent.fire( new MaximizePlaceEvent( part.getPlace() ) );
-            }
-        }
-    }
-
-    @Override
-    public void minimize() {
-        if ( !getDefinition().isRoot() ) {
-            for ( final PartDefinition part : getDefinition().getParts() ) {
-                minimizePanelEvent.fire( new MinimizePlaceEvent( part.getPlace() ) );
             }
         }
     }

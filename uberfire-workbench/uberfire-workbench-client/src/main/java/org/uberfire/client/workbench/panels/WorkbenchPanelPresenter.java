@@ -67,8 +67,6 @@ public interface WorkbenchPanelPresenter {
 
     public void maximize();
 
-    public void minimize();
-
     public WorkbenchPanelView getPanelView();
 
     public void onResize( final int width,

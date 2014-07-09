@@ -23,7 +23,6 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.statusbar.WorkbenchStatusBarPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
@@ -52,7 +51,6 @@ public class AbstractPanelManagerTest {
     @Mock StubPlaceLostFocusEvent placeLostFocusEvent;
     @Mock StubSelectPlaceEvent selectPlaceEvent;
     @Mock StubPanelFocusEvent panelFocusEvent;
-    @Mock WorkbenchStatusBarPresenter statusBar;
     @Mock SimpleWorkbenchPanelPresenter workbenchPanelPresenter;
     @Mock(answer=Answers.RETURNS_DEEP_STUBS) LayoutSelection layoutSelection;
 
@@ -145,33 +143,6 @@ public class AbstractPanelManagerTest {
 
         // there should still only be 1 part
         assertEquals( 1, testPerspectiveDef.getRoot().getParts().size() );
-
-        // the panel manager should be aware of the place/part mapping for the added part
-        assertEquals( rootPart, panelManager.getPartForPlace( rootPartPlace ) );
-
-        // the panel manager should select the place, firing a general notification
-        verify( selectPlaceEvent ).fire( refEq( new SelectPlaceEvent( rootPartPlace ) ) );
-    }
-
-    @Test
-    public void addMinimizedPartToRootPanelShouldWork() throws Exception {
-        PlaceRequest rootPartPlace = new DefaultPlaceRequest( "rootPartPlace" );
-        PartDefinition rootPart = new PartDefinitionImpl( rootPartPlace );
-        rootPart.setMinimized( true );
-        Menus rootPartMenus = MenuFactory.newContributedMenu( "RootPartMenu" ).endMenu().build();
-        UIPart rootUiPart = new UIPart( "RootUiPart", null, mock(IsWidget.class) );
-        panelManager.addWorkbenchPart( rootPartPlace, rootPart, panelManager.getRoot(), rootPartMenus, rootUiPart, "rootContextId" );
-
-        // the presenter should have been created and configured for the rootPart
-        verify( partPresenter ).setWrappedWidget( rootUiPart.getWidget() );
-        verify( partPresenter ).setContextId( "rootContextId" );
-
-        // minimized parts do not belong to the target panel when minimized, but they do go to the status bar
-        verify( testPerspectiveRootPanelPresenter, never() ).addPart( partPresenter.getPartView(), "rootContextId" );
-        verify( statusBar ).addMinimizedPlace( rootPartPlace );
-
-        // even so, it should have been added to the root panel's definition
-        assertEquals( rootPart, testPerspectiveDef.getRoot().getParts().iterator().next() );
 
         // the panel manager should be aware of the place/part mapping for the added part
         assertEquals( rootPart, panelManager.getPartForPlace( rootPartPlace ) );

@@ -15,7 +15,7 @@
  */
 package org.uberfire.workbench.model.impl;
 
-import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
+import static org.uberfire.workbench.model.ContextDisplayMode.*;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.mvp.PlaceRequest;
@@ -29,14 +29,13 @@ import org.uberfire.workbench.model.PartDefinition;
  */
 @Portable
 public class PartDefinitionImpl
-        implements
-        PartDefinition {
+implements
+PartDefinition {
 
     private PlaceRequest place;
 
     private PanelDefinition parentPanel;
 
-    private boolean isMinimized = false;
     private ContextDefinition contextDefinition;
     private ContextDisplayMode contextDisplayMode = SHOW;
 
@@ -77,21 +76,6 @@ public class PartDefinitionImpl
     @Override
     public void setParentPanel( final PanelDefinition parentPanel ) {
         this.parentPanel = parentPanel;
-    }
-
-    @Override
-    public void setMinimized( final boolean isMinimized ) {
-        this.isMinimized = isMinimized;
-    }
-
-    @Override
-    public boolean isMinimized() {
-        return this.isMinimized;
-    }
-
-    @Override
-    public boolean isMaximized() {
-        return false;
     }
 
     @Override
@@ -139,7 +123,7 @@ public class PartDefinitionImpl
 
     @Override
     public String toString() {
-      return "PartDefinitionImpl [place=" + place + "]";
+        return "PartDefinitionImpl [place=" + place + "]";
     }
 
 }
