@@ -21,10 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnShutdown;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
@@ -40,26 +36,6 @@ public class SimplePerspective {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_TAB );
         p.setName( "Simple Perspective" );
         return p;
-    }
-
-    @OnStartup
-    public void onStartup() {
-        new Exception("SimplePerspective is starting!").printStackTrace();
-    }
-
-    @OnOpen
-    public void onOpen() {
-        new Exception("SimplePerspective is opening!").printStackTrace();
-    }
-
-    @OnClose
-    public void onClose() {
-        new Exception("SimplePerspective is opening!").printStackTrace();
-    }
-
-    @OnShutdown
-    public void onShutdown() {
-        new Exception("SimplePerspective is shutting down!").printStackTrace();
     }
 
 }
