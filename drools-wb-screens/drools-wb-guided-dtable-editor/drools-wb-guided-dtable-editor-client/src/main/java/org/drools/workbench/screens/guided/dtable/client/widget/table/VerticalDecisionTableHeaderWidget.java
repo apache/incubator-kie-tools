@@ -75,7 +75,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.SetInternalDecisionTableModelEvent;
-import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractDecoratedGridHeaderWidget;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DynamicColumn;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;

@@ -49,10 +49,6 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DefaultValueDropDownManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
-import org.guvnor.common.services.shared.config.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
 import org.kie.uberfire.client.common.NumericBigDecimalTextBox;
 import org.kie.uberfire.client.common.NumericBigIntegerTextBox;
@@ -63,6 +59,10 @@ import org.kie.uberfire.client.common.NumericIntegerTextBox;
 import org.kie.uberfire.client.common.NumericLongTextBox;
 import org.kie.uberfire.client.common.NumericShortTextBox;
 import org.kie.uberfire.client.common.NumericTextBox;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
+import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 
 /**
  * A Factory for Widgets to edit DTCellValues

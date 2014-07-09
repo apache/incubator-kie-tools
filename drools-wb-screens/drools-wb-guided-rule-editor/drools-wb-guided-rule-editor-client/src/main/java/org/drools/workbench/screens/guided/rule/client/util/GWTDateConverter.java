@@ -19,7 +19,7 @@ import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.models.datamodel.oracle.DateConverter;
-import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 /**
  * Convenience class to handle date conversion when running under GWT.

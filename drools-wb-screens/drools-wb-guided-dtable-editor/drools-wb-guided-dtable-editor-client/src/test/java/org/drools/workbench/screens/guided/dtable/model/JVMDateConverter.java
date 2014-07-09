@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.drools.workbench.models.datamodel.oracle.DateConverter;
-import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 /**
  * Convenience class to handle date conversion in a normal JVM (i.e. not running

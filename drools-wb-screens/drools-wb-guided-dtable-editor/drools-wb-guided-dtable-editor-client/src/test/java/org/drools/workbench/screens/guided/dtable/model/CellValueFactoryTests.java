@@ -37,11 +37,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DecisionTableCellValueFactory;
-import org.guvnor.common.services.shared.config.ApplicationPreferences;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;

@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.auditlog;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
-import org.guvnor.common.services.shared.config.ApplicationPreferences;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 /**
  * A column for the Audit Log summary
