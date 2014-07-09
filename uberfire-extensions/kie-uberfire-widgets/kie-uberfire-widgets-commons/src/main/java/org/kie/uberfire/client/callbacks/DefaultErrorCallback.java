@@ -15,7 +15,6 @@
  */
 package org.kie.uberfire.client.callbacks;
 
-import org.guvnor.common.services.project.service.PackageAlreadyExistsException;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
@@ -47,9 +46,6 @@ public class DefaultErrorCallback implements ErrorCallback<Message> {
 
         } catch ( org.uberfire.java.nio.file.FileAlreadyExistsException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionFileAlreadyExists0( e.getFile() ) );
-
-        } catch ( PackageAlreadyExistsException e ) {
-            ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionPackageAlreadyExists0( e.getFile() ) );
 
         } catch ( org.uberfire.java.nio.file.FileSystemAlreadyExistsException e ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.ExceptionGeneric0( e.getMessage() ) );

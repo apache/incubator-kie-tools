@@ -85,8 +85,6 @@ public interface CommonConstants
 
     String ExceptionFileAlreadyExists0( final String uri );
 
-    String ExceptionPackageAlreadyExists0( final String packageName );
-
     String ExceptionNoSuchFile0( final String uri );
 
     String ExceptionSecurity0( final String uri );

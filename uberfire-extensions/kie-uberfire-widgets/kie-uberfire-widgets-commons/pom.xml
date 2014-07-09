@@ -34,13 +34,13 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
+      <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
 
     <dependency>
@@ -52,6 +52,12 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
+    </dependency>
+
+    <!-- Errai Core -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
     </dependency>
 
     <dependency>
