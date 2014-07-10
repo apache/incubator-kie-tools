@@ -20,7 +20,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 
 @Dependent
@@ -28,9 +28,9 @@ public class SimpleWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresent
 
     @Inject
     public SimpleWorkbenchPanelPresenter( @Named("SimpleWorkbenchPanelView") final SimpleWorkbenchPanelView view,
-                                          final PanelManager panelManager,
+                                          final PerspectiveManager perspectiveManager,
                                           final Event<MaximizePlaceEvent> maximizePanelEvent ) {
-        super( view, panelManager, maximizePanelEvent );
+        super( view, perspectiveManager, maximizePanelEvent );
     }
 
     @Override

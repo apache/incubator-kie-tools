@@ -1,12 +1,14 @@
 package org.uberfire.client.workbench.widgets.tab;
 
 import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -74,6 +76,8 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     final Map<PartDefinition, TabLink> partTabIndex = new HashMap<PartDefinition, TabLink>();
     private boolean hasFocus = false;
     private Command addOnFocusHandler;
+
+    private final PanelManager panelManager;
 
     @Override
     public void clear() {
@@ -170,7 +174,8 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
         return addHandler( handler, SelectionEvent.getType() );
     }
 
-    public UberTabPanel() {
+    public UberTabPanel( PanelManager panelManager ) {
+        this.panelManager = checkNotNull( "panelManager", panelManager );
         tabPanel = new ResizeTabPanel( ABOVE );
         tabPanel.addShownHandler( new ShownEvent.Handler() {
             @Override
@@ -504,7 +509,7 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
                 @Override
                 public void onClick( final ClickEvent event ) {
                     final WorkbenchPartPresenter.View partToDeselect = tabInvertedIndex.get( tab.asTabLink() );
-                    presenter.closePart( partToDeselect.getPresenter().getDefinition() );
+                    panelManager.closePart( partToDeselect.getPresenter().getDefinition() );
                 }
             } );
         }};

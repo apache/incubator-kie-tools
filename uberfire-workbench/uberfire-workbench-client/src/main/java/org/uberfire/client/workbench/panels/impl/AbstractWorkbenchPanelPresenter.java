@@ -18,7 +18,7 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 
-import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
@@ -38,15 +38,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenchPanelPresenter<P>> implements WorkbenchPanelPresenter {
 
     private final WorkbenchPanelView<P> view;
-    protected final PanelManager panelManager;
+    protected final PerspectiveManager perspectiveManager;
     private PanelDefinition definition;
     private final Event<MaximizePlaceEvent> maximizePanelEvent;
 
     public AbstractWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
-                                            final PanelManager panelManager,
+                                            final PerspectiveManager panelManager,
                                             final Event<MaximizePlaceEvent> maximizePanelEvent ) {
         this.view = view;
-        this.panelManager = panelManager;
+        this.perspectiveManager = panelManager;
         this.maximizePanelEvent = maximizePanelEvent;
     }
 
@@ -130,26 +130,6 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
 
     private boolean contains( final PartDefinition part ) {
         return definition.getParts().contains( part );
-    }
-
-    @Override
-    public void onPartFocus( final PartDefinition part ) {
-        panelManager.onPartFocus( part );
-    }
-
-    @Override
-    public void onPartLostFocus() {
-        panelManager.onPartLostFocus();
-    }
-
-    @Override
-    public void onPanelFocus() {
-        panelManager.onPanelFocus( definition );
-    }
-
-    @Override
-    public void closePart( final PartDefinition part ) {
-        panelManager.closePart( part );
     }
 
     @Override

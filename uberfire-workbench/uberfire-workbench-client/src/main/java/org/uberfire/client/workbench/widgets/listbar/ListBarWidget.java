@@ -163,7 +163,7 @@ extends ResizeComposite implements MultiPartWidget {
                 @Override
                 public void onClick( ClickEvent event ) {
                     if ( currentPart != null ) {
-                        presenter.closePart( currentPart.getK1() );
+                        panelManager.closePart( currentPart.getK1() );
                     }
                 }
             } );

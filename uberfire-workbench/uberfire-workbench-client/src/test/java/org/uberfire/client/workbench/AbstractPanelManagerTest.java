@@ -90,7 +90,7 @@ public class AbstractPanelManagerTest {
                                             any( IsWidget.class ),
                                             any( PartDefinition.class ) ) ).thenReturn( partPresenter );
 
-        panelManager.setPerspective( testPerspectiveDef );
+        panelManager.setRoot( testPerspectiveDef.getRoot() );
     }
 
     @Test

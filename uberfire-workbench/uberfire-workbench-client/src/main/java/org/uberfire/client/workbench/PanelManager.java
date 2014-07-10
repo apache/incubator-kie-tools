@@ -2,11 +2,9 @@ package org.uberfire.client.workbench;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
-import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -23,29 +21,7 @@ import org.uberfire.workbench.model.menu.Menus;
 public interface PanelManager {
 
     /**
-     * Returns the description of the currently-active perspective.
-     * Will be null until the first call to
-     * {@link #setPerspective(PerspectiveDefinition)}, which is typically done by the {@link PlaceManager}
-     * shortly after the {@link ApplicationReadyEvent} is fired. After this, the returned value will never
-     * revert to null.
-     */
-    PerspectiveDefinition getPerspective();
-
-    /**
-     * Switches to the given perspective, replacing the previously active perspective. The PanelManager is responsible
-     * for creating all panels described in the PerspectiveDefinition and its constituent parts.
-     * <p>
-     * TODO (question) should it also issue PlaceRequests for the default place in each part?
-     * If so, these PlaceRequests should have their UpdateHistory flag set to false so that the
-     * perspective switch is an atomic history item! (can unit test this too)
-     *
-     * @param perspective
-     *            description of the perspective to switch to. Must not be null.
-     */
-    void setPerspective( final PerspectiveDefinition perspective );
-
-    /**
-     * TODO may not need this anymore (should always be the root of the current perspective?)
+     * Returns the description of the entire panel + part tree that makes up the UI in its current state.
      */
     PanelDefinition getRoot();
 
@@ -128,5 +104,15 @@ public interface PanelManager {
      *            the part to close (remove from the GUI). Must not be null.
      */
     void closePart( final PartDefinition part );
+
+    /**
+     * Clears all existing panel structure from the user interface, then installs a new root panel according to the
+     * specifications in the given {@link PanelDefinition}. Only installs the root panel; does not build the child
+     * panel/part structure recursively.
+     * 
+     * @param root
+     *            description of the new root panel to install. Must not be null.
+     */
+    void setRoot( PanelDefinition root );
 
 }

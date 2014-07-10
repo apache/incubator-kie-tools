@@ -2,6 +2,7 @@ package org.uberfire.client.workbench.widgets.tab;
 
 import static org.mockito.Mockito.*;
 
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 
@@ -14,6 +15,10 @@ public class UberTabPanelUnitTestWrapper extends UberTabPanel {
 
     ResizeTabPanel tabPanelSpy;
     private boolean lastTabIsDropdownTab;
+
+    public UberTabPanelUnitTestWrapper( PanelManager panelManager ) {
+        super( panelManager );
+    }
 
     @Override
     Tab createTab( final WorkbenchPartPresenter.View view,

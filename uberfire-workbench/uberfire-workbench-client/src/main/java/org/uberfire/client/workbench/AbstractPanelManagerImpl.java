@@ -25,7 +25,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
@@ -58,12 +57,11 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     protected Instance<PlaceManager> placeManager;
 
     /**
-     * Description of the current perspective's root panel.
-     * TODO: this should always be the same as <tt>perspective.getRoot()</tt>. Tracking it separately probably does more harm than good!
+     * Description that the current root panel was created from. Presently, this is a mutable data structure and the
+     * whole UF framework tries to keep this in sync with the reality (syncing each change from DOM -> Widget ->
+     * UberView -> Presenter -> Definition). This may change in the future. See UF-117.
      */
     protected PanelDefinition rootPanelDef = null;
-
-    protected PerspectiveDefinition perspective;
 
     protected final Map<PartDefinition, WorkbenchPartPresenter> mapPartDefinitionToPresenter = new HashMap<PartDefinition, WorkbenchPartPresenter>();
 
@@ -74,13 +72,16 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     @Inject
     LayoutSelection layoutSelection;
 
+    protected abstract BeanFactory getBeanFactory();
+
     @Override
-    public PerspectiveDefinition getPerspective() {
-        return this.perspective;
+    public PanelDefinition getRoot() {
+        return this.rootPanelDef;
     }
 
     @Override
-    public void setPerspective( final PerspectiveDefinition newPerspectiveDef ) {
+    public void setRoot( PanelDefinition root ) {
+        checkNotNull( "root", root );
 
         final WorkbenchPanelPresenter oldRootPanelPresenter = mapPanelDefinitionToPresenter.remove( rootPanelDef );
 
@@ -89,22 +90,13 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
         getBeanFactory().destroy( oldRootPanelPresenter );
 
-        final PanelDefinition newRootPanelDef = newPerspectiveDef.getRoot();
-        this.rootPanelDef = newRootPanelDef;
-        this.perspective = newPerspectiveDef;
-        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter(newRootPanelDef);
+        this.rootPanelDef = root;
+        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter( root );
         if ( newPresenter == null ) {
-            newPresenter = getBeanFactory().newWorkbenchPanel( newRootPanelDef );
-            mapPanelDefinitionToPresenter.put( newRootPanelDef, newPresenter );
+            newPresenter = getBeanFactory().newWorkbenchPanel( root );
+            mapPanelDefinitionToPresenter.put( root, newPresenter );
         }
         perspectiveContainer.add( newPresenter.getPanelView().asWidget() );
-    }
-
-    protected abstract BeanFactory getBeanFactory();
-
-    @Override
-    public PanelDefinition getRoot() {
-        return this.rootPanelDef;
     }
 
     @Override

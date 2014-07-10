@@ -17,7 +17,7 @@ package org.uberfire.client.workbench.pmgr.template.panels.impl;
 
 import javax.enterprise.event.Event;
 
-import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelPresenter;
@@ -33,9 +33,9 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class AbstractTemplateWorkbenchPanelPresenter<P extends AbstractTemplateWorkbenchPanelPresenter<P>> extends AbstractWorkbenchPanelPresenter<P> {
 
     protected AbstractTemplateWorkbenchPanelPresenter( final BaseWorkbenchTemplatePanelView<P> view,
-                                                       final PanelManager panelManager,
+                                                       final PerspectiveManager perspectiveManager,
                                                        final Event<MaximizePlaceEvent> maximizePanelEvent ) {
-        super( view, panelManager, maximizePanelEvent );
+        super( view, perspectiveManager, maximizePanelEvent );
     }
 
 

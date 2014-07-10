@@ -24,7 +24,6 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 
 import com.google.gwt.core.client.Scheduler;
@@ -64,8 +63,8 @@ extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
         panel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
             @Override
             public void onSelection( final SelectionEvent<PartDefinition> event ) {
-                presenter.onPartLostFocus();
-                presenter.onPartFocus( event.getSelectedItem() );
+                panelManager.onPartLostFocus();
+                panelManager.onPartFocus( event.getSelectedItem() );
             }
         } );
 

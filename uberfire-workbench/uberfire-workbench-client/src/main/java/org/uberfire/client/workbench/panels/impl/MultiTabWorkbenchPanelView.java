@@ -51,8 +51,8 @@ extends BaseMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
         tabPanel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
             @Override
             public void onSelection( SelectionEvent<PartDefinition> event ) {
-                presenter.onPartLostFocus();
-                presenter.onPartFocus( event.getSelectedItem() );
+                panelManager.onPartLostFocus();
+                panelManager.onPartFocus( event.getSelectedItem() );
             }
         } );
 
@@ -66,6 +66,6 @@ extends BaseMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
         return tabPanel;
     }
     UberTabPanel getUberTabPanel() {
-        return new UberTabPanel();
+        return new UberTabPanel( panelManager );
     }
 }

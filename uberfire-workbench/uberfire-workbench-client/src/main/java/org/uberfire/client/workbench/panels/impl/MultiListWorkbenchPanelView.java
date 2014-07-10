@@ -53,8 +53,8 @@ extends BaseMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
         listBar.addSelectionHandler( new SelectionHandler<PartDefinition>() {
             @Override
             public void onSelection( final SelectionEvent<PartDefinition> event ) {
-                presenter.onPartLostFocus();
-                presenter.onPartFocus( event.getSelectedItem() );
+                panelManager.onPartLostFocus();
+                panelManager.onPartFocus( event.getSelectedItem() );
             }
         } );
 

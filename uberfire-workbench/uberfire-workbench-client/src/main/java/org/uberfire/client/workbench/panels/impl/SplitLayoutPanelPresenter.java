@@ -20,7 +20,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.workbench.model.CompassPosition;
 
@@ -35,9 +35,9 @@ public class SplitLayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<S
 
     @Inject
     public SplitLayoutPanelPresenter(@Named("SplitLayoutPanelView") final SplitLayoutPanelView view,
-                                     final PanelManager panelManager,
+                                     final PerspectiveManager perspectiveManager,
                                      final Event<MaximizePlaceEvent> maximizePanelEvent ) {
-        super( view, panelManager, maximizePanelEvent );
+        super( view, perspectiveManager, maximizePanelEvent );
     }
 
     @Override

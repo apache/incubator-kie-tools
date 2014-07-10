@@ -71,8 +71,8 @@ extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
         listBar.addSelectionHandler( new SelectionHandler<PartDefinition>() {
             @Override
             public void onSelection( SelectionEvent<PartDefinition> event ) {
-                presenter.onPartLostFocus();
-                presenter.onPartFocus( event.getSelectedItem() );
+                panelManager.onPartLostFocus();
+                panelManager.onPartFocus( event.getSelectedItem() );
             }
         } );
 

@@ -1,5 +1,17 @@
 package org.uberfire.client.workbench.widgets.tab;
 
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+
 import com.github.gwtbootstrap.client.ui.DropdownTab;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.google.gwt.core.client.GWT;
@@ -7,15 +19,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UberTabPanelTest {
@@ -24,11 +27,11 @@ public class UberTabPanelTest {
     private WorkbenchPartPresenter.View presenter;
     @GwtMock
     private WorkbenchDragAndDropManager dndManager;
-
+    @Mock private PanelManager panelManager;
 
     @Before
     public void setup() {
-        uberTabPanel = new UberTabPanelUnitTestWrapper();
+        uberTabPanel = new UberTabPanelUnitTestWrapper( panelManager );
         uberTabPanel.setupMocks( dndManager );
         presenter = GWT.create( WorkbenchPartPresenter.View.class );
     }

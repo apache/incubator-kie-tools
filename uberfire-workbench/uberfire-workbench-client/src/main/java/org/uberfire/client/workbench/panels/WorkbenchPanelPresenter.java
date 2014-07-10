@@ -52,19 +52,6 @@ public interface WorkbenchPanelPresenter {
 
     public boolean selectPart( final PartDefinition part );
 
-    public void onPartFocus( final PartDefinition part );
-
-    public void onPartLostFocus();
-
-    public void onPanelFocus();
-
-    /**
-     * Closes the part identified by the given PartDefinition, if such a part is currently managed by this presenter.
-     * 
-     * @param part description of the part to close.
-     */
-    public void closePart( final PartDefinition part );
-
     public void maximize();
 
     public WorkbenchPanelView getPanelView();

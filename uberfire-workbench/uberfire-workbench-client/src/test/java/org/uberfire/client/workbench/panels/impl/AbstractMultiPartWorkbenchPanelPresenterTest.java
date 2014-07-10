@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
-import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -38,7 +38,7 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenterTest {
     protected WorkbenchPanelView<MultiListWorkbenchPanelPresenter> view;
 
     @Mock protected ActivityManager mockActivityManager;
-    @Mock protected PanelManager mockPanelManager;
+    @Mock protected PerspectiveManager mockPerspectiveManager;
     @Mock protected Event<MaximizePlaceEvent> maximizePanelEvent;
     @Mock protected View mockPartView;
     @Mock protected WorkbenchPartPresenter mockPartPresenter;
@@ -49,17 +49,20 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenterTest {
     protected final PanelDefinition panelPresenterPanelDefinition = new PanelDefinitionImpl();
     protected final ContextDefinition perspectiveContextDefinition = new ContextDefinitionImpl( new DefaultPlaceRequest( "Perspective Context" ) );
 
-
+    /**
+     * The individual test classes that extend this base class implement this method by returning the implementation of
+     * MultiPartWorkbenchPanelPresenter that they want to test. The protected mock objects set up by this base class
+     * should be given to the presenter's constructor.
+     */
     abstract AbstractMultiPartWorkbenchPanelPresenter<?> getPresenterToTest();
 
     @Before
     public void setUp() {
-        when( mockPanelManager.getPerspective() ).thenReturn( panelManagerPerspectiveDefinition );
+        when( mockPerspectiveManager.getLivePerspectiveDefinition() ).thenReturn( panelManagerPerspectiveDefinition );
         panelManagerPerspectiveDefinition.setContextDefinition( perspectiveContextDefinition );
         when( mockActivityManager.getActivity( ContextActivity.class, perspectiveContextDefinition.getPlace() ) ).thenReturn( perspectiveContextActivity );
         when( mockPartView.getPresenter() ).thenReturn( mockPartPresenter );
         when( mockPartPresenter.getDefinition() ).thenReturn( partPresenterPartDefinition );
-
     }
 
     @Test

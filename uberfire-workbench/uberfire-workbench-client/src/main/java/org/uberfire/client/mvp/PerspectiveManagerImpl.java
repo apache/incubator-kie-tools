@@ -38,10 +38,6 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
     private PerspectiveDefinition livePerspectiveDef;
 
-    /**
-     * Switches
-     * @param perspectiveDef
-     */
     @Override
     public void switchToPerspective( final PerspectiveActivity perspective, final Command doWhenFinished ) {
 
@@ -64,6 +60,11 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     @Override
     public PerspectiveActivity getCurrentPerspective() {
         return currentPerspective;
+    }
+
+    @Override
+    public PerspectiveDefinition getLivePerspectiveDefinition() {
+        return livePerspectiveDef;
     }
 
     /**
@@ -119,7 +120,7 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         @Override
         public void execute( PerspectiveDefinition perspectiveDef ) {
             livePerspectiveDef = perspectiveDef;
-            panelManager.setPerspective( perspectiveDef );
+            panelManager.setRoot( perspectiveDef.getRoot() );
             setupPanelRecursively( perspectiveDef.getRoot() );
             doWhenFinished.execute( perspectiveDef );
         }

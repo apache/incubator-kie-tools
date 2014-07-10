@@ -24,11 +24,13 @@ import javax.enterprise.event.Event;
 
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
-import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.ContextDefinition;
+import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 
@@ -41,15 +43,17 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
 
     protected AbstractMultiPartWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
                                                         final ActivityManager activityManager,
-                                                        final PanelManager panelManager,
+                                                        final PerspectiveManager perspectiveManager,
                                                         final Event<MaximizePlaceEvent> maximizePanelEvent ) {
-        super( view, panelManager, maximizePanelEvent );
+        super( view, perspectiveManager, maximizePanelEvent );
         this.activityManager = activityManager;
     }
 
     private void buildPerspectiveContext() {
-        if ( panelManager.getPerspective().getContextDefinition() != null && panelManager.getPerspective().getContextDisplayMode() == SHOW ) {
-            final ContextActivity activity = activityManager.getActivity( ContextActivity.class, panelManager.getPerspective().getContextDefinition().getPlace() );
+        final ContextDefinition contextDefinition = perspectiveManager.getLivePerspectiveDefinition().getContextDefinition();
+        final ContextDisplayMode contextDisplayMode = perspectiveManager.getLivePerspectiveDefinition().getContextDisplayMode();
+        if ( contextDefinition != null && contextDisplayMode == SHOW ) {
+            final ContextActivity activity = activityManager.getActivity( ContextActivity.class, contextDefinition.getPlace() );
             if ( activity != null ) {
                 perspectiveContext = activity;
             }
@@ -60,8 +64,10 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     public void setDefinition( final PanelDefinition definition ) {
         super.setDefinition( definition );
 
+        final ContextDisplayMode perspectiveContextDisplayMode = perspectiveManager.getLivePerspectiveDefinition().getContextDisplayMode();
+
         if ( definition.getContextDefinition() != null
-                && panelManager.getPerspective().getContextDisplayMode() == SHOW
+                && perspectiveContextDisplayMode == SHOW
                 && definition.getContextDisplayMode() == SHOW ) {
             final ContextActivity activity = activityManager.getActivity( ContextActivity.class, definition.getContextDefinition().getPlace() );
             if ( activity != null ) {
@@ -75,7 +81,8 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     public void addPart( final WorkbenchPartPresenter.View view,
                          final String contextId ) {
         getPanelView().addPart( view );
-        if ( panelManager.getPerspective().getContextDisplayMode() == SHOW
+        final ContextDisplayMode perspectiveContextDisplayMode = perspectiveManager.getLivePerspectiveDefinition().getContextDisplayMode();
+        if ( perspectiveContextDisplayMode == SHOW
                 && getDefinition().getContextDisplayMode() == SHOW
                 && view.getPresenter().getDefinition().getContextDisplayMode() == SHOW ) {
             ContextActivity activity = null;
@@ -91,7 +98,6 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
             } else {
                 System.out.println("Warning: couldn't add this view to the partMap (no activity found): " + view);
             }
-
         }
     }
 
