@@ -52,10 +52,10 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void onOpen() {
         if ( this.place == null ) {
-            throw new IllegalStateException( "Activity has not been started" );
+            throw new IllegalStateException( "Activity " + this + " has not been started" );
         }
         if ( open ) {
-            throw new IllegalStateException( "Activity already open" );
+            throw new IllegalStateException( "Activity " + this + " already open" );
         }
         open = true;
         placeManager.executeOnOpenCallback( this.place );
@@ -68,7 +68,7 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void onClose() {
         if ( !open ) {
-            throw new IllegalStateException( "Activity not open" );
+            throw new IllegalStateException( "Activity " + this + " not open" );
         }
         open = false;
     }
@@ -80,10 +80,10 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public void onShutdown() {
         if ( this.place == null ) {
-            throw new IllegalStateException( "Activity has not been started" );
+            throw new IllegalStateException( "Activity " + this + " has not been started" );
         }
         if ( open ) {
-            throw new IllegalStateException( "Activity is open" );
+            throw new IllegalStateException( "Activity " + this + " is open" );
         }
         this.place = null;
     }
@@ -95,6 +95,6 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public String toString() {
-        return getClass().getName() + ": " + place;
+        return getClass().getName() + ( place == null ? " (not started)" : " for " + place );
     }
 }
