@@ -6,8 +6,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.inject.name.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.uberfire.social.activities.model.DefaultTypes;
 import org.kie.uberfire.social.activities.model.SocialEventType;

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.inject.name.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserPersistenceAPI;
