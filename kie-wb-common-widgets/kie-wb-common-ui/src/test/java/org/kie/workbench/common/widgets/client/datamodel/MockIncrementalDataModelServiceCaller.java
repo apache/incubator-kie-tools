@@ -12,6 +12,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.IncrementalDat
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
 import static org.mockito.Mockito.*;
@@ -25,7 +26,7 @@ public class MockIncrementalDataModelServiceCaller implements Caller<Incremental
     }
 
     public MockIncrementalDataModelServiceCaller( final PackageDataModelOracle packageLoader ) {
-        final Project project = mock( Project.class );
+        final KieProject project = mock( KieProject.class );
         final Package pkg = new Package( mock( Path.class ),
                                          mock( Path.class ),
                                          mock( Path.class ),

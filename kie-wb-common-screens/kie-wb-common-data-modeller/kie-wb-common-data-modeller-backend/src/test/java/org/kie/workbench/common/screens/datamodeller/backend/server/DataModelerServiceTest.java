@@ -18,6 +18,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -63,7 +64,7 @@ public class DataModelerServiceTest {
         //Create ProjectServiceBean
         final Bean projectServiceBean = ( Bean ) beanManager.getBeans( ProjectService.class ).iterator().next();
         final CreationalContext pscc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = ( ProjectService ) beanManager.getReference( projectServiceBean,
+        final ProjectService<KieProject> projectService = ( ProjectService ) beanManager.getReference( projectServiceBean,
                 ProjectService.class,
                 pscc );
 
@@ -71,7 +72,7 @@ public class DataModelerServiceTest {
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
-        Project project = projectService.resolveProject( packagePath );
+        KieProject project = projectService.resolveProject( packagePath );
 
         systemAnnotations = dataModelService.getAnnotationDefinitions();
 

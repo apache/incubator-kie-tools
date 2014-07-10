@@ -21,6 +21,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -44,17 +45,17 @@ public class TestJavaFileIndexer extends JavaFileIndexer implements TestIndexer<
     }
 
     @Override
-    protected ClassLoader getProjectClassLoader( Project project ) {
+    protected ClassLoader getProjectClassLoader( KieProject project ) {
         //for testing purposes
         return this.getClass().getClassLoader();
     }
 
     @Override
-    protected Project getProject( Path path ) {
+    protected KieProject getProject( Path path ) {
         final org.uberfire.backend.vfs.Path mockRoot = mock( org.uberfire.backend.vfs.Path.class );
         when( mockRoot.toURI() ).thenReturn( BaseIndexingTest.TEST_PROJECT_ROOT );
 
-        final Project mockProject = mock( Project.class );
+        final KieProject mockProject = mock( KieProject.class );
         when( mockProject.getRootPath() ).thenReturn( mockRoot );
         return mockProject;
     }

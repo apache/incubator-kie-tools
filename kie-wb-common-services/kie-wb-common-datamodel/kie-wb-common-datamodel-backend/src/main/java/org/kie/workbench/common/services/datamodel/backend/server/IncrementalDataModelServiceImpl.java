@@ -30,6 +30,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -42,7 +43,7 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
 
     private LRUDataModelOracleCache cachePackages;
 
-    private ProjectService projectService;
+    private ProjectService<KieProject> projectService;
 
     @Inject
     public IncrementalDataModelServiceImpl( @Named("PackageDataModelOracleCache") final LRUDataModelOracleCache cachePackages,
@@ -71,7 +72,7 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
 
         try {
             //Check resource was within a Project structure
-            final Project project = resolveProject( resourcePath );
+            final KieProject project = resolveProject( resourcePath );
             if ( project == null ) {
                 return dataModel;
             }
@@ -119,7 +120,7 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
 
     }
 
-    private Project resolveProject( final Path resourcePath ) {
+    private KieProject resolveProject( final Path resourcePath ) {
         return projectService.resolveProject( resourcePath );
     }
 

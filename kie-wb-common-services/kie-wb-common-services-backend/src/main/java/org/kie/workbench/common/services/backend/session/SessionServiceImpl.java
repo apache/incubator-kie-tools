@@ -19,12 +19,12 @@ import javax.inject.Inject;
 
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
-import org.guvnor.common.services.builder.Builder;
-import org.guvnor.common.services.builder.LRUBuilderCache;
-import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.services.backend.builder.Builder;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.workbench.common.services.shared.project.KieProject;
 
 public class SessionServiceImpl
         implements SessionService {
@@ -41,7 +41,7 @@ public class SessionServiceImpl
     }
 
     @Override
-    public KieSession newKieSession( final Project project ) {
+    public KieSession newKieSession( final KieProject project ) {
 
         final Builder builder = cache.assertBuilder( project );
 

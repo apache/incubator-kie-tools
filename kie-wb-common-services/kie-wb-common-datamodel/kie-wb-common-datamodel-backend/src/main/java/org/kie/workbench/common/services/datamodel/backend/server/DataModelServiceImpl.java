@@ -29,6 +29,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
@@ -48,15 +49,22 @@ public class DataModelServiceImpl
     @Named("ProjectDataModelOracleCache")
     private LRUProjectDataModelOracleCache cacheProjects;
 
+    private ProjectService<KieProject> projectService;
+
+    public DataModelServiceImpl() {
+    }
+
     @Inject
-    private ProjectService projectService;
+    public DataModelServiceImpl(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @Override
     public PackageDataModelOracle getDataModel( final Path resourcePath ) {
         try {
             PortablePreconditions.checkNotNull( "resourcePath",
                                                 resourcePath );
-            final Project project = resolveProject( resourcePath );
+            final KieProject project = resolveProject( resourcePath );
             final Package pkg = resolvePackage( resourcePath );
 
             //Resource was not within a Project structure
@@ -79,7 +87,7 @@ public class DataModelServiceImpl
         try {
             PortablePreconditions.checkNotNull( "resourcePath",
                                                 resourcePath );
-            final Project project = resolveProject( resourcePath );
+            final KieProject project = resolveProject( resourcePath );
 
             //Resource was not within a Project structure
             if ( project == null ) {
@@ -96,7 +104,7 @@ public class DataModelServiceImpl
         }
     }
 
-    private Project resolveProject( final Path resourcePath ) {
+    private KieProject resolveProject( final Path resourcePath ) {
         return projectService.resolveProject( resourcePath );
     }
 

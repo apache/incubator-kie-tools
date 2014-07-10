@@ -17,7 +17,7 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import org.guvnor.common.services.project.model.KModuleModel;
-import org.guvnor.common.services.project.service.KModuleService;
+import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -38,6 +38,12 @@ public class MockProjectEditorServiceCaller
     MockProjectEditorServiceCaller() {
 
         service = new KModuleService() {
+
+            @Override
+            public boolean isKModule(Path resource) {
+                callback.callback(null);
+                return false;
+            }
 
             @Override
             public Path setUpKModuleStructure( Path pathToPom ) {

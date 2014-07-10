@@ -12,7 +12,7 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
-import org.guvnor.common.services.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
@@ -25,6 +25,7 @@ import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.EnumerationsFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -107,7 +108,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
     }
 
     //Check the DataModelOracle for the Package has been created, otherwise create one!
-    public synchronized PackageDataModelOracle assertPackageDataModelOracle( final Project project,
+    public synchronized PackageDataModelOracle assertPackageDataModelOracle( final KieProject project,
                                                                              final Package pkg ) {
         PackageDataModelOracle oracle = getEntry( pkg );
         if ( oracle == null ) {
@@ -119,7 +120,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
         return oracle;
     }
 
-    private PackageDataModelOracle makePackageDataModelOracle( final Project project,
+    private PackageDataModelOracle makePackageDataModelOracle( final KieProject project,
                                                                final Package pkg ) {
         final String packageName = pkg.getPackageName();
         final PackageDataModelOracleBuilder dmoBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder( packageName );
@@ -150,7 +151,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
     }
 
     private void loadEnumsForPackage( final PackageDataModelOracleBuilder dmoBuilder,
-                                      final Project project,
+                                      final KieProject project,
                                       final Package pkg ) {
         final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
         final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();

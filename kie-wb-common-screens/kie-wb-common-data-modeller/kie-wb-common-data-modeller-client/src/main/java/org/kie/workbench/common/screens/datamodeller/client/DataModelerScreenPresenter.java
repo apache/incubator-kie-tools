@@ -56,6 +56,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -123,7 +124,7 @@ public class DataModelerScreenPresenter {
     @Inject
     private ProjectContext workbenchContext;
 
-    private Project currentProject;
+    private KieProject currentProject;
 
     private DataModelTO dataModel;
 
@@ -225,7 +226,7 @@ public class DataModelerScreenPresenter {
      * The user will have the option to save/discard/or force save prior to navigate to the next project.
      *
      */
-    public void onSaveAndChange( final Project changeProject ) {
+    public void onSaveAndChange( final KieProject changeProject ) {
 
         if (getContext().isDMOInvalidated()) {
 
@@ -286,7 +287,7 @@ public class DataModelerScreenPresenter {
      * @param changeProject if this parameter is set, currentProject will be saved, and then the changeProject will be
      *                      loaded.
      */
-    private void saveAndChangeProject(boolean overwrite, final Project changeProject) {
+    private void saveAndChangeProject(boolean overwrite, final KieProject changeProject) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_saving() );
         setOnSaveObjectsStatus();
@@ -336,7 +337,7 @@ public class DataModelerScreenPresenter {
         onSaveObjectsStatus.clear();
     }
 
-    private void loadProjectDataModel( final Project project ) {
+    private void loadProjectDataModel( final KieProject project ) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_loading() );
 
@@ -589,7 +590,10 @@ public class DataModelerScreenPresenter {
      */
     private void processProjectChange( final Project newProject ) {
 
-        if ( newProject != null && isOpen() && currentProjectChanged( newProject ) ) {
+        if ( newProject != null && isOpen() && currentProjectChanged( newProject ) && newProject instanceof KieProject ) {
+
+            final KieProject project = (KieProject) newProject;
+
             //the project has changed and we have pending changes to save.
             final String newProjectURI = newProject.getRootPath().toURI();
             final String currentProjectURI = ( currentProject != null ? currentProject.getRootPath().toURI() : "" );
@@ -604,14 +608,14 @@ public class DataModelerScreenPresenter {
                             public void execute() {
                                 //ok, the user wants to save current changes and then open next project.
                                 //save current project and open the new project.
-                                onSaveAndChange(newProject);
+                                onSaveAndChange(project);
                             }
                         },
                         new Command() {
                             @Override
                             public void execute() {
                                 //not save current changes, simply open the new project.
-                                loadProjectDataModel(newProject);
+                                loadProjectDataModel(project);
                             }
                         },
                         null
@@ -626,7 +630,7 @@ public class DataModelerScreenPresenter {
                             @Override
                             public void execute() {
                                 //simply open the new project.
-                                loadProjectDataModel(newProject);
+                                loadProjectDataModel(project);
                             }
                         },
                         CommonConstants.INSTANCE.OK(),
@@ -640,7 +644,7 @@ public class DataModelerScreenPresenter {
             } else {
                 //if currentProject is null, we are at the window opening type, simply load the data model
                 //to start working.
-                loadProjectDataModel(newProject);
+                loadProjectDataModel(project);
             }
         } else {
             //TODO check if this is possible. By definition we will always have a path.

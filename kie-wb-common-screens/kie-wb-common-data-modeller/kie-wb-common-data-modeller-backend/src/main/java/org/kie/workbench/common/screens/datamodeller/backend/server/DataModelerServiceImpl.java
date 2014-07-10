@@ -28,7 +28,7 @@ import javax.inject.Named;
 
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.guvnor.common.services.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
@@ -75,6 +75,7 @@ import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -136,7 +137,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public DataModelTO loadModel( Project project ) {
+    public DataModelTO loadModel( KieProject project ) {
 
         if ( logger.isDebugEnabled() ) {
             logger.debug( "Loading data model from path: " + project.getRootPath() );
@@ -210,7 +211,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Override
     public GenerationResult saveModel( DataModelTO dataModel,
-                                       final Project project ) {
+                                       final KieProject project ) {
 
         return saveModel( dataModel, project, false );
 
@@ -218,7 +219,7 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Override
     public GenerationResult saveModel( DataModelTO dataModel,
-            final Project project,
+            final KieProject project,
             final boolean overwrite ) {
 
 
@@ -263,7 +264,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    private void generateModel ( DataModelTO dataModelTO, Project project, CommentedOption option) throws Exception {
+    private void generateModel ( DataModelTO dataModelTO, KieProject project, CommentedOption option) throws Exception {
 
         org.uberfire.java.nio.file.Path sourceFile;
         org.uberfire.java.nio.file.Path targetFile;
@@ -468,7 +469,7 @@ public class DataModelerServiceImpl implements DataModelerService {
         return source;
     }
 
-    private ClassLoader getProjectClassLoader(Project project) {
+    private ClassLoader getProjectClassLoader(KieProject project) {
 
         final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
         final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();

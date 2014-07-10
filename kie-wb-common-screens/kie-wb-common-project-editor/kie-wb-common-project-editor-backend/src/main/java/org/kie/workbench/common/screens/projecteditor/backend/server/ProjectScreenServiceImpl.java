@@ -8,13 +8,15 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.KModuleService;
+import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -34,14 +36,16 @@ public class ProjectScreenServiceImpl
     @Inject
     private KModuleService kModuleService;
 
-    @Inject
-    private ProjectService projectService;
+    private ProjectService<KieProject> projectService;
 
     @Inject
     private MetadataService metadataService;
 
     @Inject
     private ValidationService validationService;
+
+    @Inject
+    private ProjectImportsService importsService;
 
     @Inject
     private Identity identity;
@@ -53,6 +57,14 @@ public class ProjectScreenServiceImpl
     @Named("ioStrategy")
     private IOService ioService;
 
+    public ProjectScreenServiceImpl() {
+    }
+
+    @Inject
+    public ProjectScreenServiceImpl(ProjectService projectService) {
+        this.projectService = projectService;
+    }
+
     @Override
     public ProjectScreenModel load( final Path pathToPom ) {
         ProjectScreenModel model = new ProjectScreenModel();
@@ -61,7 +73,7 @@ public class ProjectScreenServiceImpl
         model.setPOMMetaData( metadataService.getMetadata( pathToPom ) );
         model.setPathToPOM( pathToPom );
 
-        final Project project = projectService.resolveProject( pathToPom );
+        final KieProject project = projectService.resolveProject( pathToPom );
 
         Path pathToKModule = project.getKModuleXMLPath();
         model.setKModule( kModuleService.load( pathToKModule ) );
@@ -69,7 +81,7 @@ public class ProjectScreenServiceImpl
         model.setPathToKModule( pathToKModule );
 
         Path pathToProjectImports = project.getImportsPath();
-        model.setProjectImports( projectService.load( pathToProjectImports ) );
+        model.setProjectImports( importsService.load( pathToProjectImports ) );
         model.setProjectImportsMetaData( metadataService.getMetadata( pathToProjectImports ) );
         model.setPathToImports( pathToProjectImports );
 
@@ -80,7 +92,7 @@ public class ProjectScreenServiceImpl
     public void save( final Path pathToPomXML,
                       final ProjectScreenModel model,
                       final String comment ) {
-        final Project project = projectService.resolveProject( pathToPomXML );
+        final KieProject project = projectService.resolveProject( pathToPomXML );
 
         try {
             ioService.startBatch( makeCommentedOption( comment ) );
@@ -92,10 +104,10 @@ public class ProjectScreenServiceImpl
                                  model.getKModule(),
                                  model.getKModuleMetaData(),
                                  comment );
-            projectService.save( project.getImportsPath(),
-                                 model.getProjectImports(),
-                                 model.getProjectImportsMetaData(),
-                                 comment );
+            importsService.save(project.getImportsPath(),
+                    model.getProjectImports(),
+                    model.getProjectImportsMetaData(),
+                    comment);
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         } finally {

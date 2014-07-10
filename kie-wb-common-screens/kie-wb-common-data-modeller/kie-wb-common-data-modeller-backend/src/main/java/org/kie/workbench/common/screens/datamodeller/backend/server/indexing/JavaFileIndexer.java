@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.core.base.ClassTypeResolver;
-import org.guvnor.common.services.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -54,6 +54,7 @@ import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -99,14 +100,21 @@ public class JavaFileIndexer implements Indexer {
     @Named("ioStrategy")
     protected IOService ioService;
 
-    @Inject
-    protected ProjectService projectService;
+    protected ProjectService<KieProject> projectService;
 
     @Inject
     private LRUBuilderCache builderCache;
 
     @Inject
     protected JavaResourceTypeDefinition javaResourceTypeDefinition;
+
+    public JavaFileIndexer() {
+    }
+
+    @Inject
+    public JavaFileIndexer(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @Override
     public boolean supportsPath( Path path ) {
@@ -119,7 +127,7 @@ public class JavaFileIndexer implements Indexer {
 
         try {
             final String javaSource = ioService.readAllString( path );
-            final Project project = getProject( path );
+            final KieProject project = getProject( path );
 
             if ( project == null ) {
                 logger.error( "Unable to index: " + path.toUri().toString() + ", project could not be calculated." );
@@ -244,7 +252,7 @@ public class JavaFileIndexer implements Indexer {
         return KObjectUtil.toKObjectKey( path );
     }
 
-    protected Project getProject( final Path path ) {
+    protected KieProject getProject( final Path path ) {
         return projectService.resolveProject( Paths.convert( path ) );
     }
 
@@ -252,7 +260,7 @@ public class JavaFileIndexer implements Indexer {
         return projectService.resolvePackage( Paths.convert( path ) );
     }
 
-    protected ClassLoader getProjectClassLoader( Project project ) {
+    protected ClassLoader getProjectClassLoader( KieProject project ) {
         final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
         final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
         return classLoader;

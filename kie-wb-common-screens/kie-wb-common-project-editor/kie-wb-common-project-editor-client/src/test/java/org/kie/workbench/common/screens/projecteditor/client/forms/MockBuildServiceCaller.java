@@ -39,7 +39,7 @@ public class MockBuildServiceCaller
     private boolean buildWasCalled = false;
 
     public MockBuildServiceCaller() {
-        service = new BuildService() {
+        service = new BuildService<Project>() {
 
             @Override
             public BuildResults build( Project project ) {

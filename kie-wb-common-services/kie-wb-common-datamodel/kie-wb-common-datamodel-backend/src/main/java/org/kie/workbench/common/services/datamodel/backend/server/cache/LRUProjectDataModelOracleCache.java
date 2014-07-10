@@ -1,7 +1,6 @@
 package org.kie.workbench.common.services.datamodel.backend.server.cache;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -13,13 +12,14 @@ import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.guvnor.common.services.backend.cache.LRUCache;
-import org.guvnor.common.services.builder.Builder;
-import org.guvnor.common.services.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.Builder;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -35,7 +35,7 @@ import org.uberfire.backend.vfs.Path;
  */
 @ApplicationScoped
 @Named("ProjectDataModelOracleCache")
-public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDataModelOracle> {
+public class LRUProjectDataModelOracleCache extends LRUCache<KieProject, ProjectDataModelOracle> {
 
     private static final Logger log = LoggerFactory.getLogger( LRUProjectDataModelOracleCache.class );
 
@@ -46,17 +46,27 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
     @Named("ioStrategy")
     private IOService ioService;
 
+    private ProjectService<KieProject> projectService;
+
     @Inject
-    private ProjectService projectService;
+    private ProjectImportsService importsService;
 
     @Inject
     private LRUBuilderCache cache;
+
+    public LRUProjectDataModelOracleCache() {
+    }
+
+    @Inject
+    public LRUProjectDataModelOracleCache(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
                                             event );
         final Path resourcePath = event.getResourcePath();
-        final Project project = projectService.resolveProject( resourcePath );
+        final KieProject project = projectService.resolveProject( resourcePath );
 
         //If resource was not within a Project there's nothing to invalidate
         if ( project != null ) {
@@ -65,7 +75,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
     }
 
     //Check the ProjectOracle for the Project has been created, otherwise create one!
-    public synchronized ProjectDataModelOracle assertProjectDataModelOracle( final Project project ) {
+    public synchronized ProjectDataModelOracle assertProjectDataModelOracle( final KieProject project ) {
         ProjectDataModelOracle projectOracle = getEntry( project );
         if ( projectOracle == null ) {
             projectOracle = makeProjectOracle( project );
@@ -75,7 +85,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         return projectOracle;
     }
 
-    private ProjectDataModelOracle makeProjectOracle( final Project project ) {
+    private ProjectDataModelOracle makeProjectOracle( final KieProject project ) {
         //Get a Builder for the project
         final Builder builder = cache.assertBuilder( project );
 
@@ -109,7 +119,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<Project, ProjectDat
         final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert( project.getImportsPath() );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final Path externalImportsPath = Paths.convert( nioExternalImportsPath );
-            final ProjectImports projectImports = projectService.load( externalImportsPath );
+            final ProjectImports projectImports = importsService.load(externalImportsPath);
             final Imports imports = projectImports.getImports();
             for ( final Import item : imports.getImports() ) {
                 try {

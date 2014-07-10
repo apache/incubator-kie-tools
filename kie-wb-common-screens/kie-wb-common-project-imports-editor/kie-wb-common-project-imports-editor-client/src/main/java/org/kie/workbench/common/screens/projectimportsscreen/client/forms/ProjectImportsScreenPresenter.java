@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
@@ -31,6 +30,7 @@ import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.screens.projectimportsscreen.client.resources.i18n.ProjectConfigScreenConstants;
 import org.kie.workbench.common.screens.projectimportsscreen.client.type.ProjectImportsResourceType;
+import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -59,7 +59,7 @@ public class ProjectImportsScreenPresenter
 
     private ProjectImportsScreenView view;
 
-    private Caller<ProjectService> projectService;
+    private Caller<ProjectImportsService> importsService;
     private Caller<MetadataService> metadataService;
 
     private FileMenuBuilder menuBuilder;
@@ -80,12 +80,12 @@ public class ProjectImportsScreenPresenter
                                           @New final ImportsWidgetPresenter importsWidget,
                                           final Event<NotificationEvent> notification,
                                           final BusyIndicatorView busyIndicatorView,
-                                          final Caller<ProjectService> projectService,
+                                          final Caller<ProjectImportsService> importsService,
                                           final Caller<MetadataService> metadataService ) {
         this.view = view;
         this.menuBuilder = menuBuilder;
         this.importsWidget = importsWidget;
-        this.projectService = projectService;
+        this.importsService = importsService;
         this.metadataService = metadataService;
         this.busyIndicatorView = busyIndicatorView;
         this.notification = notification;
@@ -106,8 +106,8 @@ public class ProjectImportsScreenPresenter
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        projectService.call( getModelSuccessCallback(),
-                             new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
+        importsService.call(getModelSuccessCallback(),
+                new HasBusyIndicatorDefaultErrorCallback(view)).load( path );
     }
 
     private RemoteCallback<ProjectImports> getModelSuccessCallback() {
@@ -145,8 +145,8 @@ public class ProjectImportsScreenPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 projectService.call( getSaveSuccessCallback(),
-                                                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
+                                                 importsService.call(getSaveSuccessCallback(),
+                                                         new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).save( path,
                                                                                                                                             content,
                                                                                                                                             view.getMetadata(),
                                                                                                                                             commitMessage );
