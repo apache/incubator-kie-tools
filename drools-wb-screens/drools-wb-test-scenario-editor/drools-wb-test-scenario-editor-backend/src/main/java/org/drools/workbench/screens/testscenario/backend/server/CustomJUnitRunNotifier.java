@@ -2,18 +2,15 @@ package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 
-import org.drools.workbench.screens.testscenario.model.TestResultMessage;
+import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
-
-import javax.enterprise.event.Event;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CustomJUnitRunNotifier
         extends RunNotifier {
@@ -61,11 +58,11 @@ public class CustomJUnitRunNotifier
         fireMessageEvent( new TestResultMessage( true,
                                                  1,
                                                  1,
-                                                 new ArrayList<org.drools.workbench.screens.testscenario.model.Failure>() ) );
+                                                 new ArrayList<org.guvnor.common.services.shared.test.Failure>() ) );
     }
 
     private void reportTestFailure( final Failure failure ) {
-        ArrayList<org.drools.workbench.screens.testscenario.model.Failure> failures = new ArrayList<org.drools.workbench.screens.testscenario.model.Failure>();
+        ArrayList<org.guvnor.common.services.shared.test.Failure> failures = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
         failures.add( failureToFailure( failure ) );
 
         fireMessageEvent( new TestResultMessage( false,
@@ -78,8 +75,8 @@ public class CustomJUnitRunNotifier
         testResultMessageEvent.fire( testResultMessage );
     }
 
-    private List<org.drools.workbench.screens.testscenario.model.Failure> getFailures( final List<Failure> failures ) {
-        ArrayList<org.drools.workbench.screens.testscenario.model.Failure> result = new ArrayList<org.drools.workbench.screens.testscenario.model.Failure>();
+    private List<org.guvnor.common.services.shared.test.Failure> getFailures( final List<Failure> failures ) {
+        ArrayList<org.guvnor.common.services.shared.test.Failure> result = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
 
         for ( Failure failure : failures ) {
             result.add( failureToFailure( failure ) );
@@ -88,8 +85,8 @@ public class CustomJUnitRunNotifier
         return result;
     }
 
-    private org.drools.workbench.screens.testscenario.model.Failure failureToFailure( final Failure failure ) {
-        return new org.drools.workbench.screens.testscenario.model.Failure( getScenarioName( failure ),
+    private org.guvnor.common.services.shared.test.Failure failureToFailure( final Failure failure ) {
+        return new org.guvnor.common.services.shared.test.Failure( getScenarioName( failure ),
                                                                             failure.getMessage() );
     }
 

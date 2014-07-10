@@ -15,16 +15,16 @@
 */
 package org.drools.workbench.common.services.rest;
 
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.guvnor.rest.backend.JobRequestApprovalService;
+import org.guvnor.rest.client.JobRequest;
+import org.guvnor.rest.client.JobResult;
+import org.guvnor.rest.client.JobStatus;
 import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.workbench.common.services.shared.rest.JobRequest;
-import org.kie.workbench.common.services.shared.rest.JobResult;
-import org.kie.workbench.common.services.shared.rest.JobStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,28 +32,22 @@ import org.slf4j.LoggerFactory;
  * Service class to approve requests for jobs
  */
 
-public class JobRequestApprovalService {
+public class JobRequestApprovalServiceImpl implements JobRequestApprovalService {
 
-    private static final Logger logger = LoggerFactory.getLogger( JobRequestApprovalService.class );
+    private static final Logger logger = LoggerFactory.getLogger( JobRequestApprovalServiceImpl.class );
 
     @Inject
     @KSession("ksession1")
     private Instance<KieSession> ksessionInjected = null;
 
-    @Inject
-    private Event<JobResult> jobResultEvent;
-    
-    public JobResult requestApproval( final JobRequest jobRequest ) {
+    public void requestApproval( final JobRequest jobRequest, final JobResult jobResult ) {
         logger.debug( "--- approve job request ---, job: {} ", jobRequest.getJobId() );
-        final JobResult jobResult = new JobResult();
-        jobResult.setJobId( jobRequest.getJobId() );
-        jobResult.setStatus( jobRequest.getStatus() );
 
         KieSession ksession = getKieSession();
         //If no ksession is available default to true
         if ( ksession == null ) {
             jobResult.setStatus(JobStatus.APPROVED);
-            return jobResult;
+            return;
         }
 
         //Delegate approval to ksession
@@ -72,11 +66,9 @@ public class JobRequestApprovalService {
             }
         }
         jobResult.setLastModified( System.currentTimeMillis() );
-        jobResultEvent.fire(jobResult);
-        return jobResult;
     }
 
-    public KieSession getKieSession() {
+    private KieSession getKieSession() {
         if (!ksessionInjected.isUnsatisfied()) {
             return ksessionInjected.get();
         }

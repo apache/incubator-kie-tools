@@ -4,15 +4,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
-import org.drools.workbench.screens.testscenario.model.Failure;
 import org.drools.workbench.screens.testscenario.model.Success;
+import org.guvnor.common.services.shared.test.Failure;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.workbench.model.Position;
+
+import com.google.gwt.user.client.ui.Widget;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.TestResults")

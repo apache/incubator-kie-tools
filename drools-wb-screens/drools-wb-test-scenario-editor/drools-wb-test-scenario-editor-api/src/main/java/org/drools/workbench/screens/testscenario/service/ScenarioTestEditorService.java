@@ -19,7 +19,6 @@ package org.drools.workbench.screens.testscenario.service;
 import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.drools.workbench.screens.testscenario.model.TestResultMessage;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
@@ -27,6 +26,8 @@ import org.guvnor.common.services.shared.file.SupportsDelete;
 import org.guvnor.common.services.shared.file.SupportsRead;
 import org.guvnor.common.services.shared.file.SupportsRename;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.test.ScenarioTestService;
+import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
@@ -41,7 +42,8 @@ public interface ScenarioTestEditorService
         SupportsUpdate<Scenario>,
         SupportsDelete,
         SupportsCopy,
-        SupportsRename {
+        SupportsRename, 
+        ScenarioTestService {
 
     public static final String TEST_SCENARIO_EDITOR_SETTINGS = "test-scenario-editor-settings";
     public static final String TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS = "max-rule-firings";

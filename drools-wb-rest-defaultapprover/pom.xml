@@ -57,8 +57,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-rest</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-rest-client</artifactId>
     </dependency>
   </dependencies>
   

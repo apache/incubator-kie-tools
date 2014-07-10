@@ -296,6 +296,11 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-rest</artifactId>
     </dependency>
+    <!-- REST exception handling -->
+    <dependency>
+      <groupId>org.kie.remote</groupId>
+      <artifactId>kie-remote-common</artifactId>
+    </dependency>
 
     <!-- Drools Workbench Screens -->
     <dependency>

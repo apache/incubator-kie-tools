@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -28,7 +29,6 @@ import javax.inject.Named;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.drools.workbench.screens.testscenario.model.TestResultMessage;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -43,6 +43,7 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
@@ -286,7 +287,7 @@ public class ScenarioTestEditorServiceImpl
                          testResultMessageEvent );
     }
 
-    //@Override
+    @Override
     public void runAllScenarios( final Path testResourcePath,
                                  Event<TestResultMessage> customTestResultEvent ) {
         try {

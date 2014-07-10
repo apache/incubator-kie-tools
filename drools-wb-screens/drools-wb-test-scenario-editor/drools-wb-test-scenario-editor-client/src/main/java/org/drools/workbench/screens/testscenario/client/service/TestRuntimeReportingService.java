@@ -5,12 +5,13 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.drools.workbench.screens.testscenario.model.Success;
+import org.guvnor.common.services.shared.test.Failure;
+import org.guvnor.common.services.shared.test.TestResultMessage;
+import org.uberfire.client.mvp.PlaceManager;
+
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import org.drools.workbench.screens.testscenario.model.Failure;
-import org.drools.workbench.screens.testscenario.model.Success;
-import org.drools.workbench.screens.testscenario.model.TestResultMessage;
-import org.uberfire.client.mvp.PlaceManager;
 
 @ApplicationScoped
 public class TestRuntimeReportingService {

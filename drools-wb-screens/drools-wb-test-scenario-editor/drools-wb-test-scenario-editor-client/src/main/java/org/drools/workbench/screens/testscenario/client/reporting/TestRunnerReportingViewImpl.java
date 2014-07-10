@@ -2,6 +2,11 @@ package org.drools.workbench.screens.testscenario.client.reporting;
 
 import javax.inject.Inject;
 
+import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
+import org.guvnor.common.services.shared.test.Failure;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
+
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageResourceCell;
@@ -9,6 +14,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -20,10 +26,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
-import org.drools.workbench.screens.testscenario.model.Failure;
-import org.kie.workbench.common.widgets.client.resources.CommonImages;
 
 public class TestRunnerReportingViewImpl
         extends Composite

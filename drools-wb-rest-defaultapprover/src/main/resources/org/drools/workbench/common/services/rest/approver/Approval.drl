@@ -1,8 +1,8 @@
 package org.drools.workbench.common.services.rest.approver;
 
-import org.kie.workbench.common.services.shared.rest.JobRequest;
-import org.kie.workbench.common.services.shared.rest.JobResult;
-import org.kie.workbench.common.services.shared.rest.JobStatus;
+import org.guvnor.rest.client.JobRequest;
+import org.guvnor.rest.client.JobResult;
+import org.guvnor.rest.client.JobStatus;
 
 //Approval all requests
 rule "approve"
