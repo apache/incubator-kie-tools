@@ -54,6 +54,7 @@ import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -80,8 +81,7 @@ public class ScenarioTestEditorServiceImpl
     @Inject
     private SessionService sessionService;
 
-    @Inject
-    private ProjectService projectService;
+    private ProjectService<KieProject> projectService;
 
     @Inject
     private CopyService copyService;
@@ -109,6 +109,14 @@ public class ScenarioTestEditorServiceImpl
 
     @Inject
     private ConfigurationService configurationService;
+
+    public ScenarioTestEditorServiceImpl() {
+    }
+
+    @Inject
+    public ScenarioTestEditorServiceImpl(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @Override
     public Path create( final Path context,
@@ -254,7 +262,7 @@ public class ScenarioTestEditorServiceImpl
                              final Scenario scenario ) {
         try {
 
-            final Project project = projectService.resolveProject( path );
+            final KieProject project = projectService.resolveProject( path );
             final KieSession session = sessionService.newKieSession( project );
             final ScenarioRunnerWrapper runner = new ScenarioRunnerWrapper( testResultMessageEvent,
                                                                             getMaxRuleFirings() );
@@ -291,7 +299,7 @@ public class ScenarioTestEditorServiceImpl
     public void runAllScenarios( final Path testResourcePath,
                                  Event<TestResultMessage> customTestResultEvent ) {
         try {
-            final Project project = projectService.resolveProject( testResourcePath );
+            final KieProject project = projectService.resolveProject( testResourcePath );
             List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );
             List<Scenario> scenarios = new ArrayList<Scenario>();
             for ( Path path : scenarioPaths ) {

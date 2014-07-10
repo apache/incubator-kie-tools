@@ -26,6 +26,7 @@ import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -45,15 +46,19 @@ public class FactModelsMigrater extends BaseAssetMigrater {
     @Inject
     PackageImportHelper packageImportHelper;
 
-    @Inject
-    private ProjectService projectService;
+    private ProjectService<KieProject> projectService;
     
     @Inject
     private DataModelerService modelerService;    
 
     private Map <String, String> orderedBaseTypes = new TreeMap<String, String>();
     private Map<String, AnnotationDefinitionTO> annotationDefinitions;
-    
+
+    @Inject
+    public FactModelsMigrater(ProjectService projectService) {
+        this.projectService = projectService;
+    }
+
     public Path migrate(Module jcrModule, AssetItem jcrAssetItem, Path previousVersionPath) {
         if (!AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
             throw new IllegalArgumentException("The jcrAsset (" + jcrAssetItem.getName()
@@ -66,7 +71,7 @@ public class FactModelsMigrater extends BaseAssetMigrater {
              ioService.move(Paths.convert( previousVersionPath ), Paths.convert( path ), StandardCopyOption.REPLACE_EXISTING);
         }
         
-        Project project = projectService.resolveProject(path);
+        KieProject project = projectService.resolveProject(path);
         
         initBasePropertyTypes();
         initAnnotationDefinitions();        
@@ -74,7 +79,7 @@ public class FactModelsMigrater extends BaseAssetMigrater {
         if(project == null) {
         	Path projectRootPath = migrationPathManager.generatePathForModule(jcrModule.getName());
         	//Quick hack to pass mock values for pomPath etc, to make Project constructor happy. We only use projectRootPath anyway
-        	project = new Project( projectRootPath,
+        	project = new KieProject( projectRootPath,
         			projectRootPath,
         			projectRootPath,
         			projectRootPath,

@@ -54,6 +54,8 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Files;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
@@ -89,8 +91,10 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     @Inject
     private GlobalsEditorService globalsService;
 
+    private ProjectService<KieProject> projectService;
+
     @Inject
-    private ProjectService projectService;
+    private ProjectImportsService importsService;
 
     @Inject
     private MetadataService metadataService;
@@ -116,6 +120,14 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
     private Map<String, String> orderedBaseTypes = new TreeMap<String, String>();
     private Map<String, AnnotationDefinitionTO> annotationDefinitions;
+
+    public DecisionTableXLSToDecisionTableGuidedConverter() {
+    }
+
+    @Inject
+    public DecisionTableXLSToDecisionTableGuidedConverter(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @PostConstruct
     public void initialiseTypeConversionMetaData() {
@@ -256,7 +268,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             return;
         }
 
-        final Project project = projectService.resolveProject( context );
+        final KieProject project = projectService.resolveProject( context );
 
         for ( String declaredType : declaredTypes ) {
             final FactModels factModels = FactModelPersistence.unmarshal( declaredType );
@@ -392,7 +404,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert( context ).resolve( "project.imports" );
         final Path externalImportsPath = Paths.convert( nioExternalImportsPath );
         if ( Files.exists( nioExternalImportsPath ) ) {
-            projectImports = projectService.load( externalImportsPath );
+            projectImports = importsService.load( externalImportsPath );
         }
 
         //Make collections of existing Imports so we don't duplicate them when adding the new
@@ -415,7 +427,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         //Save update
         if ( isModified ) {
             final Metadata metadata = metadataService.getMetadata( context );
-            projectService.save( externalImportsPath,
+            importsService.save( externalImportsPath,
                                  projectImports,
                                  metadata,
                                  "Imports added during XLS conversion" );

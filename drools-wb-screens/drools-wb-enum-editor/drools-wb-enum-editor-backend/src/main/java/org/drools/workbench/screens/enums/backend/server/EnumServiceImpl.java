@@ -30,7 +30,7 @@ import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -44,6 +44,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -91,11 +92,18 @@ public class EnumServiceImpl implements EnumService {
     @Inject
     private EnumResourceTypeDefinition resourceTypeDefinition;
 
-    @Inject
-    private ProjectService projectService;
+    private ProjectService<KieProject> projectService;
 
     @Inject
     private LRUBuilderCache builderCache;
+
+    public EnumServiceImpl() {
+    }
+
+    @Inject
+    public EnumServiceImpl(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @Override
     public Path create( final Path context,
@@ -237,7 +245,7 @@ public class EnumServiceImpl implements EnumService {
     private List<ValidationMessage> doValidation( final Path path,
                                                   final String content ) {
         try {
-            final Project project = projectService.resolveProject( path );
+            final KieProject project = projectService.resolveProject( path );
             final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
             final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
             final DataEnumLoader loader = new DataEnumLoader( content,
