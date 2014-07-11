@@ -29,7 +29,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -99,7 +98,6 @@ public class UserManagementWidgetTest {
     }
 
     @Test
-    @Ignore("Requires gwtmockito 1.1.4-SNAPSHOT or later")
     public void verifyNewInstanceCreationSequenceHappyCase() {
         verify( table,
                 times( 2 ) ).addColumn( any( Column.class ),
@@ -119,7 +117,6 @@ public class UserManagementWidgetTest {
     }
 
     @Test
-    @Ignore("Requires gwtmockito 1.1.4-SNAPSHOT or later")
     public void verifySetContent() {
         final List<UserInformation> userInformation = Collections.EMPTY_LIST;
         final UserManagerCapabilities capabilities = new UserManagerCapabilities( true,
@@ -136,7 +133,6 @@ public class UserManagementWidgetTest {
     }
 
     @Test
-    @Ignore("Requires gwtmockito 1.1.4-SNAPSHOT or later")
     public void verifySetContentNotReadOnly() {
         final List<UserInformation> userInformation = Collections.EMPTY_LIST;
         final UserManagerCapabilities capabilities = new UserManagerCapabilities( true,
@@ -161,7 +157,6 @@ public class UserManagementWidgetTest {
     }
 
     @Test
-    @Ignore("Requires gwtmockito 1.1.4-SNAPSHOT or later")
     public void verifySetContentReadOnly() {
         final List<UserInformation> userInformation = Collections.EMPTY_LIST;
         final UserManagerCapabilities capabilities = new UserManagerCapabilities( true,
@@ -190,7 +185,6 @@ public class UserManagementWidgetTest {
     }
 
     @Test
-    @Ignore("Requires gwtmockito 1.1.4-SNAPSHOT or later")
     public void verifySetContentIsAddUserSupportedIsFalse() {
         final List<UserInformation> userInformation = Collections.EMPTY_LIST;
         final UserManagerCapabilities capabilities = new UserManagerCapabilities( false,
@@ -216,7 +210,6 @@ public class UserManagementWidgetTest {
     }
 
     @Test
-    @Ignore("Requires gwtmockito 1.1.4-SNAPSHOT or later")
     public void verifySetContentIsUpdateUserPasswordSupportedIsFalse() {
         final List<UserInformation> userInformation = Collections.EMPTY_LIST;
         final UserManagerCapabilities capabilities = new UserManagerCapabilities( true,
@@ -242,7 +235,6 @@ public class UserManagementWidgetTest {
     }
 
     @Test
-    @Ignore("Requires gwtmockito 1.1.4-SNAPSHOT or later")
     public void verifySetContentIsDeleteUserSupportedIsFalse() {
         final List<UserInformation> userInformation = Collections.EMPTY_LIST;
         final UserManagerCapabilities capabilities = new UserManagerCapabilities( true,
@@ -268,7 +260,6 @@ public class UserManagementWidgetTest {
     }
 
     @Test
-    @Ignore("Requires gwtmockito 1.1.4-SNAPSHOT or later")
     public void verifySetContentIsUpdateUserRolesSupportedIsFalse() {
         final List<UserInformation> userInformation = Collections.EMPTY_LIST;
         final UserManagerCapabilities capabilities = new UserManagerCapabilities( true,
