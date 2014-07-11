@@ -1,0 +1,172 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Kie Workbench - Common - Services Backend 6.2.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ kie-wb-common-services-backend ---
+[INFO] org.kie.workbench.services:kie-wb-common-services-backend:jar:6.2.0-SNAPSHOT
+[INFO] +- org.kie.workbench.services:kie-wb-common-services-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  +- org.guvnor:guvnor-project-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  +- org.guvnor:guvnor-workingset-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  \- org.uberfire:uberfire-api:jar:0.4.2-SNAPSHOT:compile
+[INFO] |  |     +- org.jboss.errai:errai-ioc:jar:2.4.4.Final:compile
+[INFO] |  |     |  +- org.jboss.errai:errai-codegen:jar:2.4.4.Final:compile
+[INFO] |  |     |  \- org.jboss.errai:errai-codegen-gwt:jar:2.4.4.Final:compile
+[INFO] |  |     \- org.jboss.errai:errai-marshalling:jar:2.4.4.Final:compile
+[INFO] |  +- org.guvnor:guvnor-services-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  \- org.uberfire:uberfire-backend-api:jar:0.4.2-SNAPSHOT:compile
+[INFO] |  +- org.kie:kie-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  +- org.uberfire:uberfire-client-api:jar:0.4.2-SNAPSHOT:compile
+[INFO] |  |  +- org.jboss.errai:errai-javax-enterprise:jar:2.4.4.Final:compile
+[INFO] |  |  \- org.jboss.errai:errai-common:jar:2.4.4.Final:compile
+[INFO] |  |     \- org.jboss.errai.reflections:reflections:jar:2.4.4.Final:compile
+[INFO] |  |        \- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  |           \- xml-apis:xml-apis:jar:1.3.04:compile
+[INFO] |  \- org.uberfire:uberfire-io:jar:0.4.2-SNAPSHOT:compile
+[INFO] |     +- org.uberfire:uberfire-nio2-api:jar:0.4.2-SNAPSHOT:compile
+[INFO] |     \- org.apache.helix:helix-core:jar:0.6.2-incubating:compile
+[INFO] |        +- log4j:log4j:jar:1.2.17:compile
+[INFO] |        +- org.apache.zookeeper:zookeeper:jar:3.3.4:compile
+[INFO] |        +- org.codehaus.jackson:jackson-core-asl:jar:1.9.9:compile
+[INFO] |        +- org.codehaus.jackson:jackson-mapper-asl:jar:1.9.9:compile
+[INFO] |        +- commons-cli:commons-cli:jar:1.2:compile
+[INFO] |        +- com.github.sgroschupf:zkclient:jar:0.1:compile
+[INFO] |        +- org.apache.camel:camel-josql:jar:2.12.1:compile
+[INFO] |        |  +- org.apache.camel:camel-core:jar:2.12.2:compile
+[INFO] |        |  +- net.sf.josql:josql:jar:1.5:compile
+[INFO] |        |  +- net.sf.josql:gentlyweb-utils:jar:1.5:compile
+[INFO] |        |  \- com.sun.xml.bind:jaxb-impl:jar:2.2.5:compile
+[INFO] |        +- org.apache.commons:commons-math:jar:2.1:compile
+[INFO] |        \- org.restlet.jse:org.restlet:jar:2.1.4:compile
+[INFO] +- org.guvnor:guvnor-project-builder:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  +- org.guvnor:guvnor-services-backend:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  +- org.guvnor:guvnor-project-backend:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  +- org.guvnor:guvnor-m2repo-editor-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  +- org.uberfire:uberfire-backend-cdi:jar:0.4.2-SNAPSHOT:compile
+[INFO] |  |  \- org.apache.maven:maven-model:jar:3.2.2:compile
+[INFO] |  |     \- org.codehaus.plexus:plexus-utils:jar:3.0.17:compile
+[INFO] |  +- org.guvnor:guvnor-m2repo-editor-backend:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  +- org.jboss.errai:errai-bus:jar:2.4.4.Final:compile
+[INFO] |  |  |  +- org.jboss.errai:errai-config:jar:2.4.4.Final:compile
+[INFO] |  |  |  +- com.google.inject:guice:jar:3.0:compile
+[INFO] |  |  |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  |  |  \- org.jgroups:jgroups:jar:3.2.13.Final:compile
+[INFO] |  |  +- org.apache.maven:maven-core:jar:3.2.2:compile
+[INFO] |  |  |  +- org.apache.maven:maven-settings:jar:3.2.2:compile
+[INFO] |  |  |  +- org.apache.maven:maven-settings-builder:jar:3.2.2:compile
+[INFO] |  |  |  +- org.apache.maven:maven-repository-metadata:jar:3.2.2:compile
+[INFO] |  |  |  +- org.apache.maven:maven-artifact:jar:3.2.2:compile
+[INFO] |  |  |  +- org.apache.maven:maven-plugin-api:jar:3.2.2:compile
+[INFO] |  |  |  +- org.apache.maven:maven-model-builder:jar:3.2.2:compile
+[INFO] |  |  |  +- org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.0.0.M5:compile
+[INFO] |  |  |  |  +- org.sonatype.sisu:sisu-guice:jar:no_aop:3.1.0:compile
+[INFO] |  |  |  |  \- org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.0.0.M5:compile
+[INFO] |  |  |  +- org.codehaus.plexus:plexus-interpolation:jar:1.19:compile
+[INFO] |  |  |  +- org.codehaus.plexus:plexus-classworlds:jar:2.5.1:compile
+[INFO] |  |  |  +- org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:compile
+[INFO] |  |  |  \- org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[INFO] |  |  |     \- org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[INFO] |  |  +- org.apache.maven:maven-compat:jar:3.2.2:compile
+[INFO] |  |  |  \- org.apache.maven.wagon:wagon-provider-api:jar:1.0:compile
+[INFO] |  |  +- org.sonatype.aether:aether-api:jar:1.13.1:compile
+[INFO] |  |  +- org.sonatype.aether:aether-util:jar:1.13.1:compile
+[INFO] |  |  +- org.sonatype.aether:aether-impl:jar:1.13.1:compile
+[INFO] |  |  |  \- org.sonatype.aether:aether-spi:jar:1.13.1:compile
+[INFO] |  |  +- org.sonatype.aether:aether-connector-wagon:jar:1.13.1:compile
+[INFO] |  |  |  \- org.sonatype.sisu:sisu-inject-plexus:jar:2.2.3:compile
+[INFO] |  |  |     \- org.sonatype.sisu:sisu-inject-bean:jar:2.2.3:compile
+[INFO] |  |  +- org.sonatype.aether:aether-connector-file:jar:1.13.1:compile
+[INFO] |  |  \- org.sonatype.maven:wagon-ahc:jar:1.2.1:compile
+[INFO] |  |     \- com.ning:async-http-client:jar:1.6.5:compile
+[INFO] |  |        \- org.jboss.netty:netty:jar:3.2.6.Final:compile
+[INFO] |  +- com.google.protobuf:protobuf-java:jar:2.5.0:compile
+[INFO] |  +- org.kie:kie-ci:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  +- org.apache.maven:maven-aether-provider:jar:3.2.2:compile
+[INFO] |  |  |  \- org.eclipse.aether:aether-spi:jar:1.0.0.v20140518:compile
+[INFO] |  |  +- org.eclipse.aether:aether-api:jar:1.0.0.v20140518:compile
+[INFO] |  |  +- org.eclipse.aether:aether-util:jar:1.0.0.v20140518:compile
+[INFO] |  |  +- org.eclipse.aether:aether-impl:jar:1.0.0.v20140518:compile
+[INFO] |  |  +- org.eclipse.aether:aether-connector-basic:jar:1.0.0.v20140518:compile
+[INFO] |  |  +- org.eclipse.aether:aether-transport-wagon:jar:1.0.0.v20140518:compile
+[INFO] |  |  +- org.eclipse.aether:aether-transport-file:jar:1.0.0.v20140518:compile
+[INFO] |  |  +- org.eclipse.aether:aether-transport-http:jar:1.0.0.v20140518:compile
+[INFO] |  |  |  \- org.slf4j:jcl-over-slf4j:jar:1.7.2:compile
+[INFO] |  |  +- org.apache.ant:ant:jar:1.8.2:compile
+[INFO] |  |  |  \- org.apache.ant:ant-launcher:jar:1.8.2:compile
+[INFO] |  |  +- org.apache.maven.wagon:wagon-http:jar:2.0:compile
+[INFO] |  |  |  \- org.apache.maven.wagon:wagon-http-shared4:jar:2.0:compile
+[INFO] |  |  |     \- org.jsoup:jsoup:jar:1.6.1:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.2.1:compile
+[INFO] |  +- org.drools:drools-compiler:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  +- org.antlr:antlr-runtime:jar:3.5:compile
+[INFO] |  |  \- org.eclipse.jdt.core.compiler:ecj:jar:4.3.1:compile
+[INFO] |  +- org.drools:drools-workbench-models-datamodel-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  \- org.uberfire:uberfire-backend-server:jar:0.4.2-SNAPSHOT:compile
+[INFO] |     +- org.ocpsoft.prettytime:prettytime:jar:3.0.2.Final:compile
+[INFO] |     +- org.jasypt:jasypt:jar:1.9.0:compile
+[INFO] |     \- org.jboss.spec.javax.ejb:jboss-ejb-api_3.1_spec:jar:1.0.2.Final:compile
+[INFO] +- org.kie.workbench.services:kie-wb-common-refactoring-backend:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  +- org.kie.workbench.services:kie-wb-common-refactoring-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  +- org.kie.uberfire:kie-uberfire-metadata-backend-lucene:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  |  +- org.apache.lucene:lucene-core:jar:4.0.0:compile
+[INFO] |  |  +- org.apache.lucene:lucene-analyzers-common:jar:4.0.0:compile
+[INFO] |  |  +- org.apache.lucene:lucene-codecs:jar:4.0.0:compile
+[INFO] |  |  +- org.apache.lucene:lucene-queryparser:jar:4.0.0:compile
+[INFO] |  |  |  +- org.apache.lucene:lucene-queries:jar:4.0.0:compile
+[INFO] |  |  |  \- org.apache.lucene:lucene-sandbox:jar:4.0.0:compile
+[INFO] |  |  |     \- jakarta-regexp:jakarta-regexp:jar:1.4:compile
+[INFO] |  |  \- org.kie.uberfire:kie-uberfire-metadata-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  +- org.slf4j:slf4j-api:jar:1.7.2:compile
+[INFO] |  \- org.drools:drools-workbench-models-commons:jar:6.2.0-SNAPSHOT:compile
+[INFO] +- javax.enterprise:cdi-api:jar:1.0-SP4:compile
+[INFO] |  +- org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.0.Beta1:compile
+[INFO] |  +- javax.annotation:jsr250-api:jar:1.0:compile
+[INFO] |  \- javax.inject:javax.inject:jar:1:compile
+[INFO] +- org.drools:drools-core:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  +- org.mvel:mvel2:jar:2.1.9.Final:compile
+[INFO] |  \- org.kie:kie-internal:jar:6.2.0-SNAPSHOT:compile
+[INFO] +- commons-io:commons-io:jar:2.1:compile
+[INFO] +- commons-lang:commons-lang:jar:2.6:compile
+[INFO] +- commons-fileupload:commons-fileupload:jar:1.3.1:compile
+[INFO] +- org.uberfire:uberfire-nio2-fs:jar:0.4.2-SNAPSHOT:test
+[INFO] |  +- org.uberfire:uberfire-nio2-model:jar:0.4.2-SNAPSHOT:compile
+[INFO] |  |  \- org.uberfire:uberfire-security-api:jar:0.4.2-SNAPSHOT:compile
+[INFO] |  \- commons-httpclient:commons-httpclient:jar:3.1:compile
+[INFO] |     +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |     \- commons-codec:commons-codec:jar:1.4:compile
+[INFO] +- org.guvnor:guvnor-structure-backend:jar:6.2.0-SNAPSHOT:test
+[INFO] |  +- org.guvnor:guvnor-structure-api:jar:6.2.0-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.4.7:compile
+[INFO] |     +- xmlpull:xmlpull:jar:1.1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec:jar:1.0.2.Final:test
+[INFO] +- org.uberfire:uberfire-nio2-jgit:jar:0.4.2-SNAPSHOT:test
+[INFO] |  +- org.uberfire:uberfire-commons:jar:0.4.2-SNAPSHOT:compile
+[INFO] |  +- org.apache.sshd:sshd-core:jar:0.10.0:test
+[INFO] |  |  \- org.apache.mina:mina-core:jar:2.0.4:test
+[INFO] |  +- org.eclipse.jgit:org.eclipse.jgit:jar:3.3.1.201403241930-r:test
+[INFO] |  |  +- com.jcraft:jsch:jar:0.1.48:test
+[INFO] |  |  +- com.googlecode.javaewah:JavaEWAH:jar:0.7.9:test
+[INFO] |  |  \- org.apache.httpcomponents:httpclient:jar:4.2.1:compile
+[INFO] |  \- org.uberfire:uberfire-security-server:jar:0.4.2-SNAPSHOT:compile
+[INFO] |     \- org.yaml:snakeyaml:jar:1.8:compile
+[INFO] +- org.jboss.weld.se:weld-se-core:jar:1.1.21.Final:test
+[INFO] |  +- org.jboss.weld:weld-spi:jar:1.1.Final:test
+[INFO] |  |  \- org.jboss.weld:weld-api:jar:1.1.Final:test
+[INFO] |  +- org.jboss.weld:weld-core:jar:1.1.21.Final:test
+[INFO] |  |  +- org.javassist:javassist:jar:3.18.1-GA:compile
+[INFO] |  |  +- com.google.guava:guava:jar:13.0.1:compile
+[INFO] |  |  +- org.slf4j:slf4j-ext:jar:1.7.2:test
+[INFO] |  |  \- ch.qos.cal10n:cal10n-api:jar:0.7.7:test
+[INFO] |  \- javax.el:el-api:jar:2.2:test
+[INFO] +- junit:junit:jar:4.11:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] \- org.mockito:mockito-all:jar:1.9.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 5.767s
+[INFO] Finished at: Thu Jul 10 20:32:25 EEST 2014
+[INFO] Final Memory: 33M/427M
+[INFO] ------------------------------------------------------------------------
