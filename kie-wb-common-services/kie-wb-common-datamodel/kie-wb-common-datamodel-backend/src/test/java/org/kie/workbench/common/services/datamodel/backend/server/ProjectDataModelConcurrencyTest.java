@@ -69,6 +69,8 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.uberfire.backend.server.config" )
                 .addPackage( "org.uberfire.backend.server.io" )
                 .addPackage( "org.uberfire.backend.server.cluster" )
+                .addPackage( "org.kie.workbench.common.services.backend.project" )
+                .addPackage( "org.kie.workbench.common.services.backend.builder" )
                 .addAsManifestResource( "META-INF/beans.xml",
                                         ArchivePaths.create( "beans.xml" ) );
     }
