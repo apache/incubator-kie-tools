@@ -24,12 +24,6 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-builder</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.inject</groupId>
-          <artifactId>guice</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
