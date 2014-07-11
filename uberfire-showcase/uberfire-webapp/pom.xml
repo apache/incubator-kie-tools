@@ -236,15 +236,6 @@
         </configuration>
       </plugin>
 
-      <!-- Tests are skipped by default because they require additional GWT dependencies. Run mvn with
-        -Pintegration-test to enable testing. -->
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
