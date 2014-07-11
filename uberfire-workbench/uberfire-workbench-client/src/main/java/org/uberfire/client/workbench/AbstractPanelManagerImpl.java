@@ -85,13 +85,22 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
         final WorkbenchPanelPresenter oldRootPanelPresenter = mapPanelDefinitionToPresenter.remove( rootPanelDef );
 
+        if ( !mapPanelDefinitionToPresenter.isEmpty() ) {
+            mapPanelDefinitionToPresenter.put( rootPanelDef, oldRootPanelPresenter );
+            throw new IllegalStateException( "Can't replace current root panel because it is not empty. The following panels remain: " + mapPanelDefinitionToPresenter );
+        }
+
+        if ( !mapPartDefinitionToPresenter.isEmpty() ) {
+            throw new IllegalStateException( "Can't replace current root panel because it is not empty. The following parts remain: " + mapPartDefinitionToPresenter );
+        }
+
         HasWidgets perspectiveContainer = layoutSelection.get().getPerspectiveContainer();
         perspectiveContainer.clear();
 
         getBeanFactory().destroy( oldRootPanelPresenter );
 
         this.rootPanelDef = root;
-        WorkbenchPanelPresenter newPresenter = getWorkbenchPanelPresenter( root );
+        WorkbenchPanelPresenter newPresenter = mapPanelDefinitionToPresenter.get( root );
         if ( newPresenter == null ) {
             newPresenter = getBeanFactory().newWorkbenchPanel( root );
             mapPanelDefinitionToPresenter.put( root, newPresenter );
@@ -117,7 +126,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                                   final String contextId ) {
         checkNotNull( "panel", panel );
 
-        final WorkbenchPanelPresenter panelPresenter = getWorkbenchPanelPresenter( panel );
+        final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
         if ( panelPresenter == null ) {
             throw new IllegalArgumentException( "Target panel is not part of the layout" );
         }
@@ -139,10 +148,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
         //Select newly inserted part
         selectPlaceEvent.fire( new SelectPlaceEvent( place ) );
-    }
-
-    protected WorkbenchPanelPresenter getWorkbenchPanelPresenter( PanelDefinition panel ) {
-        return mapPanelDefinitionToPresenter.get( panel );
     }
 
     /**

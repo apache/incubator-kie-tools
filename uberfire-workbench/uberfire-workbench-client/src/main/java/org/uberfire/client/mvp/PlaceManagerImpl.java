@@ -94,6 +94,7 @@ implements PlaceManager {
     private PerspectiveManager perspectiveManager;
 
     private final Map<String, SplashScreenActivity> activeSplashScreens = new HashMap<String, SplashScreenActivity>();
+    private final Map<String, PopupActivity> activePopups = new HashMap<String, PopupActivity>();
     private final Map<PlaceRequest, Activity> onMayCloseList = new HashMap<PlaceRequest, Activity>();
 
     @PostConstruct
@@ -542,10 +543,15 @@ implements PlaceManager {
 
     private void launchPopupActivity( final PlaceRequest place,
                                       final PopupActivity activity ) {
-        //Record new place\part\activity
+
+        if ( activePopups.get( place.getIdentifier() ) != null ) {
+            return;
+        }
+
         getPlaceHistoryHandler().onPlaceChange( place );
         checkPathDelete( place );
 
+        activePopups.put( place.getIdentifier(), activity );
         activity.onOpen();
     }
 
@@ -600,6 +606,7 @@ implements PlaceManager {
                                                                        true ) );
 
         activeSplashScreens.remove( place.getIdentifier() );
+        activePopups.remove( place.getIdentifier() );
 
         if ( activity instanceof WorkbenchActivity ) {
             WorkbenchActivity activity1 = (WorkbenchActivity) activity;

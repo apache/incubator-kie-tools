@@ -45,7 +45,7 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
 
         PanelDefinition newPanel = null;
 
-        WorkbenchPanelPresenter targetPanelPresenter = getWorkbenchPanelPresenter( targetPanel );
+        WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
 
         if ( targetPanelPresenter == null ) {
             targetPanelPresenter = factory.newWorkbenchPanel( targetPanel );

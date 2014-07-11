@@ -30,8 +30,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * Skeleton for popups
  */
 public class PopupView
-        extends Composite
-        implements HasCloseHandlers<PopupView> {
+extends Composite
+implements HasCloseHandlers<PopupView> {
 
     final Modal modal = new Modal( true, true );
 
@@ -45,6 +45,7 @@ public class PopupView
         modal.add( widget );
     }
 
+    @Override
     public void setTitle( final String title ) {
         modal.setTitle( title );
     }
@@ -54,17 +55,13 @@ public class PopupView
         modal.addHideHandler( new HideHandler() {
             @Override
             public void onHide( final HideEvent hideEvent ) {
-                cleanup();
+                CloseEvent.fire( PopupView.this, PopupView.this, false );
             }
         } );
     }
 
     public void hide() {
         modal.hide();
-    }
-
-    private void cleanup() {
-        CloseEvent.fire( this, this, false );
     }
 
     @Override

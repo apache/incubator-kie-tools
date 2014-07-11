@@ -138,6 +138,7 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
                 setupPanelRecursively( target );
             }
         }
+
         // TODO (UF-88) when PlaceRequest is an immutable value type, cloning will no longer be a sensible operation
         private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest _place ) {
             return _place.clone();

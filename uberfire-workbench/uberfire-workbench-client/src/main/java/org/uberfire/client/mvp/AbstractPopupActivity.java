@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 
@@ -28,18 +30,33 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class AbstractPopupActivity extends AbstractActivity implements PopupActivity {
 
-    private final PopupView popup = new PopupView();
+    private final PopupView popup;
 
-    public AbstractPopupActivity( final PlaceManager placeManager ) {
+    /**
+     * Interlock to prevent a call back into PlaceManager.closePlace() when this activity is already in the process of
+     * closing.
+     */
+    private boolean placeManagerIsClosingUs = false;
+
+    /**
+     * Interlock to prevent a call back into PopupView.hide() when the view is already in the process of hiding.
+     */
+    private boolean popupAlreadyHiding = false;
+
+    /**
+     * MVP constructor that allows caller to provide the PopupView instance.
+     */
+    public AbstractPopupActivity( final PlaceManager placeManager, final PopupView popupView ) {
         super( placeManager );
+        popup = checkNotNull( "popupView", popupView );
+    }
 
-        // this handler notifies PlaceManager to clean up after the popup's view has been closed
-        popup.addCloseHandler( new CloseHandler<PopupView>() {
-            @Override
-            public void onClose( CloseEvent<PopupView> event ) {
-                placeManager.closePlace( place );
-            }
-        } );
+    /**
+     * Used by generated PopupActivity subclasses.
+     */
+    public AbstractPopupActivity( final PlaceManager placeManager ) {
+        // XXX this class (an MVP Presenter) should not be creating its own view instance!
+        this( placeManager, new PopupView() );
     }
 
     @Override
@@ -52,6 +69,44 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
 
     @Override
     public abstract IsWidget getWidget();
+
+    @Override
+    public void onOpen() {
+        super.onOpen();
+
+        popup.addCloseHandler( new CloseHandler<PopupView>() {
+            @Override
+            public void onClose( CloseEvent<PopupView> event ) {
+                if ( !placeManagerIsClosingUs ) {
+                    try {
+                        popupAlreadyHiding = true;
+                        placeManager.closePlace( place );
+                    } finally {
+                        popupAlreadyHiding = false;
+                    }
+                }
+            }
+        } );
+
+        final IsWidget widget = getWidget();
+
+        popup.setContent( widget );
+        popup.setTitle( getTitle() );
+        popup.show();
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        if ( !popupAlreadyHiding ) {
+            try {
+                placeManagerIsClosingUs = true;
+                popup.hide();
+            } finally {
+                placeManagerIsClosingUs = false;
+            }
+        }
+    }
 
     @Override
     public boolean onMayClose() {

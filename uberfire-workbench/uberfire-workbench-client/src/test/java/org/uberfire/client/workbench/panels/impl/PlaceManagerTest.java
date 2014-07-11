@@ -450,20 +450,73 @@ public class PlaceManagerTest {
     }
 
     @Test
-    public void testPopUpLaunch() throws Exception {
+    public void testLaunchingPopup() throws Exception {
 
-        final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
-        final AbstractPopupActivity activity = mock( AbstractPopupActivity.class );
+        final PlaceRequest popupPlace = new DefaultPlaceRequest( "Somewhere" );
+        final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
 
-        when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) activity ) );
+        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
 
-        placeManager.goTo( somewhere );
+        placeManager.goTo( popupPlace );
 
-        verify( activity, never() ).onStartup( any( PlaceRequest.class ) );
-        verify( activity, times( 1 ) ).onOpen();
-        verify( placeHistoryHandler, times( 1 ) ).onPlaceChange( somewhere );
+        verify( popupActivity, never() ).onStartup( any( PlaceRequest.class ) );
+        verify( popupActivity, times( 1 ) ).onOpen();
+        verify( placeHistoryHandler, times( 1 ) ).onPlaceChange( popupPlace );
+
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( popupPlace ) );
 
         // TODO this test was moved here from the old test suite. it may not verify all required side effects of launching a popup.
+    }
+
+    @Test
+    public void testLaunchingPopupThatIsAlreadyOpen() throws Exception {
+
+        final PlaceRequest popupPlace = new DefaultPlaceRequest( "Somewhere" );
+        final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
+
+        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
+
+        placeManager.goTo( popupPlace );
+        placeManager.goTo( popupPlace );
+
+        verify( popupActivity, never() ).onStartup( any( PlaceRequest.class ) );
+        verify( popupActivity, times( 1 ) ).onOpen();
+        verify( placeHistoryHandler, times( 1 ) ).onPlaceChange( popupPlace );
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( popupPlace ) );
+    }
+
+    @Test
+    public void testReLaunchingClosedPopup() throws Exception {
+
+        final PlaceRequest popupPlace = new DefaultPlaceRequest( "Somewhere" );
+        final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
+        when( popupActivity.onMayClose() ).thenReturn( true );
+
+        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
+
+        placeManager.goTo( popupPlace );
+        placeManager.closePlace( popupPlace );
+        placeManager.goTo( popupPlace );
+
+        verify( popupActivity, times( 2 ) ).onOpen();
+        verify( popupActivity, times( 1 ) ).onClose();
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( popupPlace ) );
+    }
+
+    @Test
+    public void testPopupCancelsClose() throws Exception {
+
+        final PlaceRequest popupPlace = new DefaultPlaceRequest( "Somewhere" );
+        final AbstractPopupActivity popupActivity = mock( AbstractPopupActivity.class );
+        when( popupActivity.onMayClose() ).thenReturn( false );
+
+        when( activityManager.getActivities( popupPlace ) ).thenReturn( singleton( (Activity) popupActivity ) );
+
+        placeManager.goTo( popupPlace );
+        placeManager.closePlace( popupPlace );
+
+        verify( popupActivity, never() ).onClose();
+        assertEquals( PlaceStatus.OPEN, placeManager.getStatus( popupPlace ) );
     }
 
     // TODO test going to an unresolvable/unknown place
