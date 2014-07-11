@@ -26,7 +26,6 @@ import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.guvnor.common.services.backend.file.DotFileFilter;
-import org.guvnor.common.services.backend.file.KModuleFileFilter;
 import org.guvnor.common.services.backend.file.PomFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Project;
