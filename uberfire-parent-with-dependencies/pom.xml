@@ -539,7 +539,6 @@
         <groupId>javax.security.jacc</groupId>
         <artifactId>javax.security.jacc-api</artifactId>
         <version>${version.javax.security.jacc}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.google.gwt.gwtmockito</groupId>
