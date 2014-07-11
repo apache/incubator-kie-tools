@@ -95,4 +95,25 @@
 
   </dependencies>
 
+  <build>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>.niogit/**</include>
+                <include>repository/**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
 </project>

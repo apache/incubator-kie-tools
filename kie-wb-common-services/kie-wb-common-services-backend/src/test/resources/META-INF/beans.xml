@@ -18,5 +18,6 @@
   <alternatives>
     <class>org.kie.workbench.common.services.backend.TestAppSetup</class>
     <class>org.kie.workbench.common.services.backend.TestIdentityFactory</class>
+    <class>org.kie.workbench.common.services.backend.TestIncrementalBuilderExecutorManagerFactoryImpl</class>
   </alternatives>
 </beans>

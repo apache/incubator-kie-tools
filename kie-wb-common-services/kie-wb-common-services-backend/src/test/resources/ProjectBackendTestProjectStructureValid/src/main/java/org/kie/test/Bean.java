@@ -1,4 +1,4 @@
-package ProjectBackendTestProjectStructureValid.src.main.java.org.kie.test;
+package org.kie.test;
 
 public class Bean {
     private final int value;

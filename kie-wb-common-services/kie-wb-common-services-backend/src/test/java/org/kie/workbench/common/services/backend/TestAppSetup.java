@@ -17,18 +17,12 @@
 package org.kie.workbench.common.services.backend;
 
 import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
 import org.guvnor.m2repo.service.M2RepoService;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
-import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationFactory;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
@@ -51,32 +45,24 @@ public class TestAppSetup {
     @Produces
     @Alternative
     public M2RepoService m2RepoService() {
-        return mock(M2RepoService.class);
+        return mock( M2RepoService.class );
     }
 
     @Produces
     @Named("uf")
     public ServletContext servletContext() {
-        return mock(ServletContext.class);
+        return mock( ServletContext.class );
     }
 
     @Produces
-//    @Default
     public SessionInfo sessionInfo() {
-        return mock(SessionInfo.class);
+        return mock( SessionInfo.class );
     }
-
-//    @Produces
-//    @Alternative
-//    public ConfigurationService configurationService() {
-//        return mock(ConfigurationService.class);
-//    }
-
 
     @Produces
     @Named("luceneConfig")
     public LuceneConfig luceneConfig() {
-        return mock(LuceneConfig.class);
+        return mock( LuceneConfig.class );
     }
 
 }
