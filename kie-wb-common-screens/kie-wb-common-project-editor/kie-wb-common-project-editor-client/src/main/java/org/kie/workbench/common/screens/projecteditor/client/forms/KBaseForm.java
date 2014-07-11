@@ -19,9 +19,9 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.AssertBehaviorOption;
-import org.guvnor.common.services.project.model.EventProcessingOption;
-import org.guvnor.common.services.project.model.KBaseModel;
+import org.kie.workbench.common.services.shared.kmodule.AssertBehaviorOption;
+import org.kie.workbench.common.services.shared.kmodule.EventProcessingOption;
+import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
 
 public class KBaseForm

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.ListenerModel;
+import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 
 public class ListenersPanel
         implements IsWidget, ListenersPanelView.Presenter {

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.guvnor.common.services.project.model.KModuleModel;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;

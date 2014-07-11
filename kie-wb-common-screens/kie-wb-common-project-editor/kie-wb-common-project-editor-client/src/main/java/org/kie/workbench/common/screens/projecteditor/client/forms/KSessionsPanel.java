@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.KSessionModel;
+import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.XsdIDValidator;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;

@@ -22,9 +22,7 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.project.backend.server.KModuleContentHandler;
-import org.guvnor.common.services.project.model.KModuleModel;
-import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.guvnor.common.services.shared.metadata.MetadataService;

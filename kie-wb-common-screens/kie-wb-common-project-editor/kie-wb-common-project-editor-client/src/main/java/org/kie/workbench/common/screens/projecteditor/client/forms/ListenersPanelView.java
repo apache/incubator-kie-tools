@@ -19,7 +19,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.model.ListenerModel;
+import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 
 public interface ListenersPanelView
         extends IsWidget {

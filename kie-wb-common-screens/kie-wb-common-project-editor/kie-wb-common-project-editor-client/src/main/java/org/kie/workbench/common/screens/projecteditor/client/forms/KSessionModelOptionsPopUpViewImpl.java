@@ -27,7 +27,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.ListenerModel;
+import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.uberfire.client.common.Popup;

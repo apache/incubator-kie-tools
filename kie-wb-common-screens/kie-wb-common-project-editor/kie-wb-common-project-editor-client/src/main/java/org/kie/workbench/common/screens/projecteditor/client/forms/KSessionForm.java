@@ -19,8 +19,8 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.ClockTypeOption;
-import org.guvnor.common.services.project.model.KSessionModel;
+import org.kie.workbench.common.services.shared.kmodule.ClockTypeOption;
+import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.Form;
 
 public class KSessionForm

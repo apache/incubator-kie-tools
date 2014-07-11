@@ -16,12 +16,11 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.guvnor.common.services.project.model.KBaseModel;
-import org.guvnor.common.services.project.model.KModuleModel;
+import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
-import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
 import org.mockito.ArgumentCaptor;

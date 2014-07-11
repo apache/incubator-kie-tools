@@ -19,7 +19,6 @@ package org.kie.workbench.common.services.backend.kmodule;
 import java.util.List;
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.backend.server.KModuleContentHandler;
 import org.guvnor.common.services.project.backend.server.POMContentHandler;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;

@@ -16,20 +16,6 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import java.util.List;
-import java.util.Map;
-
-import org.guvnor.common.services.project.model.AssertBehaviorOption;
-import org.guvnor.common.services.project.model.EventProcessingOption;
-import org.guvnor.common.services.project.model.KBaseModel;
-import org.guvnor.common.services.project.model.KSessionModel;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-
-import static junit.framework.Assert.*;
-import static org.mockito.Mockito.*;
-
 public class KBaseFormTest {
 
 

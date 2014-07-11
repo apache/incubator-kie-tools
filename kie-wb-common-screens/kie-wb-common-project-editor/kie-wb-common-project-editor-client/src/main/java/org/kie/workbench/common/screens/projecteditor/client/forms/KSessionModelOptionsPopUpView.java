@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.List;
 
-import org.guvnor.common.services.project.model.ListenerModel;
+import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 
 public interface KSessionModelOptionsPopUpView {

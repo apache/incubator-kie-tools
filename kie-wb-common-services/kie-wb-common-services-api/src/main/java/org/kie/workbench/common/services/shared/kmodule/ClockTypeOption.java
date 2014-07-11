@@ -16,22 +16,32 @@
 
 package org.kie.workbench.common.services.shared.kmodule;
 
-import org.guvnor.common.services.shared.file.SupportsRead;
-import org.guvnor.common.services.shared.file.SupportsUpdate;
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.Path;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-@Remote
-public interface KModuleService extends SupportsRead<KModuleModel>,
-                                        SupportsUpdate<KModuleModel> {
+@Portable
+public enum ClockTypeOption {
 
-    /**
-     * Return true if the file is the Project's kmodule.xml file
-     * @param resource
-     * @return
-     */
-    boolean isKModule( Path resource );
+    PSEUDO("pseudo"),
+    REALTIME("realtime");
 
-    public Path setUpKModuleStructure( final Path projectRoot );
+    private final String name;
 
+    ClockTypeOption(String name) {
+        this.name = name;
+    }
+
+
+    public String getClockTypeAsString() {
+        return name;
+    }
+
+    public static ClockTypeOption get(String clockType) {
+        if (PSEUDO.getClockTypeAsString().equals(clockType)) {
+            return PSEUDO;
+        } else if (REALTIME.getClockTypeAsString().equals(clockType)) {
+            return REALTIME;
+        }
+
+        return null;
+    }
 }

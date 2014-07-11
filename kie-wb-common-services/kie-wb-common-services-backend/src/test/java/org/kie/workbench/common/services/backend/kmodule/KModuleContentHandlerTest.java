@@ -20,8 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;import java.lang.Exception;import java.lang.IllegalStateException;import java.lang.String;import java.lang.StringBuffer;
 
-import org.guvnor.common.services.project.backend.server.KModuleContentHandler;
-import org.guvnor.common.services.project.model.KModuleModel;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

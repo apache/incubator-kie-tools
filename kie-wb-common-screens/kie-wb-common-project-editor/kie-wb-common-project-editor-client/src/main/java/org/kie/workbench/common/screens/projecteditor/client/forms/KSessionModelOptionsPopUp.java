@@ -18,10 +18,9 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.ConsoleLogger;
-import org.guvnor.common.services.project.model.FileLogger;
-import org.guvnor.common.services.project.model.KSessionModel;
-import org.guvnor.common.services.project.model.ListenerModel;
+import org.kie.workbench.common.services.shared.kmodule.ConsoleLogger;
+import org.kie.workbench.common.services.shared.kmodule.FileLogger;
+import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 
 public class KSessionModelOptionsPopUp
         implements KSessionModelOptionsPopUpView.Presenter {
