@@ -1,0 +1,5 @@
+<beans>
+  <alternatives>
+    <class>org.kie.workbench.common.services.backend.builder.ResourceChangeIncrementalBuilder</class>
+  </alternatives>
+</beans>
