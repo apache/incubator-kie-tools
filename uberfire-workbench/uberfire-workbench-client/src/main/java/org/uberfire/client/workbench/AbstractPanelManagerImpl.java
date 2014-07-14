@@ -150,6 +150,16 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         selectPlaceEvent.fire( new SelectPlaceEvent( place ) );
     }
 
+    @Override
+    public boolean removePartForPlace( PlaceRequest toRemove ) {
+        final PartDefinition removedPart = getPartForPlace( toRemove );
+        if ( removedPart != null ) {
+            removePart( removedPart );
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Calls the abstract {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)} method supplied by the
      * subclass. The child panel argument is an empty PanelDefinition of the target panel's default child type.

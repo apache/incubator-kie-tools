@@ -21,7 +21,6 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.AbstractPanelManagerImpl;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
@@ -51,11 +50,6 @@ public class TemplatePanelManager extends AbstractPanelManagerImpl {
         onPanelFocus( childPanel );
 
         return childPanel;
-    }
-
-    @Override
-    public boolean removePartForPlace( PlaceRequest toRemove ) {
-        throw new UnsupportedOperationException("Not implemented.");
     }
 
     private WorkbenchPanelPresenter createChildPresenter( PanelDefinition childPanel ) {

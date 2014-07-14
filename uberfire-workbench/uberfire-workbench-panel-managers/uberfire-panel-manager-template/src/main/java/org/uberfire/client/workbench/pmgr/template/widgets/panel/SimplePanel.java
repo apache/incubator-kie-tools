@@ -3,16 +3,16 @@ package org.uberfire.client.workbench.pmgr.template.widgets.panel;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PartDefinition;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
 /**
  * An UberFire panel that can contain zero or one parts.
  */
 public class SimplePanel
-extends Composite {
+extends ResizeComposite {
 
-    private final FlowPanel container = new FlowPanel();
+    private final SimpleLayoutPanel container = new SimpleLayoutPanel();
 
     private PartDefinition partDefinition;
 

@@ -21,10 +21,8 @@ import javax.inject.Inject;
 import org.uberfire.client.workbench.AbstractPanelManagerImpl;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
 @ApplicationScoped
@@ -85,16 +83,6 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
 
         onPanelFocus( newPanel );
         return newPanel;
-    }
-
-    @Override
-    public boolean removePartForPlace( PlaceRequest toRemove ) {
-        final PartDefinition removedPart = getPartForPlace( toRemove );
-        if ( removedPart != null ) {
-            removePart( removedPart );
-            return true;
-        }
-        return false;
     }
 
 }
