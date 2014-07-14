@@ -7,8 +7,10 @@ import org.uberfire.workbench.model.PartDefinition;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 
-public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPanelPresenter> extends BaseWorkbenchTemplatePanelView<P> {
+public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPanelPresenter> extends AbstractWorkbenchTemplatePanelView<P> {
 
     SimplePanel panel = new SimplePanel();
 
@@ -68,6 +70,16 @@ public abstract class AbstractTemplateWorkbenchPanelView<P extends WorkbenchPane
                 onResize();
             }
         } );
+    }
+
+    @Override
+    public void onResize() {
+        Widget w = asWidget();
+        if ( w == this ) {
+            panel.onResize();
+        } else if ( w instanceof RequiresResize ) {
+            ((RequiresResize) w).onResize();
+        }
     }
 
 }

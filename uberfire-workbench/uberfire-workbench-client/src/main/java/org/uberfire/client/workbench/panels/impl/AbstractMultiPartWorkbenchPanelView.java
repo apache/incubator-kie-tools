@@ -16,8 +16,8 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-public abstract class BaseMultiPartWorkbenchPanelView<P extends AbstractMultiPartWorkbenchPanelPresenter>
-extends BaseWorkbenchPanelView<P> {
+public abstract class AbstractMultiPartWorkbenchPanelView<P extends AbstractMultiPartWorkbenchPanelPresenter>
+extends AbstractWorkbenchPanelView<P> {
 
     protected RequiresResizeFlowPanel container = new RequiresResizeFlowPanel();
     protected ContextPanel contextWidget = new ContextPanel();

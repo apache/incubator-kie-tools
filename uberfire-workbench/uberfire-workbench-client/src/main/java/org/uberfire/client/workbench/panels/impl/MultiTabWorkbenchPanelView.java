@@ -18,15 +18,9 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.widgets.tab.UberTabPanel;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.PartDefinition;
-
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 
 /**
  * A Workbench panel that can contain WorkbenchParts.
@@ -34,37 +28,19 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 @Dependent
 @Named("MultiTabWorkbenchPanelView")
 public class MultiTabWorkbenchPanelView
-extends BaseMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
+extends AbstractMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
 
     @Override
     protected MultiPartWidget setupWidget() {
         final UberTabPanel tabPanel = getUberTabPanel();
 
-        Style tabPanelStyle = tabPanel.getElement().getStyle();
-        tabPanelStyle.setPosition( com.google.gwt.dom.client.Style.Position.ABSOLUTE );
-        tabPanelStyle.setTop( 0, Unit.PX );
-        tabPanelStyle.setBottom( 0, Unit.PX );
-        tabPanelStyle.setLeft( 0, Unit.PX );
-        tabPanelStyle.setRight( 0, Unit.PX );
-
-        //When a tab is selected ensure content is resized and set focus
-        tabPanel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
-            @Override
-            public void onSelection( SelectionEvent<PartDefinition> event ) {
-                panelManager.onPartLostFocus();
-                panelManager.onPartFocus( event.getSelectedItem() );
-            }
-        } );
-
-        tabPanel.addOnFocusHandler( new Command() {
-            @Override
-            public void execute() {
-                panelManager.onPanelFocus( presenter.getDefinition() );
-            }
-        } );
+        Layouts.setToFillParent( tabPanel );
+        addOnFocusHandler( tabPanel );
+        addSelectionHandler( tabPanel );
 
         return tabPanel;
     }
+
     UberTabPanel getUberTabPanel() {
         return new UberTabPanel( panelManager );
     }

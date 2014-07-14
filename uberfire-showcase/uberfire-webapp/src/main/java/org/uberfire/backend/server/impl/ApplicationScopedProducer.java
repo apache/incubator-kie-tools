@@ -63,9 +63,10 @@ public class ApplicationScopedProducer {
                 .build();
 
         final IOService service = new IOServiceIndexedImpl( watchService,
-                luceneConfig.getIndexEngine(),
-                DublinCoreView.class,
-                VersionAttributeView.class );
+                                                            luceneConfig.getIndexEngine(),
+                                                            luceneConfig.getIndexers(),
+                                                            DublinCoreView.class,
+                                                            VersionAttributeView.class );
 
         if ( clusterServiceFactory == null ) {
             ioService = service;

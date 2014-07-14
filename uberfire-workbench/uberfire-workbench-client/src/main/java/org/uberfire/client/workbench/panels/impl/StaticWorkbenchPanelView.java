@@ -41,7 +41,7 @@ import com.google.inject.Inject;
 @Dependent
 @Named("StaticWorkbenchPanelView")
 public class StaticWorkbenchPanelView
-extends BaseWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
+extends AbstractWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
 
     @Inject
     PlaceManager placeManager;

@@ -2,13 +2,13 @@ package org.uberfire.client.workbench.pmgr.template.panels.support;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.user.client.ui.Widget;
-
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.BaseWorkbenchPanelView;
+import org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelSupport;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
+
+import com.google.gwt.user.client.ui.Widget;
 
 @ApplicationScoped
 public class PanelSupportImpl implements PanelSupport {
@@ -21,7 +21,7 @@ public class PanelSupportImpl implements PanelSupport {
     }
 
     @Override
-    public void remove( final BaseWorkbenchPanelView<?> view,
+    public void remove( final AbstractWorkbenchPanelView<?> view,
                         final Widget parent ) {
 
     }

@@ -46,6 +46,7 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.metadata.engine.Index;
 
 import static org.junit.Assert.*;
 import static org.uberfire.metadata.io.KObjectUtil.*;
@@ -61,7 +62,10 @@ public class IOServiceIndexedGitImplTest {
     public IOService ioService() {
         if ( ioService == null ) {
             config = new LuceneConfigBuilder().withInMemoryMetaModelStore().useDirectoryBasedIndex().useInMemoryDirectory().build();
-            ioService = new IOServiceIndexedImpl( config.getIndexEngine(), DublinCoreView.class, VersionAttributeView.class );
+            ioService = new IOServiceIndexedImpl( config.getIndexEngine(),
+                                                  config.getIndexers(),
+                                                  DublinCoreView.class,
+                                                  VersionAttributeView.class );
         }
         return ioService;
     }
@@ -135,9 +139,9 @@ public class IOServiceIndexedGitImplTest {
         assertTrue( config.getMetaModelStore().getMetaObject( Path.class.getName() ).getProperty( "int.hello" ).getTypes().contains( String.class ) );
         assertTrue( config.getMetaModelStore().getMetaObject( Path.class.getName() ).getProperty( "custom" ).getTypes().contains( Date.class ) );
 
-        final LuceneIndex index = config.getIndexManager().get( toKCluster( newOtherPath.getFileSystem() ) );
+        final Index index = config.getIndexManager().get( toKCluster( newOtherPath.getFileSystem() ) );
 
-        final IndexSearcher searcher = index.nrtSearcher();
+        final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
 
         {
             final TopScoreDocCollector collector = TopScoreDocCollector.create( 10, true );
@@ -169,7 +173,7 @@ public class IOServiceIndexedGitImplTest {
             assertEquals( 2, hits.length );
         }
 
-        index.nrtRelease( searcher );
+        ( (LuceneIndex) index ).nrtRelease( searcher );
     }
 
     public Path getDirectoryPath() {

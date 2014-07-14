@@ -24,12 +24,9 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
 import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
-import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 @Dependent
 @Named("SimpleWorkbenchPanelView")
 public class SimpleWorkbenchPanelView
-extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
+extends AbstractWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
     @Inject
     protected ListBarWidget listBar;
@@ -66,23 +63,8 @@ extends BaseWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
     private void setupListBarDragAndDrop() {
         listBar.setDndManager( dndManager );
         listBar.setup( false, false );
-
-        //When a tab is selected ensure content is resized and set focus
-        listBar.addSelectionHandler( new SelectionHandler<PartDefinition>() {
-            @Override
-            public void onSelection( SelectionEvent<PartDefinition> event ) {
-                panelManager.onPartLostFocus();
-                panelManager.onPartFocus( event.getSelectedItem() );
-            }
-        } );
-
-        listBar.addOnFocusHandler( new Command() {
-            @Override
-            public void execute() {
-                panelManager.onPanelFocus( presenter.getDefinition() );
-            }
-        } );
-
+        addOnFocusHandler( listBar );
+        addSelectionHandler( listBar );
         listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
     }
 

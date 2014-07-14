@@ -90,7 +90,7 @@
     <version.org.jboss.ejb3.api>3.1.0</version.org.jboss.ejb3.api>
 
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
-    <version.com.google.gwt.gwtmockito>1.1.2</version.com.google.gwt.gwtmockito>
+    <version.com.google.gwt.gwtmockito>1.1.4</version.com.google.gwt.gwtmockito>
   </properties>
 
   <!-- IMPORTANT: Do not declare any build configuration here! Declare it in kie-parent-metadata. -->
@@ -491,6 +491,12 @@
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
+        <version>${version.com.google.gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
         <version>${version.com.google.gwt}</version>
       </dependency>
 
