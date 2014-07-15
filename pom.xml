@@ -78,7 +78,6 @@
         <module>drools-wb-screens</module>
         <module>drools-wb-webapp</module>
         <module>drools-wb-jcr2vfs-migration</module>
-        <module>drools-wb-distribution-wars</module>
       </modules>
     </profile>
   </profiles>
