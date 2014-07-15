@@ -8,6 +8,7 @@ import org.kie.workbench.common.widgets.configresource.client.widget.unbound.Imp
 public interface ProjectImportsScreenView extends HasBusyIndicator,
         IsWidget {
 
+
     interface Presenter {
 
         void onShowMetadata();
