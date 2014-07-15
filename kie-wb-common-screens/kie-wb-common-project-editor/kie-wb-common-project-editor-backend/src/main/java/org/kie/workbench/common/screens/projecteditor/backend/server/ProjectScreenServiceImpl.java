@@ -7,21 +7,22 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
-import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 
@@ -61,7 +62,7 @@ public class ProjectScreenServiceImpl
     }
 
     @Inject
-    public ProjectScreenServiceImpl(ProjectService projectService) {
+    public ProjectScreenServiceImpl( ProjectService projectService ) {
         this.projectService = projectService;
     }
 
@@ -93,9 +94,9 @@ public class ProjectScreenServiceImpl
                       final ProjectScreenModel model,
                       final String comment ) {
         final KieProject project = projectService.resolveProject( pathToPomXML );
-
+        final FileSystem fs = Paths.convert( pathToPomXML ).getFileSystem();
         try {
-            ioService.startBatch( makeCommentedOption( comment ) );
+            ioService.startBatch( fs, makeCommentedOption( comment ) );
             pomService.save( pathToPomXML,
                              model.getPOM(),
                              model.getPOMMetaData(),
@@ -104,14 +105,14 @@ public class ProjectScreenServiceImpl
                                  model.getKModule(),
                                  model.getKModuleMetaData(),
                                  comment );
-            importsService.save(project.getImportsPath(),
-                    model.getProjectImports(),
-                    model.getProjectImportsMetaData(),
-                    comment);
+            importsService.save( project.getImportsPath(),
+                                 model.getProjectImports(),
+                                 model.getProjectImportsMetaData(),
+                                 comment );
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         } finally {
-            ioService.endBatch();
+            ioService.endBatch( fs );
         }
     }
 

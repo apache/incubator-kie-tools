@@ -825,7 +825,7 @@ public class ExplorerServiceImpl
 
         try {
             if ( paths.size() > 1 ) {
-                ioService.startBatch();
+                ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
             }
 
             for ( final Path path : paths ) {
@@ -841,7 +841,7 @@ public class ExplorerServiceImpl
             throw ExceptionUtilities.handleException( e );
         } finally {
             if ( paths.size() > 1 ) {
-                ioService.endBatch();
+                ioService.endBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
             }
         }
     }
@@ -854,7 +854,7 @@ public class ExplorerServiceImpl
 
         try {
             //Always use a batch as RenameHelpers may be involved with the rename operation
-            ioService.startBatch();
+            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -892,7 +892,7 @@ public class ExplorerServiceImpl
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
         } finally {
-            ioService.endBatch();
+            ioService.endBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
         }
     }
 
@@ -904,7 +904,7 @@ public class ExplorerServiceImpl
 
         try {
             //Always use a batch as CopyHelpers may be involved with the rename operation
-            ioService.startBatch();
+            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -942,7 +942,7 @@ public class ExplorerServiceImpl
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
         } finally {
-            ioService.endBatch();
+            ioService.endBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
         }
     }
 

@@ -58,12 +58,14 @@ public class IOServiceMock
     }
 
     @Override
-    public void startBatch( Option... options ) {
+    public void startBatch( FileSystem fs,
+                            Option... options ) {
 
     }
 
     @Override
-    public void endBatch( Option... options ) {
+    public void endBatch( FileSystem fs,
+                          Option... options ) {
 
     }
 

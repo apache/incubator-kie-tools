@@ -28,7 +28,6 @@ import javax.inject.Named;
 
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
@@ -49,6 +48,7 @@ import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
@@ -82,6 +82,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -226,18 +227,19 @@ public class DataModelerServiceImpl implements DataModelerService {
         Long startTime = System.currentTimeMillis();
         boolean onBatch = false;
 
+        final FileSystem fs = Paths.convert(project.getRootPath()).getFileSystem();
         try {
 
             //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
             //to it must be treated carefully.
             CommentedOption option = makeCommentedOption( );
-            ioService.startBatch();
+            ioService.startBatch(fs);
             onBatch = true;
 
             generateModel( dataModel, project, option );
 
             onBatch = false;
-            ioService.endBatch();
+            ioService.endBatch(fs);
 
             Long endTime = System.currentTimeMillis();
             if ( logger.isDebugEnabled() ) {
@@ -254,7 +256,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             if ( onBatch ) {
                 try {
                     logger.warn( "IOService batch method is still on, trying to end batch processing." );
-                    ioService.endBatch();
+                    ioService.endBatch(fs);
                     logger.warn( "IOService batch method is was successfully finished. The user will still get the exception, but the batch processing was finished." );
                 } catch ( Exception ex ) {
                     logger.error( "An error was produced when the IOService.endBatch processing was executed.", ex );
