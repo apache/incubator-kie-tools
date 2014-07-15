@@ -31,9 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
-import org.uberfire.commons.lock.LockService;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.io.lock.FSLockService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FSPath;
 import org.uberfire.java.nio.base.WatchContext;
@@ -115,7 +115,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.views = views;
     }
 
-    public IOServiceIndexedImpl( final LockService lockService,
+    public IOServiceIndexedImpl( final FSLockService lockService,
                                  final IOWatchService watchService,
                                  final MetaIndexEngine indexEngine,
                                  final Class<? extends FileAttributeView>... views ) {
@@ -130,7 +130,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     public IOServiceIndexedImpl( final String id,
-                                 final LockService lockService,
+                                 final FSLockService lockService,
                                  final IOWatchService watchService,
                                  final MetaIndexEngine indexEngine,
                                  final Set<Indexer> additionalIndexers,
