@@ -34,7 +34,6 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -56,7 +55,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -105,7 +104,7 @@ public class DataModelerScreenPresenter {
     private Caller<DataModelerService> modelerService;
 
     @Inject
-    private Caller<ProjectService> projectService;
+    private Caller<KieProjectService> projectService;
 
     private Menus menus;
 
@@ -124,7 +123,7 @@ public class DataModelerScreenPresenter {
     @Inject
     private ProjectContext workbenchContext;
 
-    private KieProject currentProject;
+    private Project currentProject;
 
     private DataModelTO dataModel;
 
@@ -132,7 +131,7 @@ public class DataModelerScreenPresenter {
 
     private boolean open = false;
 
-    private Map<String, DataModelTO.TOStatus> onSaveObjectsStatus = new HashMap<String, DataModelTO.TOStatus>( );
+    private Map<String, DataModelTO.TOStatus> onSaveObjectsStatus = new HashMap<String, DataModelTO.TOStatus>();
 
     @Inject
     private SessionInfo sessionInfo;
@@ -186,38 +185,38 @@ public class DataModelerScreenPresenter {
      */
     public void onSave() {
 
-        if (getContext().isDMOInvalidated()) {
+        if ( getContext().isDMOInvalidated() ) {
 
             //if the DMO was modified by another user we need to give the user the opportunity to force saving his
             //changes or reload the model.
 
             newConcurrentUpdate( getContext().getLastDMOUpdate().getProject().getRootPath(),
-                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //force save.
-                            saveAndChangeProject(true, null);
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel
-                            //the editor remains in current status.
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //re-open, local changes will be discarded.
-                            reload();
-                        }
-                    }
-            ).show();
+                                 getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //force save.
+                                         saveAndChangeProject( true, null );
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //cancel
+                                         //the editor remains in current status.
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //re-open, local changes will be discarded.
+                                         reload();
+                                     }
+                                 }
+                               ).show();
         } else {
             //no concurrency problems, we can save the model directly.
-            saveAndChangeProject(false, null);
+            saveAndChangeProject( false, null );
         }
     }
 
@@ -226,51 +225,51 @@ public class DataModelerScreenPresenter {
      * The user will have the option to save/discard/or force save prior to navigate to the next project.
      *
      */
-    public void onSaveAndChange( final KieProject changeProject ) {
+    public void onSaveAndChange( final Project changeProject ) {
 
-        if (getContext().isDMOInvalidated()) {
+        if ( getContext().isDMOInvalidated() ) {
 
             //The user selected to save current modifications prior to open next project, but the DMO was modified.
             //we need to ask the user if he wants to force writing his changes, or he prefer to discard them.
 
             final String newProjectURI = changeProject.getRootPath().toURI();
             final String currentProjectURI = ( currentProject != null ? currentProject.getRootPath().toURI() : "" );
-            final String externalUser = getContext().getLastDMOUpdate() != null ? getSessionInfoIdentity(getContext().getLastDMOUpdate().getSessionInfo()) : null;
+            final String externalUser = getContext().getLastDMOUpdate() != null ? getSessionInfoIdentity( getContext().getLastDMOUpdate().getSessionInfo() ) : null;
 
-            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Error(),
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Error(),
 
-                    Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change_force(SafeHtmlUtils.htmlEscape(externalUser != null ? externalUser : ""), currentProjectURI ),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //force my changes to be written and then change the project.
-                            saveAndChangeProject(true, changeProject);
-                        }
-                    },
-                    Constants.INSTANCE.modelEditor_action_yes_force_save(),
-                    ButtonType.PRIMARY,
-                    IconType.PLUS_SIGN,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //discard my changes and load next project directly.
-                            loadProjectDataModel(changeProject);
-                        }
-                    },
-                    Constants.INSTANCE.modelEditor_action_no_discard_changes(),
-                    ButtonType.DANGER,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-            );
-            yesNoCancelPopup.setCloseVisible(true);
+                                                                                      Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change_force( SafeHtmlUtils.htmlEscape( externalUser != null ? externalUser : "" ), currentProjectURI ),
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //force my changes to be written and then change the project.
+                                                                                              saveAndChangeProject( true, changeProject );
+                                                                                          }
+                                                                                      },
+                                                                                      Constants.INSTANCE.modelEditor_action_yes_force_save(),
+                                                                                      ButtonType.PRIMARY,
+                                                                                      IconType.PLUS_SIGN,
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //discard my changes and load next project directly.
+                                                                                              loadProjectDataModel( changeProject );
+                                                                                          }
+                                                                                      },
+                                                                                      Constants.INSTANCE.modelEditor_action_no_discard_changes(),
+                                                                                      ButtonType.DANGER,
+                                                                                      null,
+                                                                                      null,
+                                                                                      null,
+                                                                                      null,
+                                                                                      null
+                                                                                    );
+            yesNoCancelPopup.setCloseVisible( true );
             yesNoCancelPopup.show();
 
         } else {
             //no problem, save my changes and load next project.
-            saveAndChangeProject(false, changeProject);
+            saveAndChangeProject( false, changeProject );
         }
     }
 
@@ -279,55 +278,54 @@ public class DataModelerScreenPresenter {
      * Also if the overwrite attribute is true, we will ensure that currentProject pojos will overwrite existing ones.
      * This attribute is used in cases where the project model was concurrently modified during edition and we want
      * to force a rewriting.
-     *
      * @param overwrite true, ensures that what you see in the UI will be the model after generation. This attribute
-     *                   is set to true in when we want to force a model rewriting. false, indicates that we'll proceed
-     *                   as in the normal sequence when the DMO wasn't concurrently modified.
-     *
+     * is set to true in when we want to force a model rewriting. false, indicates that we'll proceed
+     * as in the normal sequence when the DMO wasn't concurrently modified.
      * @param changeProject if this parameter is set, currentProject will be saved, and then the changeProject will be
-     *                      loaded.
+     * loaded.
      */
-    private void saveAndChangeProject(boolean overwrite, final KieProject changeProject) {
+    private void saveAndChangeProject( final boolean overwrite,
+                                       final Project changeProject ) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_saving() );
         setOnSaveObjectsStatus();
 
         modelerService.call(
-            new RemoteCallback<GenerationResult>() {
-                @Override
-                public void callback( GenerationResult result ) {
-                    BusyPopup.close();
-                    restoreModelStatus( result );
-                    cleanOnSaveObjectsStatus();
+                new RemoteCallback<GenerationResult>() {
+                    @Override
+                    public void callback( GenerationResult result ) {
+                        BusyPopup.close();
+                        restoreModelStatus( result );
+                        cleanOnSaveObjectsStatus();
 
-                    Boolean oldDirtyStatus = getContext().isDirty();
-                    getContext().setDirty( false );
-                    getContext().setLastDMOUpdate( null );
-                    getContext().setLastJavaFileChangeEvent( null );
-                    notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
+                        Boolean oldDirtyStatus = getContext().isDirty();
+                        getContext().setDirty( false );
+                        getContext().setLastDMOUpdate( null );
+                        getContext().setLastJavaFileChangeEvent( null );
+                        notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
 
-                    if ( changeProject != null ) {
-                        loadProjectDataModel( changeProject );
+                        if ( changeProject != null ) {
+                            loadProjectDataModel( changeProject );
+                        }
+
+                        dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
+                                                                               getDataModel(),
+                                                                               oldDirtyStatus,
+                                                                               getContext().isDirty() ) );
+
+                        dataModelerEvent.fire( new DataModelSaved( null, getDataModel() ) );
+
                     }
-
-                    dataModelerEvent.fire(new DataModelStatusChangeEvent(DataModelerEvent.DATA_MODEL_BROWSER,
-                            getDataModel(),
-                            oldDirtyStatus,
-                            getContext().isDirty()));
-
-                    dataModelerEvent.fire(new DataModelSaved(null, getDataModel()));
-
-                }
-            },  new CleanOnSaveObjectsStatusRemoteCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(), currentProject, overwrite );
+                }, new CleanOnSaveObjectsStatusRemoteCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(), currentProject, overwrite );
     }
 
     private void setOnSaveObjectsStatus() {
         cleanOnSaveObjectsStatus();
-        if (getDataModel() != null) {
-            for (DataObjectTO dataObjectTO : getDataModel().getDataObjects()) {
+        if ( getDataModel() != null ) {
+            for ( DataObjectTO dataObjectTO : getDataModel().getDataObjects() ) {
                 onSaveObjectsStatus.put( dataObjectTO.getClassName(), dataObjectTO.getStatus() );
             }
-            for (DataObjectTO dataObjectTO : getDataModel().getDeletedDataObjects()) {
+            for ( DataObjectTO dataObjectTO : getDataModel().getDeletedDataObjects() ) {
                 onSaveObjectsStatus.put( dataObjectTO.getOriginalClassName(), dataObjectTO.getStatus() );
             }
         }
@@ -337,7 +335,7 @@ public class DataModelerScreenPresenter {
         onSaveObjectsStatus.clear();
     }
 
-    private void loadProjectDataModel( final KieProject project ) {
+    private void loadProjectDataModel( final Project project ) {
 
         BusyPopup.showMessage( Constants.INSTANCE.modelEditor_loading() );
 
@@ -351,10 +349,10 @@ public class DataModelerScreenPresenter {
 
                 projectService.call( new RemoteCallback<Collection<Package>>() {
 
-                    public void callback(Collection<Package> packages) {
+                    public void callback( Collection<Package> packages ) {
 
                         context.cleanPackages();
-                        context.appendPackages(packages);
+                        context.appendPackages( packages );
 
                         modelerService.call(
                                 new RemoteCallback<DataModelTO>() {
@@ -364,8 +362,8 @@ public class DataModelerScreenPresenter {
                                         BusyPopup.close();
 
                                         getContext().setDirty( false );
-                                        getContext().setLastDMOUpdate(null);
-                                        getContext().setLastJavaFileChangeEvent(null);
+                                        getContext().setLastDMOUpdate( null );
+                                        getContext().setLastJavaFileChangeEvent( null );
 
                                         dataModel.setParentProjectName( projectRootPath.getFileName() );
                                         setDataModel( dataModel );
@@ -374,13 +372,13 @@ public class DataModelerScreenPresenter {
                                     }
 
                                 },
-                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel(project);
+                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel( project );
 
                     }
-                }, new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_loading_error())).resolvePackages(project);
+                }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).resolvePackages( project );
             }
-        },new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
-        ).getAnnotationDefinitions();
+        }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
+                           ).getAnnotationDefinitions();
 
         currentProject = project;
     }
@@ -410,25 +408,25 @@ public class DataModelerScreenPresenter {
 
     private void onNewDataObject() {
 
-        if (getContext().isDMOInvalidated()) {
+        if ( getContext().isDMOInvalidated() ) {
             newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
-                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //ignore external changes
-                            newDataObjectPopup.setContext( getContext() );
-                            newDataObjectPopup.show();
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //re-open
-                            reload();
-                        }
-                    }
-            ).show();
+                                 getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //ignore external changes
+                                         newDataObjectPopup.setContext( getContext() );
+                                         newDataObjectPopup.show();
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //re-open
+                                         reload();
+                                     }
+                                 }
+                               ).show();
         } else {
             newDataObjectPopup.setContext( getContext() );
             newDataObjectPopup.show();
@@ -443,66 +441,67 @@ public class DataModelerScreenPresenter {
         processProjectChange( project );
     }
 
-    private void onDataModelReload( @Observes final DataModelReload event) {
-        if (event.isFrom(getDataModel())) {
+    private void onDataModelReload( @Observes final DataModelReload event ) {
+        if ( event.isFrom( getDataModel() ) ) {
             //Some of the related widgets has sent this event in order to re-load the model.
             reload();
         }
     }
 
-    private void onResourceAdded(@Observes  final ResourceAddedEvent resourceAddedEvent) {
-        processExternalFileChange(resourceAddedEvent.getSessionInfo(), resourceAddedEvent);
+    private void onResourceAdded( @Observes final ResourceAddedEvent resourceAddedEvent ) {
+        processExternalFileChange( resourceAddedEvent.getSessionInfo(), resourceAddedEvent );
     }
 
-    private void onResourceRenamed(@Observes final ResourceRenamedEvent resourceRenamedEvent) {
-        processExternalFileChange(resourceRenamedEvent.getSessionInfo(), resourceRenamedEvent);
+    private void onResourceRenamed( @Observes final ResourceRenamedEvent resourceRenamedEvent ) {
+        processExternalFileChange( resourceRenamedEvent.getSessionInfo(), resourceRenamedEvent );
     }
 
-    private void onResourceDeleted(@Observes final ResourceDeletedEvent resourceDeletedEvent) {
-        processExternalFileChange(resourceDeletedEvent.getSessionInfo(), resourceDeletedEvent);
+    private void onResourceDeleted( @Observes final ResourceDeletedEvent resourceDeletedEvent ) {
+        processExternalFileChange( resourceDeletedEvent.getSessionInfo(), resourceDeletedEvent );
     }
 
-    private void onResourceUpdated(@Observes final ResourceUpdatedEvent resourceUpdatedEvent) {
-        processExternalFileChange(resourceUpdatedEvent.getSessionInfo(), resourceUpdatedEvent);
+    private void onResourceUpdated( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
+        processExternalFileChange( resourceUpdatedEvent.getSessionInfo(), resourceUpdatedEvent );
     }
 
-    private void onResourceCopied(@Observes final ResourceCopiedEvent resourceCopiedEvent) {
-        processExternalFileChange(resourceCopiedEvent.getSessionInfo(), resourceCopiedEvent);
+    private void onResourceCopied( @Observes final ResourceCopiedEvent resourceCopiedEvent ) {
+        processExternalFileChange( resourceCopiedEvent.getSessionInfo(), resourceCopiedEvent );
     }
 
-    private void processExternalFileChange(SessionInfo evtSessionInfo, ResourceEvent resourceEvent) {
-        if (sessionInfo.equals(evtSessionInfo) && resourceEvent.getPath().getFileName().endsWith(".java")
-            && currentProject != null && resourceEvent.getPath().toURI().startsWith(currentProject.getRootPath().toURI())) {
+    private void processExternalFileChange( SessionInfo evtSessionInfo,
+                                            ResourceEvent resourceEvent ) {
+        if ( sessionInfo.equals( evtSessionInfo ) && resourceEvent.getPath().getFileName().endsWith( ".java" )
+                && currentProject != null && resourceEvent.getPath().toURI().startsWith( currentProject.getRootPath().toURI() ) ) {
 
             boolean notifyChange = false;
             Path path = null;
 
-            if (resourceEvent instanceof ResourceRenamedEvent || resourceEvent instanceof ResourceCopiedEvent) {
+            if ( resourceEvent instanceof ResourceRenamedEvent || resourceEvent instanceof ResourceCopiedEvent ) {
                 //datamodeller never generates these events
-                path = resourceEvent instanceof ResourceRenamedEvent ? ((ResourceRenamedEvent)resourceEvent).getDestinationPath() : ((ResourceCopiedEvent)resourceEvent).getDestinationPath();
+                path = resourceEvent instanceof ResourceRenamedEvent ? ( (ResourceRenamedEvent) resourceEvent ).getDestinationPath() : ( (ResourceCopiedEvent) resourceEvent ).getDestinationPath();
                 notifyChange = true;
-            } else if (resourceEvent instanceof ResourceAddedEvent) {
+            } else if ( resourceEvent instanceof ResourceAddedEvent ) {
                 path = resourceEvent.getPath();
-                if (getDataModel() != null) {
-                    String className = DataModelerUtils.calculateExpectedClassName(currentProject.getRootPath(), resourceEvent.getPath());
-                    if (className != null) {
-                        DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName(className);
-                        if (dataObjectTO == null || (dataObjectTO.isVolatile() && !onSaveObjectsStatus.containsKey( className ) )) {
+                if ( getDataModel() != null ) {
+                    String className = DataModelerUtils.calculateExpectedClassName( currentProject.getRootPath(), resourceEvent.getPath() );
+                    if ( className != null ) {
+                        DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName( className );
+                        if ( dataObjectTO == null || ( dataObjectTO.isVolatile() && !onSaveObjectsStatus.containsKey( className ) ) ) {
                             notifyChange = true;
                         }
                     }
                 }
-            } else if (resourceEvent instanceof ResourceDeletedEvent) {
+            } else if ( resourceEvent instanceof ResourceDeletedEvent ) {
                 path = resourceEvent.getPath();
-                if (getDataModel() != null) {
-                    String className = DataModelerUtils.calculateExpectedClassName(currentProject.getRootPath(), resourceEvent.getPath());
-                    if (className != null) {
-                        DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName(className);
-                        if (dataObjectTO != null) {
+                if ( getDataModel() != null ) {
+                    String className = DataModelerUtils.calculateExpectedClassName( currentProject.getRootPath(), resourceEvent.getPath() );
+                    if ( className != null ) {
+                        DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName( className );
+                        if ( dataObjectTO != null ) {
                             notifyChange = true;
                         } else {
-                            for (DataObjectTO deletedObject : getDataModel().getDeletedDataObjects()) {
-                                if (className.equals(deletedObject.getClassName()) && !onSaveObjectsStatus.containsKey( deletedObject.getClassName() )) {
+                            for ( DataObjectTO deletedObject : getDataModel().getDeletedDataObjects() ) {
+                                if ( className.equals( deletedObject.getClassName() ) && !onSaveObjectsStatus.containsKey( deletedObject.getClassName() ) ) {
                                     notifyChange = true;
                                     break;
                                 }
@@ -510,7 +509,7 @@ public class DataModelerScreenPresenter {
                         }
                     }
                 }
-            } else if (resourceEvent instanceof ResourceUpdatedEvent) {
+            } else if ( resourceEvent instanceof ResourceUpdatedEvent ) {
                 //TODO:
                 //at the moment the only editor that can update a .java file in this same session and same user is the
                 //datamodeller. So when we reach this point it means that the ResourceUpdateEvent for this .java file
@@ -520,14 +519,14 @@ public class DataModelerScreenPresenter {
                 // So no extra control is needed in this case.
 
                 //modelerService.call( new FileVerificationRemoteCallback(evtSessionInfo, resourceEvent.getPath()),
-                        //new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).verifiesHash(resourceEvent.getPath());
+                //new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).verifiesHash(resourceEvent.getPath());
             }
 
-            if (notifyChange) {
-                InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo, currentProject, path);
-                getContext().setLastJavaFileChangeEvent(event);
-                if (getContext().isDirty()) {
-                    notifyExternalDMOChange(event);
+            if ( notifyChange ) {
+                InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent( sessionInfo, currentProject, path );
+                getContext().setLastJavaFileChangeEvent( event );
+                if ( getContext().isDirty() ) {
+                    notifyExternalDMOChange( event );
                 }
             }
         }
@@ -538,12 +537,13 @@ public class DataModelerScreenPresenter {
         public CleanOnSaveObjectsStatusRemoteCallback() {
         }
 
-        public CleanOnSaveObjectsStatusRemoteCallback(String localMessage) {
-            super(localMessage);
+        public CleanOnSaveObjectsStatusRemoteCallback( String localMessage ) {
+            super( localMessage );
         }
 
         @Override
-        public boolean error( final Message message, final Throwable throwable ) {
+        public boolean error( final Message message,
+                              final Throwable throwable ) {
             cleanOnSaveObjectsStatus();
             return super.error( message, throwable );
         }
@@ -558,23 +558,24 @@ public class DataModelerScreenPresenter {
         private FileVerificationRemoteCallback() {
         }
 
-        public FileVerificationRemoteCallback(SessionInfo sessionInfo, Path path) {
+        public FileVerificationRemoteCallback( SessionInfo sessionInfo,
+                                               Path path ) {
             this.sessionInfo = sessionInfo;
             this.path = path;
         }
 
         @Override
-        public void callback(Boolean verifiesHash) {
+        public void callback( Boolean verifiesHash ) {
             /**
-            if (!verifiesHash) {
-                InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo, currentProject, path);
-                getContext().setLastJavaFileChangeEvent(event);
+             if (!verifiesHash) {
+             InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo, currentProject, path);
+             getContext().setLastJavaFileChangeEvent(event);
 
-                if (getContext().isDirty()) {
-                    notifyExternalDMOChange(event);
-                }
-            }
-            **/
+             if (getContext().isDirty()) {
+             notifyExternalDMOChange(event);
+             }
+             }
+             **/
         }
     }
 
@@ -590,9 +591,7 @@ public class DataModelerScreenPresenter {
      */
     private void processProjectChange( final Project newProject ) {
 
-        if ( newProject != null && isOpen() && currentProjectChanged( newProject ) && newProject instanceof KieProject ) {
-
-            final KieProject project = (KieProject) newProject;
+        if ( newProject != null && isOpen() && currentProjectChanged( newProject )) {
 
             //the project has changed and we have pending changes to save.
             final String newProjectURI = newProject.getRootPath().toURI();
@@ -600,51 +599,51 @@ public class DataModelerScreenPresenter {
             if ( getContext() != null && getContext().isDirty() ) {
                 //when the project changed, and the current project is dirty we give the opportunity to the user
                 //to save current changes prior to open the destination project.
-                YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Warning(),
-                        Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change( currentProjectURI,
-                        newProjectURI ),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                //ok, the user wants to save current changes and then open next project.
-                                //save current project and open the new project.
-                                onSaveAndChange(project);
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                //not save current changes, simply open the new project.
-                                loadProjectDataModel(project);
-                            }
-                        },
-                        null
-                );
-                yesNoCancelPopup.setCloseVisible(false);
+                YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
+                                                                                          Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change( currentProjectURI,
+                                                                                                                                                                   newProjectURI ),
+                                                                                          new Command() {
+                                                                                              @Override
+                                                                                              public void execute() {
+                                                                                                  //ok, the user wants to save current changes and then open next project.
+                                                                                                  //save current project and open the new project.
+                                                                                                  onSaveAndChange( newProject );
+                                                                                              }
+                                                                                          },
+                                                                                          new Command() {
+                                                                                              @Override
+                                                                                              public void execute() {
+                                                                                                  //not save current changes, simply open the new project.
+                                                                                                  loadProjectDataModel( newProject );
+                                                                                              }
+                                                                                          },
+                                                                                          null
+                                                                                        );
+                yesNoCancelPopup.setCloseVisible( false );
                 yesNoCancelPopup.show();
             } else if ( currentProject != null ) {
                 //no pending changes, so simply notify the user that another project will be opened.
-                YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
-                        Constants.INSTANCE.modelEditor_notify_project_change( currentProjectURI, newProjectURI ),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                //simply open the new project.
-                                loadProjectDataModel(project);
-                            }
-                        },
-                        CommonConstants.INSTANCE.OK(),
-                        null,
-                        null,
-                        null,
-                        null
-                );
-                yesNoCancelPopup.setCloseVisible(false);
+                YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                                                                                          Constants.INSTANCE.modelEditor_notify_project_change( currentProjectURI, newProjectURI ),
+                                                                                          new Command() {
+                                                                                              @Override
+                                                                                              public void execute() {
+                                                                                                  //simply open the new project.
+                                                                                                  loadProjectDataModel( newProject );
+                                                                                              }
+                                                                                          },
+                                                                                          CommonConstants.INSTANCE.OK(),
+                                                                                          null,
+                                                                                          null,
+                                                                                          null,
+                                                                                          null
+                                                                                        );
+                yesNoCancelPopup.setCloseVisible( false );
                 yesNoCancelPopup.show();
             } else {
                 //if currentProject is null, we are at the window opening type, simply load the data model
                 //to start working.
-                loadProjectDataModel(project);
+                loadProjectDataModel( newProject );
             }
         } else {
             //TODO check if this is possible. By definition we will always have a path.
@@ -658,7 +657,7 @@ public class DataModelerScreenPresenter {
         return !newProject.getRootPath().equals( currentProject.getRootPath() );
     }
 
-    private void processDMOChange(@Observes InvalidateDMOProjectCacheEvent evt) {
+    private void processDMOChange( @Observes InvalidateDMOProjectCacheEvent evt ) {
         /*
         Window.alert("InvalidateDMOProjectCacheEvent was received: \n" +
                 " currentSessionInfo: \n" + printSessionInfo(sessionInfo) +
@@ -667,59 +666,58 @@ public class DataModelerScreenPresenter {
                 " eventID: " + evt.getEventId());
         */
         //filter if the event is related to current project
-        if (currentProject != null && currentProject.getRootPath().equals( evt.getProject().getRootPath() ) && sessionInfo != null ) {
+        if ( currentProject != null && currentProject.getRootPath().equals( evt.getProject().getRootPath() ) && sessionInfo != null ) {
 
-
-            if (!sessionInfo.equals(evt.getSessionInfo())
-                    || isDMOChangeSensitivePath(evt.getResourcePath()) ) {
+            if ( !sessionInfo.equals( evt.getSessionInfo() )
+                    || isDMOChangeSensitivePath( evt.getResourcePath() ) ) {
                 //the project data model oracle was changed because of another user different than me OR
                 //the modification was done by me, executing in the same session but saving the project
                 //likely in the project editor.
 
                 //current project DMO was concurrently modified.
-                getContext().setLastDMOUpdate(evt);
+                getContext().setLastDMOUpdate( evt );
 
-                if (getContext().isDirty()) {
-                    notifyExternalDMOChange(evt);
+                if ( getContext().isDirty() ) {
+                    notifyExternalDMOChange( evt );
                 }
             } else {
                 //the event was generated when I saved the model
-                getContext().setLastDMOUpdate(null);
+                getContext().setLastDMOUpdate( null );
             }
         }
     }
 
-    boolean isDMOChangeSensitivePath(Path path) {
+    boolean isDMOChangeSensitivePath( Path path ) {
         return path != null &&
-        (path.getFileName().equals("pom.xml") ||
-         path.getFileName().endsWith(".drl") ||
-         path.getFileName().equals("kmodule.xml") ||
-         path.getFileName().equals("project.imports") ||
-         path.getFileName().equals("import.suggestions") );
+                ( path.getFileName().equals( "pom.xml" ) ||
+                        path.getFileName().endsWith( ".drl" ) ||
+                        path.getFileName().equals( "kmodule.xml" ) ||
+                        path.getFileName().equals( "project.imports" ) ||
+                        path.getFileName().equals( "import.suggestions" ) );
     }
 
-    private void notifyExternalDMOChange(InvalidateDMOProjectCacheEvent evt) {
+    private void notifyExternalDMOChange( InvalidateDMOProjectCacheEvent evt ) {
 
         newConcurrentChange( evt.getProject().getRootPath(),
-                evt.getSessionInfo().getIdentity(),
-                new Command() {
-                    @Override
-                    public void execute() {
-                        //ignore, do nothing.
-                    }
-                },
-                new Command() {
-                    @Override
-                    public void execute() {
-                        reload();
-                    }
-                }
-        ).show();
+                             evt.getSessionInfo().getIdentity(),
+                             new Command() {
+                                 @Override
+                                 public void execute() {
+                                     //ignore, do nothing.
+                                 }
+                             },
+                             new Command() {
+                                 @Override
+                                 public void execute() {
+                                     reload();
+                                 }
+                             }
+                           ).show();
 
     }
 
     private void reload() {
-        loadProjectDataModel(currentProject);
+        loadProjectDataModel( currentProject );
     }
 
     private void restoreModelStatus( GenerationResult result ) {
@@ -733,7 +731,7 @@ public class DataModelerScreenPresenter {
         UnpublishMessagesEvent unpublishMessage = new UnpublishMessagesEvent();
         unpublishMessage.setShowSystemConsole( false );
         unpublishMessage.setMessageType( "DataModeler" );
-        unpublishMessage.setUserId( (sessionInfo != null && sessionInfo.getIdentity() != null) ? sessionInfo.getIdentity().getName() : null );
+        unpublishMessage.setUserId( ( sessionInfo != null && sessionInfo.getIdentity() != null ) ? sessionInfo.getIdentity().getName() : null );
         unpublishMessagesEvent.fire( unpublishMessage );
     }
 
@@ -743,43 +741,43 @@ public class DataModelerScreenPresenter {
         final StringBuilder message = new StringBuilder();
         boolean isFirst = true;
 
-        message.append(Constants.INSTANCE.modelEditor_notify_externally_modified_objects_read());
-        message.append("</BR>");
-        message.append("</BR>");
+        message.append( Constants.INSTANCE.modelEditor_notify_externally_modified_objects_read() );
+        message.append( "</BR>" );
+        message.append( "</BR>" );
 
-        if (dataModelTO != null && dataModelTO.getDataObjects() != null) {
-            for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
-                if (dataObjectTO.isExternallyModified()) {
-                    readonlyObjects.add(dataObjectTO.getClassName());
+        if ( dataModelTO != null && dataModelTO.getDataObjects() != null ) {
+            for ( DataObjectTO dataObjectTO : dataModelTO.getDataObjects() ) {
+                if ( dataObjectTO.isExternallyModified() ) {
+                    readonlyObjects.add( dataObjectTO.getClassName() );
                 }
             }
         }
 
-        Collections.sort(readonlyObjects);
-        for (String readonlyObject : readonlyObjects) {
-            if (!isFirst) {
-                message.append("</BR>");
+        Collections.sort( readonlyObjects );
+        for ( String readonlyObject : readonlyObjects ) {
+            if ( !isFirst ) {
+                message.append( "</BR>" );
             }
-            message.append(readonlyObject);
+            message.append( readonlyObject );
             isFirst = false;
         }
 
-        if (readonlyObjects.size() > 0) {
-            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
-                    message.toString(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //do nothing.
-                        }
-                    },
-                    CommonConstants.INSTANCE.OK(),
-                    null,
-                    null,
-                    null,
-                    null
-            );
-            yesNoCancelPopup.setCloseVisible(false);
+        if ( readonlyObjects.size() > 0 ) {
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                                                                                      message.toString(),
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //do nothing.
+                                                                                          }
+                                                                                      },
+                                                                                      CommonConstants.INSTANCE.OK(),
+                                                                                      null,
+                                                                                      null,
+                                                                                      null,
+                                                                                      null
+                                                                                    );
+            yesNoCancelPopup.setCloseVisible( false );
             yesNoCancelPopup.show();
         }
     }
@@ -811,21 +809,21 @@ public class DataModelerScreenPresenter {
                     }
                 },
                 new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_propertyType_loading_error() )
-        ).getBasePropertyTypes();
+                           ).getBasePropertyTypes();
     }
 
     private void clearContext() {
         context.clear();
     }
 
-    private static String printSessionInfo(SessionInfo sessionInfo) {
-        if (sessionInfo != null) {
-            return " [id: " + sessionInfo.getId() + ", identity: " + (sessionInfo.getIdentity() != null ? sessionInfo.getIdentity().getName() : null) + " ]";
+    private static String printSessionInfo( SessionInfo sessionInfo ) {
+        if ( sessionInfo != null ) {
+            return " [id: " + sessionInfo.getId() + ", identity: " + ( sessionInfo.getIdentity() != null ? sessionInfo.getIdentity().getName() : null ) + " ]";
         }
         return null;
     }
 
-    private static String getSessionInfoIdentity(SessionInfo sessionInfo) {
+    private static String getSessionInfoIdentity( SessionInfo sessionInfo ) {
         return sessionInfo != null && sessionInfo.getIdentity() != null ? sessionInfo.getIdentity().getName() : null;
     }
 }

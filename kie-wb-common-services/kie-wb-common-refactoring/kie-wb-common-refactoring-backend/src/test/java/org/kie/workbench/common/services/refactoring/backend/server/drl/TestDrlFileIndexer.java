@@ -27,13 +27,13 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.model.KObject;
 import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -47,7 +47,7 @@ public class TestDrlFileIndexer implements TestIndexer<TestDrlFileTypeDefinition
 
     private IOService ioService;
 
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     private TestDrlFileTypeDefinition type;
 
@@ -57,7 +57,7 @@ public class TestDrlFileIndexer implements TestIndexer<TestDrlFileTypeDefinition
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
+    public void setProjectService( final KieProjectService projectService ) {
         this.projectService = projectService;
     }
 

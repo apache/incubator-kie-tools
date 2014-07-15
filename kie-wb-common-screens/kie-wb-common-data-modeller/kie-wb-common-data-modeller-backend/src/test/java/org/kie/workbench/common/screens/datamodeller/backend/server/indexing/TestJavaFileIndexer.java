@@ -16,12 +16,11 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server.indexing;
 
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -35,7 +34,7 @@ public class TestJavaFileIndexer extends JavaFileIndexer implements TestIndexer<
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
+    public void setProjectService( final KieProjectService projectService ) {
         this.projectService = projectService;
     }
 
@@ -45,13 +44,13 @@ public class TestJavaFileIndexer extends JavaFileIndexer implements TestIndexer<
     }
 
     @Override
-    protected ClassLoader getProjectClassLoader( KieProject project ) {
+    protected ClassLoader getProjectClassLoader( final KieProject project ) {
         //for testing purposes
         return this.getClass().getClassLoader();
     }
 
     @Override
-    protected KieProject getProject( Path path ) {
+    protected KieProject getProject( final Path path ) {
         final org.uberfire.backend.vfs.Path mockRoot = mock( org.uberfire.backend.vfs.Path.class );
         when( mockRoot.toURI() ).thenReturn( BaseIndexingTest.TEST_PROJECT_ROOT );
 
@@ -61,7 +60,7 @@ public class TestJavaFileIndexer extends JavaFileIndexer implements TestIndexer<
     }
 
     @Override
-    protected Package getPackage( Path path ) {
+    protected Package getPackage( final Path path ) {
         final org.guvnor.common.services.project.model.Package mockPackage = mock( Package.class );
         when( mockPackage.getPackageName() ).thenReturn( BaseIndexingTest.TEST_PACKAGE_NAME );
         return mockPackage;

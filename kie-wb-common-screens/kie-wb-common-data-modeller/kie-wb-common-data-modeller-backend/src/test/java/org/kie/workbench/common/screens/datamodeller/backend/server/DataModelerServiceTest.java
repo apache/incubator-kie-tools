@@ -7,8 +7,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +17,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -41,11 +40,11 @@ public class DataModelerServiceTest {
         beanManager = startMain.go().getBeanManager();
 
         //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = ( Bean ) beanManager.getBeans( Paths.class ).iterator().next();
+        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = ( Paths ) beanManager.getReference( pathsBean,
-                Paths.class,
-                cc );
+        paths = (Paths) beanManager.getReference( pathsBean,
+                                                  Paths.class,
+                                                  cc );
 
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
@@ -55,18 +54,18 @@ public class DataModelerServiceTest {
     public void testDataModelerService() throws Exception {
 
         //Create DataModelerService bean
-        final Bean dataModelServiceBean = ( Bean ) beanManager.getBeans( DataModelerService.class ).iterator().next();
+        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelerService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelerService dataModelService = ( DataModelerService ) beanManager.getReference( dataModelServiceBean,
-                DataModelerService.class,
-                cc );
+        final DataModelerService dataModelService = (DataModelerService) beanManager.getReference( dataModelServiceBean,
+                                                                                                   DataModelerService.class,
+                                                                                                   cc );
 
         //Create ProjectServiceBean
-        final Bean projectServiceBean = ( Bean ) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext pscc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService<KieProject> projectService = ( ProjectService ) beanManager.getReference( projectServiceBean,
-                ProjectService.class,
-                pscc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               pscc );
 
         final URL packageUrl = this.getClass().getResource( "/DataModelerTest1" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
@@ -177,17 +176,28 @@ public class DataModelerServiceTest {
 
     }
 
-    private DataObjectTO createDataObject( String name, String packageName, String superClassName ) {
+    private DataObjectTO createDataObject( String name,
+                                           String packageName,
+                                           String superClassName ) {
         return new DataObjectTO( name, packageName, superClassName );
     }
 
-    private ObjectPropertyTO addProperty( DataObjectTO dataObjectTO, String name, String className, boolean baseType, boolean multiple, String bag ) {
+    private ObjectPropertyTO addProperty( DataObjectTO dataObjectTO,
+                                          String name,
+                                          String className,
+                                          boolean baseType,
+                                          boolean multiple,
+                                          String bag ) {
         //todo set modifiers.
         ObjectPropertyTO propertyTO = new ObjectPropertyTO( name, className, multiple, baseType, bag, -1 );
         return propertyTO;
     }
 
-    private AnnotationTO createAnnotation( Map<String, AnnotationDefinitionTO> systemAnnotations, String name, String className, String memberName, String value ) {
+    private AnnotationTO createAnnotation( Map<String, AnnotationDefinitionTO> systemAnnotations,
+                                           String name,
+                                           String className,
+                                           String memberName,
+                                           String value ) {
         AnnotationDefinitionTO annotationDefinitionTO = systemAnnotations.get( className );
 
         AnnotationTO annotationTO = new AnnotationTO( annotationDefinitionTO );

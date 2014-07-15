@@ -23,10 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.core.base.ClassTypeResolver;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.FieldSource;
@@ -50,11 +47,13 @@ import org.kie.workbench.common.screens.datamodeller.model.index.terms.valueterm
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.valueterms.ValueJavaTypeNameIndexTerm;
 import org.kie.workbench.common.screens.datamodeller.model.index.terms.valueterms.ValueJavaTypeParentIndexTerm;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -100,7 +99,8 @@ public class JavaFileIndexer implements Indexer {
     @Named("ioStrategy")
     protected IOService ioService;
 
-    protected ProjectService<KieProject> projectService;
+    @Inject
+    protected KieProjectService projectService;
 
     @Inject
     private LRUBuilderCache builderCache;
@@ -108,21 +108,13 @@ public class JavaFileIndexer implements Indexer {
     @Inject
     protected JavaResourceTypeDefinition javaResourceTypeDefinition;
 
-    public JavaFileIndexer() {
-    }
-
-    @Inject
-    public JavaFileIndexer(ProjectService projectService) {
-        this.projectService = projectService;
-    }
-
     @Override
-    public boolean supportsPath( Path path ) {
+    public boolean supportsPath( final Path path ) {
         return javaResourceTypeDefinition.accept( Paths.convert( path ) );
     }
 
     @Override
-    public KObject toKObject( Path path ) {
+    public KObject toKObject( final Path path ) {
         KObject index = null;
 
         try {
@@ -179,9 +171,9 @@ public class JavaFileIndexer implements Indexer {
         return index;
     }
 
-    private void addJavaTypeTerms( JavaClassSource javaClassSource,
-                                   DefaultIndexBuilder builder,
-                                   ClassLoader classLoader ) {
+    private void addJavaTypeTerms( final JavaClassSource javaClassSource,
+                                   final DefaultIndexBuilder builder,
+                                   final ClassLoader classLoader ) {
 
         ClassTypeResolver classTypeResolver = DriverUtils.getInstance().createClassTypeResolver( javaClassSource, classLoader );
         DriverUtils driverUtils = DriverUtils.getInstance();
@@ -260,7 +252,7 @@ public class JavaFileIndexer implements Indexer {
         return projectService.resolvePackage( Paths.convert( path ) );
     }
 
-    protected ClassLoader getProjectClassLoader( KieProject project ) {
+    protected ClassLoader getProjectClassLoader( final KieProject project ) {
         final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
         final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
         return classLoader;

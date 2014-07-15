@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
@@ -39,7 +38,7 @@ public class MockBuildServiceCaller
     private boolean buildWasCalled = false;
 
     public MockBuildServiceCaller() {
-        service = new BuildService<Project>() {
+        service = new BuildService() {
 
             @Override
             public BuildResults build( Project project ) {

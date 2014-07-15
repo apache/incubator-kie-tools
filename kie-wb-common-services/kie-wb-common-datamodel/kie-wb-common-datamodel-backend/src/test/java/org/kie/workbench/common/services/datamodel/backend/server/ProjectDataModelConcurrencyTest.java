@@ -14,8 +14,6 @@ import org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,6 +23,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -85,7 +85,7 @@ public class ProjectDataModelConcurrencyTest {
     private BuildService buildService;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     private DataModelService dataModelService;
@@ -114,7 +114,7 @@ public class ProjectDataModelConcurrencyTest {
         final Path resourcePath = paths.convert( nioResourcePath );
 
         //Force full build before attempting incremental changes
-        final Project project = projectService.resolveProject( resourcePath );
+        final KieProject project = projectService.resolveProject( resourcePath );
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
@@ -195,7 +195,7 @@ public class ProjectDataModelConcurrencyTest {
 
     }
 
-    private void invalidateCaches( final Project project,
+    private void invalidateCaches( final KieProject project,
                                    final Path resourcePath ) {
         invalidateDMOProjectCacheEvent.fire( new InvalidateDMOProjectCacheEvent( sessionInfo,
                                                                                  project,

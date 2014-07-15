@@ -27,11 +27,11 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.junit.Test;
 import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
 import org.kie.uberfire.metadata.engine.Index;
 import org.kie.uberfire.metadata.io.KObjectUtil;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -112,8 +112,8 @@ public class IndexCopiedResourcesTest extends BaseIndexingTest {
     }
 
     @Override
-    protected ProjectService getProjectService() {
-        return mock( ProjectService.class );
+    protected KieProjectService getProjectService() {
+        return mock( KieProjectService.class );
     }
 
 }

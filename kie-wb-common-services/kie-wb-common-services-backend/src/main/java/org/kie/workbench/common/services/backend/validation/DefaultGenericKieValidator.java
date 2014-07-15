@@ -29,13 +29,13 @@ import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.PomFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -57,7 +57,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
     private IOService ioService;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     //Exclude dot-files
     private final DirectoryStream.Filter<org.uberfire.java.nio.file.Path> dotFileFilter = new DotFileFilter();

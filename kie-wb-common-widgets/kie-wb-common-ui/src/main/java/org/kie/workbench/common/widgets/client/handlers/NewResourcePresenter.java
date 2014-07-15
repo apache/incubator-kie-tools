@@ -26,10 +26,10 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.mvp.UberView;
@@ -67,7 +67,7 @@ public class NewResourcePresenter {
     private SyncBeanManager iocBeanManager;
 
     @Inject
-    private Caller<ProjectService> projectService;
+    private Caller<KieProjectService> projectService;
 
     @Inject
     private View view;

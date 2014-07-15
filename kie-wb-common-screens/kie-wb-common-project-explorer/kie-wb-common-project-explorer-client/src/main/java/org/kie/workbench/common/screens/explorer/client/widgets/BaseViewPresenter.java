@@ -454,8 +454,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                         buildResultsEvent.fire( results );
                     }
                 },
-                new DefaultErrorCallback()
-                         ).build( project );
+                new DefaultErrorCallback() ).build( project );
     }
 
     @Override

@@ -22,13 +22,13 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
-import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
+import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -42,7 +42,7 @@ public class KModuleServiceImpl
         implements KModuleService {
 
     private IOService ioService;
-    private ProjectService<KieProject> projectService;
+    private KieProjectService projectService;
     private MetadataService metadataService;
     private KModuleContentHandler moduleContentHandler;
     private Identity identity;
@@ -54,7 +54,7 @@ public class KModuleServiceImpl
 
     @Inject
     public KModuleServiceImpl( final @Named("ioStrategy") IOService ioService,
-                               final ProjectService projectService,
+                               final KieProjectService projectService,
                                final MetadataService metadataService,
                                final KModuleContentHandler moduleContentHandler,
                                final Identity identity,
@@ -64,7 +64,7 @@ public class KModuleServiceImpl
         this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
         this.identity = identity;
-        this.sessionInfo = new SafeSessionInfo(sessionInfo);
+        this.sessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
     @Override
@@ -76,7 +76,7 @@ public class KModuleServiceImpl
             }
 
             //Check if path equals kmodule.xml
-            final KieProject project = projectService.resolveProject(resource);
+            final KieProject project = projectService.resolveProject( resource );
             //It's possible that the Incremental Build attempts to act on a Project file before the project has been fully created.
             //This should be a short-term issue that will be resolved when saving a project batches pom.xml, kmodule.xml and project.imports
             //etc into a single git-batch. At present they are saved individually leading to multiple Incremental Build requests.

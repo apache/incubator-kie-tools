@@ -22,13 +22,13 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
@@ -58,22 +58,22 @@ public class ProjectServiceImplResolveProjectValidTest {
     @Test
     public void testProjectServiceInstantiation() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
         assertNotNull( projectService );
     }
 
     @Test
     public void testResolveProjectWithNonProjectPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL testUrl = this.getClass().getResource( "/" );
         final org.uberfire.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
@@ -87,11 +87,11 @@ public class ProjectServiceImplResolveProjectValidTest {
     @Test
     public void testResolveProjectWithRootPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -106,11 +106,11 @@ public class ProjectServiceImplResolveProjectValidTest {
     @Test
     public void testResolveProjectWithChildPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -129,11 +129,11 @@ public class ProjectServiceImplResolveProjectValidTest {
     @Test
     public void testResolveProjectWithJavaFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -152,11 +152,11 @@ public class ProjectServiceImplResolveProjectValidTest {
     @Test
     public void testResolveProjectWithResourcesFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );

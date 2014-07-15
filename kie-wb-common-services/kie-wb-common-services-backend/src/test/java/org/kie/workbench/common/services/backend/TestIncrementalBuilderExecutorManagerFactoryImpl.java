@@ -18,7 +18,7 @@ import org.guvnor.common.services.builder.IncrementalBuilderExecutorManagerFacto
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 
 /**
  * Producer for Executor services so we can plug-in a different implementation in tests
@@ -28,7 +28,7 @@ import org.guvnor.common.services.project.service.ProjectService;
 public class TestIncrementalBuilderExecutorManagerFactoryImpl implements IncrementalBuilderExecutorManagerFactory {
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     private BuildService buildService;

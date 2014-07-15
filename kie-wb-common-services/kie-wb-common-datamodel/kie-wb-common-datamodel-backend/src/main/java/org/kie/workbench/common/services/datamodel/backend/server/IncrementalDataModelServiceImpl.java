@@ -24,13 +24,12 @@ import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -43,11 +42,11 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
 
     private LRUDataModelOracleCache cachePackages;
 
-    private ProjectService<KieProject> projectService;
+    private KieProjectService projectService;
 
     @Inject
     public IncrementalDataModelServiceImpl( @Named("PackageDataModelOracleCache") final LRUDataModelOracleCache cachePackages,
-                                            final ProjectService projectService ) {
+                                            final KieProjectService projectService ) {
         this.cachePackages = PortablePreconditions.checkNotNull( "cachePackages",
                                                                  cachePackages );
         this.projectService = PortablePreconditions.checkNotNull( "projectService",

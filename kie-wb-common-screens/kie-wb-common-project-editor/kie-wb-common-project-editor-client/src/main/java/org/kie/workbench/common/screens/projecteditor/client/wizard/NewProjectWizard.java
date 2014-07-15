@@ -12,8 +12,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -22,6 +20,8 @@ import org.kie.uberfire.client.wizards.AbstractWizard;
 import org.kie.uberfire.client.wizards.WizardPage;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
@@ -46,7 +46,7 @@ public class NewProjectWizard extends AbstractWizard {
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
-    private Caller<ProjectService> projectServiceCaller;
+    private Caller<KieProjectService> projectServiceCaller;
 
     @Inject
     private Caller<ProjectScreenService> projectScreenService;
@@ -123,11 +123,11 @@ public class NewProjectWizard extends AbstractWizard {
                                                                                                                baseUrl );
     }
 
-    private RemoteCallback<Project> getSuccessCallback() {
-        return new RemoteCallback<Project>() {
+    private RemoteCallback<KieProject> getSuccessCallback() {
+        return new RemoteCallback<KieProject>() {
 
             @Override
-            public void callback( final Project project ) {
+            public void callback( final KieProject project ) {
                 busyIndicatorView.hideBusyIndicator();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
                 placeManager.goTo( "projectScreen" );

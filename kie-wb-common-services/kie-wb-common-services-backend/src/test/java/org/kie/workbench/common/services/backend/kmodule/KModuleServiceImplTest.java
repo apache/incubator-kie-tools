@@ -20,11 +20,11 @@ import java.util.List;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.backend.server.POMContentHandler;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -55,7 +55,7 @@ public class KModuleServiceImplTest {
         setUpWrite();
         serviceImpl = new KModuleServiceImpl( ioService,
 //                                              paths,
-                                              mock(ProjectService.class),
+                                              mock( KieProjectService.class ),
                                               mock( MetadataService.class ),
                                               kProjectContentHandler,
                                               mock( Identity.class ),

@@ -39,7 +39,6 @@ import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -51,6 +50,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +83,7 @@ public class Builder {
     private final Path moduleDirectory;
     private final GAV gav;
     private final IOService ioService;
-    private final ProjectService projectService;
+    private final KieProjectService projectService;
 
     private final String projectPrefix;
 
@@ -101,12 +101,12 @@ public class Builder {
 
     private KieContainer kieContainer;
 
-    public Builder(final Path moduleDirectory,
-            final GAV gav,
-            final IOService ioService,
-            final ProjectService projectService,
-            final ProjectImportsService importsService,
-            final List<BuildValidationHelper> buildValidationHelpers) {
+    public Builder( final Path moduleDirectory,
+                    final GAV gav,
+                    final IOService ioService,
+                    final KieProjectService projectService,
+                    final ProjectImportsService importsService,
+                    final List<BuildValidationHelper> buildValidationHelpers ) {
         this.moduleDirectory = moduleDirectory;
         this.gav = gav;
         this.ioService = ioService;

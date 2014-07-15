@@ -21,14 +21,14 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.guvnor.common.services.project.model.Package;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
-import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
@@ -58,22 +58,22 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testProjectServiceInstantiation() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
         assertNotNull( projectService );
     }
 
     @Test
     public void testResolvePackageWithNonProjectPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL testUrl = this.getClass().getResource( "/" );
         final org.uberfire.java.nio.file.Path testNioPath = fs.getPath( testUrl.toURI() );
@@ -87,11 +87,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageWithRootPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -105,11 +105,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageWithSrcPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM/src" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -123,11 +123,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageWithMainPath() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM/src/main" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -141,11 +141,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageDefaultJava() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM/src/main/java" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -163,11 +163,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageDefaultResources() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM/src/main/resources" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -185,11 +185,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageWithJavaFileInDefaultPackage() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM/src/main/java" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -207,11 +207,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageWithJavaFileInSubPackage() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM/src/main/java/org/kie/test" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -229,11 +229,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageWithResourcesFileInDefaultPackage() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM/src/main/resources" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );
@@ -251,11 +251,11 @@ public class ProjectServiceImplResolvePackageInvalidNoPOMTest {
     @Test
     public void testResolvePackageWithResourcesFileInSubPackage() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL rootUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureInvalidNoPOM/src/main/resources/org/kie/test" );
         final org.uberfire.java.nio.file.Path nioRootPath = fs.getPath( rootUrl.toURI() );

@@ -44,7 +44,6 @@ import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -57,6 +56,7 @@ import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.UserServicesBackendImpl;
@@ -96,7 +96,7 @@ public class ExplorerServiceImpl
     private IOService ioServiceConfig;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     private DeleteService deleteService;
@@ -136,7 +136,7 @@ public class ExplorerServiceImpl
 
     public ExplorerServiceImpl( final IOService ioService,
                                 final AuthorizationManager authorizationManager,
-                                final ProjectService projectService,
+                                final KieProjectService projectService,
                                 final OrganizationalUnitService organizationalUnitService,
                                 final Identity identity ) {
         this.ioService = ioService;

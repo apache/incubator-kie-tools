@@ -24,11 +24,11 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
@@ -63,21 +63,21 @@ public class ProjectServiceImplResolvePackagesTest {
     @Test
     public void testResolvePackages() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( ProjectService.class ).iterator().next();
+        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final ProjectService projectService = (ProjectService) beanManager.getReference( projectServiceBean,
-                                                                                         ProjectService.class,
-                                                                                         cc );
+        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
+                                                                                               KieProjectService.class,
+                                                                                               cc );
 
         final URL root = this.getClass().getResource( "/ProjectBackendTestProject1" );
         final URL pom = this.getClass().getResource( "/ProjectBackendTestProject1/pom.xml" );
         final URL kmodule = this.getClass().getResource( "/ProjectBackendTestProject1/src/main/resources/META-INF/kmodule.xml" );
         final URL imports = this.getClass().getResource( "/ProjectBackendTestProject1/project.imports" );
         final Project project = new KieProject( paths.convert( fs.getPath( root.toURI() ) ),
-                                             paths.convert( fs.getPath( pom.toURI() ) ),
-                                             paths.convert( fs.getPath( kmodule.toURI() ) ),
-                                             paths.convert( fs.getPath( imports.toURI() ) ),
-                                             "ProjectBackendTestProject1" );
+                                                paths.convert( fs.getPath( pom.toURI() ) ),
+                                                paths.convert( fs.getPath( kmodule.toURI() ) ),
+                                                paths.convert( fs.getPath( imports.toURI() ) ),
+                                                "ProjectBackendTestProject1" );
 
         {
             Set<Package> packages = projectService.resolvePackages( (Package) null );

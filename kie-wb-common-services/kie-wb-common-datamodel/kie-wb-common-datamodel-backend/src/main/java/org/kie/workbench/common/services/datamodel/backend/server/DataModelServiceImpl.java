@@ -26,16 +26,13 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
-import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @ApplicationScoped
 public class DataModelServiceImpl
@@ -49,15 +46,8 @@ public class DataModelServiceImpl
     @Named("ProjectDataModelOracleCache")
     private LRUProjectDataModelOracleCache cacheProjects;
 
-    private ProjectService<KieProject> projectService;
-
-    public DataModelServiceImpl() {
-    }
-
     @Inject
-    public DataModelServiceImpl(ProjectService projectService) {
-        this.projectService = projectService;
-    }
+    private KieProjectService projectService;
 
     @Override
     public PackageDataModelOracle getDataModel( final Path resourcePath ) {

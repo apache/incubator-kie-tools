@@ -3,8 +3,6 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -13,6 +11,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataM
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 
 import static org.mockito.Mockito.*;
@@ -39,7 +38,7 @@ public class MockIncrementalDataModelServiceCaller implements Caller<Incremental
         when( cachePackages.assertPackageDataModelOracle( project,
                                                           pkg ) ).thenReturn( packageLoader );
 
-        final ProjectService projectService = mock( ProjectService.class );
+        final KieProjectService projectService = mock( KieProjectService.class );
         when( projectService.resolveProject( any( Path.class ) ) ).thenReturn( project );
         when( projectService.resolvePackage( any( Path.class ) ) ).thenReturn( pkg );
 
@@ -70,7 +69,7 @@ public class MockIncrementalDataModelServiceCaller implements Caller<Incremental
         private RemoteCallback<?> remoteCallback;
 
         public IncrementalDataModelServiceImplWrapper( final LRUDataModelOracleCache cachePackages,
-                                                       final ProjectService projectService ) {
+                                                       final KieProjectService projectService ) {
             super( cachePackages,
                    projectService );
         }

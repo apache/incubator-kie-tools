@@ -31,8 +31,6 @@ import java.util.Random;
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,6 +39,8 @@ import org.kie.uberfire.metadata.backend.lucene.LuceneConfigBuilder;
 import org.kie.uberfire.metadata.io.IOServiceIndexedImpl;
 import org.kie.uberfire.metadata.io.IndexersFactory;
 import org.kie.uberfire.metadata.model.KObject;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
@@ -175,17 +175,17 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> {
         return ioService;
     }
 
-    protected ProjectService getProjectService() {
+    protected KieProjectService getProjectService() {
         final org.uberfire.backend.vfs.Path mockRoot = mock( org.uberfire.backend.vfs.Path.class );
         when( mockRoot.toURI() ).thenReturn( TEST_PROJECT_ROOT );
 
-        final Project mockProject = mock( Project.class );
+        final KieProject mockProject = mock( KieProject.class );
         when( mockProject.getRootPath() ).thenReturn( mockRoot );
 
         final org.guvnor.common.services.project.model.Package mockPackage = mock( Package.class );
         when( mockPackage.getPackageName() ).thenReturn( TEST_PACKAGE_NAME );
 
-        final ProjectService mockProjectService = mock( ProjectService.class );
+        final KieProjectService mockProjectService = mock( KieProjectService.class );
         when( mockProjectService.resolveProject( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( mockProject );
         when( mockProjectService.resolvePackage( any( org.uberfire.backend.vfs.Path.class ) ) ).thenReturn( mockPackage );
         return mockProjectService;

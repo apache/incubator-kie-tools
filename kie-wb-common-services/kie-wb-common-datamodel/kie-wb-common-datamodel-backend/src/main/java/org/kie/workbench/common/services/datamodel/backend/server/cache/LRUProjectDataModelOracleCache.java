@@ -12,23 +12,23 @@ import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.guvnor.common.services.backend.cache.LRUCache;
-import org.kie.workbench.common.services.backend.builder.Builder;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.ProjectImportsService;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.backend.builder.Builder;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Files;
 
 /**
  * A simple LRU cache for Project DataModelOracles
@@ -46,21 +46,14 @@ public class LRUProjectDataModelOracleCache extends LRUCache<KieProject, Project
     @Named("ioStrategy")
     private IOService ioService;
 
-    private ProjectService<KieProject> projectService;
+    @Inject
+    private KieProjectService projectService;
 
     @Inject
     private ProjectImportsService importsService;
 
     @Inject
     private LRUBuilderCache cache;
-
-    public LRUProjectDataModelOracleCache() {
-    }
-
-    @Inject
-    public LRUProjectDataModelOracleCache(ProjectService projectService) {
-        this.projectService = projectService;
-    }
 
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
         PortablePreconditions.checkNotNull( "event",
@@ -119,7 +112,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<KieProject, Project
         final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert( project.getImportsPath() );
         if ( Files.exists( nioExternalImportsPath ) ) {
             final Path externalImportsPath = Paths.convert( nioExternalImportsPath );
-            final ProjectImports projectImports = importsService.load(externalImportsPath);
+            final ProjectImports projectImports = importsService.load( externalImportsPath );
             final Imports imports = projectImports.getImports();
             for ( final Import item : imports.getImports() ) {
                 try {

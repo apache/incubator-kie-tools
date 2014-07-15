@@ -31,12 +31,12 @@ import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -58,7 +58,7 @@ public class BuildServiceImplTest {
     @Test
     public void testBuilderSimpleKProject() throws Exception {
         IOService ioService = getReference( IOService.class );
-        ProjectService projectService = getReference( ProjectService.class );
+        KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
@@ -80,7 +80,7 @@ public class BuildServiceImplTest {
     @Test
     public void testBuilderKProjectHasDependency() throws Exception {
         IOService ioService = getReference( IOService.class );
-        ProjectService projectService = getReference( ProjectService.class );
+        KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
@@ -109,7 +109,7 @@ public class BuildServiceImplTest {
     @Test
     public void testBuilderKProjectHasSnapshotDependency() throws Exception {
         IOService ioService = getReference( IOService.class );
-        ProjectService projectService = getReference( ProjectService.class );
+        KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
@@ -138,7 +138,7 @@ public class BuildServiceImplTest {
     @Test
     public void testBuilderKProjectHasDependencyMetaData() throws Exception {
         IOService ioService = getReference( IOService.class );
-        ProjectService projectService = getReference( ProjectService.class );
+        KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
 
         URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
@@ -195,7 +195,7 @@ public class BuildServiceImplTest {
     @Test
     public void testKProjectContainsXLS() throws Exception {
         IOService ioService = getReference( IOService.class );
-        ProjectService projectService = getReference( ProjectService.class );
+        KieProjectService projectService = getReference( KieProjectService.class );
         ProjectImportsService importsService = getReference( ProjectImportsService.class );
 
         URL url = this.getClass().getResource( "/ExampleWithExcel" );

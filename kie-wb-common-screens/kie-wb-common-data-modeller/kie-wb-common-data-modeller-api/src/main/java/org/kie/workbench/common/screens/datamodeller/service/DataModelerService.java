@@ -25,7 +25,6 @@ import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionT
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
@@ -34,19 +33,19 @@ public interface DataModelerService {
     Path createModel( final Path context,
                       final String fileName );
 
-    DataModelTO loadModel( final KieProject project );
+    DataModelTO loadModel( final Project project );
 
     GenerationResult saveModel( final DataModelTO dataModel,
-                                final KieProject project,
-                                final boolean overwrite);
+                                final Project project,
+                                final boolean overwrite );
 
     GenerationResult saveModel( final DataModelTO dataModel,
-                                final KieProject project);
+                                final Project project );
 
     List<PropertyTypeTO> getBasePropertyTypes();
 
     Map<String, AnnotationDefinitionTO> getAnnotationDefinitions();
 
-    Boolean verifiesHash(Path javaFile);
+    Boolean verifiesHash( Path javaFile );
 
 }

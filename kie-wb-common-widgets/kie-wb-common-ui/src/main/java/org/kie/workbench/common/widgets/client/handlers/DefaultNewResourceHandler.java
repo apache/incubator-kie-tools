@@ -10,11 +10,11 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -39,7 +39,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     protected ProjectContext context;
 
     @Inject
-    protected Caller<ProjectService> projectService;
+    protected Caller<KieProjectService> projectService;
 
     @Inject
     protected Caller<ValidationService> validationService;

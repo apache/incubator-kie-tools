@@ -8,13 +8,13 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithFileNameAndCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.CopyPopup;
@@ -35,7 +35,7 @@ public class ProjectMenu {
     private PlaceManager placeManager;
 
     @Inject
-    protected Caller<ProjectService> projectService;
+    protected Caller<KieProjectService> projectService;
 
     @Inject
     protected Caller<RenameService> renameService;
@@ -136,10 +136,10 @@ public class ProjectMenu {
     }
 
     public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
-        enableToolsMenuItems( event.getProject() );
+        enableToolsMenuItems( (KieProject) event.getProject() );
     }
 
-    private void enableToolsMenuItems( final Project project ) {
+    private void enableToolsMenuItems( final KieProject project ) {
         final boolean enabled = ( project != null );
         projectScreen.setEnabled( enabled );
         dataModelerScreen.setEnabled( enabled );

@@ -31,11 +31,12 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -45,13 +46,13 @@ import org.uberfire.workbench.events.ResourceChange;
 @Service
 @ApplicationScoped
 public class BuildServiceImpl
-        implements BuildService<KieProject> {
+        implements BuildService {
 
     private static final Logger logger = LoggerFactory.getLogger( BuildServiceImpl.class );
 
     private POMService pomService;
     private ExtendedM2RepoService m2RepoService;
-    private ProjectService<KieProject> projectService;
+    private KieProjectService projectService;
     private LRUBuilderCache cache;
     private Instance<PostBuildHandler> handlers;
 
@@ -62,7 +63,7 @@ public class BuildServiceImpl
     @Inject
     public BuildServiceImpl( final POMService pomService,
                              final ExtendedM2RepoService m2RepoService,
-                             final ProjectService projectService,
+                             final KieProjectService projectService,
                              final LRUBuilderCache cache,
                              final Instance<PostBuildHandler> handlers ) {
         this.pomService = pomService;
@@ -73,7 +74,7 @@ public class BuildServiceImpl
     }
 
     @Override
-    public BuildResults build( final KieProject project ) {
+    public BuildResults build( final Project project ) {
         try {
             final BuildResults results = doBuild( project );
             return results;
@@ -84,12 +85,12 @@ public class BuildServiceImpl
 
             // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
             // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
-            return buildExceptionResults(e);
+            return buildExceptionResults( e );
         }
     }
 
     @Override
-    public BuildResults buildAndDeploy( final KieProject project ) {
+    public BuildResults buildAndDeploy( final Project project ) {
         try {
             //Build
             final BuildResults results = doBuild( project );
@@ -119,36 +120,35 @@ public class BuildServiceImpl
 
             // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
             // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
-            return buildExceptionResults(e);
+            return buildExceptionResults( e );
         }
     }
 
     /**
      * When an exception is produced by the builder service, this method is uses to generate an instance of
      * <code>org.guvnor.common.services.project.builder.model.BuildResults</code> in generated with the exception details.
-     *
      * @param e The error exception.
      * @return An instance of BuildResults with the exception details.
      */
-    private BuildResults buildExceptionResults(Exception e) {
+    private BuildResults buildExceptionResults( Exception e ) {
         BuildResults exceptionResults = new BuildResults();
         BuildMessage exceptionMessage = new BuildMessage();
-        exceptionMessage.setLevel(BuildMessage.Level.ERROR);
-        exceptionMessage.setText(e.getMessage());
-        exceptionResults.addBuildMessage(exceptionMessage);
+        exceptionMessage.setLevel( BuildMessage.Level.ERROR );
+        exceptionMessage.setText( e.getMessage() );
+        exceptionResults.addBuildMessage( exceptionMessage );
 
         return exceptionResults;
     }
 
-    private BuildResults doBuild( final KieProject project ) {
-        cache.invalidateCache(project);
+    private BuildResults doBuild( final Project project ) {
+        cache.invalidateCache( project );
         final Builder builder = cache.assertBuilder( project );
         final BuildResults results = builder.build();
         return results;
     }
 
     @Override
-    public boolean isBuilt( final KieProject project ) {
+    public boolean isBuilt( final Project project ) {
         final Builder builder = cache.assertBuilder( project );
         return builder.isBuilt();
     }
@@ -226,7 +226,7 @@ public class BuildServiceImpl
     }
 
     @Override
-    public IncrementalBuildResults applyBatchResourceChanges( final KieProject project,
+    public IncrementalBuildResults applyBatchResourceChanges( final Project project,
                                                               final Map<Path, Collection<ResourceChange>> changes ) {
         IncrementalBuildResults results = new IncrementalBuildResults();
         try {

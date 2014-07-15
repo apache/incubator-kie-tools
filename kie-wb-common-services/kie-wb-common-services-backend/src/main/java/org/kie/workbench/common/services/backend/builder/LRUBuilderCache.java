@@ -32,8 +32,7 @@ import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -44,13 +43,13 @@ import org.uberfire.io.IOService;
  * A simple LRU cache for Builders
  */
 @ApplicationScoped
-public class LRUBuilderCache extends LRUCache<KieProject, Builder> {
+public class LRUBuilderCache extends LRUCache<Project, Builder> {
 
     @Inject
     private POMService pomService;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     private ProjectImportsService importsService;
@@ -68,36 +67,36 @@ public class LRUBuilderCache extends LRUCache<KieProject, Builder> {
     @PostConstruct
     public void setupValidators() {
         final Iterator<BuildValidationHelper> itr = anyValidators.iterator();
-        while (itr.hasNext()) {
-            validators.add(itr.next());
+        while ( itr.hasNext() ) {
+            validators.add( itr.next() );
         }
     }
 
-    public synchronized void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
-        PortablePreconditions.checkNotNull("event",
-                event);
+    public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
+        PortablePreconditions.checkNotNull( "event",
+                                            event );
         final Project project = event.getProject();
 
         //If resource was not within a Project there's nothing to invalidate
-        if (project != null && project instanceof KieProject) {
-            invalidateCache((KieProject) project);
+        if ( project != null ) {
+            invalidateCache( project );
         }
     }
 
-    public synchronized Builder assertBuilder(final KieProject project) {
-        Builder builder = getEntry(project);
-        if (builder == null) {
+    public synchronized Builder assertBuilder( final Project project ) {
+        Builder builder = getEntry( project );
+        if ( builder == null ) {
             final Path pathToPom = project.getPomXMLPath();
-            final POM pom = pomService.load(pathToPom);
-            builder = new Builder(Paths.convert(project.getRootPath()),
-                    pom.getGav(),
-                    ioService,
-                    projectService,
-                    importsService,
-                    validators);
+            final POM pom = pomService.load( pathToPom );
+            builder = new Builder( Paths.convert( project.getRootPath() ),
+                                   pom.getGav(),
+                                   ioService,
+                                   projectService,
+                                   importsService,
+                                   validators );
 
-            setEntry(project,
-                    builder);
+            setEntry( project,
+                      builder );
         }
         return builder;
     }

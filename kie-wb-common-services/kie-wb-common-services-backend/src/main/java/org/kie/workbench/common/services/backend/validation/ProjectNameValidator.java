@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -32,7 +32,7 @@ public class ProjectNameValidator implements FileNameValidator {
     private DefaultFileNameValidator fileNameValidator;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Override
     public int getPriority() {

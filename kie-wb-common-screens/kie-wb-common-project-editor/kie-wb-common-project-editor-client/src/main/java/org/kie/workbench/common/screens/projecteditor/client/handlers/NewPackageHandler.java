@@ -22,10 +22,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
@@ -42,7 +42,7 @@ public class NewPackageHandler
         extends DefaultNewResourceHandler {
 
     @Inject
-    private Caller<ProjectService> projectService;
+    private Caller<KieProjectService> projectService;
 
     @Inject
     private Caller<ValidationService> validationService;

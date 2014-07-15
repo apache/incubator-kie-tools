@@ -8,13 +8,13 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.backend.server.util.Paths;
@@ -37,7 +37,8 @@ public class ProjectScreenServiceImpl
     @Inject
     private KModuleService kModuleService;
 
-    private ProjectService<KieProject> projectService;
+    @Inject
+    private KieProjectService projectService;
 
     @Inject
     private MetadataService metadataService;
@@ -57,14 +58,6 @@ public class ProjectScreenServiceImpl
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    public ProjectScreenServiceImpl() {
-    }
-
-    @Inject
-    public ProjectScreenServiceImpl( ProjectService projectService ) {
-        this.projectService = projectService;
-    }
 
     @Override
     public ProjectScreenModel load( final Path pathToPom ) {

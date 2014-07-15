@@ -16,32 +16,32 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import org.guvnor.common.services.project.model.Project;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 @RequestScoped
 public class ProjectResourceDriverListener implements ModelDriverListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectResourceDriverListener.class);
+    private static final Logger logger = LoggerFactory.getLogger( ProjectResourceDriverListener.class );
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     @Named("ioStrategy")
@@ -58,16 +58,16 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
     public ProjectResourceDriverListener() {
     }
 
-    public void setCurrentProject(Project currentProject) {
+    public void setCurrentProject( Project currentProject ) {
         this.currentProject = currentProject;
     }
 
-    public void setOption(CommentedOption option) {
+    public void setOption( CommentedOption option ) {
         this.option = option;
     }
 
     public void init() throws Exception {
-        defaultPackage = projectService.resolveDefaultPackage(currentProject);
+        defaultPackage = projectService.resolveDefaultPackage( currentProject );
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
         StringTokenizer dirNames;
         Package subPackage;
 
-        subDirPath = Paths.convert(defaultPackage.getPackageMainSrcPath());
+        subDirPath = Paths.convert( defaultPackage.getPackageMainSrcPath() );
         subPackage = defaultPackage;
 
         int index = fileName.lastIndexOf( "/" );
@@ -97,10 +97,10 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
                 subDirPath = subDirPath.resolve( subDirName );
                 if ( !ioService.exists( subDirPath ) ) {
                     //create the package using the projectService.
-                    subPackage = projectService.newPackage(subPackage, subDirName);
+                    subPackage = projectService.newPackage( subPackage, subDirName );
                     //ioService.createDirectory( subDirPath );
                 } else {
-                    subPackage = projectService.resolvePackage( Paths.convert(subDirPath) );
+                    subPackage = projectService.resolvePackage( Paths.convert( subDirPath ) );
                 }
             }
         }
@@ -112,8 +112,8 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
         String hashedContent = FileHashingUtils.setFileHashValue( content );
 
         ioService.write( destFilePath,
-                hashedContent,
-                option );
+                         hashedContent,
+                         option );
 
         if ( !exists ) {
             if ( logger.isDebugEnabled() ) {
