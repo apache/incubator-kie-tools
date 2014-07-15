@@ -34,9 +34,9 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -65,7 +65,7 @@ public class GuidedRuleDSLRSourceService
     private FileDiscoveryService fileDiscoveryService;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Override
     public String getPattern() {

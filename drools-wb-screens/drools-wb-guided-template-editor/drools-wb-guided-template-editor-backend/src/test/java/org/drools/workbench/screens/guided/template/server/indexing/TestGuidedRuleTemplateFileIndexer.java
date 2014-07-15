@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.template.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.io.IOService;
 
 /**
@@ -34,7 +34,7 @@ public class TestGuidedRuleTemplateFileIndexer extends GuidedRuleTemplateFileInd
     }
 
     @Override
-    public void setProjectService( final ProjectService projectService ) {
+    public void setProjectService( final KieProjectService projectService ) {
         this.projectService = projectService;
     }
 

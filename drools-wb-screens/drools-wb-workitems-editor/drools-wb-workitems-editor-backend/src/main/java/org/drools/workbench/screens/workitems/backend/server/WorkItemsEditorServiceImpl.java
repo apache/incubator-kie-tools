@@ -52,7 +52,6 @@ import org.drools.workbench.screens.workitems.type.WorkItemsTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionsFilter;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -65,6 +64,7 @@ import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -114,7 +114,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
     private ConfigWorkDefinitionsLoader configWorkDefinitionsLoader;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     private Identity identity;
@@ -202,7 +202,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new WorkItemsModelContent( definition,
                                               workItemImages );

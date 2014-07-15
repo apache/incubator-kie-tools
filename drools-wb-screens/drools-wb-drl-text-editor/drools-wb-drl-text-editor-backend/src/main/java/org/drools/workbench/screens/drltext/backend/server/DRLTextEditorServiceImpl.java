@@ -39,7 +39,6 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -55,6 +54,7 @@ import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -106,7 +106,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
     private DataModelService dataModelService;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     private GenericValidator genericValidator;
@@ -167,7 +167,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new DrlModelContent( drl,
                                         Arrays.asList( fullyQualifiedClassNames ),

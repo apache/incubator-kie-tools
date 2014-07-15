@@ -25,7 +25,6 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.uberfire.metadata.engine.Indexer;
 import org.kie.uberfire.metadata.model.KObject;
 import org.kie.uberfire.metadata.model.KObjectKey;
@@ -33,6 +32,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -52,7 +52,7 @@ public class GuidedRuleDrlFileIndexer implements Indexer {
     private DataModelService dataModelService;
 
     @Inject
-    protected ProjectService projectService;
+    protected KieProjectService projectService;
 
     @Inject
     protected GuidedRuleDRLResourceTypeDefinition type;

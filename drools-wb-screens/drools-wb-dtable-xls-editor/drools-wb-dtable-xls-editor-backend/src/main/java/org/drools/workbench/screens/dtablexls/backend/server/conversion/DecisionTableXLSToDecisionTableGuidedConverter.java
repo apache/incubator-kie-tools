@@ -49,23 +49,22 @@ import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.ProjectImportsService;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.Files;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -91,7 +90,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     @Inject
     private GlobalsEditorService globalsService;
 
-    private ProjectService<KieProject> projectService;
+    @Inject
+    private KieProjectService projectService;
 
     @Inject
     private ProjectImportsService importsService;
@@ -120,14 +120,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
     private Map<String, String> orderedBaseTypes = new TreeMap<String, String>();
     private Map<String, AnnotationDefinitionTO> annotationDefinitions;
-
-    public DecisionTableXLSToDecisionTableGuidedConverter() {
-    }
-
-    @Inject
-    public DecisionTableXLSToDecisionTableGuidedConverter(ProjectService projectService) {
-        this.projectService = projectService;
-    }
 
     @PostConstruct
     public void initialiseTypeConversionMetaData() {

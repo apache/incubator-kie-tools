@@ -30,10 +30,7 @@ import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -43,8 +40,10 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -92,18 +91,11 @@ public class EnumServiceImpl implements EnumService {
     @Inject
     private EnumResourceTypeDefinition resourceTypeDefinition;
 
-    private ProjectService<KieProject> projectService;
+    @Inject
+    private KieProjectService projectService;
 
     @Inject
     private LRUBuilderCache builderCache;
-
-    public EnumServiceImpl() {
-    }
-
-    @Inject
-    public EnumServiceImpl(ProjectService projectService) {
-        this.projectService = projectService;
-    }
 
     @Override
     public Path create( final Path context,
@@ -147,7 +139,7 @@ public class EnumServiceImpl implements EnumService {
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new EnumModelContent( new EnumModel( load( path ) ) );
 

@@ -34,7 +34,6 @@ import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -46,6 +45,7 @@ import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -91,7 +91,7 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
     private SourceServices sourceServices;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Override
     public Path create( final Path context,
@@ -146,7 +146,7 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
 
             //Signal opening to interested parties
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                    sessionInfo ) );
+                                                               sessionInfo ) );
 
             return new ScoreCardModelContent( model,
                                               dataModel );

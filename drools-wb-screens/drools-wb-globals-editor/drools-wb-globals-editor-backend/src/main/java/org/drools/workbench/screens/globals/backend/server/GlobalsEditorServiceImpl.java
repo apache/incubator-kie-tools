@@ -36,7 +36,6 @@ import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -46,6 +45,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -96,7 +96,7 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
     private SourceServices sourceServices;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     @Inject
     private GenericValidator genericValidator;

@@ -24,9 +24,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -58,7 +58,7 @@ public class GuidedRuleEditorServiceUtilities {
     private FileDiscoveryService fileDiscoveryService;
 
     @Inject
-    private ProjectService projectService;
+    private KieProjectService projectService;
 
     /**
      * Load DSL definitions held in the Package relating to the provide Path

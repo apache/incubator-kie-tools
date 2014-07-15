@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -36,8 +35,6 @@ import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedFilter;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -55,6 +52,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracl
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -81,7 +79,8 @@ public class ScenarioTestEditorServiceImpl
     @Inject
     private SessionService sessionService;
 
-    private ProjectService<KieProject> projectService;
+    @Inject
+    private KieProjectService projectService;
 
     @Inject
     private CopyService copyService;
@@ -109,14 +108,6 @@ public class ScenarioTestEditorServiceImpl
 
     @Inject
     private ConfigurationService configurationService;
-
-    public ScenarioTestEditorServiceImpl() {
-    }
-
-    @Inject
-    public ScenarioTestEditorServiceImpl(ProjectService projectService) {
-        this.projectService = projectService;
-    }
 
     @Override
     public Path create( final Path context,
