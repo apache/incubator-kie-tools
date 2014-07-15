@@ -30,6 +30,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.Header;
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -346,5 +347,8 @@ public class SimpleTable<T>
     }
     
     
+    public void setRowStyles(RowStyles<T> styles) {
+      dataGrid.setRowStyles(styles);
+    }
 
 }
