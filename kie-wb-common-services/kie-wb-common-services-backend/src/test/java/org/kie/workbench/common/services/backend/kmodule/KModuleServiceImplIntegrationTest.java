@@ -25,7 +25,6 @@ import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -58,9 +57,9 @@ public class KModuleServiceImplIntegrationTest {
     @Test
     public void testIsKModuleFileWithKModuleFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final KModuleService kModuleService = (KModuleService) beanManager.getReference( projectServiceBean,
+        final Bean kmoduleServiceBean = (Bean) beanManager.getBeans( KModuleService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( kmoduleServiceBean );
+        final KModuleService kModuleService = (KModuleService) beanManager.getReference( kmoduleServiceBean,
                                                                                          KModuleService.class,
                                                                                          cc );
 
@@ -76,9 +75,9 @@ public class KModuleServiceImplIntegrationTest {
     @Test
     public void testIsKModuleFileWithNonKModuleFile() throws Exception {
 
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( projectServiceBean );
-        final KModuleService kModuleService = (KModuleService) beanManager.getReference( projectServiceBean,
+        final Bean kmoduleServiceBean = (Bean) beanManager.getBeans( KModuleService.class ).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext( kmoduleServiceBean );
+        final KModuleService kModuleService = (KModuleService) beanManager.getReference( kmoduleServiceBean,
                                                                                          KModuleService.class,
                                                                                          cc );
 
