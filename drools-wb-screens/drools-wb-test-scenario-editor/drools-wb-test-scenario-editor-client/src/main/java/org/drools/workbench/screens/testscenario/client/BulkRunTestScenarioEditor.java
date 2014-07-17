@@ -70,7 +70,7 @@ public class BulkRunTestScenarioEditor
             }
         },
                               new HasBusyIndicatorDefaultErrorCallback( BulkRunTestScenarioEditor.this )
-                            ).runAllScenarios( path );
+                            ).runAllTests(path);
     }
 
     @Override

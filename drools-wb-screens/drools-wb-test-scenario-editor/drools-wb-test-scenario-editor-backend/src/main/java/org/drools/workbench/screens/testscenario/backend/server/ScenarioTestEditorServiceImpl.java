@@ -281,14 +281,14 @@ public class ScenarioTestEditorServiceImpl
     }
 
     @Override
-    public void runAllScenarios( final Path testResourcePath ) {
-        runAllScenarios( testResourcePath,
-                         testResultMessageEvent );
+    public void runAllTests(final Path testResourcePath) {
+        runAllTests(testResourcePath,
+                testResultMessageEvent);
     }
 
     @Override
-    public void runAllScenarios( final Path testResourcePath,
-                                 Event<TestResultMessage> customTestResultEvent ) {
+    public void runAllTests(final Path testResourcePath,
+            Event<TestResultMessage> customTestResultEvent) {
         try {
             final KieProject project = projectService.resolveProject( testResourcePath );
             List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );
