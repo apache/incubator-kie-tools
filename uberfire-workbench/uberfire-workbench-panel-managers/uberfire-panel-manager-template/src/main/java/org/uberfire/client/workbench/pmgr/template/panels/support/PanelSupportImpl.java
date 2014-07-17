@@ -3,7 +3,6 @@ package org.uberfire.client.workbench.pmgr.template.panels.support;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelSupport;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
@@ -21,8 +20,8 @@ public class PanelSupportImpl implements PanelSupport {
     }
 
     @Override
-    public void remove( final AbstractWorkbenchPanelView<?> view,
-                        final Widget parent ) {
-
+    public boolean remove( final WorkbenchPanelView<?> view,
+                           final Widget parent ) {
+        return false;
     }
 }

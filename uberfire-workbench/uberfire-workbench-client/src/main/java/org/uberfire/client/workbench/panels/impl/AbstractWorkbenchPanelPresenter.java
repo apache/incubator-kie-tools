@@ -15,6 +15,10 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 
@@ -41,6 +45,7 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     protected final PerspectiveManager perspectiveManager;
     private PanelDefinition definition;
     private final Event<MaximizePlaceEvent> maximizePanelEvent;
+    private final Map<Position, WorkbenchPanelPresenter> childPanels = new HashMap<Position, WorkbenchPanelPresenter>();
 
     public AbstractWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
                                             final PerspectiveManager panelManager,
@@ -56,7 +61,7 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     protected abstract P asPresenterType();
 
     @PostConstruct
-    public void init() {
+    void init() {
         getPanelView().init( this.asPresenterType() );
     }
 
@@ -96,15 +101,37 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
 
     @Override
     public void addPanel( final PanelDefinition panel,
-                          final WorkbenchPanelView view,
+                          final WorkbenchPanelView view, // TODO change to presenter to keep API layers distinct?
                           final Position position ) {
         getPanelView().addPanel( panel, view, position );
         definition.insertChild( position, panel );
+        childPanels.put( position, view.getPresenter() );
     }
 
     @Override
-    public void removePanel() {
-        view.removePanel();
+    public boolean removePanel( WorkbenchPanelPresenter child ) {
+        Position position = positionOf( child );
+        if ( position == null ) {
+            return false;
+        }
+        getPanelView().removePanel( child.getPanelView() );
+        definition.removeChild( position );
+        childPanels.remove( position );
+        return true;
+    }
+
+    @Override
+    public Map<Position, WorkbenchPanelPresenter> getPanels() {
+        return Collections.unmodifiableMap( childPanels );
+    }
+
+    private Position positionOf( WorkbenchPanelPresenter child ) {
+        for ( Map.Entry<Position, WorkbenchPanelPresenter> entry : childPanels.entrySet() ) {
+            if ( child == entry.getValue() ) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     @Override

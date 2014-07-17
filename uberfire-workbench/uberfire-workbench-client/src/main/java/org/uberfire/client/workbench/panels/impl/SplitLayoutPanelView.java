@@ -66,39 +66,32 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     @Override
     public void addPanel(PanelDefinition panel, WorkbenchPanelView view, Position position) {
 
-        if(CompassPosition.WEST.equals(position))
-        {
+        if ( CompassPosition.WEST.equals( position ) ) {
             Widget widget = view.asWidget();
-            widget.addStyleName("split-west"); // HAL specific
-            westPanel.add(widget);
-        }
-        else if(CompassPosition.CENTER.equals(position))
-        {
+            widget.addStyleName( "split-west" ); // HAL specific
+            westPanel.add( widget );
 
-            // identify active panel
-
-            if(activePanel !=null) {
+        } else if ( CompassPosition.CENTER.equals( position ) ) {
+            if ( activePanel != null ) {
                 // close active parts of current panel
-                for (PartDefinition part : activePanel.getK1().getParts()) {
-                    placeManager.closePlace(part.getPlace());
+                for ( PartDefinition part : activePanel.getK1().getParts() ) {
+                    placeManager.closePlace( part.getPlace() );
                 }
             }
 
             Widget widget = view.asWidget();
-            widget.addStyleName("split-center"); // HAL specific
+            widget.addStyleName( "split-center" ); // HAL specific
             centerPanel.clear();
-            centerPanel.add(widget);
-            activePanel = new Pair<PanelDefinition, Widget>(panel, widget);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unsupported position directive: "+ position);
+            centerPanel.add( widget );
+            activePanel = new Pair<PanelDefinition, Widget>( panel, widget );
+        } else {
+            throw new IllegalArgumentException( "Unsupported position directive: " + position );
         }
     }
 
     @Override
-    public void removePanel() {
-
+    public boolean removePanel( WorkbenchPanelView<?> child ) {
+        return westPanel.remove( child ) || centerPanel.remove( child );
     }
 
     // -------------------------

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -73,6 +74,9 @@ public class ShowcaseEntryPoint {
     @Inject
     private ClientMessageBus bus;
 
+    @Inject private Event<DumpLayout> dumpLayoutEvent;
+    public static class DumpLayout {};
+
     @PostConstruct
     public void startApp() {
         UberFirePreferences.setProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable", true );
@@ -104,6 +108,12 @@ public class ShowcaseEntryPoint {
                 .newTopLevelMenu( "Screens" )
                 .withItems( getScreens() )
                 .endMenu()
+                .newTopLevelMenu( "Dump Layout" ).respondsWith( new Command() {
+                    @Override
+                    public void execute() {
+                        dumpLayoutEvent.fire( new DumpLayout() );
+                    }
+                } ).endMenu()
                 .build();
 
         menubar.addMenus( menus );
@@ -184,7 +194,7 @@ public class ShowcaseEntryPoint {
         //Sort Perspective Providers so they're always in the same sequence!
         List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>( activities );
         Collections.sort( sortedActivities,
-                new Comparator<PerspectiveActivity>() {
+                          new Comparator<PerspectiveActivity>() {
 
             @Override
             public int compare( PerspectiveActivity o1,

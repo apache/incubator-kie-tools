@@ -109,7 +109,7 @@ PanelDefinition {
 
     @Override
     public List<PanelDefinition> getChildren() {
-        return Collections.unmodifiableList( children );
+        return Collections.unmodifiableList( new ArrayList<PanelDefinition>( children ) );
     }
 
     @Override
@@ -302,7 +302,9 @@ PanelDefinition {
 
     @Override
     public String toString() {
-        return "PanelDefinitionImpl [parts=" + parts + ", children=" + children + ", panelType=" + panelType
+        String fullName = getClass().getName();
+        String simpleName = fullName.substring( fullName.lastIndexOf( '.' ) + 1 );
+        return simpleName + " [parts=" + parts + ", children=" + children + ", panelType=" + panelType
                 + ", contextDefinition=" + contextDefinition + ", contextDisplayMode=" + contextDisplayMode + "]";
     }
 

@@ -86,12 +86,9 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         final WorkbenchPanelPresenter oldRootPanelPresenter = mapPanelDefinitionToPresenter.remove( rootPanelDef );
 
         if ( !mapPanelDefinitionToPresenter.isEmpty() ) {
+            String message = "Can't replace current root panel because it is not empty. The following panels remain: " + mapPanelDefinitionToPresenter;
             mapPanelDefinitionToPresenter.put( rootPanelDef, oldRootPanelPresenter );
-            throw new IllegalStateException( "Can't replace current root panel because it is not empty. The following panels remain: " + mapPanelDefinitionToPresenter );
-        }
-
-        if ( !mapPartDefinitionToPresenter.isEmpty() ) {
-            throw new IllegalStateException( "Can't replace current root panel because it is not empty. The following parts remain: " + mapPartDefinitionToPresenter );
+            throw new IllegalStateException( message );
         }
 
         HasWidgets perspectiveContainer = layoutSelection.get().getPerspectiveContainer();
@@ -196,6 +193,35 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         return addWorkbenchPanel( targetPanel,
                                   childPanel,
                                   position );
+    }
+
+    @Override
+    public void removeWorkbenchPanel( final PanelDefinition toRemove ) throws IllegalStateException {
+        if ( !toRemove.getParts().isEmpty() ) {
+            throw new IllegalStateException( "Panel still contains parts: " + toRemove.getParts() );
+        }
+        if ( !toRemove.getChildren().isEmpty() ) {
+            throw new IllegalStateException( "Panel still contains child panels: " + toRemove.getChildren() );
+        }
+
+        final WorkbenchPanelPresenter presenterToRemove = mapPanelDefinitionToPresenter.remove( toRemove );
+        if ( presenterToRemove == null ) {
+            throw new IllegalArgumentException( "The given panel could not be found" );
+        }
+
+        final PanelDefinition parentDef = toRemove.getParent();
+        final WorkbenchPanelPresenter parentPresenter = mapPanelDefinitionToPresenter.get( parentDef );
+        if ( parentPresenter == null ) {
+            throw new IllegalArgumentException( "The given panel's parent could not be found" );
+        }
+
+        parentPresenter.removePanel( presenterToRemove );
+
+        parentDef.removeChild( toRemove.getPosition() );
+
+        getBeanFactory().destroy( presenterToRemove );
+        System.out.println("removed panel " + toRemove);
+        System.out.println("remaining panels: " + mapPanelDefinitionToPresenter);
     }
 
     @Override
@@ -314,10 +340,16 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
             }
         }
         if ( presenterToRemove != null ) {
-            presenterToRemove.removePanel();
+
+            // this also removes the panel from mapPanelDefinitionToPresenter
+            spliceOutPanel( presenterToRemove.getDefinition(),
+                            rootPanelDef );
+
+            if ( mapPanelDefinitionToPresenter.containsKey( presenterToRemove.getDefinition() ) ) {
+                throw new AssertionError( "Spliced out panel is still stuck in map" );
+            }
+
             getBeanFactory().destroy( presenterToRemove );
-            removePanel( presenterToRemove.getDefinition(),
-                         rootPanelDef );
         }
     }
 
@@ -326,16 +358,16 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
      * Positions of the removed panel by appending them to the same Position within the removed panel's parent. Children
      * in other Positions within the removed panel will be removed along with that panel.
      * <p>
-     * TODO: this method should make some effort to check that the parent panel actually supports the NORTH, SOUTH,
-     * EAST, WEST positions before attempting to reparent the orphaned children.
+     * TODO: move this logic into the panel presenters themselves (for panel types that want to support this behaviour;
+     * probably only the north/south/east/west panels will want this)
      * 
      * @param panelToRemove
      *            the panel to remove (children will be preserved).
      * @param panelToSearch
      *            the panel that contains the panel to remove.
      */
-    private void removePanel( final PanelDefinition panelToRemove,
-                              final PanelDefinition panelToSearch ) {
+    private void spliceOutPanel( final PanelDefinition panelToRemove,
+                                 final PanelDefinition panelToSearch ) {
         final PanelDefinition northChild = panelToSearch.getChild( CompassPosition.NORTH );
         final PanelDefinition southChild = panelToSearch.getChild( CompassPosition.SOUTH );
         final PanelDefinition eastChild = panelToSearch.getChild( CompassPosition.EAST );
@@ -343,56 +375,60 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         if ( northChild != null ) {
             if ( northChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( northChild );
-                removePanel( panelToRemove,
-                             panelToSearch,
-                             CompassPosition.NORTH );
+                spliceOutPanelDefinition( panelToRemove,
+                                          panelToSearch,
+                                          CompassPosition.NORTH );
             } else {
-                removePanel( panelToRemove,
-                             northChild );
+                spliceOutPanel( panelToRemove,
+                                northChild );
             }
         }
         if ( southChild != null ) {
             if ( southChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( southChild );
-                removePanel( panelToRemove,
-                             panelToSearch,
-                             CompassPosition.SOUTH );
+                spliceOutPanelDefinition( panelToRemove,
+                                          panelToSearch,
+                                          CompassPosition.SOUTH );
             } else {
-                removePanel( panelToRemove,
-                             southChild );
+                spliceOutPanel( panelToRemove,
+                                southChild );
             }
         }
         if ( eastChild != null ) {
             if ( eastChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( eastChild );
-                removePanel( panelToRemove,
-                             panelToSearch,
-                             CompassPosition.EAST );
+                spliceOutPanelDefinition( panelToRemove,
+                                          panelToSearch,
+                                          CompassPosition.EAST );
             } else {
-                removePanel( panelToRemove,
-                             eastChild );
+                spliceOutPanel( panelToRemove,
+                                eastChild );
             }
         }
         if ( westChild != null ) {
             if ( westChild.equals( panelToRemove ) ) {
                 mapPanelDefinitionToPresenter.remove( westChild );
-                removePanel( panelToRemove,
-                             panelToSearch,
-                             CompassPosition.WEST );
+                spliceOutPanelDefinition( panelToRemove,
+                                          panelToSearch,
+                                          CompassPosition.WEST );
             } else {
-                removePanel( panelToRemove,
-                             westChild );
+                spliceOutPanel( panelToRemove,
+                                westChild );
             }
         }
     }
 
     /**
-     * Subroutine of {@link #removePanel(PanelDefinition, PanelDefinition)} which does the physical grafting of the
-     * orphaned child panels onto their grandparents.
+     * Subroutine of {@link #spliceOutPanel(PanelDefinition, PanelDefinition)} which does the same operation of grafting
+     * orphaned child panels onto their grandparents, but for the PanelDefinition objects rather than the Presenter/View
+     * objects.
+     * <p>
+     * TODO: move this logic into the panel presenters themselves (for panel types that want to support this behaviour;
+     * probably only the north/south/east/west panels will want this)
      */
-    private void removePanel( final PanelDefinition panelToRemove,
-                              final PanelDefinition panelToSearch,
-                              final Position position ) {
+    private void spliceOutPanelDefinition( final PanelDefinition panelToRemove,
+                                           final PanelDefinition panelToSearch,
+                                           final Position position ) {
 
         panelToSearch.removeChild( position );
 

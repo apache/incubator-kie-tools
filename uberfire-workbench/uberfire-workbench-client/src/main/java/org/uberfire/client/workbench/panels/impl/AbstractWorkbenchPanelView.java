@@ -20,7 +20,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
 
 public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresenter>
 extends ResizeComposite
@@ -49,13 +48,12 @@ implements WorkbenchPanelView<P> {
     }
 
     @Override
-    public void removePanel() {
-        // TODO (hbraun): This is a REAL MESS!
-        final Widget parent = this.asWidget().getParent().getParent().getParent();
-
-        panelSupport.remove( this, parent );
-
-        dndManager.unregisterDropController( this );
+    public boolean removePanel( WorkbenchPanelView<?> childView ) {
+        if ( panelSupport.remove( childView, this.getWidget() ) ) {
+            dndManager.unregisterDropController( childView );
+            return true;
+        }
+        return false;
     }
 
     @Override

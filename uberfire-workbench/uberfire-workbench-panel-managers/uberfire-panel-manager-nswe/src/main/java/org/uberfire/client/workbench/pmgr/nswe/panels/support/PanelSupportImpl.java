@@ -4,7 +4,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelSupport;
 import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
@@ -75,8 +74,8 @@ public class PanelSupportImpl implements PanelSupport {
     }
 
     @Override
-    public void remove( final AbstractWorkbenchPanelView<?> view,
-                        final Widget parent ) {
+    public boolean remove( final WorkbenchPanelView<?> view,
+                           final Widget parent ) {
         CompassPosition position = CompassPosition.NONE;
 
         if ( parent instanceof HorizontalSplitterPanel ) {
@@ -113,5 +112,6 @@ public class PanelSupportImpl implements PanelSupport {
                 break;
         }
 
+        return position != CompassPosition.NONE;
     }
 }

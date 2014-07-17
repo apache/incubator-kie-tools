@@ -199,16 +199,6 @@ public class AbstractPanelManagerTest {
     }
 
     @Test
-    public void addingAPanelShouldWork() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl( PanelType.SIMPLE );
-        testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
-        panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );
-
-        // need to remember this for later
-        WorkbenchPanelPresenter subPanelPresenter = panelManager.mapPanelDefinitionToPresenter.get( subPanel );
-    }
-
-    @Test
     public void removingLastPartFromPanelShouldRemovePanelToo() throws Exception {
         PanelDefinition subPanel = new PanelDefinitionImpl( PanelType.SIMPLE );
         testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
@@ -234,6 +224,29 @@ public class AbstractPanelManagerTest {
 
         // the empty panel should be gone from the layout and its bean destroyed
         verify( beanFactory ).destroy( subPanelPresenter );
+        assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( subPanel ) );
+    }
+
+    @Test
+    public void addedPanelsShouldBeRemembered() throws Exception {
+        PanelDefinition subPanel = new PanelDefinitionImpl( PanelType.SIMPLE );
+        testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
+
+        // warning: this is not a particularly good test, because this method is stubbed out in our
+        // TestingPanelManagerImpl.
+        panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );
+
+        assertTrue( panelManager.mapPanelDefinitionToPresenter.containsKey( subPanel ) );
+    }
+
+    @Test
+    public void explicitlyRemovedPanelsShouldBeForgotten() throws Exception {
+        PanelDefinition subPanel = new PanelDefinitionImpl( PanelType.SIMPLE );
+        testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
+
+        panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );
+        panelManager.removeWorkbenchPanel( subPanel );
+
         assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( subPanel ) );
     }
 
@@ -269,6 +282,12 @@ public class AbstractPanelManagerTest {
 
             mapPanelDefinitionToPresenter.put( childPanel, childPanelPresenter );
             return childPanel;
+        }
+
+        @Override
+        public void removeWorkbenchPanel( PanelDefinition toRemove ) throws IllegalStateException {
+            panelHierarchy.remove( toRemove.getParent(), toRemove );
+            super.removeWorkbenchPanel( toRemove );
         }
 
         @Override

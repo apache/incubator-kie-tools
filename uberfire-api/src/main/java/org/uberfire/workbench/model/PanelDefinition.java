@@ -39,8 +39,10 @@ public interface PanelDefinition {
     public Set<PartDefinition> getParts();
 
     /**
-     * Get all of this Panel's immediate child Panels (i.e. not recursive).
-     * @return All children
+     * Returns this panel's immediate child panels.
+     * 
+     * @return a snapshot of the current child list. The list is not modifiable, and will not change as panels are added
+     *         and removed from this panel. The returned list is never null.
      */
     public List<PanelDefinition> getChildren();
 

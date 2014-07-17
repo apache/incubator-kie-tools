@@ -29,6 +29,24 @@ import com.google.gwt.user.client.ui.RequiresResize;
 /**
  * Manages the Widget and DOM interaction of a panel. Part of the UberFire MVC system for panels. For a full explanation
  * of what a panel is in UberFire, see the class-level documentation for {@link WorkbenchPanelPresenter}.
+ * <p>
+ * <h2>View Lifecycle</h2>
+ * <p>
+ * UberFire Panel Views are Dependent-scoped beans managed by the Errai IOC container. Views are always created by
+ * injection into their presenter, which ties their bean lifecycle to that of the presenter: they are created when the
+ * presenter is created, and they are destroyed when the presenter is destroyed.
+ * <p>
+ * This is the lifecycle of a WorkbenchPanelView:
+ * <ol>
+ *  <li>The view's constructor is invoked by Errai IOC. At this point, it is not yet safe to access injected
+ *      members (they may be uninitialized proxies).
+ *  <li>The view's {@code @PostConstruct} method (if it has one) is invoked by Errai IOC. Safe to access injected members.
+ *  <li>The view's {@link #init(Object)} method is invoked by the presenter. The argument is a reference to the presenter itself.
+ *  <li>The view's widget (obtained from {@link #asWidget()}) is added to the parent panel's widget.
+ *  <li>The view is now in service, and any of its public methods can be called.
+ *  <li>When the panel is no longer needed, Errai IOC is told to destroy the presenter bean. This results in the view bean
+ *      being destroyed too. At this point, the view's {@code @PreDestroy} method is invoked by Errai IOC.
+ * </ol>
  */
 public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends UberView<P>, RequiresResize {
 
@@ -47,7 +65,8 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
 
     /**
      * Nests the given WorkbenchPanelView inside this one at the given position. If there is already a nested panel view
-     * in the target position, it will be replaced with the given panel.
+     * in the target position, it will be replaced with the given panel. (TODO: what happens to the old panel's parts and
+     * child panels? is the old panel bean properly destroyed?)
      * 
      * @param panel
      *            specifies the size that should be imposed on the nested view. Must not be null.
@@ -60,6 +79,12 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
     void addPanel( final PanelDefinition panel,
                    final WorkbenchPanelView view,
                    final Position position );
+
+    /**
+     * Removes the view widget associated with the given child from this panel, freeing any resources that were
+     * allocated when the panel was added to this one.
+     */
+    boolean removePanel( WorkbenchPanelView<?> child );
 
     /**
      * Assigns the given title to the given part, if the part belongs to this panel.
@@ -93,11 +118,6 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
      * @return true if the part was found and removed. False if not.
      */
     boolean removePart( final PartDefinition part );
-
-    /**
-     * Removes this panel from its parent, freeing all view resources that were associated with it.
-     */
-    void removePanel();
 
     /**
      * Requests or releases keyboard focus for the currently-visible part within this panel.

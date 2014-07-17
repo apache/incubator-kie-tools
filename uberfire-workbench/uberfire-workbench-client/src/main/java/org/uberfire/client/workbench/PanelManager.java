@@ -73,6 +73,19 @@ public interface PanelManager {
                                        final Position position );
 
     /**
+     * Removes the panel associated with the given definition, removing the panel's presenter and view from the
+     * workbench, and freeing any resources associated with them. The panel must have no parts and no child panels.
+     * 
+     * @param toRemove
+     *            the panel to remove from the workbench layout. Must not be null.
+     * @throws IllegalStateException
+     *             if the panel contains parts or child panels
+     * @throws IllegalArgumentException
+     *             if no panel presenter is currently associated with the given definition
+     */
+    void removeWorkbenchPanel( final PanelDefinition toRemove ) throws IllegalStateException;
+
+    /**
      * Removes the part associated with the given PlaceRequest from the panel that contains it. If this operation
      * removes the last part from the panel, and the panel is not the root panel, it will be removed from the workbench
      * layout. Child panels are preserved by reparenting them to the removed panel's parent. Application code should not

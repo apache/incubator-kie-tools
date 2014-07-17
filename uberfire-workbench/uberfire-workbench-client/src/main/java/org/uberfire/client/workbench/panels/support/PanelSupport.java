@@ -1,10 +1,10 @@
 package org.uberfire.client.workbench.panels.support;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.AbstractWorkbenchPanelView;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
+
+import com.google.gwt.user.client.ui.Widget;
 
 public interface PanelSupport {
 
@@ -13,6 +13,6 @@ public interface PanelSupport {
                    final WorkbenchPanelView targetView,
                    final Position position );
 
-    void remove( final AbstractWorkbenchPanelView<?> view,
-                 final Widget parent );
+    boolean remove( final WorkbenchPanelView<?> view,
+                    final Widget parent );
 }

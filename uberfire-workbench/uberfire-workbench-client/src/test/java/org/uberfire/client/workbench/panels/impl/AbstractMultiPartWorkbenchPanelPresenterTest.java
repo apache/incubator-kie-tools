@@ -13,13 +13,16 @@ import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
@@ -121,6 +124,70 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenterTest {
         // if the part we added and removed is now unknown, we should get the perspective's context
         assertSame( perspectiveContextActivity, presenter.resolveContext( mockPartView.getPresenter().getDefinition() ) );
 
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void addedChildPanelsShouldBeRemembered() throws Exception {
+        AbstractMultiPartWorkbenchPanelPresenter<?> presenter = getPresenterToTest();
+
+        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        WorkbenchPanelPresenter childPanelPresenter = mock( WorkbenchPanelPresenter.class );
+        WorkbenchPanelView<WorkbenchPanelPresenter> childPanelView = mock( WorkbenchPanelView.class );
+        when( childPanelView.getPresenter() ).thenReturn( childPanelPresenter );
+
+        presenter.addPanel( childPanelDef, childPanelView, CompassPosition.NORTH );
+
+        assertSame( childPanelPresenter, presenter.getPanels().get( CompassPosition.NORTH ) );
+        assertEquals( childPanelDef, presenter.getDefinition().getChild( CompassPosition.NORTH ) );
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void removedChildPanelsShouldBeForgotten() throws Exception {
+        AbstractMultiPartWorkbenchPanelPresenter<?> presenter = getPresenterToTest();
+
+        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        WorkbenchPanelPresenter childPanelPresenter = mock( WorkbenchPanelPresenter.class );
+        WorkbenchPanelView<WorkbenchPanelPresenter> childPanelView = mock( WorkbenchPanelView.class );
+        when( childPanelView.getPresenter() ).thenReturn( childPanelPresenter );
+
+        presenter.addPanel( childPanelDef, childPanelView, CompassPosition.NORTH );
+        boolean removed = presenter.removePanel( childPanelPresenter );
+
+        assertTrue( removed );
+        assertNull( presenter.getPanels().get( CompassPosition.NORTH ) );
+        assertNull( presenter.getDefinition().getChild( CompassPosition.NORTH ) );
+    }
+
+    @Test
+    public void removingUnknownPanelShouldReturnFalse() throws Exception {
+        AbstractMultiPartWorkbenchPanelPresenter<?> presenter = getPresenterToTest();
+
+        WorkbenchPanelPresenter childPanelPresenter = mock( WorkbenchPanelPresenter.class );
+
+        boolean removed = presenter.removePanel( childPanelPresenter );
+
+        assertFalse( removed );
+    }
+
+    @Test
+    public void removingUnknownPanelShouldNotAffectExistingOnes() throws Exception {
+        AbstractMultiPartWorkbenchPanelPresenter<?> presenter = getPresenterToTest();
+
+        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        WorkbenchPanelPresenter childPanelPresenter = mock( WorkbenchPanelPresenter.class );
+        WorkbenchPanelView<WorkbenchPanelPresenter> childPanelView = mock( WorkbenchPanelView.class );
+        when( childPanelView.getPresenter() ).thenReturn( childPanelPresenter );
+
+        WorkbenchPanelPresenter unknownPanelPresenter = mock( WorkbenchPanelPresenter.class );
+
+        presenter.addPanel( childPanelDef, childPanelView, CompassPosition.NORTH );
+        boolean removed = presenter.removePanel( unknownPanelPresenter );
+
+        assertFalse( removed );
+        assertSame( childPanelPresenter, presenter.getPanels().get( CompassPosition.NORTH ) );
+        assertEquals( childPanelDef, presenter.getDefinition().getChild( CompassPosition.NORTH ) );
     }
 
 }

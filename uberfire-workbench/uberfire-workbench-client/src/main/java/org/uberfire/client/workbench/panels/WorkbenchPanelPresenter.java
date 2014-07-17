@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.panels;
 
+import java.util.Map;
+
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -42,7 +44,23 @@ public interface WorkbenchPanelPresenter {
                           final WorkbenchPanelView view,
                           final Position position );
 
-    public void removePanel();
+    /**
+     * Removes the given panel presenter and its view from this panel, freeing all resources associated with them.
+     * 
+     * @param child
+     *            The child panel to remove. Must be a direct child of this panel, and must be empty (contain no parts
+     *            or child panels). Null is not permitted.
+     * @return true if the child was found and removed from this panel; false if the child panel could not be found.
+     */
+    public boolean removePanel( WorkbenchPanelPresenter child );
+
+    /**
+     * Returns the immediate child panels of this panel. Note that panels and parts are not the same thing; this method
+     * only returns the panels.
+     * 
+     * @return an unmodifiable view of the immediate child panels nested within this one. Never null.
+     */
+    public Map<Position, WorkbenchPanelPresenter> getPanels();
 
     public void changeTitle( final PartDefinition part,
                              final String title,

@@ -192,6 +192,35 @@ public class PerspectiveManagerTest {
     }
 
     @Test
+    public void shouldDestroyAllOldPanelsWhenSwitchingRoot() throws Exception {
+        PerspectiveDefinition fooPerspectiveDef = new PerspectiveDefinitionImpl( PanelType.ROOT_SIMPLE );
+        PanelDefinition rootPanel = fooPerspectiveDef.getRoot();
+        PanelDefinition fooPanel = new PanelDefinitionImpl( PanelType.TEMPLATE );
+        PanelDefinition fooChildPanel = new PanelDefinitionImpl( PanelType.TEMPLATE );
+        PanelDefinition barPanel = new PanelDefinitionImpl( PanelType.TEMPLATE );
+        PanelDefinition bazPanel = new PanelDefinitionImpl( PanelType.TEMPLATE );
+
+        rootPanel.appendChild( fooPanel );
+        rootPanel.appendChild( barPanel );
+        rootPanel.appendChild( bazPanel );
+
+        fooPanel.appendChild( fooChildPanel );
+
+        PerspectiveActivity fooPerspective = mock( PerspectiveActivity.class );
+        when( fooPerspective.getDefaultPerspectiveLayout() ).thenReturn( fooPerspectiveDef );
+        when( fooPerspective.isTransient() ).thenReturn( true );
+
+        perspectiveManager.switchToPerspective( fooPerspective, doWhenFinished );
+        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+
+        verify( panelManager ).removeWorkbenchPanel( fooPanel );
+        verify( panelManager ).removeWorkbenchPanel( fooChildPanel );
+        verify( panelManager ).removeWorkbenchPanel( barPanel );
+        verify( panelManager ).removeWorkbenchPanel( bazPanel );
+        verify( panelManager, never() ).removeWorkbenchPanel( rootPanel );
+    }
+
+    @Test
     public void shouldLaunchPartsFoundInPanels() throws Exception {
         PartDefinitionImpl rootPart1 = new PartDefinitionImpl( new DefaultPlaceRequest( "rootPart1" ) );
         PartDefinitionImpl southPart1 = new PartDefinitionImpl( new DefaultPlaceRequest( "southPart1" ) );
