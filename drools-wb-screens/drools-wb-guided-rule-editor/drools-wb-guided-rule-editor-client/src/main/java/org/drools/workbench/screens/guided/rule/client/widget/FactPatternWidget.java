@@ -50,8 +50,12 @@ import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 import org.drools.workbench.models.datamodel.rule.HasConstraints;
 import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleAttribute;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
+import org.drools.workbench.models.datamodel.rule.visitors.ToStringExpressionVisitor;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.ConstraintValueEditor;
@@ -63,12 +67,12 @@ import org.drools.workbench.screens.guided.rule.client.editor.factPattern.Connec
 import org.drools.workbench.screens.guided.rule.client.editor.factPattern.PopupCreator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.workbench.common.widgets.client.resources.HumanReadable;
-import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.uberfire.client.callbacks.Callback;
 import org.kie.uberfire.client.common.ClickableLabel;
 import org.kie.uberfire.client.common.DirtyableFlexTable;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.workbench.common.widgets.client.resources.HumanReadable;
+import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
+import org.uberfire.client.callbacks.Callback;
 
 /**
  * This is the new smart widget that works off the model.
@@ -446,7 +450,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             HorizontalPanel ebContainer = null;
             if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
                 ebContainer = expressionBuilderLS( (SingleFieldConstraintEBLeftSide) constraint,
-                                                   showBinding);
+                                                   showBinding );
                 inner.setWidget( row,
                                  0 + col,
                                  ebContainer );
@@ -467,7 +471,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             //Get first part of constraint.fieldName? #1=Fact1, #2=SubFact1
             inner.setWidget( row,
                              2 + col,
-                             createValueEditor(constraint) );
+                             createValueEditor( constraint ) );
             inner.setWidget( row,
                              3 + col,
                              connectives.connectives( constraint ) );
@@ -551,7 +555,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                     constraint.setValue( "" );
                     inner.setWidget( row,
                                      2 + col,
-                                     createValueEditor(constraint) );
+                                     createValueEditor( constraint ) );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                 }
@@ -650,7 +654,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
     }
 
-    private Widget createValueEditor(final SingleFieldConstraint constraint) {
+    private Widget createValueEditor( final SingleFieldConstraint constraint ) {
 
         constraintValueEditor = new ConstraintValueEditor( constraint,
                                                            pattern.getConstraintList(),
@@ -658,24 +662,24 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                            this.getEventBus(),
                                                            this.readOnly );
         //If any literal value changes set to dirty and refresh dependent enumerations
-        constraintValueEditor.setOnValueChangeCommand(new Command() {
+        constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {
                 constraintValueEditor.hideError();
-                setModified(true);
-                refreshConstraintValueEditorsDropDownData(constraint);
+                setModified( true );
+                refreshConstraintValueEditorsDropDownData( constraint );
             }
-        });
+        } );
         //If a Template Key value changes only set to dirty
-        constraintValueEditor.setOnTemplateValueChangeCommand(new Command() {
+        constraintValueEditor.setOnTemplateValueChangeCommand( new Command() {
             public void execute() {
                 constraintValueEditor.hideError();
-                setModified(true);
+                setModified( true );
             }
-        });
+        } );
 
         //Keep a reference to the value editors so they can be refreshed for dependent enums
         constraintValueEditors.put( constraint,
-                constraintValueEditor);
+                                    constraintValueEditor );
 
         return constraintValueEditor;
     }
@@ -687,11 +691,12 @@ public class FactPatternWidget extends RuleModellerWidget {
         final HorizontalPanel hp = new HorizontalPanel();
         if ( !this.readOnly ) {
 
-            getOperatorDropDown(constraint, inner, row, col, new Callback<CEPOperatorsDropdown>() {
-                @Override public void callback(CEPOperatorsDropdown result) {
-                    hp.add(result);
+            getOperatorDropDown( constraint, inner, row, col, new Callback<CEPOperatorsDropdown>() {
+                @Override
+                public void callback( CEPOperatorsDropdown result ) {
+                    hp.add( result );
                 }
-            });
+            } );
 
         } else {
             final SmallLabel sl = new SmallLabel( "<b>" + ( constraint.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName( constraint.getOperator() ) ) + "</b>" );
@@ -704,12 +709,12 @@ public class FactPatternWidget extends RuleModellerWidget {
                                       final DirtyableFlexTable inner,
                                       final int row,
                                       final int col,
-                                      final Callback<CEPOperatorsDropdown> callback) {
+                                      final Callback<CEPOperatorsDropdown> callback ) {
         String fieldName;
         String factType;
 
         //Connectives Operators are handled in class Connectives
-        if ( constraint instanceof SingleFieldConstraintEBLeftSide) {
+        if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constraint;
             factType = sfexp.getExpressionLeftSide().getPreviousClassType();
             if ( factType == null ) {
@@ -722,62 +727,72 @@ public class FactPatternWidget extends RuleModellerWidget {
             fieldName = constraint.getFieldName();
         }
 
-        getOperatorCompletions(constraint, inner, row, col, callback, fieldName, factType);
+        getOperatorCompletions( constraint, inner, row, col, callback, fieldName, factType );
     }
 
-    private void getOperatorCompletions(final SingleFieldConstraint constraint, final DirtyableFlexTable inner, final int row, final int col, final Callback<CEPOperatorsDropdown> callback, String fieldName, String factType) {
+    private void getOperatorCompletions( final SingleFieldConstraint constraint,
+                                         final DirtyableFlexTable inner,
+                                         final int row,
+                                         final int col,
+                                         final Callback<CEPOperatorsDropdown> callback,
+                                         String fieldName,
+                                         String factType ) {
         connectives.getDataModelOracle().getOperatorCompletions( factType,
                                                                  fieldName,
                                                                  new Callback<String[]>() {
                                                                      @Override
                                                                      public void callback( final String[] operators ) {
                                                                          CEPOperatorsDropdown dropdown = new CEPOperatorsDropdown( operators,
-                                                                                                                            constraint );
+                                                                                                                                   constraint );
                                                                          callback.callback( dropdown );
 
-                                                                         dropdown.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
+                                                                         dropdown.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-                                                                             public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                                                                                 onDropDownValueChanged(event, constraint, inner, row, col);
+                                                                             public void onValueChange( ValueChangeEvent<OperatorSelection> event ) {
+                                                                                 onDropDownValueChanged( event, constraint, inner, row, col );
                                                                              }
-                                                                         });
+                                                                         } );
                                                                      }
                                                                  } );
     }
 
-    private void onDropDownValueChanged(ValueChangeEvent<OperatorSelection> event, SingleFieldConstraint constraint, DirtyableFlexTable inner, int row, int col) {
-        setModified(true);
+    private void onDropDownValueChanged( ValueChangeEvent<OperatorSelection> event,
+                                         SingleFieldConstraint constraint,
+                                         DirtyableFlexTable inner,
+                                         int row,
+                                         int col ) {
+        setModified( true );
         final String selected = event.getValue().getValue();
         final String selectedText = event.getValue().getDisplayText();
 
         //Prevent recursion once operator change has been applied
-        if (selectedText.equals(constraint.getOperator())) {
+        if ( selectedText.equals( constraint.getOperator() ) ) {
             return;
         }
 
-        constraint.setOperator(selected);
-        if (constraint.getOperator().equals("")) {
-            constraint.setOperator(null);
+        constraint.setOperator( selected );
+        if ( constraint.getOperator().equals( "" ) ) {
+            constraint.setOperator( null );
             constraintValueEditor.hideError();
         } else {
             constraintValueEditor.showError();
         }
 
-        if (inner != null) {
-            if (isWidgetForValueNeeded(selectedText)) {
-                inner.getWidget(row, col).setVisible(false);
+        if ( inner != null ) {
+            if ( isWidgetForValueNeeded( selectedText ) ) {
+                inner.getWidget( row, col ).setVisible( false );
             } else {
-                inner.getWidget(row, col).setVisible(true);
+                inner.getWidget( row, col ).setVisible( true );
             }
         }
 
         //If new operator requires a comma separated list and old did not, or vice-versa
         //we need to redraw the ConstraintValueEditor for the constraint
-        if (OperatorsOracle.operatorRequiresList(selected) != OperatorsOracle.operatorRequiresList(constraint.getOperator())) {
-            if (OperatorsOracle.operatorRequiresList(selected) == false) {
-                final String[] oldValueList = constraint.getValue().split(",");
-                if (oldValueList.length > 0) {
-                    constraint.setValue(oldValueList[0]);
+        if ( OperatorsOracle.operatorRequiresList( selected ) != OperatorsOracle.operatorRequiresList( constraint.getOperator() ) ) {
+            if ( OperatorsOracle.operatorRequiresList( selected ) == false ) {
+                final String[] oldValueList = constraint.getValue().split( "," );
+                if ( oldValueList.length > 0 ) {
+                    constraint.setValue( oldValueList[ 0 ] );
                 }
             }
 
@@ -785,16 +800,16 @@ public class FactPatternWidget extends RuleModellerWidget {
             inner.setWidget(
                     row,
                     col,
-                    createValueEditor(constraint));
+                    createValueEditor( constraint ) );
         }
     }
 
-    private boolean isWidgetForValueNeeded(String selectedText) {
-        return selectedText.equals(HumanReadableConstants.INSTANCE.isEqualToNull()) || selectedText.equals(HumanReadableConstants.INSTANCE.isNotEqualToNull());
+    private boolean isWidgetForValueNeeded( String selectedText ) {
+        return selectedText.equals( HumanReadableConstants.INSTANCE.isEqualToNull() ) || selectedText.equals( HumanReadableConstants.INSTANCE.isNotEqualToNull() );
     }
 
     private HorizontalPanel expressionBuilderLS( final SingleFieldConstraintEBLeftSide con,
-                                                 boolean showBinding) {
+                                                 boolean showBinding ) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
 
@@ -804,7 +819,10 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                getEventBus(),
                                                con.getExpressionLeftSide() ) );
             } else {
-                ab.add( new SmallLabel( con.getExpressionLeftSide().getText() ) );
+                final DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( getRuleDialect() );
+                final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( con.getExpressionLeftSide().getBinding(),
+                                                                                         constraintValueBuilder );
+                ab.add( new SmallLabel( con.getExpressionLeftSide().getText( visitor ) ) );
             }
         } else {
             ab.add( new ExpressionBuilder( getModeller(),
@@ -902,5 +920,16 @@ public class FactPatternWidget extends RuleModellerWidget {
                 e.getValue().refreshEditor();
             }
         }
+    }
+
+    private String getRuleDialect() {
+        final RuleModel model = getModeller().getModel();
+        for ( int i = 0; i < model.attributes.length; i++ ) {
+            RuleAttribute attr = model.attributes[ i ];
+            if ( attr.getAttributeName().equals( "dialect" ) ) {
+                return attr.getValue();
+            }
+        }
+        return DRLConstraintValueBuilder.DEFAULT_DIALECT;
     }
 }

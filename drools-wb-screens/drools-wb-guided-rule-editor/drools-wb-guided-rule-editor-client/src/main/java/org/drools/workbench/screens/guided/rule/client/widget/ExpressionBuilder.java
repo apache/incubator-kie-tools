@@ -25,6 +25,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
@@ -41,6 +43,8 @@ import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFieldVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethodParameter;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionText;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
@@ -55,12 +59,13 @@ import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionChang
 import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionTypeChangeHandlers;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.uberfire.client.callbacks.Callback;
 import org.kie.uberfire.client.common.ClickableLabel;
 import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
+import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.client.callbacks.Callback;
 
 public class ExpressionBuilder extends RuleModellerWidget
         implements
@@ -362,7 +367,6 @@ public class ExpressionBuilder extends RuleModellerWidget
                              final Callback<Map<String, String>> callback,
                              final String factName ) {
         getDataModelOracle().getMethodInfos( factName,
-                                             0,
                                              new Callback<List<MethodInfo>>() {
                                                  @Override
                                                  public void callback( final List<MethodInfo> methodInfos ) {
@@ -521,9 +525,9 @@ public class ExpressionBuilder extends RuleModellerWidget
         return label;
     }
 
-    //This is a simplification of ExpressionFormLine$ToStringVisitor that uses TextBoxes for ExpressionText parts
-    //to allow their values to be edited. If we every support method calls in an expression with more than zero
-    //parameters this will need to be changed.
+    //Render Widgets for the Expression. ExpressionMethodParameter and ExpressionText parts
+    //are represented by a TextBox to allow the User to edit the values, Updates are
+    //reflected in the model.
     private Widget createWidgetForExpression() {
         final HorizontalPanel container = new HorizontalPanel();
         container.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
@@ -531,7 +535,32 @@ public class ExpressionBuilder extends RuleModellerWidget
         for ( ExpressionPart expressionPart : expression.getParts() ) {
             if ( expressionPart instanceof ExpressionUnboundFact ) {
                 continue;
-            } else if ( !( expressionPart instanceof ExpressionText ) || this.readOnly ) {
+            } else if ( this.readOnly ) {
+                container.add( new Label( expressionPart.getName() ) );
+            } else if ( expressionPart instanceof ExpressionMethod ) {
+                container.add( new Label( expressionPart.getName() ) );
+                container.add( new Label( "(" ) );
+                final ExpressionMethod em = (ExpressionMethod) expressionPart;
+                final List<ExpressionFormLine> emParams = em.getOrderedParams();
+                for ( int index = 0; index < emParams.size(); index++ ) {
+                    final ExpressionFormLine paramValueHolder = emParams.get( index );
+                    final String paramDataType = em.getParameterDataType( paramValueHolder );
+                    final ExpressionMethodParameter paramValue = ( (ExpressionMethodParameter) paramValueHolder.getRootExpression() );
+                    final TextBox paramValueEditor = TextBoxFactory.getTextBox( paramDataType );
+                    paramValueEditor.addValueChangeHandler( new ValueChangeHandler<String>() {
+                        @Override
+                        public void onValueChange( ValueChangeEvent<String> event ) {
+                            paramValue.setText( event.getValue() );
+                        }
+                    } );
+                    paramValueEditor.setText( paramValue.getName() );
+                    container.add( paramValueEditor );
+                    if ( index < emParams.size() - 1 ) {
+                        container.add( new Label( ", " ) );
+                    }
+                }
+                container.add( new Label( ")" ) );
+            } else if ( !( expressionPart instanceof ExpressionText ) ) {
                 container.add( new Label( expressionPart.getName() ) );
             } else {
                 final TextBox tb = new TextBox();
@@ -540,7 +569,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                 tb.addChangeHandler( new ChangeHandler() {
                     @Override
                     public void onChange( final ChangeEvent changeEvent ) {
-                        expressionTextPart.setName( tb.getText() );
+                        expressionTextPart.setText( tb.getText() );
                         modeller.makeDirty();
                     }
                 } );

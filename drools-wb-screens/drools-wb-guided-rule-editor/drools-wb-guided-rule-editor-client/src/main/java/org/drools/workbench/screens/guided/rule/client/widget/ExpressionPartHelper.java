@@ -21,8 +21,10 @@ import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
+import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionGlobalVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethodParameter;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
@@ -45,9 +47,22 @@ public class ExpressionPartHelper {
                                                                                        mi.getGenericType(),
                                                                                        mi.getParametricReturnType() ) );
                                       } else {
-                                          callback.callback( new ExpressionMethod( mi.getName(),
-                                                                                   mi.getReturnClassType(),
-                                                                                   mi.getGenericType() ) );
+                                          final ExpressionMethod em = new ExpressionMethod( mi.getName(),
+                                                                                            mi.getReturnClassType(),
+                                                                                            mi.getGenericType(),
+                                                                                            mi.getParametricReturnType() );
+                                          //Add applicable parameters
+                                          for ( int index = 0; index < mi.getParams().size(); index++ ) {
+                                              final String paramDataType = mi.getParams().get( index );
+                                              final ExpressionFormLine param = new ExpressionFormLine( index );
+                                              param.appendPart( new ExpressionMethodParameter( "",
+                                                                                               paramDataType,
+                                                                                               paramDataType ) );
+                                              em.putParam( paramDataType,
+                                                           param );
+                                          }
+
+                                          callback.callback( em );
                                       }
                                   }
                               } );

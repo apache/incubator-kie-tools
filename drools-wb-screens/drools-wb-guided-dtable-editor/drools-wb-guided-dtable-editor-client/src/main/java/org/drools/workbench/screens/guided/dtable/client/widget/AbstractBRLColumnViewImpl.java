@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
-import org.drools.workbench.models.datamodel.rule.RuleModelVisitor;
+import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -51,12 +51,12 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.template.client.editor.TemplateModellerWidgetFactory;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * An editor for BRL Column definitions
@@ -149,7 +149,7 @@ public abstract class AbstractBRLColumnViewImpl<T, C extends BaseColumn> extends
             public void callback( Collection<String> ruleNames ) {
                 ruleModeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNames(path, model.getPackageName());
+        } ).getRuleNames( path, model.getPackageName() );
 
         this.brlEditorContainer.setHeight( "100%" );
         this.brlEditorContainer.setWidth( "100%" );
