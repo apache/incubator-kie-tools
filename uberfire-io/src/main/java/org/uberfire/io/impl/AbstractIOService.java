@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -33,10 +34,10 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.lock.LockService;
-import org.uberfire.commons.lock.impl.ThreadLockServiceImpl;
 import org.uberfire.io.IOWatchService;
+import org.uberfire.io.lock.BatchLockControl;
 import org.uberfire.io.lock.FSLockService;
+import org.uberfire.io.lock.impl.BatchLockControlImpl;
 import org.uberfire.io.lock.impl.FSLockServiceImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
@@ -75,6 +76,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     protected static final Charset UTF_8 = Charset.forName( "UTF-8" );
 
     protected final FSLockService lockService;
+    protected final BatchLockControl batchLockControl;
     protected final IOWatchService ioWatchService;
     protected final Set<FileSystem> fileSystems = new HashSet<FileSystem>();
 
@@ -85,18 +87,21 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     public AbstractIOService() {
         this.id = DEFAULT_SERVICE_NAME;
         lockService = new FSLockServiceImpl();
+        batchLockControl = new BatchLockControlImpl();
         ioWatchService = null;
     }
 
     public AbstractIOService( final String id ) {
         this.id = id;
         lockService = new FSLockServiceImpl();
+        batchLockControl = new BatchLockControlImpl();
         ioWatchService = null;
     }
 
     public AbstractIOService( final IOWatchService watchService ) {
         this.id = DEFAULT_SERVICE_NAME;
         lockService = new FSLockServiceImpl();
+        batchLockControl = new BatchLockControlImpl();
         ioWatchService = watchService;
     }
 
@@ -104,6 +109,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                               final IOWatchService watchService ) {
         this.id = id;
         lockService = new FSLockServiceImpl();
+        batchLockControl = new BatchLockControlImpl();
         ioWatchService = watchService;
     }
 
@@ -111,6 +117,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                               final IOWatchService watchService ) {
         this.id = DEFAULT_SERVICE_NAME;
         this.lockService = lockService;
+        this.batchLockControl = new BatchLockControlImpl();
         this.ioWatchService = watchService;
     }
 
@@ -120,30 +127,63 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         this.id = id;
         this.lockService = lockService;
         this.ioWatchService = watchService;
+        this.batchLockControl = new BatchLockControlImpl();
     }
 
     @Override
-    public void startBatch( FileSystem fs,
+    public void startBatch( FileSystem[] fs,
                             final Option... options ) throws InterruptedException {
-        setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
-        lockService.lock( fs );
+        startBatch( fs );
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
-            if ( options != null && options.length == 1 ) {
+            setOptionsOnFileSystems( fs, options );
+        }
+    }
+
+    private void setOptionsOnFileSystems( FileSystem[] fss,
+                                          Option[] options ) {
+        if ( options != null && options.length == 1 ) {
+            for ( FileSystem fs : fss ) {
                 setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, options[ 0 ] );
             }
         }
     }
 
     @Override
-    public void endBatch( FileSystem fs,
-                          final Option... options ) {
-        lockService.unlock( fs );
-        setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
+    public void endBatch() {
+        FileSystem[] lockedFileSystems = batchLockControl.getLockedFileSystems();
+        if ( lockedFileSystems == null || lockedFileSystems.length == 0 ) {
+            throw new RuntimeException( "There is no locked FS" );
+        }
+        for ( FileSystem fs : lockedFileSystems ) {
+            lockService.unlock( fs );
+            unsetBatchModeOn( fs );
+        }
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
-            setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
         }
+        batchLockControl.end();
+    }
+
+    private void startBatch( FileSystem[] fileSystems ) {
+        batchLockControl.start( fileSystems );
+        sortFileSystemsForLocking( fileSystems );
+        for ( FileSystem fs : fileSystems ) {
+            setBatchModeOn( fs );
+            lockService.lock( fs );
+        }
+    }
+
+    private void sortFileSystemsForLocking( FileSystem[] fileSystems ) {
+        Arrays.sort( fileSystems, new Comparator<FileSystem>() {
+            @Override
+            public int compare( FileSystem o1,
+                                FileSystem o2 ) {
+                Integer idO1 = System.identityHashCode( o1 );
+                Integer idO2 = System.identityHashCode( o2 );
+                return idO1.compareTo( idO2 );
+            }
+        } );
     }
 
     private synchronized void cleanupClosedFileSystems() {
@@ -157,6 +197,27 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         }
 
         fileSystems.removeAll( removeList );
+    }
+
+    private synchronized void removeClosedFileSystems() {
+
+        final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
+        for ( final FileSystem fileSystem : fileSystems ) {
+            if ( !fileSystem.isOpen() ) {
+                removeList.add( fileSystem );
+                lockService.removeFromService( fileSystem );
+            }
+        }
+
+        fileSystems.removeAll( removeList );
+    }
+
+    private void setBatchModeOn( FileSystem fs ) {
+        setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+    }
+
+    private void unsetBatchModeOn( FileSystem fs ) {
+        setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
     }
 
     @Override

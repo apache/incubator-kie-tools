@@ -57,11 +57,10 @@ public interface IOService {
 
     void dispose();
 
-    void startBatch( FileSystem fs,
+    void startBatch( FileSystem[] fs,
                      final Option... options ) throws InterruptedException;
 
-    void endBatch( FileSystem fs,
-                   final Option... options );
+    void endBatch();
 
     FileAttribute<?>[] convert( Map<String, ?> attrs );
 

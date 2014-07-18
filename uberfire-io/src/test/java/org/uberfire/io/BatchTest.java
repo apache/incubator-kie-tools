@@ -96,7 +96,7 @@ public class BatchTest {
         assertNotNull( vinit2 );
         assertEquals( 2, vinit2.readAttributes().history().records().size() );
 
-        ioService.startBatch( init.getFileSystem() );
+        ioService.startBatch( new FileSystem[]{ init.getFileSystem() } );
         final Path path = ioService.get( URI.create( "git://amend-repo-test/mybatch" + new Random( 10L ).nextInt() + ".txt" ) );
         final Path path2 = ioService.get( URI.create( "git://amend-repo-test/mybatch2" + new Random( 10L ).nextInt() + ".txt" ) );
         ioService.write( path, "ooooo!" );
@@ -108,7 +108,7 @@ public class BatchTest {
         assertNull( ws.poll() );
         ioService.write( path2, " sdfsdg sdg ooooo222!" );
         assertNull( ws.poll() );
-        ioService.endBatch( init.getFileSystem() );
+        ioService.endBatch();
         {
             List<WatchEvent<?>> events = ws.poll().pollEvents();
             assertEquals( 2, events.size() ); //adds files
@@ -134,14 +134,14 @@ public class BatchTest {
 
         final WatchService ws = f1.getFileSystem().newWatchService();
 
-        ioService.startBatch( f1.getFileSystem() );
+        ioService.startBatch( new FileSystem[]{ f1.getFileSystem() } );
         ioService.write( f1, "f1-u1!" );
         assertNull( ws.poll() );
         ioService.write( f2, "f2-u1!" );
         assertNull( ws.poll() );
         ioService.write( f3, "f3-u1!" );
         assertNull( ws.poll() );
-        ioService.endBatch( f1.getFileSystem() );
+        ioService.endBatch();
 
         {
             List<WatchEvent<?>> events = ws.poll().pollEvents();
@@ -160,14 +160,14 @@ public class BatchTest {
             assertEquals( 1, v3.readAttributes().history().records().size() );
         }
 
-        ioService.startBatch( f1.getFileSystem() );
+        ioService.startBatch( new FileSystem[]{ f1.getFileSystem() } );
         ioService.write( f1, "f1-u1!" );
         assertNull( ws.poll() );
         ioService.write( f2, "f2-u2!" );
         assertNull( ws.poll() );
         ioService.write( f3, "f3-u2!" );
         assertNull( ws.poll() );
-        ioService.endBatch( f1.getFileSystem() );
+        ioService.endBatch();
 
         {
             List<WatchEvent<?>> events = ws.poll().pollEvents();
@@ -193,9 +193,9 @@ public class BatchTest {
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
 
         assertFalse( fs1Batch.isOnBatch() );
-        ioService.startBatch( fs1 );
+        ioService.startBatch( new FileSystem[]{ fs1 } );
         assertTrue( fs1Batch.isOnBatch() );
-        ioService.endBatch( fs1 );
+        ioService.endBatch();
         assertFalse( fs1Batch.isOnBatch() );
     }
 
@@ -209,27 +209,61 @@ public class BatchTest {
 
         assertFalse( fs1Batch.isOnBatch() );
         assertFalse( fs2Batch.isOnBatch() );
-        ioService.startBatch( fs1 );
+        ioService.startBatch( new FileSystem[]{ fs1 } );
         assertTrue( fs1Batch.isOnBatch() );
         assertFalse( fs2Batch.isOnBatch() );
-        ioService.endBatch( fs1 );
+        ioService.endBatch();
         assertFalse( fs1Batch.isOnBatch() );
         assertFalse( fs2Batch.isOnBatch() );
     }
 
     @Test
-    public void testTwoFsOnBatch() throws IOException, InterruptedException {
+    public void testTwoStaredFsOnBatchByTheSameThread() throws IOException, InterruptedException {
         Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
 
         init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
 
-        ioService.startBatch( fs1 );
-        ioService.startBatch( fs2 );
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        try {
+            ioService.startBatch( new FileSystem[]{ fs2 } );
+            fail();
+        } catch ( RuntimeException e ) {
+            ioService.endBatch();
+        }
+    }
+
+    @Test
+    public void testTwoFsOnBatchByTheSameThread() throws IOException, InterruptedException {
+        Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        assertTrue( fs1Batch.isOnBatch() );
+        ioService.endBatch();
+        ioService.startBatch( new FileSystem[]{ fs2 } );
+        assertTrue( fs2Batch.isOnBatch() );
+        ioService.endBatch();
+    }
+
+    @Test
+    public void iCanLockMultipleFS() throws IOException, InterruptedException {
+        Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        ioService.startBatch( new FileSystem[]{ fs1, fs2 } );
         assertTrue( fs1Batch.isOnBatch() );
         assertTrue( fs2Batch.isOnBatch() );
-        ioService.endBatch( fs1 );
-        ioService.endBatch( fs2 );
+
+        ioService.endBatch();
+        assertFalse( fs1Batch.isOnBatch() );
+        assertFalse( fs2Batch.isOnBatch() );
     }
 }
