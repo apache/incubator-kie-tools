@@ -19,8 +19,11 @@ package org.kie.workbench.common.services.shared.messageconsole;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.guvnor.messageconsole.whitelist.MessageConsoleWhiteList;
 
+@ApplicationScoped
 public class MessageConsoleWhiteListImpl
         implements MessageConsoleWhiteList {
 
