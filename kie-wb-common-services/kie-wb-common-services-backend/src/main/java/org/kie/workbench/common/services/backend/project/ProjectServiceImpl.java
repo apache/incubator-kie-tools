@@ -98,7 +98,7 @@ public class ProjectServiceImpl
             final Path fsRoot = repository.getRoot();
             final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
 
-            ioService.startBatch( fs, makeCommentedOption( "New project [" + projectName + "]" ) );
+            ioService.startBatch( new FileSystem[]{fs}, makeCommentedOption( "New project [" + projectName + "]" ) );
 
             //Set-up project structure and KModule.xml
             kModuleService.setUpKModuleStructure( projectRootPath );
@@ -144,7 +144,7 @@ public class ProjectServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         } finally {
-            ioService.endBatch( fs );
+            ioService.endBatch();
         }
     }
 

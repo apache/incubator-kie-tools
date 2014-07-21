@@ -233,7 +233,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
             //to it must be treated carefully.
             CommentedOption option = makeCommentedOption();
-            ioService.startBatch( fs );
+            ioService.startBatch( new FileSystem[]{fs} );
             onBatch = true;
 
             generateModel( dataModel,
@@ -241,7 +241,7 @@ public class DataModelerServiceImpl implements DataModelerService {
                            option );
 
             onBatch = false;
-            ioService.endBatch( fs );
+            ioService.endBatch();
 
             Long endTime = System.currentTimeMillis();
             if ( logger.isDebugEnabled() ) {
@@ -258,7 +258,7 @@ public class DataModelerServiceImpl implements DataModelerService {
             if ( onBatch ) {
                 try {
                     logger.warn( "IOService batch method is still on, trying to end batch processing." );
-                    ioService.endBatch( fs );
+                    ioService.endBatch();
                     logger.warn( "IOService batch method is was successfully finished. The user will still get the exception, but the batch processing was finished." );
                 } catch ( Exception ex ) {
                     logger.error( "An error was produced when the IOService.endBatch processing was executed.", ex );

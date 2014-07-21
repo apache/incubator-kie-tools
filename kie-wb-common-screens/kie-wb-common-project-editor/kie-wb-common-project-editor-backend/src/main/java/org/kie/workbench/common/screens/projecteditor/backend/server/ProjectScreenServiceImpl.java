@@ -89,7 +89,7 @@ public class ProjectScreenServiceImpl
         final KieProject project = projectService.resolveProject( pathToPomXML );
         final FileSystem fs = Paths.convert( pathToPomXML ).getFileSystem();
         try {
-            ioService.startBatch( fs, makeCommentedOption( comment ) );
+            ioService.startBatch( new FileSystem[]{fs}, makeCommentedOption( comment ) );
             pomService.save( pathToPomXML,
                              model.getPOM(),
                              model.getPOMMetaData(),
@@ -105,7 +105,7 @@ public class ProjectScreenServiceImpl
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         } finally {
-            ioService.endBatch( fs );
+            ioService.endBatch();
         }
     }
 

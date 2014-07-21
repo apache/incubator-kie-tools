@@ -68,6 +68,7 @@ import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
@@ -825,7 +826,7 @@ public class ExplorerServiceImpl
 
         try {
             if ( paths.size() > 1 ) {
-                ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+                ioService.startBatch( new FileSystem[]{Paths.convert( paths.iterator().next() ).getFileSystem()} );
             }
 
             for ( final Path path : paths ) {
@@ -841,7 +842,7 @@ public class ExplorerServiceImpl
             throw ExceptionUtilities.handleException( e );
         } finally {
             if ( paths.size() > 1 ) {
-                ioService.endBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+                ioService.endBatch();
             }
         }
     }
@@ -854,7 +855,7 @@ public class ExplorerServiceImpl
 
         try {
             //Always use a batch as RenameHelpers may be involved with the rename operation
-            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+            ioService.startBatch( new FileSystem[]{Paths.convert( paths.iterator().next() ).getFileSystem()} );
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -892,7 +893,7 @@ public class ExplorerServiceImpl
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
         } finally {
-            ioService.endBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+            ioService.endBatch();
         }
     }
 
@@ -904,7 +905,7 @@ public class ExplorerServiceImpl
 
         try {
             //Always use a batch as CopyHelpers may be involved with the rename operation
-            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+            ioService.startBatch( new FileSystem[]{Paths.convert( paths.iterator().next() ).getFileSystem()} );
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -942,7 +943,7 @@ public class ExplorerServiceImpl
         } catch ( final Exception e ) {
             throw ExceptionUtilities.handleException( e );
         } finally {
-            ioService.endBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+            ioService.endBatch();
         }
     }
 
