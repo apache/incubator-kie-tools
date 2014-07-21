@@ -40,43 +40,28 @@ public class InvertColorImageDataFilter extends AbstractBaseImageDataFilter<Inve
         {
             return source;
         }
-        final int length = getLength(source);
-
         final CanvasPixelArray data = source.getData();
 
         if (null == data)
         {
             return source;
         }
-        if (isNative())
-        {
-            filter0(data, length);
-        }
-        else
-        {
-            for (int i = 0; i < length; i += PIXEL_SZ)
-            {
-                data.set(i + R_OFFSET, 255 - data.get(i + R_OFFSET));
+        filter_(data, FilterOps.getLength(source));
 
-                data.set(i + G_OFFSET, 255 - data.get(i + G_OFFSET));
-
-                data.set(i + B_OFFSET, 255 - data.get(i + B_OFFSET));
-            }
-        }
         return source;
     }
 
-    private final native void filter0(JavaScriptObject pixa, int length)
+    private final native void filter_(JavaScriptObject pixa, int length)
     /*-{
-		var data = pixa;
+    	var data = pixa;
 
-		for (var i = 0; i < length; i += 4) {
+    	for (var i = 0; i < length; i += 4) {
 
-			data[i + 0] = 255 - data[i + 0];
+    		data[i + 0] = 255 - data[i + 0];
 
-			data[i + 1] = 255 - data[i + 1];
+    		data[i + 1] = 255 - data[i + 1];
 
-			data[i + 2] = 255 - data[i + 2];
-		}
+    		data[i + 2] = 255 - data[i + 2];
+    	}
     }-*/;
 }

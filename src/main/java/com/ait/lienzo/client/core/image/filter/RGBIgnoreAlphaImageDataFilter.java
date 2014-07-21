@@ -69,55 +69,33 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractBaseRGBImageDataFilte
         {
             return source;
         }
-        final int length = getLength(source);
-
         final CanvasPixelArray data = source.getData();
 
         if (null == data)
         {
             return source;
         }
-        if (isNative())
-        {
-            filter0(data, length, getR(), getG(), getB());
-        }
-        else
-        {
-            for (int i = 0; i < length; i += PIXEL_SZ)
-            {
-                if (data.get(i + A_OFFSET) > 0)
-                {
-                    data.set(i + R_OFFSET, getR());
+        filter_(data, FilterOps.getLength(source), getR(), getG(), getB());
 
-                    data.set(i + G_OFFSET, getG());
-
-                    data.set(i + B_OFFSET, getB());
-
-                    data.set(i + A_OFFSET, 255);
-                }
-            }
-        }
         return source;
     }
 
-    private final native void filter0(JavaScriptObject pixa, int length, int r, int g, int b)
+    private final native void filter_(JavaScriptObject pixa, int length, int r, int g, int b)
     /*-{
-		var data = pixa;
+    	var data = pixa;
 
-		for (var i = 0; i < length; i += 4) {
+    	for (var i = 0; i < length; i += 4) {
 
-			var a = data[i + 3] || 0;
+    		if (data[i + 3] > 0) {
 
-			if (a > 0) {
+    			data[i + 0] = r;
 
-				data[i + 0] = r;
+    			data[i + 1] = g;
 
-				data[i + 1] = g;
+    			data[i + 2] = b;
 
-				data[i + 2] = b;
-
-				data[i + 3] = 255;
-			}
-		}
+    			data[i + 3] = 255;
+    		}
+    	}
     }-*/;
 }

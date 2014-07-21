@@ -63,81 +63,41 @@ public class PosterizeImageDataFilter extends AbstractBaseImageDataFilter<Poster
 
         final int m = w * 4;
 
-        if (isNative())
-        {
-            filter0(data, areas, valus, w, h, m);
-        }
-        else
-        {
-            int y = h;
+        filter_(data, areas, valus, w, h, m);
 
-            do
-            {
-                final int offsety = (y - 1) * m;
-
-                int x = w;
-
-                do
-                {
-                    final int offset = offsety + (x - 1) * m;
-
-                    int r = (int) (valus * ((data.get(offset + 0) / areas)));
-                    int g = (int) (valus * ((data.get(offset + 1) / areas)));
-                    int b = (int) (valus * ((data.get(offset + 2) / areas)));
-
-                    if (r > 255)
-                    {
-                        r = 255;
-                    }
-                    if (g > 255)
-                    {
-                        g = 255;
-                    }
-                    if (b > 255)
-                    {
-                        b = 255;
-                    }
-                    data.set(offset + 0, r);
-                    data.set(offset + 1, g);
-                    data.set(offset + 2, b);
-                }
-                while (--x > 0);
-            }
-            while (--y > 0);
-        }
         return source;
     }
 
-    private final native void filter0(JavaScriptObject pixa, double areas, double valus, int w, int h, int m)
+    private final native void filter_(JavaScriptObject pixa, double areas, double valus, int w, int h, int m)
     /*-{
-		var data = pixa;
+    	var data = pixa;
 
-		var y = h;
+    	var y = h;
 
-		do {
-			var offsety = (y - 1) * m;
-			var x = w;
-			do {
-				var offset = offsety + (x - 1) * 4;
+    	do {
+    		var offsety = (y - 1) * m;
+    		var x = w;
+    		do {
+    			var offset = offsety + (x - 1) * 4;
 
-				var r = values * ((data[offset + 0] / areas) >> 0);
-				var g = values * ((data[offset + 1] / areas) >> 0);
-				var b = values * ((data[offset + 2] / areas) >> 0);
+    			var r = (valus * ((data[offset + 0] / areas))) | 0;
+    			var g = (valus * ((data[offset + 1] / areas))) | 0;
+    			var b = (valus * ((data[offset + 2] / areas))) | 0;
 
-				if (r > 255) {
-					r = 255;
-				}
-				if (g > 255) {
-					g = 255;
-				}
-				if (b > 255) {
-					b = 255;
-				}
-				data[offset + 0] = r;
-				data[offset + 1] = g;
-				data[offset + 2] = b;
+    			if (r > 255) {
+    				r = 255;
+    			}
+    			if (g > 255) {
+    				g = 255;
+    			}
+    			if (b > 255) {
+    				b = 255;
+    			}
+    			data[offset + 0] = r;
+    			data[offset + 1] = g;
+    			data[offset + 2] = b;
 
-			} while (--x);
-		} while (--y);
+    		} while (--x);
+    	} while (--y);
     }-*/;
 }

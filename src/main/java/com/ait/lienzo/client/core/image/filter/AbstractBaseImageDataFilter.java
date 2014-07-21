@@ -16,36 +16,11 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.types.ImageData;
-
-public abstract class AbstractBaseImageDataFilter<T extends AbstractBaseImageDataFilter<T>> implements IBaseImageDataFilter<T>
+public abstract class AbstractBaseImageDataFilter<T extends AbstractBaseImageDataFilter<T>> implements ImageDataFilter
 {
     private String  m_name   = null;
 
-    private boolean m_native = true;
-
     private boolean m_active = true;
-
-    @Override
-    public final boolean isNative()
-    {
-        return m_native;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public final T setNative(boolean isnative)
-    {
-        m_native = isnative;
-
-        return (T) this;
-    }
-
-    @Override
-    public final int getLength(ImageData source)
-    {
-        return ((source.getWidth() * source.getHeight()) * PIXEL_SZ);
-    }
 
     @Override
     public boolean isTransforming()

@@ -56,50 +56,33 @@ public class ColorLuminosityImageDataFilter extends AbstractBaseRGBImageDataFilt
         {
             return source;
         }
-        final int length = getLength(source);
-
         final CanvasPixelArray data = source.getData();
 
         if (null == data)
         {
             return source;
         }
-        if (isNative())
-        {
-            filter0(data, length, getR(), getG(), getB());
-        }
-        else
-        {
-            for (int i = 0; i < length; i += PIXEL_SZ)
-            {
-                double m = (((0.21 * data.get(i + R_OFFSET)) + (0.72 * data.get(i + G_OFFSET)) + (0.07 * data.get(i + B_OFFSET))) / 255.0);
+        filter_(data, FilterOps.getLength(source), getR(), getG(), getB());
 
-                data.set(i + R_OFFSET, (int) ((getR() * m) + 0.5));
-
-                data.set(i + G_OFFSET, (int) ((getG() * m) + 0.5));
-
-                data.set(i + B_OFFSET, (int) ((getB() * m) + 0.5));
-            }
-        }
         return source;
     }
 
-    private final native void filter0(JavaScriptObject pixa, int length, int r, int g, int b)
+    private final native void filter_(JavaScriptObject pixa, int length, int r, int g, int b)
     /*-{
-		var data = pixa;
+    	var data = pixa;
 
-		function luminocity(rv, gv, bv) {
-			return (rv * 0.21) + (gv * 0.72) + (bv * 0.07);
-		}
-		for (var i = 0; i < length; i += 4) {
+    	function luminocity(rv, gv, bv) {
+    		return (rv * 0.21) + (gv * 0.72) + (bv * 0.07);
+    	}
+    	for (var i = 0; i < length; i += 4) {
 
-			var v = (luminocity(data[i + 0], data[i + 1], data[i + 2]) / 255.0);
+    		var v = (luminocity(data[i + 0], data[i + 1], data[i + 2]) / 255.0);
 
-			data[i + 0] = ((r * v) + 0.5) | 0;
+    		data[i + 0] = ((r * v) + 0.5) | 0;
 
-			data[i + 1] = ((g * v) + 0.5) | 0;
+    		data[i + 1] = ((g * v) + 0.5) | 0;
 
-			data[i + 2] = ((b * v) + 0.5) | 0;
-		}
+    		data[i + 2] = ((b * v) + 0.5) | 0;
+    	}
     }-*/;
 }

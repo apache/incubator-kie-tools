@@ -44,4 +44,12 @@ public interface ImageDataFilter
     public String getName();
 
     public void setName(String name);
+
+    public static final class FilterOps
+    {
+        public static final int getLength(ImageData source)
+        {
+            return ((source.getWidth() * source.getHeight()) * PIXEL_SZ);
+        }
+    }
 }

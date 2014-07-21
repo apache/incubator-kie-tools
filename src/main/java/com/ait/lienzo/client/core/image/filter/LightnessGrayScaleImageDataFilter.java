@@ -40,60 +40,37 @@ public class LightnessGrayScaleImageDataFilter extends AbstractBaseImageDataFilt
         {
             return source;
         }
-        final int length = getLength(source);
-
         final CanvasPixelArray data = source.getData();
 
         if (null == data)
         {
             return source;
         }
-        if (isNative())
-        {
-            filter0(data, length);
-        }
-        else
-        {
-            for (int i = 0; i < length; i += PIXEL_SZ)
-            {
-                int r = data.get(i + R_OFFSET);
+        filter_(data, FilterOps.getLength(source));
 
-                int g = data.get(i + G_OFFSET);
-
-                int b = data.get(i + B_OFFSET);
-
-                int v = (int) ((((Math.max(Math.max(r, g), b) + Math.min(Math.min(r, g), b))) / 2.0) + 0.5);
-
-                data.set(i + R_OFFSET, v);
-
-                data.set(i + G_OFFSET, v);
-
-                data.set(i + B_OFFSET, v);
-            }
-        }
         return source;
     }
 
-    private final native void filter0(JavaScriptObject pixa, int length)
+    private final native void filter_(JavaScriptObject pixa, int length)
     /*-{
-		var data = pixa;
+    	var data = pixa;
 
-		for (var i = 0; i < length; i += 4) {
+    	for (var i = 0; i < length; i += 4) {
 
-			var r = data[i + 0];
+    		var r = data[i + 0];
 
-			var g = data[i + 1];
+    		var g = data[i + 1];
 
-			var b = data[i + 2];
+    		var b = data[i + 2];
 
-			var v = ((((Math.max(Math.max(r, g), b) + Math.min(Math.min(r, g),
-					b))) / 2.0) + 0.5) | 0;
+    		var v = ((((Math.max(Math.max(r, g), b) + Math.min(Math.min(r, g),
+    				b))) / 2.0) + 0.5) | 0;
 
-			data[i + 0] = v;
+    		data[i + 0] = v;
 
-			data[i + 1] = v;
+    		data[i + 1] = v;
 
-			data[i + 2] = v;
-		}
+    		data[i + 2] = v;
+    	}
     }-*/;
 }
