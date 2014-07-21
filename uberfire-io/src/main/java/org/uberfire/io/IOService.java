@@ -60,6 +60,11 @@ public interface IOService {
     void startBatch( FileSystem[] fs,
                      final Option... options ) throws InterruptedException;
 
+    public void startBatch( FileSystem fs,
+                            final Option... options ) throws InterruptedException;
+
+    public void startBatch( final FileSystem... fs ) throws InterruptedException;
+
     void endBatch();
 
     FileAttribute<?>[] convert( Map<String, ?> attrs );

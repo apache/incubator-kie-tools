@@ -131,9 +131,25 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     }
 
     @Override
+    public void startBatch( FileSystem fs,
+                            final Option... options ) throws InterruptedException {
+        batchProcess( new FileSystem[]{ fs }, options );
+    }
+
+    @Override
+    public void startBatch( final FileSystem... fs ) throws InterruptedException {
+        batchProcess( fs );
+    }
+
+    @Override
     public void startBatch( FileSystem[] fs,
                             final Option... options ) throws InterruptedException {
-        startBatch( fs );
+        batchProcess( fs, options );
+    }
+
+    private void batchProcess( FileSystem[] fs,
+                               Option... options ) {
+        startBatchProcess( fs );
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
             setOptionsOnFileSystems( fs, options );
@@ -165,7 +181,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         batchLockControl.end();
     }
 
-    private void startBatch( FileSystem[] fileSystems ) {
+    private void startBatchProcess( FileSystem[] fileSystems ) {
         batchLockControl.start( fileSystems );
         sortFileSystemsForLocking( fileSystems );
         for ( FileSystem fs : fileSystems ) {
