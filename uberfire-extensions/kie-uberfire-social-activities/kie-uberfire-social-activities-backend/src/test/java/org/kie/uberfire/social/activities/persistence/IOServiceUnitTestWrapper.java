@@ -45,12 +45,23 @@ public class IOServiceUnitTestWrapper implements IOService {
     }
 
     @Override
+    public void startBatch( FileSystem[] fs,
+                            Option... options ) throws InterruptedException {
+
+    }
+
+    @Override
     public void startBatch( FileSystem fs, Option... options ) {
 
     }
 
     @Override
-    public void endBatch( FileSystem fs, Option... options ) {
+    public void startBatch( FileSystem... fs ) throws InterruptedException {
+
+    }
+
+    @Override
+    public void endBatch() {
 
     }
 
