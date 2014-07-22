@@ -63,6 +63,16 @@ public class IOServiceMock
     }
 
     @Override
+    public void startBatch(FileSystem fileSystem, Option... options) throws InterruptedException {
+
+    }
+
+    @Override
+    public void startBatch(FileSystem... fileSystems) throws InterruptedException {
+
+    }
+
+    @Override
     public void endBatch() {
 
     }
