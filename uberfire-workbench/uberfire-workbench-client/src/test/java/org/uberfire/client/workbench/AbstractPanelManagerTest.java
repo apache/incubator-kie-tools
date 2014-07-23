@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.PanelFocusEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
@@ -27,7 +28,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
@@ -77,10 +77,11 @@ public class AbstractPanelManagerTest {
     public void setup() {
         when( layoutSelection.get().getPerspectiveContainer() ).thenReturn( mock( HasWidgets.class ) );
 
-        testPerspectiveDef = new PerspectiveDefinitionImpl( PanelType.ROOT_SIMPLE );
+        testPerspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         testPerspectiveRootPanelPresenter = mock( WorkbenchPanelPresenter.class );
 
-        when( beanFactory.newWorkbenchPanel( testPerspectiveDef.getRoot() )).thenReturn( testPerspectiveRootPanelPresenter );
+        when( beanFactory.newRootPanel( any( PerspectiveActivity.class ),
+                                        eq( testPerspectiveDef.getRoot() ) )).thenReturn( testPerspectiveRootPanelPresenter );
         when( testPerspectiveRootPanelPresenter.getDefinition() ).thenReturn( testPerspectiveDef.getRoot() );
         when( testPerspectiveRootPanelPresenter.getPanelView() ).thenReturn( mock( WorkbenchPanelView.class ) );
 
@@ -90,7 +91,8 @@ public class AbstractPanelManagerTest {
                                             any( IsWidget.class ),
                                             any( PartDefinition.class ) ) ).thenReturn( partPresenter );
 
-        panelManager.setRoot( testPerspectiveDef.getRoot() );
+        PerspectiveActivity testPerspectiveActivity = mock( PerspectiveActivity.class );
+        panelManager.setRoot( testPerspectiveActivity, testPerspectiveDef.getRoot() );
     }
 
     @Test
@@ -157,7 +159,7 @@ public class AbstractPanelManagerTest {
         PartDefinition part = new PartDefinitionImpl( partPlace );
         Menus partMenus = MenuFactory.newContributedMenu( "PartMenu" ).endMenu().build();
         UIPart uiPart = new UIPart( "uiPart", null, mock(IsWidget.class) );
-        PanelDefinition randomUnattachedPanel = new PanelDefinitionImpl( PanelType.SIMPLE );
+        PanelDefinition randomUnattachedPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
 
         try {
             panelManager.addWorkbenchPart( partPlace, part, randomUnattachedPanel, partMenus, uiPart, "contextId" );
@@ -200,7 +202,7 @@ public class AbstractPanelManagerTest {
 
     @Test
     public void removingLastPartFromPanelShouldRemovePanelToo() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl( PanelType.SIMPLE );
+        PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
         panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );
 
@@ -229,7 +231,7 @@ public class AbstractPanelManagerTest {
 
     @Test
     public void addedPanelsShouldBeRemembered() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl( PanelType.SIMPLE );
+        PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
 
         // warning: this is not a particularly good test, because this method is stubbed out in our
@@ -241,7 +243,7 @@ public class AbstractPanelManagerTest {
 
     @Test
     public void explicitlyRemovedPanelsShouldBeForgotten() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl( PanelType.SIMPLE );
+        PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
 
         panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );

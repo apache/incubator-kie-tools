@@ -1,6 +1,6 @@
 package org.uberfire.annotations.processors;
 
-import static org.uberfire.annotations.processors.GeneratorUtils.*;
+import static org.uberfire.annotations.processors.GeneratorUtils.getAnnotation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,8 @@ public class TemplateInformationHelper {
     public static final String VALUE = "value";
     public static final String PANEL_TYPE = "panelType";
     public static final String IS_DEFAULT = "isDefault";
-    public static final String DEFAULT_PANEL_TYPE = "TEMPLATE";
+    public static final String DEFAULT_PANEL_TYPE = "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter";
+    public static final String PARENT_CHOOSES_PANEL_TYPE = "PARENT_CHOOSES_TYPE"; // must match PanelDefinition.PARENT_CHOOSES_TYPE
     public static final String PART = "part";
     public static final String PARAMETERS = "parameters";
     public static final String PARAMETERS_NAME_PARAM = "name";
@@ -94,7 +95,11 @@ public class TemplateInformationHelper {
 
     private static String extractPanelType( Elements elementUtils, Element element ) throws GenerationException {
         AnnotationMirror am = getAnnotation( elementUtils, element, ClientAPIModule.getWorkbenchPanel() );
-        return GeneratorUtils.extractAnnotationStringValue( elementUtils, am, PANEL_TYPE );
+        String panelPresenterClassName = GeneratorUtils.extractAnnotationStringValue( elementUtils, am, PANEL_TYPE );
+        if ( panelPresenterClassName.equals( "java.lang.Void" ) ) {
+            return PARENT_CHOOSES_PANEL_TYPE;
+        }
+        return panelPresenterClassName;
     }
 
     private static boolean workbenchPanelIsDefault( Elements elementUtils, Element element ) throws GenerationException {

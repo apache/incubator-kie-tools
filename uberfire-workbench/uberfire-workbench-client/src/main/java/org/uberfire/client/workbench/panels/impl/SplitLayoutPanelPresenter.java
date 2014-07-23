@@ -28,7 +28,8 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
 /**
  * SplitLayoutPanelPresenter and {@link SplitLayoutPanelView} arrange panels using a GWT {@link SplitLayoutPanel}.
- * As such it only supports {@link CompassPosition#WEST} and {@link CompassPosition#CENTER}
+ * As such it only supports {@link CompassPosition#WEST} and {@link CompassPosition#CENTER}. Does not support
+ * containing parts directly.
  */
 @Dependent
 public class SplitLayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<SplitLayoutPanelPresenter> {
@@ -43,5 +44,13 @@ public class SplitLayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<S
     @Override
     protected SplitLayoutPanelPresenter asPresenterType() {
         return this;
+    }
+
+    /**
+     * Returns the {@link LayoutPanelPresenter} class name.
+     */
+    @Override
+    public String getDefaultChildType() {
+        return LayoutPanelPresenter.class.getName();
     }
 }

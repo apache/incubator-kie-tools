@@ -29,7 +29,7 @@ import org.uberfire.workbench.model.Position;
 public class NSWEPanelManager extends AbstractPanelManagerImpl {
 
     @Inject
-    private NSWEExtendedBeanFactory factory;
+    private BeanFactory factory;
 
     @Override
     protected BeanFactory getBeanFactory(){
@@ -41,8 +41,7 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
                                               final PanelDefinition childPanel,
                                               final Position position ) {
 
-        PanelDefinition newPanel = null;
-
+        System.out.println("    Adding panel " + childPanel.getPanelType() + "@" + System.identityHashCode( childPanel ) );
         WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
 
         if ( targetPanelPresenter == null ) {
@@ -51,37 +50,34 @@ public class NSWEPanelManager extends AbstractPanelManagerImpl {
                                                targetPanelPresenter );
         }
 
-        switch ( (CompassPosition) position ) {
-            case ROOT:
-                newPanel = rootPanelDef;
-                break;
+        if ( childPanel.getPanelType().equals( PanelDefinition.PARENT_CHOOSES_TYPE ) ) {
+            childPanel.setPanelType( targetPanelPresenter.getDefaultChildType() );
+        }
 
-            case SELF:
-                newPanel = targetPanelPresenter.getDefinition();
-                break;
+        PanelDefinition newPanel;
+        if ( position == CompassPosition.ROOT ) {
+            // TODO not sure if this is needed/used anymore
+            newPanel = rootPanelDef;
+        } else if ( position == CompassPosition.SELF ) {
+            // TODO not sure if this is needed/used anymore
+            newPanel = targetPanelPresenter.getDefinition();
+        } else {
+            final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
+            mapPanelDefinitionToPresenter.put( childPanel,
+                                               childPanelPresenter );
 
-            case NORTH:
-            case SOUTH:
-            case EAST:
-            case WEST:
-            case CENTER:
-
-                final WorkbenchPanelPresenter childPanelPresenter = factory.newWorkbenchPanel( childPanel );
-                mapPanelDefinitionToPresenter.put( childPanel,
-                                                   childPanelPresenter );
-
-                // TODO (hbraun): why no remove callback before the addPanel invocation?
-                targetPanelPresenter.addPanel( childPanel,
-                                               childPanelPresenter.getPanelView(),
-                                               position );
-                newPanel = childPanel;
-                break;
-
-            default:
-                throw new IllegalArgumentException( "Unhandled Position '"+position+"': Expect subsequent errors." );
+            // TODO (hbraun): why no remove callback before the addPanel invocation?
+            targetPanelPresenter.addPanel( childPanel,
+                                           childPanelPresenter.getPanelView(),
+                                           position );
+            newPanel = childPanel;
         }
 
         onPanelFocus( newPanel );
+
+        System.out.println("  ->Added  panel " + childPanel.getPanelType() + "@" + System.identityHashCode( childPanel ) );
+        dumpKnownPanels();
+
         return newPanel;
     }
 

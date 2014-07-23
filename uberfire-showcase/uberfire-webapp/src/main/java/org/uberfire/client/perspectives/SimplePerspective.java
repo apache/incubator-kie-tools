@@ -15,12 +15,11 @@
  */
 package org.uberfire.client.perspectives;
 
-import static org.uberfire.workbench.model.PanelType.*;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
@@ -33,7 +32,7 @@ public class SimplePerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_TAB );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( MultiTabWorkbenchPanelPresenter.class.getName() );
         p.setName( "Simple Perspective" );
         return p;
     }

@@ -26,13 +26,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 <#if isTemplate>
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import java.util.HashMap;
 import java.util.Map;
 import org.uberfire.client.annotations.Perspective;
-import org.uberfire.client.mvp.AbstractTemplateWorkbenchPerspectiveActivity;
-<#else>
-import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 </#if>
+import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.mvp.PlaceRequest;
@@ -46,13 +45,15 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 
 </#if>
 <#if isTemplate>
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.pmgr.template.TemplatePanelDefinitionImpl;
-import org.uberfire.client.workbench.pmgr.template.TemplatePerspectiveDefinitionImpl;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.TemplatedActivity;
+import org.uberfire.client.workbench.panels.impl.TemplatedWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.NamedPosition;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 </#if>
@@ -69,7 +70,7 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class ${className} extends <#if isTemplate> AbstractTemplateWorkbenchPerspectiveActivity <#else>AbstractWorkbenchPerspectiveActivity</#if> {
+public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTemplate> implements TemplatedActivity</#if> {
 
 <#if rolesList??>
 private static final Collection<String> ROLES = Arrays.asList(${rolesList});
@@ -186,69 +187,67 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
         return "${packageName}.${className}";
     }
     <#if isTemplate>
+
     @Override
-    public Widget getRealPresenterWidget( ) {
-      return realPresenter.asWidget();
+    public IsWidget getRootWidget() {
+        return realPresenter;
     }
 
     @Override
-    public void setWidget( String fieldName,
-        Widget widget ) {
-
+    public HasWidgets resolvePosition( NamedPosition position ) {
+        final String fieldName = position.getFieldName();
         <#if defaultPanel??>
-        if ( fieldName.equalsIgnoreCase( "${defaultPanel.fieldName}" ) ) {
-            realPresenter.${defaultPanel.fieldName}.clear();
-            realPresenter.${defaultPanel.fieldName}.add( widget.asWidget() );
+        if ( fieldName.equals( "${defaultPanel.fieldName}" ) ) {
+            return realPresenter.${defaultPanel.fieldName};
         }
         </#if>
         <#list wbPanels as wbPanel>
-        if ( fieldName.equalsIgnoreCase( "${wbPanel.fieldName}" ) ) {
-            realPresenter.${wbPanel.fieldName}.clear();
-            realPresenter.${wbPanel.fieldName}.add( widget.asWidget() );
+        if ( fieldName.equals( "${wbPanel.fieldName}" ) ) {
+            return realPresenter.${wbPanel.fieldName};
         }
         </#list>
+        return null;
     }
 
-    @Perspective
+    @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( TemplatedWorkbenchPanelPresenter.class.getName() );
+        p.setName( realPresenter.getClass().getName() );
+
         <#if defaultPanel??>
-        final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,"${defaultPanel.fieldName}", getClass().getName() );
-        PanelDefinition panelDefinition = new TemplatePanelDefinitionImpl( this, PanelType.${defaultPanel.panelType} , "${defaultPanel.fieldName}"  );
+        PanelDefinition panelDefinition = new PanelDefinitionImpl( "${defaultPanel.panelType}" );
             <#list defaultPanel.wbParts as wbPart>
                 <#if wbPart.parameters??>
-            Map properties = new HashMap<String,String>();
+        Map properties = new HashMap<String,String>();
                     <#list wbPart.parameters?keys as key>
-            properties.put("${key}","${ wbPart.parameters[key]}");
+        properties.put("${key}","${ wbPart.parameters[key]}");
                     </#list>
-            panelDefinition.addPart(
+        panelDefinition.addPart(
             new PartDefinitionImpl(new DefaultPlaceRequest( "${wbPart.partName}", properties  ) ) );
                 <#else>
-            panelDefinition.addPart(
+        panelDefinition.addPart(
             new PartDefinitionImpl(new DefaultPlaceRequest( "${wbPart.partName}" ) ) );
                 </#if>
             </#list>
-        p.getRoot().appendChild( panelDefinition );
-        <#else>
-        final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,null, getClass().getName() );
-
+        p.getRoot().appendChild( new NamedPosition( "${defaultPanel.fieldName}" ), panelDefinition );
         </#if>
 
         <#list wbPanels as wbPanel>
-        PanelDefinition panelDefinition${wbPanel_index} = new TemplatePanelDefinitionImpl( this, PanelType.${wbPanel.panelType} , "${wbPanel.fieldName}"  );
+        PanelDefinition panelDefinition${wbPanel_index} = new PanelDefinitionImpl( "${wbPanel.panelType}" );
             <#list wbPanel.wbParts as wbPart>
                 <#if wbPart.parameters??>
         Map properties${wbPanel_index} = new HashMap<String,String>();
                     <#list wbPart.parameters?keys as key>
-            properties${wbPanel_index}.put("${key}","${ wbPart.parameters[key]}");
+        properties${wbPanel_index}.put( "${key}","${ wbPart.parameters[key]}" );
                     </#list>
         panelDefinition${wbPanel_index}.addPart(
-                new PartDefinitionImpl(new DefaultPlaceRequest( "${wbPart.partName}", properties${wbPanel_index} ) ) );
+                new PartDefinitionImpl( new DefaultPlaceRequest( "${wbPart.partName}", properties${wbPanel_index} ) ) );
                 <#else>
         panelDefinition${wbPanel_index}.addPart(
-                new PartDefinitionImpl(new DefaultPlaceRequest( "${wbPart.partName}" ) ) );
+                new PartDefinitionImpl( new DefaultPlaceRequest( "${wbPart.partName}" ) ) );
                 </#if>
             </#list>
-        p.getRoot().appendChild( panelDefinition${wbPanel_index} );
+        p.getRoot().appendChild( new NamedPosition( "${wbPanel.fieldName}" ), panelDefinition${wbPanel_index} );
         </#list>
         return p;
     }

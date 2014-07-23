@@ -18,12 +18,13 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.events.PerspectiveChange;
+import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
@@ -48,7 +49,7 @@ public class PerspectiveManagerTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setup() {
-        ozDefinition = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
+        ozDefinition = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
 
         oz = mock( PerspectiveActivity.class );
         when( oz.getDefaultPerspectiveLayout() ).thenReturn( ozDefinition );
@@ -103,7 +104,7 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldSaveOldNonTransientPerspectiveStateWhenSwitching() throws Exception {
-        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
+        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
 
         PerspectiveActivity kansas = mock( PerspectiveActivity.class );
         when( kansas.getDefaultPerspectiveLayout() ).thenReturn( kansasDefinition );
@@ -118,7 +119,7 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldNotSaveOldTransientPerspectiveStateWhenSwitching() throws Exception {
-        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
+        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
 
         PerspectiveActivity kansas = mock( PerspectiveActivity.class );
         when( kansas.getDefaultPerspectiveLayout() ).thenReturn( kansasDefinition );
@@ -167,11 +168,11 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldAddAllPanelsToPanelManager() throws Exception {
-        PanelDefinition westPanel = new PanelDefinitionImpl( PanelType.MULTI_LIST );
-        PanelDefinition eastPanel = new PanelDefinitionImpl( PanelType.MULTI_LIST );
-        PanelDefinition northPanel = new PanelDefinitionImpl( PanelType.MULTI_LIST );
-        PanelDefinition southPanel = new PanelDefinitionImpl( PanelType.MULTI_LIST );
-        PanelDefinition southWestPanel = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        PanelDefinition westPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition eastPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition northPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition southPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition southWestPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
 
         ozDefinition.getRoot().appendChild( CompassPosition.WEST, westPanel );
         ozDefinition.getRoot().appendChild( CompassPosition.EAST, eastPanel );
@@ -193,12 +194,12 @@ public class PerspectiveManagerTest {
 
     @Test
     public void shouldDestroyAllOldPanelsWhenSwitchingRoot() throws Exception {
-        PerspectiveDefinition fooPerspectiveDef = new PerspectiveDefinitionImpl( PanelType.ROOT_SIMPLE );
+        PerspectiveDefinition fooPerspectiveDef = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         PanelDefinition rootPanel = fooPerspectiveDef.getRoot();
-        PanelDefinition fooPanel = new PanelDefinitionImpl( PanelType.TEMPLATE );
-        PanelDefinition fooChildPanel = new PanelDefinitionImpl( PanelType.TEMPLATE );
-        PanelDefinition barPanel = new PanelDefinitionImpl( PanelType.TEMPLATE );
-        PanelDefinition bazPanel = new PanelDefinitionImpl( PanelType.TEMPLATE );
+        PanelDefinition fooPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition fooChildPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition barPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition bazPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
 
         rootPanel.appendChild( fooPanel );
         rootPanel.appendChild( barPanel );
@@ -230,12 +231,12 @@ public class PerspectiveManagerTest {
 
         ozDefinition.getRoot().addPart( rootPart1 );
 
-        PanelDefinition southPanel = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        PanelDefinition southPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         southPanel.addPart( southPart1 );
         southPanel.addPart( southPart2 );
         ozDefinition.getRoot().appendChild( CompassPosition.SOUTH, southPanel );
 
-        PanelDefinition southWestPanel = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        PanelDefinition southWestPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         southWestPanel.addPart( southWestPart1 );
         southWestPanel.addPart( southWestPart2 );
         southPanel.appendChild( CompassPosition.WEST, southWestPanel );

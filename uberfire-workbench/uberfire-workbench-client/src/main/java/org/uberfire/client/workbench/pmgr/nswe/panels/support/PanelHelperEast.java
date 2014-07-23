@@ -18,10 +18,10 @@ package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
 import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
-import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
+import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
 import org.uberfire.workbench.model.CompassPosition;
 
 import com.google.gwt.core.client.Scheduler;
@@ -31,17 +31,15 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Helper to add or remove WorkbenchPanels from the South of a
- * VerticalSplitterPanel.
+ * Helper to add or remove WorkbenchPanels from the East of a
+ * HorizontalSplitterPanel.
  */
 @ApplicationScoped
-@WorkbenchPosition(position = CompassPosition.SOUTH)
-public class PanelHelperSouth
-implements
-PanelHelper {
+@WorkbenchPosition(position = CompassPosition.EAST)
+public class PanelHelperEast implements PanelHelper {
 
     @Inject
-    private NSWEExtendedBeanFactory factory;
+    private BeanFactory factory;
 
     @Override
     public void add( final WorkbenchPanelView newPanel,
@@ -54,38 +52,38 @@ PanelHelper {
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
-            final VerticalSplitterPanel vsp = factory.newVerticalSplitterPanel( targetPanel,
-                                                                                newPanel,
-                                                                                CompassPosition.SOUTH,
-                                                                                preferredSize,
-                                                                                preferredMinSize );
+            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( newPanel,
+                                                                                    targetPanel,
+                                                                                    CompassPosition.EAST,
+                                                                                    preferredSize,
+                                                                                    preferredMinSize );
 
             sp.clear();
-            sp.setWidget( vsp );
+            sp.setWidget( hsp );
 
             //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
             //so ensure we set the sizes of the new Panel and it's children after the
             //browser has added the new DIVs to the HTML tree. This does occasionally
             //add slight flicker when adding a new Panel.
-            scheduleResize( vsp );
+            scheduleResize( hsp );
         }
     }
 
     @Override
     public void remove( final WorkbenchPanelView panel ) {
-        final VerticalSplitterPanel vsp = (VerticalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
+        final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
-        final Widget northWidget = vsp.getWidget( CompassPosition.NORTH );
+        final Widget westWidget = vsp.getWidget( CompassPosition.WEST );
 
         vsp.clear();
 
-        //Set parent's content to the NORTH widget
+        //Set parent's content to the WEST widget
         if ( parent instanceof SimplePanel ) {
-            ( (SimplePanel) parent ).setWidget( northWidget );
+            ( (SimplePanel) parent ).setWidget( westWidget );
         }
 
-        if ( northWidget instanceof RequiresResize ) {
-            scheduleResize( (RequiresResize) northWidget );
+        if ( westWidget instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) westWidget );
         }
     }
 

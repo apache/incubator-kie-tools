@@ -15,10 +15,14 @@
  */
 package org.uberfire.client.workbench;
 
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.menu.Menus;
@@ -35,7 +39,37 @@ public interface BeanFactory {
                                                     final IsWidget titleDecoration,
                                                     final PartDefinition definition );
 
+    /**
+     * Creates a new perspective root panel for the given Perspective Activity and Root Panel Definition. The returned
+     * object must be destroyed by a call to {@link #destroy(Object)} when it is no longer needed.
+     * 
+     * @param activity
+     *            the perspective that the root panel is being created for. Must not be null.
+     * @param root
+     *            description of the panel to create. Must not be null.
+     * @return a new WorkbenchPanelPresenter configured as specified in the given panel definition.
+     */
+    public WorkbenchPanelPresenter newRootPanel( PerspectiveActivity activity,
+                                                 PanelDefinition root );
+
+    /**
+     * Creates a new panel
+     * @param definition
+     * @return
+     */
     public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition );
+
+    public HorizontalSplitterPanel newHorizontalSplitterPanel( final WorkbenchPanelView eastPanel,
+                                                               final WorkbenchPanelView westPanel,
+                                                               final CompassPosition position,
+                                                               final Integer preferredSize,
+                                                               final Integer preferredMinSize );
+
+    public VerticalSplitterPanel newVerticalSplitterPanel( final WorkbenchPanelView northPanel,
+                                                           final WorkbenchPanelView southPanel,
+                                                           final CompassPosition position,
+                                                           final Integer preferredSize,
+                                                           final Integer preferredMinSize );
 
     public CompassDropController newDropController( final WorkbenchPanelView view );
 

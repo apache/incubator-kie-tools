@@ -17,13 +17,11 @@ package org.uberfire.workbench.model.impl;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.workbench.model.ContextDisplayMode.*;
-import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 /**
@@ -41,16 +39,14 @@ PerspectiveDefinition {
     private ContextDisplayMode contextDisplayMode = SHOW;
 
     public PerspectiveDefinitionImpl() {
-        this.root = new PanelDefinitionImpl( PanelType.ROOT_TAB );
+        this( "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter" );
     }
 
-    public PerspectiveDefinitionImpl( final PanelType type ) {
-        checkNotNull( "type", type );
-        if ( !isRoot( type ) ) {
-            throw new IllegalArgumentException( "Perspective requires a 'ROOT' panel type, but got '" + type.name() + "' instead!" );
-        }
-
-        this.root = new PanelDefinitionImpl( type );
+    public PerspectiveDefinitionImpl( final String panelType ) {
+        checkNotNull( "type", panelType );
+        PanelDefinitionImpl root = new PanelDefinitionImpl( panelType );
+        root.setRoot( true );
+        this.root = root;
     }
 
     @Override

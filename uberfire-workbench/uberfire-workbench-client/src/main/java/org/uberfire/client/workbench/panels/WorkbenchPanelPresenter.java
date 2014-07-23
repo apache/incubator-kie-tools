@@ -77,4 +77,13 @@ public interface WorkbenchPanelPresenter {
     public void onResize( final int width,
                           final int height );
 
+    /**
+     * Returns the panel type that should be used when adding child panels of type
+     * {@link PanelDefinition#PARENT_CHOOSES_TYPE}.
+     * 
+     * @return the fully-qualified class name of a WorkbenchPanelPresenter implementation. Returns null if
+     *         this panel presenter does not allow child panels.
+     */
+    public String getDefaultChildType();
+
 }

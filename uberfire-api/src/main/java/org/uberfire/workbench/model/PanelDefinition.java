@@ -27,6 +27,13 @@ import java.util.Set;
 public interface PanelDefinition {
 
     /**
+     * Special value for {@link #getPanelType()}. When adding a new child panel to a parent panel, if the child panel
+     * has this type, the parent can create any type of PanelPresenter it likes. Typically, each panel type will have
+     * some constant default child type that it uses in this scenario.
+     */
+    String PARENT_CHOOSES_TYPE = "PARENT_CHOOSES_TYPE";
+
+    /**
      * Add a Part to the Panel
      * @param part The Part to add
      */
@@ -104,12 +111,23 @@ public interface PanelDefinition {
     public boolean isRoot();
 
     /**
-     * Get the type of the Panel
-     * @return The panel type
+     * Specifies the WorkbenchPanelPresenter implementation that should be used when adding this panel to the UI. Must
+     * refer to a Dependent-scoped Errai IOC bean type.
+     * 
+     * @return fully-qualified class name of the WorkbenchPanelPresenter implementation to use. Must not be null, but
+     *         may be the special value {@link #PARENT_CHOOSES_TYPE}.
      */
-    public PanelType getPanelType();
+    public String getPanelType();
 
-    public PanelType getDefaultChildPanelType();
+    /**
+     * Specifies the WorkbenchPanelPresenter implementation that should be used when adding this panel to the UI. Must
+     * refer to a Dependent-scoped Errai IOC bean type.
+     * 
+     * @param fqcn
+     *            fully-qualified class name of the WorkbenchPanelPresenter implementation to use. Must not be null, but
+     *            may be the special value {@link #PARENT_CHOOSES_TYPE}.
+     */
+    public void setPanelType( String fqcn );
 
     /**
      * Get the height of the Panel in pixels
@@ -161,12 +179,20 @@ public interface PanelDefinition {
 
     /**
      * Get the Position of the Panel relate to it's Parent
+     * <p>
+     * TODO remove this. parent panels should track the positions of their children; making it a property of the child
+     * is error-prone when moving panels around in the UI.
+     * 
      * @return The Position of the Panel
      */
     public Position getPosition();
 
     /**
      * Set the Position of the Panel relative to it's parent.
+     * <p>
+     * TODO remove this. parent panels should track the positions of their children; making it a property of the child
+     * is error-prone when moving panels around in the UI.
+     * 
      * @param position The Position of the Panel relative to it's parent
      */
     public void setPosition( Position position );

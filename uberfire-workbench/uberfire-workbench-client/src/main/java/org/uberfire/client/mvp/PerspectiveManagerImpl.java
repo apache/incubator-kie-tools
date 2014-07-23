@@ -39,16 +39,16 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     private PerspectiveDefinition livePerspectiveDef;
 
     @Override
-    public void switchToPerspective( final PerspectiveActivity perspective, final Command doWhenFinished ) {
+    public void switchToPerspective( final PerspectiveActivity activity, final Command doWhenFinished ) {
 
         // switching perspectives is a chain of async operations. they're declared here
         // in reverse order (last to first):
 
         NotifyOthersOfPerspectiveChangeCommand fourthOperation = new NotifyOthersOfPerspectiveChangeCommand( doWhenFinished );
 
-        BuildPerspectiveFromDefinitionCommand thirdOperation = new BuildPerspectiveFromDefinitionCommand( fourthOperation );
+        BuildPerspectiveFromDefinitionCommand thirdOperation = new BuildPerspectiveFromDefinitionCommand( activity, fourthOperation );
 
-        FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand( perspective, thirdOperation );
+        FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand( activity, thirdOperation );
 
         if ( currentPerspective != null && !currentPerspective.isTransient() ) {
             wbServices.save( livePerspectiveDef, secondOperation );
@@ -112,8 +112,10 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     class BuildPerspectiveFromDefinitionCommand implements ParameterizedCommand<PerspectiveDefinition> {
 
         private final ParameterizedCommand<PerspectiveDefinition> doWhenFinished;
+        private final PerspectiveActivity activity;
 
-        public BuildPerspectiveFromDefinitionCommand( ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
+        public BuildPerspectiveFromDefinitionCommand( PerspectiveActivity activity, ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
+            this.activity = checkNotNull( "activity", activity );
             this.doWhenFinished = checkNotNull( "doWhenFinished", doWhenFinished );
         }
 
@@ -123,7 +125,7 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
                 tearDownChildPanelsRecursively( livePerspectiveDef.getRoot() );
             }
             livePerspectiveDef = perspectiveDef;
-            panelManager.setRoot( perspectiveDef.getRoot() );
+            panelManager.setRoot( activity, perspectiveDef.getRoot() );
             setupPanelRecursively( perspectiveDef.getRoot() );
             doWhenFinished.execute( perspectiveDef );
         }

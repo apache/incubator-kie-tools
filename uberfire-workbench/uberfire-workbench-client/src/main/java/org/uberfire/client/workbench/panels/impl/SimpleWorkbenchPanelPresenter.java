@@ -23,6 +23,13 @@ import javax.inject.Named;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 
+/**
+ * A panel with a title bar. Can contain one part at a time. The part's view fills the entire space not used up by
+ * the title bar. Adding a new part replaces the existing part. Does not support drag-and-drop rearrangement of
+ * parts.
+ * 
+ * @see SimpleDnDWorkbenchPanelPresenter
+ */
 @Dependent
 public class SimpleWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresenter<SimpleWorkbenchPanelPresenter> {
 
@@ -42,9 +49,4 @@ public class SimpleWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresent
     public SimpleWorkbenchPanelView getPanelView() {
         return (SimpleWorkbenchPanelView) super.getPanelView();
     }
-
-    public void enableDnd() {
-        getPanelView().enableDnd();
-    }
-
 }

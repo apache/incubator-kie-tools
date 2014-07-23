@@ -22,7 +22,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
@@ -131,7 +130,7 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenterTest {
     public void addedChildPanelsShouldBeRemembered() throws Exception {
         AbstractMultiPartWorkbenchPanelPresenter<?> presenter = getPresenterToTest();
 
-        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         WorkbenchPanelPresenter childPanelPresenter = mock( WorkbenchPanelPresenter.class );
         WorkbenchPanelView<WorkbenchPanelPresenter> childPanelView = mock( WorkbenchPanelView.class );
         when( childPanelView.getPresenter() ).thenReturn( childPanelPresenter );
@@ -147,7 +146,7 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenterTest {
     public void removedChildPanelsShouldBeForgotten() throws Exception {
         AbstractMultiPartWorkbenchPanelPresenter<?> presenter = getPresenterToTest();
 
-        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         WorkbenchPanelPresenter childPanelPresenter = mock( WorkbenchPanelPresenter.class );
         WorkbenchPanelView<WorkbenchPanelPresenter> childPanelView = mock( WorkbenchPanelView.class );
         when( childPanelView.getPresenter() ).thenReturn( childPanelPresenter );
@@ -175,7 +174,7 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenterTest {
     public void removingUnknownPanelShouldNotAffectExistingOnes() throws Exception {
         AbstractMultiPartWorkbenchPanelPresenter<?> presenter = getPresenterToTest();
 
-        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( PanelType.MULTI_LIST );
+        PanelDefinitionImpl childPanelDef = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         WorkbenchPanelPresenter childPanelPresenter = mock( WorkbenchPanelPresenter.class );
         WorkbenchPanelView<WorkbenchPanelPresenter> childPanelView = mock( WorkbenchPanelView.class );
         when( childPanelView.getPresenter() ).thenReturn( childPanelPresenter );

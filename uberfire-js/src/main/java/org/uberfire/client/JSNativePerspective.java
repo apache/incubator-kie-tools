@@ -11,12 +11,12 @@ import org.uberfire.client.perspective.JSPanelDefinition;
 import org.uberfire.client.perspective.JSPartDefinition;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
+import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
@@ -131,8 +131,8 @@ public class JSNativePerspective {
         return perspectiveDefinition;
     }
 
-    private PanelType getDefaultPanelType() {
-        return getPanelType( getPanelTypeAsString(), PanelType.ROOT_TAB );
+    private String getDefaultPanelType() {
+        return getPanelType( getPanelTypeAsString(), MultiTabWorkbenchPanelPresenter.class.getName() );
     }
 
     private ContextDisplayMode getContextDisplayMode() {
@@ -152,17 +152,12 @@ public class JSNativePerspective {
         }
     }
 
-    private PanelType getPanelType( final String panelType,
-                                    final PanelType defaultType ) {
+    private String getPanelType( final String panelType,
+                                 final String defaultType ) {
         if ( panelType == null ) {
             return defaultType;
         }
-
-        try {
-            return PanelType.valueOf( panelType.toUpperCase() );
-        } catch ( Exception ex ) {
-            return defaultType;
-        }
+        return panelType;
     }
 
     private void buildParts( final PanelDefinition panel,
@@ -196,7 +191,7 @@ public class JSNativePerspective {
             for ( int i = 0; i < panels.length(); i++ ) {
                 final JSPanelDefinition activePanelDef = panels.get( i );
 
-                final PanelDefinition newPanel = new PanelDefinitionImpl( getPanelType( activePanelDef.getPanelTypeAsString(), PanelType.MULTI_TAB ) );
+                final PanelDefinition newPanel = new PanelDefinitionImpl( getPanelType( activePanelDef.getPanelTypeAsString(), MultiTabWorkbenchPanelPresenter.class.getName() ) );
 
                 newPanel.setContextDisplayMode( JSNativePerspective.this.getContextDisplayMode( activePanelDef.getContextDisplayModeAsString(), ContextDisplayMode.SHOW ) );
                 if ( activePanelDef.getContextId() != null ) {

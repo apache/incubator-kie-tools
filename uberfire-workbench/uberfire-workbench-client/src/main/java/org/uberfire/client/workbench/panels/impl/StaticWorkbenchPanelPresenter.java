@@ -23,6 +23,11 @@ import javax.inject.Named;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 
+/**
+ * An undecorated panel that can contain one part at a time and does not support child panels. The part's view fills
+ * the entire panel. Adding a new part replaces the existing part. Does not support drag-and-drop rearrangement of
+ * parts.
+ */
 @Dependent
 public class StaticWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresenter<StaticWorkbenchPanelPresenter> {
 
@@ -36,5 +41,13 @@ public class StaticWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresent
     @Override
     protected StaticWorkbenchPanelPresenter asPresenterType() {
         return this;
+    }
+
+    /**
+     * Returns null (static panels don't support child panels).
+     */
+    @Override
+    public String getDefaultChildType() {
+        return null;
     }
 }

@@ -21,14 +21,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.uberfire.workbench.model.PanelType;
-
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
 public @interface WorkbenchPanel {
 
-    PanelType panelType() default PanelType.TEMPLATE;
+    /**
+     * The Presenter type of the panel. Must be a Dependent-scoped Errai IOC bean which implements
+     * WorkbenchPanelPresenter. The default is SimpleWorkbenchPanelPresenter.
+     */
+    Class<?/* TODO extends WorkbenchPanelPresenter */> panelType() default Void.class;
 
     boolean isDefault() default false;
 

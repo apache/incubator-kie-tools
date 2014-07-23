@@ -70,6 +70,15 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
         return definition;
     }
 
+    /**
+     * Most panel types are their own default child type, so this implementation returns {@code getClass().getName()}.
+     * Subclasses can override if they prefer a different child type.
+     */
+    @Override
+    public String getDefaultChildType() {
+        return getClass().getName();
+    }
+
     @Override
     public void setDefinition( final PanelDefinition definition ) {
         this.definition = definition;

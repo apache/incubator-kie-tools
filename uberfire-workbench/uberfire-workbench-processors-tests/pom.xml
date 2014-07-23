@@ -40,7 +40,7 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-api</artifactId>
+      <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
 
     <dependency>

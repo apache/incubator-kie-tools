@@ -2,7 +2,6 @@ package org.uberfire.client.perspective;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import org.uberfire.workbench.model.PanelType;
 
 public class JSPanelDefinition extends JavaScriptObject {
 

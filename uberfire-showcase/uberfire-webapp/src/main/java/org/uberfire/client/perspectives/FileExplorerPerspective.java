@@ -15,7 +15,6 @@
  */
 package org.uberfire.client.perspectives;
 
-import static org.uberfire.workbench.model.PanelType.*;
 import static org.uberfire.workbench.model.toolbar.IconType.*;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +29,7 @@ import org.uberfire.client.annotations.WorkbenchToolBar;
 import org.uberfire.client.editors.repository.clone.CloneRepositoryForm;
 import org.uberfire.client.editors.repository.create.CreateRepositoryForm;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -104,7 +104,7 @@ public class FileExplorerPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( ROOT_LIST );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         p.setName( "File Explorer" );
         p.setContextDefinition( new ContextDefinitionImpl( new DefaultPlaceRequest( "fileNavContext" ) ) );
 

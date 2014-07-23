@@ -34,12 +34,6 @@
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-panel-manager-template</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client</artifactId>
       <scope>provided</scope>
     </dependency>

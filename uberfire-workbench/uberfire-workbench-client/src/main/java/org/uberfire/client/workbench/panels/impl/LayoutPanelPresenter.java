@@ -23,6 +23,7 @@ import javax.inject.Named;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 
+// TODO (hbraun) needs javadoc
 @Dependent
 public class LayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<LayoutPanelPresenter> {
 
@@ -37,4 +38,5 @@ public class LayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<Layout
     protected LayoutPanelPresenter asPresenterType() {
         return this;
     }
+
 }

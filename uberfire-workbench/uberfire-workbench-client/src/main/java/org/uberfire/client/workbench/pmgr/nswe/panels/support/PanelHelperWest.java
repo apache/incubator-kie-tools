@@ -18,10 +18,10 @@ package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
 import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
-import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
+import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
 import org.uberfire.workbench.model.CompassPosition;
 
 import com.google.gwt.core.client.Scheduler;
@@ -31,17 +31,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Helper to add or remove WorkbenchPanels from the North of a
- * VerticalSplitterPanel.
+ * Helper to add or remove WorkbenchPanels from the West of a
+ * HorizontalSplitterPanel.
  */
 @ApplicationScoped
-@WorkbenchPosition(position = CompassPosition.NORTH)
-public class PanelHelperNorth
+@WorkbenchPosition(position = CompassPosition.WEST)
+public class PanelHelperWest
 implements
 PanelHelper {
 
     @Inject
-    private NSWEExtendedBeanFactory factory;
+    private BeanFactory factory;
 
     @Override
     public void add( final WorkbenchPanelView newPanel,
@@ -54,38 +54,38 @@ PanelHelper {
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
-            final VerticalSplitterPanel vsp = factory.newVerticalSplitterPanel( newPanel,
-                                                                                targetPanel,
-                                                                                CompassPosition.NORTH,
-                                                                                preferredSize,
-                                                                                preferredMinSize );
+            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
+                                                                                    newPanel,
+                                                                                    CompassPosition.WEST,
+                                                                                    preferredSize,
+                                                                                    preferredMinSize );
 
             sp.clear();
-            sp.setWidget( vsp );
+            sp.setWidget( hsp );
 
             //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
             //so ensure we set the sizes of the new Panel and it's children after the
             //browser has added the new DIVs to the HTML tree. This does occasionally
             //add slight flicker when adding a new Panel.
-            scheduleResize( vsp );
+            scheduleResize( hsp );
         }
     }
 
     @Override
     public void remove( final WorkbenchPanelView panel ) {
-        final VerticalSplitterPanel vsp = (VerticalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
+        final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
-        final Widget southWidget = vsp.getWidget( CompassPosition.SOUTH );
+        final Widget eastWidget = vsp.getWidget( CompassPosition.EAST );
 
         vsp.clear();
 
-        //Set parent's content to the SOUTH widget
+        //Set parent's content to the EAST widget
         if ( parent instanceof SimplePanel ) {
-            ( (SimplePanel) parent ).setWidget( southWidget );
+            ( (SimplePanel) parent ).setWidget( eastWidget );
         }
 
-        if ( southWidget instanceof RequiresResize ) {
-            scheduleResize( (RequiresResize) southWidget );
+        if ( eastWidget instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) eastWidget );
         }
     }
 

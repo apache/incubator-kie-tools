@@ -6,7 +6,6 @@
   <inherits name="org.uberfire.UberfireMarkdownWidget"/>
   <inherits name="org.uberfire.properties.editor.PropertiesEditorClient"/>
   <inherits name="org.uberfire.user.management.UserManagementClient"/>
-  <inherits name="org.uberfire.UberfireNSWEManager"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>

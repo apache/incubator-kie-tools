@@ -18,10 +18,10 @@ package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.pmgr.nswe.NSWEExtendedBeanFactory;
 import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
-import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
+import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
 import org.uberfire.workbench.model.CompassPosition;
 
 import com.google.gwt.core.client.Scheduler;
@@ -31,17 +31,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Helper to add or remove WorkbenchPanels from the West of a
- * HorizontalSplitterPanel.
+ * Helper to add or remove WorkbenchPanels from the South of a
+ * VerticalSplitterPanel.
  */
 @ApplicationScoped
-@WorkbenchPosition(position = CompassPosition.WEST)
-public class PanelHelperWest
-        implements
-        PanelHelper {
+@WorkbenchPosition(position = CompassPosition.SOUTH)
+public class PanelHelperSouth
+implements
+PanelHelper {
 
     @Inject
-    private NSWEExtendedBeanFactory factory;
+    private BeanFactory factory;
 
     @Override
     public void add( final WorkbenchPanelView newPanel,
@@ -54,38 +54,38 @@ public class PanelHelperWest
         if ( parent instanceof SimplePanel ) {
 
             final SimplePanel sp = (SimplePanel) parent;
-            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
-                                                                                    newPanel,
-                                                                                    CompassPosition.WEST,
-                                                                                    preferredSize,
-                                                                                    preferredMinSize );
+            final VerticalSplitterPanel vsp = factory.newVerticalSplitterPanel( targetPanel,
+                                                                                newPanel,
+                                                                                CompassPosition.SOUTH,
+                                                                                preferredSize,
+                                                                                preferredMinSize );
 
             sp.clear();
-            sp.setWidget( hsp );
+            sp.setWidget( vsp );
 
             //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
-            //so ensure we set the sizes of the new Panel and it's children after the 
+            //so ensure we set the sizes of the new Panel and it's children after the
             //browser has added the new DIVs to the HTML tree. This does occasionally
             //add slight flicker when adding a new Panel.
-            scheduleResize( hsp );
+            scheduleResize( vsp );
         }
     }
 
     @Override
     public void remove( final WorkbenchPanelView panel ) {
-        final HorizontalSplitterPanel vsp = (HorizontalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
+        final VerticalSplitterPanel vsp = (VerticalSplitterPanel) panel.asWidget().getParent().getParent().getParent();
         final Widget parent = vsp.getParent();
-        final Widget eastWidget = vsp.getWidget( CompassPosition.EAST );
+        final Widget northWidget = vsp.getWidget( CompassPosition.NORTH );
 
         vsp.clear();
 
-        //Set parent's content to the EAST widget
+        //Set parent's content to the NORTH widget
         if ( parent instanceof SimplePanel ) {
-            ( (SimplePanel) parent ).setWidget( eastWidget );
+            ( (SimplePanel) parent ).setWidget( northWidget );
         }
 
-        if ( eastWidget instanceof RequiresResize ) {
-            scheduleResize( (RequiresResize) eastWidget );
+        if ( northWidget instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) northWidget );
         }
     }
 

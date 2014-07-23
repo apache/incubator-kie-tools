@@ -16,12 +16,12 @@ public class TestWorkbenchModel {
 
     @Test
     public void testPanelHierarchyInsert() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(PanelType.ROOT_SIMPLE);
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl("what.ever.panel.PresenterClass");
         perspective.setName("perspective");
 
 
-        PanelDefinition westPanel = new PanelDefinitionImpl(PanelType.MULTI_LIST);
-        PanelDefinition eastPanel = new PanelDefinitionImpl(PanelType.MULTI_LIST);
+        PanelDefinition westPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
+        PanelDefinition eastPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
 
         PartDefinition part1 = new PartDefinitionImpl(new DefaultPlaceRequest("one"));
         PartDefinition part2 = new PartDefinitionImpl(new DefaultPlaceRequest("two"));
@@ -43,12 +43,12 @@ public class TestWorkbenchModel {
 
     @Test
     public void testPanelHierarchyAppend() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(PanelType.ROOT_SIMPLE);
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl("what.ever.panel.PresenterClass");
         perspective.setName("perspective");
 
 
-        PanelDefinition westPanel = new PanelDefinitionImpl(PanelType.MULTI_LIST);
-        PanelDefinition eastPanel = new PanelDefinitionImpl(PanelType.MULTI_LIST);
+        PanelDefinition westPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
+        PanelDefinition eastPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
 
         PartDefinition part1 = new PartDefinitionImpl(new DefaultPlaceRequest("one"));
         PartDefinition part2 = new PartDefinitionImpl(new DefaultPlaceRequest("two"));
@@ -75,7 +75,7 @@ public class TestWorkbenchModel {
      */
     @Test(expected=IllegalStateException.class)
     public void testDetachedPanels() {
-        PanelDefinition westPanel = new PanelDefinitionImpl(PanelType.MULTI_LIST);
+        PanelDefinition westPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
         PartDefinition part1 = new PartDefinitionImpl(new DefaultPlaceRequest("one"));
 
         westPanel.addPart(part1);

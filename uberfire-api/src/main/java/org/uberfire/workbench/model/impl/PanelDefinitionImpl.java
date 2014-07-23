@@ -15,8 +15,8 @@
  */
 package org.uberfire.workbench.model.impl;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.workbench.model.ContextDisplayMode.*;
-import static org.uberfire.workbench.model.impl.PanelTypeHelper.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +30,6 @@ import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
@@ -38,9 +37,7 @@ import org.uberfire.workbench.model.Position;
  * Default implementation of PanelDefinition
  */
 @Portable
-public class PanelDefinitionImpl
-implements
-PanelDefinition {
+public class PanelDefinitionImpl implements PanelDefinition {
 
     private Integer height = null;
     private Integer width = null;
@@ -54,45 +51,29 @@ PanelDefinition {
     private final List<PanelDefinition> children = new ArrayList<PanelDefinition>();
 
     private Position position;
-    private final PanelType panelType;
-    private final PanelType defaultChildPanelType;
+    private String panelType;
     private boolean isRoot;
     private ContextDefinition contextDefinition;
     private ContextDisplayMode contextDisplayMode = SHOW;
     private PanelDefinition parent = null;
 
     public PanelDefinitionImpl() {
-        this( PanelType.ROOT_TAB );
+        this( "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter" );
     }
 
-    public PanelDefinitionImpl( final PanelType type ) {
+    public PanelDefinitionImpl( final String type ) {
         this.panelType = type;
-        if ( PanelTypeHelper.isRoot( type ) ) {
-            this.position = CompassPosition.ROOT;
-            this.isRoot = true;
-        }
-        this.defaultChildPanelType = getDefaultChildType( type );
     }
 
-    public PanelDefinitionImpl( final PanelType type,
-                                final PanelType defaultChildPanelType ) {
-        this.panelType = type;
-        if ( PanelTypeHelper.isRoot( type ) ) {
-            this.position = CompassPosition.ROOT;
-            this.isRoot = true;
-        }
-        this.defaultChildPanelType = defaultChildPanelType;
-    }
-
-    public void setParent(PanelDefinition parent)
-    {
+    public void setParent( PanelDefinition parent ) {
         this.parent = parent;
     }
 
     @Override
     public PanelDefinition getParent() {
-        if(!isRoot() && parent==null)
-            throw new IllegalStateException("PanelDefinition is not properly initialised: It requires a parent panel definition");
+        if ( !isRoot() && parent == null ) {
+            throw new IllegalStateException( "PanelDefinition is not properly initialised: It requires a parent panel definition" );
+        }
         return parent;
     }
 
@@ -209,14 +190,18 @@ PanelDefinition {
         return isRoot;
     }
 
+    public void setRoot( boolean isRoot ) {
+        this.isRoot = isRoot;
+    }
+
     @Override
-    public PanelType getPanelType() {
+    public String getPanelType() {
         return panelType;
     }
 
     @Override
-    public PanelType getDefaultChildPanelType() {
-        return defaultChildPanelType;
+    public void setPanelType( String fqcn ) {
+        this.panelType = checkNotNull( "fqcn", fqcn );
     }
 
     @Override

@@ -20,29 +20,21 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 
 /**
- * A panel with a title bar and drop-down list that allows selecting among the parts it contains, and drag-and-drop
- * for moving parts to and from other drag-and-drop enabled panels. Only one part at a time is visible, and it fills
- * the entire available space not used up by the title bar.
+ * Exactly like {@link SimpleWorkbenchPanelPresenter} but has drag and drop enabled by default.
  */
 @Dependent
-public class MultiListWorkbenchPanelPresenter extends AbstractMultiPartWorkbenchPanelPresenter<MultiListWorkbenchPanelPresenter> {
+public class SimpleDnDWorkbenchPanelPresenter extends SimpleWorkbenchPanelPresenter {
 
     @Inject
-    public MultiListWorkbenchPanelPresenter( @Named("MultiListWorkbenchPanelView") final WorkbenchPanelView<MultiListWorkbenchPanelPresenter> view,
-                                             final ActivityManager activityManager,
+    public SimpleDnDWorkbenchPanelPresenter( @Named("SimpleWorkbenchPanelView") final SimpleWorkbenchPanelView view,
                                              final PerspectiveManager perspectiveManager,
                                              final Event<MaximizePlaceEvent> maximizePanelEvent ) {
-        super( view, activityManager, perspectiveManager, maximizePanelEvent );
+        super( view, perspectiveManager, maximizePanelEvent );
+        getPanelView().enableDnd();
     }
 
-    @Override
-    protected MultiListWorkbenchPanelPresenter asPresenterType() {
-        return this;
-    }
 }

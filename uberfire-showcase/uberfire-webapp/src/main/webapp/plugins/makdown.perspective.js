@@ -1,7 +1,7 @@
 $registerPerspective({
     id: "Markdown Live Editor",
     is_serializable: false,
-    panel_type: "root_static",
+    panel_type: "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter",
     view: {
         parts: [
             {
@@ -14,7 +14,7 @@ $registerPerspective({
                 width: 600,
                 min_width: 300,
                 position: "west",
-                panel_type: "simple",
+                panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
                 parts: [
                     {
                         place: "MarkdownLiveEditor",

@@ -25,6 +25,11 @@ import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 
+/**
+ * A panel with a tab bar that allows selecting among the parts it contains, with drag-and-drop for moving parts to
+ * and from other drag-and-drop enabled panels. Only one part at a time is visible, and it fills the entire
+ * available space not used up by the tab bar.
+ */
 @Dependent
 public class MultiTabWorkbenchPanelPresenter extends AbstractMultiPartWorkbenchPanelPresenter<MultiTabWorkbenchPanelPresenter> {
 

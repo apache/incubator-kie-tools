@@ -1,6 +1,6 @@
 $registerPerspective({
     id: "PropertyEditor",
-    panel_type: "root_list",
+    panel_type: "org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter",
     view: {
         parts: [
             {
@@ -14,7 +14,7 @@ $registerPerspective({
                 width: 500,
                 min_width: 500,
                 position: "west",
-                panel_type: "multi_list",
+                panel_type: "org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter",
                 parts: [
                     {
                         place: "PropertyEditorClientScreen",
@@ -26,7 +26,7 @@ $registerPerspective({
                 width: 500,
                 min_width: 500,
                 position: "east",
-                panel_type: "multi_list",
+                panel_type: "org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter",
                 parts: [
                     {
                         place: "PropertyEditorScreen",

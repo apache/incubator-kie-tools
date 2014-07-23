@@ -1,5 +1,6 @@
 package org.uberfire.client.workbench;
 
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.mvp.PlaceRequest;
@@ -126,6 +127,6 @@ public interface PanelManager {
      * @param root
      *            description of the new root panel to install. Must not be null.
      */
-    void setRoot( PanelDefinition root );
+    void setRoot( PerspectiveActivity activity, PanelDefinition root );
 
 }

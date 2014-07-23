@@ -11,6 +11,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -80,7 +81,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     }
 
     @Override
-    public void setRoot( PanelDefinition root ) {
+    public void setRoot( PerspectiveActivity activity, PanelDefinition root ) {
         checkNotNull( "root", root );
 
         final WorkbenchPanelPresenter oldRootPanelPresenter = mapPanelDefinitionToPresenter.remove( rootPanelDef );
@@ -99,7 +100,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         this.rootPanelDef = root;
         WorkbenchPanelPresenter newPresenter = mapPanelDefinitionToPresenter.get( root );
         if ( newPresenter == null ) {
-            newPresenter = getBeanFactory().newWorkbenchPanel( root );
+            newPresenter = getBeanFactory().newRootPanel( activity, root );
             mapPanelDefinitionToPresenter.put( root, newPresenter );
         }
         perspectiveContainer.add( newPresenter.getPanelView().asWidget() );
@@ -159,12 +160,12 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     /**
      * Calls the abstract {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)} method supplied by the
-     * subclass. The child panel argument is an empty PanelDefinition of the target panel's default child type.
+     * subclass. The child panel argument is an empty PanelDefinition of {@link PanelDefinition#PARENT_CHOOSES_TYPE}.
      */
     @Override
     public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
                                               final Position position ) {
-        final PanelDefinitionImpl childPanel = new PanelDefinitionImpl( targetPanel.getDefaultChildPanelType() );
+        final PanelDefinitionImpl childPanel = new PanelDefinitionImpl( PanelDefinition.PARENT_CHOOSES_TYPE );
         childPanel.setParent(targetPanel);
         return addWorkbenchPanel( targetPanel,
                                   childPanel,
@@ -173,7 +174,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     /**
      * Calls the abstract {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)} method supplied by the
-     * subclass. The child panel argument is an empty PanelDefinition of the target panel's default child type, and its
+     * subclass. The child panel argument is an empty PanelDefinition of {@link PanelDefinition#PARENT_CHOOSES_TYPE}, and its
      * size and minimum sizes have been initialized to the given amounts.
      */
     @Override
@@ -183,7 +184,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                                               final Integer width,
                                               final Integer minHeight,
                                               final Integer minWidth ) {
-        final PanelDefinitionImpl childPanel = new PanelDefinitionImpl( targetPanel.getDefaultChildPanelType() );
+        final PanelDefinitionImpl childPanel = new PanelDefinitionImpl( PanelDefinition.PARENT_CHOOSES_TYPE );
         childPanel.setParent(targetPanel);
 
         childPanel.setHeight( height );
@@ -197,6 +198,8 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Override
     public void removeWorkbenchPanel( final PanelDefinition toRemove ) throws IllegalStateException {
+        System.out.println( "Removing: " + toRemove.getPanelType() + "@" + System.identityHashCode( toRemove ));
+        dumpKnownPanels();
         if ( !toRemove.getParts().isEmpty() ) {
             throw new IllegalStateException( "Panel still contains parts: " + toRemove.getParts() );
         }
@@ -206,7 +209,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
         final WorkbenchPanelPresenter presenterToRemove = mapPanelDefinitionToPresenter.remove( toRemove );
         if ( presenterToRemove == null ) {
-            throw new IllegalArgumentException( "The given panel could not be found" );
+            throw new IllegalArgumentException( "Couldn't find panel to remove: " + toRemove );
         }
 
         final PanelDefinition parentDef = toRemove.getParent();
@@ -222,6 +225,12 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         getBeanFactory().destroy( presenterToRemove );
         System.out.println("removed panel " + toRemove);
         System.out.println("remaining panels: " + mapPanelDefinitionToPresenter);
+    }
+
+    protected void dumpKnownPanels() {
+        for ( PanelDefinition knownDef : mapPanelDefinitionToPresenter.keySet() ) {
+            System.out.println( "Known Panel: " + knownDef.getPanelType() + "@" + System.identityHashCode( knownDef ));
+        }
     }
 
     @Override
@@ -340,16 +349,10 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
             }
         }
         if ( presenterToRemove != null ) {
-
-            // this also removes the panel from mapPanelDefinitionToPresenter
-            spliceOutPanel( presenterToRemove.getDefinition(),
-                            rootPanelDef );
-
-            if ( mapPanelDefinitionToPresenter.containsKey( presenterToRemove.getDefinition() ) ) {
-                throw new AssertionError( "Spliced out panel is still stuck in map" );
+            if ( spliceOutPanel( presenterToRemove.getDefinition(), rootPanelDef ) ) {
+                mapPanelDefinitionToPresenter.remove( presenterToRemove.getDefinition() );
+                getBeanFactory().destroy( presenterToRemove );
             }
-
-            getBeanFactory().destroy( presenterToRemove );
         }
     }
 
@@ -366,15 +369,14 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
      * @param panelToSearch
      *            the panel that contains the panel to remove.
      */
-    private void spliceOutPanel( final PanelDefinition panelToRemove,
-                                 final PanelDefinition panelToSearch ) {
+    private boolean spliceOutPanel( final PanelDefinition panelToRemove,
+                                    final PanelDefinition panelToSearch ) {
         final PanelDefinition northChild = panelToSearch.getChild( CompassPosition.NORTH );
         final PanelDefinition southChild = panelToSearch.getChild( CompassPosition.SOUTH );
         final PanelDefinition eastChild = panelToSearch.getChild( CompassPosition.EAST );
         final PanelDefinition westChild = panelToSearch.getChild( CompassPosition.WEST );
         if ( northChild != null ) {
             if ( northChild.equals( panelToRemove ) ) {
-                mapPanelDefinitionToPresenter.remove( northChild );
                 spliceOutPanelDefinition( panelToRemove,
                                           panelToSearch,
                                           CompassPosition.NORTH );
@@ -385,7 +387,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         }
         if ( southChild != null ) {
             if ( southChild.equals( panelToRemove ) ) {
-                mapPanelDefinitionToPresenter.remove( southChild );
                 spliceOutPanelDefinition( panelToRemove,
                                           panelToSearch,
                                           CompassPosition.SOUTH );
@@ -396,7 +397,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         }
         if ( eastChild != null ) {
             if ( eastChild.equals( panelToRemove ) ) {
-                mapPanelDefinitionToPresenter.remove( eastChild );
                 spliceOutPanelDefinition( panelToRemove,
                                           panelToSearch,
                                           CompassPosition.EAST );
@@ -407,7 +407,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         }
         if ( westChild != null ) {
             if ( westChild.equals( panelToRemove ) ) {
-                mapPanelDefinitionToPresenter.remove( westChild );
                 spliceOutPanelDefinition( panelToRemove,
                                           panelToSearch,
                                           CompassPosition.WEST );
@@ -416,6 +415,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                                 westChild );
             }
         }
+        return northChild != null || southChild != null || eastChild != null || westChild != null;
     }
 
     /**

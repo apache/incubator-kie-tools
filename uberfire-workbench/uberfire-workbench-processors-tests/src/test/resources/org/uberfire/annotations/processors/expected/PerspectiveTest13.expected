@@ -25,21 +25,24 @@ import javax.inject.Inject;
 
 import javax.inject.Named;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import java.util.HashMap;
 import java.util.Map;
 import org.uberfire.client.annotations.Perspective;
-import org.uberfire.client.mvp.AbstractTemplateWorkbenchPerspectiveActivity;
+import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.pmgr.template.TemplatePanelDefinitionImpl;
-import org.uberfire.client.workbench.pmgr.template.TemplatePerspectiveDefinitionImpl;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.TemplatedActivity;
+import org.uberfire.client.workbench.panels.impl.TemplatedWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.NamedPosition;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 @Dependent
@@ -48,7 +51,7 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class PerspectiveTest13Activity extends  AbstractTemplateWorkbenchPerspectiveActivity  {
+public class PerspectiveTest13Activity extends AbstractWorkbenchPerspectiveActivity implements TemplatedActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
@@ -87,30 +90,32 @@ public class PerspectiveTest13Activity extends  AbstractTemplateWorkbenchPerspec
     public String getSignatureId() {
         return "org.uberfire.annotations.processors.PerspectiveTest13Activity";
     }
+
     @Override
-    public Widget getRealPresenterWidget( ) {
-      return realPresenter.asWidget();
+    public IsWidget getRootWidget() {
+        return realPresenter;
     }
 
     @Override
-    public void setWidget( String fieldName,
-        Widget widget ) {
-
-        if ( fieldName.equalsIgnoreCase( "teste" ) ) {
-            realPresenter.teste.clear();
-            realPresenter.teste.add( widget.asWidget() );
+    public HasWidgets resolvePosition( NamedPosition position ) {
+        final String fieldName = position.getFieldName();
+        if ( fieldName.equals( "teste" ) ) {
+            return realPresenter.teste;
         }
+        return null;
     }
 
-    @Perspective
+    @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        final PerspectiveDefinition p = new TemplatePerspectiveDefinitionImpl( this,"teste", getClass().getName() );
-        PanelDefinition panelDefinition = new TemplatePanelDefinitionImpl( this, PanelType.MULTI_TAB , "teste"  );
-            panelDefinition.addPart(
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( TemplatedWorkbenchPanelPresenter.class.getName() );
+        p.setName( realPresenter.getClass().getName() );
+
+        PanelDefinition panelDefinition = new PanelDefinitionImpl( "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter" );
+        panelDefinition.addPart(
             new PartDefinitionImpl(new DefaultPlaceRequest( "HelloWorldScreen1" ) ) );
-            panelDefinition.addPart(
+        panelDefinition.addPart(
             new PartDefinitionImpl(new DefaultPlaceRequest( "HelloWorldScreen2" ) ) );
-        p.getRoot().appendChild( panelDefinition );
+        p.getRoot().appendChild( new NamedPosition( "teste" ), panelDefinition );
 
         return p;
     }
