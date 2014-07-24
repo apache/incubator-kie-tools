@@ -1,12 +1,6 @@
 package org.uberfire.security.server.auth.source;
 
-import java.security.CodeSource;
-import java.security.Permission;
-import java.security.PermissionCollection;
-import java.security.Policy;
-import java.security.ProtectionDomain;
 import java.security.acl.Group;
-import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,7 +9,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
-import javax.security.jacc.WebRoleRefPermission;
+import javax.servlet.http.HttpServletRequest;
 
 import org.uberfire.security.Role;
 import org.uberfire.security.SecurityContext;
@@ -26,9 +20,10 @@ import org.uberfire.security.auth.RoleProvider;
 import org.uberfire.security.auth.RolesMode;
 import org.uberfire.security.impl.RoleImpl;
 import org.uberfire.security.impl.auth.UserNameCredential;
+import org.uberfire.security.server.HttpSecurityContext;
+import org.uberfire.security.server.RolesRegistry;
 import org.uberfire.security.server.auth.source.adapter.RolesAdapter;
 
-import static java.util.Collections.*;
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.security.server.SecurityConstants.*;
 
@@ -95,7 +90,7 @@ public class JACCAuthenticationSource implements AuthenticationSource,
             if ( subject != null ) {
 
                 if ( mode.equals( RolesMode.ROLE ) || mode.equals( RolesMode.BOTH ) ) {
-                    roles.addAll( loadRoles( subject ) );
+                    roles.addAll( loadRoles( subject, securityContext ) );
                 }
 
                 if ( mode.equals( RolesMode.GROUP ) || mode.equals( RolesMode.BOTH ) ) {
@@ -139,24 +134,15 @@ public class JACCAuthenticationSource implements AuthenticationSource,
         return roles;
     }
 
-    private List<Role> loadRoles( final Subject subject ) {
+    private List<Role> loadRoles( final Subject subject,
+                                  final SecurityContext securityContext ) {
         final List<Role> roles = new ArrayList<Role>();
 
-        final PermissionCollection permissionCollection = Policy.getPolicy().getPermissions(
-                new ProtectionDomain(
-                        new CodeSource( null, (Certificate[]) null ),
-                        null,
-                        null,
-                        subject.getPrincipals().toArray( new java.security.Principal[ subject.getPrincipals().size() ] ) ) );
-
-        permissionCollection.implies( new WebRoleRefPermission( "", "nothing" ) );
-
-        for ( final Permission permission : list( permissionCollection.elements() ) ) {
-            if ( permission instanceof WebRoleRefPermission ) {
-                final String role = permission.getActions();
-                final Role roleImpl = new RoleImpl( role );
-                if ( !roles.contains( roleImpl ) ) {
-                    roles.add( roleImpl );
+        if ( securityContext instanceof HttpSecurityContext ) {
+            final HttpServletRequest request = ( (HttpSecurityContext) securityContext ).getRequest();
+            for ( final Role enforcementRole : RolesRegistry.get().getRegisteredRoles() ) {
+                if ( request.isUserInRole( enforcementRole.getName() ) ) {
+                    roles.add( new RoleImpl( enforcementRole.getName() ) );
                 }
             }
         }
