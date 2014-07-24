@@ -9,8 +9,8 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.pack.PackConfig;
 import org.eclipse.jgit.transport.UploadPack;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.security.Subject;
-import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.java.nio.security.AuthorizationManager;
+import org.uberfire.java.nio.security.Subject;
 
 public class GitUploadCommand extends BaseGitCommand {
 

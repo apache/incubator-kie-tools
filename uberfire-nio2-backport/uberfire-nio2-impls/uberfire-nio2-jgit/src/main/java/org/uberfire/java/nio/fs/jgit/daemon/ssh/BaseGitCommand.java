@@ -38,9 +38,8 @@ import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.security.FileSystemResourceAdaptor;
-import org.uberfire.security.Subject;
-import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.java.nio.security.AuthorizationManager;
+import org.uberfire.java.nio.security.Subject;
 
 public abstract class BaseGitCommand implements Command,
                                                 SessionAware,
@@ -117,11 +116,13 @@ public abstract class BaseGitCommand implements Command,
             final Repository repository = openRepository( repositoryName );
             if ( repository != null ) {
                 final FileSystem fileSystem = repositoryResolver.resolveFileSystem( repository );
-                if ( authorizationManager.authorize( new FileSystemResourceAdaptor( fileSystem ), user ) ) {
+
+                if ( authorizationManager.authorize( fileSystem, user ) ) {
                     execute( user, repository, in, out, err );
                 } else {
                     err.write( "Invalid credentials.".getBytes() );
                 }
+
             } else {
                 err.write( "Can't resolve repository name.".getBytes() );
             }

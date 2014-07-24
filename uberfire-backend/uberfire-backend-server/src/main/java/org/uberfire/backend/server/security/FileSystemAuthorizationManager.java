@@ -19,7 +19,6 @@ package org.uberfire.backend.server.security;
 import javax.enterprise.inject.Alternative;
 
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.security.FileSystemResourceAdaptor;
 import org.uberfire.security.Resource;
 import org.uberfire.security.Subject;
 import org.uberfire.security.authz.AuthorizationException;

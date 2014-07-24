@@ -123,9 +123,9 @@ import org.uberfire.java.nio.fs.jgit.util.DefaultCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
+import org.uberfire.java.nio.security.AuthorizationManager;
 import org.uberfire.java.nio.security.SecurityAware;
-import org.uberfire.security.auth.AuthenticationManager;
-import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.java.nio.security.UserPassAuthenticator;
 
 import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
 import static org.eclipse.jgit.lib.Constants.*;
@@ -186,11 +186,10 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
     private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
 
-    private AuthenticationManager authenticationManager = null;
-    private AuthorizationManager authorizationManager = null;
-
     private Daemon daemonService = null;
     private GitSSHService gitSSHService = null;
+    private UserPassAuthenticator authenticator;
+    private AuthorizationManager authorizationManager;
 
     private void loadConfig() {
         final String bareReposDir = System.getProperty( "org.uberfire.nio.git.dir" );
@@ -311,15 +310,15 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     }
 
     @Override
-    public void setAuthenticationManager( final AuthenticationManager authenticationManager ) {
-        this.authenticationManager = authenticationManager;
+    public void setUserPassAuthenticator( final UserPassAuthenticator authenticator ) {
+        this.authenticator = authenticator;
         if ( gitSSHService != null ) {
-            gitSSHService.setAuthenticationManager( authenticationManager );
+            gitSSHService.setUserPassAuthenticator( authenticator );
         }
     }
 
     @Override
-    public void setAuthorizationManager( final AuthorizationManager authorizationManager ) {
+    public void setAuthorizationManager( AuthorizationManager authorizationManager ) {
         this.authorizationManager = authorizationManager;
         if ( gitSSHService != null ) {
             gitSSHService.setAuthorizationManager( authorizationManager );
@@ -452,7 +451,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
         gitSSHService = new GitSSHService();
 
-        gitSSHService.setup( SSH_FILE_CERT_DIR, SSH_HOST_ADDR, SSH_PORT, authenticationManager, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
+        gitSSHService.setup( SSH_FILE_CERT_DIR, SSH_HOST_ADDR, SSH_PORT, authenticator, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
 
         gitSSHService.start();
     }

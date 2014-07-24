@@ -7,8 +7,8 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.security.Subject;
-import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.java.nio.security.AuthorizationManager;
+import org.uberfire.java.nio.security.Subject;
 
 public class GitReceiveCommand extends BaseGitCommand {
 
