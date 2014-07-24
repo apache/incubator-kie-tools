@@ -104,7 +104,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
         splash.addCloseHandler( new CloseHandler<SplashView>() {
             @Override
             public void onClose( final CloseEvent<SplashView> event ) {
-                AbstractSplashScreenActivity.this.onClose();
+                placeManager.closeSplashScreen( getPlace() );
             }
         } );
     }
@@ -112,6 +112,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     @Override
     public void onClose() {
         saveState();
+        super.onClose();
     }
 
     @Override

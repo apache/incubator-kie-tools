@@ -25,17 +25,16 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.mvp.AbstractPopupActivity;
-import org.uberfire.client.mvp.AbstractSplashScreenActivity;
-import org.uberfire.client.mvp.AbstractWorkbenchContextActivity;
-import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceHistoryHandler;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceManagerImpl;
 import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.workbench.PanelManager;
@@ -105,6 +104,8 @@ public class PlaceManagerTest {
         placeManager.goTo( kansas, (PanelDefinition) null );
         resetInjectedMocks();
         reset( kansasActivity );
+
+        when( kansasActivity.onMayClose() ).thenReturn( true );
 
         // arrange for the mock PerspectiveManager to invoke the doWhenFinished callback
         doAnswer( new Answer<Void>(){
@@ -322,8 +323,14 @@ public class PlaceManagerTest {
 
         placeManager.goTo( ozPerspectivePlace );
 
-        // verify proper shutdown of kansas
-        InOrder inOrder = inOrder( activityManager, kansasPerspectiveActivity );
+        // verify proper shutdown of kansasPerspective and its contents
+        InOrder inOrder = inOrder( activityManager, kansasPerspectiveActivity, kansasActivity );
+
+        // shut down the screens first
+        inOrder.verify( kansasActivity ).onClose();
+        inOrder.verify( activityManager ).destroyActivity( kansasActivity );
+
+        // then the perspective
         inOrder.verify( kansasPerspectiveActivity ).onClose();
         inOrder.verify( activityManager ).destroyActivity( kansasPerspectiveActivity );
     }
@@ -385,10 +392,10 @@ public class PlaceManagerTest {
     @Test
     public void testPerspectiveLaunchWithSplashScreen() throws Exception {
         final PlaceRequest perspectivePlace = new DefaultPlaceRequest( "Somewhere" );
-        final AbstractWorkbenchPerspectiveActivity perspectiveActivity = mock( AbstractWorkbenchPerspectiveActivity.class );
+        final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
         when( activityManager.getActivities( perspectivePlace ) ).thenReturn( singleton( (Activity) perspectiveActivity ) );
 
-        final AbstractSplashScreenActivity splashScreenActivity = mock( AbstractSplashScreenActivity.class );
+        final SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
         when( activityManager.getSplashScreenInterceptor( perspectivePlace ) ).thenReturn( splashScreenActivity );
 
         placeManager.goTo( perspectivePlace );
@@ -409,7 +416,79 @@ public class PlaceManagerTest {
         assertSame( perspectiveActivity, placeManager.getActivity( perspectivePlace ) );
     }
 
-    // TODO (UF-123) test explicitly closing a splash screen (ensure the activity bean is closed and destroyed)
+    @Test
+    public void testProperSplashScreenShutdownOnPerspectiveSwitch() throws Exception {
+        final PlaceRequest perspectivePlace = new DefaultPlaceRequest( "Somewhere" );
+        final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
+        when( activityManager.getActivities( perspectivePlace ) ).thenReturn( singleton( (Activity) perspectiveActivity ) );
+
+        // first splash screen: linked to the perspective itself
+        final SplashScreenActivity splashScreenActivity1 = mock( SplashScreenActivity.class );
+        when( activityManager.getSplashScreenInterceptor( perspectivePlace ) ).thenReturn( splashScreenActivity1 );
+
+        // second splash screen: linked to a screen that we will display in the perspective
+        final SplashScreenActivity splashScreenActivity2 = mock( SplashScreenActivity.class );
+        when( activityManager.getSplashScreenInterceptor( kansas ) ).thenReturn( splashScreenActivity2 );
+        when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
+
+        placeManager.goTo( perspectivePlace );
+        placeManager.goTo( kansas );
+
+        assertTrue( placeManager.getActiveSplashScreens().contains( splashScreenActivity1 ) );
+        assertTrue( placeManager.getActiveSplashScreens().contains( splashScreenActivity2 ) );
+
+        // now switch to another perspective and ensure both kinds of splash screens got closed
+        final PlaceRequest otherPerspectivePlace = new DefaultPlaceRequest( "Elsewhere" );
+        final PerspectiveActivity otherPerspectiveActivity = mock( PerspectiveActivity.class );
+        when( activityManager.getActivities( otherPerspectivePlace ) ).thenReturn( singleton( (Activity) otherPerspectiveActivity ) );
+
+        placeManager.goTo( otherPerspectivePlace );
+
+        assertTrue( placeManager.getActiveSplashScreens().isEmpty() );
+        verify( splashScreenActivity1).onClose();
+        verify( splashScreenActivity2).onClose();
+
+        // we don't destroy splash screens because they are supposed to be Application Scoped
+        verify( activityManager, never() ).destroyActivity( splashScreenActivity1 );
+    }
+
+    @Test
+    public void testPartLaunchWithSplashScreen() throws Exception {
+        PlaceRequest oz = new DefaultPlaceRequest( "oz" );
+        WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
+        when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
+
+        final SplashScreenActivity lollipopGuildActivity = mock( SplashScreenActivity.class );
+        when( activityManager.getSplashScreenInterceptor( oz ) ).thenReturn( lollipopGuildActivity );
+
+        placeManager.goTo( oz, (PanelDefinition) null );
+
+        assertTrue( placeManager.getActiveSplashScreens().contains( lollipopGuildActivity ) );
+        verify( lollipopGuildActivity, never() ).onStartup( any( PlaceRequest.class ) );
+
+        InOrder inOrder = inOrder( lollipopGuildActivity, newSplashScreenActiveEvent );
+        inOrder.verify( lollipopGuildActivity ).onOpen();
+        inOrder.verify( newSplashScreenActiveEvent ).fire( any( NewSplashScreenActiveEvent.class) );
+    }
+
+    @Test
+    public void testProperSplashScreenShutdownOnPartClose() throws Exception {
+        PlaceRequest oz = new DefaultPlaceRequest( "oz" );
+        WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
+        when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
+
+        final SplashScreenActivity lollipopGuildActivity = mock( SplashScreenActivity.class );
+        when( activityManager.getSplashScreenInterceptor( oz ) ).thenReturn( lollipopGuildActivity );
+
+        placeManager.goTo( oz, (PanelDefinition) null );
+        placeManager.closePlace( oz );
+
+        assertTrue( placeManager.getActiveSplashScreens().isEmpty() );
+        verify( lollipopGuildActivity).onClose();
+
+        // we don't destroy splash screens because they are supposed to be Application Scoped
+        verify( activityManager, never() ).destroyActivity( lollipopGuildActivity );
+    }
 
     /**
      * Ensures that splash screens can't be launched on their own (they should only launch as a side effect of launching
@@ -421,7 +500,7 @@ public class PlaceManagerTest {
     public void testSplashScreenActivityShouldNotLaunchOnItsOwn() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
-        final AbstractSplashScreenActivity splashScreenActivity = mock( AbstractSplashScreenActivity.class );
+        final SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
         when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) splashScreenActivity ) );
 
         placeManager.goTo( somewhere );
@@ -440,7 +519,7 @@ public class PlaceManagerTest {
     public void testContextActivityShouldNotLaunchOnItsOwn() throws Exception {
         final PlaceRequest somewhere = new DefaultPlaceRequest( "Somewhere" );
 
-        final AbstractWorkbenchContextActivity activity = mock( AbstractWorkbenchContextActivity.class );
+        final ContextActivity activity = mock( ContextActivity.class );
         when( activityManager.getActivities( somewhere ) ).thenReturn( singleton( (Activity) activity ) );
 
         placeManager.goTo( somewhere );

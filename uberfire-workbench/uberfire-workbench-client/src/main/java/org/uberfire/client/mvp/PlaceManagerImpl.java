@@ -203,8 +203,8 @@ implements PlaceManager {
         boolean result = true;
         for ( final PlaceRequest placeRequest : placeRequests ) {
             final Activity activity = existingWorkbenchActivities.get( placeRequest );
-            if ( activity instanceof AbstractWorkbenchActivity ) {
-                if ( ( (AbstractWorkbenchActivity) activity ).onMayClose() ) {
+            if ( activity instanceof WorkbenchActivity ) {
+                if ( ( (WorkbenchActivity) activity ).onMayClose() ) {
                     onMayCloseList.put( placeRequest, activity );
                 } else {
                     result = false;
@@ -433,6 +433,40 @@ implements PlaceManager {
         }
     }
 
+    /**
+     * Launches the given splash screen, associating it with the given place in {@link #activeSplashScreens} for later
+     * disposal. For every call to this method, you must call {@link #closeSplashScreen(PlaceRequest)} with the same
+     * PlaceRequest at some point in the future, or call {@link #closeAllSplashScreens()}.
+     * 
+     * @param place
+     *            the place that wanted the splash screen to launch.
+     * @param splashScreen
+     *            the splash screen to launch. Must be in the initialized but not started state.
+     */
+    private void launchSplashScreen( final PlaceRequest place,
+                                     final SplashScreenActivity splashScreen ) {
+        activeSplashScreens.put( place.getIdentifier(), splashScreen );
+        splashScreen.onOpen();
+        newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
+    }
+
+    @Override
+    public void closeSplashScreen( final PlaceRequest place ) {
+        SplashScreenActivity splashScreenActivity = activeSplashScreens.remove( place.getIdentifier() );
+        if ( splashScreenActivity != null ) {
+            splashScreenActivity.onClose();
+        }
+    }
+
+    /**
+     * Closes all splash screens that are currently known to be open.
+     */
+    private void closeAllSplashScreens() {
+        for ( String placeId : new ArrayList<String>( activeSplashScreens.keySet() ) ) {
+            closeSplashScreen( new DefaultPlaceRequest( placeId ) );
+        }
+    }
+
     @Override
     public Collection<SplashScreenActivity> getActiveSplashScreens() {
         return unmodifiableCollection( activeSplashScreens.values() );
@@ -511,9 +545,8 @@ implements PlaceManager {
                                             uiPart,
                                             activity.contextId() );
         if ( splashScreen != null ) {
-            activeSplashScreens.put( place.getIdentifier(), splashScreen );
-            newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
-            splashScreen.onOpen();
+            launchSplashScreen( place,
+                                splashScreen );
         }
 
         activity.onOpen();
@@ -570,13 +603,11 @@ implements PlaceManager {
         // both operations must be the responsibility of the same manager (probably PerspectiveManager)
         if ( closeAllCurrentPanels() ) {
 
-            activeSplashScreens.clear();
+            closeAllSplashScreens();
             final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
             if ( splashScreen != null ) {
-                activeSplashScreens.put( place.getIdentifier(), splashScreen );
-                splashScreen.onOpen();
+                launchSplashScreen( place, splashScreen );
             }
-            newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
 
             Command closeOldActivityAndExecuteChainedCallback = new Command() {
                 @Override
@@ -605,7 +636,7 @@ implements PlaceManager {
                                                                        force,
                                                                        true ) );
 
-        activeSplashScreens.remove( place.getIdentifier() );
+        closeSplashScreen( place );
         activePopups.remove( place.getIdentifier() );
 
         if ( activity instanceof WorkbenchActivity ) {
