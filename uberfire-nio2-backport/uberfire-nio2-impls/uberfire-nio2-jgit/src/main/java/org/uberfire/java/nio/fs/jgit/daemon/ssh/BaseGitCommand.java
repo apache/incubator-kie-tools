@@ -34,19 +34,18 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.security.FileSystemResourceAdaptor;
-import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.java.nio.security.AuthorizationManager;
+import org.uberfire.java.nio.security.Subject;
 
 public abstract class BaseGitCommand implements Command,
 SessionAware,
 Runnable {
 
-    public final static Session.AttributeKey<User> SUBJECT_KEY = new Session.AttributeKey<User>();
+    public final static Session.AttributeKey<Subject> SUBJECT_KEY = new Session.AttributeKey<Subject>();
 
     protected final String command;
     protected final String repositoryName;
@@ -57,7 +56,7 @@ Runnable {
     private OutputStream out;
     private OutputStream err;
     private ExitCallback callback;
-    private User user;
+    private Subject user;
 
     public BaseGitCommand( final String command,
                            final AuthorizationManager authorizationManager,
@@ -123,11 +122,13 @@ Runnable {
             final Repository repository = openRepository( repositoryName );
             if ( repository != null ) {
                 final FileSystem fileSystem = repositoryResolver.resolveFileSystem( repository );
-                if ( authorizationManager.authorize( new FileSystemResourceAdaptor( fileSystem ), user ) ) {
+
+                if ( authorizationManager.authorize( fileSystem, user ) ) {
                     execute( user, repository, in, out, err );
                 } else {
                     err.write( "Invalid credentials.".getBytes() );
                 }
+
             } else {
                 err.write( "Can't resolve repository name.".getBytes() );
             }
@@ -168,7 +169,7 @@ Runnable {
         }
     }
 
-    protected abstract void execute( final User user,
+    protected abstract void execute( final Subject user,
                                      final Repository repository,
                                      final InputStream in,
                                      final OutputStream out,
@@ -178,7 +179,7 @@ Runnable {
     public void destroy() {
     }
 
-    public User getUser() {
+    public Subject getUser() {
         return user;
     }
 

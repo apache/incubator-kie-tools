@@ -1,4 +1,4 @@
-package org.uberfire.java.nio.security;
+package org.uberfire.backend.server.security;
 
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.security.Resource;

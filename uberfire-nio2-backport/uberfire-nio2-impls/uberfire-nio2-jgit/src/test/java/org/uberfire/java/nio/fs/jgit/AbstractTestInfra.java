@@ -37,8 +37,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import com.google.common.collect.ImmutableMap;
-
 public abstract class AbstractTestInfra {
 
     protected static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
@@ -49,7 +47,7 @@ public abstract class AbstractTestInfra {
 
     @Before
     public void createGitFsProvider() {
-        provider = new JGitFileSystemProvider( ImmutableMap.<String, String>of() );
+        provider = new JGitFileSystemProvider( Collections.<String, String>emptyMap() );
     }
 
     @After

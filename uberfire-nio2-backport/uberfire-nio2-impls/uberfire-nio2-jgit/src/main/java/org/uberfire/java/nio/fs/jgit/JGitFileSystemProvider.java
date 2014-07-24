@@ -77,14 +77,12 @@ import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.util.FileUtils;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.config.ConfigProperties;
-import org.uberfire.backend.server.config.ConfigProperties.ConfigProperty;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterService;
+import org.uberfire.commons.config.ConfigProperties;
+import org.uberfire.commons.config.ConfigProperties.ConfigProperty;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.message.MessageType;
 import org.uberfire.java.nio.IOException;
@@ -141,8 +139,9 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil.JGitPathInfo;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
+import org.uberfire.java.nio.security.AuthorizationManager;
 import org.uberfire.java.nio.security.SecurityAware;
-import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.java.nio.security.UserPassAuthenticator;
 
 public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware {
 
@@ -205,11 +204,10 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
     private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
 
-    private AuthorizationManager authorizationManager = null;
-    private AuthenticationService authenticationService = null;
-
     private Daemon daemonService = null;
     private GitSSHService gitSSHService = null;
+    private UserPassAuthenticator authenticator;
+    private AuthorizationManager authorizationManager;
 
     private void loadConfig( ConfigProperties config ) {
         LOG.debug("Configuring from properties:");
@@ -274,15 +272,15 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
     }
 
     @Override
-    public void setAuthenticationManager( final AuthenticationService authenticationService ) {
-        this.authenticationService = authenticationService;
+    public void setUserPassAuthenticator( final UserPassAuthenticator authenticator ) {
+        this.authenticator = authenticator;
         if ( gitSSHService != null ) {
-            gitSSHService.setAuthenticationManager( authenticationService );
+            gitSSHService.setUserPassAuthenticator( authenticator );
         }
     }
 
     @Override
-    public void setAuthorizationManager( final AuthorizationManager authorizationManager ) {
+    public void setAuthorizationManager( AuthorizationManager authorizationManager ) {
         this.authorizationManager = authorizationManager;
         if ( gitSSHService != null ) {
             gitSSHService.setAuthorizationManager( authorizationManager );
@@ -418,9 +416,7 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
                         @Override
                         public void onPostReceive( final ReceivePack rp,
                                                    final Collection<ReceiveCommand> commands ) {
-                            final String userName =
-                                    req.getUser().getProperty( User.StandardUserProperties.FIRST_NAME ) + " " +
-                                            req.getUser().getProperty( User.StandardUserProperties.LAST_NAME );
+                            final String userName = req.getUser().getName();
                             for ( Map.Entry<String, ObjectId> oldTreeRef : oldTreeRefs.entrySet() ) {
                                 notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", userName, oldTreeRef.getValue(), JGitUtil.getTreeRefObjectId( db, oldTreeRef.getKey() ) );
                             }
@@ -457,7 +453,7 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
         gitSSHService = new GitSSHService();
 
-        gitSSHService.setup( sshFileCertDir, sshHostAddr, sshPort, null /* will be replaced in upcoming merge */, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
+        gitSSHService.setup( sshFileCertDir, sshHostAddr, sshPort, authenticator, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
 
         gitSSHService.start();
     }

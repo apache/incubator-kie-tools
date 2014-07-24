@@ -24,7 +24,6 @@ import javax.enterprise.inject.Alternative;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.security.FileSystemResourceAdaptor;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
@@ -46,8 +45,8 @@ public class FileSystemAuthorizationManager implements AuthorizationManager {
 
     @Override
     public boolean authorize( final Resource resource,
-                              final User user ) throws UnauthorizedException {
-        checkNotNull( "subject", user );
+                              final User subject ) throws UnauthorizedException {
+        checkNotNull( "subject", subject );
 
         final FileSystemResourceAdaptor fileSystemResource;
         if ( resource instanceof FileSystem ) {
@@ -56,7 +55,7 @@ public class FileSystemAuthorizationManager implements AuthorizationManager {
             fileSystemResource = (FileSystemResourceAdaptor) resource;
         }
 
-        final AuthorizationResult finalResult = decisionManager.decide( fileSystemResource, user, roleDecisionManager );
+        final AuthorizationResult finalResult = decisionManager.decide( fileSystemResource, subject, roleDecisionManager );
 
         return finalResult.equals( ACCESS_ABSTAIN ) || finalResult.equals( ACCESS_GRANTED );
     }

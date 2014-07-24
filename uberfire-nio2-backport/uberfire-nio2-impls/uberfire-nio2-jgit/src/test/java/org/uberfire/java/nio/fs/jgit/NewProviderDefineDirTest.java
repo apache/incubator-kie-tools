@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +32,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableMap;
 
 public class NewProviderDefineDirTest {
 
@@ -73,7 +72,8 @@ public class NewProviderDefineDirTest {
 
         final File dir = createTempDirectory();
 
-        Map<String, String> gitPrefs = ImmutableMap.of( "org.uberfire.nio.git.dir", dir.toString() );
+        Map<String, String> gitPrefs = new HashMap<String, String>();
+        gitPrefs.put( "org.uberfire.nio.git.dir", dir.toString() );
         final JGitFileSystemProvider provider = new JGitFileSystemProvider( gitPrefs );
 
         final URI newRepo = URI.create("git://repo-name");

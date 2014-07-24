@@ -16,12 +16,15 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static org.eclipse.jgit.lib.Repository.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,14 +58,12 @@ import org.uberfire.java.nio.file.Watchable;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import com.google.common.collect.ImmutableSet;
-
 public class JGitFileSystem implements FileSystem,
 FileSystemId {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( JGitFileSystem.class );
 
-    private static final Set<String> SUPPORTED_ATTR_VIEWS = ImmutableSet.of( "basic", "version" );
+    private static final Set<String> SUPPORTED_ATTR_VIEWS = unmodifiableSet( new HashSet<String>( asList( "basic", "version" ) ) );
 
     private final JGitFileSystemProvider provider;
     private final Git gitRepo;

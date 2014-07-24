@@ -1,4 +1,6 @@
-package org.uberfire.backend.server.config;
+package org.uberfire.commons.config;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,11 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jboss.errai.common.client.api.Assert;
-
 /**
- * Encapsulates a Java System Property by name and value. Includes handy methods for default values and conversion from
- * Strings to other common types.
+ * Encapsulates a collection of Java System Properties by name and value. Includes handy methods for providing and
+ * identifying application-provided default values and converting from Strings to other common types.
  */
 public class ConfigProperties {
 
@@ -19,17 +19,17 @@ public class ConfigProperties {
 
     /**
      * Creates a new container of configured values from which specific config properties can be obtained.
-     * 
+     *
      * @param configuredValues
      *            The configured values, which may have been hardcoded in a Map, read from a config file, or whatever.
      */
     public ConfigProperties(Map<String, String> configuredValues) {
-        this.configuredValues = Assert.notNull( configuredValues );
+        this.configuredValues = checkNotNull( "configuredValues", configuredValues );
     }
 
     /**
      * Creates a new container of configured values from which specific config properties can be obtained.
-     * 
+     *
      * @param configuredValues
      *            The configured values, which may have been read from a properties file, or obtained from
      *            {@link System#getProperties()}. If the property set contains entries whose key and value are not both
@@ -46,7 +46,7 @@ public class ConfigProperties {
     /**
      * Returns the ConfigProperty instance corresponding to the configured value of the given property, or the default
      * if no configured value exists.
-     * 
+     *
      * @param name
      *            the property name. Must not be null.
      * @param defaultValue
@@ -71,7 +71,7 @@ public class ConfigProperties {
      * contain a lot of unrelated information (for example, when using System.getProperties()). This is useful for
      * printing a summary of the configuration in a given subsystem. It also helps users learn about available
      * configuration values.
-     * 
+     *
      * @param heading
      *            a line of text to print before listing the configuration values
      */
@@ -105,7 +105,7 @@ public class ConfigProperties {
 
         /**
          * Returns the value of this property, which may or may not have been the default value.
-         * 
+         *
          * @see #isDefault()
          * @return the property value. Will be null if both the configured value was missing and the default was given
          *         as null.
@@ -115,9 +115,9 @@ public class ConfigProperties {
         }
 
         /**
-         * Returns false if this value appeared among the configured values; false if it came from the
+         * Returns false if this value appeared among the user-supplied values; false if it came from the
          * application-provided default.
-         * 
+         *
          * @return whether this value is a default
          */
         public boolean isDefault() {
@@ -135,7 +135,7 @@ public class ConfigProperties {
         /**
          * Returns the integer value of this property, converting from string using the same rules as
          * {@link Integer#parseInt(String)}.
-         * 
+         *
          * @throws NumberFormatException
          *             if the value cannot be parsed as an integer.
          */
