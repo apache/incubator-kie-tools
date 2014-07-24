@@ -53,6 +53,10 @@ public class Attribute implements IAttribute
 
     public static final Attribute           ALPHA                            = new Attribute("alpha", MESSAGES.alphaLabel(), MESSAGES.alphaDescription(), AttributeType.NUMBER_TYPE);
 
+    public static final Attribute           FILL_ALPHA                       = new Attribute("fillAlpha", MESSAGES.fillAlphaLabel(), MESSAGES.fillAlphaDescription(), AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           STROKE_ALPHA                     = new Attribute("strokeAlpha", MESSAGES.strokeAlphaLabel(), MESSAGES.strokeAlphaDescription(), AttributeType.NUMBER_TYPE);
+
     public static final Attribute           SCALE                            = new Attribute("scale", MESSAGES.scaleLabel(), MESSAGES.scaleDescription(), AttributeType.POINT2D_TYPE);
 
     public static final Attribute           ROTATION                         = new Attribute("rotation", MESSAGES.rotationLabel(), MESSAGES.rotationDescription(), AttributeType.NUMBER_TYPE);

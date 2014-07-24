@@ -14,7 +14,6 @@
    limitations under the License.
  */
 
-
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -35,6 +34,7 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 
 /**
@@ -185,7 +185,7 @@ public class Text extends Shape<Text>
 
             doApplyShadow(context, attr);
 
-            context.setGlobalAlpha(alpha);
+            context.setGlobalAlpha(alpha * getFillAlpha());
 
             String fill = attr.getFillColor();
 
@@ -253,6 +253,10 @@ public class Text extends Shape<Text>
             else
             {
                 doApplyShadow(context, attr);
+                
+                GWT.log("alpha=" + alpha);
+                
+                context.setGlobalAlpha(1);
 
                 context.beginPath();
 

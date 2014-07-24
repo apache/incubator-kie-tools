@@ -298,6 +298,36 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>
      * @return this IPrimitive
      */
     public T setAlpha(double alpha);
+    
+    /**
+     * Gets the alpha for this node.
+     * 
+     * @return double
+     */
+     public double getStrokeAlpha();
+
+     /**
+      * Sets alpha
+      * 
+      * @param alpha
+      * @return this IPrimitive
+      */
+     public T setStrokeAlpha(double alpha);
+
+    /**
+    * Gets the alpha for this node.
+    * 
+    * @return double
+    */
+    public double getFillAlpha();
+
+    /**
+     * Sets alpha
+     * 
+     * @param alpha
+     * @return this IPrimitive
+     */
+    public T setFillAlpha(double alpha);
 
     /**
      * Gets the transform for this node.

@@ -203,6 +203,56 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     }
 
     /**
+     * Gets the alpha value (transparency) for this group.
+     * 
+     * @return double between 0 and 1
+     */
+    @Override
+    public double getFillAlpha()
+    {
+        return getAttributes().getFillAlpha();
+    }
+
+    /**
+     * Sets the alpha value (transparency) on this group.
+     * 
+     * @param alpha between 0 and 1
+     * @return Group this Group
+     */
+    @Override
+    public Group setFillAlpha(double alpha)
+    {
+        getAttributes().setFillAlpha(alpha);
+
+        return this;
+    }
+
+    /**
+     * Sets the alpha color on this shape.
+     * 
+     * @param alpha
+     * @return T
+     */
+    @Override
+    public Group setStrokeAlpha(double alpha)
+    {
+        getAttributes().setStrokeAlpha(alpha);
+
+        return cast();
+    }
+
+    /**
+     * Gets the alpha value for this shape.
+     * 
+     * @return double
+     */
+    @Override
+    public double getStrokeAlpha()
+    {
+        return getAttributes().getStrokeAlpha();
+    }
+
+    /**
      * Returns whether this group can be dragged.
      * 
      * @return boolean 
@@ -849,6 +899,10 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
             addAttribute(Attribute.Y);
 
             addAttribute(Attribute.ALPHA);
+
+            addAttribute(Attribute.FILL_ALPHA);
+
+            addAttribute(Attribute.STROKE_ALPHA);
 
             addAttribute(Attribute.DRAGGABLE);
 

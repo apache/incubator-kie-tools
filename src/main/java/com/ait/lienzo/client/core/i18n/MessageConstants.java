@@ -159,6 +159,18 @@ public interface MessageConstants extends Constants
     @DefaultStringValue("The alpha transparency for the shape.")
     public String alphaDescription();
 
+    @DefaultStringValue("Stroke Alpha")
+    public String strokeAlphaLabel();
+
+    @DefaultStringValue("The alpha transparency for the shape's stroke.")
+    public String strokeAlphaDescription();
+
+    @DefaultStringValue("Fill Alpha")
+    public String fillAlphaLabel();
+
+    @DefaultStringValue("The alpha transparency for the shape's fill.")
+    public String fillAlphaDescription();
+
     @DefaultStringValue("Scale")
     public String scaleLabel();
 

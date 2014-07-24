@@ -222,7 +222,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
             doApplyShadow(context, attr);
 
-            context.setGlobalAlpha(alpha);
+            context.setGlobalAlpha(alpha * getFillAlpha());
 
             String fill = attr.getFillColor();
 
@@ -314,7 +314,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
         else
         {
-            context.setGlobalAlpha(alpha);
+            context.setGlobalAlpha(alpha * getStrokeAlpha());
         }
         context.setStrokeColor(color);
 
@@ -520,6 +520,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             node = node.getParent();
         }
         return alpha;
+    }
+
+    @Override
+    public final double getFillAlpha()
+    {
+        return getAttributes().getFillAlpha();
     }
 
     /**
@@ -1034,6 +1040,45 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     }
 
     /**
+     * Sets the alpha color on this shape.
+     * 
+     * @param alpha
+     * @return T
+     */
+    @Override
+    public T setFillAlpha(double alpha)
+    {
+        getAttributes().setFillAlpha(alpha);
+
+        return cast();
+    }
+
+    /**
+     * Sets the alpha color on this shape.
+     * 
+     * @param alpha
+     * @return T
+     */
+    @Override
+    public T setStrokeAlpha(double alpha)
+    {
+        getAttributes().setStrokeAlpha(alpha);
+
+        return cast();
+    }
+
+    /**
+     * Gets the alpha value for this shape.
+     * 
+     * @return double
+     */
+    @Override
+    public double getStrokeAlpha()
+    {
+        return getAttributes().getStrokeAlpha();
+    }
+
+    /**
      * Gets the fill color in hex.
      * 
      * @return String
@@ -1359,9 +1404,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
             addAttribute(Attribute.FILL);
 
+            addAttribute(Attribute.FILL_ALPHA);
+
             addAttribute(Attribute.STROKE);
 
             addAttribute(Attribute.STROKE_WIDTH);
+
+            addAttribute(Attribute.STROKE_ALPHA);
 
             addAttribute(Attribute.DRAGGABLE);
 

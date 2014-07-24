@@ -61,7 +61,7 @@ public class Attributes extends JavaScriptObject
 
     public static final native Attributes make()
     /*-{
-		return {};
+    	return {};
     }-*/;
 
     public final boolean isClearLayerBeforeDraw()
@@ -90,6 +90,70 @@ public class Attributes extends JavaScriptObject
     public final void setTransformable(boolean transformable)
     {
         put(Attribute.TRANSFORMABLE.getProperty(), transformable);
+    }
+
+    public final void setFillAlpha(double alpha)
+    {
+        if (alpha < 0)
+        {
+            alpha = 0;
+        }
+        if (alpha > 1)
+        {
+            alpha = 1;
+        }
+        put(Attribute.FILL_ALPHA.getProperty(), alpha);
+    }
+
+    public final double getFillAlpha()
+    {
+        if (isDefined(Attribute.FILL_ALPHA))
+        {
+            double alpha = getDouble(Attribute.FILL_ALPHA.getProperty());
+
+            if (alpha < 0)
+            {
+                alpha = 0;
+            }
+            if (alpha > 1)
+            {
+                alpha = 1;
+            }
+            return alpha;
+        }
+        return 1;
+    }
+
+    public final void setStrokeAlpha(double alpha)
+    {
+        if (alpha < 0)
+        {
+            alpha = 0;
+        }
+        if (alpha > 1)
+        {
+            alpha = 1;
+        }
+        put(Attribute.STROKE_ALPHA.getProperty(), alpha);
+    }
+
+    public final double getStrokeAlpha()
+    {
+        if (isDefined(Attribute.STROKE_ALPHA))
+        {
+            double alpha = getDouble(Attribute.STROKE_ALPHA.getProperty());
+
+            if (alpha < 0)
+            {
+                alpha = 0;
+            }
+            if (alpha > 1)
+            {
+                alpha = 1;
+            }
+            return alpha;
+        }
+        return 1;
     }
 
     public final void setFillColor(String fill)
@@ -890,17 +954,21 @@ public class Attributes extends JavaScriptObject
 
     public final double getAlpha()
     {
-        double alpha = getDouble(Attribute.ALPHA.getProperty());
+        if (isDefined(Attribute.ALPHA))
+        {
+            double alpha = getDouble(Attribute.ALPHA.getProperty());
 
-        if (alpha < 0)
-        {
-            alpha = 0;
+            if (alpha < 0)
+            {
+                alpha = 0;
+            }
+            if (alpha > 1)
+            {
+                alpha = 1;
+            }
+            return alpha;
         }
-        if (alpha > 1)
-        {
-            alpha = 1;
-        }
-        return alpha;
+        return 1;
     }
 
     public final void setOffset(double xy)
@@ -1328,37 +1396,37 @@ public class Attributes extends JavaScriptObject
 
     public final native boolean isEmpty()
     /*-{
-		var that = this;
+    	var that = this;
 
-		for ( var i in that) {
-			return false;
-		}
-		return true;
+    	for ( var i in that) {
+    		return false;
+    	}
+    	return true;
     }-*/;
 
     private final native void put0(String name, String value)
     /*-{
-		this[name] = value;
+    	this[name] = value;
     }-*/;
 
     private final native void put(String name, int value)
     /*-{
-		this[name] = value;
+    	this[name] = value;
     }-*/;
 
     public final native void put(String name, double value)
     /*-{
-		this[name] = value;
+    	this[name] = value;
     }-*/;
 
     public final native void put(String name, boolean value)
     /*-{
-		this[name] = value;
+    	this[name] = value;
     }-*/;
 
     public final native void put(String name, JavaScriptObject value)
     /*-{
-		this[name] = value;
+    	this[name] = value;
     }-*/;
 
     public final Collection<String> getKeysCollection()
@@ -1372,13 +1440,13 @@ public class Attributes extends JavaScriptObject
 
     private final native void fillKeysCollection(Collection<String> keys)
     /*-{
-		var self = this;
+    	var self = this;
 
-		for ( var name in self) {
-			if ((self.hasOwnProperty(name)) && (self[name] !== undefined)) {
-				keys.@java.util.Collection::add(Ljava/lang/Object;)(name);
-			}
-		}
+    	for ( var name in self) {
+    		if ((self.hasOwnProperty(name)) && (self[name] !== undefined)) {
+    			keys.@java.util.Collection::add(Ljava/lang/Object;)(name);
+    		}
+    	}
     }-*/;
 
     public final int getInteger(String name)
@@ -1491,47 +1559,47 @@ public class Attributes extends JavaScriptObject
 
     private final native boolean isDefined0(String name)
     /*-{
-		return this.hasOwnProperty(String(name));
+    	return this.hasOwnProperty(String(name));
     }-*/;
 
     private final native double getDouble0(String name)
     /*-{
-		return this[name];
+    	return this[name];
     }-*/;
 
     private final native int getInteger0(String name)
     /*-{
-		return Math.round(this[name]);
+    	return Math.round(this[name]);
     }-*/;
 
     private final native String getString0(String name)
     /*-{
-		return this[name];
+    	return this[name];
     }-*/;
 
     private final native boolean getBoolean0(String name)
     /*-{
-		return this[name];
+    	return this[name];
     }-*/;
 
     private final native JavaScriptObject getObject0(String name)
     /*-{
-		return this[name];
+    	return this[name];
     }-*/;
 
     private final native JsArray<JavaScriptObject> getArrayOfJSO0(String name)
     /*-{
-		return this[name];
+    	return this[name];
     }-*/;
 
     private final native JsArrayMixed getArray0(String name)
     /*-{
-		return this[name];
+    	return this[name];
     }-*/;
 
     public final native void delete(String name)
     /*-{
-		delete this[name];
+    	delete this[name];
     }-*/;
 
     public final NativeInternalType typeOf(Attribute attr)
@@ -1545,42 +1613,42 @@ public class Attributes extends JavaScriptObject
 
     public final native NativeInternalType typeOf(String name)
     /*-{
-		if (this.hasOwnProperty(String(name)) && (this[name] !== undefined)) {
+    	if (this.hasOwnProperty(String(name)) && (this[name] !== undefined)) {
 
-			var valu = this[name];
+    		var valu = this[name];
 
-			var type = typeof valu;
+    		var type = typeof valu;
 
-			switch (type) {
-			case 'string': {
-				return @com.ait.lienzo.client.core.types.NativeInternalType::STRING;
-			}
-			case 'boolean': {
-				return @com.ait.lienzo.client.core.types.NativeInternalType::BOOLEAN;
-			}
-			case 'number': {
-				if (isFinite(valu)) {
-					return @com.ait.lienzo.client.core.types.NativeInternalType::NUMBER;
-				}
-				return @com.ait.lienzo.client.core.types.NativeInternalType::UNDEFINED;
-			}
-			case 'object': {
-				if ((valu instanceof Array) || (valu instanceof $wnd.Array)) {
-					return @com.ait.lienzo.client.core.types.NativeInternalType::ARRAY;
-				}
-				return @com.ait.lienzo.client.core.types.NativeInternalType::OBJECT;
-			}
-			case 'function': {
-				return @com.ait.lienzo.client.core.types.NativeInternalType::FUNCTION;
-			}
-			}
-		}
-		return @com.ait.lienzo.client.core.types.NativeInternalType::UNDEFINED;
+    		switch (type) {
+    		case 'string': {
+    			return @com.ait.lienzo.client.core.types.NativeInternalType::STRING;
+    		}
+    		case 'boolean': {
+    			return @com.ait.lienzo.client.core.types.NativeInternalType::BOOLEAN;
+    		}
+    		case 'number': {
+    			if (isFinite(valu)) {
+    				return @com.ait.lienzo.client.core.types.NativeInternalType::NUMBER;
+    			}
+    			return @com.ait.lienzo.client.core.types.NativeInternalType::UNDEFINED;
+    		}
+    		case 'object': {
+    			if ((valu instanceof Array) || (valu instanceof $wnd.Array)) {
+    				return @com.ait.lienzo.client.core.types.NativeInternalType::ARRAY;
+    			}
+    			return @com.ait.lienzo.client.core.types.NativeInternalType::OBJECT;
+    		}
+    		case 'function': {
+    			return @com.ait.lienzo.client.core.types.NativeInternalType::FUNCTION;
+    		}
+    		}
+    	}
+    	return @com.ait.lienzo.client.core.types.NativeInternalType::UNDEFINED;
     }-*/;
 
     public static final native String getString(String name, JavaScriptObject obj)
     /*-{
-		return obj[name];
+    	return obj[name];
     }-*/;
 
 }
