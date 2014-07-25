@@ -16,7 +16,7 @@
 package org.kie.workbench.common.services.backend.builder;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
@@ -26,14 +26,15 @@ import org.uberfire.backend.vfs.Path;
  * Listener for changes to project resources to handle incremental builds
  */
 @ApplicationScoped
-public @Alternative class ResourceChangeIncrementalBuilder
+@Specializes
+public class ResourceChangeIncrementalBuilder
         extends org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder {
 
     @Inject
     private KModuleService kModuleService;
 
     @Override
-    protected boolean isProjectResourceUpdateNeeded(Path resource) {
-        return projectService.isPom(resource) || kModuleService.isKModule(resource);
+    protected boolean isProjectResourceUpdateNeeded( Path resource ) {
+        return projectService.isPom( resource ) || kModuleService.isKModule( resource );
     }
 }
