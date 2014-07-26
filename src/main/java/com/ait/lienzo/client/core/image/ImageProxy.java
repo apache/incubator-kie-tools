@@ -235,53 +235,25 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
         m_dest_high = m_obounds.getDestHigh();
 
-        new ImageLoader(m_image.getURL())
+        String url = m_image.getURL();
+
+        if (false == url.startsWith("data:"))
+        {
+            JSImage img = ImageCache.get().getImageByURL(url);
+
+            if (null != img)
+            {
+                doInitialize(img);
+
+                return;
+            }
+        }
+        new ImageLoader(url)
         {
             @Override
             public void onLoaded(ImageLoader loader)
             {
-                m_jsimg = loader.getJSImage();
-
-                if (m_clip_wide == 0)
-                {
-                    m_clip_wide = m_jsimg.getWidth();
-                }
-                if (m_clip_high == 0)
-                {
-                    m_clip_high = m_jsimg.getHeight();
-                }
-                if (m_dest_wide == 0)
-                {
-                    m_dest_wide = m_clip_wide;
-                }
-                if (m_dest_high == 0)
-                {
-                    m_dest_high = m_clip_high;
-                }
-                m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
-
-                m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
-
-                m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
-
-                m_normalImage.clear();
-
-                m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
-
-                m_x_forms = m_filters.isTransforming();
-
-                doFiltering(m_normalImage, m_filterImage, m_filters);
-
-                if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
-                {
-                    doneLoading(true, "loaded " + m_image.getURL());
-                }
-                else
-                {
-                    doFiltering(m_filterImage, m_selectImage, m_ignores);
-
-                    doneLoading(true, "loaded " + m_image.getURL());
-                }
+                doInitialize(loader.getJSImage());
             }
 
             @Override
@@ -290,6 +262,52 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
                 doneLoading(false, message);
             }
         };
+    }
+
+    private final void doInitialize(JSImage image)
+    {
+        m_jsimg = image;
+
+        if (m_clip_wide == 0)
+        {
+            m_clip_wide = m_jsimg.getWidth();
+        }
+        if (m_clip_high == 0)
+        {
+            m_clip_high = m_jsimg.getHeight();
+        }
+        if (m_dest_wide == 0)
+        {
+            m_dest_wide = m_clip_wide;
+        }
+        if (m_dest_high == 0)
+        {
+            m_dest_high = m_clip_high;
+        }
+        m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
+
+        m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
+
+        m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
+
+        m_normalImage.clear();
+
+        m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+
+        m_x_forms = m_filters.isTransforming();
+
+        doFiltering(m_normalImage, m_filterImage, m_filters);
+
+        if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+        {
+            doneLoading(true, "loaded " + m_image.getURL());
+        }
+        else
+        {
+            doFiltering(m_filterImage, m_selectImage, m_ignores);
+
+            doneLoading(true, "loaded " + m_image.getURL());
+        }
     }
 
     private final void doUpdateCheck()
