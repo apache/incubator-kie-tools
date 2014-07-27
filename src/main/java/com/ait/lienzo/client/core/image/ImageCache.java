@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.image;
 
 import java.util.HashMap;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.UriUtils;
 
 public final class ImageCache
@@ -77,9 +78,15 @@ public final class ImageCache
     {
         if (null != image)
         {
+            GWT.log("Did get image " + key);
+            
             m_key_hmap.put(key, image);
 
-            m_key_hmap.put(url, image);
+            m_url_hmap.put(url, image);
+        }
+        else
+        {
+            GWT.log("Did not get image " + key + " message=[ " + message + " ]");
         }
         m_messages.put(key, message);
 
