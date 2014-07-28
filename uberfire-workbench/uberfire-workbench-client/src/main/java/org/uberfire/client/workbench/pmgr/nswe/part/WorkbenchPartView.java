@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench.pmgr.nswe.part;
 
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -35,6 +36,7 @@ implements WorkbenchPartPresenter.View {
     @Override
     public void init( WorkbenchPartPresenter presenter ) {
         this.presenter = presenter;
+        Layouts.setToFillParent( this );
     }
 
     @Override

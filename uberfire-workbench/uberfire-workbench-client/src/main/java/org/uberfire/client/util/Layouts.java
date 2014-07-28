@@ -37,7 +37,7 @@ public class Layouts {
                     w.getClass().getName() + "@" + System.identityHashCode( w ) +
                     (w instanceof RequiresResize ? " RequiresResize" : "") +
                     (w instanceof ProvidesResize ? " ProvidesResize" : "") +
-                    " position: " + w.getElement().getStyle().getPosition());
+                    " position: " + w.getElement().getStyle().getPosition() + "\n");
             w.ensureDebugId("containment-parent-" + depth);
             w = w.getParent();
             depth++;

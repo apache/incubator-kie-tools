@@ -1,6 +1,5 @@
 package org.uberfire.client;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -11,7 +10,6 @@ import org.uberfire.client.annotations.WorkbenchPart;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 
 @ApplicationScoped
 @WorkbenchPerspective(
@@ -22,20 +20,26 @@ public class HomePerspective extends Composite {
 
     @DataField
     @WorkbenchPart(part = "MoodScreen" ,parameters = {@ParameterMapping(name="uber", val="fire"),@ParameterMapping(name="uber1", val="fire1")})
-    FlowPanel moodScreen = new FlowPanel();
+    WorkbenchPanelPanel moodScreen = new WorkbenchPanelPanel(100);
 
     @DataField
     @WorkbenchPanel
     @WorkbenchPart(part = "HomeScreen", parameters = @ParameterMapping(name="uber", val="fire"))
-    FlowPanel homeScreen = new FlowPanel();
+    WorkbenchPanelPanel homeScreen = new WorkbenchPanelPanel(100);
 
     @DataField
     @WorkbenchPart(part = "AnotherScreen")
-    FlowPanel anotherScreen = new FlowPanel();
+    WorkbenchPanelPanel anotherScreen = new WorkbenchPanelPanel(100);
 
 
-    @PostConstruct
-    public void setup() {
-    }
-
+    //    @PostConstruct
+    //    public void setup() {
+    //        resize( moodScreen );
+    //        resize( homeScreen );
+    //        resize( anotherScreen );
+    //    }
+    //
+    //    private void resize( Widget container ) {
+    //        container.setPixelSize( 300, 300 );
+    //    }
 }

@@ -12,7 +12,6 @@ import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 
 @ApplicationScoped
 @WorkbenchPerspective(
@@ -24,7 +23,7 @@ public class AnotherPerspective extends Composite {
     @DataField
     @WorkbenchPanel(isDefault = true, panelType = MultiTabWorkbenchPanelPresenter.class)
     @WorkbenchParts({@WorkbenchPart(part="HomeScreen"),@WorkbenchPart(part="MoodScreen")})
-    FlowPanel homeScreen = new FlowPanel();
+    WorkbenchPanelPanel homeScreen = new WorkbenchPanelPanel();
 
     @PostConstruct
     public void setup() {

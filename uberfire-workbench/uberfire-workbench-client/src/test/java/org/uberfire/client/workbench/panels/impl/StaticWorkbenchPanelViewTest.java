@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -36,7 +37,7 @@ public class StaticWorkbenchPanelViewTest {
     @Mock
     private PlaceManager placeManager;
 
-    @Mock
+    @Mock(answer=Answers.RETURNS_MOCKS)
     private StaticFocusedResizePanel panel;
 
     @Before
@@ -58,8 +59,9 @@ public class StaticWorkbenchPanelViewTest {
 
     @Test
     public void addPartToPanelWhenPartViewIsNull() {
-
         WorkbenchPartPresenter.View viewWbPartPresenter = mock( WorkbenchPartPresenter.View.class );
+        when( panel.getPartView() ).thenReturn( null );
+
         view.addPart( viewWbPartPresenter );
 
         verify( panel ).setPart( viewWbPartPresenter );

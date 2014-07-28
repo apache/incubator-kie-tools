@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 /**
- * A Workbench panel that can contain WorkbenchParts.
+ * The view component of {@link StaticWorkbenchPanelPresenter}.
  */
 @Dependent
 @Named("StaticWorkbenchPanelView")
@@ -67,6 +68,8 @@ extends AbstractWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
                 panelManager.onPartFocus( event.getSelectedItem() );
             }
         } );
+
+        Layouts.setToFillParent( panel );
 
         initWidget( panel );
     }
