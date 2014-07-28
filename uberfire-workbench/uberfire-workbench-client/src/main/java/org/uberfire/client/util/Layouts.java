@@ -22,11 +22,11 @@ public class Layouts {
     public static void setToFillParent( Widget w ) {
         Element e = w.getElement();
         Style s = e.getStyle();
-        s.setPosition( Position.ABSOLUTE );
+        s.setPosition( Position.RELATIVE );
         s.setTop( 0.0, Unit.PX );
         s.setLeft( 0.0, Unit.PX );
-        s.setRight( 0.0, Unit.PX );
-        s.setBottom( 0.0, Unit.PX );
+        s.setWidth( 100.0, Unit.PCT );
+        s.setHeight( 100.0, Unit.PCT );
     }
 
     public static String getContainmentHierarchy( Widget w ) {

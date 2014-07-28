@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.PanelManager;
@@ -34,7 +35,7 @@ public class SimpleWorkbenchPanelViewTest {
     private final Element listBarElement = mock( Element.class );
     private final Style listBarElementStyle = mock( Style.class );
 
-    @Mock
+    @Mock(answer=Answers.RETURNS_MOCKS)
     private RequiresResizeFlowPanel container;
 
     @Mock
@@ -51,7 +52,7 @@ public class SimpleWorkbenchPanelViewTest {
 
         presenter = mock( SimpleWorkbenchPanelPresenter.class );
 
-        view.setupDragAndDrop(); // this is the PostConstruct method
+        view.setup(); // this is the PostConstruct method
         view.init( presenter );
     }
 

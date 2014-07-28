@@ -38,10 +38,18 @@
     .inline {
       display: inline;
     }
+    
+    .fill-parent {
+      position: relative;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+    }
   </ui:style>
 
   <uf:ResizeFocusPanel ui:field="container">
-    <g:FlowPanel>
+    <g:FlowPanel styleName="{style.fill-parent}">
       <g:FlowPanel styleName="{res.CSS.listbar}" ui:field="header">
 
         <g:FlowPanel styleName="{style.pull-right} {style.better_margin}" ui:field="menuArea">
@@ -60,7 +68,7 @@
         </g:FlowPanel>
 
       </g:FlowPanel>
-      <g:FlowPanel ui:field="content"/>
+      <g:FlowPanel styleName="{style.fill-parent}" ui:field="content"/>
     </g:FlowPanel>
   </uf:ResizeFocusPanel>
 

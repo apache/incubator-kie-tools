@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
@@ -46,18 +47,14 @@ extends AbstractWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
     protected ContextPanel contextWidget = new ContextPanel();
 
     @PostConstruct
-    void setupDragAndDrop() {
+    void setup() {
         setupListBarDragAndDrop();
 
         container.add( contextWidget );
         container.add( listBar );
         initWidget( container );
-    }
 
-    // override is for unit test: super.getWidget() returns a new mock every time
-    @Override
-    public Widget getWidget() {
-        return container;
+        Layouts.setToFillParent( getWidget() );
     }
 
     private void setupListBarDragAndDrop() {
@@ -66,6 +63,13 @@ extends AbstractWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
         addOnFocusHandler( listBar );
         addSelectionHandler( listBar );
         listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
+        Layouts.setToFillParent( listBar );
+    }
+
+    // override is for unit test: super.getWidget() returns a new mock every time
+    @Override
+    public Widget getWidget() {
+        return container;
     }
 
     public void enableDnd() {

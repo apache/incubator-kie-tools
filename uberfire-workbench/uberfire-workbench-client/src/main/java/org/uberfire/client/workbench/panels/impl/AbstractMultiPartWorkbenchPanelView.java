@@ -5,6 +5,7 @@ import javax.annotation.PreDestroy;
 
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.UIPart;
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
@@ -12,7 +13,6 @@ import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
 import org.uberfire.workbench.model.PartDefinition;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,11 +29,8 @@ extends AbstractWorkbenchPanelView<P> {
     private void setupDragAndDrop() {
         widget = setupWidget();
         widget.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
-        container.getElement().getStyle().setPosition( Style.Position.ABSOLUTE );
-        container.getElement().getStyle().setTop( 0, Unit.PX );
-        container.getElement().getStyle().setBottom( 0, Unit.PX );
-        container.getElement().getStyle().setLeft( 0, Unit.PX );
-        container.getElement().getStyle().setRight( 0, Unit.PX );
+        Layouts.setToFillParent( widget.asWidget() );
+        Layouts.setToFillParent( container );
         container.add( contextWidget );
         container.add( widget );
         initWidget( container );

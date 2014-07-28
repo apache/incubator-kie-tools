@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.UberFirePreferences;
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
@@ -243,6 +244,7 @@ extends ResizeComposite implements MultiPartWidget {
         parts.add( partDefinition );
 
         final FlowPanel panel = new FlowPanel();
+        Layouts.setToFillParent( panel );
         panel.add( view );
         content.add( panel );
         partContentView.put( partDefinition, panel );
@@ -403,24 +405,24 @@ extends ResizeComposite implements MultiPartWidget {
         // TODO none of this may be necessary.
         // also, this might work better if content and header were LayoutPanels
 
-        int width = getOffsetWidth();
-        int height = getOffsetHeight();
-
-        content.setPixelSize( width, height - getHeaderHeight() );
-        header.setWidth( width + "px" );
+        //        int width = getOffsetWidth();
+        //        int height = getOffsetHeight();
+        //
+        //        content.setPixelSize( width, height - getHeaderHeight() );
+        //        header.setWidth( width + "px" );
 
         // FIXME only need to do this for the one visible part .. need to call onResize() when switching parts anyway
         for ( int i = 0; i < content.getWidgetCount(); i++ ) {
             final FlowPanel container = (FlowPanel) content.getWidget( i );
             final Widget containedWidget = container.getWidget( 0 );
-            containedWidget.setPixelSize( width, height - getHeaderHeight() );
+            //            containedWidget.setPixelSize( width, height - getHeaderHeight() );
             if ( containedWidget instanceof RequiresResize ) {
                 ( (RequiresResize) containedWidget ).onResize();
             }
         }
-        if ( partChooserList != null ) {
-            partChooserList.onResize();
-        }
+        //        if ( partChooserList != null ) {
+        //            partChooserList.onResize();
+        //        }
     }
 
     private int getHeaderHeight() {

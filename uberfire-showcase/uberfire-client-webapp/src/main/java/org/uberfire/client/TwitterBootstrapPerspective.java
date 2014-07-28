@@ -10,7 +10,7 @@ import org.uberfire.client.annotations.WorkbenchParts;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SimpleDnDWorkbenchPanelPresenter;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -33,8 +33,8 @@ public class TwitterBootstrapPerspective extends Composite {
 
     @Inject
     @DataField
-    @WorkbenchPanel(panelType=SimpleWorkbenchPanelPresenter.class)
-    @WorkbenchParts(@WorkbenchPart(part="AnotherScreen"))
+    @WorkbenchPanel(panelType=SimpleDnDWorkbenchPanelPresenter.class)
+    @WorkbenchParts(@WorkbenchPart(part="HomeScreen"))
     FlowPanel simplePanel;
 
 }
