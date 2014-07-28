@@ -99,4 +99,9 @@ public interface MetadataConstants extends
                                      final String lastModifiedComment );
 
     String URI();
+
+    String UsedInProjects();
+
+    String Preview();
+    
 }
