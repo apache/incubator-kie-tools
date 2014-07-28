@@ -25,6 +25,7 @@
     <module>kie-wb-common-data-modeller</module>
     <module>kie-wb-common-home</module>
     <module>kie-wb-common-java-editor</module>
+    <module>kie-wb-common-server-ui</module>
   </modules>
 
   <build>
