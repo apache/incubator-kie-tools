@@ -43,9 +43,6 @@ import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
-import org.kie.workbench.common.screens.socialscreen.client.discussion.VersionRecordManager;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
@@ -54,6 +51,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
+import org.kie.workbench.common.widgets.client.discussion.VersionRecordManager;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;

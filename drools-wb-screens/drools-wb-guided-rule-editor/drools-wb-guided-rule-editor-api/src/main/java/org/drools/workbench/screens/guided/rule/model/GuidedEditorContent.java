@@ -17,8 +17,8 @@
 package org.drools.workbench.screens.guided.rule.model;
 
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.screens.socialscreen.model.Overview;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.commons.validation.PortablePreconditions;
 

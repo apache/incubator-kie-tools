@@ -28,8 +28,7 @@
   <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetClient"/>
 
   <inherits name="org.kie.workbench.common.services.security.KieWorkbenchCommonSecurity"/>
-  <inherits name="org.kie.workbench.common.screens.socialscreen.KieWorkbenchSocialScreenClient"/>
-  alk
+
   <inherits name="org.kie.workbench.common.widgets.viewsource.KieWorkbenchViewSourceWidget"/>
   <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
   <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
