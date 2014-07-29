@@ -49,6 +49,7 @@
 
   <properties>
     <!-- IMPORTANT: Do not declare any external dependencies versions here! Declare them in uberfire-parent-with-dependencies. -->
+    <uberfire.version>${project.version}</uberfire.version>
     <!-- Make build platform independent -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
