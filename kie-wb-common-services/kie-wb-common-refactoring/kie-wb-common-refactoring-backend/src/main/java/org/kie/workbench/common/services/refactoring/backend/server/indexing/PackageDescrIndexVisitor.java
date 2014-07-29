@@ -37,7 +37,6 @@ import org.drools.compiler.lang.descr.DeclarativeInvokerDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.FactTemplateDescr;
-import org.drools.compiler.lang.descr.FieldAccessDescr;
 import org.drools.compiler.lang.descr.FieldConstraintDescr;
 import org.drools.compiler.lang.descr.FieldTemplateDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
@@ -48,7 +47,6 @@ import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
 import org.drools.compiler.lang.descr.MVELExprDescr;
-import org.drools.compiler.lang.descr.MethodAccessDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -57,7 +55,6 @@ import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.lang.descr.StringConnectiveDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
@@ -159,8 +156,6 @@ public class PackageDescrIndexVisitor {
             visit( (ExprConstraintDescr) descr );
         } else if ( descr instanceof FactTemplateDescr ) {
             visit( (FactTemplateDescr) descr );
-        } else if ( descr instanceof FieldAccessDescr ) {
-            visit( (FieldAccessDescr) descr );
         } else if ( descr instanceof FieldConstraintDescr ) {
             visit( (FieldConstraintDescr) descr );
         } else if ( descr instanceof FieldTemplateDescr ) {
@@ -179,8 +174,6 @@ public class PackageDescrIndexVisitor {
             visit( (ImportDescr) descr );
         } else if ( descr instanceof LiteralRestrictionDescr ) {
             visit( (LiteralRestrictionDescr) descr );
-        } else if ( descr instanceof MethodAccessDescr ) {
-            visit( (MethodAccessDescr) descr );
         } else if ( descr instanceof MVELExprDescr ) {
             visit( (MVELExprDescr) descr );
         } else if ( descr instanceof NotDescr ) {
@@ -199,8 +192,6 @@ public class PackageDescrIndexVisitor {
             visit( (RelationalExprDescr) descr );
         } else if ( descr instanceof RuleDescr ) {
             visit( (RuleDescr) descr );
-        } else if ( descr instanceof StringConnectiveDescr ) {
-            visit( (StringConnectiveDescr) descr );
         } else if ( descr instanceof TypeDeclarationDescr ) {
             visit( (TypeDeclarationDescr) descr );
         } else if ( descr instanceof TypeFieldDescr ) {
@@ -326,10 +317,6 @@ public class PackageDescrIndexVisitor {
         }
     }
 
-    protected void visit( final FieldAccessDescr descr ) {
-        //TODO - Not yet implemented
-    }
-
     protected void visit( final FieldConstraintDescr descr ) {
         //FieldConstraintDescr isn't type-safe
         for ( Object o : descr.getRestrictions() ) {
@@ -372,10 +359,6 @@ public class PackageDescrIndexVisitor {
     }
 
     protected void visit( final LiteralRestrictionDescr descr ) {
-        //TODO - Not yet implemented
-    }
-
-    protected void visit( final MethodAccessDescr descr ) {
         //TODO - Not yet implemented
     }
 
@@ -446,12 +429,6 @@ public class PackageDescrIndexVisitor {
 
     protected void visitConsequence( final Object consequence ) {
         //TODO - Not yet implemented
-    }
-
-    protected void visit( final StringConnectiveDescr descr ) {
-        for ( Object o : descr.getRestrictions() ) {
-            visit( o );
-        }
     }
 
     protected void visit( final TypeDeclarationDescr descr ) {
