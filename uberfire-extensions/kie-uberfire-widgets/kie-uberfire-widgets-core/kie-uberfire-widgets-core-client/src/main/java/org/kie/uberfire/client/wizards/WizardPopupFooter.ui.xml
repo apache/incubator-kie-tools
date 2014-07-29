@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2011 JBoss Inc
+  ~ Copyright 2014 JBoss Inc
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
   ~   you may not use this file except in compliance with the License.
@@ -16,20 +16,15 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-    >
+  xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
-  <ui:with field="i18n" type="org.kie.uberfire.client.resources.i18n.CoreConstants"/>
-  <ui:with field="res" type="org.kie.uberfire.client.resources.WizardResources"/>
+  <ui:with field="i18n" type="org.kie.uberfire.client.resources.i18n.CoreConstants" />
 
-  <gwt:HorizontalPanel>
-    <gwt:ScrollPanel ui:field="sideBarContainer" styleName="{res.css.wizardSidebar}">
-      <gwt:VerticalPanel ui:field="sideBar" width="200px"></gwt:VerticalPanel>
-    </gwt:ScrollPanel>
-    <gwt:SimplePanel styleName="{res.css.wizardSidebarSpacer}"/>
-    <gwt:ScrollPanel ui:field="bodyContainer">
-      <gwt:SimplePanel ui:field="body"/>
-    </gwt:ScrollPanel>
-  </gwt:HorizontalPanel>
+      <b:ModalFooter>
+        <b:Button ui:field="btnPrevious" icon="PLUS_SIGN" text="{i18n.Previous}"></b:Button>
+        <b:Button ui:field="btnNext" icon="PLUS_SIGN" text="{i18n.Next}"></b:Button>
+        <b:Button ui:field="btnCancel" icon="PLUS_SIGN" text="{i18n.cancel}"></b:Button>
+        <b:Button ui:field="btnFinish" icon="PLUS_SIGN" type="PRIMARY" text="{i18n.Finish}"></b:Button>
+      </b:ModalFooter>
 
 </ui:UiBinder>
