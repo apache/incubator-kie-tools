@@ -16,39 +16,41 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
+import java.util.HashMap;
+import java.util.Map;
 
+import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.widgets.client.discussion.CommentLine;
-import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetManager;
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresenter;
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetView;
 import org.mockito.ArgumentCaptor;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.security.Identity;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-
 public class DiscussionWidgetPresenterTest {
 
     private DiscussionWidgetView view;
-    private DiscussionWidgetManagerMock manager;
     private Identity identity;
+    private DiscussionWidgetPresenterTest.MockAppConfigServiceCaller appConfigService;
 
     @Before
     public void setUp() throws Exception {
         view = mock(DiscussionWidgetView.class);
         identity = mock(Identity.class);
-        manager = new DiscussionWidgetManagerMock();
+        appConfigService = new MockAppConfigServiceCaller();
     }
 
     @Test
     public void testPresenterSet() throws Exception {
-        DiscussionWidgetPresenter presenter = new DiscussionWidgetPresenter(view, identity, manager);
+        DiscussionWidgetPresenter presenter = new DiscussionWidgetPresenter(view, identity, appConfigService);
         verify(view).setPresenter(presenter);
     }
 
@@ -59,59 +61,92 @@ public class DiscussionWidgetPresenterTest {
         metadata.getDiscussion().add(new DiscussionRecord(1234, "Toni", "Knock Knock"));
         metadata.getDiscussion().add(new DiscussionRecord(1235, "Michael", "Who is there?"));
         metadata.getDiscussion().add(new DiscussionRecord(1236, "Toni", "Can't think of anything funny :("));
-        manager.metadata = metadata;
 
-        new DiscussionWidgetPresenter(view, identity, manager);
+        DiscussionWidgetPresenter presenter = new DiscussionWidgetPresenter(view, identity, appConfigService);
 
-        ArgumentCaptor<CommentLine> commentLineArgumentCaptor = ArgumentCaptor.forClass(CommentLine.class);
-        verify(view, times(3)).addRow(commentLineArgumentCaptor.capture());
+        presenter.setContent(metadata);
 
-        assertComment(commentLineArgumentCaptor.getAllValues().get(0), 1234, "Toni", "Knock Knock");
-        assertComment(commentLineArgumentCaptor.getAllValues().get(1), 1235, "Michael", "Who is there?");
-        assertComment(commentLineArgumentCaptor.getAllValues().get(2), 1236, "Toni", "Can't think of anything funny :(");
+        ArgumentCaptor<DiscussionRecord> discussionRecordArgumentCaptor = ArgumentCaptor.forClass(DiscussionRecord.class);
+        verify(view, times(3)).addRow(discussionRecordArgumentCaptor.capture());
+
+        assertComment(discussionRecordArgumentCaptor.getAllValues().get(0), 1234, "Toni", "Knock Knock");
+        assertComment(discussionRecordArgumentCaptor.getAllValues().get(1), 1235, "Michael", "Who is there?");
+        assertComment(discussionRecordArgumentCaptor.getAllValues().get(2), 1236, "Toni", "Can't think of anything funny :(");
     }
 
-    private void assertComment(CommentLine comment, long timestamp, String name, String message) {
-//        assertEquals(comment.getRecord().getTimestamp().longValue(), timestamp);
-//        assertEquals(comment.getRecord().getAuthor(), name);
-//        assertEquals(comment.getRecord().getNote(), message);
+    private void assertComment(DiscussionRecord record, long timestamp, String name, String message) {
+        assertEquals(record.getTimestamp().longValue(), timestamp);
+        assertEquals(record.getAuthor(), name);
+        assertEquals(record.getNote(), message);
 
     }
 
     @Test
     public void testInitWhenThereIsCurrentlyNoAssetOpen() throws Exception {
-        new DiscussionWidgetPresenter(view, identity, manager);
+        new DiscussionWidgetPresenter(view, identity, appConfigService);
 
-        verify(view, never()).addRow(any(CommentLine.class));
+        verify(view, never()).addRow(any(DiscussionRecord.class));
     }
 
     @Test
     public void testAddComment() throws Exception {
 
-        ArgumentCaptor<CommentLine> commentLineArgumentCaptor = ArgumentCaptor.forClass(CommentLine.class);
+        ArgumentCaptor<DiscussionRecord> discussionRecordArgumentCaptor = ArgumentCaptor.forClass(DiscussionRecord.class);
 
         when(identity.getName()).thenReturn("Toni");
 
-        DiscussionWidgetView.Presenter presenter = new DiscussionWidgetPresenter(view, identity, manager);
+        DiscussionWidgetPresenter presenterImpl = new DiscussionWidgetPresenter(view, identity, appConfigService);
+        DiscussionWidgetView.Presenter presenter = presenterImpl;
+
+        presenterImpl.setContent(new Metadata());
+
         presenter.onAddComment("Hello World!");
 
-        verify(view).addRow(commentLineArgumentCaptor.capture());
-        CommentLine line = commentLineArgumentCaptor.getValue();
+        verify(view).addRow(discussionRecordArgumentCaptor.capture());
+        DiscussionRecord line = discussionRecordArgumentCaptor.getValue();
         assertNotNull(line);
-//        assertEquals(line.getRecord().getAuthor(), "Toni");
-//        assertEquals(line.getRecord().getNote(), "Hello World!");
+        assertEquals(line.getTimestamp(), new Long(1234));
+        assertEquals(line.getAuthor(), "Toni");
+        assertEquals(line.getNote(), "Hello World!");
 
         // save
     }
 
-    private class DiscussionWidgetManagerMock
-            extends DiscussionWidgetManager {
+    private class MockAppConfigServiceCaller
+            implements Caller<AppConfigService> {
 
-        protected Metadata metadata;
+        private RemoteCallback callback;
 
-        @Override
-        public void getMetaData(final Callback<Metadata> callback) {
-            callback.callback(metadata);
+        private AppConfigService service;
+
+        private MockAppConfigServiceCaller() {
+
+            service = new AppConfigService() {
+
+                @Override public Map<String, String> loadPreferences() {
+                    callback.callback(new HashMap<String, String>());
+                    return null;
+                }
+
+                @Override public long getTimestamp() {
+                    callback.callback(new Long(1234));
+                    return new Long(1234);
+                }
+            };
+        }
+
+        @Override public AppConfigService call() {
+            return service;
+        }
+
+        @Override public AppConfigService call(RemoteCallback<?> remoteCallback) {
+            callback = remoteCallback;
+            return service;
+        }
+
+        @Override public AppConfigService call(RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback) {
+            callback = remoteCallback;
+            return service;
         }
     }
 }

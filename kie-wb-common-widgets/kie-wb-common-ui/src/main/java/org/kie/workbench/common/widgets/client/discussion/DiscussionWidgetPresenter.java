@@ -20,8 +20,11 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.security.Identity;
 
 public class DiscussionWidgetPresenter
@@ -29,23 +32,29 @@ public class DiscussionWidgetPresenter
 
     private DiscussionWidgetView view;
     private final Identity identity;
+    private Caller<AppConfigService> appConfigService;
+
+    private Metadata metadata;
 
     @Inject
     public DiscussionWidgetPresenter(
             final DiscussionWidgetView view,
             final Identity identity,
-            final DiscussionWidgetManager manager) {
+            final Caller<AppConfigService> appConfigService) {
         this.view = view;
         this.identity = identity;
+        this.appConfigService = appConfigService;
 
         view.setPresenter(this);
 
     }
 
     public void setContent(Metadata metadata) {
+        this.metadata = metadata;
         for (DiscussionRecord record : metadata.getDiscussion()) {
-            view.addRow(new CommentLine(record));
+            view.addRow(record);
         }
+        view.scrollToBottom();
     }
 
     @Override
@@ -54,8 +63,18 @@ public class DiscussionWidgetPresenter
     }
 
     @Override
-    public void onAddComment(String comment) {
-        view.addRow(new CommentLine(new DiscussionRecord(1, identity.getName(), comment)));
-        view.clearCommentBox();
+    public void onAddComment(final String comment) {
+        if (comment != null && !comment.trim().isEmpty()) {
+            appConfigService.call(new RemoteCallback<Long>() {
+                @Override
+                public void callback(Long timestamp) {
+                    DiscussionRecord record = new DiscussionRecord(timestamp, identity.getName(), comment);
+                    metadata.getDiscussion().add(record);
+                    view.addRow(record);
+                    view.clearCommentBox();
+                    view.scrollToBottom();
+                }
+            }).getTimestamp();
+        }
     }
 }

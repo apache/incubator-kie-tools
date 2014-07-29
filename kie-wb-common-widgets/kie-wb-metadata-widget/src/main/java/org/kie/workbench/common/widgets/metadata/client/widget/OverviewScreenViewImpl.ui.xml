@@ -28,6 +28,8 @@
   <ui:style>
     .base {
       padding: 10px 10px 10px 10px;
+      height: 450px;
+      width: 620px;
     }
 
     .previewBox {
@@ -48,69 +50,70 @@
     }
   </ui:style>
 
-  <gwt:HTMLPanel styleName='{style.base}'>
-    <div style="float:left">
-
+  <gwt:HorizontalPanel styleName='{style.base}'>
+    <gwt:HTMLPanel width="620px">
       <div>
-        <div class='{style.firstColumn}'>
-          <gwt:Label text='{i18n.TypeMetaData}'/>
-        </div>
-        <div style="float:left;">
-          <gwt:Label ui:field="resourceType"/>
-        </div>
-      </div>
-      <div style="clear:both;">
-        <div class='{style.firstColumn}'>
-          <gwt:Label text='{i18n.Description}'/>
-        </div>
-        <div style="float:left;">
-          <bootstrap:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" width="380px" visibleLines="2"/>
-        </div>
-      </div>
-      <div style="clear:both;">
-        <div class='{style.firstColumn}'>
-          <gwt:Label text='{i18n.UsedInProjects}'/>
-        </div>
-        <div style="float:left;">
-          <gwt:Label ui:field="projects"/>
-        </div>
-      </div>
-      <div style="clear:both;">
-        <div class='{style.firstColumn}'>
-          <gwt:Label text='{i18n.LastModified}'/>
-        </div>
-        <div style="float:left;">
-          <gwt:Label ui:field="lastModifiedLabel"/>
-        </div>
-      </div>
-      <div style="clear:both;">
-        <div class='{style.firstColumn}'>
-          <gwt:Label text='{i18n.CreatedOnMetaData}'/>
-        </div>
-        <div style="float:left;">
-          <gwt:Label ui:field="createdLabel"/>
-        </div>
-      </div>
-    </div>
-    <div style="clear:both;">
-      <gwt:TabPanel ui:field="tabPanel">
-        <gwt:Tab text='{i18n.Preview}'>
-          <gwt:FlowPanel>
-            <bootstrap:TextArea ui:field="filePreview" enabled="false" styleName='{style.previewBox}' visibleLines="15"/>
-          </gwt:FlowPanel>
-        </gwt:Tab>
-        <gwt:Tab text='{i18n.Metadata}'>
-          <gwt:FlowPanel>
-            <metadata:MetadataWidget ui:field="metadata" width="600px"/>
-          </gwt:FlowPanel>
-        </gwt:Tab>
-      </gwt:TabPanel>
-    </div>
 
-    <div class='{style.discussion}' style="float:left">
-      <discussion:DiscussionWidgetPresenter ui:field="discussionArea"/>
-    </div>
+        <div>
+          <div class='{style.firstColumn}'>
+            <gwt:Label text='{i18n.TypeMetaData}'/>
+          </div>
+          <div style="float:left;">
+            <gwt:Label ui:field="resourceType"/>
+          </div>
+        </div>
+        <div style="clear:both;">
+          <div class='{style.firstColumn}'>
+            <gwt:Label text='{i18n.Description}'/>
+          </div>
+          <div style="float:left;">
+            <bootstrap:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" width="380px" visibleLines="2"/>
+          </div>
+        </div>
+        <div style="clear:both;">
+          <div class='{style.firstColumn}'>
+            <gwt:Label text='{i18n.UsedInProjects}'/>
+          </div>
+          <div style="float:left;">
+            <gwt:Label ui:field="projects"/>
+          </div>
+        </div>
+        <div style="clear:both;">
+          <div class='{style.firstColumn}'>
+            <gwt:Label text='{i18n.LastModified}'/>
+          </div>
+          <div style="float:left;">
+            <gwt:Label ui:field="lastModifiedLabel"/>
+          </div>
+        </div>
+        <div style="clear:both;">
+          <div class='{style.firstColumn}'>
+            <gwt:Label text='{i18n.CreatedOnMetaData}'/>
+          </div>
+          <div style="float:left;">
+            <gwt:Label ui:field="createdLabel"/>
+          </div>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <gwt:TabPanel ui:field="tabPanel">
+          <gwt:Tab text='{i18n.Preview}'>
+            <gwt:FlowPanel>
+              <bootstrap:TextArea ui:field="filePreview" enabled="false" styleName='{style.previewBox}' visibleLines="15"/>
+            </gwt:FlowPanel>
+          </gwt:Tab>
+          <gwt:Tab text='{i18n.Metadata}'>
+            <gwt:FlowPanel>
+              <metadata:MetadataWidget ui:field="metadata" width="600px"/>
+            </gwt:FlowPanel>
+          </gwt:Tab>
+        </gwt:TabPanel>
+      </div>
+    </gwt:HTMLPanel>
 
-  </gwt:HTMLPanel>
+    <discussion:DiscussionWidgetPresenter ui:field="discussionArea" />
+
+  </gwt:HorizontalPanel>
+
 
 </ui:UiBinder>

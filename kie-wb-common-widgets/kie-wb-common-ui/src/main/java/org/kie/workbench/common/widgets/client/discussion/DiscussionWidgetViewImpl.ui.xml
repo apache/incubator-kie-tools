@@ -21,14 +21,48 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:bootstrap="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
-  <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
+  <ui:with field="i18n" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
 
-  <gwt:HTMLPanel>
+  <ui:style>
+    .wrapper {
+      position: relative;
+      height: 100%;
+      border-left: solid #e7e7e7 1px;
+      margin-left: 8px;
+    }
 
-    <gwt:VerticalPanel ui:field="lines"/>
-    <bootstrap:TextArea ui:field="textBox" />
+    .top {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      padding: 5px 20px 10px 20px;
+    }
 
+    .bottom {
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      padding-left: 8px;
+      height: 85%;
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+
+    .title {
+      font-weight: bold;
+    }
+  </ui:style>
+
+  <gwt:HTMLPanel addStyleNames='{style.wrapper}'>
+    <div class='{style.top}'>
+      <gwt:Label text='{i18n.Comments}' addStyleNames='{style.title}'/>
+    </div>
+    <div class='{style.bottom}'>
+      <gwt:ScrollPanel ui:field="commentScroll" height="100%" width="245px">
+        <gwt:VerticalPanel ui:field="lines"/>
+      </gwt:ScrollPanel>
+      <bootstrap:TextArea ui:field="textBox" width="240px"/>
+    </div>
   </gwt:HTMLPanel>
 
 </ui:UiBinder>

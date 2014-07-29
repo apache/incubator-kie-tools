@@ -17,6 +17,7 @@
 package org.kie.workbench.common.widgets.client.discussion;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 
 public interface DiscussionWidgetView
         extends IsWidget {
@@ -30,8 +31,10 @@ public interface DiscussionWidgetView
 
     void setPresenter(Presenter presenter);
 
-    void addRow(CommentLine line);
+    void addRow(DiscussionRecord line);
 
     void clearCommentBox();
+
+    void scrollToBottom();
 
 }

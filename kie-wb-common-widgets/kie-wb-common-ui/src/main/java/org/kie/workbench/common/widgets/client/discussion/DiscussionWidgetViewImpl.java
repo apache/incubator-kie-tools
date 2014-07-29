@@ -24,12 +24,15 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 
 public class DiscussionWidgetViewImpl
         extends Composite
-        implements DiscussionWidgetView {
+        implements DiscussionWidgetView, RequiresResize {
 
     private Presenter presenter;
 
@@ -47,6 +50,9 @@ public class DiscussionWidgetViewImpl
     @UiField
     TextArea textBox;
 
+    @UiField
+    ScrollPanel commentScroll;
+
     public DiscussionWidgetViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -57,13 +63,18 @@ public class DiscussionWidgetViewImpl
     }
 
     @Override
-    public void addRow(CommentLine line) {
-        lines.add(line);
+    public void addRow(DiscussionRecord line) {
+        lines.add(new CommentLine(line));
     }
 
     @Override
     public void clearCommentBox() {
         textBox.setText("");
+    }
+
+    @Override
+    public void scrollToBottom() {
+        commentScroll.scrollToBottom();
     }
 
     @UiHandler("textBox")
@@ -73,4 +84,11 @@ public class DiscussionWidgetViewImpl
         }
     }
 
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        setPixelSize(width,
+                height);
+    }
 }
