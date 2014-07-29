@@ -22,7 +22,7 @@
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
   <ui:with field="images" type="org.drools.workbench.screens.globals.client.resources.images.GlobalsEditorImageResources"/>
-  <ui:with field="wizardResources" type="org.kie.workbench.common.widgets.client.resources.WizardResources"/>
+  <ui:with field="wizardResources" type="org.kie.uberfire.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel width="100%">
     <gwt:HorizontalPanel styleName="{wizardResources.css.wizardDTableFieldContainerValid}">

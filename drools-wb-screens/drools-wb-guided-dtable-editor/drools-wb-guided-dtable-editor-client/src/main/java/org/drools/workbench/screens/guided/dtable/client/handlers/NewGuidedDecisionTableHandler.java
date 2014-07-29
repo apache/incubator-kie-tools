@@ -15,6 +15,7 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -53,6 +54,8 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     private AsyncPackageDataModelOracleFactory oracleFactory;
 
     @Inject
+    private SyncBeanManager iocManager;
+
     private NewGuidedDecisionTableWizard wizard;
 
     private AsyncPackageDataModelOracle oracle;
@@ -117,6 +120,12 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
                 newResourcePresenter.complete();
                 oracle = oracleFactory.makeAsyncPackageDataModelOracle( contextPath,
                                                                         dataModel );
+
+                //This NewResourceHandler is @ApplicationScoped and so has a single instance of the NewGuidedDecisionTableWizard injected.
+                //The Wizard maintains state and hence multiple use of the same Wizard instance leads to the Wizard UI showing stale values.
+                //Rather than have the Wizard initialise fields when shown I elected to create new instances whenever needed.
+                wizard = iocManager.lookupBean( NewGuidedDecisionTableWizard.class ).getInstance();
+
                 wizard.setContent( contextPath,
                                    baseFileName,
                                    tableFormat,
@@ -127,9 +136,17 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
         } ).loadDataModel( contextPath );
     }
 
+    public void destroyWizard() {
+        if ( wizard != null ) {
+            iocManager.destroyBean( wizard );
+            wizard = null;
+        }
+    }
+
     public void save( final Path contextPath,
                       final String baseFileName,
                       final GuidedDecisionTable52 model ) {
+        destroyWizard();
         oracleFactory.destroy( oracle );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         service.call( getSuccessCallback( newResourcePresenter ),

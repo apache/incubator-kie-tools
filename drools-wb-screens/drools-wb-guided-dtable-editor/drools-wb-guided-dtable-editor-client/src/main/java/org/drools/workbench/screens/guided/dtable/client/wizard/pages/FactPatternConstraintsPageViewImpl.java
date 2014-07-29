@@ -25,7 +25,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.HelpBlock;
 import com.github.gwtbootstrap.client.ui.RadioButton;
+import com.github.gwtbootstrap.client.ui.base.StyleHelper;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -67,8 +70,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Cond
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionPatternCell;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
-import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
-import org.kie.workbench.common.widgets.client.resources.WizardResources;
+import org.kie.uberfire.client.resources.WizardCellListResources;
 import org.uberfire.client.callbacks.Callback;
 
 /**
@@ -134,6 +136,9 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     TextBox txtColumnHeader;
 
     @UiField
+    HelpBlock txtColumnHeaderHelp;
+
+    @UiField
     HorizontalPanel columnHeaderContainer;
 
     @UiField
@@ -149,13 +154,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     SimplePanel ddOperatorContainer;
 
     @UiField
+    HelpBlock ddOperatorContainerHelp;
+
+    @UiField
     TextBox txtValueList;
-
-    @UiField
-    HorizontalPanel msgDuplicateBindings;
-
-    @UiField
-    HorizontalPanel msgIncompleteConditions;
 
     @UiField
     VerticalPanel criteriaExtendedEntry;
@@ -483,18 +485,26 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     private void validateConditionHeader() {
         if ( validator.isConditionHeaderValid( chosenConditionsSelection ) ) {
-            columnHeaderContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
+            txtColumnHeaderHelp.setVisible( false );
+            StyleHelper.removeStyle( columnHeaderContainer,
+                                     ControlGroupType.ERROR );
         } else {
-            columnHeaderContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
+            txtColumnHeaderHelp.setVisible( true );
+            StyleHelper.addStyle( columnHeaderContainer,
+                                  ControlGroupType.ERROR );
         }
     }
 
     private void validateConditionOperator() {
         isOperatorValid = validator.isConditionOperatorValid( chosenConditionsSelection );
         if ( isOperatorValid ) {
-            operatorContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
+            ddOperatorContainerHelp.setVisible( false );
+            StyleHelper.removeStyle( operatorContainer,
+                                     ControlGroupType.ERROR );
         } else {
-            operatorContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
+            ddOperatorContainerHelp.setVisible( true );
+            StyleHelper.addStyle( operatorContainer,
+                                  ControlGroupType.ERROR );
         }
     }
 
@@ -652,14 +662,12 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     @Override
     public void setAreConditionsDefined( final boolean areConditionsDefined ) {
-        msgIncompleteConditions.setVisible( !areConditionsDefined );
         chosenConditionsWidget.redraw();
         availablePatternsWidget.redraw();
     }
 
     @Override
     public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
-        msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         availablePatternsWidget.redraw();
     }
 
@@ -682,7 +690,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 setChosenConditions( new ArrayList<ConditionCol52>() );
                 chosenConditionsSelection = null;
                 conditionDefinition.setVisible( false );
-                msgIncompleteConditions.setVisible( false );
             }
         } else {
 

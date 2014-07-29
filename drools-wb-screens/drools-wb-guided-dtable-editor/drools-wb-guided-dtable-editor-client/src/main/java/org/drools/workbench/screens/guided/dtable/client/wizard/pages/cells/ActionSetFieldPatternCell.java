@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells;
 
-import org.kie.workbench.common.widgets.client.resources.WizardResources;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.uberfire.client.resources.WizardResources;
 
 /**
  * A cell to display a Fact Pattern on the Action Set Field page. Additional

@@ -39,8 +39,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.resources.WizardCellListResources;
 
 /**
  * An implementation of the Imports page

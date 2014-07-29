@@ -26,6 +26,9 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.HelpBlock;
+import com.github.gwtbootstrap.client.ui.base.StyleHelper;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -60,8 +63,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Acti
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ActionInsertFactFieldPatternCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
-import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
-import org.kie.workbench.common.widgets.client.resources.WizardResources;
+import org.kie.uberfire.client.resources.WizardCellListResources;
 
 /**
  * An implementation of the ActionInsertFactFields page
@@ -127,10 +129,16 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     BindingTextBox txtBinding;
 
     @UiField
+    HelpBlock txtBindingHelp;
+
+    @UiField
     VerticalPanel fieldDefinition;
 
     @UiField
     TextBox txtColumnHeader;
+
+    @UiField
+    HelpBlock txtColumnHeaderHelp;
 
     @UiField
     HorizontalPanel columnHeaderContainer;
@@ -140,12 +148,6 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
     @UiField
     CheckBox chkLogicalInsert;
-
-    @UiField
-    HorizontalPanel msgDuplicateBindings;
-
-    @UiField
-    HorizontalPanel msgIncompleteActions;
 
     @UiField
     VerticalPanel criteriaExtendedEntry;
@@ -416,9 +418,13 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
             return;
         }
         if ( validator.isPatternBindingUnique( chosenPatternsSelection ) ) {
-            bindingContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
+            txtBindingHelp.setVisible( false );
+            StyleHelper.removeStyle( bindingContainer,
+                                     ControlGroupType.ERROR );
         } else {
-            bindingContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
+            txtBindingHelp.setVisible( true );
+            StyleHelper.addStyle( bindingContainer,
+                                  ControlGroupType.ERROR );
         }
     }
 
@@ -438,9 +444,13 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
     private void validateFieldHeader() {
         if ( validator.isActionHeaderValid( chosenFieldsSelection ) ) {
-            columnHeaderContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
+            txtColumnHeaderHelp.setVisible( false );
+            StyleHelper.removeStyle( columnHeaderContainer,
+                                     ControlGroupType.ERROR );
         } else {
-            columnHeaderContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
+            txtColumnHeaderHelp.setVisible( true );
+            StyleHelper.addStyle( columnHeaderContainer,
+                                  ControlGroupType.ERROR );
         }
     }
 
@@ -494,14 +504,12 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
     @Override
     public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
-        msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         chosenPatternsWidget.redraw();
         validateBinding();
     }
 
     @Override
     public void setAreActionInsertFactFieldsDefined( final boolean areActionInsertFactFieldsDefined ) {
-        msgIncompleteActions.setVisible( !areActionInsertFactFieldsDefined );
         chosenPatternsWidget.redraw();
         chosenFieldsWidget.redraw();
     }

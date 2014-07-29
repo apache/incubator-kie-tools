@@ -40,11 +40,11 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.FactPatter
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.ImportsPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.RowExpander;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.SummaryPage;
+import org.kie.uberfire.client.wizards.AbstractWizard;
+import org.kie.uberfire.client.wizards.WizardPage;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.wizards.AbstractWizard;
-import org.kie.uberfire.client.wizards.WizardPage;
 
 /**
  * Wizard for creating a Guided Decision Table
@@ -210,4 +210,9 @@ public class NewGuidedDecisionTableWizard extends AbstractWizard {
                       model );
     }
 
+    @Override
+    public void close() {
+        super.close();
+        handler.destroyWizard();
+    }
 }

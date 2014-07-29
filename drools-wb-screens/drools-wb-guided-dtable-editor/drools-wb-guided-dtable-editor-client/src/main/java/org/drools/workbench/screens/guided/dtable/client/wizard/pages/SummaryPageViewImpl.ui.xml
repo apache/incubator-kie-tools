@@ -15,35 +15,35 @@
   ~   limitations under the License.
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-  xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants" />
-  <ui:with field="ufImages" type="org.kie.uberfire.client.resources.CommonImages" />
-  <ui:with field="images" type="org.kie.workbench.common.widgets.client.resources.CommonImages" />
-  <ui:with field="res" type="org.kie.workbench.common.widgets.client.resources.WizardResources" />
+  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
+  <ui:with field="ufImages" type="org.kie.uberfire.client.resources.CommonImages"/>
+  <ui:with field="images" type="org.kie.workbench.common.widgets.client.resources.CommonImages"/>
+  <ui:with field="res" type="org.kie.uberfire.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel ui:field="container" width="100%">
-    <gwt:HorizontalPanel ui:field="messages" styleName="{res.css.wizardDTableMessageContainer}" visible="false">
-      <gwt:HorizontalPanel>
-        <gwt:Image resource="{ufImages.warningLarge}" />
-        <gwt:Label text="{i18n.DecisionTableWizardSummaryInvalidName}" styleName="{res.css.wizardDTableMessage}" />
-      </gwt:HorizontalPanel>
-    </gwt:HorizontalPanel>
     <gwt:Label text="{i18n.DecisionTableWizardDescriptionSummaryPage}" styleName="{res.css.wizardDTableCaption}"/>
     <gwt:VerticalPanel styleName="{res.css.wizardDTableSummaryContainer}">
-      <gwt:HorizontalPanel ui:field="baseFileNameContainer" styleName="{res.css.wizardDTableFieldContainerValid}">
-        <gwt:Label text="{i18n.NameColon}" styleName="{res.css.wizardDTableFields}" />
-        <gwt:TextBox ui:field="txtBaseFileName" styleName="{res.css.wizardDTableFields}" />
-        <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.css.wizardDTableFields}" />
+      <gwt:HorizontalPanel ui:field="baseFileNameContainer" addStyleNames="{res.css.wizardDTableFieldContainerValid} control-group">
+        <gwt:InlineHTML>
+          <font color="red">*</font>
+        </gwt:InlineHTML>
+        <gwt:Label text="{i18n.NameColon}" addStyleNames="{res.css.wizardDTableFields} help-inline"/>
+        <b:Controls>
+          <gwt:TextBox ui:field="txtBaseFileName" addStyleNames="{res.css.wizardDTableFields}"/>
+          <b:HelpBlock ui:field="baseFileNameHelp" addStyleNames="{res.css.wizardDTableFields}" text="{i18n.DecisionTableWizardSummaryInvalidName}" visible="false"/>
+        </b:Controls>
       </gwt:HorizontalPanel>
       <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-        <gwt:Label text="{i18n.PathColon}" styleName="{res.css.wizardDTableFields}" />
-        <gwt:Label ui:field="lblContextPath" styleName="{res.css.wizardDTableFields}" />
+        <gwt:Label text="{i18n.PathColon}" styleName="{res.css.wizardDTableFields}"/>
+        <gwt:Label ui:field="lblContextPath" styleName="{res.css.wizardDTableFields}"/>
       </gwt:HorizontalPanel>
       <gwt:HorizontalPanel styleName="{res.css.wizardDTableFieldContainerValid}">
-        <gwt:Label text="{i18n.TableFormat}" styleName="{res.css.wizardDTableFields}" />
-        <gwt:Label ui:field="lblTableFormat" styleName="{res.css.wizardDTableFields}" />
+        <gwt:Label text="{i18n.TableFormat}" styleName="{res.css.wizardDTableFields}"/>
+        <gwt:Label ui:field="lblTableFormat" styleName="{res.css.wizardDTableFields}"/>
       </gwt:HorizontalPanel>
     </gwt:VerticalPanel>
   </gwt:VerticalPanel>

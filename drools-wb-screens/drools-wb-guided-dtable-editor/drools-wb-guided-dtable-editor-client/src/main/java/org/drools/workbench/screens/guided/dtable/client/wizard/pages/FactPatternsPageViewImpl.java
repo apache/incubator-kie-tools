@@ -23,6 +23,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.HelpBlock;
+import com.github.gwtbootstrap.client.ui.base.StyleHelper;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -53,8 +56,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Patt
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
-import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
-import org.kie.workbench.common.widgets.client.resources.WizardResources;
+import org.kie.uberfire.client.resources.WizardCellListResources;
 import org.uberfire.client.callbacks.Callback;
 
 /**
@@ -96,6 +98,9 @@ public class FactPatternsPageViewImpl extends Composite
     BindingTextBox txtBinding;
 
     @UiField
+    HelpBlock txtBindingHelp;
+
+    @UiField
     HorizontalPanel bindingContainer;
 
     @UiField
@@ -106,9 +111,6 @@ public class FactPatternsPageViewImpl extends Composite
 
     @UiField
     HorizontalPanel cepWindowContainer;
-
-    @UiField
-    HorizontalPanel msgDuplicateBindings;
 
     @UiField(provided = true)
     PushButton btnMoveUp = new PushButton( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().shuffleUp() ).createImage() );
@@ -240,9 +242,13 @@ public class FactPatternsPageViewImpl extends Composite
 
     private void validateBinding() {
         if ( validator.isPatternBindingUnique( chosenPatternSelection ) ) {
-            bindingContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
+            txtBindingHelp.setVisible( false );
+            StyleHelper.removeStyle( bindingContainer,
+                                     ControlGroupType.ERROR );
         } else {
-            bindingContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
+            txtBindingHelp.setVisible( true );
+            StyleHelper.addStyle( bindingContainer,
+                                  ControlGroupType.ERROR );
         }
     }
 
@@ -362,7 +368,6 @@ public class FactPatternsPageViewImpl extends Composite
 
     @Override
     public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
-        msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         chosenPatternWidget.redraw();
     }
 

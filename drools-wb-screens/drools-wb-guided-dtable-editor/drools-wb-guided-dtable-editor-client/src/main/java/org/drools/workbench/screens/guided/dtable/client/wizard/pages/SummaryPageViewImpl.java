@@ -18,6 +18,9 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.pages;
 
 import javax.enterprise.context.Dependent;
 
+import com.github.gwtbootstrap.client.ui.HelpBlock;
+import com.github.gwtbootstrap.client.ui.base.StyleHelper;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -30,7 +33,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.kie.workbench.common.widgets.client.resources.WizardResources;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -44,10 +46,10 @@ public class SummaryPageViewImpl extends Composite
     private Presenter presenter;
 
     @UiField
-    HorizontalPanel messages;
+    TextBox txtBaseFileName;
 
     @UiField
-    TextBox txtBaseFileName;
+    HelpBlock baseFileNameHelp;
 
     @UiField
     HorizontalPanel baseFileNameContainer;
@@ -103,11 +105,14 @@ public class SummaryPageViewImpl extends Composite
     @Override
     public void setValidBaseFileName( final boolean isValid ) {
         if ( isValid ) {
-            baseFileNameContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
+            baseFileNameHelp.setVisible( false );
+            StyleHelper.removeStyle( baseFileNameContainer,
+                                     ControlGroupType.ERROR );
         } else {
-            baseFileNameContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
+            baseFileNameHelp.setVisible( true );
+            StyleHelper.addStyle( baseFileNameContainer,
+                                  ControlGroupType.ERROR );
         }
-        messages.setVisible( !isValid );
     }
 
     @Override

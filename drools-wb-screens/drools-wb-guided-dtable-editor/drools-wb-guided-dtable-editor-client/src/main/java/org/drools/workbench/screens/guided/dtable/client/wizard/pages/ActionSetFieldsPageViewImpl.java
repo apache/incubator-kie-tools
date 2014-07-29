@@ -25,6 +25,9 @@ import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.HelpBlock;
+import com.github.gwtbootstrap.client.ui.base.StyleHelper;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -58,8 +61,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ActionSetFieldCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ActionSetFieldPatternCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.AvailableFieldCell;
-import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
-import org.kie.workbench.common.widgets.client.resources.WizardResources;
+import org.kie.uberfire.client.resources.WizardCellListResources;
 
 /**
  * An implementation of the ActionSetFields page
@@ -109,6 +111,9 @@ public class ActionSetFieldsPageViewImpl extends Composite
     TextBox txtColumnHeader;
 
     @UiField
+    HelpBlock txtColumnHeaderHelp;
+
+    @UiField
     HorizontalPanel columnHeaderContainer;
 
     @UiField
@@ -116,12 +121,6 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     @UiField
     CheckBox chkUpdateEngine;
-
-    @UiField
-    HorizontalPanel msgDuplicateBindings;
-
-    @UiField
-    HorizontalPanel msgIncompleteActionSetFields;
 
     @UiField
     VerticalPanel criteriaExtendedEntry;
@@ -322,9 +321,13 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     private void validateFieldHeader() {
         if ( validator.isActionHeaderValid( chosenFieldsSelection ) ) {
-            columnHeaderContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerValid() );
+            txtColumnHeaderHelp.setVisible( false );
+            StyleHelper.removeStyle( columnHeaderContainer,
+                                     ControlGroupType.ERROR );
         } else {
-            columnHeaderContainer.setStyleName( WizardResources.INSTANCE.css().wizardDTableFieldContainerInvalid() );
+            txtColumnHeaderHelp.setVisible( true );
+            StyleHelper.addStyle( columnHeaderContainer,
+                                  ControlGroupType.ERROR );
         }
     }
 
@@ -393,13 +396,11 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     @Override
     public void setArePatternBindingsUnique( final boolean arePatternBindingsUnique ) {
-        msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         availablePatternsWidget.redraw();
     }
 
     @Override
     public void setAreActionSetFieldsDefined( final boolean areActionSetFieldsDefined ) {
-        msgIncompleteActionSetFields.setVisible( !areActionSetFieldsDefined );
         chosenFieldsWidget.redraw();
     }
 
@@ -422,7 +423,6 @@ public class ActionSetFieldsPageViewImpl extends Composite
                 setChosenFields( new ArrayList<ActionSetFieldCol52>() );
                 chosenFieldsSelection = null;
                 fieldDefinition.setVisible( false );
-                msgIncompleteActionSetFields.setVisible( false );
             }
         } else {
 

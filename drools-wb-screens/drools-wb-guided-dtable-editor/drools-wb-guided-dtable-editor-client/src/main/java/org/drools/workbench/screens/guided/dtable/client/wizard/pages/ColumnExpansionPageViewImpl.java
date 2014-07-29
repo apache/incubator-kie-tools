@@ -44,7 +44,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.ConditionCell;
-import org.kie.workbench.common.widgets.client.resources.WizardCellListResources;
+import org.kie.uberfire.client.resources.WizardCellListResources;
 
 /**
  * An implementation of the Column Expansion page
@@ -86,9 +86,6 @@ public class ColumnExpansionPageViewImpl extends Composite
 
     @UiField
     PushButton btnRemove;
-
-    @UiField
-    HorizontalPanel msgIncompleteConditions;
 
     @New
     @Inject
@@ -207,7 +204,6 @@ public class ColumnExpansionPageViewImpl extends Composite
 
     @Override
     public void setAreConditionsDefined( final boolean areConditionsDefined ) {
-        msgIncompleteConditions.setVisible( !areConditionsDefined );
         availableColumnsWidget.redraw();
         chosenColumnsWidget.redraw();
     }

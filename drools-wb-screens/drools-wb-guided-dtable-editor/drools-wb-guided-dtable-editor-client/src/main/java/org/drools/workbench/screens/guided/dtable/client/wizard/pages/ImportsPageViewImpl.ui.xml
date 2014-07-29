@@ -16,12 +16,12 @@
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-  xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
-  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants" />
-  <ui:with field="ufImages" type="org.kie.uberfire.client.resources.CommonImages" />
-  <ui:with field="images" type="org.kie.workbench.common.widgets.client.resources.CommonImages" />
-  <ui:with field="res" type="org.kie.workbench.common.widgets.client.resources.WizardResources" />
+  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
+  <ui:with field="ufImages" type="org.kie.uberfire.client.resources.CommonImages"/>
+  <ui:with field="images" type="org.kie.workbench.common.widgets.client.resources.CommonImages"/>
+  <ui:with field="res" type="org.kie.uberfire.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel ui:field="container" width="100%">
     <gwt:VerticalPanel>
@@ -29,9 +29,9 @@
       <gwt:HorizontalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <gwt:Label text="{i18n.DecisionTableWizardAvailableImports}" styleName="{res.css.wizardDTableHeader}" />
+            <gwt:Label text="{i18n.DecisionTableWizardAvailableImports}" styleName="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="availableImportsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px" />
+          <gwt:ScrollPanel ui:field="availableImportsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px"/>
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.css.wizardDTableButtons}">
           <gwt:PushButton ui:field="btnAdd" enabled="false">&gt;&gt;</gwt:PushButton>
@@ -39,9 +39,9 @@
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <gwt:Label text="{i18n.DecisionTableWizardChosenImports}" styleName="{res.css.wizardDTableHeader}" />
+            <gwt:Label text="{i18n.DecisionTableWizardChosenImports}" styleName="{res.css.wizardDTableHeader}"/>
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="chosenImportsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px" />
+          <gwt:ScrollPanel ui:field="chosenImportsContainer" styleName="{res.css.wizardDTableList}" height="260px" width="280px"/>
         </gwt:VerticalPanel>
       </gwt:HorizontalPanel>
     </gwt:VerticalPanel>
