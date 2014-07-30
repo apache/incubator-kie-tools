@@ -145,6 +145,13 @@ public class DRLEditorPresenter {
                 changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
             }
         } );
+        this.path.onDelete( new Command() {
+            @Override
+            public void execute() {
+                placeManager.forceClosePlace( place );
+            }
+        } );
+
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
             public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
@@ -152,52 +159,52 @@ public class DRLEditorPresenter {
             }
         } );
 
-        this.path.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
-            public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
-                newConcurrentRename(info.getSource(),
-                        info.getTarget(),
-                        info.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                disableMenus();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                reload();
-                            }
-                        }
-                ).show();
+            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
+                newConcurrentRename( info.getSource(),
+                                     info.getTarget(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             reload();
+                                         }
+                                     }
+                                   ).show();
             }
-        });
+        } );
 
-        this.path.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
             @Override
-            public void execute(final ObservablePath.OnConcurrentDelete info) {
-                newConcurrentDelete(info.getPath(),
-                        info.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                disableMenus();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.closePlace(place);
-                            }
-                        }
-                ).show();
+            public void execute( final ObservablePath.OnConcurrentDelete info ) {
+                newConcurrentDelete( info.getPath(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             placeManager.closePlace( place );
+                                         }
+                                     }
+                                   ).show();
             }
-        });
+        } );
 
         makeMenuBar();
 
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
         loadContent();
     }
@@ -243,11 +250,10 @@ public class DRLEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                               isReadOnly ),
-                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
-                                                ).getMetadata( path );
+                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                           isReadOnly ),
+                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
                     }
 
                     @Override

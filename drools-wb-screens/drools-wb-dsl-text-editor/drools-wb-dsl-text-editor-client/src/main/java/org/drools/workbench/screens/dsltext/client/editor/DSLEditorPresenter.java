@@ -130,6 +130,13 @@ public class DSLEditorPresenter {
                 changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
             }
         } );
+        this.path.onDelete( new Command() {
+            @Override
+            public void execute() {
+                placeManager.forceClosePlace( place );
+            }
+        } );
+
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
             public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
@@ -228,10 +235,10 @@ public class DSLEditorPresenter {
                                              CommonConstants.INSTANCE.MetadataTabTitle() ) {
                     @Override
                     public void onFocus() {
-                            metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                            metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                               isReadOnly ),
-                                                  new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
+                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
+                                                                           isReadOnly ),
+                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
                     }
 
                     @Override

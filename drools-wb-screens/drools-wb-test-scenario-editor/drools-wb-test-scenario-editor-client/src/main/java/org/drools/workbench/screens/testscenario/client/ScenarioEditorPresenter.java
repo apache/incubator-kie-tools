@@ -120,6 +120,13 @@ public class ScenarioEditorPresenter {
                 changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
             }
         } );
+        this.path.onDelete( new Command() {
+            @Override
+            public void execute() {
+                placeManager.forceClosePlace( place );
+            }
+        } );
+
         this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
             public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {

@@ -37,7 +37,6 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.MultiPageEditor;
@@ -62,7 +61,6 @@ import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPre
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -88,7 +86,7 @@ import org.uberfire.workbench.type.FileNameUtil;
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = {GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class}, priority = 102)
+@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = { GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class }, priority = 102)
 public class GuidedRuleEditorPresenter {
 
     @Inject
@@ -160,39 +158,39 @@ public class GuidedRuleEditorPresenter {
     private Metadata metadata;
 
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
         this.path = path;
         this.place = place;
-        this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
-        this.isDSLEnabled = resourceTypeDSL.accept(path);
+        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.isDSLEnabled = resourceTypeDSL.accept( path );
 
-        versionRecordManager.setVersion(place.getParameter("version", null));
-        versionRecordManager.setPathToLatest(path);
+        versionRecordManager.setVersion( place.getParameter( "version", null ) );
+        versionRecordManager.setPathToLatest( path );
 
         versionRecordManager.addVersionSelectionCallback(
                 new Callback<VersionRecord>() {
                     @Override
-                    public void callback(VersionRecord versionRecord) {
+                    public void callback( VersionRecord versionRecord ) {
 
-                        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+                        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-                        if (versionRecordManager.isLatest(versionRecord)) {
+                        if ( versionRecordManager.isLatest( versionRecord ) ) {
                             isReadOnly = false;
 
-                            versionRecordManager.setVersion(null);
+                            versionRecordManager.setVersion( null );
                             GuidedRuleEditorPresenter.this.path = versionRecordManager.getCurrentPath();
 
                         } else {
                             isReadOnly = true;
 
-                            versionRecordManager.setVersion(versionRecord.id());
+                            versionRecordManager.setVersion( versionRecord.id() );
                             GuidedRuleEditorPresenter.this.path = versionRecordManager.getCurrentPath();
                         }
 
                         loadContent();
                     }
-                });
+                } );
 
         addFileChangeListeners();
 
@@ -202,129 +200,136 @@ public class GuidedRuleEditorPresenter {
     }
 
     private void addFileChangeListeners() {
-        this.path.onRename(new Command() {
+        this.path.onRename( new Command() {
             @Override
             public void execute() {
                 //Effectively the same as reload() but don't reset concurrentUpdateSessionInfo
-                changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
+                changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
                 loadContent();
             }
-        });
-        this.path.onConcurrentUpdate(new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+        } );
+        this.path.onDelete( new Command() {
             @Override
-            public void execute(final ObservablePath.OnConcurrentUpdateEvent eventInfo) {
+            public void execute() {
+                placeManager.forceClosePlace( place );
+            }
+        } );
+
+        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
                 concurrentUpdateSessionInfo = eventInfo;
             }
-        });
+        } );
 
-        this.path.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
-            public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
-                newConcurrentRename(info.getSource(),
-                        info.getTarget(),
-                        info.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                disableMenus();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                reload();
-                            }
-                        }
-                ).show();
+            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
+                newConcurrentRename( info.getSource(),
+                                     info.getTarget(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             reload();
+                                         }
+                                     }
+                                   ).show();
             }
-        });
+        } );
 
-        this.path.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
             @Override
-            public void execute(final ObservablePath.OnConcurrentDelete info) {
-                newConcurrentDelete(info.getPath(),
-                        info.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                disableMenus();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.closePlace(place);
-                            }
-                        }
-                ).show();
+            public void execute( final ObservablePath.OnConcurrentDelete info ) {
+                newConcurrentDelete( info.getPath(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             placeManager.closePlace( place );
+                                         }
+                                     }
+                                   ).show();
             }
-        });
+        } );
     }
 
     private void reload() {
         concurrentUpdateSessionInfo = null;
-        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
+        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
         loadContent();
     }
 
     private void disableMenus() {
-        menus.getItemsMap().get(FileMenuBuilder.MenuItems.COPY).setEnabled(false);
-        menus.getItemsMap().get(FileMenuBuilder.MenuItems.RENAME).setEnabled(false);
-        menus.getItemsMap().get(FileMenuBuilder.MenuItems.DELETE).setEnabled(false);
-        menus.getItemsMap().get(FileMenuBuilder.MenuItems.VALIDATE).setEnabled(false);
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
     }
 
     private void loadContent() {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        service.call(getModelSuccessCallback(),
-                new CommandDrivenErrorCallback(view,
-                        new CommandBuilder().addNoSuchFileException(view,
-                                multiPage,
-                                menus).build()
-                )).loadContent(path);
+        service.call( getModelSuccessCallback(),
+                      new CommandDrivenErrorCallback( view,
+                                                      new CommandBuilder().addNoSuchFileException( view,
+                                                                                                   multiPage,
+                                                                                                   menus ).build()
+                      ) ).loadContent( path );
     }
 
     private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
         return new RemoteCallback<GuidedEditorContent>() {
 
             @Override
-            public void callback(final GuidedEditorContent content) {
+            public void callback( final GuidedEditorContent content ) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if (path == null) {
+                if ( path == null ) {
                     return;
                 }
 
-                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
+                versionRecordManager.setVersions( content.getOverview().getMetadata().getVersion() );
 
                 multiPage.clear();
-                multiPage.addWidget(overview,
-                        CommonConstants.INSTANCE.Overview());
+                multiPage.addWidget( overview,
+                                     CommonConstants.INSTANCE.Overview() );
 
-                multiPage.addWidget(view,
-                        CommonConstants.INSTANCE.EditTabTitle());
+                multiPage.addWidget( view,
+                                     CommonConstants.INSTANCE.EditTabTitle() );
 
-                multiPage.addWidget(importsWidget,
-                        CommonConstants.INSTANCE.ConfigTabTitle());
+                multiPage.addWidget( importsWidget,
+                                     CommonConstants.INSTANCE.ConfigTabTitle() );
 
                 GuidedRuleEditorPresenter.this.model = content.getModel();
                 GuidedRuleEditorPresenter.this.metadata = content.getOverview().getMetadata();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle(path,
-                        model,
-                        dataModel);
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
+                                                                        model,
+                                                                        dataModel );
 
-                overview.setContent(content.getOverview(), clientTypeRegistry.resolve(path));
+                overview.setContent( content.getOverview(), clientTypeRegistry.resolve( path ) );
 
-                view.setContent(path,
-                        model,
-                        oracle,
-                        ruleNamesService,
-                        isReadOnly,
-                        isDSLEnabled);
-                importsWidget.setContent(oracle,
-                        model.getImports(),
-                        isReadOnly);
+                view.setContent( path,
+                                 model,
+                                 oracle,
+                                 ruleNamesService,
+                                 isReadOnly,
+                                 isDSLEnabled );
+                importsWidget.setContent( oracle,
+                                          model.getImports(),
+                                          isReadOnly );
 
                 view.hideBusyIndicator();
             }
@@ -332,36 +337,36 @@ public class GuidedRuleEditorPresenter {
     }
 
     private void makeMenuBar() {
-        if (isReadOnly) {
-            menus = menuBuilder.addRestoreVersion(path).build();
+        if ( isReadOnly ) {
+            menus = menuBuilder.addRestoreVersion( path ).build();
         } else {
             menus = menuBuilder
-                    .addSave(new Command() {
+                    .addSave( new Command() {
                         @Override
                         public void execute() {
                             onSave();
                         }
-                    })
-                    .addCopy(path,
-                            fileNameValidator)
-                    .addRename(path,
-                            fileNameValidator)
-                    .addDelete(path)
-                    .addValidate(onValidate())
-                    .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                    } )
+                    .addCopy( path,
+                              fileNameValidator )
+                    .addRename( path,
+                                fileNameValidator )
+                    .addDelete( path )
+                    .addValidate( onValidate() )
+                    .addNewTopLevelMenu( versionRecordManager.buildMenu() )
                     .build();
         }
     }
 
-    public void handleImportAddedEvent(@Observes ImportAddedEvent event) {
-        if (!event.getDataModelOracle().equals(this.oracle)) {
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
             return;
         }
         view.refresh();
     }
 
-    public void handleImportRemovedEvent(@Observes ImportRemovedEvent event) {
-        if (!event.getDataModelOracle().equals(this.oracle)) {
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
             return;
         }
         view.refresh();
@@ -371,78 +376,78 @@ public class GuidedRuleEditorPresenter {
         return new Command() {
             @Override
             public void execute() {
-                service.call(new RemoteCallback<List<ValidationMessage>>() {
+                service.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback(final List<ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                    NotificationEvent.NotificationType.SUCCESS));
+                    public void callback( final List<ValidationMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages(results);
+                            ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback()).validate(path,
-                        view.getContent());
+                }, new DefaultErrorCallback() ).validate( path,
+                                                          view.getContent() );
             }
         };
     }
 
     @OnSave
     public void onSave() {
-        if (isReadOnly) {
+        if ( isReadOnly ) {
             view.alertReadOnly();
             return;
         }
 
-        if (concurrentUpdateSessionInfo != null) {
-            newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
-                    concurrentUpdateSessionInfo.getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            save();
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel?
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            reload();
-                        }
-                    }
-            ).show();
+        if ( concurrentUpdateSessionInfo != null ) {
+            newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                                 concurrentUpdateSessionInfo.getIdentity(),
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         save();
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         //cancel?
+                                     }
+                                 },
+                                 new Command() {
+                                     @Override
+                                     public void execute() {
+                                         reload();
+                                     }
+                                 }
+                               ).show();
         } else {
             save();
         }
     }
 
     private void save() {
-        GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator(model, GuidedRuleEditorResources.CONSTANTS);
+        GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator( model, GuidedRuleEditorResources.CONSTANTS );
 
-        if (validator.isValid()) {
-            new SaveOperationService().save(path,
-                    new CommandWithCommitMessage() {
-                        @Override
-                        public void execute(final String commitMessage) {
-                            view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
-                            service.call(getSaveSuccessCallback(),
-                                    new HasBusyIndicatorDefaultErrorCallback(view)).save(path,
-                                    view.getContent(),
-                                    metadata,
-                                    commitMessage);
+        if ( validator.isValid() ) {
+            new SaveOperationService().save( path,
+                                             new CommandWithCommitMessage() {
+                                                 @Override
+                                                 public void execute( final String commitMessage ) {
+                                                     view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                     service.call( getSaveSuccessCallback(),
+                                                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                                                                            view.getContent(),
+                                                                                                                            metadata,
+                                                                                                                            commitMessage );
 
-                        }
-                    }
-            );
+                                                 }
+                                             }
+                                           );
 
             concurrentUpdateSessionInfo = null;
         } else {
-            ErrorPopup.showMessage(validator.getErrors().get(0));
+            ErrorPopup.showMessage( validator.getErrors().get( 0 ) );
         }
     }
 
@@ -450,10 +455,10 @@ public class GuidedRuleEditorPresenter {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback(final Path path) {
+            public void callback( final Path path ) {
                 view.setNotDirty();
                 view.hideBusyIndicator();
-                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
         };
     }
@@ -466,12 +471,12 @@ public class GuidedRuleEditorPresenter {
     @OnClose
     public void onClose() {
         this.path = null;
-        this.oracleFactory.destroy(oracle);
+        this.oracleFactory.destroy( oracle );
     }
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             return view.confirmClose();
         }
         return true;
@@ -481,11 +486,11 @@ public class GuidedRuleEditorPresenter {
     public String getTitle() {
 
         return view.getTitle(
-                FileNameUtil.removeExtension(path, getResourceType()));
+                FileNameUtil.removeExtension( path, getResourceType() ) );
     }
 
     private ClientResourceType getResourceType() {
-        if (resourceTypeDRL.accept(path)) {
+        if ( resourceTypeDRL.accept( path ) ) {
             return resourceTypeDRL;
         } else {
             return resourceTypeDRL;
@@ -503,13 +508,13 @@ public class GuidedRuleEditorPresenter {
         return menus;
     }
 
-    public void onRestore(@Observes RestoreEvent restore) {
-        if (path == null || restore == null || restore.getPath() == null) {
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( path == null || restore == null || restore.getPath() == null ) {
             return;
         }
-        if (path.equals(restore.getPath())) {
+        if ( path.equals( restore.getPath() ) ) {
             loadContent();
-            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRestored()));
+            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
         }
     }
 
