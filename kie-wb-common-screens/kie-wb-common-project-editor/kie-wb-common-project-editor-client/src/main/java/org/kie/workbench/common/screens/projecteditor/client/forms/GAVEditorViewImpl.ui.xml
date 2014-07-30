@@ -25,64 +25,64 @@
   <ui:with field="resources"
            type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-    <gwt:HTMLPanel>
-        <bootstrap:Form type="INLINE">
-                <bootstrap:FluidRow>
-                    <bootstrap:Column size="2">
-                        <bootstrap:ControlLabel for="groupIdTextBox" >
-                            <ui:text from="{i18n.GroupID}"/>
-                        </bootstrap:ControlLabel>
-                    </bootstrap:Column>
-                    <bootstrap:Column size="4">
-                        <bootstrap:Controls>
-                            <bootstrap:TextBox ui:field="groupIdTextBox"/>
-                        </bootstrap:Controls>
-                    </bootstrap:Column>
-                    <bootstrap:Column size="6">
-                        <bootstrap:HelpInline text="{i18n.GroupIdExample}"></bootstrap:HelpInline>
-                        <bootstrap:Popover placement="LEFT" trigger="HOVER" heading="{i18n.MoreInfo}" text="{i18n.GroupIdMoreInfo}">
-                            <bootstrap:Icon ui:field="gavHelpIcon" type="QUESTION_SIGN"></bootstrap:Icon>
-                        </bootstrap:Popover>
-                    </bootstrap:Column>
-                </bootstrap:FluidRow>
+  <gwt:HTMLPanel>
+    <bootstrap:Form type="INLINE">
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="2">
+          <bootstrap:ControlLabel for="groupIdTextBox">
+            <ui:text from="{i18n.GroupID}"/>
+          </bootstrap:ControlLabel>
+        </bootstrap:Column>
+        <bootstrap:Column size="4">
+          <bootstrap:Controls>
+            <bootstrap:TextBox ui:field="groupIdTextBox" placeholder="{i18n.EnterAGroupID}"/>
+          </bootstrap:Controls>
+        </bootstrap:Column>
+        <bootstrap:Column size="6">
+          <bootstrap:HelpInline text="{i18n.GroupIdExample}"></bootstrap:HelpInline>
+          <bootstrap:Popover placement="LEFT" trigger="HOVER" heading="{i18n.MoreInfo}" text="{i18n.GroupIdMoreInfo}">
+            <bootstrap:Icon ui:field="gavHelpIcon" type="QUESTION_SIGN"></bootstrap:Icon>
+          </bootstrap:Popover>
+        </bootstrap:Column>
+      </bootstrap:FluidRow>
 
-                <bootstrap:FluidRow>
-                    <bootstrap:Column size="2">
-                        <bootstrap:ControlLabel for="artifactIdTextBox">
-                            <ui:text from="{i18n.ArtifactID}"/>
-                        </bootstrap:ControlLabel>
-                    </bootstrap:Column>
-                    <bootstrap:Column size="4">
-                        <bootstrap:Controls>
-                            <bootstrap:TextBox ui:field="artifactIdTextBox"/>
-                        </bootstrap:Controls>
-                    </bootstrap:Column>
-                    <bootstrap:Column size="6">
-                        <bootstrap:HelpInline text="{i18n.ArtifactIDExample}"></bootstrap:HelpInline>
-                        <bootstrap:Popover placement="LEFT" trigger="HOVER" heading="{i18n.MoreInfo}" text="{i18n.ArtifactIDMoreInfo}">
-                            <bootstrap:Icon ui:field="gavHelpIcon2" type="QUESTION_SIGN"></bootstrap:Icon>
-                        </bootstrap:Popover>
-                    </bootstrap:Column>
-                </bootstrap:FluidRow>
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="2">
+          <bootstrap:ControlLabel for="artifactIdTextBox">
+            <ui:text from="{i18n.ArtifactID}"/>
+          </bootstrap:ControlLabel>
+        </bootstrap:Column>
+        <bootstrap:Column size="4">
+          <bootstrap:Controls>
+            <bootstrap:TextBox ui:field="artifactIdTextBox" placeholder="{i18n.EnterAnArtifactID}"/>
+          </bootstrap:Controls>
+        </bootstrap:Column>
+        <bootstrap:Column size="6">
+          <bootstrap:HelpInline text="{i18n.ArtifactIDExample}"></bootstrap:HelpInline>
+          <bootstrap:Popover placement="LEFT" trigger="HOVER" heading="{i18n.MoreInfo}" text="{i18n.ArtifactIDMoreInfo}">
+            <bootstrap:Icon ui:field="gavHelpIcon2" type="QUESTION_SIGN"></bootstrap:Icon>
+          </bootstrap:Popover>
+        </bootstrap:Column>
+      </bootstrap:FluidRow>
 
-                <bootstrap:FluidRow>
-                    <bootstrap:Column size="2">
-                        <bootstrap:ControlLabel for="versionTextBox">
-                            <ui:text from="{i18n.Version}"/>
-                        </bootstrap:ControlLabel>
-                    </bootstrap:Column>
-                    <bootstrap:Column size="4">
-                        <bootstrap:Controls>
-                            <bootstrap:TextBox ui:field="versionTextBox"/>
-                        </bootstrap:Controls>
-                    </bootstrap:Column>
-                    <bootstrap:Column size="6">
-                        <bootstrap:HelpInline text="{i18n.VersionExample}"></bootstrap:HelpInline>
-                        <bootstrap:Popover placement="LEFT" trigger="HOVER" heading="{i18n.MoreInfo}" text="{i18n.VersionMoreInfo}">
-                            <bootstrap:Icon ui:field="gavHelpIcon3" type="QUESTION_SIGN"></bootstrap:Icon>
-                        </bootstrap:Popover>
-                    </bootstrap:Column>
-                </bootstrap:FluidRow>
-        </bootstrap:Form>
-    </gwt:HTMLPanel>
+      <bootstrap:FluidRow>
+        <bootstrap:Column size="2">
+          <bootstrap:ControlLabel for="versionTextBox">
+            <ui:text from="{i18n.Version}"/>
+          </bootstrap:ControlLabel>
+        </bootstrap:Column>
+        <bootstrap:Column size="4">
+          <bootstrap:Controls>
+            <bootstrap:TextBox ui:field="versionTextBox" placeholder="{i18n.EnterAVersion}"/>
+          </bootstrap:Controls>
+        </bootstrap:Column>
+        <bootstrap:Column size="6">
+          <bootstrap:HelpInline text="{i18n.VersionExample}"></bootstrap:HelpInline>
+          <bootstrap:Popover placement="LEFT" trigger="HOVER" heading="{i18n.MoreInfo}" text="{i18n.VersionMoreInfo}">
+            <bootstrap:Icon ui:field="gavHelpIcon3" type="QUESTION_SIGN"></bootstrap:Icon>
+          </bootstrap:Popover>
+        </bootstrap:Column>
+      </bootstrap:FluidRow>
+    </bootstrap:Form>
+  </gwt:HTMLPanel>
 </ui:UiBinder>
