@@ -68,8 +68,7 @@
 }
 
 .wizardDTableValidationError {
-    font-weight: bolder;
-    color: red;
+    color:#b94a48;
 }
 
 .wizardSidebar {
@@ -104,6 +103,7 @@
 
 .wizardPageTitleContainer:HOVER {
     background-color: #cdcdcd;
+    cursor: pointer;
 }
 
 .wizardPageTitleImageContainer {
