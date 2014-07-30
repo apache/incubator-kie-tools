@@ -36,4 +36,9 @@ public interface ToolsMenuConstants
     String CopyProject();
 
     String CategoriesEditor();
+
+    String LatestVersion();
+
+    String Version(int versionIndex);
+
 }

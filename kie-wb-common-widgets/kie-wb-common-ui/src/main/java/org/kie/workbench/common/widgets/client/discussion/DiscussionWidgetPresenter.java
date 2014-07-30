@@ -50,6 +50,8 @@ public class DiscussionWidgetPresenter
     }
 
     public void setContent(Metadata metadata) {
+        view.clear();
+
         this.metadata = metadata;
         for (DiscussionRecord record : metadata.getDiscussion()) {
             view.addRow(record);

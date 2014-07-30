@@ -33,6 +33,8 @@ public interface DiscussionWidgetView
 
     void addRow(DiscussionRecord line);
 
+    void clear();
+
     void clearCommentBox();
 
     void scrollToBottom();

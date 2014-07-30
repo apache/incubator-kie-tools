@@ -27,6 +27,7 @@
 
   <ui:style>
     .base {
+      margin: 10px 10px 10px 10px;
       padding: 10px 10px 10px 10px;
       height: 450px;
       width: 620px;
@@ -48,10 +49,14 @@
       height: 600px;
       border-left: solid black 1px;
     }
+
+    .left {
+      width: 620px;
+    }
   </ui:style>
 
   <gwt:HorizontalPanel styleName='{style.base}'>
-    <gwt:HTMLPanel width="620px">
+    <gwt:HTMLPanel addStyleNames='{style.left}'>
       <div>
 
         <div>
@@ -111,7 +116,7 @@
       </div>
     </gwt:HTMLPanel>
 
-    <discussion:DiscussionWidgetPresenter ui:field="discussionArea" />
+    <discussion:DiscussionWidgetPresenter ui:field="discussionArea"/>
 
   </gwt:HorizontalPanel>
 

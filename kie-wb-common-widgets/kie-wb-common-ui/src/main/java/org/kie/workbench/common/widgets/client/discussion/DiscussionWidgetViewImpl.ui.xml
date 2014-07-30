@@ -27,6 +27,7 @@
     .wrapper {
       position: relative;
       height: 100%;
+      width: 220px;
       border-left: solid #e7e7e7 1px;
       margin-left: 8px;
     }
@@ -51,17 +52,28 @@
     .title {
       font-weight: bold;
     }
+
+    .box {
+      width: 240px;
+      margin-top: 3px !important;
+    }
+
+    .scroll {
+      height: 95%;
+      width: 245px;
+    }
+
   </ui:style>
 
-  <gwt:HTMLPanel addStyleNames='{style.wrapper}'>
+  <gwt:HTMLPanel addStyleNames='{style.wrapper},well'>
     <div class='{style.top}'>
       <gwt:Label text='{i18n.Comments}' addStyleNames='{style.title}'/>
     </div>
     <div class='{style.bottom}'>
-      <gwt:ScrollPanel ui:field="commentScroll" height="100%" width="245px">
+      <gwt:ScrollPanel ui:field="commentScroll" addStyleNames='{style.scroll}'>
         <gwt:VerticalPanel ui:field="lines"/>
       </gwt:ScrollPanel>
-      <bootstrap:TextArea ui:field="textBox" width="240px"/>
+      <bootstrap:TextArea ui:field="textBox" addStyleNames='{style.box}'/>
     </div>
   </gwt:HTMLPanel>
 

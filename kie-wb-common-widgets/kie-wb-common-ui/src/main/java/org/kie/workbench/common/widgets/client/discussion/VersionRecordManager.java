@@ -25,8 +25,12 @@ import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
+import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
@@ -37,13 +41,15 @@ import org.uberfire.workbench.model.menu.MenuPosition;
 
 public class VersionRecordManager {
 
-    private DropdownButton button = new DropdownButton("Latest version");
+    private DropdownButton button = new DropdownButton(ToolsMenuConstants.INSTANCE.LatestVersion());
 
     @Inject
     @New
     private FileMenuBuilder menuBuilder;
     private Callback<VersionRecord> selectionCallback;
     private List<VersionRecord> versions;
+    private ObservablePath pathToLatest;
+    private String version;
 
     public VersionRecordManager() {
         button.setRightDropdown(true);
@@ -100,7 +106,7 @@ public class VersionRecordManager {
         return version;
     }
 
-    public void setVersions(String version, List<VersionRecord> versions) {
+    public void setVersions(List<VersionRecord> versions) {
 
         button.clear();
 
@@ -112,7 +118,7 @@ public class VersionRecordManager {
     private void fillMenu(String version) {
         int versionIndex = 1;
 
-        button.setText("Latest version");
+        button.setText(ToolsMenuConstants.INSTANCE.LatestVersion());
 
         for (final VersionRecord versionRecord : versions) {
             final CommitLabel commitLabel = new CommitLabel(versionRecord);
@@ -129,7 +135,7 @@ public class VersionRecordManager {
             button.add(commitLabel);
 
             if (versionRecord.id().equals(version) && versionIndex != versions.size()) {
-                button.setText("Version " + versionIndex);
+                button.setText(ToolsMenuConstants.INSTANCE.Version(versionIndex));
             }
 
             versionIndex++;
@@ -154,4 +160,37 @@ public class VersionRecordManager {
         return versions.get(versions.size() - 1).equals(versionRecord);
     }
 
+    public void setPathToLatest(ObservablePath pathToLatest) {
+        this.pathToLatest = pathToLatest;
+    }
+
+    public ObservablePath getPathToLatest() {
+        return pathToLatest;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public ObservablePath getCurrentPath() {
+        if (version == null) {
+            return getPathToLatest();
+        } else {
+            return IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(
+                    PathFactory.newPathBasedOn(getCurrentPath().getFileName(), getCurrentVersionRecord().uri(), getCurrentPath()));
+        }
+    }
+
+    private VersionRecord getCurrentVersionRecord() {
+        for (VersionRecord versionRecord : versions) {
+            if (versionRecord.id().equals(version)) {
+                return versionRecord;
+            }
+        }
+        return null;
+    }
 }

@@ -28,7 +28,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -37,7 +36,7 @@ import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresen
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
-public class OverviewScreenViewImpl
+public class OverviewWidgetViewImpl
         extends Composite
         implements OverviewScreenView {
 
@@ -45,7 +44,7 @@ public class OverviewScreenViewImpl
 
     interface Binder
             extends
-            UiBinder<Widget, OverviewScreenViewImpl> {
+            UiBinder<Widget, OverviewWidgetViewImpl> {
 
     }
 
@@ -79,7 +78,7 @@ public class OverviewScreenViewImpl
     DiscussionWidgetPresenter discussionArea;
 
     @Inject
-    public OverviewScreenViewImpl(MetadataWidget metadata, DiscussionWidgetPresenter discussionArea) {
+    public OverviewWidgetViewImpl(MetadataWidget metadata, DiscussionWidgetPresenter discussionArea) {
 
         this.metadata = metadata;
 
