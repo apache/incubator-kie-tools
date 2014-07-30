@@ -37,12 +37,11 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.Page;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
@@ -59,6 +58,7 @@ import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileName
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -98,7 +98,7 @@ public class GuidedRuleEditorPresenter {
     private GuidedRuleEditorView view;
 
     @Inject
-    private GuidedRuleEditorOverviewPresenter overview;
+    private OverviewWidgetPresenter overview;
 
     @Inject
     private ViewSourceView viewSource;
@@ -141,6 +141,7 @@ public class GuidedRuleEditorPresenter {
     private FileMenuBuilder menuBuilder;
 
     @Inject
+    @New
     private VersionRecordManager versionRecordManager;
 
     private Menus menus;
@@ -151,7 +152,6 @@ public class GuidedRuleEditorPresenter {
     private ObservablePath path;
     private PlaceRequest place;
     private boolean isReadOnly;
-    private String version;
     private boolean isDSLEnabled;
     private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
@@ -165,19 +165,30 @@ public class GuidedRuleEditorPresenter {
         this.path = path;
         this.place = place;
         this.isReadOnly = place.getParameter("readOnly", null) == null ? false : true;
-        this.version = place.getParameter("version", null);
         this.isDSLEnabled = resourceTypeDSL.accept(path);
+
+        versionRecordManager.setVersion(place.getParameter("version", null));
+        versionRecordManager.setPathToLatest(path);
 
         versionRecordManager.addVersionSelectionCallback(
                 new Callback<VersionRecord>() {
                     @Override
                     public void callback(VersionRecord versionRecord) {
-                        GuidedRuleEditorPresenter.this.path = IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(
-                                PathFactory.newPathBasedOn(path.getFileName(), versionRecord.uri(), path));
 
-                        version = versionRecord.id();
+                        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
-                        isReadOnly = !versionRecordManager.isLatest(versionRecord);
+                        if (versionRecordManager.isLatest(versionRecord)) {
+                            isReadOnly = false;
+
+                            versionRecordManager.setVersion(null);
+                            GuidedRuleEditorPresenter.this.path = versionRecordManager.getCurrentPath();
+
+                        } else {
+                            isReadOnly = true;
+
+                            versionRecordManager.setVersion(versionRecord.id());
+                            GuidedRuleEditorPresenter.this.path = versionRecordManager.getCurrentPath();
+                        }
 
                         loadContent();
                     }
@@ -284,7 +295,7 @@ public class GuidedRuleEditorPresenter {
                     return;
                 }
 
-                versionRecordManager.setVersions(version, content.getOverview().getMetadata().getVersion());
+                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
 
                 multiPage.clear();
                 multiPage.addWidget(overview,
@@ -303,7 +314,8 @@ public class GuidedRuleEditorPresenter {
                         model,
                         dataModel);
 
-                overview.setContent(path, content.getOverview());
+                overview.setContent(content.getOverview(), clientTypeRegistry.resolve(path));
+
                 view.setContent(path,
                         model,
                         oracle,
