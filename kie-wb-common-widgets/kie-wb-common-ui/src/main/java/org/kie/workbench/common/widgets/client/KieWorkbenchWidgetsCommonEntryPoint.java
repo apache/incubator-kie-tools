@@ -18,7 +18,6 @@ package org.kie.workbench.common.widgets.client;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.widgets.client.resources.CommonsResources;
-import org.kie.workbench.common.widgets.client.resources.WizardResources;
 import org.kie.workbench.common.widgets.client.resources.RoundedCornersResource;
 
 @EntryPoint
@@ -28,7 +27,6 @@ public class KieWorkbenchWidgetsCommonEntryPoint {
     public void startApp() {
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
         CommonsResources.INSTANCE.css().ensureInjected();
-        WizardResources.INSTANCE.css().ensureInjected();
     }
 
 }
