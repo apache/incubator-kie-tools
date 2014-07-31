@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core;
 
-import com.ait.lienzo.client.core.image.JSImage;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
@@ -345,21 +344,6 @@ public class Context2D
     public NativeContext2D getJSO()
     {
         return m_jso;
-    }
-
-    public void drawImage(JSImage image, double x, double y)
-    {
-        m_jso.drawImage(image, x, y);
-    }
-
-    public void drawImage(JSImage image, double x, double y, double w, double h)
-    {
-        m_jso.drawImage(image, x, y, w, h);
-    }
-
-    public void drawImage(JSImage image, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh)
-    {
-        m_jso.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
     }
 
     public void drawImage(Element image, double x, double y)

@@ -16,70 +16,91 @@
 
 package com.ait.lienzo.client.core.image;
 
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.RootPanel;
+
 public abstract class ImageLoader
 {
-    private final JSImage m_js_img;
+    private final Image m_image;
 
-    private boolean       m_loaded = false;
-
-    public ImageLoader(String url)
+    public ImageLoader(final String url)
     {
-        m_js_img = JSImage.make(url, this);
+        m_image = new Image();
+
+        m_image.setVisible(false);
+
+        RootPanel.get().add(m_image);
+
+        if (url.startsWith("http:") || (url.startsWith("https:")))
+        {
+            setCrossOrigin(ImageElement.as(m_image.getElement()), "anonymous");
+        }
+        m_image.addLoadHandler(new LoadHandler()
+        {
+            @Override
+            public void onLoad(LoadEvent event)
+            {
+                RootPanel.get().remove(m_image);
+
+                ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()));
+            }
+        });
+        m_image.addErrorHandler(new ErrorHandler()
+        {
+            @Override
+            public void onError(ErrorEvent event)
+            {
+                RootPanel.get().remove(m_image);
+
+                ImageLoader.this.onError("Image " + url + " failed to load");
+            }
+        });
+        m_image.setUrl(url);
     }
 
-    /**
-     * Return true if the image was already loaded.
-     * @return boolean
-     */
-    public final boolean isLoaded()
+    public ImageLoader(final ImageResource resource)
     {
-        return m_loaded;
+        m_image = new Image();
+        
+        m_image.setVisible(false);
+
+        RootPanel.get().add(m_image);
+
+        m_image.addLoadHandler(new LoadHandler()
+        {
+            @Override
+            public void onLoad(LoadEvent event)
+            {
+                RootPanel.get().remove(m_image);
+                
+                ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()));
+            }
+        });
+        m_image.addErrorHandler(new ErrorHandler()
+        {
+            @Override
+            public void onError(ErrorEvent event)
+            {
+                RootPanel.get().remove(m_image);
+                
+                ImageLoader.this.onError("Resource " + resource.getName() + " failed to load");
+            }
+        });
+        m_image.setResource(resource);
     }
 
-    /**
-     * Get width
-     * @return int
-     */
-    public final int getWidth()
-    {
-        return m_js_img.getWidth();
-    }
+    private final native void setCrossOrigin(ImageElement element, String value)
+    /*-{
+        element.crossOrigin = value;
+    }-*/;
 
-    /**
-     * Get Height.
-     * @return int
-     */
-    public final int getHeight()
-    {
-        return m_js_img.getHeight();
-    }
+    public abstract void onLoad(ImageElement image);
 
-    /**
-     * Get the JSO
-     * @return {@link JSImage}
-     */
-    public final JSImage getJSImage()
-    {
-        return m_js_img;
-    }
-
-    @SuppressWarnings("unused")
-    private final void onLoadedHelper()
-    {
-        m_loaded = true;
-
-        onLoaded(this);
-    }
-
-    @SuppressWarnings("unused")
-    private final void onErrorHelper(String message)
-    {
-        m_loaded = false;
-
-        onError(this, message);
-    }
-
-    public abstract void onLoaded(ImageLoader loader);
-
-    public abstract void onError(ImageLoader loader, String message);
+    public abstract void onError(String message);
 }

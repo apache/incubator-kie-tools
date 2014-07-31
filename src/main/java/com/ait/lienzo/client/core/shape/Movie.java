@@ -27,7 +27,6 @@ import com.ait.lienzo.client.core.animation.IndefiniteAnimation;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.i18n.MessageConstants;
 import com.ait.lienzo.client.core.image.ImageLoader;
-import com.ait.lienzo.client.core.image.JSImage;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
@@ -41,6 +40,7 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.MediaElement;
 import com.google.gwt.dom.client.VideoElement;
 import com.google.gwt.event.dom.client.EndedEvent;
@@ -73,7 +73,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
     private String                     m_error          = null;
 
-    private JSImage                    m_postr          = null;
+    private ImageElement               m_postr          = null;
 
     private final Video                m_video          = Video.createIfSupported();
 
@@ -159,9 +159,9 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
     private final native void setErrorHandler(Movie movie, VideoElement element)
     /*-{
-		element.onerror = function(e) {
-			movie.@com.ait.lienzo.client.core.shape.Movie::setErrorCode(I)(e.target.error.code);
-		};
+    	element.onerror = function(e) {
+    		movie.@com.ait.lienzo.client.core.shape.Movie::setErrorCode(I)(e.target.error.code);
+    	};
     }-*/;
 
     private final String getTextBestFit(Context2D context, String text, int wide)
@@ -692,13 +692,13 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
                         new ImageLoader(url)
                         {
                             @Override
-                            public void onLoaded(ImageLoader loader)
+                            public void onLoad(ImageElement image)
                             {
-                                m_postr = loader.getJSImage();
+                                m_postr = image;
                             }
 
                             @Override
-                            public void onError(ImageLoader loader, String message)
+                            public void onError(String message)
                             {
                                 Console.log("ERROR: Getting video poster url[" + url + "] " + message);
                             }

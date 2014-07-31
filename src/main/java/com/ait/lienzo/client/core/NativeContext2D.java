@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core;
 
-import com.ait.lienzo.client.core.image.JSImage;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DashArray.DashArrayJSO;
 import com.ait.lienzo.client.core.types.ImageData;
@@ -248,7 +247,7 @@ public final class NativeContext2D extends JavaScriptObject
     /*-{
 		this.imageSmoothingEnabled = true;
 
-		this.fillStyle = this.createPattern(grad.image, grad.repeat);
+		this.fillStyle = this.createPattern(grad.image(), grad.repeat);
     }-*/;
 
     private final native void setFillGradient(RadialGradientJSO grad)
@@ -408,23 +407,6 @@ public final class NativeContext2D extends JavaScriptObject
     public final native TextMetrics measureText(String text)
     /*-{
 		return this.measureText(text);
-    }-*/;
-
-    public final native void drawImage(JSImage image, double x, double y)
-    /*-{
-		this.drawImage(image, x, y);
-    }-*/;
-
-    public final native void drawImage(JSImage image, double x, double y, double w, double h)
-    /*-{
-		this.drawImage(image, x, y, w, h);
-    }-*/;
-
-    public final native void drawImage(JSImage image, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh)
-    /*-{
-		this.imageSmoothingEnabled = true;
-
-		this.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
     }-*/;
 
     public final native void drawImage(Element image, double x, double y)

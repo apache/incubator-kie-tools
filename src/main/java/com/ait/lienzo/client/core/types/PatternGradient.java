@@ -16,9 +16,8 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.image.ImageLoader;
-import com.ait.lienzo.client.core.image.JSImage;
 import com.ait.lienzo.shared.core.types.FillRepeat;
+import com.google.gwt.dom.client.ImageElement;
 
 /**
  * PatternGradient defines the fill style for a {@link Shape} as a Pattern Gradient. 
@@ -34,39 +33,14 @@ public final class PatternGradient implements FillGradient
         m_jso = jso;
     }
 
-    private static final PatternGradientJSO make(ImageLoader loader, FillRepeat repeat)
+    public PatternGradient(ImageElement image)
     {
-        if (false == loader.isLoaded())
-        {
-            throw new NullPointerException("image not loaded");
-        }
-        JSImage image = loader.getJSImage();
-
-        if (null == image)
-        {
-            throw new NullPointerException("image not loaded");
-        }
-        return PatternGradientJSO.make(image, repeat.getValue());
+        this(PatternGradientJSO.make(image, image.getSrc(), FillRepeat.REPEAT.getValue()));
     }
 
-    public PatternGradient(JSImage image)
+    public PatternGradient(ImageElement image, FillRepeat repeat)
     {
-        this(PatternGradientJSO.make(image, FillRepeat.REPEAT.getValue()));
-    }
-
-    public PatternGradient(JSImage image, FillRepeat repeat)
-    {
-        this(PatternGradientJSO.make(image, repeat.getValue()));
-    }
-
-    public PatternGradient(ImageLoader loader)
-    {
-        this(make(loader, FillRepeat.REPEAT));
-    }
-
-    public PatternGradient(ImageLoader loader, FillRepeat repeat)
-    {
-        this(make(loader, repeat));
+        this(PatternGradientJSO.make(image, image.getSrc(), repeat.getValue()));
     }
 
     @Override
@@ -86,13 +60,16 @@ public final class PatternGradient implements FillGradient
         {
         }
 
-        public static final native PatternGradientJSO make(JSImage image, String repeat)
+        public static final native PatternGradientJSO make(ImageElement e, String src, String repeat)
         /*-{
-			return {
-				image : image,
-				repeat : repeat,
-				type : "PatternGradient"
-			}
+        	return {
+        	    src: src,
+        		repeat: repeat,
+        		type: "PatternGradient",
+        		image: function() {
+        		    return e;
+        		}
+        	}
         }-*/;
     }
 }

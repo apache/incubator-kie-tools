@@ -18,22 +18,22 @@ package com.ait.lienzo.client.core.image;
 
 import java.util.HashMap;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.UriUtils;
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.resources.client.ImageResource;
 
 public final class ImageCache
 {
-    private static final ImageCache        INSTANCE   = new ImageCache();
+    private static final ImageCache             INSTANCE   = new ImageCache();
 
-    private final HashMap<String, String>  m_messages = new HashMap<String, String>();
+    private final HashMap<String, String>       m_messages = new HashMap<String, String>();
 
-    private final HashMap<String, JSImage> m_url_hmap = new HashMap<String, JSImage>();
+    private final HashMap<String, ImageElement> m_url_hmap = new HashMap<String, ImageElement>();
 
-    private final HashMap<String, JSImage> m_key_hmap = new HashMap<String, JSImage>();
+    private final HashMap<String, ImageElement> m_key_hmap = new HashMap<String, ImageElement>();
 
-    private int                            m_counting = -1;
+    private int                                 m_counting = -1;
 
-    private Runnable                       m_callback = null;
+    private Runnable                            m_callback = null;
 
     public static final ImageCache get()
     {
@@ -57,16 +57,16 @@ public final class ImageCache
         }
         m_counting++;
 
-        new ImageLoader(UriUtils.fromString(url).asString())
+        new ImageLoader(url)
         {
             @Override
-            public void onLoaded(ImageLoader loader)
+            public void onLoad(ImageElement image)
             {
-                done(key, url, loader.getJSImage(), "success");
+                done(key, url, image, "success");
             }
 
             @Override
-            public void onError(ImageLoader loader, String message)
+            public void onError(String message)
             {
                 done(key, url, null, message);
             }
@@ -74,19 +74,38 @@ public final class ImageCache
         return this;
     }
 
-    private final void done(String key, String url, JSImage image, String message)
+    public final ImageCache add(final String key, final ImageResource resource)
+    {
+        if (m_counting < 0)
+        {
+            m_counting = 0;
+        }
+        m_counting++;
+
+        new ImageLoader(resource)
+        {
+            @Override
+            public void onLoad(ImageElement image)
+            {
+                done(key, resource.getName(), image, "success");
+            }
+
+            @Override
+            public void onError(String message)
+            {
+                done(key, resource.getName(), null, message);
+            }
+        };
+        return this;
+    }
+
+    private final void done(String key, String url, ImageElement image, String message)
     {
         if (null != image)
         {
-            GWT.log("Did get image " + key);
-            
             m_key_hmap.put(key, image);
 
             m_url_hmap.put(url, image);
-        }
-        else
-        {
-            GWT.log("Did not get image " + key + " message=[ " + message + " ]");
         }
         m_messages.put(key, message);
 
@@ -100,12 +119,12 @@ public final class ImageCache
         }
     }
 
-    public final JSImage getImageByKey(String key)
+    public final ImageElement getImageByKey(String key)
     {
         return m_key_hmap.get(key);
     }
 
-    public final JSImage getImageByURL(String url)
+    public final ImageElement getImageByURL(String url)
     {
         return m_url_hmap.get(url);
     }
@@ -115,7 +134,7 @@ public final class ImageCache
         return m_messages.get(name);
     }
 
-    public final ImageCache reset()
+    public final void reset()
     {
         if (m_counting > 0)
         {
@@ -128,8 +147,6 @@ public final class ImageCache
         m_key_hmap.clear();
 
         m_callback = null;
-
-        return this;
     }
 
     public final boolean isLoaded()
@@ -141,7 +158,7 @@ public final class ImageCache
         return false;
     }
 
-    public final ImageCache onLoaded(Runnable callback)
+    public final void onLoaded(Runnable callback)
     {
         if (null == callback)
         {
@@ -159,6 +176,5 @@ public final class ImageCache
         {
             m_callback = callback;
         }
-        return this;
     }
 }

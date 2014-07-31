@@ -19,10 +19,6 @@ package com.ait.lienzo.client.core.util;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.NativeContext2D;
-import com.ait.lienzo.client.core.image.BlobImageReadyCallback;
-import com.ait.lienzo.client.core.image.ImageLoader;
-import com.ait.lienzo.client.core.image.JSImage;
-import com.ait.lienzo.client.core.image.JSImageExtractionHandler;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
@@ -125,75 +121,6 @@ public final class ScratchCanvas
             return "data:,";
         }
     }
-
-    public final void getJSImage(final JSImageExtractionHandler handler)
-    {
-        if (isBlobAPISupported())
-        {
-            getImageFromBlob(new BlobImageReadyCallback()
-            {
-                @Override
-                public void onBlobImageReady(JSImage image)
-                {
-                    handler.onSuccess(image);
-                }
-            });
-        }
-        else
-        {
-            new ImageLoader(toDataURL())
-            {
-                @Override
-                public void onLoaded(ImageLoader loader)
-                {
-                    handler.onSuccess(loader.getJSImage());
-                }
-
-                @Override
-                public void onError(ImageLoader loader, String message)
-                {
-                    handler.onFailure(message);
-                }
-            };
-        }
-    }
-
-    public final boolean isBlobAPISupported()
-    {
-        return LienzoGlobals.get().isBlobAPIEnabled() && (null != m_element) && isBlobAPISupported0(m_element);
-    }
-
-    public final void getImageFromBlob(BlobImageReadyCallback callback)
-    {
-        if (false == isBlobAPISupported())
-        {
-            throw new IllegalArgumentException("Blob Images are not supported");
-        }
-        getImageFromBlob0(m_element, callback);
-    }
-
-    private static native final void getImageFromBlob0(CanvasElement element, BlobImageReadyCallback callback)
-    /*-{
-		var blobber = function(blob) {
-			url = $wnd.URL.createObjectURL(blob);
-
-			var image = new $wnd.Image();
-
-			image.onload = function() {
-
-				$wnd.URL.revokeObjectURL(url);
-
-				callback.@com.ait.lienzo.client.core.image.BlobImageReadyCallback::onBlobImageReady(Lcom/ait/lienzo/client/core/image/JSImage;)(image);
-			}
-			image.src = url;
-		};
-		element.toBlob(blobber);
-    }-*/;
-
-    private static native final boolean isBlobAPISupported0(CanvasElement element)
-    /*-{
-		return !!element.toBlob;
-    }-*/;
 
     private static native final String toDataURL(CanvasElement element)
     /*-{

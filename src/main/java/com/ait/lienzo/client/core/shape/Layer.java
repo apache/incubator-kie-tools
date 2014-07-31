@@ -23,7 +23,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
-import com.ait.lienzo.client.core.image.BlobImageReadyCallback;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -849,43 +848,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
         return find;
     }
-
-    public final boolean isBlobAPISupported()
-    {
-        return LienzoGlobals.get().isBlobAPIEnabled() && (null != m_element) && isBlobAPISupported0(m_element);
-    }
-
-    public final void getImageFromBlob(BlobImageReadyCallback callback)
-    {
-        if (false == isBlobAPISupported())
-        {
-            throw new IllegalArgumentException("Blob Images are not supported");
-        }
-        getImageFromBlob0(m_element, callback);
-    }
-
-    private static native final void getImageFromBlob0(CanvasElement element, BlobImageReadyCallback callback)
-    /*-{
-		var blobber = function(blob) {
-			url = $wnd.URL.createObjectURL(blob);
-
-			var image = new $wnd.Image();
-
-			image.onload = function() {
-
-				$wnd.URL.revokeObjectURL(url);
-
-				callback.@com.ait.lienzo.client.core.image.BlobImageReadyCallback::onBlobImageReady(Lcom/ait/lienzo/client/core/image/JSImage;)(image);
-			}
-			image.src = url;
-		};
-		element.toBlob(blobber);
-    }-*/;
-
-    private static native final boolean isBlobAPISupported0(CanvasElement element)
-    /*-{
-		return !!element.toBlob;
-    }-*/;
 
     /**
      * Returns the content of this Layer as a PNG image that can be used as a source for another canvas or an HTML element.

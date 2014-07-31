@@ -81,7 +81,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         super(ShapeType.PICTURE, url, true, ImageSelectionMode.SELECT_NON_TRANSPARENT);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -131,7 +131,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         super(ShapeType.PICTURE, url, true, mode);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -157,7 +157,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -181,7 +181,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -207,7 +207,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -231,7 +231,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -257,7 +257,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -289,7 +289,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageHeight(sh);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -323,7 +323,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -355,7 +355,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageHeight(sh);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -389,7 +389,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -421,7 +421,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageDestinationHeight(dh);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -455,7 +455,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -487,7 +487,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageDestinationHeight(dh);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -521,7 +521,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -549,7 +549,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageDestinationHeight(dh);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -579,7 +579,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -607,7 +607,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageDestinationHeight(dh);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -637,7 +637,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(url);
     }
 
     /**
@@ -661,7 +661,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         super(ShapeType.PICTURE, resource, true, ImageSelectionMode.SELECT_NON_TRANSPARENT);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -687,7 +687,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -711,7 +711,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         super(ShapeType.PICTURE, resource, true, mode);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -737,7 +737,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -761,7 +761,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -787,7 +787,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -811,7 +811,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -837,7 +837,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -870,7 +870,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageHeight(sh);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -905,7 +905,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -938,7 +938,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageHeight(sh);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -973,7 +973,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -1007,7 +1007,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageDestinationHeight(dh);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -1043,7 +1043,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -1077,7 +1077,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageDestinationHeight(dh);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -1113,7 +1113,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -1142,7 +1142,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageDestinationHeight(dh);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -1173,7 +1173,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -1202,7 +1202,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         setClippedImageDestinationHeight(dh);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     /**
@@ -1233,7 +1233,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         getImageProxy().setFilters(filter, filters);
 
-        getImageProxy().load();
+        getImageProxy().load(resource);
     }
 
     @Override

@@ -29,6 +29,8 @@ import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
  * ImageProxy is used by {@link AbstractImageShape} to load and draw the image.
@@ -37,7 +39,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 {
     private T                                   m_image;
 
-    private JSImage                             m_jsimg;
+    private ImageElement                        m_jsimg;
 
     private final ScratchCanvas                 m_normalImage = new ScratchCanvas(0, 0);
 
@@ -219,7 +221,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         return this;
     }
 
-    public void load()
+    public void load(String url)
     {
         m_obounds = m_image.getImageClipBounds();
 
@@ -235,36 +237,55 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
         m_dest_high = m_obounds.getDestHigh();
 
-        String url = m_image.getURL();
-
-        if (false == url.startsWith("data:"))
-        {
-            JSImage img = ImageCache.get().getImageByURL(url);
-
-            if (null != img)
-            {
-                doInitialize(img);
-
-                return;
-            }
-        }
         new ImageLoader(url)
         {
             @Override
-            public void onLoaded(ImageLoader loader)
+            public void onLoad(ImageElement image)
             {
-                doInitialize(loader.getJSImage());
+                doInitialize(image);
             }
 
             @Override
-            public void onError(ImageLoader image, String message)
+            public void onError(String message)
             {
                 doneLoading(false, message);
             }
         };
     }
 
-    private final void doInitialize(JSImage image)
+    public void load(ImageResource resource)
+    {
+        m_obounds = m_image.getImageClipBounds();
+
+        m_clip_xpos = m_obounds.getClipXPos();
+
+        m_clip_ypos = m_obounds.getClipYPos();
+
+        m_clip_wide = m_obounds.getClipWide();
+
+        m_clip_high = m_obounds.getClipHigh();
+
+        m_dest_wide = m_obounds.getDestWide();
+
+        m_dest_high = m_obounds.getDestHigh();
+
+        new ImageLoader(resource)
+        {
+            @Override
+            public void onLoad(ImageElement image)
+            {
+                doInitialize(image);
+            }
+
+            @Override
+            public void onError(String message)
+            {
+                doneLoading(false, message);
+            }
+        };
+    }
+
+    private final void doInitialize(ImageElement image)
     {
         m_jsimg = image;
 
@@ -492,7 +513,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         return m_dest_high;
     }
 
-    public JSImage getJSImage()
+    public ImageElement getImage()
     {
         return m_jsimg;
     }
