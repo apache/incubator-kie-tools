@@ -133,6 +133,19 @@ public class ActivityBeansCache {
         newPerspectiveEventEvent.fire( new NewPerspectiveEvent( id ) );
     }
 
+    public void addNewEditorActivity( final IOCBeanDef<Activity> activityBean,
+                                      Class<? extends ClientResourceType> resourceTypeClass ) {
+        final String id = activityBean.getName();
+
+        if ( activitiesById.keySet().contains( id ) ) {
+            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
+        }
+
+        final List<Class<? extends ClientResourceType>> resourceTypes = new ArrayList<Class<? extends ClientResourceType>>();
+        resourceTypes.add( resourceTypeClass );
+        activities.add( new ActivityAndMetaInfo( activityBean, 0, resourceTypes ) );
+    }
+
     public void addNewSplashScreenActivity( final IOCBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
@@ -142,14 +155,11 @@ public class ActivityBeansCache {
 
         activitiesById.put( id, activityBean );
         splashScreens.add( (SplashScreenActivity) activityBean.getInstance() );
-//        newSplashScreenEvent.fire( new NewSplashScreenEvent( id ) );
     }
 
     public List<SplashScreenActivity> getSplashScreens() {
         return splashScreens;
     }
-
-
 
     public IOCBeanDef<Activity> getActivity( final String id ) {
         return activitiesById.get( id );
@@ -165,7 +175,7 @@ public class ActivityBeansCache {
             }
         }
 
-        return null;
+        throw new EditorResourceTypeNotFound();
     }
 
     Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( IOCBeanDef<Activity> activityBean ) {
@@ -179,8 +189,8 @@ public class ActivityBeansCache {
         private final ClientResourceType[] resourceTypes;
 
         ActivityAndMetaInfo( final IOCBeanDef<Activity> activityBean,
-                                     final int priority,
-                                     final List<Class<? extends ClientResourceType>> resourceTypes ) {
+                             final int priority,
+                             final List<Class<? extends ClientResourceType>> resourceTypes ) {
             this.activityBean = activityBean;
             this.priority = priority;
             this.resourceTypes = new ClientResourceType[ resourceTypes.size() ];
@@ -201,5 +211,9 @@ public class ActivityBeansCache {
         public ClientResourceType[] getResourceTypes() {
             return resourceTypes;
         }
+    }
+
+    private class EditorResourceTypeNotFound extends RuntimeException {
+
     }
 }

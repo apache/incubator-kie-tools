@@ -93,6 +93,12 @@ public class JSNativePlugin {
         }
     }
 
+    public void onOpen( String URI ) {
+        if ( hasMethod( obj, "on_open" ) ) {
+            executeOnOpen( obj, URI );
+        }
+    }
+
     public void onClose() {
         if ( hasMethod( obj, "on_close" ) ) {
             executeOnClose( obj );
@@ -191,9 +197,9 @@ public class JSNativePlugin {
 
     static native boolean hasArrayProperty( final JavaScriptObject obj,
                                             final String propertyName )  /*-{
-        Window.show((obj[propertyName]) instanceof Array)
-        return ((obj[propertyName]) instanceof Array);
+        return ((obj.propertyName) instanceof Array);
     }-*/;
+
 
     private static native String getTemplateUrlFunctionResult( final JavaScriptObject o ) /*-{
         var result = o.templateUrl();
@@ -235,6 +241,11 @@ public class JSNativePlugin {
         return null;
     }-*/;
 
+    private static native void executeOnOpen( final JavaScriptObject o,
+                                              String URI ) /*-{
+        o.on_open(URI);
+    }-*/;
+
     private static native void executeOnOpen( final JavaScriptObject o ) /*-{
         o.on_open();
     }-*/;
@@ -245,6 +256,15 @@ public class JSNativePlugin {
 
     private static native void executeOnShutdown( final JavaScriptObject o ) /*-{
         o.on_shutdown();
+    }-*/;
+
+    private static native void executeOnStartup( final JavaScriptObject o,
+                                                 String URI ) /*-{
+        o.on_startup(URI);
+    }-*/;
+
+    private static native void executeOnStartup( final JavaScriptObject o ) /*-{
+        o.on_startup();
     }-*/;
 
     private static native void executeOnFocus( final JavaScriptObject o ) /*-{
@@ -283,8 +303,16 @@ public class JSNativePlugin {
         return o.templateUrl;
     }-*/;
 
-    public void onStartup() {
-        //To change body of created methods use File | Settings | File Templates.
+    public void onStartup( ) {
+        if ( hasMethod( obj, "on_startup" ) ) {
+            executeOnStartup( obj );
+        }
+    }
+
+    public void onStartup( String URI ) {
+        if ( hasMethod( obj, "on_startup" ) ) {
+            executeOnStartup( obj, URI );
+        }
     }
 
     public void onStartup( PlaceRequest place ) {

@@ -8,11 +8,10 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.framework.BusState;
-import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.uberfire.client.mvp.Activity;
@@ -20,8 +19,10 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.client.mvp.WorkbenchEditorActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
@@ -40,9 +41,13 @@ public class JSEntryPoint {
     @Inject
     private ClientMessageBus bus;
 
+    @Inject
+    private UberfireJSAPIExporter ufJsapiExporter;
+
     @PostConstruct
     public void init() {
         publish();
+        ufJsapiExporter.export();
     }
 
     @AfterInitialization
@@ -128,6 +133,41 @@ public class JSEntryPoint {
         }
     }
 
+    public static void registerEditor( final Object _obj ) {
+        final JavaScriptObject obj = (JavaScriptObject) _obj;
+        if ( JSNativeEditor.hasStringProperty( obj, "id" ) ) {
+            final SyncBeanManager beanManager = IOC.getBeanManager();
+            final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
+
+            final JSNativeEditor newNativeEditor = beanManager.lookupBean( JSNativeEditor.class ).getInstance();
+            newNativeEditor.build( obj );
+
+            PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
+            final JSEditorActivity activity = new JSEditorActivity( newNativeEditor, placeManager );
+
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) WorkbenchEditorActivity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true );
+            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSEditorActivity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true );
+
+            Class<? extends ClientResourceType> resourceTypeClass = getResourceTypeClass( beanManager, newNativeEditor );
+            activityBeansCache.addNewEditorActivity( beanManager.lookupBeans( newNativeEditor.getId() ).iterator().next(), resourceTypeClass );
+
+        }
+    }
+
+    private static Class<? extends ClientResourceType> getResourceTypeClass( SyncBeanManager beanManager,
+                                                                             JSNativeEditor newNativeEditor ) {
+
+        Collection<IOCBeanDef<ClientResourceType>> iocBeanDefs = beanManager.lookupBeans( ClientResourceType.class );
+        for ( IOCBeanDef<ClientResourceType> iocBeanDef : iocBeanDefs ) {
+            String beanClassName = iocBeanDef.getBeanClass().getName();
+            if ( beanClassName.equalsIgnoreCase( newNativeEditor.getResourceType() ) ) {
+                return (Class<? extends ClientResourceType>) iocBeanDef.getBeanClass();
+            }
+        }
+        throw new EditorResourceTypeNotFound();
+    }
+
     public static void goTo( final String place ) {
         final SyncBeanManager beanManager = IOC.getBeanManager();
         final PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
@@ -137,8 +177,13 @@ public class JSEntryPoint {
     // Alias registerPlugin with a global JS function.
     private native void publish() /*-{
         $wnd.$registerPlugin = @org.uberfire.client.JSEntryPoint::registerPlugin(Ljava/lang/Object;);
+        $wnd.$registerEditor = @org.uberfire.client.JSEntryPoint::registerEditor(Ljava/lang/Object;);
         $wnd.$registerSplashScreen = @org.uberfire.client.JSEntryPoint::registerSplashScreen(Ljava/lang/Object;);
         $wnd.$registerPerspective = @org.uberfire.client.JSEntryPoint::registerPerspective(Ljava/lang/Object;);
         $wnd.$goToPlace = @org.uberfire.client.JSEntryPoint::goTo(Ljava/lang/String;);
     }-*/;
+
+    private static class EditorResourceTypeNotFound extends RuntimeException {
+
+    }
 }
