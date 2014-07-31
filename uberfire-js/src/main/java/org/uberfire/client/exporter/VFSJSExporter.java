@@ -1,5 +1,6 @@
-package org.uberfire.client;
+package org.uberfire.client.exporter;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -8,26 +9,24 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
-public class UberfireJSAPIExporter {
+
+@ApplicationScoped
+public class VFSJSExporter  implements UberfireJSExporter{
 
     @Inject
     Caller<VFSService> vfsServices;
 
-    private native void executeNativeCallback( JavaScriptObject callback,
-                                               Object param ) /*-{
-        callback(param);
-    }-*/;
-
+    @Override
     public void export() {
-        publishVFSAPIs( this );
+        publish( this );
     }
 
-    private native void publishVFSAPIs( UberfireJSAPIExporter js )/*-{
+    private native void publish( VFSJSExporter js )/*-{
         $wnd.$vfs_write = function (uri, content, callback) {
-            js.@org.uberfire.client.UberfireJSAPIExporter::write(Ljava/lang/String;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(uri, content, callback)
+            js.@org.uberfire.client.exporter.VFSJSExporter::write(Ljava/lang/String;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(uri, content, callback)
         }
         $wnd.$vfs_readAllString = function (uri, callback) {
-            js.@org.uberfire.client.UberfireJSAPIExporter::readAllString(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(uri, callback)
+            js.@org.uberfire.client.exporter.VFSJSExporter::readAllString(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(uri, callback)
         }
     }-*/;
 
@@ -65,5 +64,10 @@ public class UberfireJSAPIExporter {
             }
         } ).get( uri );
     }
+
+    private native void executeNativeCallback( JavaScriptObject callback,
+                                               Object param ) /*-{
+        callback(param);
+    }-*/;
 
 }

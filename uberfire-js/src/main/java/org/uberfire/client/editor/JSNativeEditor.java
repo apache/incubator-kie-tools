@@ -1,9 +1,9 @@
-package org.uberfire.client;
+package org.uberfire.client.editor;
 
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
+import org.uberfire.client.plugin.JSNativePlugin;
 
 @Dependent
 public class JSNativeEditor extends JSNativePlugin {
@@ -19,12 +19,6 @@ public class JSNativeEditor extends JSNativePlugin {
 
     private static native String getResourceType( final JavaScriptObject o ) /*-{
         return o.resourceType;
-    }-*/;
-
-    public native JsArray ping( JavaScriptObject obj )  /*-{
-        alert((obj.resourceTypes) instanceof Array)
-        alert(Object.prototype.toString.call(obj));
-        return obj.resourceTypes;
     }-*/;
 
     public void onConcurrentUpdate() {

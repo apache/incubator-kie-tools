@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.uberfire.client;
+package org.uberfire.client.editor;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,6 +21,7 @@ import java.util.Collections;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.editor.JSNativeEditor;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.AcceptItem;
 import org.uberfire.client.mvp.PlaceManager;

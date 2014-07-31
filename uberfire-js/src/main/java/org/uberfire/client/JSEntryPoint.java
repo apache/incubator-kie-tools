@@ -1,33 +1,18 @@
 package org.uberfire.client;
 
 import java.util.Collection;
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
-import org.uberfire.client.mvp.Activity;
-import org.uberfire.client.mvp.ActivityBeansCache;
-import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.SplashScreenActivity;
-import org.uberfire.client.mvp.WorkbenchEditorActivity;
-import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.plugin.RuntimePluginsServiceProxy;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static com.google.gwt.core.client.ScriptInjector.*;
-import static org.jboss.errai.ioc.client.QualifierUtil.*;
 
 @EntryPoint
 public class JSEntryPoint {
@@ -41,18 +26,9 @@ public class JSEntryPoint {
     @Inject
     private ClientMessageBus bus;
 
-    @Inject
-    private UberfireJSAPIExporter ufJsapiExporter;
-
-    @PostConstruct
-    public void init() {
-        publish();
-        ufJsapiExporter.export();
-    }
-
     @AfterInitialization
     public void setup() {
-        runtimePluginsService.listFramworksContent( new ParameterizedCommand<Collection<String>>() {
+        runtimePluginsService.listFrameworksContent( new ParameterizedCommand<Collection<String>>() {
             @Override
             public void execute( final Collection<String> response ) {
                 for ( final String s : response ) {
@@ -73,117 +49,5 @@ public class JSEntryPoint {
                 } );
             }
         } );
-    }
-
-    public static void registerPlugin( final Object _obj ) {
-        final JavaScriptObject obj = (JavaScriptObject) _obj;
-
-        if ( JSNativePlugin.hasStringProperty( obj, "id" ) && JSNativePlugin.hasTemplate( obj ) ) {
-            final SyncBeanManager beanManager = IOC.getBeanManager();
-            final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
-
-            final JSNativePlugin newNativePlugin = beanManager.lookupBean( JSNativePlugin.class ).getInstance();
-            newNativePlugin.build( obj );
-
-            final JSWorkbenchScreenActivity activity = new JSWorkbenchScreenActivity( newNativePlugin, beanManager.lookupBean( PlaceManager.class ).getInstance() );
-
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) WorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSWorkbenchScreenActivity.class, JSWorkbenchScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-
-            activityBeansCache.addNewScreenActivity( beanManager.lookupBeans( newNativePlugin.getId() ).iterator().next() );
-        }
-    }
-
-    public static void registerPerspective( final Object _obj ) {
-        final JavaScriptObject obj = (JavaScriptObject) _obj;
-
-        if ( JSNativePlugin.hasStringProperty( obj, "id" ) ) {
-            final SyncBeanManager beanManager = IOC.getBeanManager();
-            final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
-
-            final JSNativePerspective newNativePerspective = beanManager.lookupBean( JSNativePerspective.class ).getInstance();
-            newNativePerspective.build( obj );
-
-            final JSWorkbenchPerspectiveActivity activity = new JSWorkbenchPerspectiveActivity( newNativePerspective );
-
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) PerspectiveActivity.class, JSWorkbenchPerspectiveActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePerspective.getId(), true );
-
-            activityBeansCache.addNewPerspectiveActivity( beanManager.lookupBeans( newNativePerspective.getId() ).iterator().next() );
-        }
-    }
-
-    public static void registerSplashScreen( final Object _obj ) {
-        final JavaScriptObject obj = (JavaScriptObject) _obj;
-
-        if ( JSNativeSplashScreen.hasStringProperty( obj, "id" ) && JSNativeSplashScreen.hasTemplate( obj ) ) {
-            final SyncBeanManager beanManager = IOC.getBeanManager();
-            final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
-
-            final JSNativeSplashScreen newNativePlugin = beanManager.lookupBean( JSNativeSplashScreen.class ).getInstance();
-            newNativePlugin.build( obj );
-
-            final JSSplashScreenActivity activity = new JSSplashScreenActivity( newNativePlugin );
-
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) SplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSSplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true );
-
-            activityBeansCache.addNewSplashScreenActivity( beanManager.lookupBeans( newNativePlugin.getId() ).iterator().next() );
-        }
-    }
-
-    public static void registerEditor( final Object _obj ) {
-        final JavaScriptObject obj = (JavaScriptObject) _obj;
-        if ( JSNativeEditor.hasStringProperty( obj, "id" ) ) {
-            final SyncBeanManager beanManager = IOC.getBeanManager();
-            final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
-
-            final JSNativeEditor newNativeEditor = beanManager.lookupBean( JSNativeEditor.class ).getInstance();
-            newNativeEditor.build( obj );
-
-            PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
-            final JSEditorActivity activity = new JSEditorActivity( newNativeEditor, placeManager );
-
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) WorkbenchEditorActivity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true );
-            ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) JSEditorActivity.class, JSEditorActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativeEditor.getId(), true );
-
-            Class<? extends ClientResourceType> resourceTypeClass = getResourceTypeClass( beanManager, newNativeEditor );
-            activityBeansCache.addNewEditorActivity( beanManager.lookupBeans( newNativeEditor.getId() ).iterator().next(), resourceTypeClass );
-
-        }
-    }
-
-    private static Class<? extends ClientResourceType> getResourceTypeClass( SyncBeanManager beanManager,
-                                                                             JSNativeEditor newNativeEditor ) {
-
-        Collection<IOCBeanDef<ClientResourceType>> iocBeanDefs = beanManager.lookupBeans( ClientResourceType.class );
-        for ( IOCBeanDef<ClientResourceType> iocBeanDef : iocBeanDefs ) {
-            String beanClassName = iocBeanDef.getBeanClass().getName();
-            if ( beanClassName.equalsIgnoreCase( newNativeEditor.getResourceType() ) ) {
-                return (Class<? extends ClientResourceType>) iocBeanDef.getBeanClass();
-            }
-        }
-        throw new EditorResourceTypeNotFound();
-    }
-
-    public static void goTo( final String place ) {
-        final SyncBeanManager beanManager = IOC.getBeanManager();
-        final PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
-        placeManager.goTo( new DefaultPlaceRequest( place ) );
-    }
-
-    // Alias registerPlugin with a global JS function.
-    private native void publish() /*-{
-        $wnd.$registerPlugin = @org.uberfire.client.JSEntryPoint::registerPlugin(Ljava/lang/Object;);
-        $wnd.$registerEditor = @org.uberfire.client.JSEntryPoint::registerEditor(Ljava/lang/Object;);
-        $wnd.$registerSplashScreen = @org.uberfire.client.JSEntryPoint::registerSplashScreen(Ljava/lang/Object;);
-        $wnd.$registerPerspective = @org.uberfire.client.JSEntryPoint::registerPerspective(Ljava/lang/Object;);
-        $wnd.$goToPlace = @org.uberfire.client.JSEntryPoint::goTo(Ljava/lang/String;);
-    }-*/;
-
-    private static class EditorResourceTypeNotFound extends RuntimeException {
-
     }
 }

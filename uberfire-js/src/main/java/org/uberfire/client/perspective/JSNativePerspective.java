@@ -1,4 +1,4 @@
-package org.uberfire.client;
+package org.uberfire.client.perspective;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -8,10 +8,9 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
+import org.uberfire.client.plugin.JSNativePlugin;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.perspective.JSPanelDefinition;
-import org.uberfire.client.perspective.JSPartDefinition;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.mvp.PlaceRequest;
@@ -56,26 +55,26 @@ public class JSNativePerspective {
     }
 
     public native String getId()  /*-{
-        return this.@org.uberfire.client.JSNativePerspective::obj.id;
+        return this.@org.uberfire.client.perspective.JSNativePerspective::obj.id;
     }-*/;
 
     public native boolean isDefault()  /*-{
-        if ((typeof this.@org.uberfire.client.JSNativePerspective::obj.is_default === "boolean")) {
-            return this.@org.uberfire.client.JSNativePerspective::obj.is_default;
+        if ((typeof this.@org.uberfire.client.perspective.JSNativePerspective::obj.is_default === "boolean")) {
+            return this.@org.uberfire.client.perspective.JSNativePerspective::obj.is_default;
         }
         return false;
     }-*/;
 
     private native String getPanelTypeAsString()  /*-{
-        return this.@org.uberfire.client.JSNativePerspective::obj.panel_type;
+        return this.@org.uberfire.client.perspective.JSNativePerspective::obj.panel_type;
     }-*/;
 
     private native String getContextDisplayModeAsString()  /*-{
-        return this.@org.uberfire.client.JSNativePerspective::obj.context_display_mode;
+        return this.@org.uberfire.client.perspective.JSNativePerspective::obj.context_display_mode;
     }-*/;
 
     private native String getContextId()  /*-{
-        return this.@org.uberfire.client.JSNativePerspective::obj.context_id;
+        return this.@org.uberfire.client.perspective.JSNativePerspective::obj.context_id;
     }-*/;
 
     public void onOpen() {

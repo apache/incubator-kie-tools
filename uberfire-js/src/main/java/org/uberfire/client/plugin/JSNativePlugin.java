@@ -1,4 +1,4 @@
-package org.uberfire.client;
+package org.uberfire.client.plugin;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,7 +36,7 @@ public class JSNativePlugin {
     }
 
     public native String getId()  /*-{
-        return this.@org.uberfire.client.JSNativePlugin::obj.id;
+        return this.@org.uberfire.client.plugin.JSNativePlugin::obj.id;
     }-*/;
 
     public Element getElement() {
@@ -167,7 +167,7 @@ public class JSNativePlugin {
         }
     }
 
-    static boolean hasTemplate( final JavaScriptObject obj ) {
+    public static boolean hasTemplate( final JavaScriptObject obj ) {
         if ( hasMethod( obj, "template" ) || hasMethod( obj, "templateUrl" ) ) {
             return true;
         }
@@ -175,27 +175,27 @@ public class JSNativePlugin {
         return hasStringProperty( obj, "template" ) || hasStringProperty( obj, "templateUrl" );
     }
 
-    static native boolean hasMethod( final JavaScriptObject obj,
+    public static native boolean hasMethod( final JavaScriptObject obj,
                                      final String methodName )  /*-{
         return ((typeof obj[methodName]) === "function");
     }-*/;
 
-    static native boolean hasStringProperty( final JavaScriptObject obj,
+    public static native boolean hasStringProperty( final JavaScriptObject obj,
                                              final String propertyName )  /*-{
         return ((typeof obj[propertyName]) === "string");
     }-*/;
 
-    static native boolean hasIntProperty( final JavaScriptObject obj,
+    public static native boolean hasIntProperty( final JavaScriptObject obj,
                                           final String propertyName )  /*-{
         return (obj[propertyName] === parseInt(obj[propertyName]));
     }-*/;
 
-    static native boolean hasBooleanProperty( final JavaScriptObject obj,
+    public static native boolean hasBooleanProperty( final JavaScriptObject obj,
                                               final String propertyName )  /*-{
         return ((typeof obj[propertyName]) === "boolean");
     }-*/;
 
-    static native boolean hasArrayProperty( final JavaScriptObject obj,
+    public static native boolean hasArrayProperty( final JavaScriptObject obj,
                                             final String propertyName )  /*-{
         return ((obj.propertyName) instanceof Array);
     }-*/;

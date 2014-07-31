@@ -1,4 +1,4 @@
-package org.uberfire.client;
+package org.uberfire.client.perspective;
 
 import java.util.Collection;
 import java.util.Set;
