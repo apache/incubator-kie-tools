@@ -74,6 +74,10 @@ public class MultiPageEditor
         view.selectPage( index );
     }
 
+    public int selectedPage() {
+        return view.selectedPage();
+    }
+
     public void clear() {
         view.clear();
     }

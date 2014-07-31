@@ -65,9 +65,13 @@ public class MultiPageEditorView
             addShowHandler( new TabPanel.ShowEvent.Handler() {
                 @Override
                 public void onShow( final TabPanel.ShowEvent e ) {
+                    try {
                     final Page.PageView widget = ( (Page.PageView) ( (LayoutPanel) e.getTarget().getTabPane().getWidget( 0 ) ).getWidget( 0 ) );
                     scheduleResize( widget );
                     widget.onFocus();
+                    } catch ( final Exception ex ) {
+
+                    }
                 }
             } );
         }};
@@ -107,6 +111,10 @@ public class MultiPageEditorView
 
     public void selectPage( int index ) {
         tabPanel.selectTab( index );
+    }
+
+    public int selectedPage() {
+        return tabPanel.getSelectedTab();
     }
 
     public void clear() {
