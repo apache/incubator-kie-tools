@@ -12,6 +12,7 @@ import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
@@ -26,7 +27,7 @@ public class RestoreVersionCommandProvider {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    Command getCommand( final Path path ) {
+    public Command getCommand( final Path path ) {
         return new Command() {
             @Override
             public void execute() {
@@ -48,8 +49,8 @@ public class RestoreVersionCommandProvider {
             @Override
             public void callback( final Path restored ) {
                 //TODO {porcelli} close current?
-                busyIndicatorView.hideBusyIndicator();
-                restoreEvent.fire( new RestoreEvent( restored ) );
+//                busyIndicatorView.hideBusyIndicator();
+//                restoreEvent.fire( new RestoreEvent( restored ) );
             }
         };
     }
