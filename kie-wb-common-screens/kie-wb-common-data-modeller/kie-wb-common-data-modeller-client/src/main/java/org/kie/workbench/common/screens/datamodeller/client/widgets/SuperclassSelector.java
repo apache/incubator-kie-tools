@@ -81,7 +81,7 @@ public class SuperclassSelector extends Composite {
 
     public void initList() {
         superclassList.clear();
-        superclassList.addItem("", NOT_SELECTED);
+        superclassList.addItem("", DataModelerUtils.NOT_SELECTED);
 
         if (getDataModel() != null) {
             SortedMap<String, String> sortedModelClasses = new TreeMap<String, String>( );
@@ -89,7 +89,7 @@ public class SuperclassSelector extends Composite {
             boolean isExtensible = false;
             String className;
             String classLabel;
-            String selectedValue = NOT_SELECTED;
+            String selectedValue = DataModelerUtils.NOT_SELECTED;
 
             // first, all data objects form this model in order
             for (DataObjectTO internalDataObject : getDataModel().getDataObjects()) {
@@ -132,4 +132,13 @@ public class SuperclassSelector extends Composite {
             superclassList.setSelectedValue( selectedValue );
         }
     }
+
+    public void refreshList( boolean keepSelection ) {
+        String selectedValue = superclassList.getValue();
+        initList();
+        if ( keepSelection && selectedValue != null ) {
+            superclassList.setSelectedValue( selectedValue );
+        }
+    }
+
 }

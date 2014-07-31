@@ -16,134 +16,210 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.guvnor.messageconsole.events.PublishBaseEvent;
+import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
+import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.BusyPopup;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
+import org.kie.uberfire.client.common.ConcurrentChangePopup;
+import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.kie.uberfire.client.common.MultiPageEditor;
+import org.kie.uberfire.client.common.Page;
 import org.kie.uberfire.client.common.YesNoCancelPopup;
 import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.NewDataObjectPopup;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelReload;
+import org.kie.workbench.common.screens.datamodeller.client.validation.JavaFileNameValidator;
+import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.ShowUsagesPopup;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelSaved;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
+import org.kie.workbench.common.screens.javaeditor.client.widget.EditJavaSourceWidget;
+import org.kie.workbench.common.widgets.client.discussion.VersionRecordManager;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithFileNameAndCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.CopyPopup;
+import org.kie.workbench.common.widgets.client.popups.file.DeletePopup;
+import org.kie.workbench.common.widgets.client.popups.file.FileNameAndCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.RenamePopup;
+import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.events.ResourceAddedEvent;
-import org.uberfire.workbench.events.ResourceCopiedEvent;
-import org.uberfire.workbench.events.ResourceDeletedEvent;
-import org.uberfire.workbench.events.ResourceEvent;
-import org.uberfire.workbench.events.ResourceRenamedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
-import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.*;
+import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
-//@Dependent
-@WorkbenchScreen(identifier = "dataModelerScreen")
+@Dependent
+@WorkbenchEditor( identifier = "DataModelerEditor",
+        supportedTypes = { JavaResourceType.class },
+        priority = Integer.MAX_VALUE )
 public class DataModelerScreenPresenter {
 
     public interface DataModelerScreenView
             extends
-            UberView<DataModelerScreenPresenter> {
+            UberView<DataModelerScreenPresenter>, HasBusyIndicator {
 
         void setContext( DataModelerContext context );
 
         boolean confirmClose();
 
+        void refreshTypeLists( boolean keepCurrentSelection );
     }
 
     @Inject
     private DataModelerScreenView view;
 
-    @Inject
-    private NewDataObjectPopup newDataObjectPopup;
+    //@Inject
+    //private DataModelerOverviewPresenter overview;
 
     @Inject
-    private Caller<DataModelerService> modelerService;
+    private OverviewWidgetPresenter overview;
 
     @Inject
-    private Caller<KieProjectService> projectService;
+    private MultiPageEditor multiPage;
+
+    @Inject
+    private EditJavaSourceWidget javaSourceEditor;
+
+    @Inject
+    @New
+    private FileMenuBuilder menuBuilder;
 
     private Menus menus;
 
     @Inject
-    Event<DataModelerEvent> dataModelerEvent;
+    private VersionRecordManager versionRecordManager;
+
+    @Inject
+    private Event<DataModelerEvent> dataModelerEvent;
 
     @Inject
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
+    private Event<ChangeTitleWidgetEvent> changeTitleNotification;
 
     @Inject
     private Event<UnpublishMessagesEvent> unpublishMessagesEvent;
 
     @Inject
-    private ProjectContext workbenchContext;
+    private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
 
-    private Project currentProject;
+    @Inject
+    private PlaceManager placeManager;
 
-    private DataModelTO dataModel;
+    @Inject
+    private Caller<DataModelerService> modelerService;
+
+    @Inject
+    private ValidatorService validatorService;
+
+    @Inject
+    private JavaFileNameValidator javaFileNameValidator;
+
+    @Inject
+    private JavaResourceType resourceType;
+
+    @Inject
+    private ClientTypeRegistry clientTypeRegistry;
+
+    private ObservablePath path;
+
+    private Metadata metadata;
+
+    private PlaceRequest place;
 
     private DataModelerContext context;
 
     private boolean open = false;
 
-    private Map<String, DataModelTO.TOStatus> onSaveObjectsStatus = new HashMap<String, DataModelTO.TOStatus>();
+    private boolean uiStarted = false;
+
+    private boolean readonly = false;
+
+    private String version;
 
     @Inject
     private SessionInfo sessionInfo;
 
+    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
+
+    private String currentMessageType;
+
+    private static final int OVERVIEW_TAB_INDEX = 0;
+
+    private static final int EDITOR_TAB_INDEX = 1;
+
+    private static final int EDITABLE_SOURCE_TAB = 2;
+
     @WorkbenchPartTitle
     public String getTitle() {
-        return Constants.INSTANCE.modelEditor_screen_name();
+
+        String fileName = FileNameUtil.removeExtension( path, resourceType );
+        /*
+            if ( version != null ) {
+                fileName = fileName + " v" + version;
+            }
+        */
+        return Constants.INSTANCE.modelEditor_screen_name() + " [" + fileName + "]";
     }
 
     @WorkbenchPartView
-    public UberView<DataModelerScreenPresenter> getView() {
-        return view;
+    public IsWidget getView() {
+        return multiPage;
     }
 
     @WorkbenchMenu
@@ -152,12 +228,140 @@ public class DataModelerScreenPresenter {
     }
 
     @OnStartup
-    public void onStartup() {
+    public void onStartup( final ObservablePath path, final PlaceRequest place ) {
         makeMenuBar();
         initContext();
         open = true;
-        cleanSystemMessages();
-        processProjectChange( workbenchContext.getActiveProject() );
+        this.path = path;
+        this.place = place;
+        this.readonly = place.getParameter( "readOnly", null ) == null ? false : true;
+        this.version = place.getParameter( "version", null );
+
+        currentMessageType = "DataModeler" + path.toURI();
+        cleanSystemMessages( getCurrentMessageType() );
+
+        multiPage.clear();
+        multiPage.addPage( new Page( overview.asWidget(),
+                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Overview() ) {
+            @Override public void onFocus() {
+            }
+
+            @Override public void onLostFocus() {
+            }
+        } );
+
+        multiPage.addPage( new Page( view,
+                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.EditTabTitle() ) {
+            @Override
+            public void onFocus() {
+                if ( uiStarted ) {
+                    loadEditorTab();
+                }
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        multiPage.addPage( new Page( javaSourceEditor,
+                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
+            @Override
+            public void onFocus() {
+                if ( uiStarted ) {
+                    loadSourceTab();
+                }
+            }
+
+            @Override
+            public void onLostFocus() {
+            }
+        } );
+
+        javaSourceEditor.addChangeHandler( new ChangeHandler() {
+            @Override public void onChange( ChangeEvent event ) {
+                if ( getContext() != null ) {
+                    getContext().setEditionStatus( DataModelerContext.EditionStatus.SOURCE_CHANGED );
+                    getContext().setDirty( true );
+                }
+            }
+        } );
+
+        initConcurrencyCallbacks( place );
+
+        initVersionSelectionCallback( path );
+
+        loadModel( path,
+                new Command() {
+                    @Override public void execute() {
+                        setSelectedTab( OVERVIEW_TAB_INDEX );
+                    }
+                },
+                new Command() {
+                    @Override public void execute() {
+                        setSelectedTab( OVERVIEW_TAB_INDEX );
+                    }
+                }
+        );
+
+    }
+
+    private void initVersionSelectionCallback( ObservablePath path ) {
+        versionRecordManager.addVersionSelectionCallback( getVersionSelectorChangeCallback( path ) );
+    }
+
+    private void initConcurrencyCallbacks( final PlaceRequest place ) {
+
+        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
+                concurrentUpdateSessionInfo = eventInfo;
+            }
+        } );
+
+        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
+                newConcurrentRename( info.getSource(),
+                        info.getTarget(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( info.getTarget() ),
+                                        true );
+                            }
+                        }
+                ).show();
+            }
+        } );
+
+        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+            @Override
+            public void execute( final ObservablePath.OnConcurrentDelete info ) {
+                newConcurrentDelete( info.getPath(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                placeManager.closePlace( place );
+                            }
+                        }
+                ).show();
+            }
+        } );
     }
 
     @IsDirty
@@ -176,170 +380,386 @@ public class DataModelerScreenPresenter {
     @OnClose
     public void OnClose() {
         open = false;
-        cleanSystemMessages();
+        if ( path != null ) {
+            path.dispose();
+        }
+        path = null;
+        cleanSystemMessages( getCurrentMessageType() );
         clearContext();
     }
 
     /*
      * The common use case, when the user clicks on the "Save" menu.
      */
-    public void onSave() {
+    private void onSave() {
 
-        if ( getContext().isDMOInvalidated() ) {
-
-            //if the DMO was modified by another user we need to give the user the opportunity to force saving his
-            //changes or reload the model.
-
-            newConcurrentUpdate( getContext().getLastDMOUpdate().getProject().getRootPath(),
-                                 getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         //force save.
-                                         saveAndChangeProject( true, null );
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         //cancel
-                                         //the editor remains in current status.
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         //re-open, local changes will be discarded.
-                                         reload();
-                                     }
-                                 }
-                               ).show();
-        } else {
-            //no concurrency problems, we can save the model directly.
-            saveAndChangeProject( false, null );
-        }
-    }
-
-    /*
-     * Less normal use case, when the data modeler is open, and the user selects a distinct project in the project explorer.
-     * The user will have the option to save/discard/or force save prior to navigate to the next project.
-     *
-     */
-    public void onSaveAndChange( final Project changeProject ) {
-
-        if ( getContext().isDMOInvalidated() ) {
-
-            //The user selected to save current modifications prior to open next project, but the DMO was modified.
-            //we need to ask the user if he wants to force writing his changes, or he prefer to discard them.
-
-            final String newProjectURI = changeProject.getRootPath().toURI();
-            final String currentProjectURI = ( currentProject != null ? currentProject.getRootPath().toURI() : "" );
-            final String externalUser = getContext().getLastDMOUpdate() != null ? getSessionInfoIdentity( getContext().getLastDMOUpdate().getSessionInfo() ) : null;
-
-            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Error(),
-
-                                                                                      Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change_force( SafeHtmlUtils.htmlEscape( externalUser != null ? externalUser : "" ), currentProjectURI ),
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              //force my changes to be written and then change the project.
-                                                                                              saveAndChangeProject( true, changeProject );
-                                                                                          }
-                                                                                      },
-                                                                                      Constants.INSTANCE.modelEditor_action_yes_force_save(),
-                                                                                      ButtonType.PRIMARY,
-                                                                                      IconType.PLUS_SIGN,
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              //discard my changes and load next project directly.
-                                                                                              loadProjectDataModel( changeProject );
-                                                                                          }
-                                                                                      },
-                                                                                      Constants.INSTANCE.modelEditor_action_no_discard_changes(),
-                                                                                      ButtonType.DANGER,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null
-                                                                                    );
-            yesNoCancelPopup.setCloseVisible( true );
-            yesNoCancelPopup.show();
-
-        } else {
-            //no problem, save my changes and load next project.
-            saveAndChangeProject( false, changeProject );
-        }
-    }
-
-    /**
-     * This method saves currentProject, and gives the opportunity to load another project after saving, the changeProject.
-     * Also if the overwrite attribute is true, we will ensure that currentProject pojos will overwrite existing ones.
-     * This attribute is used in cases where the project model was concurrently modified during edition and we want
-     * to force a rewriting.
-     * @param overwrite true, ensures that what you see in the UI will be the model after generation. This attribute
-     * is set to true in when we want to force a model rewriting. false, indicates that we'll proceed
-     * as in the normal sequence when the DMO wasn't concurrently modified.
-     * @param changeProject if this parameter is set, currentProject will be saved, and then the changeProject will be
-     * loaded.
-     */
-    private void saveAndChangeProject( final boolean overwrite,
-                                       final Project changeProject ) {
-
-        BusyPopup.showMessage( Constants.INSTANCE.modelEditor_saving() );
-        setOnSaveObjectsStatus();
-
-        modelerService.call(
-                new RemoteCallback<GenerationResult>() {
-                    @Override
-                    public void callback( GenerationResult result ) {
-                        BusyPopup.close();
-                        restoreModelStatus( result );
-                        cleanOnSaveObjectsStatus();
-
-                        Boolean oldDirtyStatus = getContext().isDirty();
-                        getContext().setDirty( false );
-                        getContext().setLastDMOUpdate( null );
-                        getContext().setLastJavaFileChangeEvent( null );
-                        notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
-
-                        if ( changeProject != null ) {
-                            loadProjectDataModel( changeProject );
+        if ( concurrentUpdateSessionInfo != null ) {
+            ConcurrentChangePopup.newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
+                    concurrentUpdateSessionInfo.getIdentity(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            save();
                         }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //cancel?
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            reload( path, true );
+                        }
+                    }
+            ).show();
+        } else {
+            save();
+        }
+    }
 
-                        dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
-                                                                               getDataModel(),
-                                                                               oldDirtyStatus,
-                                                                               getContext().isDirty() ) );
+    private void onSafeDelete() {
 
-                        dataModelerEvent.fire( new DataModelSaved( null, getDataModel() ) );
+        if ( getContext().getEditorModel().getOriginalClassName() != null ) {
+            //if we are about to delete a .java file that could be parsed without errors, and we can calculate the
+            //className we can check for class usages prior to deletion.
+
+            final String className = getContext().getEditorModel().getOriginalClassName();
+            modelerService.call( new RemoteCallback<List<Path>>() {
+
+                @Override public void callback( List<Path> paths ) {
+
+                    if ( paths != null && paths.size() > 0 ) {
+                        //If usages for this class were detected in project assets
+                        //show the confirmation message to the user.
+
+                        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForDeletion(
+                                Constants.INSTANCE.modelEditor_confirm_deletion_of_used_class( className ),
+                                paths,
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        onDelete( path );
+                                    }
+                                },
+                                new Command() {
+                                    @Override public void execute() {
+                                        //do nothing.
+                                    }
+                                }
+                        );
+
+                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.show();
+
+                    } else {
+                        //no usages, just proceed with the deletion.
+                        onDelete( path );
+                    }
+                }
+            } ).findClassUsages( className );
+        } else {
+            //we couldn't parse the class, so no check can be done. Just proceed with the standard
+            //file deletion procedure.
+            onDelete( path );
+        }
+    }
+
+    private void onDelete( final Path path ) {
+        final DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
+            @Override
+            public void execute( final String comment ) {
+                view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting() );
+                modelerService.call( getDeleteSuccessCallback( path ), new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_deleting_error() ) ).delete( path,
+                        comment );
+            }
+        } );
+        popup.show();
+    }
+
+    private void onCopy() {
+        final CopyPopup popup = new CopyPopup( path,
+                javaFileNameValidator,
+                new CommandWithFileNameAndCommitMessage() {
+                    @Override
+                    public void execute( final FileNameAndCommitMessage details ) {
+                        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying() );
+                        modelerService.call( getCopySuccessCallback( path ),
+                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_copying_error() ) ).copy( path,
+                                details.getNewFileName(),
+                                details.getCommitMessage(),
+                                true );
+                    }
+                } );
+        popup.show();
+    }
+
+    private void onSafeRename() {
+
+        if ( getContext().getEditorModel().getOriginalClassName() != null ) {
+            //if we are about to rename a .java file that could be parsed without errors, and we can calculate the
+            //className we can check for class usages prior to renaming and we can also suggest to perform an automatic
+            // class renaming.
+
+            final String className = getContext().getEditorModel().getOriginalClassName();
+
+            modelerService.call( new RemoteCallback<List<Path>>() {
+
+                @Override public void callback( List<Path> paths ) {
+
+                    if ( paths != null && paths.size() > 0 ) {
+                        //If usages for this class were detected in project assets
+                        //show the confirmation message to the user.
+
+                        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming(
+                                Constants.INSTANCE.modelEditor_confirm_renaming_of_used_class( className ),
+                                paths,
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        onRename();
+                                    }
+                                },
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        //do nothing.
+                                    }
+                                }
+                        );
+
+                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.show();
+
+                    } else {
+                        //no usages, just proceed with the deletion.
+                        onRename();
+                    }
+                }
+            } ).findClassUsages( className );
+        } else {
+            //we couldn't parse the class, so no check can be done. Just proceed with the standard
+            //file renaming procedure.
+            onRename();
+        }
+    }
+
+    private void onRename() {
+        if ( getContext().isDirty() ) {
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                    Constants.INSTANCE.modelEditor_confirm_save_before_rename(),
+                    new Command() {
+                        @Override public void execute() {
+                            rename( true );
+                        }
+                    },
+                    new Command() {
+                        @Override public void execute() {
+                            rename( false );
+                        }
+                    },
+                    new Command() {
+                        @Override public void execute() {
+                            //do nothing.
+                        }
+                    }
+            );
+            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.show();
+        } else {
+            //just rename.
+            rename( false );
+        }
+    }
+
+    private void onValidate() {
+
+        //at validation time we must do the same calculation as if we were about to save.
+        final DataObjectTO[] modifiedDataObject = new DataObjectTO[ 1 ];
+        if ( getContext().isDirty() ) {
+            if ( getContext().isEditorChanged() ) {
+
+                //at save time the source has always priority over the model.
+                //If the source was properly parsed and the editor has changes, we need to send the DataObject
+                //to the server in order to let the source to be updated prior to save.
+                modifiedDataObject[ 0 ] = getContext().getDataObject();
+            } else {
+                //if the source has changes, no update form the UI to the source will be performed.
+                //instead the parsed DataObject must be returned from the server.
+                modifiedDataObject[ 0 ] = null;
+            }
+        }
+
+        modelerService.call( new RemoteCallback<List<ValidationMessage>>() {
+            @Override
+            public void callback( final List<ValidationMessage> results ) {
+                if ( results == null || results.isEmpty() ) {
+                    notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                            NotificationEvent.NotificationType.SUCCESS ) );
+                } else {
+                    ValidationPopup.showMessages( results );
+                }
+            }
+        }, new DefaultErrorCallback() ).validate( getSource(), path, modifiedDataObject[ 0 ] );
+    }
+
+    private RemoteCallback<Path> getCopySuccessCallback( final Path path ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path response ) {
+                view.hideBusyIndicator();
+                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+            }
+        };
+    }
+
+    private RemoteCallback<Path> getDeleteSuccessCallback( final Path path ) {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback( final Path response ) {
+                view.hideBusyIndicator();
+                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+            }
+        };
+    }
+
+    private RemoteCallback<Path> getRenameSuccessCallback( final Path sourcePath ) {
+        return new RemoteCallback<Path>() {
+            @Override
+            public void callback( final Path targetPath ) {
+                view.hideBusyIndicator();
+                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( targetPath ), true );
+            }
+        };
+    }
+
+    private Callback<VersionRecord> getVersionSelectorChangeCallback( final ObservablePath path ) {
+        return new Callback<VersionRecord>() {
+            @Override
+            public void callback( VersionRecord versionRecord ) {
+                DataModelerScreenPresenter.this.path = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap(
+                        PathFactory.newPathBasedOn( path.getFileName(), versionRecord.uri(), path ) );
+
+                version = versionRecord.id();
+
+                readonly = !versionRecordManager.isLatest( versionRecord );
+
+                loadModel( DataModelerScreenPresenter.this.path,
+                        new Command() {
+                            @Override public void execute() {
+                                setSelectedTab( OVERVIEW_TAB_INDEX );
+                            }
+                        },
+                        new Command() {
+                            @Override public void execute() {
+                                setSelectedTab( OVERVIEW_TAB_INDEX );
+                            }
+                        }
+                );
+            }
+        };
+    }
+
+    private void save() {
+
+        //TODO
+        //Additional validations can be performed prior to save the source
+        //1) try to detect className changes and suggest a file renaming to the user.?
+        //2) try to detect package changes and suggest to the user to move the file from directory.
+        //3) If the file cannot be parsed iDt will be save as is, and eventually build errors will be
+        //  shown in the problems window. The same as for the other editors.
+
+        new SaveOperationService().save( path,
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute( final String commitMessage ) {
+
+                        final DataObjectTO[] modifiedDataObject = new DataObjectTO[ 1 ];
+                        if ( getContext().isDirty() ) {
+                            if ( getContext().isEditorChanged() ) {
+
+                                //at save time the source has always priority over the model.
+                                //If the source was properly parsed and the editor has changes, we need to send the DataObject
+                                //to the server in order to let the source to be updated prior to save.
+                                modifiedDataObject[ 0 ] = getContext().getDataObject();
+                            } else {
+                                //if the source has changes, no update form the UI to the source will be performed.
+                                //instead the parsed DataObject must be returned from the server.
+                                modifiedDataObject[ 0 ] = null;
+                            }
+                        }
+                        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Saving() );
+                        modelerService.call( getSaveSuccessCallback( ),
+                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), path, modifiedDataObject[ 0 ], metadata, commitMessage );
+                    }
+                }
+        );
+    }
+
+    private RemoteCallback<GenerationResult> getSaveSuccessCallback( ) {
+        return new RemoteCallback<GenerationResult>() {
+
+            @Override
+            public void callback( GenerationResult result ) {
+
+                view.hideBusyIndicator();
+                concurrentUpdateSessionInfo = null;
+                if ( result.hasErrors() ) {
+                    getContext().setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
+                    updateEditorView( null );
+                    getContext().setDataObject( null );
+
+                    if ( isEditorTabSelected() ) {
+                        //un common case
+
+                        showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
+                                true,
+                                result.getErrors(),
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        //return to the source tab
+                                        multiPage.selectPage( EDITABLE_SOURCE_TAB );
+                                    }
+                                } );
 
                     }
-                }, new CleanOnSaveObjectsStatusRemoteCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveModel( getDataModel(), currentProject, overwrite );
-    }
+                } else {
+                    getContext().setParseStatus( DataModelerContext.ParseStatus.PARSED );
+                    if ( getContext().isSourceChanged() ) {
+                        updateEditorView( result.getDataObject() );
+                        getContext().setDataObject( result.getDataObject() );
+                    }
+                    cleanSystemMessages( getCurrentMessageType() );
+                }
 
-    private void setOnSaveObjectsStatus() {
-        cleanOnSaveObjectsStatus();
-        if ( getDataModel() != null ) {
-            for ( DataObjectTO dataObjectTO : getDataModel().getDataObjects() ) {
-                onSaveObjectsStatus.put( dataObjectTO.getClassName(), dataObjectTO.getStatus() );
+                setSource( result.getSource() );
+
+                Boolean oldDirtyStatus = getContext().isDirty();
+                getContext().setDirty( false );
+                setSourceDirty( false );
+                getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+
+                notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
+                dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
+                        getDataModel(),
+                        oldDirtyStatus,
+                        getContext().isDirty() ) );
+
+                dataModelerEvent.fire( new DataModelSaved( null, getDataModel() ) );
+
             }
-            for ( DataObjectTO dataObjectTO : getDataModel().getDeletedDataObjects() ) {
-                onSaveObjectsStatus.put( dataObjectTO.getOriginalClassName(), dataObjectTO.getStatus() );
-            }
-        }
+        };
     }
 
-    private void cleanOnSaveObjectsStatus() {
-        onSaveObjectsStatus.clear();
-    }
+    private void loadModel( final Path path, final Command onParseSuccess, final Command onParseErrors ) {
 
-    private void loadProjectDataModel( final Project project ) {
-
-        BusyPopup.showMessage( Constants.INSTANCE.modelEditor_loading() );
-
-        final Path projectRootPath = project.getRootPath();
+        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
 
         modelerService.call( new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
             @Override
@@ -347,455 +767,411 @@ public class DataModelerScreenPresenter {
 
                 context.setAnnotationDefinitions( defs );
 
-                projectService.call( new RemoteCallback<Collection<Package>>() {
-
-                    public void callback( Collection<Package> packages ) {
-
-                        context.cleanPackages();
-                        context.appendPackages( packages );
-
-                        modelerService.call(
-                                new RemoteCallback<DataModelTO>() {
-
-                                    @Override
-                                    public void callback( DataModelTO dataModel ) {
-                                        BusyPopup.close();
-
-                                        getContext().setDirty( false );
-                                        getContext().setLastDMOUpdate( null );
-                                        getContext().setLastJavaFileChangeEvent( null );
-
-                                        dataModel.setParentProjectName( projectRootPath.getFileName() );
-                                        setDataModel( dataModel );
-                                        notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_loaded( projectRootPath.toURI() ) ) );
-                                        showReadonlyStateInfo();
-                                    }
-
-                                },
-                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel( project );
-
-                    }
-                }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).resolvePackages( project );
+                modelerService.call( getLoadModelSuccessCallback( onParseSuccess, onParseErrors ),
+                        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel( path );
             }
         }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
-                           ).getAnnotationDefinitions();
+        ).getAnnotationDefinitions();
+    }
 
-        currentProject = project;
+    private RemoteCallback<EditorModel> getLoadModelSuccessCallback( final Command onParseSuccess, final Command onParseErrors ) {
+        return new RemoteCallback<EditorModel>() {
+
+            @Override
+            public void callback( EditorModel editorModel ) {
+
+                view.hideBusyIndicator();
+
+                metadata = editorModel.getOverview().getMetadata();
+
+                versionRecordManager.setVersions( editorModel.getOverview().getMetadata().getVersion() );
+
+                overview.setContent( editorModel.getOverview(), clientTypeRegistry.resolve(path) );
+                javaSourceEditor.setReadonly( readonly );
+                getContext().setDirty( false );
+                getContext().setReadonly( readonly );
+                getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+                getContext().setEditorModel( editorModel );
+                setModel( editorModel );
+                if ( editorModel.hasErrors() ) {
+                    publishSystemMessages( getCurrentMessageType(), true, editorModel.getErrors() );
+                }
+                if ( editorModel.getDataObject() != null ) {
+                    onParseSuccess.execute();
+                } else {
+                    onParseErrors.execute();
+                }
+            }
+        };
+    }
+
+    private void rename( final boolean saveCurrentChanges ) {
+
+        final DataObjectTO[] modifiedDataObject = new DataObjectTO[ 1 ];
+        if ( saveCurrentChanges ) {
+            if ( getContext().isDirty() ) {
+                if ( getContext().isEditorChanged() ) {
+                    //at save time the source has always priority over the model.
+                    //If the source was properly parsed and the editor has changes, we need to send the DataObject
+                    //to the server in order to let the source to be updated prior to save.
+                    modifiedDataObject[ 0 ] = getContext().getDataObject();
+                } else {
+                    //if the source has changes, no update form the UI to the source will be performed.
+                    //instead the parsed DataObject must be returned from the server.
+                    modifiedDataObject[ 0 ] = null;
+                }
+            }
+        }
+
+        final RenamePopup popup = new RenamePopup( path,
+                javaFileNameValidator,
+                new CommandWithFileNameAndCommitMessage() {
+                    @Override
+                    public void execute( final FileNameAndCommitMessage details ) {
+                        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Renaming() );
+
+                        modelerService.call( getRenameSuccessCallback( path ),
+                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_renaming_error() ) ).rename( path,
+                                details.getNewFileName(),
+                                details.getCommitMessage(),
+                                true,
+                                saveCurrentChanges,
+                                getSource(), modifiedDataObject[ 0 ], metadata );
+                    }
+                } );
+        popup.show();
     }
 
     public DataModelTO getDataModel() {
-        return dataModel;
+        return context.getDataModel();
     }
 
     public DataModelerContext getContext() {
         return context;
     }
 
-    private void setDataModel( DataModelTO dataModel ) {
-        this.dataModel = dataModel;
-
-        // Set data model helper before anything else
-        if ( dataModel != null ) {
-            context.setDataModel( dataModel );
-            view.setContext( context );
-            if ( dataModel.getDataObjects().size() > 0 ) {
-                dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataModel.getDataObjects().get( 0 ) ) );
-            } else {
-                dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), null ) );
-            }
-        }
+    public String getSource() {
+        return javaSourceEditor.getContent();
     }
 
-    private void onNewDataObject() {
+    public void setSource( String source ) {
+        javaSourceEditor.setContent( source );
+    }
 
-        if ( getContext().isDMOInvalidated() ) {
-            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
-                                 getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         //ignore external changes
-                                         newDataObjectPopup.setContext( getContext() );
-                                         newDataObjectPopup.show();
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         //re-open
-                                         reload();
-                                     }
-                                 }
-                               ).show();
+    private void setSourceDirty( boolean dirty ) {
+        javaSourceEditor.setDirty( dirty );
+    }
+
+    private boolean isEditorTabSelected() {
+        return this.multiPage.selectedPage() == EDITOR_TAB_INDEX;
+    }
+
+    private boolean isSourceTabSelected() {
+        return this.multiPage.selectedPage() == EDITABLE_SOURCE_TAB;
+    }
+
+    private void setSelectedTab( int tabIndex ) {
+        multiPage.selectPage( tabIndex );
+    }
+
+    private void setModel( EditorModel model ) {
+
+        view.setContext( context );
+        setSource( model.getSource() );
+
+        uiStarted = true;
+
+        if ( model.getDataObject() != null ) {
+            getContext().setParseStatus( DataModelerContext.ParseStatus.PARSED );
+            dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), model.getDataObject() ) );
         } else {
-            newDataObjectPopup.setContext( getContext() );
-            newDataObjectPopup.show();
+            getContext().setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
+            dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), null ) );
         }
     }
 
-    private void onProjectContextChange( @Observes final ProjectContextChangeEvent event ) {
-        final Project project = event.getProject();
-        if ( project == null ) {
-            return;
+    private void loadSourceTab() {
+
+        if ( getContext().isParsed() && getContext().isEditorChanged() ) {
+
+            //If there are changes in the ui the source must be regenerated on server side.
+            view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
+            modelerService.call( new RemoteCallback<GenerationResult>() {
+                @Override
+                public void callback( GenerationResult result ) {
+                    view.hideBusyIndicator();
+                    setSource( result.getSource() );
+                    getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+                }
+            }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).updateSource( getSource(), path, getContext().getDataObject() );
+        } else {
+            getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
         }
-        processProjectChange( project );
     }
 
-    private void onDataModelReload( @Observes final DataModelReload event ) {
-        if ( event.isFrom( getDataModel() ) ) {
-            //Some of the related widgets has sent this event in order to re-load the model.
-            reload();
+    private void updateSourceView( String source ) {
+        setSource( source );
+    }
+
+    private void updateEditorView( DataObjectTO dataObjectTO ) {
+        //here we need to check if data object name, or package, changed, etc.
+        //if this is the likely we can show an alert to the user, etc.
+        //also the file should be renamed.
+
+        //test implementation
+        if ( getContext().getDataObject() != null ) {
+            getContext().getDataModel().removeDataObject( getContext().getDataObject().getClassName() );
         }
+        if ( dataObjectTO != null ) {
+            getContext().getDataModel().removeDataObject( dataObjectTO.getClassName() );
+            getContext().getDataModel().getDataObjects().add( dataObjectTO );
+        }
+        dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObjectTO ) );
     }
 
-    private void onResourceAdded( @Observes final ResourceAddedEvent resourceAddedEvent ) {
-        processExternalFileChange( resourceAddedEvent.getSessionInfo(), resourceAddedEvent );
-    }
+    private void loadEditorTab() {
 
-    private void onResourceRenamed( @Observes final ResourceRenamedEvent resourceRenamedEvent ) {
-        processExternalFileChange( resourceRenamedEvent.getSessionInfo(), resourceRenamedEvent );
-    }
+        boolean doParsing = false;
+        if ( getContext().isSourceChanged() ) {
+            //if there has been changes in the source we should try to parse the file and build the data object again.
+            doParsing = true;
+        } else if ( getContext().isNotParsed() ) {
+            //uncommon case, the file wasn't parsed yet.
+            doParsing = true;
+        }
 
-    private void onResourceDeleted( @Observes final ResourceDeletedEvent resourceDeletedEvent ) {
-        processExternalFileChange( resourceDeletedEvent.getSessionInfo(), resourceDeletedEvent );
-    }
+        if ( doParsing ) {
 
-    private void onResourceUpdated( @Observes final ResourceUpdatedEvent resourceUpdatedEvent ) {
-        processExternalFileChange( resourceUpdatedEvent.getSessionInfo(), resourceUpdatedEvent );
-    }
+            view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
 
-    private void onResourceCopied( @Observes final ResourceCopiedEvent resourceCopiedEvent ) {
-        processExternalFileChange( resourceCopiedEvent.getSessionInfo(), resourceCopiedEvent );
-    }
+            //If there are changes in the source, we must try to parse the file.
+            modelerService.call( new RemoteCallback<GenerationResult>() {
+                @Override
+                public void callback( GenerationResult result ) {
+                    view.hideBusyIndicator();
+                    if ( result.hasErrors() ) {
 
-    private void processExternalFileChange( SessionInfo evtSessionInfo,
-                                            ResourceEvent resourceEvent ) {
-        if ( sessionInfo.equals( evtSessionInfo ) && resourceEvent.getPath().getFileName().endsWith( ".java" )
-                && currentProject != null && resourceEvent.getPath().toURI().startsWith( currentProject.getRootPath().toURI() ) ) {
+                        showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors() ,
+                                true,
+                                result.getErrors(),
+                                new Command() {
+                                    @Override public void execute() {
+                                        //return to the source tab
+                                        multiPage.selectPage( EDITABLE_SOURCE_TAB );
+                                        getContext().setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
+                                        updateEditorView( null );
+                                        getContext().setDataObject( null );
+                                    }
+                                } );
 
-            boolean notifyChange = false;
-            Path path = null;
-
-            if ( resourceEvent instanceof ResourceRenamedEvent || resourceEvent instanceof ResourceCopiedEvent ) {
-                //datamodeller never generates these events
-                path = resourceEvent instanceof ResourceRenamedEvent ? ( (ResourceRenamedEvent) resourceEvent ).getDestinationPath() : ( (ResourceCopiedEvent) resourceEvent ).getDestinationPath();
-                notifyChange = true;
-            } else if ( resourceEvent instanceof ResourceAddedEvent ) {
-                path = resourceEvent.getPath();
-                if ( getDataModel() != null ) {
-                    String className = DataModelerUtils.calculateExpectedClassName( currentProject.getRootPath(), resourceEvent.getPath() );
-                    if ( className != null ) {
-                        DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName( className );
-                        if ( dataObjectTO == null || ( dataObjectTO.isVolatile() && !onSaveObjectsStatus.containsKey( className ) ) ) {
-                            notifyChange = true;
-                        }
+                    } else {
+                        //ok, we can reload the editor tab.
+                        getContext().setParseStatus( DataModelerContext.ParseStatus.PARSED );
+                        updateEditorView( result.getDataObject() );
+                        setSourceDirty( false );
+                        getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+                        getContext().setDataObject( result.getDataObject() );
+                        cleanSystemMessages( getCurrentMessageType() );
                     }
                 }
-            } else if ( resourceEvent instanceof ResourceDeletedEvent ) {
-                path = resourceEvent.getPath();
-                if ( getDataModel() != null ) {
-                    String className = DataModelerUtils.calculateExpectedClassName( currentProject.getRootPath(), resourceEvent.getPath() );
-                    if ( className != null ) {
-                        DataObjectTO dataObjectTO = getDataModel().getDataObjectByClassName( className );
-                        if ( dataObjectTO != null ) {
-                            notifyChange = true;
-                        } else {
-                            for ( DataObjectTO deletedObject : getDataModel().getDeletedDataObjects() ) {
-                                if ( className.equals( deletedObject.getClassName() ) && !onSaveObjectsStatus.containsKey( deletedObject.getClassName() ) ) {
-                                    notifyChange = true;
-                                    break;
-                                }
+            }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).updateDataObject( getContext().getDataObject(), getSource(), path );
+        } else {
+            //no changes in the source tab
+            getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+
+            if ( getContext().isParseErrors() ) {
+                //there are parse errors, the editor tab couldn't be loaded.  (errors are already published)
+                showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
+                        false,
+                        null,
+                        new Command() {
+                            @Override public void execute() {
+                                multiPage.selectPage( EDITABLE_SOURCE_TAB );
                             }
-                        }
+                        } );
+            }
+        }
+    }
+
+    private void showParseErrorsDialog( final String message, final boolean publishErrors, final List<DataModelerError> errors, final Command command ) {
+
+        if ( publishErrors && errors != null && !errors.isEmpty() ) {
+            publishSystemMessages( getCurrentMessageType(), true, errors );
+        }
+
+        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                message,
+                new Command() {
+                    @Override
+                    public void execute() {
+                        command.execute();
                     }
-                }
-            } else if ( resourceEvent instanceof ResourceUpdatedEvent ) {
-                //TODO:
-                //at the moment the only editor that can update a .java file in this same session and same user is the
-                //datamodeller. So when we reach this point it means that the ResourceUpdateEvent for this .java file
-                //was produced when this datamodeler screen updated the file. Also this case is produced only when
-                //the datamodeller modifies one file. (if more than one file is deleted, modified, created, a
-                // ResourceBatchChangesEvent is produced instead.
-                // So no extra control is needed in this case.
-
-                //modelerService.call( new FileVerificationRemoteCallback(evtSessionInfo, resourceEvent.getPath()),
-                //new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).verifiesHash(resourceEvent.getPath());
-            }
-
-            if ( notifyChange ) {
-                InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent( sessionInfo, currentProject, path );
-                getContext().setLastJavaFileChangeEvent( event );
-                if ( getContext().isDirty() ) {
-                    notifyExternalDMOChange( event );
-                }
-            }
-        }
-    }
-
-    private class CleanOnSaveObjectsStatusRemoteCallback extends DataModelerErrorCallback {
-
-        public CleanOnSaveObjectsStatusRemoteCallback() {
-        }
-
-        public CleanOnSaveObjectsStatusRemoteCallback( String localMessage ) {
-            super( localMessage );
-        }
-
-        @Override
-        public boolean error( final Message message,
-                              final Throwable throwable ) {
-            cleanOnSaveObjectsStatus();
-            return super.error( message, throwable );
-        }
-    }
-
-    private class FileVerificationRemoteCallback implements RemoteCallback<Boolean> {
-
-        private SessionInfo sessionInfo;
-
-        private Path path;
-
-        private FileVerificationRemoteCallback() {
-        }
-
-        public FileVerificationRemoteCallback( SessionInfo sessionInfo,
-                                               Path path ) {
-            this.sessionInfo = sessionInfo;
-            this.path = path;
-        }
-
-        @Override
-        public void callback( Boolean verifiesHash ) {
-            /**
-             if (!verifiesHash) {
-             InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo, currentProject, path);
-             getContext().setLastJavaFileChangeEvent(event);
-
-             if (getContext().isDirty()) {
-             notifyExternalDMOChange(event);
-             }
-             }
-             **/
-        }
+                },
+                CommonConstants.INSTANCE.OK(),
+                null,
+                null,
+                null,
+                null
+        );
+        yesNoCancelPopup.setCloseVisible( false );
+        yesNoCancelPopup.show();
     }
 
     private boolean isOpen() {
         return open;
     }
 
-    /**
-     * This method is invoked when we detect that currentProject changed. Current project can change due to the following
-     * two scenarios.
-     * 1) The window is being opened at this moment, so we need to load the newProject for the first time.
-     * 2) The window was already opened and the user navigated to another project with the project explorer.
-     */
-    private void processProjectChange( final Project newProject ) {
-
-        if ( newProject != null && isOpen() && currentProjectChanged( newProject )) {
-
-            //the project has changed and we have pending changes to save.
-            final String newProjectURI = newProject.getRootPath().toURI();
-            final String currentProjectURI = ( currentProject != null ? currentProject.getRootPath().toURI() : "" );
-            if ( getContext() != null && getContext().isDirty() ) {
-                //when the project changed, and the current project is dirty we give the opportunity to the user
-                //to save current changes prior to open the destination project.
-                YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
-                                                                                          Constants.INSTANCE.modelEditor_confirm_save_model_before_project_change( currentProjectURI,
-                                                                                                                                                                   newProjectURI ),
-                                                                                          new Command() {
-                                                                                              @Override
-                                                                                              public void execute() {
-                                                                                                  //ok, the user wants to save current changes and then open next project.
-                                                                                                  //save current project and open the new project.
-                                                                                                  onSaveAndChange( newProject );
-                                                                                              }
-                                                                                          },
-                                                                                          new Command() {
-                                                                                              @Override
-                                                                                              public void execute() {
-                                                                                                  //not save current changes, simply open the new project.
-                                                                                                  loadProjectDataModel( newProject );
-                                                                                              }
-                                                                                          },
-                                                                                          null
-                                                                                        );
-                yesNoCancelPopup.setCloseVisible( false );
-                yesNoCancelPopup.show();
-            } else if ( currentProject != null ) {
-                //no pending changes, so simply notify the user that another project will be opened.
-                YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                                                                                          Constants.INSTANCE.modelEditor_notify_project_change( currentProjectURI, newProjectURI ),
-                                                                                          new Command() {
-                                                                                              @Override
-                                                                                              public void execute() {
-                                                                                                  //simply open the new project.
-                                                                                                  loadProjectDataModel( newProject );
-                                                                                              }
-                                                                                          },
-                                                                                          CommonConstants.INSTANCE.OK(),
-                                                                                          null,
-                                                                                          null,
-                                                                                          null,
-                                                                                          null
-                                                                                        );
-                yesNoCancelPopup.setCloseVisible( false );
-                yesNoCancelPopup.show();
-            } else {
-                //if currentProject is null, we are at the window opening type, simply load the data model
-                //to start working.
-                loadProjectDataModel( newProject );
-            }
-        } else {
-            //TODO check if this is possible. By definition we will always have a path.
+    private void reload( final ObservablePath targetPath, final boolean cleanConcurrencyInfo ) {
+        if ( cleanConcurrencyInfo ) {
+            concurrentUpdateSessionInfo = null;
         }
-    }
 
-    private boolean currentProjectChanged( final Project newProject ) {
-        if ( currentProject == null ) {
-            return true;
+        if ( path != targetPath ) {
+            //we are about to reload to a new path
+            this.path.dispose();
+            this.path = targetPath;
+            initConcurrencyCallbacks( place );
+            initVersionSelectionCallback( this.path );
         }
-        return !newProject.getRootPath().equals( currentProject.getRootPath() );
-    }
+        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
 
-    private void processDMOChange( @Observes InvalidateDMOProjectCacheEvent evt ) {
-        /*
-        Window.alert("InvalidateDMOProjectCacheEvent was received: \n" +
-                " currentSessionInfo: \n" + printSessionInfo(sessionInfo) +
-                " eventSessionInfo: " + printSessionInfo(evt.getSessionInfo()) + ", path: " + evt.getResourcePath() +
-                " \n eventProject: " + evt.getProject() + " \n" +
-                " eventID: " + evt.getEventId());
-        */
-        //filter if the event is related to current project
-        if ( currentProject != null && currentProject.getRootPath().equals( evt.getProject().getRootPath() ) && sessionInfo != null ) {
-
-            if ( !sessionInfo.equals( evt.getSessionInfo() )
-                    || isDMOChangeSensitivePath( evt.getResourcePath() ) ) {
-                //the project data model oracle was changed because of another user different than me OR
-                //the modification was done by me, executing in the same session but saving the project
-                //likely in the project editor.
-
-                //current project DMO was concurrently modified.
-                getContext().setLastDMOUpdate( evt );
-
-                if ( getContext().isDirty() ) {
-                    notifyExternalDMOChange( evt );
+        loadModel( path,
+                new Command() {
+                    @Override
+                    public void execute() {
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        if ( isEditorTabSelected() ) {
+                            showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
+                                    false,
+                                    getContext().getEditorModel().getErrors(),
+                                    new Command() {
+                                        @Override public void execute() {
+                                            //we need to go directly to the sources tab
+                                            loadSourceTab();
+                                            setSelectedTab( EDITABLE_SOURCE_TAB );
+                                        }
+                                    } );
+                        }
+                    }
                 }
-            } else {
-                //the event was generated when I saved the model
-                getContext().setLastDMOUpdate( null );
+        );
+    }
+
+    private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
+        if ( getContext() != null &&
+                event.isFrom( getContext().getCurrentProject() ) &&
+                event.getCurrentDataObject() != null &&
+                getContext().isParsed() &&
+                isEditorTabSelected() &&
+                getContext().getDataObject() != null &&
+                !getContext().getDataObject().getClassName().equals( event.getCurrentDataObject().getClassName() ) ) {
+
+            //check deleted object is referenced by current data object.
+            if ( validatorService.isReferencedByCurrentObject( event.getCurrentDataObject(), getContext().getDataObject() ) ) {
+                notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataObject_referenced_has_been_deleted(event.getCurrentDataObject().getClassName(), getContext().getDataObject().getClassName()) ) );
+            } else if ( !getDataModel().isExternal( event.getCurrentDataObject().getClassName() ) ) {
+                getDataModel().removeDataObject( event.getCurrentDataObject().getClassName() );
+                view.refreshTypeLists( true );
             }
         }
     }
 
-    boolean isDMOChangeSensitivePath( Path path ) {
-        return path != null &&
-                ( path.getFileName().equals( "pom.xml" ) ||
-                        path.getFileName().endsWith( ".drl" ) ||
-                        path.getFileName().equals( "kmodule.xml" ) ||
-                        path.getFileName().equals( "project.imports" ) ||
-                        path.getFileName().equals( "import.suggestions" ) );
+    private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
+        if ( getContext() != null &&
+                event.isFrom( getContext().getCurrentProject() ) &&
+                event.getCurrentDataObject() != null &&
+                getDataModel() != null &&
+                getDataModel().getDataObjectByClassName( event.getCurrentDataObject().getClassName() ) == null ) {
+
+            getDataModel().getDataObjects().add( event.getCurrentDataObject() );
+            view.refreshTypeLists( true );
+        }
     }
 
-    private void notifyExternalDMOChange( InvalidateDMOProjectCacheEvent evt ) {
-
-        newConcurrentChange( evt.getProject().getRootPath(),
-                             evt.getSessionInfo().getIdentity(),
-                             new Command() {
-                                 @Override
-                                 public void execute() {
-                                     //ignore, do nothing.
-                                 }
-                             },
-                             new Command() {
-                                 @Override
-                                 public void execute() {
-                                     reload();
-                                 }
-                             }
-                           ).show();
-
-    }
-
-    private void reload() {
-        loadProjectDataModel( currentProject );
-    }
-
-    private void restoreModelStatus( GenerationResult result ) {
-        //when the model is saved without errors
-        //clean the deleted dataobjects status, mark all dataobjects as persisted (except readonly objects), etc.
-        getDataModel().setPersistedStatus( false );
-        getDataModel().updateFingerPrints( result.getObjectFingerPrints() );
-    }
-
-    private void cleanSystemMessages() {
+    private void cleanSystemMessages( String currentMessageType ) {
         UnpublishMessagesEvent unpublishMessage = new UnpublishMessagesEvent();
         unpublishMessage.setShowSystemConsole( false );
-        unpublishMessage.setMessageType( "DataModeler" );
+        unpublishMessage.setMessageType( currentMessageType );
         unpublishMessage.setUserId( ( sessionInfo != null && sessionInfo.getIdentity() != null ) ? sessionInfo.getIdentity().getName() : null );
         unpublishMessagesEvent.fire( unpublishMessage );
     }
 
-    private void showReadonlyStateInfo() {
-        final DataModelTO dataModelTO = getDataModel();
-        final List<String> readonlyObjects = new ArrayList<String>();
-        final StringBuilder message = new StringBuilder();
-        boolean isFirst = true;
-
-        message.append( Constants.INSTANCE.modelEditor_notify_externally_modified_objects_read() );
-        message.append( "</BR>" );
-        message.append( "</BR>" );
-
-        if ( dataModelTO != null && dataModelTO.getDataObjects() != null ) {
-            for ( DataObjectTO dataObjectTO : dataModelTO.getDataObjects() ) {
-                if ( dataObjectTO.isExternallyModified() ) {
-                    readonlyObjects.add( dataObjectTO.getClassName() );
-                }
-            }
+    private void publishSystemMessages( String messageType, boolean cleanExisting, List<DataModelerError> errors ) {
+        PublishBatchMessagesEvent publishMessage = new PublishBatchMessagesEvent();
+        publishMessage.setCleanExisting( cleanExisting );
+        publishMessage.setMessageType( messageType );
+        publishMessage.setUserId( ( sessionInfo != null && sessionInfo.getIdentity() != null ) ? sessionInfo.getIdentity().getName() : null );
+        publishMessage.setPlace( PublishBaseEvent.Place.TOP );
+        SystemMessage systemMessage;
+        for ( DataModelerError error : errors ) {
+            systemMessage = new SystemMessage();
+            systemMessage.setMessageType( messageType );
+            systemMessage.setId( error.getId() );
+            systemMessage.setText( error.getMessage() );
+            systemMessage.setPath( error.getFile() );
+            systemMessage.setLevel( error.getLevel() );
+            systemMessage.setLine( error.getLine() );
+            systemMessage.setColumn( error.getColumn() );
+            publishMessage.getMessagesToPublish().add( systemMessage );
         }
-
-        Collections.sort( readonlyObjects );
-        for ( String readonlyObject : readonlyObjects ) {
-            if ( !isFirst ) {
-                message.append( "</BR>" );
-            }
-            message.append( readonlyObject );
-            isFirst = false;
-        }
-
-        if ( readonlyObjects.size() > 0 ) {
-            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                                                                                      message.toString(),
-                                                                                      new Command() {
-                                                                                          @Override
-                                                                                          public void execute() {
-                                                                                              //do nothing.
-                                                                                          }
-                                                                                      },
-                                                                                      CommonConstants.INSTANCE.OK(),
-                                                                                      null,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null
-                                                                                    );
-            yesNoCancelPopup.setCloseVisible( false );
-            yesNoCancelPopup.show();
-        }
+        publishBatchMessagesEvent.fire( publishMessage );
     }
 
     private void makeMenuBar() {
 
-        org.uberfire.mvp.Command saveCommand = new org.uberfire.mvp.Command() {
-            @Override
-            public void execute() {
-                onSave();
-            }
-        };
-
-        menus = MenuFactory
-                .newTopLevelMenu( Constants.INSTANCE.modelEditor_menu_save() )
-                .respondsWith( saveCommand )
-                .endMenu()
+        menus = menuBuilder
+                .addSave( new Command() {
+                    @Override
+                    public void execute() {
+                        onSave();
+                    }
+                } )
+                .addCopy( new Command() {
+                    @Override
+                    public void execute() {
+                        onCopy();
+                    }
+                } )
+                .addRename( new Command() {
+                    @Override
+                    public void execute() {
+                        onSafeRename();
+                    }
+                } )
+                .addDelete( new Command() {
+                    @Override public void execute() {
+                        onSafeDelete();
+                    }
+                } )
+                .addValidate( new Command() {
+                    @Override public void execute() {
+                        onValidate();
+                    }
+                } )
+                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
+                .addCommand( "ShowStatus (testing)", new Command() {
+                    @Override public void execute() {
+                        showStatus();
+                    }
+                } )
+                .addCommand( "TestReload (testing)", new Command() {
+                    @Override public void execute() {
+                        reload( path, true );
+                    }
+                } )
                 .build();
+
+    }
+
+    private void disableMenus() {
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
     }
 
     private void initContext() {
@@ -809,11 +1185,15 @@ public class DataModelerScreenPresenter {
                     }
                 },
                 new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_propertyType_loading_error() )
-                           ).getBasePropertyTypes();
+        ).getBasePropertyTypes();
     }
 
     private void clearContext() {
         context.clear();
+    }
+
+    private String getCurrentMessageType() {
+        return currentMessageType;
     }
 
     private static String printSessionInfo( SessionInfo sessionInfo ) {
@@ -825,5 +1205,40 @@ public class DataModelerScreenPresenter {
 
     private static String getSessionInfoIdentity( SessionInfo sessionInfo ) {
         return sessionInfo != null && sessionInfo.getIdentity() != null ? sessionInfo.getIdentity().getName() : null;
+    }
+
+    private void showStatus() {
+
+        String status = "Editor edition status: \n";
+        status += "dirty:         " + ( getContext() != null ? getContext().isDirty() : null ) + "\n";
+        status += "contextStatus: " + printContextStatus( getContext().getEditionStatus() ) + "\n";
+        status += "parseStatus:   " + printParseStatus( getContext().getParseStatus() ) + "\n";
+        status += "dataModel:     " + getContext().getDataModel() + "\n";
+        status += "dataObject:    " + getContext().getDataObject() + "\n";
+        Window.alert( status );
+    }
+
+    private String printContextStatus( DataModelerContext.EditionStatus editionStatus ) {
+        switch ( editionStatus ) {
+            case NO_CHANGES:
+                return "NO_CHANGES";
+            case EDITOR_CHANGED:
+                return "EDITOR_CHANGED";
+            case SOURCE_CHANGED:
+                return "SOURCE_CHANGED";
+        }
+        return "unknown";
+    }
+
+    private String printParseStatus( DataModelerContext.ParseStatus status ) {
+        switch ( status ) {
+            case PARSED:
+                return "PARSED";
+            case NOT_PARSED:
+                return "NOT_PARSED";
+            case PARSE_ERRORS:
+                return "PARSE_ERRORS";
+        }
+        return "unknown";
     }
 }

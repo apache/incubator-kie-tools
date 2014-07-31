@@ -19,16 +19,19 @@ package org.kie.workbench.common.screens.datamodeller.model;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 @Portable
 public class DataModelTO {
-    
+
     private String parentProjectName;
 
     private List<DataObjectTO> dataObjects = new ArrayList<DataObjectTO>();
+
+    private Map<String, String> sources = new HashMap<String, String>( );
 
     /**
      * List of class names imported by this module.
@@ -41,7 +44,7 @@ public class DataModelTO {
      */
     private List<DataObjectTO> deletedDataObjects = new ArrayList<DataObjectTO>();
 
-    
+
     private static int modelIds = 0;
 
     //only to distinguish models created in memory
@@ -87,7 +90,7 @@ public class DataModelTO {
     public void setDataObjects(List<DataObjectTO> dataObjects) {
         this.dataObjects = dataObjects;
     }
-    
+
     public DataObjectTO getDataObjectByClassName(String className) {
         for (DataObjectTO dataObject : dataObjects) {
             if (dataObject.getClassName() != null && dataObject.getClassName().equals(className)) return dataObject;
@@ -98,6 +101,13 @@ public class DataModelTO {
     public void removeDataObject(DataObjectTO dataObject) {
         getDataObjects().remove(dataObject);
         deletedDataObjects.add(dataObject);
+    }
+
+    public void removeDataObject(String className) {
+        DataObjectTO dataObjectTO;
+        if ( ( dataObjectTO = getDataObjectByClassName( className )) != null) {
+            removeDataObject( dataObjectTO );
+        }
     }
 
     public List<DataObjectTO> getDeletedDataObjects() {
@@ -152,7 +162,7 @@ public class DataModelTO {
     public void setExternalClasses(List<DataObjectTO> externalClasses) {
         this.externalClasses = externalClasses;
     }
-    
+
     public boolean isExternal(String className) {
         if (externalClasses == null || className == null || "".equals(className)) return false;
         for (DataObjectTO externalDataObject : externalClasses) {
@@ -163,6 +173,10 @@ public class DataModelTO {
 
     public int getId() {
         return id;
+    }
+
+    public Map<String, String> getSources() {
+        return sources;
     }
 }
 

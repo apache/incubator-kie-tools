@@ -41,6 +41,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
@@ -48,6 +51,7 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
@@ -58,8 +62,10 @@ import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.backend.vfs.Path;
 
 public class DataObjectEditor extends Composite {
 
@@ -71,9 +77,9 @@ public class DataObjectEditor extends Composite {
     public static final String NOT_SELECTED = "NOT_SELECTED";
 
     private static final String DEFAULT_LABEL_CLASS = "gwt-Label";
-    
+
     private static final String TEXT_ERROR_CLASS = "text-error";
-            
+
     @UiField
     TextBox name;
 
@@ -166,6 +172,9 @@ public class DataObjectEditor extends Composite {
     DataModelerContext context;
 
     @Inject
+    private Caller<DataModelerService> modelerService;
+
+    @Inject
     private ValidatorService validatorService;
 
     private boolean readonly = true;
@@ -184,7 +193,7 @@ public class DataObjectEditor extends Composite {
         typeSafeHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
         timestampHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
         durationHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
-        expires.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        expiresHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
     }
 
     @PostConstruct
@@ -253,6 +262,10 @@ public class DataObjectEditor extends Composite {
         return context;
     }
 
+    private Project getProject() {
+        return getContext() != null ? getContext().getCurrentProject() : null;
+    }
+
     public void setContext( DataModelerContext context ) {
         this.context = context;
         packageSelector.setContext( context );
@@ -261,6 +274,10 @@ public class DataObjectEditor extends Composite {
 
     private DataModelTO getDataModel() {
         return getContext() != null ? getContext().getDataModel() : null;
+    }
+
+    public void refreshTypeList( boolean keepSelection ) {
+        superclassSelector.refreshList( keepSelection );
     }
 
     private void setReadonly(boolean readonly) {
@@ -338,7 +355,7 @@ public class DataObjectEditor extends Composite {
 
             loadTimestamp( dataObject );
 
-            setReadonly( false );
+            setReadonly( getContext() == null || getContext().isReadonly() );
         }
     }
 
@@ -370,18 +387,6 @@ public class DataObjectEditor extends Composite {
         }
     }
 
-    private void onDataObjectDeleted( @Observes DataObjectDeletedEvent event ) {
-        // When all objects from current model have been deleted clean
-        if ( event.isFrom( getDataModel() ) ) {
-            if ( getDataModel().getDataObjects().size() == 0 ) {
-                clean();
-                setDataObject( null );
-                setReadonly( true );
-            }
-            superclassSelector.initList();
-        }
-    }
-
     private void onDataObjectFieldCreated(@Observes DataObjectFieldCreatedEvent event) {
         updateFieldDependentSelectors( event, event.getCurrentDataObject(), event.getCurrentField() );
     }
@@ -403,8 +408,8 @@ public class DataObjectEditor extends Composite {
 
     // Event notifications
     private void notifyObjectChange( String memberName,
-                                     Object oldValue,
-                                     Object newValue ) {
+            Object oldValue,
+            Object newValue ) {
         DataObjectChangeEvent changeEvent = new DataObjectChangeEvent( DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, newValue );
         // Notify helper directly
         getContext().getHelper().dataModelChanged( changeEvent );
@@ -421,6 +426,56 @@ public class DataObjectEditor extends Composite {
 
         // Set widgets to errorpopup for styling purposes etc.
         nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+
+        final String packageName = getDataObject().getPackageName();
+        final String oldValue = getDataObject().getName();
+        final String newValue = name.getValue();
+
+        final String originalClassName = getContext() != null ? getContext().getEditorModel().getOriginalClassName() : null;
+        final String fieldName = oldValue;
+
+        if ( originalClassName != null ) {
+            modelerService.call( new RemoteCallback<List<Path>>() {
+
+                @Override public void callback( List<Path> paths ) {
+
+                    if ( paths != null && paths.size() > 0 ) {
+                        //If usages for this field were detected in project assets
+                        //show the confirmation message to the user.
+
+                        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming(
+                                Constants.INSTANCE.modelEditor_confirm_renaming_of_used_class( originalClassName ),
+                                paths,
+                                new org.uberfire.mvp.Command() {
+                                    @Override
+                                    public void execute() {
+                                        doClassNameChange( packageName, oldValue, newValue );
+                                    }
+                                },
+                                new org.uberfire.mvp.Command() {
+                                    @Override public void execute() {
+                                        //do nothing.
+                                        name.setValue( oldValue );
+                                    }
+                                }
+                        );
+
+                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.show();
+
+                    } else {
+                        //no usages, just proceed with the deletion.
+                        doClassNameChange( packageName, oldValue, newValue );
+                    }
+                }
+            } ).findClassUsages( originalClassName );
+        } else {
+            doClassNameChange( packageName, oldValue, fieldName );
+        }
+    }
+
+    private void doClassNameChange(final String packageName, final String oldValue, final String newValue) {
+
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
@@ -428,10 +483,6 @@ public class DataObjectEditor extends Composite {
                 name.selectAll();
             }
         };
-
-        final String packageName = getDataObject().getPackageName();
-        final String oldValue = getDataObject().getName();
-        final String newValue = name.getValue();
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
         if ( oldValue.equals( newValue ) ) {
@@ -462,6 +513,7 @@ public class DataObjectEditor extends Composite {
                 } );
             }
         } );
+
     }
 
     @UiHandler("label")

@@ -22,6 +22,7 @@
 
   <inherits name="org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI" />
   <inherits name="org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringAPI" />
+  <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleAPI" />
 
   <source path="model"/>
   <source path="service"/>

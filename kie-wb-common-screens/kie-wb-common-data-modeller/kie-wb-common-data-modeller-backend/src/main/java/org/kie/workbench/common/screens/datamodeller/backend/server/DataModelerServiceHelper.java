@@ -19,9 +19,16 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.guvnor.messageconsole.events.SystemMessage;
+import org.jboss.forge.roaster.model.SyntaxError;
 import org.kie.workbench.common.screens.datamodeller.model.*;
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.core.impl.*;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.java.nio.file.Path;
 
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -49,7 +56,7 @@ public class DataModelerServiceHelper {
         return dataModel;
     }
 
-    public DataModelTO domain2To(DataModel dataModel, DataModelTO.TOStatus initialStatus, boolean calculateFingerprints) throws Exception {
+    public DataModelTO domain2To(DataModel dataModel, Map<String, Path> classPaths, DataModelTO.TOStatus initialStatus, boolean calculateFingerprints) throws Exception {
         DataModelTO dataModelTO = new DataModelTO();
         List<DataObject> dataObjects = new ArrayList<DataObject>();
         List<DataObject> externalDataObjects = new ArrayList<DataObject>();
@@ -71,6 +78,7 @@ public class DataModelerServiceHelper {
                 if (calculateFingerprints) {
                     dataObjectTO.setFingerPrint(calculateFingerPrint(dataObjectTO.getStringId()));
                 }
+                if (classPaths != null && classPaths.get(dataObjectTO.getClassName()) != null) dataObjectTO.setPath(Paths.convert(classPaths.get( dataObjectTO.getClassName() ))) ;
             }
         }
 
@@ -92,6 +100,7 @@ public class DataModelerServiceHelper {
 
     public void domain2To(DataObject dataObject, DataObjectTO dataObjectTO, DataModelTO.TOStatus initialStatus) {
         dataObjectTO.setName(dataObject.getName());
+        dataObjectTO.setPackageName( dataObject.getPackageName() );
         dataObjectTO.setOriginalClassName(dataObject.getClassName());
         dataObjectTO.setSuperClassName(dataObject.getSuperClassName());
         List<ObjectProperty> properties = new ArrayList<ObjectProperty>();
@@ -266,6 +275,69 @@ public class DataModelerServiceHelper {
             }
         }
         return deletions;
+    }
+
+    public List<DataModelerError> toDataModelerError( List<ModelDriverError> errors) {
+        List<DataModelerError> result = new ArrayList<DataModelerError>( );
+        if (errors == null) return result;
+
+        for ( ModelDriverError error : errors ) {
+            DataModelerError dataModelerError = new DataModelerError(
+                    error.getId(),
+                    error.getMessage(),
+                    SystemMessage.Level.ERROR,
+                    Paths.convert( error.getFile() ),
+                    error.getLine(),
+                    error.getColumn() );
+            result.add( dataModelerError );
+        }
+        return result;
+    }
+
+    public List<DataModelerError> toDataModelerError( List<SyntaxError> syntaxErrors, Path file ) {
+        List<DataModelerError> errors = new ArrayList<DataModelerError>(  );
+        DataModelerError error;
+        for (SyntaxError syntaxError : syntaxErrors) {
+            error = new DataModelerError( syntaxError.getDescription(),
+                    syntaxError.isError() ? SystemMessage.Level.ERROR : SystemMessage.Level.WARNING,
+                    Paths.convert( file ) );
+            error.setColumn( syntaxError.getColumn() );
+            error.setLine( syntaxError.getLine() );
+            errors.add( error );
+        }
+        return errors;
+    }
+
+    public List<ValidationMessage> toValidationMessage( List<DataModelerError> errors ) {
+        List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>(  );
+        ValidationMessage validationMessage;
+
+        if ( errors == null ) return validationMessages;
+        for ( DataModelerError error : errors ) {
+            validationMessage = new ValidationMessage();
+            validationMessage.setPath( error.getFile() );
+            validationMessage.setText( error.getMessage() );
+            validationMessage.setColumn( error.getColumn() );
+            validationMessage.setLine( error.getLine() );
+            validationMessage.setId( error.getId() );
+            if ( error.getLevel() != null ) {
+                switch ( error.getLevel() ) {
+                    case ERROR:
+                        validationMessage.setLevel( ValidationMessage.Level.ERROR );
+                        break;
+                    case WARNING:
+                        validationMessage.setLevel( ValidationMessage.Level.WARNING );
+                        break;
+                    case INFO:
+                        validationMessage.setLevel( ValidationMessage.Level.INFO );
+                        break;
+                    default:
+                        validationMessage.setLevel( ValidationMessage.Level.ERROR );
+                }
+            }
+            validationMessages.add( validationMessage );
+        }
+        return validationMessages;
     }
 
 }

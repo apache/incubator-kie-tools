@@ -18,68 +18,67 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-        >
+    >
 
-    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-    <gwt:HTMLPanel>
+  <gwt:HTMLPanel>
 
-            <gwt:VerticalPanel ui:field="mainPanel" styleName="row-fluid">
-                <gwt:SimplePanel ui:field="breadCrumbsPanel"></gwt:SimplePanel>
-                <!--datamodeler:DataObjectBreadcrums  divider=">" ui:field="dataObjectNavigation"/-->
+    <gwt:VerticalPanel ui:field="mainPanel" styleName="row-fluid">
+      <!--gwt:SimplePanel ui:field="breadCrumbsPanel"></gwt:SimplePanel-->
 
-                <gwt:HTMLPanel>
-                    <!--div class="well" style="margin-top:20px;"-->
-                    <div class="well well-small">
+      <gwt:HTMLPanel>
+        <!--div class="well" style="margin-top:20px;"-->
+        <div class="well well-small">
 
-                        <h5>
-                            <gwt:Label ui:field="newPropertyHeader" text="{i18n.objectBrowser_createProperty}"/>
-                        </h5>
+          <h5>
+            <gwt:Label ui:field="newPropertyHeader" text="{i18n.objectBrowser_createProperty}"/>
+          </h5>
 
-                        <div class="well">
-                            <table>
-                                <tr>
-                                    <td style="white-space: nowrap; vertical-align: top;">
-                                        <gwt:Label ui:field="newPropertyIdLabel" text="{i18n.objectBrowser_idLabel}"/>
-                                    </td>
-                                    <td style="padding-left: 4px;">
-                                        <b:TextBox ui:field="newPropertyId" placeholder="{i18n.java_id_placeholder}"/>
-                                    </td>
-                                    <td align="right" style="padding-left: 15px; white-space: nowrap; vertical-align: top;">
-                                        <gwt:Label ui:field="newPropertyLabelLabel" text="{i18n.objectBrowser_labelLabel}"/>
-                                    </td>
-                                    <td align="right" style="padding-left: 4px;">
-                                        <b:TextBox ui:field="newPropertyLabel" placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="white-space: nowrap; vertical-align: top;">
-                                        <gwt:Label ui:field="newPropertyTypeLabel" text="{i18n.objectBrowser_typeLabel}"/>
-                                    </td>
-                                    <td style="padding-left: 4px;">
-                                        <b:ListBox ui:field="newPropertyType"></b:ListBox>
-                                    </td>
-                                    <td colspan="2" align="right" style="padding-left: 4px;">
-                                        <b:Button ui:field="newPropertyButton" styleName="btn btn-primary" text="{i18n.objectBrowser_create}"/>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+          <div class="well">
+            <table>
+              <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                  <gwt:Label ui:field="newPropertyIdLabel" text="{i18n.objectBrowser_idLabel}"/>
+                </td>
+                <td style="padding-left: 4px;">
+                  <b:TextBox ui:field="newPropertyId" placeholder="{i18n.java_id_placeholder}"/>
+                </td>
+                <td align="right" style="padding-left: 15px; white-space: nowrap; vertical-align: top;">
+                  <gwt:Label ui:field="newPropertyLabelLabel" text="{i18n.objectBrowser_labelLabel}"/>
+                </td>
+                <td align="right" style="padding-left: 4px;">
+                  <b:TextBox ui:field="newPropertyLabel" placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
+                </td>
+              </tr>
+              <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                  <gwt:Label ui:field="newPropertyTypeLabel" text="{i18n.objectBrowser_typeLabel}"/>
+                </td>
+                <td style="padding-left: 4px;">
+                  <b:ListBox ui:field="newPropertyType"></b:ListBox>
+                </td>
+                <td colspan="2" align="right" style="padding-left: 4px;">
+                  <b:Button ui:field="newPropertyButton" styleName="btn btn-primary" text="{i18n.objectBrowser_create}"/>
+                </td>
+              </tr>
+            </table>
+          </div>
 
-                        <h5>
-                            <gwt:Label ui:field="objectName" ></gwt:Label>
-                        </h5>
+          <h5>
+            <gwt:Label ui:field="objectName" ></gwt:Label>
+          </h5>
 
-                        <gwt:ScrollPanel width="100%" height="408px">
-                            <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
-                        </gwt:ScrollPanel>
+          <gwt:ScrollPanel width="100%" height="460px">
+            <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
+          </gwt:ScrollPanel>
 
-                        <!--b:SimplePager ui:field="pager" display="{dataObjectPropertiesTable}"  /-->
+          <!--b:SimplePager ui:field="pager" display="{dataObjectPropertiesTable}"  /-->
 
-                    </div>
-                </gwt:HTMLPanel>
+        </div>
+      </gwt:HTMLPanel>
 
-            </gwt:VerticalPanel>
+    </gwt:VerticalPanel>
 
-    </gwt:HTMLPanel>
+  </gwt:HTMLPanel>
 </ui:UiBinder>

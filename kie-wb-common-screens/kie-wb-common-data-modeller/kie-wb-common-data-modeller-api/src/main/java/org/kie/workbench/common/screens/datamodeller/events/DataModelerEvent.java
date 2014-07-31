@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
+import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -30,8 +31,10 @@ public class DataModelerEvent {
 
     protected ObjectPropertyTO currentField;
 
+    protected Project currentProject;
+
     protected String source;
-    
+
     public static final String DATA_MODEL_BROWSER = "DATA_MODEL_BROWSER";
 
     public static final String DATA_MODEL_BREAD_CRUMB = "DATA_MODEL_BREAD_CRUMB";
@@ -45,7 +48,7 @@ public class DataModelerEvent {
     public static final String NEW_DATA_OBJECT_POPUP = "NEW_DATA_OBJECT_POPUP";
 
     private static int eventIds = 0;
-    
+
     private int id = eventIds++;
 
     public DataModelerEvent() {
@@ -62,6 +65,11 @@ public class DataModelerEvent {
         this.currentModel = currentModel;
         this.currentDataObject = currentDataObject;
         this.currentField = currentField;
+    }
+
+    public DataModelerEvent( Project currentProject, DataObjectTO currentDataObject ) {
+        this.currentProject = currentProject;
+        this.currentDataObject = currentDataObject;
     }
 
     public DataModelTO getCurrentModel() {
@@ -96,15 +104,24 @@ public class DataModelerEvent {
         this.source = source;
     }
 
+    public Project getCurrentProject() {
+        return currentProject;
+    }
+
+    public void setCurrentProject( Project currentProject ) {
+        this.currentProject = currentProject;
+    }
+
     public boolean isFrom(DataModelTO dataModel) {
-        return dataModel != null && dataModel.getId() == getCurrentModel().getId();
+        return currentModel != null && dataModel != null && currentModel.getId() == dataModel.getId();
+    }
+
+    public boolean isFrom(Project project) {
+        return currentProject != null && currentProject.equals( project );
     }
 
     public boolean isFrom(String source) {
-        if (source != null) {
-            return source.equals(this.source);
-        }
-        return source == this.source;
+        return source != null && source.equals( source );
     }
 
     public int getId() {

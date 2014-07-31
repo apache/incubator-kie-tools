@@ -127,8 +127,8 @@ public class DataModelBrowser extends Composite {
 
             @Override
             public void render( Cell.Context context,
-                                DataObjectTO object,
-                                SafeHtmlBuilder sb ) {
+                    DataObjectTO object,
+                    SafeHtmlBuilder sb ) {
                 SafeHtml startDiv = new SafeHtml() {
                     @Override
                     public String asString() {
@@ -171,8 +171,8 @@ public class DataModelBrowser extends Composite {
 
         deleteDataObjectColumnImg.setFieldUpdater( new FieldUpdater<DataObjectTO, ImageResource>() {
             public void update( final int index,
-                                final DataObjectTO object,
-                                final ImageResource value ) {
+                    final DataObjectTO object,
+                    final ImageResource value ) {
                 checkAndDeleteDataObject(object, index);
             }
         } );
@@ -228,7 +228,7 @@ public class DataModelBrowser extends Composite {
     }
 
     private void setTooltip( Widget w,
-                             String message ) {
+            String message ) {
         Tooltip tooltip = new Tooltip();
         tooltip.setWidget( w );
         tooltip.setText( message );
@@ -294,7 +294,7 @@ public class DataModelBrowser extends Composite {
 
     @UiHandler("newEntityButton")
     void newEntityClick( ClickEvent event ) {
-
+        /*
         if (getContext().isDMOInvalidated()) {
             newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
                     getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
@@ -312,10 +312,10 @@ public class DataModelBrowser extends Composite {
                         }
                     }
             ).show();
-        } else {
-            newDataObjectPopup.setContext( getContext() );
-            newDataObjectPopup.show();
-        }
+        } else {*/
+        newDataObjectPopup.setContext( getContext() );
+        newDataObjectPopup.show();
+        //}
 
     }
 
@@ -342,6 +342,7 @@ public class DataModelBrowser extends Composite {
     }
 
     private void checkAndDeleteDataObject(final DataObjectTO dataObject, final int index) {
+        /*
         if (getContext().isDMOInvalidated()) {
             newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
                     getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
@@ -358,13 +359,13 @@ public class DataModelBrowser extends Composite {
                         }
                     }
             ).show();
-        } else {
-            deleteDataObject(dataObject, index);
-        }
+        } else {*/
+        deleteDataObject(dataObject, index);
+        //}
     }
 
     private void deleteDataObject( final DataObjectTO dataObjectTO,
-                                   final int index ) {
+            final int index ) {
 
         Collection<String> refs = validatorService.getDataObjectExternalReferences(getContext(), dataObjectTO, getDataModel());
         if ( refs != null && refs.size() > 0) {

@@ -46,7 +46,7 @@ public class ValidatorService {
 
     // TODO Generify this!!
     public void isValidIdentifier( final String identifier,
-                                   final ValidatorCallback callback ) {
+            final ValidatorCallback callback ) {
         validationService.call(
                 new RemoteCallback<Map<String, Boolean>>() {
                     @Override
@@ -60,12 +60,12 @@ public class ValidatorService {
                     }
                 },
                 new DataModelerErrorCallback( "An error occurred during the server validation process" )
-                              )
+        )
                 .evaluateIdentifiers( new String[]{ identifier } );
     }
 
     public void isValidPackageIdentifier( String identifier,
-                                          final ValidatorCallback callback ) {
+            final ValidatorCallback callback ) {
         String[] packageTerms = DataModelerUtils.getPackageTerms( identifier );
         validationService.call(
                 new RemoteCallback<Map<String, Boolean>>() {
@@ -82,7 +82,7 @@ public class ValidatorService {
                     }
                 },
                 new DataModelerErrorCallback( "An error occurred during the server validation process" )
-                              )
+        )
                 .evaluateIdentifiers( packageTerms );
     }
 
@@ -105,9 +105,9 @@ public class ValidatorService {
     }
 
     public void isUniqueEntityName( String packageName,
-                                    String name,
-                                    DataModelTO model,
-                                    ValidatorCallback callback ) {
+            String name,
+            DataModelTO model,
+            ValidatorCallback callback ) {
         Boolean b = Boolean.TRUE;
         String className = assembleClassName( packageName, name );
         for ( DataObjectTO d : model.getDataObjects() ) {
@@ -126,8 +126,8 @@ public class ValidatorService {
     // TODO add a validation in order to avoid cyclic extensions
 
     public void isUniqueAttributeName( String name,
-                                       DataObjectTO object,
-                                       ValidatorCallback callback ) {
+            DataObjectTO object,
+            ValidatorCallback callback ) {
         for ( ObjectPropertyTO prop : object.getProperties() ) {
             if ( prop.getName().equalsIgnoreCase( name ) ) {
                 callback.onFailure();
@@ -138,9 +138,9 @@ public class ValidatorService {
     }
 
     public void canExtend( DataModelerContext context,
-                           String siblingCandidateName,
-                           String parentCandidateName,
-                           ValidatorCallback callback ) {
+            String siblingCandidateName,
+            String parentCandidateName,
+            ValidatorCallback callback ) {
         if ( context.getHelper().isAssignableFrom( siblingCandidateName, parentCandidateName ) ) {
             callback.onSuccess();
         } else {
@@ -149,7 +149,7 @@ public class ValidatorService {
     }
 
     public void isValidPosition( String position,
-                                 ValidatorCallback callback ) {
+            ValidatorCallback callback ) {
         int i = -1;
         if ( position == null || position.length() == 0 ) {
             i = 0;  // null or empty String is allowed
@@ -165,13 +165,40 @@ public class ValidatorService {
         }
     }
 
+    public boolean isReferencedByCurrentObject( DataModelerContext context,
+            DataObjectTO referencedObject,
+            DataModelTO model,
+            DataObjectTO currentObject ) {
+        Collection<String> self = new ArrayList<String>(1);
+        self.add( referencedObject.getClassName() );
+        Collection<String> refs = context.getHelper().getDataObjectReferences( referencedObject.getClassName() );
+        refs.removeAll( self );
+
+        return refs.contains( currentObject.getClassName() );
+    }
+
+    public boolean isReferencedByCurrentObject( DataObjectTO referencedObject,
+            DataObjectTO currentObject ) {
+
+        if ( currentObject.getSuperClassName() != null && currentObject.getSuperClassName().equals( referencedObject.getClassName() )) return true;
+
+        if ( currentObject.getProperties() != null ) {
+            for ( ObjectPropertyTO propertyTO : currentObject.getProperties() ) {
+                if ( propertyTO.getClassName().equals( referencedObject.getClassName() ) ) return true;
+            }
+        }
+        return false;
+    }
+
+
     public Collection<String> getDataObjectExternalReferences( DataModelerContext context,
-                                     DataObjectTO object,
-                                     DataModelTO model ) {
+            DataObjectTO object,
+            DataModelTO model ) {
         Collection<String> self = new ArrayList<String>(1);
         self.add( object.getClassName() );
         Collection<String> refs = context.getHelper().getDataObjectReferences( object.getClassName() );
         refs.removeAll( self );
         return refs;
     }
+
 }

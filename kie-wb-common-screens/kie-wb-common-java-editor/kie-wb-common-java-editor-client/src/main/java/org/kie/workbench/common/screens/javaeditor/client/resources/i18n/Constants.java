@@ -8,4 +8,7 @@ public interface Constants extends Messages {
     public static final Constants INSTANCE = GWT.create(Constants.class);
 
     public String javaResourceTypeDescription();
+
+    public String newJavaFile();
+
 }

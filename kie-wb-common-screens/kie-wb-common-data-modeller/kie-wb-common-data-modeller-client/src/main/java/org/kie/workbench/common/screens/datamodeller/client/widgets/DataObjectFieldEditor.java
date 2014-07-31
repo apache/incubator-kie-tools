@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -43,6 +42,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
@@ -56,9 +59,14 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChang
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
-import org.kie.workbench.common.screens.datamodeller.model.*;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.backend.vfs.Path;
 
 public class DataObjectFieldEditor extends Composite {
 
@@ -109,8 +117,6 @@ public class DataObjectFieldEditor extends Composite {
     @Inject
     private ValidatorService validatorService;
 
-    private Map<String, AnnotationDefinitionTO> annotationDefinitions = new HashMap<String, AnnotationDefinitionTO>();
-
     private DataObjectTO dataObject;
 
     private ObjectPropertyTO objectField;
@@ -118,6 +124,9 @@ public class DataObjectFieldEditor extends Composite {
     private DataModelerContext context;
 
     private boolean readonly = true;
+
+    @Inject
+    private Caller<DataModelerService> modelerService;
 
     public DataObjectFieldEditor() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -172,6 +181,10 @@ public class DataObjectFieldEditor extends Composite {
         return getContext() != null ? getContext().getDataModel() : null;
     }
 
+    private Project getProject() {
+        return getContext() != null ? getContext().getCurrentProject() : null;
+    }
+
     private void setReadonly(boolean readonly) {
         this.readonly = readonly;
         boolean value = !readonly;
@@ -217,29 +230,10 @@ public class DataObjectFieldEditor extends Composite {
     private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
         if (event.isFrom(getDataModel())) {
             if ("name".equals(event.getPropertyName()) ||
-                "packageName".equals(event.getPropertyName()) ||
-                "label".equals(event.getPropertyName())) {
+                    "packageName".equals(event.getPropertyName()) ||
+                    "label".equals(event.getPropertyName())) {
 
                 initTypeList();
-                setSelectedType();
-            }
-        }
-    }
-
-    private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
-        if (event.isFrom(getDataModel())) {
-            initTypeList();
-        }
-    }
-
-    private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
-        if (event.isFrom(getDataModel())) {
-            initTypeList();
-            if (getDataModel() != null && getDataModel().getDataObjects().size() == 0) {
-                clean();
-                setDataObject(null);
-                setObjectField(null);
-                setReadonly(true);
             }
         }
     }
@@ -274,8 +268,6 @@ public class DataObjectFieldEditor extends Composite {
                 description.setText( (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM));
             }
 
-            setSelectedType();
-
             annotation = objectField.getAnnotation(AnnotationDefinitionTO.KEY_ANNOTATION);
             if (annotation != null) {
                 equalsSelector.setValue(Boolean.TRUE);
@@ -287,7 +279,7 @@ public class DataObjectFieldEditor extends Composite {
                 positionSelector.setSelectedValue(position);
             }
 
-            setReadonly( false );
+            setReadonly( getContext() == null || getContext().isReadonly() );
         } else {
             initTypeList();
         }
@@ -301,6 +293,55 @@ public class DataObjectFieldEditor extends Composite {
         if (getObjectField() == null) return;
         // Set widgets to errorpopup for styling purposes etc.
         nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+
+        final String oldValue = getObjectField().getName();
+        final String newValue = DataModelerUtils.unCapitalize(name.getValue());
+
+        final String originalClassName = getContext() != null ? getContext().getEditorModel().getOriginalClassName() : null;
+        final String fieldName = oldValue;
+
+        if ( originalClassName != null ) {
+            modelerService.call( new RemoteCallback<List<Path>>() {
+
+                @Override public void callback( List<Path> paths ) {
+
+                    if ( paths != null && paths.size() > 0 ) {
+                        //If usages for this field were detected in project assets
+                        //show the confirmation message to the user.
+
+                        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming(
+                                Constants.INSTANCE.modelEditor_confirm_renaming_of_used_field( oldValue ),
+                                paths,
+                                new org.uberfire.mvp.Command() {
+                                    @Override
+                                    public void execute() {
+                                        doFieldNameChange( oldValue, newValue );
+                                    }
+                                },
+                                new org.uberfire.mvp.Command() {
+                                    @Override public void execute() {
+                                        //do nothing.
+                                        name.setValue( oldValue );
+                                    }
+                                }
+                        );
+
+                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.show();
+
+                    } else {
+                        //no usages, just proceed with the deletion.
+                        doFieldNameChange( oldValue, newValue );
+                    }
+                }
+            } ).findFieldUsages( originalClassName, fieldName );
+        } else {
+            doFieldNameChange( oldValue, fieldName );
+        }
+    }
+
+    private void doFieldNameChange( final String oldValue, final String newValue ) {
+
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
@@ -308,9 +349,6 @@ public class DataObjectFieldEditor extends Composite {
                 name.selectAll();
             }
         };
-
-        final String oldValue = getObjectField().getName();
-        final String newValue = DataModelerUtils.unCapitalize(name.getValue());
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
         if (oldValue.equalsIgnoreCase(name.getValue())) {
@@ -442,79 +480,26 @@ public class DataObjectFieldEditor extends Composite {
     }
 
     private void initTypeList() {
-        typeSelector.clear();
 
-        SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>( );
-        SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>( );
         String currentFieldType = null;
-        boolean currentFieldTypeIncluded = false;
+        boolean currentFieldTypeMultiple = false;
 
         if (getDataModel() != null) {
-
             if (getDataObject() != null && getObjectField() != null) {
                 currentFieldType = getObjectField().getClassName();
+                currentFieldTypeMultiple = getObjectField().isMultiple();
             }
+            DataModelerUtils.initTypeList( typeSelector, getContext().getHelper().getOrderedBaseTypes().values(), getDataModel().getDataObjects(), getDataModel().getExternalClasses(), currentFieldType, currentFieldTypeMultiple);
+        } else {
+            DataModelerUtils.initList( typeSelector, false );
+        }
+    }
 
-            // First add all base types, ordered
-            for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
-                if (!baseType.getValue().isPrimitive()) {
-
-                    String baseClassName = baseType.getValue().getClassName();
-                    String baseClassName_m = baseClassName + DataModelerUtils.MULTIPLE;
-                    String baseClassLabel = baseType.getKey();
-                    String baseClassLabel_m = baseClassLabel  + DataModelerUtils.MULTIPLE;
-
-                    typeSelector.addItem( baseClassLabel, baseClassName );
-                    typeSelector.addItem( baseClassLabel_m, baseClassName_m );
-                }
-            }
-
-            // collect all model types, ordered
-            for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
-                String className = dataObject.getClassName();
-                String className_m = className + DataModelerUtils.MULTIPLE;
-                String classLabel = DataModelerUtils.getDataObjectFullLabel(dataObject);
-                String classLabel_m = classLabel  + DataModelerUtils.MULTIPLE;
-                sortedModelTypeNames.put(classLabel, className);
-                sortedModelTypeNames.put(classLabel_m, className_m);
-                if (className.equals( currentFieldType )) currentFieldTypeIncluded = true;
-            }
-
-            // collect external types, ordered
-            for (DataObjectTO externalDataObject : getDataModel().getExternalClasses()) {
-                String extClass = externalDataObject.getClassName();
-                String extClass_m = extClass + DataModelerUtils.MULTIPLE;
-                sortedExternalTypeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
-                sortedExternalTypeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);
-                if (extClass.equals( currentFieldType )) currentFieldTypeIncluded = true;
-            }
-
-            //check if current fields type is present
-            if (currentFieldType != null && !currentFieldTypeIncluded && !getContext().getHelper().isBaseType( currentFieldType )) {
-                //uncommon case. A field was loaded but the class isn't within the model or externall classes.
-
-                String extClass = currentFieldType;
-                String extClass_m = extClass + DataModelerUtils.MULTIPLE;
-                sortedExternalTypeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
-                sortedExternalTypeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);
-            }
-
-            //add project classes to the selector.
-            for (Map.Entry<String, String> typeName : sortedModelTypeNames.entrySet()) {
-                typeSelector.addItem(typeName.getKey(), typeName.getValue());
-            }
-
-            //add external classes to the selector.
-            for (Map.Entry<String, String> typeName : sortedExternalTypeNames.entrySet()) {
-                typeSelector.addItem(typeName.getKey(), typeName.getValue());
-            }
-
-            //finally add primitives
-            for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
-                if (baseType.getValue().isPrimitive()) {
-                    typeSelector.addItem(baseType.getKey(), baseType.getValue().getClassName());
-                }
-            }
+    public void refreshTypeList( boolean keepSelection ) {
+        String selectedValue = typeSelector.getValue();
+        initTypeList();
+        if ( keepSelection && selectedValue != null ) {
+            typeSelector.setSelectedValue( selectedValue );
         }
     }
 

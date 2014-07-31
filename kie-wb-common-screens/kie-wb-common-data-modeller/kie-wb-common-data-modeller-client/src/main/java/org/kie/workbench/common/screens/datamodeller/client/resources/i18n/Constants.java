@@ -26,11 +26,11 @@ public interface Constants extends Messages {
     public String modelEditor_newModel();
 
     public String modelEditor_menu_main();
-    
+
     public String modelEditor_menu_file();
 
     public String modelEditor_screen_name();
-    
+
     public String modelEditor_menu_save();
 
     public String modelEditor_menu_new_dataObject();
@@ -44,6 +44,8 @@ public interface Constants extends Messages {
     public String modelEditor_loading();
 
     public String modelEditor_loading_error();
+
+    public String modelEditor_deleting_error();
 
     public String modelEditor_propertyType_loading_error();
 
@@ -61,6 +63,8 @@ public interface Constants extends Messages {
 
     public String modelEditor_notification_dataModel_saved(String seconds);
 
+    public String modelEditor_notification_dataObject_referenced_has_been_deleted(String classA, String classB);
+
     public String modelEditor_notify_readonly_objects_read();
 
     public String modelEditor_notify_externally_modified_objects_read();
@@ -77,14 +81,30 @@ public interface Constants extends Messages {
 
     public String modelEditor_confirm_save_model_before_project_change_force(String user, String to);
 
+    public String modelEditor_confirm_save_before_rename();
+
     public String modelEditor_notify_project_change(String from, String to);
+
+    public String modelEditor_message_file_parsing_errors();
+
+    public String modelEditor_confirm_deletion_of_used_class(String className);
+
+    public String modelEditor_confirm_renaming_of_used_class(String className);
+
+    public String modelEditor_confirm_deletion_of_used_field(String fieldName);
+
+    public String modelEditor_confirm_renaming_of_used_field(String fieldName);
+
+    public String modelEditor_renaming_error();
+
+    public String modelEditor_copying_error();
 
     public String modelBrowser_modelUnknown();
 
     public String modelBrowser_emptyTable();
 
     public String modelBrowser_create();
-    
+
     public String modelBrowser_createDataObject();
 
     public String modelBrowser_action_deleteDataObject();
@@ -120,6 +140,8 @@ public interface Constants extends Messages {
     public String objectBrowser_externallyModifiedLabel();
 
     public String objectBrowser_action_goToDataObjectDefinition();
+
+    public String objectBrowser_message_file_not_exists_or_renamed(String file);
 
     public String objectEditor_nameLabel();
 
@@ -178,7 +200,7 @@ public interface Constants extends Messages {
     public String objectEditor_droolsParametersLabel();
 
     public String new_dataobject_popup_title();
-    
+
     public String new_dataobject_popup_identifier();
 
     public String new_dataobject_popup_label();
@@ -190,7 +212,7 @@ public interface Constants extends Messages {
     public String validPackageHelp(String line_break);
 
     public String new_dataobject_popup_new_package();
-    
+
     public String new_dataobject_popup_existing_package();
 
     public String new_dataobject_popup_superclass();
@@ -232,5 +254,15 @@ public interface Constants extends Messages {
     public String objectEditor_dataObjectTitle();
 
     public String objectFieldEditor_fieldTitle();
+
+    public String usages_popup_title();
+
+    public String usages_popup_action_yes_delete_anyway();
+
+    public String usages_popup_action_yes_rename_anyway();
+
+    public String usages_popup_file_name_column();
+
+    public String usages_popup_file_path_column();
 
 }

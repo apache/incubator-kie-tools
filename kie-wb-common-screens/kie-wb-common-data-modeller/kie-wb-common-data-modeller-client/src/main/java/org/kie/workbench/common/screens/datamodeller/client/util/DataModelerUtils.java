@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
+import com.github.gwtbootstrap.client.ui.ListBox;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.uberfire.backend.vfs.Path;
 
 import java.util.ArrayList;
@@ -26,12 +28,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class DataModelerUtils {
 
     public static final String EXTERNAL_PREFIX = "- ext - ";
     public static final String CLIPPED_MARKER = "...";
     public static final String MULTIPLE = " [0..N]";
+    public static final String NOT_SELECTED = "NOT_SELECTED";
 
     public static final String BYTE  = "byte";
     public static final String SHORT = "short";
@@ -157,9 +162,9 @@ public class DataModelerUtils {
             return str;
         } else {
             return new StringBuffer(strLen)
-                .append(Character.toLowerCase(str.charAt(0)))
-                .append(str.substring(1))
-                .toString();
+                    .append(Character.toLowerCase(str.charAt(0)))
+                    .append(str.substring(1))
+                    .toString();
         }
     }
 
@@ -311,6 +316,116 @@ public class DataModelerUtils {
         }
 
         return result;
+    }
+
+    public static void initList( final ListBox listBox, boolean includeEmptyItem ) {
+        listBox.clear();
+        if ( includeEmptyItem ) {
+            listBox.addItem( "", NOT_SELECTED );
+        }
+    }
+
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObjectTO> dataObjects, final Collection<DataObjectTO> externalClasses, boolean includeEmptyItem ) {
+        initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, null, false, includeEmptyItem );
+    }
+
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObjectTO> dataObjects, final Collection<DataObjectTO> externalClasses, final String selectedType, boolean selectedTypeMultiple ) {
+        initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, selectedType, selectedTypeMultiple, false );
+    }
+
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObjectTO> dataObjects, final Collection<DataObjectTO> externalClasses, final String selectedType, boolean selectedTypeMultiple, boolean includeEmptyItem ) {
+
+        SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>();
+        SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>();
+        Map<String, PropertyTypeTO> orderedBaseTypes = new TreeMap<String, PropertyTypeTO>();
+        Map<String, PropertyTypeTO> baseTypesByClassName = new TreeMap<String, PropertyTypeTO>();
+        boolean selectedTypeIncluded = false;
+
+        if ( baseTypes != null ) {
+            for ( PropertyTypeTO type : baseTypes ) {
+                orderedBaseTypes.put( type.getName(), type );
+                baseTypesByClassName.put( type.getClassName(), type );
+            }
+        }
+
+        typeSelector.clear();
+        if ( includeEmptyItem ) {
+            typeSelector.addItem( "", NOT_SELECTED );
+        }
+
+        // First add all base types, ordered
+        for ( Map.Entry<String, PropertyTypeTO> baseType : orderedBaseTypes.entrySet() ) {
+            if ( !baseType.getValue().isPrimitive() ) {
+
+                String baseClassName = baseType.getValue().getClassName();
+                String baseClassName_m = baseClassName + DataModelerUtils.MULTIPLE;
+                String baseClassLabel = baseType.getKey();
+                String baseClassLabel_m = baseClassLabel + DataModelerUtils.MULTIPLE;
+
+                typeSelector.addItem( baseClassLabel, baseClassName );
+                typeSelector.addItem( baseClassLabel_m, baseClassName_m );
+            }
+        }
+
+        if ( dataObjects != null ) {
+            // collect all model types, ordered
+            for ( DataObjectTO dataObject : dataObjects ) {
+                String className = dataObject.getClassName();
+                String className_m = className + DataModelerUtils.MULTIPLE;
+                String classLabel = DataModelerUtils.getDataObjectFullLabel( dataObject );
+                String classLabel_m = classLabel + DataModelerUtils.MULTIPLE;
+                sortedModelTypeNames.put( classLabel, className );
+                sortedModelTypeNames.put( classLabel_m, className_m );
+                if ( selectedType != null && selectedType.equals( className ) ) {
+                    selectedTypeIncluded = true;
+                }
+            }
+        }
+
+        // collect external types, ordered
+        if ( externalClasses != null ) {
+            for ( DataObjectTO externalDataObject : externalClasses ) {
+                String extClass = externalDataObject.getClassName();
+                String extClass_m = extClass + DataModelerUtils.MULTIPLE;
+                sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
+                sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m );
+                if ( selectedType != null && selectedType.equals( extClass ) ) {
+                    selectedTypeIncluded = true;
+                }
+            }
+        }
+
+        //check selectedType isn't present
+        if ( selectedType != null && !selectedTypeIncluded && !baseTypesByClassName.containsKey( selectedType ) ) {
+            //uncommon case. A field was loaded but the class isn't within the model or externall classes.
+
+            String extClass = selectedType;
+            String extClass_m = extClass + DataModelerUtils.MULTIPLE;
+            sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
+            sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m );
+        }
+
+        //add project classes to the selector.
+        for ( Map.Entry<String, String> typeName : sortedModelTypeNames.entrySet() ) {
+            typeSelector.addItem( typeName.getKey(), typeName.getValue() );
+        }
+
+        //add external classes to the selector.
+        for ( Map.Entry<String, String> typeName : sortedExternalTypeNames.entrySet() ) {
+            typeSelector.addItem( typeName.getKey(), typeName.getValue() );
+        }
+
+        //finally add primitives
+        for ( Map.Entry<String, PropertyTypeTO> baseType : orderedBaseTypes.entrySet() ) {
+            if ( baseType.getValue().isPrimitive() ) {
+                typeSelector.addItem( baseType.getKey(), baseType.getValue().getClassName() );
+            }
+        }
+
+        if ( selectedType != null ) {
+            String selectedValue = selectedType + ( selectedTypeMultiple ? MULTIPLE : "" );
+            typeSelector.setSelectedValue( selectedValue );
+        }
     }
 
 }

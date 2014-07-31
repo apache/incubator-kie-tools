@@ -33,6 +33,8 @@ public interface ValidationService {
     public boolean isFileNameValid( final Path path,
                                     final String fileName );
 
+    public boolean isJavaFileNameValid( final String fileName );
+
     public boolean isFileNameValid( final String fileName );
 
     public Map<String, Boolean> evaluateIdentifiers( final String[] identifiers );

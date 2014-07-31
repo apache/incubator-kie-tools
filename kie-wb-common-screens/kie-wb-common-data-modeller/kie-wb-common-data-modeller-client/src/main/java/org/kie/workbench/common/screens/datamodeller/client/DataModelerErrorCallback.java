@@ -17,13 +17,13 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 
-public class DataModelerErrorCallback implements ErrorCallback<Message> {
-    
+public class DataModelerErrorCallback extends DefaultErrorCallback {
+
     String localMessage = "";
 
     public DataModelerErrorCallback() {
@@ -35,9 +35,14 @@ public class DataModelerErrorCallback implements ErrorCallback<Message> {
 
     @Override
     public boolean error( final Message message,
-                          final Throwable throwable ) {
+            final Throwable throwable ) {
+
         BusyPopup.close();
-        ErrorPopup.showMessage( Constants.INSTANCE.modeler_callback_error( localMessage, throwable.getMessage() ) );
-        return true;
+        if (throwable.getClass().getName().startsWith( "org.uberfire.java.nio.file" )) {
+            super.error( message, throwable );
+        } else {
+            ErrorPopup.showMessage( Constants.INSTANCE.modeler_callback_error( localMessage, throwable.getMessage() ) );
+        }
+        return false;
     }
 }

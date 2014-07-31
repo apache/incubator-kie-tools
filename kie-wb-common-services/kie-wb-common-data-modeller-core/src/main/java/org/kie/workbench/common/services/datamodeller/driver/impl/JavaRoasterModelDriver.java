@@ -152,9 +152,11 @@ public class JavaRoasterModelDriver implements ModelDriver {
                             //if a file has parsing errors it will be skipped.
                             addSyntaxErrors( result, scanResult.getFile(), javaType.getSyntaxErrors() );
                         } else {
+                            DataObject dataObject;
                             try {
                                 //try to load the data object.
-                                addDataObject( dataModel, (JavaClassSource)javaType );
+                                dataObject = addDataObject( dataModel, (JavaClassSource)javaType );
+                                if ( dataObject != null ) result.setClassPath( dataObject.getClassName(), scanResult.getFile() );
                             } catch (ModelDriverException e) {
                                 logger.error( "An error was produced when file: " + scanResult.getFile() + " was being loaded into a DataObject.", e );
                                 addModelDriverError(result , scanResult.getFile(), e );
@@ -170,6 +172,46 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 }
             }
         }
+        return result;
+    }
+
+    public ModelDriverResult loadDataObject(final String source, final Path path) throws ModelDriverException {
+
+        ModelDriverResult result = new ModelDriverResult( );
+        DataModel dataModel = createModel();
+        result.setDataModel( dataModel );
+
+        if ( source == null || "".equals( source ) ) {
+            logger.debug( "source: " + source + " is empty." );
+            return result;
+        }
+
+        try {
+            JavaType<?> javaType = Roaster.parse( source );
+            if ( javaType.isClass() ) {
+                if (javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty()) {
+                    //if a file has parsing errors it will be skipped.
+                    addSyntaxErrors( result, path, javaType.getSyntaxErrors() );
+                } else {
+                    DataObject dataObject;
+                    try {
+                        //try to load the data object.
+                        dataObject = addDataObject( dataModel, (JavaClassSource)javaType );
+                        result.setClassPath( dataObject.getClassName(), path );
+                    } catch (ModelDriverException e) {
+                        logger.error( "An error was produced when source: " + source + " was being loaded into a DataObject.", e );
+                        addModelDriverError(result , path, e );
+                    }
+                }
+            } else {
+                logger.debug( "No Class definition was found for source: " + source + ", it will be skipped." );
+            }
+        } catch ( Exception e ) {
+            //Unexpected parsing o model loading exception.
+            logger.error( errorMessage( MODEL_LOAD_GENERIC_ERROR, javaRootPath.toUri()), e );
+            throw new ModelDriverException( errorMessage( MODEL_LOAD_GENERIC_ERROR, javaRootPath.toUri()), e );
+        }
+
         return result;
     }
 
@@ -196,6 +238,8 @@ public class JavaRoasterModelDriver implements ModelDriver {
         ModelDriverError error;
         for (SyntaxError syntaxError : syntaxErrors) {
             error = new ModelDriverError( syntaxError.getDescription(), file);
+            error.setLine( syntaxError.getLine() );
+            error.setColumn( syntaxError.getColumn() );
             result.addError( error );
         }
     }
@@ -1008,6 +1052,12 @@ public class JavaRoasterModelDriver implements ModelDriver {
             this.property = property;
             this.position = position;
         }
+    }
+
+    public static class ModelFilter {
+
+        boolean includeFields = true;
+
     }
 
 }

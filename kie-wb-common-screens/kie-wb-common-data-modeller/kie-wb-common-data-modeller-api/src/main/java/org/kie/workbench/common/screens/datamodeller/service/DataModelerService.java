@@ -19,33 +19,63 @@ package org.kie.workbench.common.screens.datamodeller.service;
 import java.util.List;
 import java.util.Map;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface DataModelerService {
 
-    Path createModel( final Path context,
-                      final String fileName );
+    Path createJavaFile( final Path context, final String fileName );
 
-    DataModelTO loadModel( final Project project );
+    DataModelTO loadModel( final KieProject project );
 
-    GenerationResult saveModel( final DataModelTO dataModel,
-                                final Project project,
-                                final boolean overwrite );
+    EditorModel loadModel( final Path path );
 
     GenerationResult saveModel( final DataModelTO dataModel,
-                                final Project project );
+            final KieProject project,
+            final boolean overwrite,
+            final String commitMessage );
+
+    GenerationResult saveModel( final DataModelTO dataModel,
+            final KieProject project );
+
+    GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage );
+
+    GenerationResult updateSource( final String source, final Path path, final DataObjectTO dataObjectTO );
+
+    GenerationResult updateDataObject( final DataObjectTO dataObjectTO, final String source, final Path path );
+
+    Path copy( final Path path, final String newName, final String comment, boolean refactor );
+
+    public Path rename( final Path path, final String newName, String comment, final boolean refactor,
+            final boolean saveCurrentChanges, final String source, final DataObjectTO dataObjectTO,
+            final Metadata metadata );
+
+    void delete( final Path path, final String comment );
+
+    GenerationResult refactorClass( final Path path, final String newPackageName, final String newClassName );
+
+    List<ValidationMessage> validate( String source, final Path path, DataObjectTO dataObjectTO );
 
     List<PropertyTypeTO> getBasePropertyTypes();
 
     Map<String, AnnotationDefinitionTO> getAnnotationDefinitions();
 
     Boolean verifiesHash( Path javaFile );
+
+    List<Path> findClassUsages( String className );
+
+    List<Path> findFieldUsages( String className, String fieldName );
+
+    Boolean exists( Path path );
 
 }

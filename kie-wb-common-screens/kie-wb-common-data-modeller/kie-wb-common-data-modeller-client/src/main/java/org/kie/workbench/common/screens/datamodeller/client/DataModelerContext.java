@@ -16,22 +16,24 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
-import org.guvnor.common.services.project.model.Package;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+
+/**
+ * Data modeler context shared between the different widgets that composes the editor.
+ */
 public class DataModelerContext {
-
-    private DataModelTO dataModel;
 
     private DataModelHelper helper;
 
@@ -41,11 +43,63 @@ public class DataModelerContext {
 
     private boolean dirty = false;
 
-    private InvalidateDMOProjectCacheEvent lastDMOUpdate;
-
-    private InvalidateDMOProjectCacheEvent lastJavaFileChangeEvent;
+    private boolean readonly = false;
 
     private List<String> currentProjectPackages = new ArrayList<String>();
+
+    private EditorModel editorModel;
+
+    /**
+     * Status relative to the edition tabs. This is a kind of sub status, that tells us if there are pending changes
+     * in whatever of the edition tabs.
+     * It may happen that there are no pending changes in the edition tabs but the .java file is dirty.
+     * e.g. If you make some changes in the "Editor" tab and goes to the "Source" tab, the code will be automatically
+     * re generated to include the changes. After the code is re regenerated the editionStatus will be changed from
+     * EDITOR_CHANGED to NO_CHANGES. This means that the "Source" tab is synchronized with the "Editor" tab, but the
+     * .java file still needs to be saved. And this the editor as the mail component is dirty.
+     */
+    public static enum EditionStatus {
+
+        /**
+         * No pending changes to process.
+         */
+        NO_CHANGES,
+
+        /**
+         * Changes has been done in "Editor" tab and the code wasn't regenerated yet.
+         */
+        EDITOR_CHANGED,
+
+        /**
+         * Changes has been done in the "Source" tab and the data object wasn't regenerated (parsed) yet.
+         */
+        SOURCE_CHANGED
+    }
+
+    public static enum ParseStatus {
+
+        /**
+         * The source has been parsed without errors, so we basically have the model built to be shown in the editor tab.
+         */
+        PARSED,
+
+        /**
+         * The source is not parsed. This not necessary means that there are parse errors, for example when the
+         * user is changing the code in the source tab the parse status will be NOT_PARSED. It means that if the
+         * user wants to open the "Editor" tab the code needs to be parsed.
+         */
+        NOT_PARSED,
+
+        /**
+         * There have been parsing errors in the last parse try. e.g when the file was loaded at editor opening time, or
+         * when the user tried to switch from the "source tab" to the "editor tab".
+         */
+        PARSE_ERRORS
+    }
+
+    private EditionStatus editionStatus = EditionStatus.NO_CHANGES;
+
+    private ParseStatus parseStatus = ParseStatus.NOT_PARSED;
 
     public DataModelerContext() {
     }
@@ -57,12 +111,7 @@ public class DataModelerContext {
     }
 
     public DataModelTO getDataModel() {
-        return dataModel;
-    }
-
-    public void setDataModel(DataModelTO dataModel) {
-        this.dataModel = dataModel;
-        helper.setDataModel(dataModel);
+        return editorModel != null ? editorModel.getDataModel() : null;
     }
 
     public DataModelHelper getHelper() {
@@ -85,6 +134,33 @@ public class DataModelerContext {
         return baseTypes;
     }
 
+    public ParseStatus getParseStatus() {
+        return parseStatus;
+    }
+
+    public void setParseStatus( ParseStatus parseStatus ) {
+        this.parseStatus = parseStatus;
+    }
+
+    public boolean isParsed() {
+        return getParseStatus() == ParseStatus.PARSED;
+    }
+
+    public boolean isNotParsed() {
+        return getParseStatus() == ParseStatus.NOT_PARSED;
+    }
+
+    public boolean isParseErrors() {
+        return getParseStatus() == ParseStatus.PARSE_ERRORS;
+    }
+
+    /**
+     * Editor level dirty status.
+     *
+     * @return true if there have been whatever change since the last save/load operation, no mater if the change
+     * was in the "Editor" tab or in the "Source" tab, and if the tabs are synchronized. We still need to save the
+     * changes in the .java file.
+     */
     public boolean isDirty() {
         return dirty;
     }
@@ -93,24 +169,20 @@ public class DataModelerContext {
         this.dirty = dirty;
     }
 
-    public boolean isDMOInvalidated() {
-        return lastDMOUpdate != null || lastJavaFileChangeEvent != null;
+    public boolean isReadonly() {
+        return readonly;
     }
 
-    public InvalidateDMOProjectCacheEvent getLastDMOUpdate() {
-        return lastDMOUpdate == null ? getLastJavaFileChangeEvent() : lastDMOUpdate;
+    public void setReadonly( boolean readonly ) {
+        this.readonly = readonly;
     }
 
-    public void setLastDMOUpdate(InvalidateDMOProjectCacheEvent lastDMOUpdate) {
-        this.lastDMOUpdate = lastDMOUpdate;
+    public boolean isEditorChanged() {
+        return editionStatus == EditionStatus.EDITOR_CHANGED;
     }
 
-    public InvalidateDMOProjectCacheEvent getLastJavaFileChangeEvent() {
-        return lastJavaFileChangeEvent;
-    }
-
-    public void setLastJavaFileChangeEvent(InvalidateDMOProjectCacheEvent lastJavaFileChangeEvent) {
-        this.lastJavaFileChangeEvent = lastJavaFileChangeEvent;
+    public boolean isSourceChanged() {
+        return editionStatus == EditionStatus.SOURCE_CHANGED;
     }
 
     public void appendPackages(Collection<Package> packages) {
@@ -134,22 +206,64 @@ public class DataModelerContext {
             }
         }
     }
-    
+
     public List<String> getCurrentProjectPackages() {
         return currentProjectPackages;
     }
-    
+
     public void cleanPackages() {
         if (currentProjectPackages != null) currentProjectPackages.clear();
+    }
+
+    public boolean isDataObjectLoaded() {
+        return getDataObject() != null;
+    }
+
+    public Project getCurrentProject() {
+        if ( editorModel != null ) {
+            return editorModel.getCurrentProject();
+        }
+        return null;
+    }
+
+    public DataObjectTO getDataObject() {
+        if ( editorModel != null ) {
+            return editorModel.getDataObject();
+        }
+        return null;
+    }
+
+    public void setDataObject(DataObjectTO dataObjectTO) {
+        if (editorModel != null) {
+            editorModel.setDataObject( dataObjectTO );
+        }
+    }
+
+    public EditionStatus getEditionStatus() {
+        return editionStatus;
+    }
+
+    public void setEditionStatus( EditionStatus editionStatus ) {
+        this.editionStatus = editionStatus;
+    }
+
+    public EditorModel getEditorModel() {
+        return editorModel;
+    }
+
+    public void setEditorModel( EditorModel editorModel ) {
+        this.editorModel = editorModel;
+        if ( editorModel.getDataModel() != null) {
+            //TODO, likely this helper is no longer needed.
+            helper.setDataModel( editorModel.getDataModel());
+        }
     }
 
     public void clear() {
         if (annotationDefinitions != null) annotationDefinitions.clear();
         if (baseTypes != null) baseTypes.clear();
-        if (dataModel != null && dataModel.getDataObjects() != null) dataModel.getDataObjects().clear();
+        if (getDataModel() != null && getDataModel().getDataObjects() != null) getDataModel().getDataObjects().clear();
         cleanPackages();
         helper = new DataModelHelper();
-        setLastDMOUpdate(null);
-        setLastJavaFileChangeEvent(null);
     }
 }

@@ -46,6 +46,9 @@ public class FileUtils {
             for (Path root : rootPaths) {
                 if (Files.isDirectory(root) && !scannedCache.containsKey(root)) {
                     results.addAll(scan(ioService, root, fileTypes, recursiveScan, scannedCache));
+                } else if ( (fileTypes == null || isFromType( root, fileTypes )) && !scannedCache.containsKey( root ) ) {
+                    results.add( new ScanResult( root ) );
+                    scannedCache.put( root, root );
                 }
             }
         }
@@ -81,14 +84,9 @@ public class FileUtils {
                                     if (fileTypes == null) {
                                         include = true;
                                     } else {
-                                        for (String type : fileTypes) {
-                                            if (entry.getFileName().toString().endsWith( type )) {
-                                                include = true;
-                                                break;
+                                        include = isFromType( entry, fileTypes );
                                             }
                                         }
-                                    }
-                                }
                                 return include;
                         }
                 } );
@@ -108,6 +106,16 @@ public class FileUtils {
             }
         }
         return results;
+    }
+
+    private boolean isFromType(Path file, Collection<String> fileTypes) {
+        if (Files.isDirectory( file )) return false;
+
+        for (String type : fileTypes) {
+            if (file.getFileName().toString().endsWith( type )) return true;
+        }
+
+        return false;
     }
 
     public Collection<ScanResult> scanDirectories(IOService ioService, Path rootPath, final boolean includeRoot, final boolean recursiveScan/*, final Map<Path, Path> scannedCache*/) throws IOException {

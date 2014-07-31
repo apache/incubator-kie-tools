@@ -19,10 +19,6 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -30,6 +26,7 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
 import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.constants.Placement;
 import com.google.gwt.cell.client.Cell;
@@ -48,28 +45,50 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.DataModelerErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.images.ImagesResources;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.util.ObjectPropertyComparator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.workbench.common.screens.datamodeller.events.*;
-import org.kie.workbench.common.screens.datamodeller.model.*;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
+import org.uberfire.backend.vfs.Path;
+import org.kie.uberfire.client.common.YesNoCancelPopup;
+import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentChange;
+import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.*;
 
 
 public class DataObjectBrowser extends Composite {
@@ -79,18 +98,10 @@ public class DataObjectBrowser extends Composite {
 
     };
 
-    public static final String NOT_SELECTED = "NOT_SELECTED";
-
     private static DataObjectEditorUIBinder uiBinder = GWT.create(DataObjectEditorUIBinder.class);
 
     @UiField
     VerticalPanel mainPanel;
-
-    @UiField
-    SimplePanel breadCrumbsPanel;
-
-    @Inject
-    DataObjectBreadcrums dataObjectNavigation;
 
     @UiField
     Label objectName;
@@ -132,9 +143,13 @@ public class DataObjectBrowser extends Composite {
     private ValidatorService validatorService;
 
     @Inject
+    private Caller<DataModelerService> modelerService;
+
+    @Inject
     Event<DataModelerEvent> dataModelerEvent;
 
-    private boolean newPropertyActionEnabled = false;
+    @Inject
+    private PlaceManager placeManager;
 
     private boolean readonly = true;
 
@@ -263,7 +278,10 @@ public class DataObjectBrowser extends Composite {
             @Override
             public ImageResource getValue( final ObjectPropertyTO property ) {
 
-                if (!property.isBaseType() && !getDataObject().getClassName().equals(property.getClassName()) && !getDataModel().isExternal(property.getClassName())) {
+                if (!property.isBaseType() &&
+                        !getDataObject().getClassName().equals(property.getClassName()) &&
+                        !getDataModel().isExternal(property.getClassName()) &&
+                        getDataObject().getPath() != null ) {
                     return ImagesResources.INSTANCE.BrowseObject();
                 } else {
                     return null;
@@ -273,8 +291,8 @@ public class DataObjectBrowser extends Composite {
 
         typeImageColumn.setFieldUpdater( new FieldUpdater<ObjectPropertyTO, ImageResource>() {
             public void update( final int index,
-                                final ObjectPropertyTO property,
-                                final ImageResource value ) {
+                    final ObjectPropertyTO property,
+                    final ImageResource value ) {
 
                 onTypeCellSelection(property);
             }
@@ -335,8 +353,8 @@ public class DataObjectBrowser extends Composite {
 
         deletePropertyColumnImg.setFieldUpdater( new FieldUpdater<ObjectPropertyTO, ImageResource>() {
             public void update( final int index,
-                                final ObjectPropertyTO property,
-                                final ImageResource value ) {
+                    final ObjectPropertyTO property,
+                    final ImageResource value ) {
 
                 if (!isReadonly()) {
                     checkAndDeleteDataObjectProperty(property, index);
@@ -378,12 +396,6 @@ public class DataObjectBrowser extends Composite {
 
         setReadonly(true);
     }
-    
-    @PostConstruct
-    void completeUI() {
-        dataObjectNavigation.setDivider(">");
-        breadCrumbsPanel.add(dataObjectNavigation);
-    }
 
     public DataModelerContext getContext() {
         return context;
@@ -391,59 +403,21 @@ public class DataObjectBrowser extends Composite {
 
     public void setContext(DataModelerContext context) {
         this.context = context;
-        dataObjectNavigation.setContext(context);
     }
 
     private void initTypeList() {
-        newPropertyType.clear();
-        newPropertyType.addItem("", NOT_SELECTED);
-
-        SortedMap<String, String> typeNames = new TreeMap<String, String>();
         if (getDataModel() != null) {
-            // First add all base types, ordered
-            for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
-                if (!baseType.getValue().isPrimitive()) {
+            DataModelerUtils.initTypeList( newPropertyType, getContext().getHelper().getOrderedBaseTypes().values(), getDataModel().getDataObjects(), getDataModel().getExternalClasses(), true );
+        } else {
+            DataModelerUtils.initList( newPropertyType, true );
+        }
+    }
 
-                    String baseClassName = baseType.getValue().getClassName();
-                    String baseClassName_m = baseClassName + DataModelerUtils.MULTIPLE;
-                    String baseClassLabel = baseType.getKey();
-                    String baseClassLabel_m = baseClassLabel  + DataModelerUtils.MULTIPLE;
-
-                    newPropertyType.addItem( baseClassLabel, baseClassName );
-                    newPropertyType.addItem( baseClassLabel_m, baseClassName_m );
-                }
-            }
-
-            // Second add all model types, ordered
-            for (DataObjectTO dataObject : getDataModel().getDataObjects()) {
-                String className = dataObject.getClassName();
-                String className_m = className + DataModelerUtils.MULTIPLE;
-                String classLabel = DataModelerUtils.getDataObjectFullLabel(dataObject);
-                String classLabel_m = classLabel  + DataModelerUtils.MULTIPLE;
-                typeNames.put(classLabel, className);
-                typeNames.put(classLabel_m, className_m);
-            }
-            for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
-                newPropertyType.addItem(typeName.getKey(), typeName.getValue());
-            }
-
-            // Then add all external types, ordered
-            typeNames.clear();
-            for (DataObjectTO externalDataObject : getDataModel().getExternalClasses()) {
-                String extClass = externalDataObject.getClassName();
-                String extClass_m = extClass + DataModelerUtils.MULTIPLE;
-                typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass);
-                typeNames.put(DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m);
-            }
-            for (Map.Entry<String, String> typeName : typeNames.entrySet()) {
-                newPropertyType.addItem(typeName.getKey(), typeName.getValue());
-            }
-            //finally add primitives
-            for (Map.Entry<String, PropertyTypeTO> baseType : getContext().getHelper().getOrderedBaseTypes().entrySet()) {
-                if (baseType.getValue().isPrimitive()) {
-                    newPropertyType.addItem(baseType.getKey(), baseType.getValue().getClassName());
-                }
-            }
+    public void refreshTypeList( boolean keepSelection ) {
+        String selectedValue = newPropertyType.getValue();
+        initTypeList();
+        if ( keepSelection && selectedValue != null ) {
+            newPropertyType.setSelectedValue( selectedValue );
         }
     }
 
@@ -465,13 +439,13 @@ public class DataObjectBrowser extends Composite {
 
                         @Override
                         public void onSuccess() {
-                            if (propertyType != null && !"".equals(propertyType) && !NOT_SELECTED.equals(propertyType)) {
+                            if (propertyType != null && !"".equals(propertyType) && !DataModelerUtils.NOT_SELECTED.equals(propertyType)) {
                                 Boolean isMultiple = DataModelerUtils.isMultipleType(propertyType);
                                 String canonicalType = isMultiple ? DataModelerUtils.getCanonicalClassName(propertyType) : propertyType;
                                 ObjectPropertyTO property = new ObjectPropertyTO(propertyName,
-                                                                                 canonicalType,
-                                                                                 isMultiple,
-                                                                                 getContext().getHelper().isBaseType(canonicalType));
+                                        canonicalType,
+                                        isMultiple,
+                                        getContext().getHelper().isBaseType(canonicalType));
                                 if (propertyLabel != null && !"".equals(propertyLabel)) {
                                     property.addAnnotation( getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
                                 }
@@ -490,7 +464,7 @@ public class DataObjectBrowser extends Composite {
             });
         }
     }
-    
+
     private void setDataObject(DataObjectTO dataObject) {
         this.dataObject = dataObject;
         objectName.setText(DataModelerUtils.getDataObjectFullLabel(getDataObject()));
@@ -553,13 +527,14 @@ public class DataObjectBrowser extends Composite {
     }
 
     private void checkAndDeleteDataObjectProperty(final ObjectPropertyTO objectPropertyTO, final int index) {
-        if (getContext().isDMOInvalidated()) {
+        /*if (getContext().isDMOInvalidated()) {
             newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
                     getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
                     new Command() {
                         @Override
                         public void execute() {
-                            deleteDataObjectProperty(objectPropertyTO, index);
+                            //deleteDataObjectProperty(objectPropertyTO, index);
+                            checkUsageAndDeleteDataObjectProperty( objectPropertyTO, index );
                         }
                     },
                     new Command() {
@@ -569,9 +544,10 @@ public class DataObjectBrowser extends Composite {
                         }
                     }
             ).show();
-        } else {
-            deleteDataObjectProperty(objectPropertyTO, index);
-        }
+        } else {*/
+        //deleteDataObjectProperty(objectPropertyTO, index);
+        checkUsageAndDeleteDataObjectProperty( objectPropertyTO, index );
+        //}
     }
 
     private void deleteDataObjectProperty(final ObjectPropertyTO objectProperty, final int index) {
@@ -598,6 +574,46 @@ public class DataObjectBrowser extends Composite {
         }
     }
 
+    private void checkUsageAndDeleteDataObjectProperty( final ObjectPropertyTO objectProperty, final int index ) {
+
+        final String className = dataObject.getClassName();
+        final String fieldName = objectProperty.getName();
+
+        modelerService.call( new RemoteCallback<List<Path>>() {
+
+            @Override public void callback( List<Path> paths ) {
+
+                if ( paths != null && paths.size() > 0 ) {
+                    //If usages for this field were detected in project assets
+                    //show the confirmation message to the user.
+
+                    ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForDeletion(
+                            Constants.INSTANCE.modelEditor_confirm_deletion_of_used_field( objectProperty.getName() ),
+                            paths,
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    deleteDataObjectProperty( objectProperty, index );
+                                }
+                            },
+                            new Command() {
+                                @Override public void execute() {
+                                    //do nothing.
+                                }
+                            }
+                    );
+
+                    showUsagesPopup.setCloseVisible( false );
+                    showUsagesPopup.show();
+
+                } else {
+                    //no usages, just proceed with the deletion.
+                    deleteDataObjectProperty( objectProperty, index );
+                }
+            }
+        } ).findFieldUsages( className, fieldName );
+    }
+
     private String propertyTypeDisplay(ObjectPropertyTO property) {
         String displayName = property.getClassName();
 
@@ -618,6 +634,10 @@ public class DataObjectBrowser extends Composite {
         return getContext() != null ? getContext().getDataModel() : null;
     }
 
+    private Project getProject() {
+        return getContext() != null ? getContext().getCurrentProject() : null;
+    }
+
     public DataObjectTO getDataObject() {
         return dataObject;
     }
@@ -626,7 +646,7 @@ public class DataObjectBrowser extends Composite {
 
         DataObjectTO dataObject = getDataModel().getDataObjectByClassName(property.getClassName());
         if (dataObject != null) {
-            notifyObjectSelected(dataObject);
+            openDataObject( dataObject );
         }
     }
 
@@ -641,7 +661,7 @@ public class DataObjectBrowser extends Composite {
         newPropertyId.setText(null);
         newPropertyLabel.setText(null);
         initTypeList();
-        newPropertyType.setSelectedValue(NOT_SELECTED);
+        newPropertyType.setSelectedValue(DataModelerUtils.NOT_SELECTED);
     }
 
     private void setReadonly(boolean readonly) {
@@ -649,7 +669,7 @@ public class DataObjectBrowser extends Composite {
         enableNewPropertyAction(!readonly);
     }
 
-    private boolean isReadonly() {
+    public boolean isReadonly() {
         return readonly;
     }
 
@@ -657,7 +677,7 @@ public class DataObjectBrowser extends Composite {
 
     @UiHandler("newPropertyButton")
     void newPropertyClick(ClickEvent event) {
-        if (getContext().isDMOInvalidated()) {
+        /*if (getContext().isDMOInvalidated()) {
             newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
                     getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
                     new Command() {
@@ -676,12 +696,12 @@ public class DataObjectBrowser extends Composite {
                         }
                     }
             ).show();
-        } else {
-            createNewProperty(dataObject,
-                    DataModelerUtils.unCapitalize(newPropertyId.getText()),
-                    newPropertyLabel.getText(),
-                    newPropertyType.getValue());
-        }
+        } else {*/
+        createNewProperty(dataObject,
+                DataModelerUtils.unCapitalize(newPropertyId.getText()),
+                newPropertyLabel.getText(),
+                newPropertyType.getValue());
+        //}
     }
 
     //Event Observers
@@ -691,28 +711,10 @@ public class DataObjectBrowser extends Composite {
             DataObjectTO dataObject = event.getCurrentDataObject();
             resetInput();
             setDataObject(dataObject);
-            setReadonly(false);
-        }
-    }
-
-    private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
-        if (event.isFrom(getDataModel())) {
-            initTypeList();
-        }
-    }
-
-    private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
-        if (event.isFrom(getDataModel())) {
-            initTypeList();
-            // When all objects from current model have been deleted clean
-            if (getDataModel().getDataObjects().size() == 0) {
-                dataObjectPropertiesProvider.getList().clear();
-                dataObjectPropertiesProvider.flush();
-                dataObjectPropertiesProvider.refresh();
-                dataObjectPropertiesTable.redraw();
-                objectName.setText(null);
-                resetInput();
-                setReadonly(true);
+            if ( dataObject == null) {
+                setReadonly( true );
+            } else {
+                setReadonly( getContext() == null || getContext().isReadonly() );
             }
         }
     }
@@ -720,8 +722,8 @@ public class DataObjectBrowser extends Composite {
     private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
         if (event.isFrom(getDataModel())) {
             if ("name".equals(event.getPropertyName()) ||
-                "packageName".equals(event.getPropertyName()) ||
-                "label".equals(event.getPropertyName())) {
+                    "packageName".equals(event.getPropertyName()) ||
+                    "label".equals(event.getPropertyName())) {
 
                 // For self references: in case name or package changes redraw properties table
                 if (dataObject.getClassName().equals( event.getCurrentDataObject().getClassName() )) {
@@ -738,8 +740,8 @@ public class DataObjectBrowser extends Composite {
     private void onDataObjectPropertyChange(@Observes DataObjectFieldChangeEvent event) {
         if (event.isFrom(getDataModel())) {
             if ( "name".equals(event.getPropertyName()) ||
-                 "className".equals(event.getPropertyName()) ||
-                 "label".equals(event.getPropertyName()) ) {
+                    "className".equals(event.getPropertyName()) ||
+                    "label".equals(event.getPropertyName()) ) {
 
                 List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
                 for (int i = 0; i < props.size(); i++) {
@@ -768,7 +770,38 @@ public class DataObjectBrowser extends Composite {
         dataModelerEvent.fire(new DataObjectFieldCreatedEvent(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), getDataObject(), createdPropertyTO));
     }
 
-    private void notifyObjectSelected(DataObjectTO dataObject) {
-        dataModelerEvent.fire(new DataObjectSelectedEvent(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), dataObject));
+    private void openDataObject(final DataObjectTO dataObject) {
+        if ( dataObject.getPath() != null ) {
+            BusyPopup.showMessage( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
+            modelerService.call( new RemoteCallback<Boolean>() {
+                @Override
+                public void callback( Boolean exists ) {
+                    BusyPopup.close();
+                    if (Boolean.TRUE.equals( exists )) {
+                        placeManager.goTo( new PathPlaceRequest( dataObject.getPath() ) );
+                    } else {
+                        YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
+                                Constants.INSTANCE.objectBrowser_message_file_not_exists_or_renamed( dataObject.getPath().toURI() ),
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        //do nothing.
+                                    }
+                                },
+                                CommonConstants.INSTANCE.Close(),
+                                ButtonType.WARNING,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                        );
+                        yesNoCancelPopup.setCloseVisible( false );
+                        yesNoCancelPopup.show();
+                    }
+                }
+            }, new DataModelerErrorCallback( CommonConstants.INSTANCE.ExceptionNoSuchFile0( dataObject.getPath().toURI() )) ).exists( dataObject.getPath() );
+        }
     }
 }

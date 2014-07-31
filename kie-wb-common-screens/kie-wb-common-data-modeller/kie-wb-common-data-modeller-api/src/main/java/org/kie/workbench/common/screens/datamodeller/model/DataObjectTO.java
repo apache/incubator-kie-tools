@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +44,11 @@ public class DataObjectTO {
     public static final Integer PERSISTENT_EXTERNALLY_MODIFIED = 2;
 
     private String name;
-    
+
     private String packageName;
-    
+
     private String superClassName;
-    
+
     private DataModelTO.TOStatus status = DataModelTO.TOStatus.VOLATILE;
 
 
@@ -66,6 +67,8 @@ public class DataObjectTO {
     private boolean interfaceModifier = false;
 
     private boolean finalModifier = false;
+
+    private Path path;
 
     public DataObjectTO() {
     }
@@ -153,7 +156,7 @@ public class DataObjectTO {
     public boolean isVolatile() {
         return getStatus() == DataModelTO.TOStatus.VOLATILE;
     }
-    
+
     public boolean isPersistent() {
         return getStatus() == DataModelTO.TOStatus.PERSISTENT;
     }
@@ -231,7 +234,7 @@ public class DataObjectTO {
         }
         return -1;
     }
-    
+
     public String getStringId() {
         StringBuilder strId = new StringBuilder();
         strId.append(getClassName());
@@ -257,4 +260,11 @@ public class DataObjectTO {
         return interfaceModifier;
     }
 
+    public Path getPath() {
+        return path;
+    }
+
+    public void setPath( Path path ) {
+        this.path = path;
+    }
 }

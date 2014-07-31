@@ -50,6 +50,9 @@ public class ValidationServiceImpl implements ValidationService {
     @Inject
     private ProjectNameValidator projectNameValidator;
 
+    @Inject
+    private JavaFileNameValidator javaFileNameValidator;
+
     @PostConstruct
     public void configureValidators() {
         for ( FileNameValidator fileNameValidator : fileNameValidatorBeans ) {
@@ -96,6 +99,10 @@ public class ValidationServiceImpl implements ValidationService {
             }
         }
         return false;
+    }
+
+    public boolean isJavaFileNameValid( final String fileName ) {
+        return javaFileNameValidator.isValid( fileName );
     }
 
     @Override

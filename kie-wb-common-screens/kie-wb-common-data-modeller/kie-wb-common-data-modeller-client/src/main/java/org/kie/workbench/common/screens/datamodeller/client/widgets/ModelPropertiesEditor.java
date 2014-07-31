@@ -37,7 +37,7 @@ import javax.inject.Inject;
 public class ModelPropertiesEditor extends Composite {
 
     interface ModelPropertiesEditorUIBinder
-        extends UiBinder<Widget, ModelPropertiesEditor> {
+            extends UiBinder<Widget, ModelPropertiesEditor> {
 
     }
 
@@ -51,7 +51,7 @@ public class ModelPropertiesEditor extends Composite {
     private Tab fieldTab = new Tab();
 
     private boolean fieldTabAdded;
-    
+
     private static int ENTITY_TAB = 0;
 
     private static int FIELD_TAB = 1;
@@ -87,7 +87,7 @@ public class ModelPropertiesEditor extends Composite {
     public DataModelerContext getContext() {
         return context;
     }
-    
+
     private DataModelTO getDataModel() {
         return getContext() != null ? getContext().getDataModel() : null;
     }
@@ -96,6 +96,11 @@ public class ModelPropertiesEditor extends Composite {
         this.context = context;
         objectProperties.setContext(context);
         fieldProperties.setContext(context);
+    }
+
+    public void refreshTypeList( boolean keepSelection ) {
+        objectProperties.refreshTypeList( keepSelection );
+        fieldProperties.refreshTypeList( keepSelection );
     }
 
     //event observers
@@ -135,11 +140,11 @@ public class ModelPropertiesEditor extends Composite {
     private void checkFieldTabStatus(DataModelerEvent event) {
         if (event.isFrom(getDataModel())) {
 
-            if (getDataModel() != null && 
-                getDataModel().getDataObjects().size() > 0 &&
-                event.getCurrentDataObject() != null &&
-                event.getCurrentDataObject().getProperties() != null &&
-                event.getCurrentDataObject().getProperties().size() > 0) {
+            if (getDataModel() != null &&
+                    getDataModel().getDataObjects().size() > 0 &&
+                    event.getCurrentDataObject() != null &&
+                    event.getCurrentDataObject().getProperties() != null &&
+                    event.getCurrentDataObject().getProperties().size() > 0) {
                 enableFieldTab(true);
             } else {
                 enableFieldTab(false);

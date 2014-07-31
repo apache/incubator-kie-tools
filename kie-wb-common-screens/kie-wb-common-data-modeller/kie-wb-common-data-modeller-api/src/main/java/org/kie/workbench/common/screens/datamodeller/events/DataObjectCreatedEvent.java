@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
+import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -26,7 +27,12 @@ public class DataObjectCreatedEvent extends DataModelerEvent {
     public DataObjectCreatedEvent() {
     }
 
+    //TODO review if this constructor should be maintained
     public DataObjectCreatedEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject) {
         super(source, currentModel, currentDataObject);
+    }
+
+    public DataObjectCreatedEvent( Project currentProject, DataObjectTO currentDataObject ) {
+        super( currentProject, currentDataObject );
     }
 }

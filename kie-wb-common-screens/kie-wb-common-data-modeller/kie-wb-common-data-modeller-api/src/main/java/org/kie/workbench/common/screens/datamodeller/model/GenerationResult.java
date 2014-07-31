@@ -18,7 +18,9 @@ package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Portable
@@ -28,7 +30,19 @@ public class GenerationResult {
 
     Map<String, String> objectFingerPrints = new HashMap<String, String>();
 
+    private String source;
+
+    private DataObjectTO dataObject;
+
+    private List<DataModelerError> errors = new ArrayList<DataModelerError>( );
+
     public GenerationResult() {
+    }
+
+    public GenerationResult( String source, DataObjectTO dataObject, List<DataModelerError> errors ) {
+        this.source = source;
+        this.dataObject = dataObject;
+        this.errors = errors;
     }
 
     public long getGenerationTime() {
@@ -49,5 +63,33 @@ public class GenerationResult {
 
     public void setObjectFingerPrints(Map<String, String> objectFingerPrints) {
         this.objectFingerPrints = objectFingerPrints;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource( String source ) {
+        this.source = source;
+    }
+
+    public DataObjectTO getDataObject() {
+        return dataObject;
+    }
+
+    public void setDataObject( DataObjectTO dataObject ) {
+        this.dataObject = dataObject;
+    }
+
+    public List<DataModelerError> getErrors() {
+        return errors;
+    }
+
+    public void setErrors( List<DataModelerError> errors ) {
+        this.errors = errors;
+    }
+
+    public boolean hasErrors() {
+        return errors != null && errors.size() > 0;
     }
 }
