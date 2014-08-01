@@ -61,6 +61,8 @@ public class AnnotationDefinitionTO {
 
     public static final String TYPE_SAFE_ANNOTATION = "org.kie.api.definition.type.TypeSafe";
 
+    public static final String REMOTABLE_ANNOTATION = "org.kie.api.remote.Remotable";
+
     public static final String VALUE_PARAM = "value";
 
     private List<AnnotationMemberDefinitionTO> annotationMembers = new ArrayList<AnnotationMemberDefinitionTO>();

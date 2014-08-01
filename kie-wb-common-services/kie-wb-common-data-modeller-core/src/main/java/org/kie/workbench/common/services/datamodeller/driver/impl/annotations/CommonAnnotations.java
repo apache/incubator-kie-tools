@@ -36,6 +36,7 @@ public class CommonAnnotations {
         commonAnnotations.add( ExpiresAnnotationDefinition.getInstance() );
         commonAnnotations.add( TimestampAnnotationDefinition.getInstance() );
         commonAnnotations.add( TypeSafeAnnotationDefinition.getInstance() );
+        commonAnnotations.add( RemotableAnnotationDefinition.getInstance() );
     }
 
     public static List<AnnotationDefinition> getCommonAnnotations () {

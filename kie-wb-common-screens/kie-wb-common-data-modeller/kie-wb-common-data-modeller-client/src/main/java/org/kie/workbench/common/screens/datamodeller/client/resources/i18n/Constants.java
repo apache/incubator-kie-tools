@@ -173,6 +173,10 @@ public interface Constants extends Messages {
 
     public String objectEditor_expiresHelp();
 
+    public String objectEditor_remotableLabel();
+
+    public String objectEditor_remotableHelp();
+
     public String objectEditor_classReactiveLabel();
 
     public String objectEditor_classReactiveLabelHelp();

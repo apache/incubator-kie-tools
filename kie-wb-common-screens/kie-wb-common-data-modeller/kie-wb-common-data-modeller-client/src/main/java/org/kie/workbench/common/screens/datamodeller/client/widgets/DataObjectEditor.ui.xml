@@ -243,6 +243,22 @@
               </td>
             </tr>
 
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="remotableLabel" text="{i18n.objectEditor_remotableLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:CheckBox ui:field="remotableSelector"></b:CheckBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_remotableLabel}" text="{i18n.objectEditor_remotableHelp}" html="true" >
+                  <b:Icon ui:field="remotableHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
 
         </table>
 

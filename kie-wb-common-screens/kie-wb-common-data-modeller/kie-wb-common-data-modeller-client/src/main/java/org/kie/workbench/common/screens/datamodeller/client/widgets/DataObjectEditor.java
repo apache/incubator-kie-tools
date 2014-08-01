@@ -162,6 +162,15 @@ public class DataObjectEditor extends Composite {
     TextBox expires;
 
     @UiField
+    Label remotableLabel;
+
+    @UiField
+    Icon remotableHelpIcon;
+
+    @UiField
+    CheckBox remotableSelector;
+
+    @UiField
     Label droolsParametersLabel;
 
     @Inject
@@ -194,6 +203,7 @@ public class DataObjectEditor extends Composite {
         timestampHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
         durationHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
         expiresHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+        remotableHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
     }
 
     @PostConstruct
@@ -296,6 +306,7 @@ public class DataObjectEditor extends Composite {
         expires.setEnabled( value );
         durationFieldSelector.setEnabled( value );
         timestampFieldSelector.setEnabled( value );
+        remotableSelector.setEnabled( value );
     }
 
     private boolean isReadonly() {
@@ -349,6 +360,11 @@ public class DataObjectEditor extends Composite {
             annotation = dataObject.getAnnotation( AnnotationDefinitionTO.EXPIRES_ANNOTATION );
             if ( annotation != null ) {
                 expires.setText( annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() );
+            }
+
+            annotation = dataObject.getAnnotation( AnnotationDefinitionTO.REMOTABLE_ANNOTATION );
+            if ( annotation != null ) {
+                remotableSelector.setValue( Boolean.TRUE );
             }
 
             loadDuration( dataObject );
@@ -861,6 +877,25 @@ public class DataObjectEditor extends Composite {
         } );
     }
 
+    @UiHandler("remotableSelector")
+    void remotableChanged(final ClickEvent event) {
+        if ( getDataObject() == null ) return;
+
+        Boolean oldValue = null;
+        AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.REMOTABLE_ANNOTATION );
+        oldValue = annotation != null;
+
+        final Boolean isChecked = remotableSelector.getValue();
+
+        if ( annotation != null && !isChecked ) {
+            getDataObject().removeAnnotation( annotation );
+        } else if ( annotation == null && isChecked ) {
+            getDataObject().addAnnotation( new AnnotationTO( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.REMOTABLE_ANNOTATION ) ) );
+        }
+
+        notifyObjectChange( AnnotationDefinitionTO.REMOTABLE_ANNOTATION, oldValue, isChecked );
+    }
+
     private void loadDurationSelector(DataObjectTO dataObject) {
         if (dataObject == null) return;
 
@@ -936,5 +971,6 @@ public class DataObjectEditor extends Composite {
         expires.setText( null );
         durationFieldSelector.setSelectedValue( NOT_SELECTED );
         timestampFieldSelector.setSelectedValue( NOT_SELECTED );
+        remotableSelector.setValue( false );
     }
 }
