@@ -59,10 +59,10 @@ public class Attributes extends JavaScriptObject
     {
     }
 
-    public static final native Attributes make()
-    /*-{
-    	return {};
-    }-*/;
+    public static final Attributes make()
+    {
+        return JavaScriptObject.createObject().cast();
+    }
 
     public final boolean isClearLayerBeforeDraw()
     {
@@ -158,7 +158,7 @@ public class Attributes extends JavaScriptObject
 
     public final void setFillColor(String fill)
     {
-        if (null != fill && !fill.isEmpty())
+        if ((null != fill) && (false == (fill = fill.trim()).isEmpty()))
         {
             put(Attribute.FILL.getProperty(), fill);
         }
@@ -242,7 +242,7 @@ public class Attributes extends JavaScriptObject
 
     public final void setStrokeColor(String stroke)
     {
-        if (null != stroke && !stroke.isEmpty())
+        if ((null != stroke) && (false == (stroke = stroke.trim()).isEmpty()))
         {
             put(Attribute.STROKE.getProperty(), stroke);
         }

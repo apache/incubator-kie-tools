@@ -22,6 +22,7 @@ import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.ImageElement;
 
 public final class ScratchCanvas
 {
@@ -122,20 +123,38 @@ public final class ScratchCanvas
         }
     }
 
+    public static final String toDataURL(ImageElement element)
+    {
+        return toDataURL(element, DataURLType.PNG);
+    }
+
+    public static final String toDataURL(ImageElement element, DataURLType mimetype)
+    {
+        if (null == mimetype)
+        {
+            mimetype = DataURLType.PNG;
+        }
+        ScratchCanvas canvas = new ScratchCanvas(element.getWidth(), element.getHeight());
+
+        canvas.getContext().drawImage(element, 0, 0, element.getWidth(), element.getHeight());
+
+        return canvas.toDataURL(mimetype);
+    }
+
     private static native final String toDataURL(CanvasElement element)
     /*-{
-		return element.toDataURL();
+    	return element.toDataURL();
     }-*/;
 
     // TODO other arguments, e.g. for image/jpeg The second argument, if it is a number in the range 0.0 to 1.0 inclusive, must be treated as the desired quality level. If it is not a number or is outside that range, the user agent must use its default value, as if the argument had been omitted.
 
     private static native final String toDataURL(CanvasElement element, String mimetype)
     /*-{
-		return element.toDataURL(mimetype);
+    	return element.toDataURL(mimetype);
     }-*/;
 
     private static final native NativeContext2D getNativeContext2D(CanvasElement element)
     /*-{
-		return element.getContext("2d");
+    	return element.getContext("2d");
     }-*/;
 }

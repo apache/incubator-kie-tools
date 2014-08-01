@@ -66,7 +66,6 @@ public final class LinearGradient implements FillGradient
     {
         protected LinearGradientJSO()
         {
-
         }
 
         public static final native LinearGradientJSO make(double sx, double sy, double ex, double ey)

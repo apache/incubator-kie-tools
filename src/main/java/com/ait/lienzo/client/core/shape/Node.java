@@ -67,7 +67,6 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.NodeType;
@@ -107,8 +106,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         m_type = type;
 
         m_attr = Attributes.make();
-
-        setVisible(true).setListening(true);
     }
 
     /**
@@ -162,15 +159,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             return;
         }
         m_attr = ajso.cast();
-
-        if (NativeInternalType.BOOLEAN != m_attr.typeOf(Attribute.VISIBLE))
-        {
-            setVisible(true);
-        }
-        if (NativeInternalType.BOOLEAN != m_attr.typeOf(Attribute.LISTENING))
-        {
-            setListening(true);
-        }
     }
 
     @SuppressWarnings("unchecked")

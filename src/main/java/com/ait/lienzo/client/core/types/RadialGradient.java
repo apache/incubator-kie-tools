@@ -80,7 +80,6 @@ public final class RadialGradient implements FillGradient
     {
         protected RadialGradientJSO()
         {
-
         }
 
         public static final native RadialGradientJSO make(double sx, double sy, double sr, double ex, double ey, double er)

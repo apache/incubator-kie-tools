@@ -27,11 +27,10 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.client.core.types.NFastStringMap;
 import com.ait.lienzo.client.core.types.INodeFilter;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
-import com.ait.lienzo.client.core.types.NativeInternalType;
+import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.lienzo.client.core.types.NFastStringMap;
 import com.ait.lienzo.client.core.types.OnLayerAfterDraw;
 import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
 import com.ait.lienzo.client.core.types.Transform;
@@ -81,10 +80,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     public Layer()
     {
         super(NodeType.LAYER);
-
-        setClearLayerBeforeDraw(true);
-
-        setTransformable(true);
     }
 
     /**
@@ -95,15 +90,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     protected Layer(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(NodeType.LAYER, node, ctx);
-
-        if (NativeInternalType.BOOLEAN != getAttributes().typeOf(Attribute.CLEAR_LAYER_BEFORE_DRAW))
-        {
-            setClearLayerBeforeDraw(true);
-        }
-        if (NativeInternalType.BOOLEAN != getAttributes().typeOf(Attribute.TRANSFORMABLE))
-        {
-            setTransformable(true);
-        }
     }
 
     /**

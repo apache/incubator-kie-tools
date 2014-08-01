@@ -33,7 +33,6 @@ import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.FillGradient.GradientJSO;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
-import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -77,8 +76,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         super(NodeType.SHAPE);
 
         m_type = type;
-
-        setX(0).setY(0).setAlpha(1).setDraggable(false);
     }
 
     public Shape(ShapeType type, JSONObject node, ValidationContext ctx) throws ValidationException
@@ -86,29 +83,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         super(NodeType.SHAPE, node, ctx);
 
         m_type = type;
-
-        final Attributes attr = getAttributes();
-
-        if (NativeInternalType.NUMBER != attr.typeOf(Attribute.X))
-        {
-            setX(0);
-        }
-        if (NativeInternalType.NUMBER != attr.typeOf(Attribute.Y))
-        {
-            setY(0);
-        }
-        if (NativeInternalType.NUMBER != attr.typeOf(Attribute.ALPHA))
-        {
-            setAlpha(1);
-        }
-        else
-        {
-            attr.setAlpha(attr.getAlpha()); // normalizes alpha if out of range
-        }
-        if (NativeInternalType.BOOLEAN != attr.typeOf(Attribute.DRAGGABLE))
-        {
-            setDraggable(false);
-        }
     }
 
     /**

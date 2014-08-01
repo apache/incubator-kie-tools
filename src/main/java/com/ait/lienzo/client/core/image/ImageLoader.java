@@ -37,37 +37,57 @@ public abstract class ImageLoader
 
         RootPanel.get().add(m_image);
 
-        if (url.startsWith("http:") || (url.startsWith("https:")))
+        if (isValidDataURL(url))
         {
-            setCrossOrigin(ImageElement.as(m_image.getElement()), "anonymous");
+            RootPanel.get().remove(m_image);
+
+            ImageElement.as(m_image.getElement()).setSrc(url);
+
+            onLoad(ImageElement.as(m_image.getElement()));
         }
-        m_image.addLoadHandler(new LoadHandler()
+        else
         {
-            @Override
-            public void onLoad(LoadEvent event)
+            if (url.startsWith("http:") || (url.startsWith("https:")))
             {
-                RootPanel.get().remove(m_image);
-
-                ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()));
+                setCrossOrigin(ImageElement.as(m_image.getElement()), "anonymous");
             }
-        });
-        m_image.addErrorHandler(new ErrorHandler()
+            m_image.addLoadHandler(new LoadHandler()
+            {
+                @Override
+                public void onLoad(LoadEvent event)
+                {
+                    RootPanel.get().remove(m_image);
+
+                    ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()));
+                }
+            });
+            m_image.addErrorHandler(new ErrorHandler()
+            {
+                @Override
+                public void onError(ErrorEvent event)
+                {
+                    RootPanel.get().remove(m_image);
+
+                    ImageLoader.this.onError("Image " + url + " failed to load");
+                }
+            });
+            m_image.setUrl(url);
+        }
+    }
+
+    public boolean isValidDataURL(String url)
+    {
+        if ((url.startsWith("data:")) && (url.length() > 6) && (false == ("data:,".equals(url))))
         {
-            @Override
-            public void onError(ErrorEvent event)
-            {
-                RootPanel.get().remove(m_image);
-
-                ImageLoader.this.onError("Image " + url + " failed to load");
-            }
-        });
-        m_image.setUrl(url);
+            return true;
+        }
+        return false;
     }
 
     public ImageLoader(final ImageResource resource)
     {
         m_image = new Image();
-        
+
         m_image.setVisible(false);
 
         RootPanel.get().add(m_image);
@@ -78,7 +98,7 @@ public abstract class ImageLoader
             public void onLoad(LoadEvent event)
             {
                 RootPanel.get().remove(m_image);
-                
+
                 ImageLoader.this.onLoad(ImageElement.as(m_image.getElement()));
             }
         });
@@ -88,7 +108,7 @@ public abstract class ImageLoader
             public void onError(ErrorEvent event)
             {
                 RootPanel.get().remove(m_image);
-                
+
                 ImageLoader.this.onError("Resource " + resource.getName() + " failed to load");
             }
         });

@@ -30,9 +30,8 @@ import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.DragBounds;
-import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.INodeFilter;
-import com.ait.lienzo.client.core.types.NativeInternalType;
+import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
@@ -56,8 +55,6 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     public Group()
     {
         super(NodeType.GROUP);
-
-        setX(0).setY(0).setAlpha(1).setDraggable(false);
     }
 
     /**
@@ -66,29 +63,6 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     protected Group(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(NodeType.GROUP, node, ctx);
-
-        final Attributes attr = getAttributes();
-
-        if (NativeInternalType.NUMBER != attr.typeOf(Attribute.X))
-        {
-            setX(0);
-        }
-        if (NativeInternalType.NUMBER != attr.typeOf(Attribute.Y))
-        {
-            setY(0);
-        }
-        if (NativeInternalType.NUMBER != attr.typeOf(Attribute.ALPHA))
-        {
-            setAlpha(1);
-        }
-        else
-        {
-            attr.setAlpha(attr.getAlpha()); // normalizes alpha if out of range
-        }
-        if (NativeInternalType.BOOLEAN != attr.typeOf(Attribute.DRAGGABLE))
-        {
-            setDraggable(false);
-        }
     }
 
     /**
