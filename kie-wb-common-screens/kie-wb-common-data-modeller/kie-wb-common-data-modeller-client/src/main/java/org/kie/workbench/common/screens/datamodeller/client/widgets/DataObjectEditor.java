@@ -92,10 +92,10 @@ public class DataObjectEditor extends Composite {
     @UiField
     TextArea description;
 
-    @UiField
+    //@UiField
     Label packageNameLabel;
 
-    @UiField
+    //@UiField
     SimplePanel packageSelectorPanel;
 
     @Inject
@@ -250,7 +250,7 @@ public class DataObjectEditor extends Composite {
         timestampFieldSelector.addItem( "", NOT_SELECTED );
         durationFieldSelector.addItem( "", NOT_SELECTED );
 
-        packageSelectorPanel.add( packageSelector );
+        //TODO remove package selector stuff packageSelectorPanel.add( packageSelector );
         packageSelector.getPackageList().addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
@@ -960,7 +960,7 @@ public class DataObjectEditor extends Composite {
         name.setText( null );
         label.setText( null );
         description.setText( null );
-        packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        //packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
         packageSelector.setDataObject( null );
         // TODO superclassLabel when its validation is put in place
         superclassSelector.setDataObject( null );

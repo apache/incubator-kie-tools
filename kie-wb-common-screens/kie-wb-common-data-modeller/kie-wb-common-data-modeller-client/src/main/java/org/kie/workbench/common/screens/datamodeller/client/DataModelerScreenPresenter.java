@@ -24,6 +24,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Window;
@@ -45,6 +46,7 @@ import org.kie.uberfire.client.common.Page;
 import org.kie.uberfire.client.common.YesNoCancelPopup;
 import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.JavaFileNameValidator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.ShowUsagesPopup;
@@ -61,6 +63,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
 import org.kie.workbench.common.screens.javaeditor.client.widget.EditJavaSourceWidget;
@@ -121,9 +124,6 @@ public class DataModelerScreenPresenter {
 
     @Inject
     private DataModelerScreenView view;
-
-    //@Inject
-    //private DataModelerOverviewPresenter overview;
 
     @Inject
     private OverviewWidgetPresenter overview;
@@ -399,7 +399,7 @@ public class DataModelerScreenPresenter {
                     new Command() {
                         @Override
                         public void execute() {
-                            save();
+                            onSafeSave();
                         }
                     },
                     new Command() {
@@ -416,7 +416,7 @@ public class DataModelerScreenPresenter {
                     }
             ).show();
         } else {
-            save();
+            onSafeSave();
         }
     }
 
@@ -665,43 +665,97 @@ public class DataModelerScreenPresenter {
         };
     }
 
-    private void save() {
+    private void onSafeSave() {
 
-        //TODO
-        //Additional validations can be performed prior to save the source
-        //1) try to detect className changes and suggest a file renaming to the user.?
-        //2) try to detect package changes and suggest to the user to move the file from directory.
-        //3) If the file cannot be parsed iDt will be save as is, and eventually build errors will be
-        //  shown in the problems window. The same as for the other editors.
-
-        new SaveOperationService().save( path,
-                new CommandWithCommitMessage() {
+        final String[] newClassName = new String[1];
+        if ( getContext().isDirty() ) {
+            if ( getContext().isEditorChanged() ) {
+                newClassName[0] = getContext().getDataObject().getName();
+                save( newClassName[0] );
+            } else {
+                view.showBusyIndicator(  org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
+                modelerService.call( new RemoteCallback<TypeInfoResult>() {
                     @Override
-                    public void execute( final String commitMessage ) {
-
-                        final DataObjectTO[] modifiedDataObject = new DataObjectTO[ 1 ];
-                        if ( getContext().isDirty() ) {
-                            if ( getContext().isEditorChanged() ) {
-
-                                //at save time the source has always priority over the model.
-                                //If the source was properly parsed and the editor has changes, we need to send the DataObject
-                                //to the server in order to let the source to be updated prior to save.
-                                modifiedDataObject[ 0 ] = getContext().getDataObject();
-                            } else {
-                                //if the source has changes, no update form the UI to the source will be performed.
-                                //instead the parsed DataObject must be returned from the server.
-                                modifiedDataObject[ 0 ] = null;
-                            }
+                    public void callback( TypeInfoResult typeInfoResult ) {
+                        view.hideBusyIndicator();
+                        if ( !typeInfoResult.hasErrors() && typeInfoResult.getJavaTypeInfo() != null ) {
+                            newClassName[0] = typeInfoResult.getJavaTypeInfo().getName();
                         }
-                        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Saving() );
-                        modelerService.call( getSaveSuccessCallback( ),
-                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), path, modifiedDataObject[ 0 ], metadata, commitMessage );
+                        save( newClassName[0] );
                     }
-                }
-        );
+                } ).loadJavaTypeInfo( getSource() );
+            }
+        } else {
+            save( null );
+        }
     }
 
-    private RemoteCallback<GenerationResult> getSaveSuccessCallback( ) {
+    private void save(final String newClassName) {
+
+        String currentFileName = DataModelerUtils.extractSimpleFileName( path );
+        if ( currentFileName != null && newClassName != null && !currentFileName.equals( newClassName )) {
+
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                    Constants.INSTANCE.modelEditor_confirm_file_name_refactoring( newClassName ),
+                    new Command() {
+                        @Override public void execute() {
+                            new SaveOperationService().save( path , getSaveCommand( newClassName ) );
+                        }
+                    },
+                    Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
+                    ButtonType.PRIMARY,
+                    new Command() {
+                        @Override public void execute() {
+                            new SaveOperationService().save( path , getSaveCommand( null ) );
+                        }
+                    },
+                    Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
+                    ButtonType.DANGER,
+                    new Command() {
+                        @Override public void execute() {
+                            //do nothing
+                        }
+                    },
+                    null,
+                    null);
+
+            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.show();
+
+        } else {
+            new SaveOperationService().save( path , getSaveCommand( null ) );
+        }
+    }
+
+    private CommandWithCommitMessage getSaveCommand(final String newFileName) {
+        return new CommandWithCommitMessage() {
+            @Override
+            public void execute( final String commitMessage ) {
+
+                final DataObjectTO[] modifiedDataObject = new DataObjectTO[ 1 ];
+                if ( getContext().isDirty() ) {
+                    if ( getContext().isEditorChanged() ) {
+
+                        //at save time the source has always priority over the model.
+                        //If the source was properly parsed and the editor has changes, we need to send the DataObject
+                        //to the server in order to let the source to be updated prior to save.
+                        modifiedDataObject[ 0 ] = getContext().getDataObject();
+                    } else {
+                        //if the source has changes, no update form the UI to the source will be performed.
+                        //instead the parsed DataObject must be returned from the server.
+                        modifiedDataObject[ 0 ] = null;
+                    }
+                }
+                view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Saving() );
+
+                modelerService.call( getSaveSuccessCallback( newFileName ),
+                    new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), path, modifiedDataObject[ 0 ], metadata, commitMessage, newFileName );
+
+            }
+        };
+    }
+
+    private RemoteCallback<GenerationResult> getSaveSuccessCallback( final String newFileName ) {
         return new RemoteCallback<GenerationResult>() {
 
             @Override
@@ -753,6 +807,9 @@ public class DataModelerScreenPresenter {
 
                 dataModelerEvent.fire( new DataModelSaved( null, getDataModel() ) );
 
+                if ( newFileName != null && result.getPath() != null ) {
+                    reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( result.getPath() ), true );
+                }
             }
         };
     }

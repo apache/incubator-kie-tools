@@ -64,6 +64,7 @@ import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
@@ -328,6 +329,23 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
+    public TypeInfoResult loadJavaTypeInfo( final String source) {
+
+        try {
+            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( );
+            TypeInfoResult result = new TypeInfoResult();
+            org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult driverResult = modelDriver.loadJavaTypeInfo( source );
+            result.setJavaTypeInfo( DataModelerServiceHelper.getInstance().domain2TO( driverResult.getTypeInfo() ) );
+            if ( driverResult.hasErrors() ) {
+                result.setErrors( DataModelerServiceHelper.getInstance().toDataModelerError( driverResult.getErrors() ) );
+            }
+            return result;
+        } catch (Exception e) {
+            logger.error( "JavaTypeInfo object couldn't be loaded for source: " + source, e );
+            throw new ServiceException( "JavaTypeInfo object couldn't be loaded for source.", e );
+        }
+    }
+
     private Pair<DataObjectTO, List<DataModelerError>> loadDataObject( final Path projectPath, final String source, final Path sourcePath ) {
 
         if ( logger.isDebugEnabled() ) {
@@ -452,6 +470,11 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Override
     public GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage ) {
+        return saveSource( source, path, dataObjectTO, metadata, commitMessage, null );
+    }
+
+    @Override
+    public GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage, final String newFileName ) {
 
         try {
 
@@ -462,6 +485,10 @@ public class DataModelerServiceImpl implements DataModelerService {
                     metadataService.setUpAttributes( path, metadata ),
                     makeCommentedOption( commitMessage ) );
 
+            if ( newFileName != null ) {
+                Path newPath = renameService.rename( path, newFileName, commitMessage );
+                result.setPath( newPath );
+            }
             return result;
 
         } catch ( Exception e ) {
@@ -572,9 +599,7 @@ public class DataModelerServiceImpl implements DataModelerService {
                     if ( !refactoringResult.hasErrors() ) {
                         targetPath = Paths.convert( Paths.convert( path ).resolveSibling( newName + ".java" ) );
                         refactoringHelper.addRefactoredPath( targetPath, refactoringResult.getSource(), makeCommentedOption( comment ) );
-                        //KieProject project = projectService.resolveProject( targetPath );
-
-                        //TODO send dataobject renamed event.
+                        //TODO send data object renamed event.
                         //if (project != null) dataObjectCreatedEvent.fire( new DataObjectCreatedEvent( project, refactoringResult.getDataObject() ) );
                     }
                 } catch ( Exception e ) {
@@ -1117,7 +1142,6 @@ public class DataModelerServiceImpl implements DataModelerService {
     private CommentedOption makeCommentedOption( String commitMessage ) {
         final String name = identity.getName();
         final Date when = new Date();
-        //final String commitMessage = DEFAULT_COMMIT_MESSAGE;
 
         final CommentedOption option = new CommentedOption( sessionInfo.getId(),
                 name,

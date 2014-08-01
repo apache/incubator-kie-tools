@@ -43,15 +43,19 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
+import org.kie.workbench.common.services.datamodeller.driver.DriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
+import org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
@@ -87,6 +91,8 @@ public class JavaRoasterModelDriver implements ModelDriver {
     private static final String DATA_OBJECT_FIELD_LOAD_ERROR = "It was not possible to create or load field: \"{0}\" for DataObject: \"{1}\" .";
 
     private static final String MODEL_LOAD_GENERIC_ERROR = "Unexpected error was produced when a DataModel was being loaded from the following path: \"{0}\" .";
+
+    private static final String GENERIC_ERROR = "Unexpected error was produced.";
 
     public JavaRoasterModelDriver() {
         configuredAnnotations.addAll( CommonAnnotations.getCommonAnnotations() );
@@ -215,6 +221,43 @@ public class JavaRoasterModelDriver implements ModelDriver {
         return result;
     }
 
+    public TypeInfoResult loadJavaTypeInfo(final String source) throws ModelDriverException {
+
+        TypeInfoResult result = new TypeInfoResult( );
+
+        if ( source == null || "".equals( source ) ) {
+            logger.debug( "source: " + source + " is empty." );
+            return result;
+        }
+
+        try {
+            JavaType<?> javaType = Roaster.parse( source );
+            if ( javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty()) {
+                addSyntaxErrors( result, null, javaType.getSyntaxErrors() );
+            } else {
+                JavaTypeInfoImpl typeInfo = new JavaTypeInfoImpl();
+                result.setTypeInfo( typeInfo );
+
+                typeInfo.setName( javaType.getName() );
+                typeInfo.setPackageName( javaType.getPackage() );
+                typeInfo.setAnnotation( javaType.isAnnotation() );
+                typeInfo.setClass( javaType.isClass() );
+                typeInfo.setEnum( javaType.isEnum() );
+                typeInfo.setInterface( javaType.isInterface() );
+                typeInfo.setPackagePrivate( javaType.isPackagePrivate() );
+                typeInfo.setPrivate( javaType.isPrivate() );
+                typeInfo.setProtected( javaType.isProtected() );
+                typeInfo.setInterface( javaType.isInterface() );
+            }
+        } catch ( Exception e ) {
+            //Unexpected parsing o model loading exception.
+            logger.error( errorMessage( GENERIC_ERROR, e ) );
+            throw new ModelDriverException( errorMessage( MODEL_LOAD_GENERIC_ERROR ), e );
+        }
+
+        return result;
+    }
+
     private void addModelDriverError( ModelDriverResult result, Path file, ModelDriverException e ) {
         ModelDriverError error;
 
@@ -234,7 +277,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
         result.addError( error );
     }
 
-    private void addSyntaxErrors( ModelDriverResult result, Path file, List<SyntaxError> syntaxErrors ) {
+    private void addSyntaxErrors( DriverResult result, Path file, List<SyntaxError> syntaxErrors ) {
         ModelDriverError error;
         for (SyntaxError syntaxError : syntaxErrors) {
             error = new ModelDriverError( syntaxError.getDescription(), file);

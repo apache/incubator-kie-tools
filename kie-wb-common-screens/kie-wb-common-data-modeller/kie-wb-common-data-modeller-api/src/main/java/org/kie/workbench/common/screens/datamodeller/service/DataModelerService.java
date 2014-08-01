@@ -28,6 +28,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
@@ -50,6 +51,8 @@ public interface DataModelerService {
 
     GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage );
 
+    GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage, final String newFileName );
+
     GenerationResult updateSource( final String source, final Path path, final DataObjectTO dataObjectTO );
 
     GenerationResult updateDataObject( final DataObjectTO dataObjectTO, final String source, final Path path );
@@ -65,6 +68,8 @@ public interface DataModelerService {
     GenerationResult refactorClass( final Path path, final String newPackageName, final String newClassName );
 
     List<ValidationMessage> validate( String source, final Path path, DataObjectTO dataObjectTO );
+
+    TypeInfoResult loadJavaTypeInfo( final String source);
 
     List<PropertyTypeTO> getBasePropertyTypes();
 

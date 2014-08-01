@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @Portable
-public class GenerationResult {
+public class GenerationResult extends DataModelerResult {
 
     long generationTime;
 
@@ -34,7 +35,7 @@ public class GenerationResult {
 
     private DataObjectTO dataObject;
 
-    private List<DataModelerError> errors = new ArrayList<DataModelerError>( );
+    private Path path;
 
     public GenerationResult() {
     }
@@ -81,15 +82,11 @@ public class GenerationResult {
         this.dataObject = dataObject;
     }
 
-    public List<DataModelerError> getErrors() {
-        return errors;
+    public Path getPath() {
+        return path;
     }
 
-    public void setErrors( List<DataModelerError> errors ) {
-        this.errors = errors;
-    }
-
-    public boolean hasErrors() {
-        return errors != null && errors.size() > 0;
+    public void setPath( Path path ) {
+        this.path = path;
     }
 }

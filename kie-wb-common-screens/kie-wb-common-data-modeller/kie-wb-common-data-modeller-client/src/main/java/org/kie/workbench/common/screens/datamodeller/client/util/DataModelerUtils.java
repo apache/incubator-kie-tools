@@ -133,6 +133,12 @@ public class DataModelerUtils {
         }
     }
 
+    public static String extractSimpleFileName(Path path) {
+        if ( path == null ) return null;
+        String fileNameWithExtension = path.getFileName();
+        return fileNameWithExtension.substring( 0, fileNameWithExtension.lastIndexOf( "." ) );
+    }
+
     public static String[] getPackageTerms(String packageName) {
         return packageName.split("\\.", -1);
     }

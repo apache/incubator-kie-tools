@@ -77,6 +77,10 @@ public interface Constants extends Messages {
 
     public String modelEditor_action_no_discard_changes();
 
+    public String modelEditor_action_yes_refactor_file_name();
+
+    public String modelEditor_action_no_dont_refactor_file_name();
+
     public String modelEditor_confirm_save_model_before_project_change(String from, String to);
 
     public String modelEditor_confirm_save_model_before_project_change_force(String user, String to);
@@ -94,6 +98,8 @@ public interface Constants extends Messages {
     public String modelEditor_confirm_deletion_of_used_field(String fieldName);
 
     public String modelEditor_confirm_renaming_of_used_field(String fieldName);
+
+    public String modelEditor_confirm_file_name_refactoring(String newFileName);
 
     public String modelEditor_renaming_error();
 

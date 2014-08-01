@@ -25,7 +25,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class EditorModel {
+public class EditorModel extends DataModelerResult {
 
     /**
      * Data model for current project at the time the DataObjectTO was loaded.
@@ -52,11 +52,6 @@ public class EditorModel {
     private Overview overview;
 
     private long elapsedTime;
-
-    /**
-     * TODO define a convenient class for the errors if needed.
-     */
-    private List<DataModelerError> errors = new ArrayList<DataModelerError> ();
 
     private Project currentProject;
 
@@ -106,18 +101,6 @@ public class EditorModel {
 
     public void setSource( String source ) {
         this.source = source;
-    }
-
-    public List<DataModelerError> getErrors() {
-        return errors;
-    }
-
-    public void setErrors( List<DataModelerError> errors ) {
-        this.errors = errors;
-    }
-
-    public boolean hasErrors() {
-        return errors != null && errors.size() > 0;
     }
 
     public long getElapsedTime() {
