@@ -22,6 +22,8 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 import static com.google.gwt.dom.client.Style.Unit.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A column header that supports resizing and moving
@@ -51,12 +53,14 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
 
     private final Element tableElement;
     private HeaderHelper current;
+    private List<ColumnChangedHandler> columnChangedHandlers = new ArrayList<ColumnChangedHandler>();
+    
 
     public ResizableMovableHeader( final String title,
-                                   final DataGrid<T> table,
+                                   final DataGrid<T> table, 
                                    final ColumnPicker columnPicker,
                                    final Column<T, ?> column ) {
-        super( new HeaderCell() );
+        super( new HeaderCell() );      
         this.title = PortablePreconditions.checkNotNull( "title",
                                                          title );
         this.table = PortablePreconditions.checkNotNull( "table",
@@ -355,6 +359,9 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
     protected void columnResized( final int newWidth ) {
         table.setColumnWidth( column,
                               newWidth + "px" );
+        for(ColumnChangedHandler handler : columnChangedHandlers){
+          handler.afterColumnChanged();
+        }
     }
 
     protected void columnMoved( final int fromIndex,
@@ -365,9 +372,19 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
         table.insertColumn( beforeIndex,
                             column,
                             this );
+        for(ColumnChangedHandler handler : columnChangedHandlers){
+          handler.afterColumnChanged();
+        }
     }
 
     protected abstract int getTableBodyHeight();
+    
+    public void addColumnChangedHandler(ColumnChangedHandler handler){
+      if(handler != null){
+        columnChangedHandlers.add(handler);
+      }
+    }
+  
 
 };
 

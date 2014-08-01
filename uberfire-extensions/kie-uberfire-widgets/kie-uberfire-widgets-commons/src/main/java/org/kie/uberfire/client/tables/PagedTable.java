@@ -22,7 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
-import java.util.Map;
+import org.guvnor.common.services.shared.preferences.GridGlobalPreferences;
 
 /**
  * Widget that shows rows of paged data.
@@ -62,17 +62,11 @@ public class PagedTable<T>
         this.pager.setPageSize( pageSize );
     }
     
+    
      public PagedTable( final int pageSize,
-                       final ProvidesKey<T> providesKey, Map<String, String> params ) {
-        super( providesKey, params );
-        this.pageSize = pageSize;
-        this.dataGrid.setPageSize( pageSize );
-        this.pager.setDisplay( dataGrid );
-        this.pager.setPageSize( pageSize );
-    }
-     public PagedTable( final int pageSize,
-                        Map<String, String> params ) {
-        super( params );
+                        final ProvidesKey<T> providesKey,
+                        final GridGlobalPreferences  gridGlobalPreferences) {
+        super(providesKey, gridGlobalPreferences );
         this.pageSize = pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
