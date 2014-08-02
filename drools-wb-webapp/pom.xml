@@ -291,6 +291,16 @@
       <artifactId>kie-wb-common-default-editor-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-server-ui-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-server-ui-client</artifactId>
+    </dependency>
+
     <!-- Drools Workbench REST -->
     <dependency>
       <groupId>org.drools</groupId>
