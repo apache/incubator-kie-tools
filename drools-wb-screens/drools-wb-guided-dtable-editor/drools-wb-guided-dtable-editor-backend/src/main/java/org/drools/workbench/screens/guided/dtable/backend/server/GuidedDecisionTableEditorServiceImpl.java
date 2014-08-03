@@ -43,6 +43,7 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
@@ -184,11 +185,29 @@ public class GuidedDecisionTableEditorServiceImpl implements GuidedDecisionTable
 
             return new GuidedDecisionTableEditorContent( model,
                                                          workItemDefinitions,
+                                                         loadOverview(path),
                                                          dataModel );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private Overview loadOverview(Path path) {
+
+        Overview overview = new Overview();
+
+        overview.setMetadata(metadataService.getMetadata(path));
+
+        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
+
+        if (sourceServices.hasServiceFor(convertedPath)) {
+            overview.setPreview(sourceServices.getServiceFor(convertedPath).getSource(convertedPath));
+        }
+
+        overview.setProjectName(projectService.resolveProject(path).getProjectName());
+
+        return overview;
     }
 
     @Override

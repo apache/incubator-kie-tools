@@ -20,8 +20,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -31,27 +29,23 @@ import org.drools.workbench.screens.drltext.client.type.DRLResourceType;
 import org.drools.workbench.screens.drltext.client.type.DSLRResourceType;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.editor.GuvnorEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -62,29 +56,23 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
-
 /**
  * This is the default rule editor widget (just text editor based).
  */
 @Dependent
-@WorkbenchEditor(identifier = "DRLEditor", supportedTypes = { DRLResourceType.class, DSLRResourceType.class })
-public class DRLEditorPresenter {
+@WorkbenchEditor(identifier = "DRLEditor", supportedTypes = {DRLResourceType.class, DSLRResourceType.class})
+public class DRLEditorPresenter
+        extends GuvnorEditor {
 
     @Inject
     private Caller<DRLTextEditorService> drlTextEditorService;
-
-    @Inject
-    private Caller<MetadataService> metadataService;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -95,11 +83,10 @@ public class DRLEditorPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
     private DRLEditorView view;
 
     @Inject
-    private MetadataWidget metadataWidget;
+    private OverviewWidgetPresenter overview;
 
     @Inject
     private MultiPageEditor multiPage;
@@ -113,175 +100,81 @@ public class DRLEditorPresenter {
     @Inject
     private DefaultFileNameValidator fileNameValidator;
 
-    @Inject
-    @New
-    private FileMenuBuilder menuBuilder;
-    private Menus menus;
-
-    private ObservablePath path;
-    private PlaceRequest place;
-    private boolean isReadOnly;
     private boolean isDSLR;
-    private String version;
-    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
+
+    private Metadata metadata;
+
+    @Inject
+    public DRLEditorPresenter(DRLEditorView view) {
+        super(view);
+        this.view = view;
+    }
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        this.path = path;
-        this.place = place;
-        this.isReadOnly = place.getParameter( "readOnly", null ) != null;
-        this.version = place.getParameter( "version", null );
-        this.isDSLR = resourceTypeDSLR.accept( path );
+    public void onStartup(final ObservablePath path,
+            final PlaceRequest place) {
+        super.init(path, place);
 
-        this.path.onRename( new Command() {
-            @Override
-            public void execute() {
-                changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
-            }
-        } );
-        this.path.onDelete( new Command() {
-            @Override
-            public void execute() {
-                placeManager.forceClosePlace( place );
-            }
-        } );
-
-        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
-                concurrentUpdateSessionInfo = eventInfo;
-            }
-        } );
-
-        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
-                newConcurrentRename( info.getSource(),
-                                     info.getTarget(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             reload();
-                                         }
-                                     }
-                                   ).show();
-            }
-        } );
-
-        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentDelete info ) {
-                newConcurrentDelete( info.getPath(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             placeManager.closePlace( place );
-                                         }
-                                     }
-                                   ).show();
-            }
-        } );
-
-        makeMenuBar();
-
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-
-        loadContent();
+        this.isDSLR = resourceTypeDSLR.accept(path);
     }
 
-    private void reload() {
-        concurrentUpdateSessionInfo = null;
-        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        loadContent();
-    }
-
-    private void disableMenus() {
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
-    }
-
-    private void loadContent() {
-        drlTextEditorService.call( getLoadContentSuccessCallback(),
-                                   new CommandDrivenErrorCallback( view,
-                                                                   new CommandBuilder().addNoSuchFileException( view,
-                                                                                                                multiPage,
-                                                                                                                menus ).build()
-                                   ) ).loadContent( path );
+    protected void loadContent() {
+        drlTextEditorService.call(getLoadContentSuccessCallback(),
+                new CommandDrivenErrorCallback(view,
+                        new CommandBuilder().addNoSuchFileException(view,
+                                multiPage,
+                                menus).build()
+                )).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<DrlModelContent> getLoadContentSuccessCallback() {
         return new RemoteCallback<DrlModelContent>() {
 
             @Override
-            public void callback( final DrlModelContent content ) {
+            public void callback(final DrlModelContent content) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( path == null ) {
+                if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
                 multiPage.clear();
-                multiPage.addWidget( view,
-                                     DRLTextEditorConstants.INSTANCE.DRL() );
 
-                multiPage.addPage( new Page( metadataWidget,
-                                             CommonConstants.INSTANCE.MetadataTabTitle() ) {
-                    @Override
-                    public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
-                    }
+                multiPage.addWidget(overview,
+                        CommonConstants.INSTANCE.Overview());
+                overview.setContent(content.getOverview(), versionRecordManager.getCurrentPath());
 
-                    @Override
-                    public void onLostFocus() {
-                        //Nothing to do
-                    }
-                } );
+                metadata = content.getOverview().getMetadata();
 
-                final String drl = assertContent( content.getDrl() );
+                multiPage.addWidget(view,
+                        DRLTextEditorConstants.INSTANCE.DRL());
+
+                final String drl = assertContent(content.getDrl());
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
                 final List<DSLSentence> dslConditions = content.getDslConditions();
                 final List<DSLSentence> dslActions = content.getDslActions();
 
+                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
+
                 //Populate view
-                if ( isDSLR ) {
-                    view.setContent( drl,
-                                     fullyQualifiedClassNames,
-                                     dslConditions,
-                                     dslActions );
+                if (isDSLR) {
+                    view.setContent(drl,
+                            fullyQualifiedClassNames,
+                            dslConditions,
+                            dslActions);
                 } else {
-                    view.setContent( drl,
-                                     fullyQualifiedClassNames );
+                    view.setContent(drl,
+                            fullyQualifiedClassNames);
                 }
                 view.hideBusyIndicator();
             }
 
-            private String assertContent( final String drl ) {
-                if ( drl == null || drl.isEmpty() ) {
+            private String assertContent(final String drl) {
+                if (drl == null || drl.isEmpty()) {
                     return "";
                 }
                 return drl;
@@ -290,142 +183,74 @@ public class DRLEditorPresenter {
         };
     }
 
-    public void loadClassFields( final String fullyQualifiedClassName,
-                                 final Callback<List<String>> callback ) {
-        drlTextEditorService.call( getLoadClassFieldsSuccessCallback( callback ),
-                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).loadClassFields( path,
-                                                                                                       fullyQualifiedClassName );
+    public void loadClassFields(final String fullyQualifiedClassName,
+            final Callback<List<String>> callback) {
+        drlTextEditorService.call(getLoadClassFieldsSuccessCallback(callback),
+                new HasBusyIndicatorDefaultErrorCallback(view)).loadClassFields(versionRecordManager.getCurrentPath(),
+                fullyQualifiedClassName);
 
     }
 
-    private RemoteCallback<List<String>> getLoadClassFieldsSuccessCallback( final Callback<List<String>> callback ) {
+    private RemoteCallback<List<String>> getLoadClassFieldsSuccessCallback(final Callback<List<String>> callback) {
         return new RemoteCallback<List<String>>() {
 
             @Override
-            public void callback( final List<String> fields ) {
-                callback.callback( fields );
+            public void callback(final List<String> fields) {
+                callback.callback(fields);
             }
         };
     }
 
-    private void makeMenuBar() {
-        if ( isReadOnly ) {
-            menus = menuBuilder.addRestoreVersion( path ).build();
-        } else {
-            menus = menuBuilder
-                    .addSave( new Command() {
-                        @Override
-                        public void execute() {
-                            onSave();
-                        }
-                    } )
-                    .addCopy( path,
-                              fileNameValidator )
-                    .addRename( path,
-                                fileNameValidator )
-                    .addDelete( path )
-                    .addValidate( onValidate() )
-                    .build();
-        }
-    }
-
-    private Command onValidate() {
+    protected Command onValidate() {
         return new Command() {
             @Override
             public void execute() {
-                drlTextEditorService.call( new RemoteCallback<List<ValidationMessage>>() {
+                drlTextEditorService.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            ValidationPopup.showMessages( results );
+                            ValidationPopup.showMessages(results);
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( path,
-                                                          view.getContent() );
+                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
+                        view.getContent());
             }
         };
     }
 
-    @OnSave
-    public void onSave() {
-        if ( isReadOnly ) {
-            view.alertReadOnly();
-            return;
-        }
-
-        if ( concurrentUpdateSessionInfo != null ) {
-            newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                                 concurrentUpdateSessionInfo.getIdentity(),
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         save();
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         //cancel?
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         reload();
-                                     }
-                                 }
-                               ).show();
-        } else {
-            save();
-        }
-    }
-
-    private void save() {
-        new SaveOperationService().save( path,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 drlTextEditorService.call( getSaveSuccessCallback(),
-                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
-                                                                                                                                     view.getContent(),
-                                                                                                                                     metadataWidget.getContent(),
-                                                                                                                                     commitMessage );
-                                             }
-                                         }
-                                       );
+    protected void save() {
+        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute(final String commitMessage) {
+                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        drlTextEditorService.call(getSaveSuccessCallback(),
+                                new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                view.getContent(),
+                                metadata,
+                                commitMessage);
+                    }
+                }
+        );
         concurrentUpdateSessionInfo = null;
-    }
-
-    private RemoteCallback<Path> getSaveSuccessCallback() {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                view.setNotDirty();
-                view.hideBusyIndicator();
-                metadataWidget.resetDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-            }
-        };
     }
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty() || metadataWidget.isDirty();
+        return view.isDirty();
     }
 
     @OnClose
     public void onClose() {
-        this.path = null;
+        versionRecordManager.clear();
     }
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if ( isDirty() ) {
+        if (isDirty()) {
             return view.confirmClose();
         }
         return true;
@@ -435,18 +260,18 @@ public class DRLEditorPresenter {
     public String getTitle() {
         String title = "";
         String fileName = "";
-        if ( resourceTypeDRL.accept( path ) ) {
+        if (resourceTypeDRL.accept(versionRecordManager.getCurrentPath())) {
             title = DRLTextEditorConstants.INSTANCE.drlEditorTitle();
-            fileName = FileNameUtil.removeExtension( path,
-                                                     resourceTypeDRL );
-        } else if ( resourceTypeDSLR.accept( path ) ) {
+            fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
+                    resourceTypeDRL);
+        } else if (resourceTypeDSLR.accept(versionRecordManager.getCurrentPath())) {
             title = DRLTextEditorConstants.INSTANCE.dslrEditorTitle();
-            fileName = FileNameUtil.removeExtension( path,
-                                                     resourceTypeDSLR );
+            fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
+                    resourceTypeDSLR);
         }
 
-        if ( version != null ) {
-            fileName = fileName + " v" + version;
+        if (versionRecordManager.getVersion() != null) {
+            fileName = fileName + " v" + versionRecordManager.getVersion();
         }
         return title + " [" + fileName + "]";
     }
@@ -459,16 +284,6 @@ public class DRLEditorPresenter {
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
-    }
-
-    public void onRestore( @Observes RestoreEvent restore ) {
-        if ( path == null || restore == null || restore.getPath() == null ) {
-            return;
-        }
-        if ( path.equals( restore.getPath() ) ) {
-            loadContent();
-            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
-        }
     }
 
 }

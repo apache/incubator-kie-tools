@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -30,13 +31,17 @@ public class GuidedDecisionTableEditorContent {
     private GuidedDecisionTable52 model;
     private Set<PortableWorkDefinition> workItemDefinitions;
     private PackageDataModelOracleBaselinePayload dataModel;
+    private Overview overview;
 
     public GuidedDecisionTableEditorContent() {
     }
 
     public GuidedDecisionTableEditorContent( final GuidedDecisionTable52 model,
                                              final Set<PortableWorkDefinition> workItemDefinitions,
+                                             final Overview overview,
                                              final PackageDataModelOracleBaselinePayload dataModel ) {
+        this.overview = PortablePreconditions.checkNotNull( "overview",
+                                                            overview );
         this.model = PortablePreconditions.checkNotNull( "model",
                                                          model );
         this.workItemDefinitions = PortablePreconditions.checkNotNull( "workItemDefinitions",
@@ -57,4 +62,11 @@ public class GuidedDecisionTableEditorContent {
         return dataModel;
     }
 
+    public Overview getOverview() {
+        return overview;
+    }
+
+    public void setOverview(Overview overview) {
+        this.overview = overview;
+    }
 }

@@ -44,6 +44,7 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
@@ -170,6 +171,7 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                                                                sessionInfo ) );
 
             return new DrlModelContent( drl,
+                                        loadOverview(path, drl),
                                         Arrays.asList( fullyQualifiedClassNames ),
                                         dslConditions,
                                         dslActions );
@@ -177,6 +179,19 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private Overview loadOverview(Path path, String drl) {
+
+        Overview overview = new Overview();
+
+        overview.setMetadata(metadataService.getMetadata(path));
+
+        overview.setPreview(drl);
+
+        overview.setProjectName(projectService.resolveProject(path).getProjectName());
+
+        return overview;
     }
 
     @Override

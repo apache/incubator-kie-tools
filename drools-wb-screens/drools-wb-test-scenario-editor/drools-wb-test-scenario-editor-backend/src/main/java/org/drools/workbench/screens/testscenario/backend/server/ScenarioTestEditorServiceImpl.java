@@ -40,6 +40,7 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -53,6 +54,8 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -68,6 +71,8 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @ApplicationScoped
 public class ScenarioTestEditorServiceImpl
         implements ScenarioTestEditorService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ScenarioTestEditorServiceImpl.class);
 
     @Inject
     @Named("ioStrategy")
@@ -140,6 +145,7 @@ public class ScenarioTestEditorServiceImpl
 
             Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal( content );
             scenario.setName( path.getFileName() );
+
             return scenario;
 
         } catch ( Exception e ) {
@@ -240,6 +246,7 @@ public class ScenarioTestEditorServiceImpl
                                                                sessionInfo ) );
 
             return new TestScenarioModelContent( scenario,
+                                                 loadOverview(path),
                                                  packageName,
                                                  dataModel );
 
@@ -248,6 +255,23 @@ public class ScenarioTestEditorServiceImpl
         }
     }
 
+    private Overview loadOverview(Path path) {
+
+        Overview overview = new Overview();
+
+        try {
+            overview.setMetadata(metadataService.getMetadata(path));
+        }catch (Exception e ){
+            // Some older versions in our example do not have metadata.
+            // This should be impossible in any kie-wb version
+            logger.error("No metadata found for file: " + path.getFileName() + " full path [" + path.toString()+"]");
+        }
+        overview.setPreview("");
+
+        overview.setProjectName(projectService.resolveProject(path).getProjectName());
+
+        return overview;
+    }
     @Override
     public void runScenario( final Path path,
                              final Scenario scenario ) {

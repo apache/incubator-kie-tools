@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
 import org.uberfire.client.mvp.UberView;
 
-public interface DRLEditorView extends HasBusyIndicator,
+public interface DRLEditorView extends GuvnorEditorView,
                                        UberView<DRLEditorPresenter> {
 
     void setContent( final String drl,

@@ -9,12 +9,13 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Guided Decision Table Editor View definition
  */
-public interface GuidedDecisionTableEditorView extends HasBusyIndicator,
+public interface GuidedDecisionTableEditorView extends GuvnorEditorView,
                                                        IsWidget {
 
     void setContent( final Path path,
