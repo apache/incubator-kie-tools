@@ -51,6 +51,10 @@ Issue Tracking
 
 https://github.com/ahome-it/lienzo-core/issues
 
+Kitchen Sink Demo	
+
+http://www.lienzo-core.com/lienzo-ks/
+
 Contributing
 
 Pull requests are welcome; see the contributor guidelines for details.
