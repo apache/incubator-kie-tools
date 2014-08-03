@@ -63,8 +63,8 @@ public class OverviewWidgetPresenterTest {
         Metadata metadata = new Metadata();
         overview.setMetadata(metadata);
 
-        ClientResourceType resourceType = mock(ClientResourceType.class);
-        editor.setContent(overview, resourceType);
+        ObservablePath observablePath = mock(ObservablePath.class);
+        editor.setContent(overview, observablePath);
 
         presenter.onDescriptionEdited("Hello");
 

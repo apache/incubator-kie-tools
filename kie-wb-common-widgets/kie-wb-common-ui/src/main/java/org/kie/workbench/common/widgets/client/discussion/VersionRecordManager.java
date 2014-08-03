@@ -261,4 +261,11 @@ public class VersionRecordManager {
             }
         }).getVersion(path);
     }
+
+    public void clear() {
+        selectionCallback = null;
+        versions = null;
+        pathToLatest = null;
+        version = null;
+    }
 }

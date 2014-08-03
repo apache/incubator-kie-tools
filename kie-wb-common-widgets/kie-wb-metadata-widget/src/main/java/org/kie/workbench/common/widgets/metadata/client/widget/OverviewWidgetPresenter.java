@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
@@ -47,13 +48,13 @@ public class OverviewWidgetPresenter
         this.clientTypeRegistry = clientTypeRegistry;
     }
 
-    public void setContent(Overview overview, ClientResourceType type) {
+    public void setContent(Overview overview, ObservablePath path) {
 
         this.overview = overview;
 
         view.setPreview(overview.getPreview());
 
-        view.setResourceType(type);
+        view.setResourceType(clientTypeRegistry.resolve(path));
 
         view.setProject(overview.getProjectName());
         view.setMetadata(overview.getMetadata(), isReadOnly);

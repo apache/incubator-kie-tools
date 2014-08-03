@@ -54,7 +54,7 @@ public class MetadataWidget
     private Metadata metadata = null;
     private boolean readOnly;
 
-    @UiField Label title;
+//    @UiField Label title;
     @UiField CategorySelectorWidget categories;
     @UiField Label note;
     @UiField Label uri;

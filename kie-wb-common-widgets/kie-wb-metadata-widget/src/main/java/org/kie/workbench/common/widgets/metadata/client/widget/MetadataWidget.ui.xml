@@ -33,14 +33,14 @@
 
   <gwt:HTMLPanel>
     <div>
-      <div>
-        <div class='{style.firstColumn}'>
-          <gwt:Label text='{i18n.Title}'/>
-        </div>
-        <div style="float:left;">
-          <gwt:Label ui:field="title"/>
-        </div>
-      </div>
+      <!--<div>-->
+        <!--<div class='{style.firstColumn}'>-->
+          <!--<gwt:Label text='{i18n.Title}'/>-->
+        <!--</div>-->
+        <!--<div style="float:left;">-->
+          <!--<gwt:Label ui:field="title"/>-->
+        <!--</div>-->
+      <!--</div>-->
       <div style="clear:both;">
         <div class='{style.firstColumn}'>
           <gwt:Label text='{i18n.CategoriesMetaData}'/>
@@ -97,6 +97,7 @@
           <gwt:TextBox ui:field="source" title='{i18n.SourceMetaDataTip}'/>
         </div>
       </div>
+      <div style="clear:both;" />
     </div>
 
 

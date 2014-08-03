@@ -173,9 +173,6 @@ public class DataModelerScreenPresenter {
     @Inject
     private JavaResourceType resourceType;
 
-    @Inject
-    private ClientTypeRegistry clientTypeRegistry;
-
     private ObservablePath path;
 
     private Metadata metadata;
@@ -843,7 +840,7 @@ public class DataModelerScreenPresenter {
 
                 versionRecordManager.setVersions( editorModel.getOverview().getMetadata().getVersion() );
 
-                overview.setContent( editorModel.getOverview(), clientTypeRegistry.resolve(path) );
+                overview.setContent( editorModel.getOverview(), path );
                 javaSourceEditor.setReadonly( readonly );
                 getContext().setDirty( false );
                 getContext().setReadonly( readonly );
