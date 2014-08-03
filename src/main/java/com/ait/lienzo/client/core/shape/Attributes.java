@@ -1497,6 +1497,29 @@ public class Attributes extends JavaScriptObject
         }
     }
 
+    public final void setPath(String path)
+    {
+        if ((null == path) || (path = path.trim()).isEmpty())
+        {
+            delete(Attribute.PATH.getProperty());
+        }
+        else
+        {
+            put(Attribute.PATH.getProperty(), path);
+        }
+    }
+
+    public final String getPath()
+    {
+        String path = getString(Attribute.PATH.getProperty());
+
+        if ((null == path) || (path = path.trim()).isEmpty())
+        {
+            return null;
+        }
+        return path;
+    }
+
     public final String getString(String name)
     {
         if (typeOf(name) == NativeInternalType.STRING)

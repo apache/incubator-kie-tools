@@ -524,4 +524,10 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("If a shape is dragged on the Drag Layer, or in it's own Layer.")
     public String dragModeDescription();
+
+    @DefaultStringValue("Path")
+    public String pathLabel();
+
+    @DefaultStringValue("A valid SVG Path specification.")
+    public String pathDescription();
 }

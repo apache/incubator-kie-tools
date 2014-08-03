@@ -37,6 +37,7 @@ import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.RegularPolygon;
 import com.ait.lienzo.client.core.shape.Ring;
+import com.ait.lienzo.client.core.shape.SVGPath;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Slice;
 import com.ait.lienzo.client.core.shape.Spline;
@@ -54,7 +55,7 @@ import com.ait.lienzo.client.core.util.Console;
  */
 public final class FactoryRegistry
 {
-    private static FactoryRegistry           s_instance;
+    private static FactoryRegistry            s_instance;
 
     private final NFastStringMap<IFactory<?>> m_factories = new NFastStringMap<IFactory<?>>();
 
@@ -166,6 +167,8 @@ public final class FactoryRegistry
         registry.registerFactory(new Chord.ChordFactory());
 
         registry.registerFactory(new IsoscelesTrapezoid.IsoscelesTrapezoidFactory());
+
+        registry.registerFactory(new SVGPath.SVGPathFactory());
 
         // Container Types
 

@@ -188,6 +188,18 @@ public final class NFastArrayList<M>
     {
         m_jso.reverse();
     }
+    
+    @SuppressWarnings("unchecked")
+    public final NFastArrayList<M> push(M v, M...values)
+    {
+        add(v);
+        
+        for(int i = 0; i < values.length; i++)
+        {
+            add(values[i]);
+        }
+        return this;
+    }
 
     public final NFastArrayList<M> copy()
     {

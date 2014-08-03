@@ -67,6 +67,8 @@ public class ShapeType
 
     public static final ShapeType ISOSCELES_TRAPEZOID = new ShapeType("IsoscelesTrapezoid");
 
+    public static final ShapeType SVG_PATH            = new ShapeType("SVGPath");
+
     private final String          m_value;
 
     protected ShapeType(String value)

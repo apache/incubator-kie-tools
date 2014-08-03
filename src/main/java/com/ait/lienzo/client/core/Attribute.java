@@ -175,6 +175,8 @@ public class Attribute implements IAttribute
 
     public static final Attribute           DRAG_MODE                        = new Attribute("dragMode", MESSAGES.dragModeLabel(), MESSAGES.dragModeDescription(), AttributeType.DRAG_MODE_TYPE);
 
+    public static final Attribute           PATH                             = new Attribute("path", MESSAGES.pathLabel(), MESSAGES.pathDescription(), AttributeType.STRING_TYPE);
+
     private final String                    m_property;
 
     private final String                    m_label;
