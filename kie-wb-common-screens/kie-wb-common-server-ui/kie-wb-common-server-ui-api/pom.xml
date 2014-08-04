@@ -9,8 +9,8 @@
 
   <artifactId>kie-wb-common-server-ui-api</artifactId>
 
-  <name>Server Component API</name>
-  <description>Server Component API</description>
+  <name>Kie Workbench - Server Component - API</name>
+  <description>Kie Workbench - Server Component - API</description>
 
   <dependencies>
     <!-- Project Dependencies -->

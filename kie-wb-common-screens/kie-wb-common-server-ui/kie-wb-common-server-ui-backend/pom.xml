@@ -10,8 +10,8 @@
   <artifactId>kie-wb-common-server-ui-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Server Component Backend</name>
-  <description>Server Component Backend</description>
+  <name>Kie Workbench - Server Component - Backend</name>
+  <description>Kie Workbench - Server Component - Backend</description>
 
   <dependencies>
     <dependency>
@@ -28,6 +28,12 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- EJB for AsyncDispatcher -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
     </dependency>
 
     <dependency>

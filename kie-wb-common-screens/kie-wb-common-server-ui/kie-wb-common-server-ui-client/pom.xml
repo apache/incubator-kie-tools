@@ -9,8 +9,8 @@
 
   <artifactId>kie-wb-common-server-ui-client</artifactId>
 
-  <name>Server Component Client</name>
-  <description>Server Component Client</description>
+  <name>Kie Workbench - Server Component - Client</name>
+  <description>Kie Workbench - Server Component - Client</description>
 
   <dependencies>
     <!-- Project Dependencies -->
