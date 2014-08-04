@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kie.uberfire</groupId>
+        <artifactId>kie-uberfire-widgets</artifactId>
+        <version>6.2.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>kie-uberfire-widgets-service</artifactId>
+    <packaging>pom</packaging>
+    <name>KIE UberFire Widgets Commons Services</name>
+    <description>KIE UberFire Widgets Commons Services</description>
+    <modules>
+        <module>kie-uberfire-widgets-service-api</module>
+        <module>kie-uberfire-widgets-service-backend</module>
+    </modules>
+</project>
