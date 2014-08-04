@@ -35,8 +35,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.guvnor.common.services.shared.preferences.GridColumnPreference;
-import org.guvnor.common.services.shared.preferences.GridPreferencesStore;
+import org.kie.uberfire.shared.preferences.GridColumnPreference;
+import org.kie.uberfire.shared.preferences.GridPreferencesStore;
+
 
 public class ColumnPicker<T> {
 
@@ -160,8 +161,7 @@ public class ColumnPicker<T> {
         
         
         for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
-          if(gridPreferences != null && !gridPreferences.getGlobalPreferences()
-                  .getBannedColumns().contains(columnMeta.getHeader().getValue())){
+          
               final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
               
               checkBox.setValue( columnMeta.isVisible() );
@@ -179,8 +179,15 @@ public class ColumnPicker<T> {
                       adjustColumnWidths();
                   }
               } );
-              popupContent.add( checkBox );
-          }
+              
+              if(gridPreferences != null && gridPreferences.getGlobalPreferences()
+                  .getBannedColumns().contains(columnMeta.getHeader().getValue())){
+                // do not add if it is banned
+              }else if (gridPreferences == null || !gridPreferences.getGlobalPreferences()
+                  .getBannedColumns().contains(columnMeta.getHeader().getValue())){
+                popupContent.add( checkBox );
+              }
+          
         }
         if(gridPreferences!= null){
           Button resetButton = new Button("Reset");

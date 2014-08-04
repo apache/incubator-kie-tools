@@ -43,13 +43,14 @@ import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import java.util.List;
 import javax.inject.Inject;
-import org.guvnor.common.services.shared.preferences.GridColumnPreference;
-import org.guvnor.common.services.shared.preferences.GridGlobalPreferences;
-import org.guvnor.common.services.shared.preferences.UserDataGridPreferencesService;
-import org.guvnor.common.services.shared.preferences.GridPreferencesStore;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.resources.CommonResources;
+import org.kie.uberfire.shared.preferences.GridColumnPreference;
+import org.kie.uberfire.shared.preferences.GridGlobalPreferences;
+import org.kie.uberfire.shared.preferences.GridPreferencesStore;
+import org.kie.uberfire.shared.preferences.UserDataGridPreferencesService;
+import org.uberfire.security.Identity;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
@@ -87,8 +88,12 @@ public class SimpleTable<T>
     private ColumnPicker<T> columnPicker;
     
     private GridPreferencesStore gridPreferencesStore;
-    @Inject
+    
+    @Inject 
     private Caller<UserDataGridPreferencesService> preferencesService;
+
+    @Inject
+    private Identity identity;
     
     public SimpleTable() {
         dataGrid = new DataGrid<T>();
@@ -126,7 +131,8 @@ public class SimpleTable<T>
 
           @Override
           public void beforeColumnChanged() {
-            if (preferencesService != null) {
+           
+            if (preferencesService != null && gridPreferencesStore != null) {
               preferencesService.call(new RemoteCallback<Void>() {
 
                 @Override
@@ -139,12 +145,14 @@ public class SimpleTable<T>
 
           @Override
           public void afterColumnChanged() {
-            List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
-            gridPreferencesStore.resetGridColumnPreferences();
-            for(GridColumnPreference gcp : columnsState){
-              gridPreferencesStore.addGridColumnPreference(gcp);
-            }
-            if (preferencesService != null) {
+            if (gridPreferencesStore != null && preferencesService != null) {
+              List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
+
+              gridPreferencesStore.resetGridColumnPreferences();
+              for (GridColumnPreference gcp : columnsState) {
+                gridPreferencesStore.addGridColumnPreference(gcp);
+              }
+
               preferencesService.call(new RemoteCallback<Void>() {
 
                 @Override
@@ -153,6 +161,7 @@ public class SimpleTable<T>
                 }
               }).saveGridPreferences(gridPreferencesStore);
             }
+            
           }
         });
         columnPickerButton = columnPicker.createToggleButton();
@@ -328,18 +337,21 @@ public class SimpleTable<T>
         header.addColumnChangedHandler(new ColumnChangedHandler() {
           @Override
           public void afterColumnChanged() {
-            List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
-            gridPreferencesStore.resetGridColumnPreferences();
-            for(GridColumnPreference gcp : columnsState){
-              gridPreferencesStore.addGridColumnPreference(gcp);
-            }
-            preferencesService.call(new RemoteCallback<Void>() {
-
-              @Override
-              public void callback(Void response) {
-                
+            if(gridPreferencesStore != null && preferencesService != null){
+              List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
+              gridPreferencesStore.resetGridColumnPreferences();
+              for(GridColumnPreference gcp : columnsState){
+                gridPreferencesStore.addGridColumnPreference(gcp);
               }
-            }).saveGridPreferences(gridPreferencesStore);
+
+              preferencesService.call(new RemoteCallback<Void>() {
+
+                @Override
+                public void callback(Void response) {
+
+                }
+              }).saveGridPreferences(gridPreferencesStore);
+            }
           }
 
           @Override

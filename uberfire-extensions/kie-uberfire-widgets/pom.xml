@@ -19,5 +19,6 @@
     <module>kie-uberfire-widgets-core</module>
     <module>kie-uberfire-widgets-properties-editor</module>
     <module>kie-uberfire-widgets-sandbox</module>
+    <module>kie-uberfire-widgets-service</module>
   </modules>
 </project>

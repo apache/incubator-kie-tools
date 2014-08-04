@@ -22,7 +22,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
-import org.guvnor.common.services.shared.preferences.GridGlobalPreferences;
+import org.kie.uberfire.shared.preferences.GridGlobalPreferences;
+
 
 /**
  * Widget that shows rows of paged data.
