@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.dsltext.service;
 
+import org.drools.workbench.screens.dsltext.model.DSLTextEditorContent;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
@@ -25,6 +26,7 @@ import org.guvnor.common.services.shared.file.SupportsRename;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface DSLTextEditorService
@@ -37,5 +39,7 @@ public interface DSLTextEditorService
         SupportsDelete,
         SupportsCopy,
         SupportsRename {
+
+    DSLTextEditorContent loadContent( final Path path );
 
 }

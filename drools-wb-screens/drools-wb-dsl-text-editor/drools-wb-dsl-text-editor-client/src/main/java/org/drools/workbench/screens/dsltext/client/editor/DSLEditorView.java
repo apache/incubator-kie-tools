@@ -2,8 +2,9 @@ package org.drools.workbench.screens.dsltext.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
 
-public interface DSLEditorView extends HasBusyIndicator,
+public interface DSLEditorView extends GuvnorEditorView,
                                        IsWidget {
 
     void setContent( final String content );
@@ -12,12 +13,8 @@ public interface DSLEditorView extends HasBusyIndicator,
 
     boolean isDirty();
 
-    void setNotDirty();
-
     boolean confirmClose();
 
     void makeReadOnly();
-
-    void alertReadOnly();
 
 }

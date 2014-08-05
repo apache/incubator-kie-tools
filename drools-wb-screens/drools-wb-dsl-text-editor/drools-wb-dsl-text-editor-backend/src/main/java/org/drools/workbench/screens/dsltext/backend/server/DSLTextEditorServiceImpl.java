@@ -28,6 +28,7 @@ import javax.inject.Named;
 
 import org.drools.compiler.lang.dsl.DSLMappingParseException;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.workbench.screens.dsltext.model.DSLTextEditorContent;
 import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -37,8 +38,10 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
@@ -50,7 +53,8 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class DSLTextEditorServiceImpl implements DSLTextEditorService {
+public class DSLTextEditorServiceImpl
+        implements DSLTextEditorService {
 
     @Inject
     @Named("ioStrategy")
@@ -58,6 +62,9 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
 
     @Inject
     private MetadataService metadataService;
+
+    @Inject
+    private KieProjectService projectService;
 
     @Inject
     private CopyService copyService;
@@ -121,6 +128,27 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public DSLTextEditorContent loadContent(Path path) {
+        String dsl = load(path);
+        return new DSLTextEditorContent(
+                dsl,
+                loadOverview(path, dsl));
+    }
+
+    private Overview loadOverview(Path path, String dsl) {
+
+        Overview overview = new Overview();
+
+        overview.setMetadata(metadataService.getMetadata(path));
+
+        overview.setPreview(dsl);
+
+        overview.setProjectName(projectService.resolveProject(path).getProjectName());
+
+        return overview;
     }
 
     @Override
@@ -270,4 +298,5 @@ public class DSLTextEditorServiceImpl implements DSLTextEditorService {
                                                         when );
         return co;
     }
+
 }

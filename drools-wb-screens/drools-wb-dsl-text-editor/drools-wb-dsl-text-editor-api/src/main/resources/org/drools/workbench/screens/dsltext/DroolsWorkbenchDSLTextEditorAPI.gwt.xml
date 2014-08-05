@@ -22,6 +22,7 @@
   <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
   <inherits name="org.guvnor.common.services.GuvnorServicesAPI"/>
 
+  <source path="model"/>
   <source path="service"/>
   <source path="type"/>
 
