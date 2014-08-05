@@ -36,6 +36,7 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
@@ -103,7 +104,7 @@ public class EnumServiceImpl implements EnumService {
                         final String content,
                         final String comment ) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve(fileName);
             final Path newPath = Paths.convert( nioPath );
 
             if ( ioService.exists( nioPath ) ) {
@@ -141,11 +142,27 @@ public class EnumServiceImpl implements EnumService {
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
                                                                sessionInfo ) );
 
-            return new EnumModelContent( new EnumModel( load( path ) ) );
+            String text = load(path);
+            return new EnumModelContent(
+                    new EnumModel(text),
+                    loadOverview(path, text));
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    private Overview loadOverview(Path path, String text) {
+
+        Overview overview = new Overview();
+
+        overview.setMetadata(metadataService.getMetadata(path));
+
+        overview.setPreview(text);
+
+        overview.setProjectName(projectService.resolveProject(path).getProjectName());
+
+        return overview;
     }
 
     @Override
