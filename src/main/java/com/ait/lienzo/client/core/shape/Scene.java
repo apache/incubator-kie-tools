@@ -158,7 +158,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
         if (null != layers)
         {
-            final int size = layers.length();
+            final int size = layers.size();
 
             for (int i = 0; i < size; i++)
             {
@@ -215,7 +215,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     {
         NFastArrayList<Layer> layers = getChildNodes();
 
-        int n = layers.length();
+        int n = layers.size();
 
         return n == 0 ? null : layers.get(n - 1);
     }
@@ -229,7 +229,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
         if (null != layers)
         {
-            final int size = layers.length();
+            final int size = layers.size();
 
             for (int i = 0; i < size; i++)
             {
@@ -260,7 +260,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             if (null != layers)
             {
-                int size = layers.length();
+                int size = layers.size();
 
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -290,7 +290,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
         if (null != layers)
         {
-            final int size = layers.length();
+            final int size = layers.size();
 
             for (int i = size - 1; i >= 0; i--)
             {
@@ -324,7 +324,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
         if (list != null)
         {
-            final int size = list.length();
+            final int size = list.size();
 
             for (int i = 0; i < size; i++)
             {
@@ -618,7 +618,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             if (null != layers)
             {
-                final int size = layers.length();
+                final int size = layers.size();
 
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -650,7 +650,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             if (null != layers)
             {
-                final int size = layers.length();
+                final int size = layers.size();
 
                 if (null != background)
                 {
@@ -684,7 +684,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             if (null != layers)
             {
-                final int size = layers.length();
+                final int size = layers.size();
 
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -716,7 +716,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             if (null != layers)
             {
-                final int size = layers.length();
+                final int size = layers.size();
 
                 if (null != background)
                 {

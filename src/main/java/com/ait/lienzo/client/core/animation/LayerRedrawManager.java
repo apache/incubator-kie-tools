@@ -45,9 +45,9 @@ public final class LayerRedrawManager
 
                 m_layers = new NFastArrayList<Layer>();
 
-                final int leng = list.length();
+                final int size = list.size();
 
-                for (int i = 0; i < leng; i++)
+                for (int i = 0; i < size; i++)
                 {
                     list.get(i).draw();
                 }
@@ -67,7 +67,7 @@ public final class LayerRedrawManager
 
     private void kick()
     {
-        if (m_layers.length() > 0)
+        if (m_layers.size() > 0)
         {
             AnimationScheduler.get().requestAnimationFrame(m_redraw);
         }

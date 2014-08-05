@@ -606,7 +606,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
 
             if (null != list)
             {
-                int size = list.length();
+                int size = list.size();
 
                 for (int i = 0; i < size; i++)
                 {
@@ -630,7 +630,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
 
             if (null != list)
             {
-                int size = list.length();
+                int size = list.size();
 
                 for (int i = 0; i < size; i++)
                 {
@@ -660,7 +660,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
 
         if (list != null)
         {
-            int size = list.length();
+            int size = list.size();
 
             for (int i = 0; i < size; i++)
             {

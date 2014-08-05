@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
-
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
@@ -29,13 +27,13 @@ import com.google.gwt.json.client.JSONObject;
 
 public class SVGPath extends Shape<SVGPath>
 {
-    private static final char[]  COMMANDS = { 'm', 'M', 'l', 'L', 'v', 'V', 'h', 'H', 'z', 'Z', 'c', 'C', 'q', 'Q', 't', 'T', 's', 'S', 'a', 'A' };
+    private static final char[]             COMMANDS = { 'm', 'M', 'l', 'L', 'v', 'V', 'h', 'H', 'z', 'Z', 'c', 'C', 'q', 'Q', 't', 'T', 's', 'S', 'a', 'A' };
 
-    private String               m_path;
+    private String                          m_path;
 
-    private boolean              m_fill   = false;
+    private boolean                         m_fill   = false;
 
-    private ArrayList<PathEntry> m_list   = new ArrayList<PathEntry>();
+    private final NFastArrayList<PathEntry> m_list   = new NFastArrayList<PathEntry>();
 
     public SVGPath(String path)
     {
@@ -47,18 +45,16 @@ public class SVGPath extends Shape<SVGPath>
     protected SVGPath(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SVG_PATH, node, ctx);
+
+        setPath(getPath());
     }
 
     @Override
     protected boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        String path = getPath();
+        final int size = m_list.size();
 
-        if (false == path.equals(m_path))
-        {
-            parse(m_path = path);
-        }
-        if (m_list.isEmpty())
+        if (size < 1)
         {
             return false;
         }
@@ -66,8 +62,10 @@ public class SVGPath extends Shape<SVGPath>
 
         context.beginPath();
 
-        for (PathEntry entry : m_list)
+        for (int i = 0; i < size; i++)
         {
+            PathEntry entry = m_list.get(i);
+
             double[] p = entry.points;
 
             switch (entry.command)
@@ -86,26 +84,44 @@ public class SVGPath extends Shape<SVGPath>
                 break;
                 case 'A':
                     double cx = p[0];
+
                     double cy = p[1];
+
                     double rx = p[2];
+
                     double ry = p[3];
+
                     double th = p[4];
+
                     double dt = p[5];
+
                     double ro = p[6];
+
                     double fs = p[7];
+
                     double ra = ((rx > ry) ? rx : ry);
+
                     double sx = ((rx > ry) ? 1 : (rx / ry));
+
                     double sy = ((rx > ry) ? (ry / rx) : 1);
+
                     context.translate(cx, cy);
+
                     context.rotate(ro);
+
                     context.scale(sx, sy);
+
                     context.arc(0, 0, ra, th, th + dt, (1 - fs) > 0);
+
                     context.scale(1 / sx, 1 / sy);
+
                     context.rotate(-ro);
+
                     context.translate(-cx, -cy);
                 break;
                 case 'z':
                     context.closePath();
+
                     m_fill = true;
                 break;
             }
@@ -115,6 +131,8 @@ public class SVGPath extends Shape<SVGPath>
 
     private final void parse(String path)
     {
+        m_list.clear();
+
         String cs = path;
 
         cs = cs.replaceAll(" ", ",");
@@ -151,13 +169,14 @@ public class SVGPath extends Shape<SVGPath>
             {
                 p.add(Double.valueOf(pt[i]));
             }
-            while (p.length() > 0)
+            while (p.size() > 0)
             {
                 Character cmd = null;
 
                 NFastArrayList<Double> points = new NFastArrayList<Double>();
 
                 double ctx, cty;
+
                 double rx, ry, psi, fa, fs, x1, y1;
 
                 PathEntry prev;
@@ -166,173 +185,264 @@ public class SVGPath extends Shape<SVGPath>
                 {
                     case 'l':
                         cpx += p.shift();
+
                         cpy += p.shift();
+
                         cmd = 'L';
+
                         points.push(cpx, cpy);
                     break;
                     case 'L':
                         cpx = p.shift();
+
                         cpy = p.shift();
+
                         points.push(cpx, cpy);
                     break;
                     case 'm':
                         double dx = p.shift();
+
                         double dy = p.shift();
+
                         cpx += dx;
+
                         cpy += dy;
+
                         cmd = 'M';
-                        if (m_list.size() > 2 && m_list.get(m_list.size() - 1).command == 'z')
+
+                        final int size = m_list.size();
+
+                        if (size > 2 && m_list.get(size - 1).command == 'z')
                         {
-                            for (int idx = m_list.size() - 2; idx >= 0; idx--)
+                            for (int idx = size - 2; idx >= 0; idx--)
                             {
                                 PathEntry pe = m_list.get(idx);
 
                                 if (pe.command == 'M')
                                 {
                                     cpx = pe.points[0] + dx;
+
                                     cpy = pe.points[1] + dy;
+
                                     break;
                                 }
                             }
                         }
                         points.push(cpx, cpy);
+
                         ch = 'l';
                     break;
                     case 'M':
                         cpx = p.shift();
+
                         cpy = p.shift();
+
                         cmd = 'M';
+
                         points.push(cpx, cpy);
+
                         ch = 'L';
                     break;
                     case 'h':
                         cpx += p.shift();
+
                         cmd = 'L';
+
                         points.push(cpx, cpy);
                     break;
                     case 'H':
                         cpx = p.shift();
+
                         cmd = 'L';
+
                         points.push(cpx, cpy);
                     break;
                     case 'v':
                         cpy += p.shift();
+
                         cmd = 'L';
+
                         points.push(cpx, cpy);
                     break;
                     case 'V':
                         cpy = p.shift();
+
                         cmd = 'L';
+
                         points.push(cpx, cpy);
                     break;
                     case 'C':
                         points.push(p.shift(), p.shift(), p.shift(), p.shift());
+
                         cpx = p.shift();
+
                         cpy = p.shift();
+
                         points.push(cpx, cpy);
                     break;
                     case 'c':
                         points.push(cpx + p.shift(), cpy + p.shift(), cpx + p.shift(), cpy + p.shift());
+
                         cpx += p.shift();
+
                         cpy += p.shift();
+
                         cmd = 'C';
+
                         points.push(cpx, cpy);
                     break;
                     case 'S':
                         ctx = cpx;
+
                         cty = cpy;
+
                         prev = m_list.get(m_list.size() - 1);
+
                         if (prev.command == 'C')
                         {
                             ctx = cpx + (cpx - prev.points[2]);
+
                             cty = cpy + (cpy - prev.points[3]);
                         }
                         points.push(ctx, cty, p.shift(), p.shift());
+
                         cpx = p.shift();
+
                         cpy = p.shift();
+
                         cmd = 'C';
+
                         points.push(cpx, cpy);
                     break;
                     case 's':
                         ctx = cpx;
+
                         cty = cpy;
+
                         prev = m_list.get(m_list.size() - 1);
+
                         if (prev.command == 'C')
                         {
                             ctx = cpx + (cpx - prev.points[2]);
+
                             cty = cpy + (cpy - prev.points[3]);
                         }
                         points.push(ctx, cty, cpx + p.shift(), cpy + p.shift());
+
                         cpx += p.shift();
+
                         cpy += p.shift();
+
                         cmd = 'C';
+
                         points.push(cpx, cpy);
                     break;
                     case 'Q':
                         points.push(p.shift(), p.shift());
+
                         cpx = p.shift();
+
                         cpy = p.shift();
+
                         points.push(cpx, cpy);
                     break;
                     case 'q':
                         points.push(cpx + p.shift(), cpy + p.shift());
+
                         cpx += p.shift();
+
                         cpy += p.shift();
+
                         cmd = 'Q';
+
                         points.push(cpx, cpy);
                     break;
                     case 'T':
                         ctx = cpx;
+
                         cty = cpy;
+
                         prev = m_list.get(m_list.size() - 1);
+
                         if (prev.command == 'Q')
                         {
                             ctx = cpx + (cpx - prev.points[0]);
+
                             cty = cpy + (cpy - prev.points[1]);
                         }
                         cpx = p.shift();
+
                         cpy = p.shift();
+
                         cmd = 'Q';
+
                         points.push(ctx, cty, cpx, cpy);
                     break;
                     case 't':
                         ctx = cpx;
+
                         cty = cpy;
+
                         prev = m_list.get(m_list.size() - 1);
+
                         if (prev.command == 'Q')
                         {
                             ctx = cpx + (cpx - prev.points[0]);
+
                             cty = cpy + (cpy - prev.points[1]);
                         }
                         cpx += p.shift();
+
                         cpy += p.shift();
+
                         cmd = 'Q';
+
                         points.push(ctx, cty, cpx, cpy);
                     break;
                     case 'A':
                         rx = p.shift();
+
                         ry = p.shift();
+
                         psi = p.shift();
+
                         fa = p.shift();
+
                         fs = p.shift();
+
                         x1 = cpx;
+
                         y1 = cpy;
+
                         cpx = p.shift();
+
                         cpy = p.shift();
+
                         cmd = 'A';
+
                         points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, psi);
                     break;
                     case 'a':
                         rx = p.shift();
+
                         ry = p.shift();
+
                         psi = p.shift();
+
                         fa = p.shift();
+
                         fs = p.shift();
+
                         x1 = cpx;
+
                         y1 = cpy;
+
                         cpx += p.shift();
+
                         cpy += p.shift();
+
                         cmd = 'A';
+
                         points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, psi);
                     break;
                 }
@@ -431,6 +541,10 @@ public class SVGPath extends Shape<SVGPath>
     {
         getAttributes().setPath(path);
 
+        if (false == path.equals(m_path))
+        {
+            parse(m_path = path);
+        }
         return this;
     }
 
@@ -468,9 +582,11 @@ public class SVGPath extends Shape<SVGPath>
 
             if (null != list)
             {
-                points = new double[list.length()];
+                final int size = list.size();
 
-                for (int i = 0; i < list.length(); i++)
+                points = new double[size];
+
+                for (int i = 0; i < size; i++)
                 {
                     points[i] = list.get(i);
                 }

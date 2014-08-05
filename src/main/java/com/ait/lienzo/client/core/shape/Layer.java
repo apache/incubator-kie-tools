@@ -224,7 +224,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         if (null != list)
         {
-            int size = list.length();
+            int size = list.size();
 
             for (int i = 0; i < size; i++)
             {
@@ -290,7 +290,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         if (list != null)
         {
-            int size = list.length();
+            int size = list.size();
 
             for (int i = 0; i < size; i++)
             {

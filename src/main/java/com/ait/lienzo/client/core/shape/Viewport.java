@@ -214,7 +214,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
         if (null != scenes)
         {
-            final int size = scenes.length();
+            final int size = scenes.size();
 
             for (int i = 0; i < size; i++)
             {
@@ -288,7 +288,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
         if (null != scenes)
         {
-            final int size = scenes.length();
+            final int size = scenes.size();
 
             for (int i = 0; i < size; i++)
             {
@@ -512,7 +512,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     {
         NFastArrayList<Layer> list = m_back.getChildNodes();
 
-        if (list.length() > 0)
+        if (list.size() > 0)
         {
             return list.get(0);
         }

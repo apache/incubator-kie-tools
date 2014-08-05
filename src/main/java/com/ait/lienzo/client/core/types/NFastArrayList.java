@@ -62,7 +62,7 @@ public final class NFastArrayList<M>
      * Return the List's size.
      * @return int
      */
-    public final int length()
+    public final int size()
     {
         return m_jso.length();
     }
@@ -74,7 +74,7 @@ public final class NFastArrayList<M>
      */
     public final M get(int index)
     {
-        if ((index >= 0) && (index < length()))
+        if ((index >= 0) && (index < size()))
         {
             return m_jso.get(index);
         }
@@ -111,9 +111,9 @@ public final class NFastArrayList<M>
     }
 
     /**
-     * Remove all values from the List.
+     * Clear all values from the List.
      */
-    public final void removeAll()
+    public final void clear()
     {
         m_jso.removeAll();
     }
@@ -144,7 +144,7 @@ public final class NFastArrayList<M>
 
     public final void moveToTop(M value)
     {
-        if ((length() < 2) || (false == contains(value)))
+        if ((size() < 2) || (false == contains(value)))
         {
             return;
         }
@@ -155,7 +155,7 @@ public final class NFastArrayList<M>
 
     public final void moveToBottom(M value)
     {
-        if ((length() < 2) || (false == contains(value)))
+        if ((size() < 2) || (false == contains(value)))
         {
             return;
         }
@@ -188,13 +188,13 @@ public final class NFastArrayList<M>
     {
         m_jso.reverse();
     }
-    
+
     @SuppressWarnings("unchecked")
-    public final NFastArrayList<M> push(M v, M...values)
+    public final NFastArrayList<M> push(M v, M... values)
     {
         add(v);
-        
-        for(int i = 0; i < values.length; i++)
+
+        for (int i = 0; i < values.length; i++)
         {
             add(values[i]);
         }
@@ -239,140 +239,140 @@ public final class NFastArrayList<M>
 
         public final native int length()
         /*-{
-			return this.length;
+        	return this.length;
         }-*/;
 
         public final native M get(int indx)
         /*-{
-			return this[indx];
+        	return this[indx];
         }-*/;
 
         public final native void add(M value)
         /*-{
-			this[this.length] = value;
+        	this[this.length] = value;
         }-*/;
 
         public final native void add(int i, M value)
         /*-{
-			this[i] = value;
+        	this[i] = value;
         }-*/;
 
         public final native boolean contains(M value)
         /*-{
-			for ( var i = 0; i < this.length; i++) {
-				if (this[i] == value) {
-					return true;
-				}
-			}
-			return false;
+        	for ( var i = 0; i < this.length; i++) {
+        		if (this[i] == value) {
+        			return true;
+        		}
+        	}
+        	return false;
         }-*/;
 
         public final native void removeAll()
         /*-{
-			this.length = 0;
+        	this.length = 0;
         }-*/;
 
         public final native void remove(M value)
         /*-{
-			for ( var i = 0; i < this.length; i++) {
-				if (this[i] == value) {
-					this.splice(i, 1);
-					break;
-				}
-			}
+        	for ( var i = 0; i < this.length; i++) {
+        		if (this[i] == value) {
+        			this.splice(i, 1);
+        			break;
+        		}
+        	}
         }-*/;
 
         public final native void moveUp(M value)
         /*-{
-			var leng = this.length;
+        	var leng = this.length;
 
-			if (leng < 2) {
-				return;
-			}
-			for ( var i = 0; i < leng; i++) {
-				if (this[i] == value) {
-					var j = i + 1;
-					if (j != leng) {
-						this[i] = this[j];
-						this[j] = value;
-					}
-					break;
-				}
-			}
+        	if (leng < 2) {
+        		return;
+        	}
+        	for ( var i = 0; i < leng; i++) {
+        		if (this[i] == value) {
+        			var j = i + 1;
+        			if (j != leng) {
+        				this[i] = this[j];
+        				this[j] = value;
+        			}
+        			break;
+        		}
+        	}
         }-*/;
 
         public final native void moveDown(M value)
         /*-{
-			var leng = this.length;
+        	var leng = this.length;
 
-			if (leng < 2) {
-				return;
-			}
-			for ( var i = 0; i < leng; i++) {
-				if (this[i] == value) {
-					if (i != 0) {
-						var j = i - 1;
-						this[i] = this[j];
-						this[j] = value;
-					}
-					break;
-				}
-			}
+        	if (leng < 2) {
+        		return;
+        	}
+        	for ( var i = 0; i < leng; i++) {
+        		if (this[i] == value) {
+        			if (i != 0) {
+        				var j = i - 1;
+        				this[i] = this[j];
+        				this[j] = value;
+        			}
+        			break;
+        		}
+        	}
         }-*/;
 
         public final native void unshift(M value)
         /*-{
-			this.unshift(value);
+        	this.unshift(value);
         }-*/;
 
         public final native void splice(int beg, int removed, M value)
         /*-{
-			this.splice(beg, removed, value);
+        	this.splice(beg, removed, value);
         }-*/;
 
         public final native void splice(int beg, int removed)
         /*-{
-			this.splice(beg, removed);
+        	this.splice(beg, removed);
         }-*/;
 
         public final native M shift()
         /*-{
-			return this.shift();
+        	return this.shift();
         }-*/;
 
         public final native M pop()
         /*-{
-			return this.pop();
+        	return this.pop();
         }-*/;
 
         public final native void push(M value)
         /*-{
-			this[this.length] = value;
+        	this[this.length] = value;
         }-*/;
 
         public final native void reverse()
         /*-{
-			this.reverse();
+        	this.reverse();
         }-*/;
 
         public final native FastArrayListJSO<M> concat(FastArrayListJSO<M> value)
         /*-{
-			return this.concat(value);
+        	return this.concat(value);
         }-*/;
 
         public final native FastArrayListJSO<M> copy()
         /*-{
-			return this.concat();
+        	return this.concat();
         }-*/;
 
         public final native FastArrayListJSO<M> slice(int beg)
         /*-{
-			return this.slice(beg);
+        	return this.slice(beg);
         }-*/;
 
         public final native FastArrayListJSO<M> slice(int beg, int end)
         /*-{
-			return this.slice(beg, end);
+        	return this.slice(beg, end);
         }-*/;
     }
 }

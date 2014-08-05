@@ -78,7 +78,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public int length()
     {
-        return m_list.length();
+        return m_list.size();
     }
 
     @SuppressWarnings("unchecked")
@@ -135,7 +135,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public T removeAll()
     {
-        m_list.removeAll();
+        m_list.clear();
 
         return coerce();
     }
@@ -150,7 +150,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     protected void drawWithoutTransforms(Context2D context)
     {
-        final int size = m_list.length();
+        final int size = m_list.size();
 
         for (int i = 0; i < size; i++)
         {
