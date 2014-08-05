@@ -175,16 +175,12 @@ public class SVGPath extends Shape<SVGPath>
                         cpy = p.shift();
                         points.push(cpx, cpy);
                     break;
-
-                    // Note: lineTo handlers need to be above this point
                     case 'm':
                         double dx = p.shift();
                         double dy = p.shift();
                         cpx += dx;
                         cpy += dy;
                         cmd = 'M';
-                        // After closing the path move the current position
-                        // to the the first point of the path (if any).
                         if (m_list.size() > 2 && m_list.get(m_list.size() - 1).command == 'z')
                         {
                             for (int idx = m_list.size() - 2; idx >= 0; idx--)
@@ -201,7 +197,6 @@ public class SVGPath extends Shape<SVGPath>
                         }
                         points.push(cpx, cpy);
                         ch = 'l';
-                    // subsequent points are treated as relative lineTo
                     break;
                     case 'M':
                         cpx = p.shift();
@@ -209,7 +204,6 @@ public class SVGPath extends Shape<SVGPath>
                         cmd = 'M';
                         points.push(cpx, cpy);
                         ch = 'L';
-                    // subsequent points are treated as absolute lineTo
                     break;
                     case 'h':
                         cpx += p.shift();
