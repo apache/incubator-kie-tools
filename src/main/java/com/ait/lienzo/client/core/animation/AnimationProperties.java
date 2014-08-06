@@ -24,7 +24,7 @@ public class AnimationProperties
 {
     private final ArrayList<AnimationProperty> m_properties = new ArrayList<AnimationProperty>();
 
-    public static final AnimationProperties create(AnimationProperty property, AnimationProperty... properties)
+    public static final AnimationProperties toPropertyList(AnimationProperty property, AnimationProperty... properties)
     {
         return new AnimationProperties(property, properties);
     }

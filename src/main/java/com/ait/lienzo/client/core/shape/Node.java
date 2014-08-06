@@ -95,6 +95,8 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     private final Attributes m_attr;
 
+    private final MetaData   m_meta;
+
     private NodeType         m_type;
 
     private Node<?>          m_parent;
@@ -105,7 +107,9 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     {
         m_type = type;
 
-        m_attr = Attributes.make();
+        m_attr = new Attributes();
+
+        m_meta = new MetaData();
     }
 
     /**
@@ -130,7 +134,9 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
         if (null == node)
         {
-            m_attr = Attributes.make();
+            m_attr = new Attributes();
+
+            m_meta = new MetaData();
 
             return;
         }
@@ -138,27 +144,58 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
         if (null == aval)
         {
-            m_attr = Attributes.make();
-
-            return;
+            m_attr = new Attributes();
         }
-        JSONObject aobj = aval.isObject();
-
-        if (null == aobj)
+        else
         {
-            m_attr = Attributes.make();
+            JSONObject aobj = aval.isObject();
 
-            return;
+            if (null == aobj)
+            {
+                m_attr = new Attributes();
+            }
+            else
+            {
+                JavaScriptObject ajso = aobj.getJavaScriptObject();
+
+                if (null == ajso)
+                {
+                    m_attr = new Attributes();
+                }
+                else
+                {
+                    m_attr = new Attributes(ajso);
+                }
+            }
         }
-        JavaScriptObject ajso = aobj.getJavaScriptObject();
+        JSONValue mval = node.get("meta");
 
-        if (null == ajso)
+        if (null == mval)
         {
-            m_attr = Attributes.make();
-
-            return;
+            m_meta = new MetaData();
         }
-        m_attr = ajso.cast();
+        else
+        {
+            JSONObject mobj = mval.isObject();
+
+            if (null == mobj)
+            {
+                m_meta = new MetaData();
+            }
+            else
+            {
+                JavaScriptObject mjso = mobj.getJavaScriptObject();
+
+                if (null == mjso)
+                {
+                    m_meta = new MetaData();
+                }
+                else
+                {
+                    m_meta = new MetaData(mjso);
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -195,6 +232,11 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             return object.toString();
         }
         return null;
+    }
+
+    public final MetaData getMetaData()
+    {
+        return m_meta;
     }
 
     /**

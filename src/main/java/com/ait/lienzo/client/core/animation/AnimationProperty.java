@@ -389,9 +389,9 @@ public interface AnimationProperty
 
                 if (posn != null)
                 {
-                    node.getAttributes().putDouble(Attribute.X.getProperty(), posn.getX());
+                    node.getAttributes().put(Attribute.X.getProperty(), posn.getX());
 
-                    node.getAttributes().putDouble(Attribute.Y.getProperty(), posn.getY());
+                    node.getAttributes().put(Attribute.Y.getProperty(), posn.getY());
 
                     return true;
                 }
@@ -429,7 +429,7 @@ public interface AnimationProperty
             @Override
             public boolean apply(Node<?> node, double percent)
             {
-                node.getAttributes().putDouble(m_attribute.getProperty(), (m_origin + ((m_target - m_origin) * percent)));
+                node.getAttributes().put(m_attribute.getProperty(), (m_origin + ((m_target - m_origin) * percent)));
 
                 return true;
             }
@@ -465,7 +465,7 @@ public interface AnimationProperty
             @Override
             public boolean apply(Node<?> node, double percent)
             {
-                node.getAttributes().putDouble(m_attribute.getProperty(), (m_origin + ((m_target - m_origin) * percent)));
+                node.getAttributes().put(m_attribute.getProperty(), (m_origin + ((m_target - m_origin) * percent)));
 
                 return true;
             }
@@ -535,7 +535,7 @@ public interface AnimationProperty
                 {
                     value = m_maxval;
                 }
-                node.getAttributes().putDouble(m_attribute.getProperty(), value);
+                node.getAttributes().put(m_attribute.getProperty(), value);
 
                 return true;
             }
@@ -605,7 +605,7 @@ public interface AnimationProperty
                 {
                     value = m_maxval;
                 }
-                node.getAttributes().putDouble(m_attribute.getProperty(), value);
+                node.getAttributes().put(m_attribute.getProperty(), value);
 
                 return true;
             }

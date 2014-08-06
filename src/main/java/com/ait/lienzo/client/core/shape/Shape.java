@@ -1327,8 +1327,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getShapeType().getValue()));
-
-        object.put("attributes", new JSONObject(getAttributes()));
+        
+        if (false == getMetaData().isEmpty())
+        {
+            object.put("meta", new JSONObject(getMetaData().getJSO()));
+        }
+        object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
         return object;
     }

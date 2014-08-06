@@ -652,7 +652,11 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
 
         object.put("type", new JSONString(getNodeType().getValue()));
 
-        object.put("attributes", new JSONObject(getAttributes()));
+        if (false == getMetaData().isEmpty())
+        {
+            object.put("meta", new JSONObject(getMetaData().getJSO()));
+        }
+        object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
         NFastArrayList<IPrimitive<?>> list = getChildNodes();
 

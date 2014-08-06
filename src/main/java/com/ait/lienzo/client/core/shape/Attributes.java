@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.types.DashArray;
@@ -28,6 +25,7 @@ import com.ait.lienzo.client.core.types.DragBounds.DragBoundsJSO;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
+import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
@@ -53,15 +51,30 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 
-public class Attributes extends JavaScriptObject
+public class Attributes
 {
-    protected Attributes()
+    private final NFastStringMapMixedJSO m_jso;
+
+    public Attributes()
     {
+        m_jso = NFastStringMapMixedJSO.make();
     }
 
-    public static final Attributes make()
+    Attributes(JavaScriptObject valu)
     {
-        return JavaScriptObject.createObject().cast();
+        if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
+        {
+            m_jso = valu.cast();
+        }
+        else
+        {
+            m_jso = NFastStringMapMixedJSO.make();
+        }
+    }
+
+    public final NFastStringMapMixedJSO getJSO()
+    {
+        return m_jso;
     }
 
     public final boolean isClearLayerBeforeDraw()
@@ -217,25 +230,25 @@ public class Attributes extends JavaScriptObject
 
     public final FillGradient getFillGradient()
     {
-        JavaScriptObject obj = getObject(Attribute.FILL.getProperty());
+        JavaScriptObject fill = getObject(Attribute.FILL.getProperty());
 
-        if (null == obj)
+        if (null == fill)
         {
             return null;
         }
-        String type = getString("type", obj);
+        String type = m_jso.getString("type", fill);
 
         if (LinearGradient.TYPE.equals(type))
         {
-            return new LinearGradient((LinearGradientJSO) obj);
+            return new LinearGradient((LinearGradientJSO) fill);
         }
         else if (RadialGradient.TYPE.equals(type))
         {
-            return new RadialGradient((RadialGradientJSO) obj);
+            return new RadialGradient((RadialGradientJSO) fill);
         }
         else if (PatternGradient.TYPE.equals(type))
         {
-            return new PatternGradient((PatternGradientJSO) obj);
+            return new PatternGradient((PatternGradientJSO) fill);
         }
         return null;
     }
@@ -1384,92 +1397,50 @@ public class Attributes extends JavaScriptObject
 
     public final void put(String name, String value)
     {
-        if (null != value)
-        {
-            put0(name, value.substring(0));
-        }
-        else
-        {
-            delete(name);
-        }
+        m_jso.put(name, value);
     }
 
-    public final native boolean isEmpty()
-    /*-{
-    	var that = this;
-
-    	for ( var i in that) {
-    		return false;
-    	}
-    	return true;
-    }-*/;
-
-    private final native void put0(String name, String value)
-    /*-{
-    	this[name] = value;
-    }-*/;
-
-    private final native void put(String name, int value)
-    /*-{
-    	this[name] = value;
-    }-*/;
-
-    public final native void put(String name, double value)
-    /*-{
-    	this[name] = value;
-    }-*/;
-
-    public final native void put(String name, boolean value)
-    /*-{
-    	this[name] = value;
-    }-*/;
-
-    public final native void put(String name, JavaScriptObject value)
-    /*-{
-    	this[name] = value;
-    }-*/;
-
-    public final Collection<String> getKeysCollection()
+    public final void put(String name, int value)
     {
-        ArrayList<String> list = new ArrayList<String>();
-
-        fillKeysCollection(list);
-
-        return list;
+        m_jso.put(name, value);
     }
 
-    private final native void fillKeysCollection(Collection<String> keys)
-    /*-{
-    	var self = this;
+    public final void put(String name, double value)
+    {
+        m_jso.put(name, value);
+    }
 
-    	for ( var name in self) {
-    		if ((self.hasOwnProperty(name)) && (self[name] !== undefined)) {
-    			keys.@java.util.Collection::add(Ljava/lang/Object;)(name);
-    		}
-    	}
-    }-*/;
+    public final void put(String name, boolean value)
+    {
+        m_jso.put(name, value);
+    }
+
+    public final void put(String name, JavaScriptObject value)
+    {
+        m_jso.put(name, value);
+    }
+
+    public final boolean isEmpty()
+    {
+        return m_jso.isEmpty();
+    }
 
     public final int getInteger(String name)
     {
-        if (typeOf(name) == NativeInternalType.NUMBER)
+        if (m_jso.typeOf(name) == NativeInternalType.NUMBER)
         {
-            return getInteger0(name);
+            return m_jso.getInteger(name);
         }
         return 0;
     }
 
     public final double getDouble(String name)
     {
-        if (typeOf(name) == NativeInternalType.NUMBER)
+        if (m_jso.typeOf(name) == NativeInternalType.NUMBER)
         {
-            return getDouble0(name);
+            return m_jso.getDouble(name);
         }
         return 0;
-    }
-
-    public final void putDouble(String name, double value)
-    {
-        put(name, value);
     }
 
     public final Point2D getPoint2D(String name)
@@ -1522,45 +1493,45 @@ public class Attributes extends JavaScriptObject
 
     public final String getString(String name)
     {
-        if (typeOf(name) == NativeInternalType.STRING)
+        if (m_jso.typeOf(name) == NativeInternalType.STRING)
         {
-            return getString0(name);
+            return m_jso.getString(name);
         }
         return null;
     }
 
     public final boolean getBoolean(String name)
     {
-        if (typeOf(name) == NativeInternalType.BOOLEAN)
+        if (m_jso.typeOf(name) == NativeInternalType.BOOLEAN)
         {
-            return getBoolean0(name);
+            return m_jso.getBoolean(name);
         }
         return false;
     }
 
     public final JavaScriptObject getObject(String name)
     {
-        if (typeOf(name) == NativeInternalType.OBJECT)
+        if (m_jso.typeOf(name) == NativeInternalType.OBJECT)
         {
-            return getObject0(name);
+            return m_jso.getObject(name);
         }
         return null;
     }
 
     public final JsArray<JavaScriptObject> getArrayOfJSO(String name)
     {
-        if (typeOf(name) == NativeInternalType.ARRAY)
+        if (m_jso.typeOf(name) == NativeInternalType.ARRAY)
         {
-            return getArrayOfJSO0(name);
+            return m_jso.getArrayOfJSO(name);
         }
         return null;
     }
 
     public final JsArrayMixed getArray(String name)
     {
-        if (typeOf(name) == NativeInternalType.ARRAY)
+        if (m_jso.typeOf(name) == NativeInternalType.ARRAY)
         {
-            return getArray0(name);
+            return m_jso.getArray(name);
         }
         return null;
     }
@@ -1577,101 +1548,25 @@ public class Attributes extends JavaScriptObject
         {
             return false;
         }
-        return isDefined0(prop);
+        return m_jso.isDefined(prop);
     }
 
-    private final native boolean isDefined0(String name)
-    /*-{
-    	return this.hasOwnProperty(String(name));
-    }-*/;
-
-    private final native double getDouble0(String name)
-    /*-{
-    	return this[name];
-    }-*/;
-
-    private final native int getInteger0(String name)
-    /*-{
-    	return Math.round(this[name]);
-    }-*/;
-
-    private final native String getString0(String name)
-    /*-{
-    	return this[name];
-    }-*/;
-
-    private final native boolean getBoolean0(String name)
-    /*-{
-    	return this[name];
-    }-*/;
-
-    private final native JavaScriptObject getObject0(String name)
-    /*-{
-    	return this[name];
-    }-*/;
-
-    private final native JsArray<JavaScriptObject> getArrayOfJSO0(String name)
-    /*-{
-    	return this[name];
-    }-*/;
-
-    private final native JsArrayMixed getArray0(String name)
-    /*-{
-    	return this[name];
-    }-*/;
-
-    public final native void delete(String name)
-    /*-{
-    	delete this[name];
-    }-*/;
+    public final void delete(String name)
+    {
+        m_jso.delete(name);
+    }
 
     public final NativeInternalType typeOf(Attribute attr)
     {
         if (null != attr)
         {
-            return typeOf(attr.getProperty());
+            String prop = attr.getProperty();
+
+            if (null != prop)
+            {
+                return m_jso.typeOf(prop);
+            }
         }
         return NativeInternalType.UNDEFINED;
     }
-
-    public final native NativeInternalType typeOf(String name)
-    /*-{
-    	if (this.hasOwnProperty(String(name)) && (this[name] !== undefined)) {
-
-    		var valu = this[name];
-
-    		var type = typeof valu;
-
-    		switch (type) {
-    		case 'string': {
-    			return @com.ait.lienzo.client.core.types.NativeInternalType::STRING;
-    		}
-    		case 'boolean': {
-    			return @com.ait.lienzo.client.core.types.NativeInternalType::BOOLEAN;
-    		}
-    		case 'number': {
-    			if (isFinite(valu)) {
-    				return @com.ait.lienzo.client.core.types.NativeInternalType::NUMBER;
-    			}
-    			return @com.ait.lienzo.client.core.types.NativeInternalType::UNDEFINED;
-    		}
-    		case 'object': {
-    			if ((valu instanceof Array) || (valu instanceof $wnd.Array)) {
-    				return @com.ait.lienzo.client.core.types.NativeInternalType::ARRAY;
-    			}
-    			return @com.ait.lienzo.client.core.types.NativeInternalType::OBJECT;
-    		}
-    		case 'function': {
-    			return @com.ait.lienzo.client.core.types.NativeInternalType::FUNCTION;
-    		}
-    		}
-    	}
-    	return @com.ait.lienzo.client.core.types.NativeInternalType::UNDEFINED;
-    }-*/;
-
-    public static final native String getString(String name, JavaScriptObject obj)
-    /*-{
-    	return obj[name];
-    }-*/;
-
 }

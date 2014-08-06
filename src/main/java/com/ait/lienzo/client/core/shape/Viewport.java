@@ -496,8 +496,12 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getNodeType().getValue()));
-
-        object.put("attributes", new JSONObject(getAttributes()));
+        
+        if (false == getMetaData().isEmpty())
+        {
+            object.put("meta", new JSONObject(getMetaData().getJSO()));
+        }
+        object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
         JSONArray children = new JSONArray();
 

@@ -1320,7 +1320,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     @Override
     public JSONObject toJSONObject()
     {
-        JSONObject attr = new JSONObject(getAttributes());
+        JSONObject attr = new JSONObject(getAttributes().getJSO());
 
         ImageSerializationMode mode = getImageSerializationMode();
 
@@ -1332,6 +1332,10 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         object.put("type", new JSONString(getShapeType().getValue()));
 
+        if (false == getMetaData().isEmpty())
+        {
+            object.put("meta", new JSONObject(getMetaData().getJSO()));
+        }
         object.put("attributes", attr);
 
         return object;

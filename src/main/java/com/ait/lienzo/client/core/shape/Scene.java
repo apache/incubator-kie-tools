@@ -315,8 +315,12 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
         final JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getNodeType().getValue()));
-
-        object.put("attributes", new JSONObject(getAttributes()));
+        
+        if (false == getMetaData().isEmpty())
+        {
+            object.put("meta", new JSONObject(getMetaData().getJSO()));
+        }
+        object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
         final NFastArrayList<Layer> list = getChildNodes();
 
