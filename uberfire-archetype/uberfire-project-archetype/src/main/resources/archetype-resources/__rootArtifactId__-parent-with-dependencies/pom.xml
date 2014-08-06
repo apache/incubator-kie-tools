@@ -17,7 +17,7 @@
   </description>
 
   <properties>
-    <version.org.uberfire>0.4.2-SNAPSHOT</version.org.uberfire>
+    <version.org.uberfire>0.4.2.Beta1</version.org.uberfire>
 
     <version.ch.qos.logback>1.0.9</version.ch.qos.logback>
     <version.org.slf4j>1.7.2</version.org.slf4j>
