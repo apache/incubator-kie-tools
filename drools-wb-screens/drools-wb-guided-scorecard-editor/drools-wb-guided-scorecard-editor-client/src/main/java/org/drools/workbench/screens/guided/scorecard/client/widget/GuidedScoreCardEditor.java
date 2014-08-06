@@ -53,11 +53,11 @@ import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
+import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
 
 public class GuidedScoreCardEditor extends Composite {
 
@@ -67,6 +67,7 @@ public class GuidedScoreCardEditor extends Composite {
     private static final String[] typesForRC = new String[]{ "List" };
 
     private static final String[] stringOperators = new String[]{ "=", "in" };
+    private static final String[] enumStringOperators = new String[]{ "=" };//, "in" };
     private static final String[] booleanOperators = new String[]{ "false", "true" };
     private static final String[] numericOperators = new String[]{ "=", ">", "<", ">=", "<=", ">..<", ">=..<", ">=..<=", ">..<=" };
 
@@ -76,6 +77,7 @@ public class GuidedScoreCardEditor extends Composite {
     private VerticalPanel characteristicsPanel;
     private List<DirtyableFlexTable> characteristicsTables = new ArrayList<DirtyableFlexTable>();
     private Map<DirtyableFlexTable, ListDataProvider<Attribute>> characteristicsAttrMap = new HashMap<DirtyableFlexTable, ListDataProvider<Attribute>>();
+    private Map<DirtyableFlexTable, VerticalPanel> characteristicsAttrPanelMap = new HashMap<DirtyableFlexTable, VerticalPanel>();
 
     private ListBox ddUseReasonCode;
     private ListBox ddReasonCodeAlgorithm;
@@ -176,64 +178,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         model.getCharacteristics().clear();
         for ( final DirtyableFlexTable flexTable : characteristicsTables ) {
-            final Characteristic characteristic = new Characteristic();
-            characteristic.setName( ( (TextBox) flexTable.getWidget( 0,
-                                                                     1 ) ).getValue() );
-
-            //Characteristic Fact Type
-            enumDropDown = (ListBox) flexTable.getWidget( 2,
-                                                          0 );
-            if ( enumDropDown.getSelectedIndex() > -1 ) {
-                final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-                characteristic.setFact( simpleFactName );
-                oracle.getFieldCompletions( simpleFactName,
-                                            new Callback<ModelField[]>() {
-                                                @Override
-                                                public void callback( final ModelField[] fields ) {
-                                                    if ( fields != null ) {
-                                                        for ( ModelField mf : fields ) {
-                                                            if ( mf.getType().equals( simpleFactName ) ) {
-                                                                characteristic.setFact( mf.getClassName() );
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            } );
-
-                //Characteristic Field (cannot be set if no Fact Type has been set)
-                enumDropDown = (ListBox) flexTable.getWidget( 2,
-                                                              1 );
-                if ( enumDropDown.getSelectedIndex() > -1 ) {
-                    String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-                    fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
-                    characteristic.setField( fieldName );
-                } else {
-                    characteristic.setField( "" );
-                }
-                getDataTypeForField( simpleFactName,
-                                     characteristic.getField(),
-                                     new Callback<String>() {
-                                         @Override
-                                         public void callback( final String result ) {
-                                             characteristic.setDataType( result );
-                                         }
-                                     } );
-            }
-
-            //Characteristic Reason Code
-            characteristic.setReasonCode( ( (TextBox) flexTable.getWidget( 2,
-                                                                           3 ) ).getValue() );
-
-            //Characteristic Base Line Score
-            final String baselineScore = ( (TextBox) flexTable.getWidget( 2,
-                                                                          2 ) ).getValue();
-            try {
-                characteristic.setBaselineScore( Double.parseDouble( baselineScore ) );
-            } catch ( Exception e ) {
-                characteristic.setBaselineScore( 0.0d );
-            }
-
+            final Characteristic characteristic = getCharacteristicFromTable( flexTable );
             //Characteristic Attributes
             characteristic.getAttributes().clear();
             characteristic.getAttributes().addAll( characteristicsAttrMap.get( flexTable ).getList() );
@@ -242,6 +187,69 @@ public class GuidedScoreCardEditor extends Composite {
         }
 
         return model;
+    }
+
+    private Characteristic getCharacteristicFromTable( DirtyableFlexTable flexTable ) {
+        ListBox enumDropDown;
+        final Characteristic characteristic = new Characteristic();
+        characteristic.setName( ( (TextBox) flexTable.getWidget( 0,
+                                                                 1 ) ).getValue() );
+
+        //Characteristic Fact Type
+        enumDropDown = (ListBox) flexTable.getWidget( 2,
+                                                      0 );
+        if ( enumDropDown.getSelectedIndex() > -1 ) {
+            final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
+            characteristic.setFact( simpleFactName );
+            oracle.getFieldCompletions( simpleFactName,
+                                        new Callback<ModelField[]>() {
+                                            @Override
+                                            public void callback( final ModelField[] fields ) {
+                                                if ( fields != null ) {
+                                                    for ( ModelField mf : fields ) {
+                                                        if ( mf.getType().equals( simpleFactName ) ) {
+                                                            characteristic.setFact( mf.getClassName() );
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } );
+
+            //Characteristic Field (cannot be set if no Fact Type has been set)
+            enumDropDown = (ListBox) flexTable.getWidget( 2,
+                                                          1 );
+            if ( enumDropDown.getSelectedIndex() > -1 ) {
+                String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
+                fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
+                characteristic.setField( fieldName );
+            } else {
+                characteristic.setField( "" );
+            }
+            getDataTypeForField( simpleFactName,
+                                 characteristic.getField(),
+                                 new Callback<String>() {
+                                     @Override
+                                     public void callback( final String result ) {
+                                         characteristic.setDataType( result );
+                                     }
+                                 } );
+        }
+
+        //Characteristic Reason Code
+        characteristic.setReasonCode( ( (TextBox) flexTable.getWidget( 2,
+                                                                       3 ) ).getValue() );
+
+        //Characteristic Base Line Score
+        final String baselineScore = ( (TextBox) flexTable.getWidget( 2,
+                                                                      2 ) ).getValue();
+        try {
+            characteristic.setBaselineScore( Double.parseDouble( baselineScore ) );
+        } catch ( Exception e ) {
+            characteristic.setBaselineScore( 0.0d );
+        }
+
+        return characteristic;
     }
 
     public void refreshFactTypes() {
@@ -457,48 +465,54 @@ public class GuidedScoreCardEditor extends Composite {
 
     private void addAttribute( final DirtyableFlexTable selectedTable,
                                final Attribute attribute ) {
+
+        //Disable the fact & field dropdowns
+        ( (ListBox) selectedTable.getWidget( 2, 0 ) ).setEnabled( false );
+        //( (ListBox) selectedTable.getWidget( 2, 1 ) ).setEnabled( false );
+        final ListBox edd = ( (ListBox) selectedTable.getWidget( 2, 1 ) );
+        edd.setEnabled( false );
+        int selectedIndex = edd.getSelectedIndex() > -1 ? edd.getSelectedIndex() : 0;
+        String field = edd.getValue( selectedIndex );
+        //field is in the format 'fieldName : datatype';
+        String fieldName = field.substring( 0, field.indexOf( ":" ) ).trim(); //the actual name
+        String dataType = field.substring( field.indexOf( ":" ) + 1 ).trim(); //the data type
+        //enum values
+        final ListBox factDD = (ListBox) selectedTable.getWidget( 2, 0 );
+        String factName = factDD.getValue( factDD.getSelectedIndex() );
+        boolean enumColumn = oracle.hasEnums( factName, fieldName );
+        final List<String> operators = new ArrayList<String>();
+        if ( "String".equalsIgnoreCase( dataType ) ) {
+            if ( enumColumn ) {
+                operators.addAll( Arrays.asList( enumStringOperators ) );
+            } else {
+                operators.addAll( Arrays.asList( stringOperators ) );
+            }
+        } else if ( "boolean".equalsIgnoreCase( dataType ) ) {
+            operators.addAll( Arrays.asList( booleanOperators ) );
+        } else {
+            operators.addAll( Arrays.asList( numericOperators ) );
+        }
+
+        if ( characteristicsAttrMap.get( selectedTable ) == null ) {
+            final Characteristic characteristic = getCharacteristicFromTable( selectedTable );
+            //first attribute, construct and add the table
+            VerticalPanel vPanel = characteristicsAttrPanelMap.get( selectedTable );
+            vPanel.add( addAttributeCellTable( selectedTable, characteristic, enumColumn, dataType, operators ) );
+            characteristicsAttrPanelMap.remove( selectedTable );
+        }
         Attribute newAttribute = null;
         if ( attribute != null ) {
             characteristicsAttrMap.get( selectedTable ).getList().add( attribute );
         } else {
             newAttribute = new Attribute();
             characteristicsAttrMap.get( selectedTable ).getList().add( newAttribute );
+            newAttribute.setOperator( operators.get( 0 ) );
         }
         characteristicsAttrMap.get( selectedTable ).refresh();
-
-        //Disable the fact & field dropdowns
-        ( (ListBox) selectedTable.getWidget( 2,
-                                             0 ) ).setEnabled( false );
-        ( (ListBox) selectedTable.getWidget( 2,
-                                             1 ) ).setEnabled( false );
-        final ListBox edd = ( (ListBox) selectedTable.getWidget( 2,
-                                                                 1 ) );
-        if ( edd.getSelectedIndex() > -1 ) {
-            String field = edd.getValue( edd.getSelectedIndex() );
-            field = field.substring( field.indexOf( ":" ) + 1 ).trim();
-            final CellTable<Attribute> cellTable = (CellTable<Attribute>) characteristicsAttrMap.get( selectedTable ).getDataDisplays().iterator().next();
-            final DynamicSelectionCell dynamicSelectionCell = (DynamicSelectionCell) cellTable.getColumn( 0 ).getCell();
-            List<String> newOptions = null;
-            if ( "double".equalsIgnoreCase( field ) || "int".equalsIgnoreCase( field ) || endsWithIgnoreCase(field, "integer")) {
-                newOptions = Arrays.asList( numericOperators );
-            } else if ( "boolean".equalsIgnoreCase( field ) ) {
-                newOptions = Arrays.asList( booleanOperators );
-                CustomEditTextCell etc = (CustomEditTextCell) cellTable.getColumn( 1 ).getCell();
-                etc.setEnabled( false );
-                ( (Button) selectedTable.getWidget( 0, 3 ) ).setEnabled( characteristicsAttrMap.get( selectedTable ).getList().size() != 2 );
-                if ( newAttribute != null ) {
-                    newAttribute.setValue( GuidedScoreCardConstants.INSTANCE.notApplicable() );
-                }
-            } else if ( "String".equalsIgnoreCase( field ) ) {
-                newOptions = Arrays.asList( stringOperators );
-            }
-            if ( newOptions != null ) {
-                dynamicSelectionCell.setOptions( newOptions );
-            }
+        if ( "boolean".equalsIgnoreCase( dataType ) ) {
+            ( (Button) selectedTable.getWidget( 0, 3 ) ).setEnabled( characteristicsAttrMap.get( selectedTable ).getList().size() != 2 );
             if ( newAttribute != null ) {
-                if ( newOptions != null ) {
-                    newAttribute.setOperator( newOptions.get( 0 ) );
-                }
+                newAttribute.setValue( GuidedScoreCardConstants.INSTANCE.notApplicable() );
             }
         }
     }
@@ -611,8 +625,8 @@ public class GuidedScoreCardEditor extends Composite {
 
         final VerticalPanel panel = new VerticalPanel();
         panel.add( cGrid );
-        panel.add( addAttributeCellTable( cGrid,
-                                          characteristic ) );
+        characteristicsAttrPanelMap.put( cGrid, panel );
+        //panel.add( addAttributeCellTable( cGrid, characteristic ) );
         panel.setWidth( "100%" );
         DecoratorPanel decoratorPanel = new DecoratorPanel();
         decoratorPanel.add( panel );
@@ -621,14 +635,10 @@ public class GuidedScoreCardEditor extends Composite {
         characteristicsPanel.add( gapPanel );
         characteristicsTables.add( cGrid );
 
-        cGrid.getColumnFormatter().setWidth( 0,
-                                             "150px" );
-        cGrid.getColumnFormatter().setWidth( 1,
-                                             "250px" );
-        cGrid.getColumnFormatter().setWidth( 2,
-                                             "150px" );
-        cGrid.getColumnFormatter().setWidth( 3,
-                                             "150px" );
+        cGrid.getColumnFormatter().setWidth( 0, "150px" );
+        cGrid.getColumnFormatter().setWidth( 1, "250px" );
+        cGrid.getColumnFormatter().setWidth( 2, "150px" );
+        cGrid.getColumnFormatter().setWidth( 3, "150px" );
 
         if ( characteristic != null ) {
             tbReasonCode.setValue( characteristic.getReasonCode() );
@@ -666,23 +676,21 @@ public class GuidedScoreCardEditor extends Composite {
     }
 
     private Widget addAttributeCellTable( final DirtyableFlexTable cGrid,
-                                          final Characteristic characteristic ) {
-        final CellTable<Attribute> attributeCellTable = new CellTable<Attribute>();
-        final List<String> operators = new ArrayList<String>();
-        String dataType;
-        if ( characteristic == null ) {
-            dataType = "String";
-        } else {
-            dataType = characteristic.getDataType();
+                                          final Characteristic characteristic,
+                                          final boolean enumColumn,
+                                          final String dataType,
+                                          final List<String> operators ) {
+        String[] enumValues = null;
+        if ( characteristic != null ) {
+            //enum values
+            if ( enumColumn ) {
+                String factName = characteristic.getFact();
+                String fieldName = characteristic.getField();
+                enumValues = oracle.getEnumValues( factName, fieldName );
+            }
         }
 
-        if ( "String".equalsIgnoreCase( dataType ) ) {
-            operators.addAll( Arrays.asList( stringOperators ) );
-        } else if ( "boolean".equalsIgnoreCase( dataType ) ) {
-            operators.addAll( Arrays.asList( booleanOperators ) );
-        } else {
-            operators.addAll( Arrays.asList( numericOperators ) );
-        }
+        final CellTable<Attribute> attributeCellTable = new CellTable<Attribute>();
 
         //Operators column
         final DynamicSelectionCell categoryCell = new DynamicSelectionCell( operators );
@@ -701,20 +709,37 @@ public class GuidedScoreCardEditor extends Composite {
         } );
 
         //Value column
-        final Column<Attribute, String> valueColumn = new Column<Attribute, String>( new CustomEditTextCell() ) {
-            public String getValue( final Attribute attribute ) {
-                return attribute.getValue();
-            }
-        };
-        valueColumn.setFieldUpdater( new FieldUpdater<Attribute, String>() {
-            public void update( int index,
-                                Attribute object,
-                                String value ) {
-                object.setValue( value );
-                attributeCellTable.redraw();
-            }
-        } );
-
+        Column<Attribute, String> valueColumn = null;
+        if ( enumValues != null && enumValues.length > 0 ) {
+            valueColumn = new Column<Attribute, String>( new DynamicSelectionCell( Arrays.asList( enumValues ) ) ) {
+                public String getValue( final Attribute object ) {
+                    return object.getValue();
+                }
+            };
+            valueColumn.setFieldUpdater( new FieldUpdater<Attribute, String>() {
+                public void update( int index,
+                                    Attribute object,
+                                    String value ) {
+                    object.setValue( value );
+                    attributeCellTable.redraw();
+                }
+            } );
+        }
+        if ( valueColumn == null ) {
+            valueColumn = new Column<Attribute, String>( new CustomEditTextCell() ) {
+                public String getValue( final Attribute attribute ) {
+                    return attribute.getValue();
+                }
+            };
+            valueColumn.setFieldUpdater( new FieldUpdater<Attribute, String>() {
+                public void update( int index,
+                                    Attribute object,
+                                    String value ) {
+                    object.setValue( value );
+                    attributeCellTable.redraw();
+                }
+            } );
+        }
         //Partial Score column
         final EditTextCell partialScoreCell = new EditTextCell();
         final Column<Attribute, String> partialScoreColumn = new Column<Attribute, String>( partialScoreCell ) {
@@ -756,12 +781,9 @@ public class GuidedScoreCardEditor extends Composite {
                 if ( Window.confirm( GuidedScoreCardConstants.INSTANCE.promptDeleteAttribute() ) ) {
                     final List<Attribute> list = characteristicsAttrMap.get( cGrid ).getList();
                     list.remove( attribute );
-                    ( (ListBox) cGrid.getWidget( 2,
-                                                 0 ) ).setEnabled( list.size() == 0 );
-                    ( (ListBox) cGrid.getWidget( 2,
-                                                 1 ) ).setEnabled( list.size() == 0 );
-                    ( (Button) cGrid.getWidget( 0,
-                                                3 ) ).setEnabled( list.size() != 2 );
+                    if ( "boolean".equalsIgnoreCase( dataType ) ) {
+                        ( (Button) cGrid.getWidget( 0, 3 ) ).setEnabled( list.size() != 2 );
+                    }
                     attributeCellTable.redraw();
                 }
             }
@@ -786,25 +808,31 @@ public class GuidedScoreCardEditor extends Composite {
                                      true );
 
         attributeCellTable.setColumnWidth( operatorColumn,
-                                           5.0,
+                                           20.0,
                                            Style.Unit.PCT );
         attributeCellTable.setColumnWidth( valueColumn,
-                                           10.0,
+                                           20.0,
                                            Style.Unit.PCT );
         attributeCellTable.setColumnWidth( partialScoreColumn,
-                                           10.0,
+                                           20.0,
                                            Style.Unit.PCT );
         attributeCellTable.setColumnWidth( reasonCodeColumn,
-                                           10.0,
+                                           20.0,
                                            Style.Unit.PCT );
         attributeCellTable.setColumnWidth( actionColumn,
-                                           5.0,
+                                           20.0,
                                            Style.Unit.PCT );
 
         ListDataProvider<Attribute> dataProvider = new ListDataProvider<Attribute>();
         dataProvider.addDataDisplay( attributeCellTable );
         characteristicsAttrMap.put( cGrid,
                                     dataProvider );
+
+        if ( "boolean".equalsIgnoreCase( dataType ) ) {
+            CustomEditTextCell etc = (CustomEditTextCell) attributeCellTable.getColumn( 1 ).getCell();
+            etc.setEnabled( false );
+        }
+
         return ( attributeCellTable );
     }
 
@@ -848,7 +876,7 @@ public class GuidedScoreCardEditor extends Composite {
                                                         type = "String";
                                                     } else if ( type.endsWith( "Double" ) ) {
                                                         type = "Double";
-                                                    } else if ( endsWithIgnoreCase(type, "integer")) {
+                                                    } else if ( endsWithIgnoreCase( type, "integer" ) ) {
                                                         type = "int";
                                                     }
                                                     callback.callback( type );
@@ -874,11 +902,9 @@ public class GuidedScoreCardEditor extends Composite {
                 ddReasonCodeField.setEnabled( enabled );
                 for ( final DirtyableFlexTable cGrid : characteristicsTables ) {
                     //baseline score for each characteristic
-                    ( (TextBox) cGrid.getWidget( 2,
-                                                 2 ) ).setEnabled( enabled );
+                    ( (TextBox) cGrid.getWidget( 2, 2 ) ).setEnabled( enabled );
                     //reason code for each characteristic
-                    ( (TextBox) cGrid.getWidget( 2,
-                                                 3 ) ).setEnabled( enabled );
+                    ( (TextBox) cGrid.getWidget( 2, 3 ) ).setEnabled( enabled );
                 }
             }
         } );
@@ -897,14 +923,15 @@ public class GuidedScoreCardEditor extends Composite {
     }
 
     /* from Commons StringUtils.java */
-    private static boolean endsWithIgnoreCase(String str, String suffix) {
-        if (str == null || suffix == null) {
-            return (str == null && suffix == null);
+    private static boolean endsWithIgnoreCase( String str,
+                                               String suffix ) {
+        if ( str == null || suffix == null ) {
+            return ( str == null && suffix == null );
         }
-        if (suffix.length() > str.length()) {
+        if ( suffix.length() > str.length() ) {
             return false;
         }
         int strOffset = str.length() - suffix.length();
-        return str.regionMatches(true, strOffset, suffix, 0, suffix.length());
+        return str.regionMatches( true, strOffset, suffix, 0, suffix.length() );
     }
 }
