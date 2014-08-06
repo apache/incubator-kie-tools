@@ -345,7 +345,7 @@ public class MultiPageEditorView
         return tabPanel.getWidget( 1 ).getOffsetHeight() + MARGIN;
     }
 
-    private ComplexPanel getTabContent() {
+    public ComplexPanel getTabContent() {
         return (ComplexPanel) tabPanel.getWidget( 0 );
     }
 

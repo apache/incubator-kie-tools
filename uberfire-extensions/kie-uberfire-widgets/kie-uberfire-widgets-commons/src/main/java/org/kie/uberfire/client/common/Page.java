@@ -52,7 +52,7 @@ public abstract class Page {
         return view;
     }
 
-    class PageView
+    public class PageView
             extends SimpleLayoutPanel
             implements RequiresResize {
 
@@ -85,6 +85,12 @@ public abstract class Page {
         public void onLostFocus() {
             presenter.onLostFocus();
         }
+
+        public ScrollPanel getSp() {
+          return sp;
+        }
+        
+        
 
     }
 }
