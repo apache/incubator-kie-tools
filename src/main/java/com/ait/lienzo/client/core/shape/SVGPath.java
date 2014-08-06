@@ -27,7 +27,7 @@ import com.google.gwt.json.client.JSONObject;
 
 public class SVGPath extends Shape<SVGPath>
 {
-    private static final char[]             COMMANDS = { 'm', 'M', 'l', 'L', 'v', 'V', 'h', 'H', 'z', 'Z', 'c', 'C', 'q', 'Q', 't', 'T', 's', 'S', 'a', 'A' };
+    private static final String[]           COMMANDS = { "m", "M", "l", "L", "v", "V", "h", "H", "z", "Z", "c", "C", "q", "Q", "t", "T", "s", "S", "a", "A" };
 
     private String                          m_path;
 
@@ -133,15 +133,13 @@ public class SVGPath extends Shape<SVGPath>
     {
         m_list.clear();
 
-        String cs = path;
-
-        cs = cs.replaceAll(" ", ",");
+        path = path.replaceAll(" ", ",");
 
         for (int n = 0; n < COMMANDS.length; n++)
         {
-            cs = cs.replaceAll("" + COMMANDS[n], "|" + COMMANDS[n]);
+            path = path.replaceAll(COMMANDS[n], "#" + COMMANDS[n]);
         }
-        String[] list = cs.split("\\|");
+        String[] list = path.split("#");
 
         double cpx = 0;
 
@@ -458,7 +456,9 @@ public class SVGPath extends Shape<SVGPath>
     private NFastArrayList<Double> convertEndpointToCenterParameterization(double x1, double y1, double x2, double y2, double fa, double fs, double rx, double ry, double psi)
     {
         psi = psi * (Math.PI / 180.0);
+
         double xp = Math.cos(psi) * (x1 - x2) / 2.0 + Math.sin(psi) * (y1 - y2) / 2.0;
+
         double yp = -1 * Math.sin(psi) * (x1 - x2) / 2.0 + Math.cos(psi) * (y1 - y2) / 2.0;
 
         double lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
@@ -466,6 +466,7 @@ public class SVGPath extends Shape<SVGPath>
         if (lambda > 1)
         {
             rx *= Math.sqrt(lambda);
+
             ry *= Math.sqrt(lambda);
         }
         double f = Math.sqrt((((rx * rx) * (ry * ry)) - ((rx * rx) * (yp * yp)) - ((ry * ry) * (xp * xp))) / ((rx * rx) * (yp * yp) + (ry * ry) * (xp * xp)));
@@ -479,48 +480,53 @@ public class SVGPath extends Shape<SVGPath>
             f = 0;
         }
         double cxp = f * rx * yp / ry;
+
         double cyp = f * -ry * xp / rx;
 
         double cx = (x1 + x2) / 2.0 + Math.cos(psi) * cxp - Math.sin(psi) * cyp;
+
         double cy = (y1 + y2) / 2.0 + Math.sin(psi) * cxp + Math.cos(psi) * cyp;
 
-        double theta = vANGLE(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
-        double[] u = new double[] { (xp - cxp) / rx, (yp - cyp) / ry };
-        double[] v = new double[] { (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry };
-        double dTheta = vANGLE(u, v);
+        double th = vector_angle(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
 
-        if (vRATIO(u, v) <= -1)
+        double[] u = new double[] { (xp - cxp) / rx, (yp - cyp) / ry };
+
+        double[] v = new double[] { (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry };
+
+        double dt = vector_angle(u, v);
+
+        if (vector_ratio(u, v) <= -1)
         {
-            dTheta = Math.PI;
+            dt = Math.PI;
         }
-        if (vRATIO(u, v) >= 1)
+        if (vector_ratio(u, v) >= 1)
         {
-            dTheta = 0;
+            dt = 0;
         }
-        if (fs == 0 && dTheta > 0)
+        if (fs == 0 && dt > 0)
         {
-            dTheta = dTheta - 2 * Math.PI;
+            dt = dt - 2 * Math.PI;
         }
-        if (fs == 1 && dTheta < 0)
+        if (fs == 1 && dt < 0)
         {
-            dTheta = dTheta + 2 * Math.PI;
+            dt = dt + 2 * Math.PI;
         }
-        return new NFastArrayList<Double>().push(cx, cy, rx, ry, theta, dTheta, psi, fs);
+        return new NFastArrayList<Double>().push(cx, cy, rx, ry, th, dt, psi, fs);
     }
 
-    private final double vMAG(double[] v)
+    private final double vector_magnitude(double[] v)
     {
         return Math.sqrt(v[0] * v[0] + v[1] * v[1]);
     }
 
-    private final double vRATIO(double[] u, double[] v)
+    private final double vector_ratio(double[] u, double[] v)
     {
-        return (u[0] * v[0] + u[1] * v[1]) / (vMAG(u) * vMAG(v));
+        return (u[0] * v[0] + u[1] * v[1]) / (vector_magnitude(u) * vector_magnitude(v));
     }
 
-    private final double vANGLE(double[] u, double[] v)
+    private final double vector_angle(double[] u, double[] v)
     {
-        return (u[0] * v[1] < u[1] * v[0] ? -1 : 1) * Math.acos(vRATIO(u, v));
+        return (u[0] * v[1] < u[1] * v[0] ? -1 : 1) * Math.acos(vector_ratio(u, v));
     }
 
     @Override
