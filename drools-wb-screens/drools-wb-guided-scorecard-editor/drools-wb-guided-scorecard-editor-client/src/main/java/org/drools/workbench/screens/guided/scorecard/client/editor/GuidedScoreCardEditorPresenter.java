@@ -29,9 +29,8 @@ import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.Guide
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
@@ -45,19 +44,17 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.editor.GuvnorEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.kie.workbench.common.widgets.viewsource.client.callbacks.ViewSourceSuccessCallback;
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -67,35 +64,25 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
-
 @Dependent
 @WorkbenchEditor(identifier = "GuidedScoreCardEditor", supportedTypes = { GuidedScoreCardResourceType.class })
-public class GuidedScoreCardEditorPresenter {
+public class GuidedScoreCardEditorPresenter
+    extends GuvnorEditor {
 
     @Inject
     private Caller<GuidedScoreCardEditorService> scoreCardEditorService;
 
     @Inject
-    private Caller<MetadataService> metadataService;
+    private OverviewWidgetPresenter overview;
 
-    @Inject
     private GuidedScoreCardEditorView view;
-
-    @Inject
-    private ViewSourceView viewSource;
-
-    @Inject
-    private MetadataWidget metadataWidget;
 
     @Inject
     private MultiPageEditor multiPage;
@@ -104,33 +91,11 @@ public class GuidedScoreCardEditorPresenter {
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Event<ChangeTitleWidgetEvent> changeTitleNotification;
-
-    @Inject
-    private Event<RestoreEvent> restoreEvent;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
     private GuidedScoreCardResourceType type;
 
     @Inject
     private AsyncPackageDataModelOracleFactory oracleFactory;
 
-    @Inject
-    private DefaultFileNameValidator fileNameValidator;
-
-    @Inject
-    @New
-    private FileMenuBuilder menuBuilder;
-    private Menus menus;
-
-    private ObservablePath path;
-    private PlaceRequest place;
-    private boolean isReadOnly;
-    private String version;
-    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private ScoreCardModel model;
     private AsyncPackageDataModelOracle oracle;
@@ -138,105 +103,27 @@ public class GuidedScoreCardEditorPresenter {
     @Inject
     private ImportsWidgetPresenter importsWidget;
 
+    private Metadata metadata;
+
+    @Inject
+    public GuidedScoreCardEditorPresenter(GuidedScoreCardEditorView baseView) {
+        super(baseView);
+        view = baseView;
+    }
+
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        this.path = path;
-        this.place = place;
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
-        this.version = place.getParameter( "version", null );
-
-        this.path.onRename( new Command() {
-            @Override
-            public void execute() {
-                changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
-            }
-        } );
-        this.path.onDelete( new Command() {
-            @Override
-            public void execute() {
-                placeManager.forceClosePlace( place );
-            }
-        } );
-
-        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
-                concurrentUpdateSessionInfo = eventInfo;
-            }
-        } );
-
-        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
-                newConcurrentRename( info.getSource(),
-                                     info.getTarget(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             reload();
-                                         }
-                                     }
-                                   ).show();
-            }
-        } );
-
-        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentDelete info ) {
-                newConcurrentDelete( info.getPath(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             placeManager.closePlace( place );
-                                         }
-                                     }
-                                   ).show();
-            }
-        } );
-
-        makeMenuBar();
-
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-
-        loadContent();
+        super.init(path, place);
     }
 
-    private void reload() {
-        concurrentUpdateSessionInfo = null;
-        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        loadContent();
-    }
-
-    private void disableMenus() {
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
-    }
-
-    private void loadContent() {
+    protected void loadContent() {
         scoreCardEditorService.call( getModelSuccessCallback(),
                                      new CommandDrivenErrorCallback( view,
                                                                      new CommandBuilder().addNoSuchFileException( view,
                                                                                                                   multiPage,
                                                                                                                   menus ).build()
-                                     ) ).loadContent( path );
+                                     ) ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     private RemoteCallback<ScoreCardModelContent> getModelSuccessCallback() {
@@ -245,52 +132,28 @@ public class GuidedScoreCardEditorPresenter {
             @Override
             public void callback( final ScoreCardModelContent content ) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( path == null ) {
+                if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
                 }
 
+                metadata = content.getOverview().getMetadata();
+
                 multiPage.clear();
-                multiPage.addWidget( view,
-                                     CommonConstants.INSTANCE.EditTabTitle() );
+                multiPage.addWidget(overview,
+                        CommonConstants.INSTANCE.Overview());
+                overview.setContent(content.getOverview(), versionRecordManager.getCurrentPath());
 
-                multiPage.addPage( new Page( viewSource,
-                                             CommonConstants.INSTANCE.SourceTabTitle() ) {
-                    @Override
-                    public void onFocus() {
-                        viewSource.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        scoreCardEditorService.call( new ViewSourceSuccessCallback( viewSource ),
-                                                     new HasBusyIndicatorDefaultErrorCallback( viewSource ) ).toSource( path,
-                                                                                                                        view.getModel() );
-                    }
+                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
 
-                    @Override
-                    public void onLostFocus() {
-                        viewSource.clear();
-                    }
-                } );
+                multiPage.addWidget(view,
+                        CommonConstants.INSTANCE.EditTabTitle());
 
-                multiPage.addWidget( importsWidget,
-                                     CommonConstants.INSTANCE.ConfigTabTitle() );
-
-                multiPage.addPage( new Page( metadataWidget,
-                                             CommonConstants.INSTANCE.MetadataTabTitle() ) {
-                    @Override
-                    public void onFocus() {
-                        metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                        metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                           isReadOnly ),
-                                              new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
-                    }
-
-                    @Override
-                    public void onLostFocus() {
-                        //Nothing to do
-                    }
-                } );
+                multiPage.addWidget(importsWidget,
+                        CommonConstants.INSTANCE.ConfigTabTitle());
 
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
                                                                         model,
                                                                         dataModel );
 
@@ -303,27 +166,6 @@ public class GuidedScoreCardEditorPresenter {
                 view.hideBusyIndicator();
             }
         };
-    }
-
-    private void makeMenuBar() {
-        if ( isReadOnly ) {
-            menus = menuBuilder.addRestoreVersion( path ).build();
-        } else {
-            menus = menuBuilder
-                    .addSave( new Command() {
-                        @Override
-                        public void execute() {
-                            onSave();
-                        }
-                    } )
-                    .addCopy( path,
-                              fileNameValidator )
-                    .addRename( path,
-                                fileNameValidator )
-                    .addDelete( path )
-                    .addValidate( onValidate() )
-                    .build();
-        }
     }
 
     public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
@@ -340,7 +182,7 @@ public class GuidedScoreCardEditorPresenter {
         view.refreshFactTypes();
     }
 
-    private Command onValidate() {
+    protected Command onValidate() {
         return new Command() {
             @Override
             public void execute() {
@@ -354,74 +196,27 @@ public class GuidedScoreCardEditorPresenter {
                             ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( path,
+                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
                                                           view.getModel() );
             }
         };
     }
 
-    @OnSave
-    public void onSave() {
-        if ( isReadOnly ) {
-            view.alertReadOnly();
-            return;
-        }
-
-        if ( concurrentUpdateSessionInfo != null ) {
-            newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                                 concurrentUpdateSessionInfo.getIdentity(),
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         save();
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         //cancel?
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         reload();
-                                     }
-                                 }
-                               ).show();
-        } else {
-            save();
-        }
-    }
-
-    private void save() {
-        new SaveOperationService().save( path,
+    protected void save() {
+        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
                                                  view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
                                                  scoreCardEditorService.call( getSaveSuccessCallback(),
-                                                                              new HasBusyIndicatorDefaultErrorCallback( view ) ).save( path,
+                                                                              new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
                                                                                                                                        view.getModel(),
-                                                                                                                                       metadataWidget.getContent(),
+                                                                                                                                       metadata,
                                                                                                                                        comment );
                                              }
                                          }
                                        );
         concurrentUpdateSessionInfo = null;
-    }
-
-    private RemoteCallback<Path> getSaveSuccessCallback() {
-        return new RemoteCallback<Path>() {
-
-            @Override
-            public void callback( final Path path ) {
-                view.setNotDirty();
-                view.hideBusyIndicator();
-                metadataWidget.resetDirty();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-            }
-        };
     }
 
     @WorkbenchPartView
@@ -431,7 +226,7 @@ public class GuidedScoreCardEditorPresenter {
 
     @OnClose
     public void onClose() {
-        this.path = null;
+        this.versionRecordManager.clear();
         this.oracleFactory.destroy( oracle );
     }
 
@@ -440,7 +235,7 @@ public class GuidedScoreCardEditorPresenter {
         if ( isReadOnly ) {
             return false;
         }
-        return ( view.isDirty() || metadataWidget.isDirty() );
+        return ( view.isDirty() );
     }
 
     @OnMayClose
@@ -453,10 +248,10 @@ public class GuidedScoreCardEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( path,
+        String fileName = FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(),
                                                         type );
-        if ( version != null ) {
-            fileName = fileName + " v" + version;
+        if ( versionRecordManager.getVersion() != null ) {
+            fileName = fileName + " v" + versionRecordManager.getVersion();
         }
 
         if ( isReadOnly ) {
@@ -468,16 +263,6 @@ public class GuidedScoreCardEditorPresenter {
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
-    }
-
-    public void onRestore( final @Observes RestoreEvent restore ) {
-        if ( path == null || restore == null || restore.getPath() == null ) {
-            return;
-        }
-        if ( path.equals( restore.getPath() ) ) {
-            loadContent();
-            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
-        }
     }
 
 }

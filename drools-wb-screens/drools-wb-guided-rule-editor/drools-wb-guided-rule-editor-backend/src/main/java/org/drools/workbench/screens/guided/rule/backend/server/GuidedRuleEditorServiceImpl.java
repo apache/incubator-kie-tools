@@ -40,9 +40,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
@@ -51,13 +49,11 @@ import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
-import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.backend.service.GuvnorService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -67,6 +63,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @Service
 @ApplicationScoped
 public class GuidedRuleEditorServiceImpl
+        extends GuvnorService
         implements GuidedRuleEditorService {
 
     //Filters to include *all* applicable resources
@@ -81,9 +78,6 @@ public class GuidedRuleEditorServiceImpl
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private MetadataService metadataService;
 
     @Inject
     private CopyService copyService;
@@ -105,12 +99,6 @@ public class GuidedRuleEditorServiceImpl
 
     @Inject
     private GuidedRuleEditorServiceUtilities utilities;
-
-    @Inject
-    private KieProjectService projectService;
-
-    @Inject
-    private SourceServices sourceServices;
 
     @Inject
     private GuidedRuleDRLResourceTypeDefinition drlResourceType;
@@ -210,23 +198,6 @@ public class GuidedRuleEditorServiceImpl
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private Overview loadOverview(Path path) {
-
-        Overview overview = new Overview();
-
-        overview.setMetadata(metadataService.getMetadata(path));
-
-        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
-
-        if (sourceServices.hasServiceFor(convertedPath)) {
-            overview.setPreview(sourceServices.getServiceFor(convertedPath).getSource(convertedPath));
-        }
-
-        overview.setProjectName(projectService.resolveProject(path).getProjectName());
-
-        return overview;
     }
 
     @Override

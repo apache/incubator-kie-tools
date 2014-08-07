@@ -17,22 +17,27 @@
 package org.drools.workbench.screens.guided.scorecard.model;
 
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ScoreCardModelContent {
 
     private ScoreCardModel model;
     private PackageDataModelOracleBaselinePayload dataModel;
+    private Overview overview;
 
     public ScoreCardModelContent() {
     }
 
     public ScoreCardModelContent( final ScoreCardModel model,
-                                  final PackageDataModelOracleBaselinePayload dataModel ) {
-        this.model = model;
-        this.dataModel = dataModel;
+                                  final Overview overview,
+                                  final PackageDataModelOracleBaselinePayload dataModel) {
+        this.model = PortablePreconditions.checkNotNull("model", model);
+        this.overview = PortablePreconditions.checkNotNull("overview", overview);
+        this.dataModel = PortablePreconditions.checkNotNull("dataModel", dataModel);
     }
 
     public ScoreCardModel getModel() {
@@ -43,4 +48,7 @@ public class ScoreCardModelContent {
         return this.dataModel;
     }
 
+    public Overview getOverview() {
+        return overview;
+    }
 }

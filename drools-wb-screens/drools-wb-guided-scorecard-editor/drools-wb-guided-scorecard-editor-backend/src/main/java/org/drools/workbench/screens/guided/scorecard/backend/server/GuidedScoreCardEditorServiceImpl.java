@@ -41,6 +41,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.service.GuvnorService;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -57,14 +58,13 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorService {
+public class GuidedScoreCardEditorServiceImpl
+        extends GuvnorService
+        implements GuidedScoreCardEditorService {
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private MetadataService metadataService;
 
     @Inject
     private CopyService copyService;
@@ -86,12 +86,6 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
 
     @Inject
     private DataModelService dataModelService;
-
-    @Inject
-    private SourceServices sourceServices;
-
-    @Inject
-    private KieProjectService projectService;
 
     @Override
     public Path create( final Path context,
@@ -149,6 +143,7 @@ public class GuidedScoreCardEditorServiceImpl implements GuidedScoreCardEditorSe
                                                                sessionInfo ) );
 
             return new ScoreCardModelContent( model,
+                                              loadOverview(path),
                                               dataModel );
 
         } catch ( Exception e ) {
