@@ -5,11 +5,12 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.globals.model.Global;
 import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
 
 /**
  * Globals Editor View definition
  */
-public interface GlobalsEditorView extends HasBusyIndicator,
+public interface GlobalsEditorView extends GuvnorEditorView,
                                            IsWidget {
 
     void setContent( final List<Global> globals,
