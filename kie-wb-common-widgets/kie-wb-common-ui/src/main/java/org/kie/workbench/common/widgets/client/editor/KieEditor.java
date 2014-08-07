@@ -41,7 +41,7 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
-public abstract class GuvnorEditor {
+public abstract class KieEditor {
 
     protected boolean isReadOnly;
 
@@ -70,10 +70,10 @@ public abstract class GuvnorEditor {
 
     private PlaceRequest place;
 
-    protected GuvnorEditor() {
+    protected KieEditor() {
     }
 
-    protected GuvnorEditor(
+    protected KieEditor(
             GuvnorEditorView baseView) {
         this.baseView = baseView;
     }

@@ -25,7 +25,7 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-public abstract class GuvnorService {
+public abstract class KieService {
 
     @Inject
     protected MetadataService metadataService;
@@ -41,16 +41,20 @@ public abstract class GuvnorService {
         Overview overview = new Overview();
 
         overview.setMetadata(metadataService.getMetadata(path));
-
-        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
-
-        if (sourceServices.hasServiceFor(convertedPath)) {
-            overview.setPreview(sourceServices.getServiceFor(convertedPath).getSource(convertedPath));
-        }
-
+        overview.setPreview(getSource(path));
         overview.setProjectName(projectService.resolveProject(path).getProjectName());
 
         return overview;
+    }
+
+    private String getSource(Path path) {
+        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
+
+        if (sourceServices.hasServiceFor(convertedPath)) {
+            return sourceServices.getServiceFor(convertedPath).getSource(convertedPath);
+        } else {
+            return "";
+        }
     }
 
 }
