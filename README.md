@@ -16,6 +16,10 @@ Lienzo provides an amazingly large number of features out the box:
 
 Downloading artifacts
 
+LATEST SNAPSHOT
+
+http://www.lienzo-core.com/lienzo-core-2.0.0.SNAPSHOT.jar
+
 RELEASE:
 
 ```xml
