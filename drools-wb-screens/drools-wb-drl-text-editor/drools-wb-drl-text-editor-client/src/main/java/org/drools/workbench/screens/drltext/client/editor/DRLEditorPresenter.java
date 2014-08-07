@@ -38,7 +38,7 @@ import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditor;
+import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
@@ -69,7 +69,7 @@ import org.uberfire.workbench.type.FileNameUtil;
 @Dependent
 @WorkbenchEditor(identifier = "DRLEditor", supportedTypes = {DRLResourceType.class, DSLRResourceType.class})
 public class DRLEditorPresenter
-        extends GuvnorEditor {
+        extends KieEditor {
 
     @Inject
     private Caller<DRLTextEditorService> drlTextEditorService;

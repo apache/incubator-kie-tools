@@ -42,7 +42,7 @@ import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditor;
+import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
@@ -72,7 +72,7 @@ import org.uberfire.workbench.type.FileNameUtil;
 @Dependent
 @WorkbenchEditor(identifier = "GuidedDecisionTableEditor", supportedTypes = {GuidedDTableResourceType.class})
 public class GuidedDecisionTableEditorPresenter
-        extends GuvnorEditor {
+        extends KieEditor {
 
     @Inject
     private OverviewWidgetPresenter overview;

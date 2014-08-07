@@ -37,16 +37,13 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.backend.service.GuvnorService;
-import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -59,7 +56,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @Service
 @ApplicationScoped
 public class GuidedScoreCardEditorServiceImpl
-        extends GuvnorService
+        extends KieService
         implements GuidedScoreCardEditorService {
 
     @Inject

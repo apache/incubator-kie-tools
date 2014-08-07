@@ -35,8 +35,7 @@ import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditor;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
+import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
@@ -65,7 +64,7 @@ import org.uberfire.workbench.type.FileNameUtil;
 @Dependent
 @WorkbenchEditor(identifier = "DSLEditor", supportedTypes = {DSLResourceType.class})
 public class DSLEditorPresenter
-        extends GuvnorEditor {
+        extends KieEditor {
 
     @Inject
     private Caller<DSLTextEditorService> dslTextEditorService;

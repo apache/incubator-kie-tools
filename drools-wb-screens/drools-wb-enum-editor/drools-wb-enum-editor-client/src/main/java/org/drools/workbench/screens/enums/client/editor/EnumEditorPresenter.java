@@ -19,8 +19,6 @@ package org.drools.workbench.screens.enums.client.editor;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -39,7 +37,7 @@ import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditor;
+import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
@@ -64,15 +62,13 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
-
 /**
  * Enum Editor Presenter
  */
 @Dependent
 @WorkbenchEditor(identifier = "EnumEditor", supportedTypes = { EnumResourceType.class })
 public class EnumEditorPresenter
-    extends GuvnorEditor{
+    extends KieEditor {
 
     private EnumEditorView view;
 

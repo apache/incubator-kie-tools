@@ -49,7 +49,7 @@ import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
-import org.kie.workbench.common.services.backend.service.GuvnorService;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -63,7 +63,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @Service
 @ApplicationScoped
 public class GuidedRuleEditorServiceImpl
-        extends GuvnorService
+        extends KieService
         implements GuidedRuleEditorService {
 
     //Filters to include *all* applicable resources
