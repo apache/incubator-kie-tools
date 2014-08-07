@@ -1,10 +1,12 @@
 package org.drools.workbench.screens.dtablexls.client.editor;
 
+import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
 
-public interface DecisionTableXLSEditorView extends UberView<DecisionTableXLSEditorView.Presenter> {
+public interface DecisionTableXLSEditorView
+        extends GuvnorEditorView, UberView<DecisionTableXLSEditorView.Presenter> {
 
     interface Presenter {
 

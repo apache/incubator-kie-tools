@@ -30,21 +30,18 @@ import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResour
 import org.drools.workbench.screens.dtablexls.client.widgets.ConversionMessageWidget;
 import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.Page;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.editor.GuvnorEditor;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -55,24 +52,19 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
-
 @Dependent
-@WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = { DecisionTableXLSResourceType.class })
+@WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = {DecisionTableXLSResourceType.class})
 public class DecisionTableXLSEditorPresenter
+        extends GuvnorEditor
         implements DecisionTableXLSEditorView.Presenter {
 
     @Inject
     private Caller<DecisionTableXLSService> decisionTableXLSService;
-
-    @Inject
-    private Caller<MetadataService> metadataService;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -83,11 +75,10 @@ public class DecisionTableXLSEditorPresenter
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
     private DecisionTableXLSEditorView view;
-
-    @Inject
-    private MetadataWidget metadataWidget;
+//
+//    @Inject
+//    private OverviewWidgetPresenter overview;
 
     @Inject
     private MultiPageEditor multiPage;
@@ -101,183 +92,114 @@ public class DecisionTableXLSEditorPresenter
     @Inject
     private DefaultFileNameValidator fileNameValidator;
 
-    @Inject
-    private FileMenuBuilder menuBuilder;
-    private Menus menus;
+    public DecisionTableXLSEditorPresenter() {
+    }
 
-    private ObservablePath path;
-    private PlaceRequest place;
-    private boolean isReadOnly;
-    private String version;
+    @Inject
+    public DecisionTableXLSEditorPresenter(DecisionTableXLSEditorView baseView) {
+        super(baseView);
+        view = baseView;
+    }
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        this.path = path;
-        this.place = place;
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
-        this.version = place.getParameter( "version", null );
+    public void onStartup(final ObservablePath path,
+            final PlaceRequest place) {
+        super.init(path, place);
 
-        this.path.onRename( new Command() {
-            @Override
-            public void execute() {
-                changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
-            }
-        } );
-        this.path.onDelete( new Command() {
-            @Override
-            public void execute() {
-                placeManager.forceClosePlace( place );
-            }
-        } );
+//        multiPage.addWidget(overview,
+//                CommonConstants.INSTANCE.Overview());
 
-        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
-                view.setConcurrentUpdateSessionInfo( eventInfo );
-            }
-        } );
+        multiPage.addWidget(view,
+                DecisionTableXLSEditorConstants.INSTANCE.DecisionTable());
 
-        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
-                newConcurrentRename( info.getSource(),
-                                     info.getTarget(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             reload();
-                                         }
-                                     }
-                                   ).show();
-            }
-        } );
-
-        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentDelete info ) {
-                newConcurrentDelete( info.getPath(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             placeManager.closePlace( place );
-                                         }
-                                     }
-                                   ).show();
-            }
-        } );
-
-        makeMenuBar();
-
-        multiPage.addWidget( view,
-                             DecisionTableXLSEditorConstants.INSTANCE.DecisionTable() );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                //Nothing to do
-            }
-        } );
-
-        view.setPath( path );
-        view.setReadOnly( isReadOnly );
+        view.setPath(path);
+        view.setReadOnly(isReadOnly);
     }
 
     @Override
-    public void reload() {
-        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
+    protected void save() {
+
     }
 
-    private void disableMenus() {
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
+    @Override
+    protected void loadContent() {
+        decisionTableXLSService.call(
+                new RemoteCallback<Overview>() {
+                    @Override
+                    public void callback(Overview overview) {
+
+//                        DecisionTableXLSEditorPresenter.this.overview.setContent(overview, versionRecordManager.getCurrentPath());
+
+                        versionRecordManager.setVersions(overview.getMetadata().getVersion());
+
+                    }
+                }
+        ).loadContent(versionRecordManager.getCurrentPath());
+
     }
 
-    private void makeMenuBar() {
-        if ( isReadOnly ) {
-            menus = menuBuilder.addRestoreVersion( path ).build();
-        } else {
-            menus = menuBuilder
-                    .addCopy( path,
-                              fileNameValidator )
-                    .addRename( path,
-                                fileNameValidator )
-                    .addDelete( path )
-                    .addValidate( onValidate() )
-                    .addCommand( DecisionTableXLSEditorConstants.INSTANCE.Convert(),
-                                 new Command() {
+    @Override public void reload() {
 
-                                     @Override
-                                     public void execute() {
-                                         convert();
-                                     }
-                                 }
-                               )
-                    .build();
-        }
     }
 
-    private Command onValidate() {
+    protected void makeMenuBar() {
+        menus = menuBuilder
+                .addCopy(versionRecordManager.getCurrentPath(),
+                        fileNameValidator)
+                .addRename(versionRecordManager.getPathToLatest(),
+                        fileNameValidator)
+                .addDelete(versionRecordManager.getPathToLatest())
+                .addValidate(onValidate())
+                .addCommand(DecisionTableXLSEditorConstants.INSTANCE.Convert(),
+                        new Command() {
+
+                            @Override
+                            public void execute() {
+                                convert();
+                            }
+                        }
+                )
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .build();
+
+    }
+
+    protected Command onValidate() {
         return new Command() {
             @Override
             public void execute() {
-                decisionTableXLSService.call( new RemoteCallback<List<ValidationMessage>>() {
+                decisionTableXLSService.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            ValidationPopup.showMessages( results );
+                            ValidationPopup.showMessages(results);
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( path,
-                                                          path );
+                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
+                        versionRecordManager.getCurrentPath());
             }
         };
     }
 
     @OnClose
     public void onClose() {
-        this.path = null;
+        this.versionRecordManager.clear();
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( path,
-                                                        type );
-        if ( version != null ) {
-            fileName = fileName + " v" + version;
+        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
+                type);
+        if (versionRecordManager.getVersion() != null) {
+            fileName = fileName + " v" + versionRecordManager.getVersion();
         }
         return DecisionTableXLSEditorConstants.INSTANCE.DecisionTableEditorTitle() + " [" + fileName + "]";
     }
@@ -293,20 +215,20 @@ public class DecisionTableXLSEditorPresenter
     }
 
     private void convert() {
-        busyIndicatorView.showBusyIndicator( DecisionTableXLSEditorConstants.INSTANCE.Converting() );
-        decisionTableXLSService.call( new RemoteCallback<ConversionResult>() {
+        busyIndicatorView.showBusyIndicator(DecisionTableXLSEditorConstants.INSTANCE.Converting());
+        decisionTableXLSService.call(new RemoteCallback<ConversionResult>() {
             @Override
-            public void callback( final ConversionResult response ) {
+            public void callback(final ConversionResult response) {
                 busyIndicatorView.hideBusyIndicator();
-                if ( response.getMessages().size() > 0 ) {
+                if (response.getMessages().size() > 0) {
                     final PopupListWidget popup = new PopupListWidget();
-                    for ( ConversionMessage message : response.getMessages() ) {
-                        popup.addListItem( new ConversionMessageWidget( message ) );
+                    for (ConversionMessage message : response.getMessages()) {
+                        popup.addListItem(new ConversionMessageWidget(message));
                     }
                     popup.show();
                 }
             }
-        } ).convert( path );
+        }).convert(versionRecordManager.getCurrentPath());
     }
 
 }

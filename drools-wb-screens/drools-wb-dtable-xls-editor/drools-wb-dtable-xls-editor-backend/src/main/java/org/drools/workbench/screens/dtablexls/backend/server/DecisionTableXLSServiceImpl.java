@@ -44,9 +44,13 @@ import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
+import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.StandardOpenOption;
@@ -98,6 +102,12 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
 
     @Inject
     private GenericValidator genericValidator;
+
+    @Inject
+    private KieProjectService projectService;
+
+    @Inject
+    private SourceServices sourceServices;
 
     public InputStream load( final Path path,
                              final String sessionId ) {
@@ -276,6 +286,25 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                        e );
             throw ExceptionUtilities.handleException( e );
         }
+    }
+
+    @Override
+    public Overview loadContent(ObservablePath path) {
+        Overview overview = new Overview();
+
+        overview.setMetadata(metadataService.getMetadata(path));
+
+        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
+
+        if (sourceServices.hasServiceFor(convertedPath)) {
+            overview.setPreview(sourceServices.getServiceFor(convertedPath).getSource(convertedPath));
+        } else {
+            overview.setPreview("");
+        }
+
+        overview.setProjectName(projectService.resolveProject(path).getProjectName());
+
+        return overview;
     }
 
     @Override

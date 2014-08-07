@@ -184,4 +184,24 @@ public class DecisionTableXLSEditorViewImpl
     private void notifySuccess() {
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
     }
+
+    @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
+    public void setNotDirty() {
+
+    }
+
+    @Override
+    public void showBusyIndicator(String s) {
+        BusyPopup.showMessage( s );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
 }
