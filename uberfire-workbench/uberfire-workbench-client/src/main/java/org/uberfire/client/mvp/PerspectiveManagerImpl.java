@@ -22,6 +22,9 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     @Inject
     private PanelManager panelManager;
 
+    @Inject
+    private ActivityManager activityManager;
+
     // FIXME this is a circular dependency!
     // would be better modularity if the PerspectiveManager would return a list of activities to launch
     // once the panels have been arranged, instead of calling PlaceManager.goTo() explicitly
@@ -147,7 +150,26 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
                 final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
                                                                                child,
                                                                                child.getPosition() );
+                overrideStoredPanelSizesWithActivityPreferredSizes( target );
                 setupPanelRecursively( target );
+            }
+        }
+
+        private void overrideStoredPanelSizesWithActivityPreferredSizes( final PanelDefinition panel ) {
+            if ( panel.getParts().isEmpty() ) {
+                return;
+            }
+            for ( final PartDefinition partDefinition : panel.getParts() ) {
+                final Activity currentActivity = activityManager.getActivity( partDefinition.getPlace() );
+                if ( currentActivity instanceof WorkbenchActivity ) {
+                    final Integer width = ( (WorkbenchActivity) currentActivity ).preferredWidth();
+                    final Integer height = ( (WorkbenchActivity) currentActivity ).preferredHeight();
+                    if ( width != null || height != null ) {
+                        panel.setHeight( height );
+                        panel.setWidth( width );
+                        break;
+                    }
+                }
             }
         }
 

@@ -100,40 +100,14 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-
-      <!-- Widgets -->
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-commons</artifactId>
+        <artifactId>uberfire-backend-cdi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-commons</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- Widgets Sandbox -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widget-markdown</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widget-markdown</artifactId>
+        <artifactId>uberfire-backend-cdi</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -293,39 +267,6 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-backend-lucene</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-backend-lucene</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-commons-io</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-metadata-commons-io</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
 
       <!-- UberFire Packaging -->
       <dependency>
@@ -375,40 +316,6 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-all</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Property Editor Widget -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-backend</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-backend</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-properties-editor-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Panel Managers -->

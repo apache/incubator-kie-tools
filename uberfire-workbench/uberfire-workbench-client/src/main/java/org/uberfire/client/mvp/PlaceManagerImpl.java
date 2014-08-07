@@ -34,7 +34,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
@@ -256,16 +255,18 @@ implements PlaceManager {
         final Set<Activity> activities = activityManager.getActivities( place );
 
         if ( activities == null || activities.size() == 0 ) {
-            boolean ignoreUnknown = (Boolean) UberFirePreferences.getProperty("org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces", false);
-            if ( ignoreUnknown ) {
-                return new ResolvedRequest( null, PlaceRequest.NOWHERE );
-            }
-
             System.out.println("Launching notfound activity for placeRequest " + place);
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
             notFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
 
-            return new ResolvedRequest( null, notFoundPopup );
+            if ( activityManager.containsActivity( notFoundPopup ) ) {
+                return new ResolvedRequest( null, notFoundPopup );
+            } else {
+                final PlaceRequest ufNotFoundPopup = new DefaultPlaceRequest( "uf.workbench.activity.notfound" );
+                ufNotFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
+                return new ResolvedRequest( null, ufNotFoundPopup );
+            }
+
         } else if ( activities.size() > 1 ) {
             final PlaceRequest multiplePlaces = new DefaultPlaceRequest( "workbench.activities.multiple" ).addParameter( "requestedPlaceIdentifier", null );
 
@@ -517,12 +518,17 @@ implements PlaceManager {
         if ( _panel != null ) {
             panel = _panel;
         } else {
-            // TODO (hbraun): If no panel given (i.e. when using token driven nav), this falls back to the root panel definition
-            panel = getPanelManager().addWorkbenchPanel( getPanelManager().getRoot(),
-                                                         position );
+            panel = addWorkbenchPanelTo( position, activity.preferredHeight(), activity.preferredWidth() );
         }
 
         launchWorkbenchActivityInPanel( place, activity, part, panel );
+    }
+
+    PanelDefinition addWorkbenchPanelTo( final Position position,
+                                         final Integer height,
+                                         final Integer width ) {
+        return panelManager.addWorkbenchPanel( panelManager.getRoot(),
+                                               position, height, width, null, null );
     }
 
     private void launchWorkbenchActivityInPanel( final PlaceRequest place,
@@ -532,46 +538,23 @@ implements PlaceManager {
 
         visibleWorkbenchParts.put( place, part );
         getPlaceHistoryHandler().onPlaceChange( place );
-        checkPathDelete( place );
 
         final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
 
         UIPart uiPart = new UIPart( activity.getTitle(), activity.getTitleDecoration(), activity.getWidget() );
 
-        getPanelManager().addWorkbenchPart( place,
-                                            part,
-                                            panel,
-                                            activity.getMenus(),
-                                            uiPart,
-                                            activity.contextId() );
+        panelManager.addWorkbenchPart( place,
+                                       part,
+                                       panel,
+                                       activity.getMenus(),
+                                       uiPart,
+                                       activity.contextId() );
         if ( splashScreen != null ) {
             launchSplashScreen( place,
                                 splashScreen );
         }
 
         activity.onOpen();
-    }
-
-    PanelManager getPanelManager() {
-        return panelManager;
-    }
-
-    private void checkPathDelete( final PlaceRequest place ) {
-        if ( place == null ) {
-            return;
-        }
-        try {
-            if ( (Boolean) UberFirePreferences.getProperty( "org.uberfire.client.workbench.path.automatic.close.onDelete", true ) &&
-                    place instanceof PathPlaceRequest ) {
-                ( (PathPlaceRequest) place ).getPath().onDelete( new Command() {
-                    @Override
-                    public void execute() {
-                        forceClosePlace( place );
-                    }
-                } );
-            }
-        } catch ( final Exception ex ) {
-        }
     }
 
     private void launchPopupActivity( final PlaceRequest place,
@@ -582,7 +565,6 @@ implements PlaceManager {
         }
 
         getPlaceHistoryHandler().onPlaceChange( place );
-        checkPathDelete( place );
 
         activePopups.put( place.getIdentifier(), activity );
         activity.onOpen();

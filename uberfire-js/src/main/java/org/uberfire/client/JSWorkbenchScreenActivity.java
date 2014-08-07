@@ -132,4 +132,14 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     public String contextId() {
         return nativePlugin.getContextId();
     }
+
+    @Override
+    public Integer preferredHeight() {
+        return null;
+    }
+
+    @Override
+    public Integer preferredWidth() {
+        return null;
+    }
 }

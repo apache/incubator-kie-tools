@@ -44,9 +44,6 @@
         <include>org.uberfire:uberfire-backend-api</include>
         <include>org.uberfire:uberfire-workbench</include>
         <include>org.uberfire:uberfire-backend-server</include>
-        <include>org.uberfire:uberfire-widgets-commons</include>
-        <include>org.uberfire:uberfire-widgets-core-client</include>
-        <include>org.uberfire:uberfire-widget-markdown</include>
       </includes>
     </dependencySet>
     <dependencySet>

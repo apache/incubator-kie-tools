@@ -23,6 +23,8 @@ import java.util.Map;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
@@ -55,7 +57,32 @@ public class ScreenActivityGenerator extends AbstractGenerator {
 
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        String identifier = ClientAPIModule.getWbScreenIdentifierValueOnClass( classElement );;
+        final String annotationName = ClientAPIModule.getWorkbenchScreenClass();
+
+        String identifier = null;
+        Integer preferredHeight = null;
+        Integer preferredWidth = null;
+
+        for ( final AnnotationMirror am : classElement.getAnnotationMirrors() ) {
+            if ( annotationName.equals( am.getAnnotationType().toString() ) ) {
+                for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet() ) {
+                    if ( "identifier".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        identifier = entry.getValue().toString();
+                    } else if ( "preferredHeight".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        final int _preferredHeight = (Integer) entry.getValue().getValue();
+                        if ( _preferredHeight > 0 ) {
+                            preferredHeight = _preferredHeight;
+                        }
+                    } else if ( "preferredWidth".equals( entry.getKey().getSimpleName().toString() ) ) {
+                        final int _preferredWidth = (Integer) entry.getValue().getValue();
+                        if ( _preferredWidth > 0 ) {
+                            preferredWidth = _preferredWidth;
+                        }
+                    }
+                }
+                break;
+            }
+        }
 
         final String owningPlace = GeneratorUtils.getOwningPerspectivePlaceRequest( classElement, processingEnvironment );
 
@@ -118,6 +145,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Class name: " + className );
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
             messager.printMessage( Kind.NOTE, "Owning Perspective Identifier: " + owningPlace );
+            messager.printMessage( Kind.NOTE, "Preferred Height: " + preferredHeight );
+            messager.printMessage( Kind.NOTE, "Preferred Width: " + preferredWidth );
             messager.printMessage( Kind.NOTE, "getContextIdMethodName: " + getContextIdMethodName );
             messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
@@ -163,6 +192,10 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                   identifier );
         root.put( "owningPlace",
                   owningPlace );
+        root.put( "preferredHeight",
+                  preferredHeight );
+        root.put( "preferredWidth",
+                  preferredWidth );
         root.put( "getContextIdMethodName",
                   getContextIdMethodName );
         root.put( "realClassName",

@@ -58,7 +58,7 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
 </#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Named("${identifier}")
+@Named(${identifier})
 <#if beanActivatorClass??>
 @ActivatedBy(${beanActivatorClass}.class)
 </#if>
@@ -92,6 +92,20 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     @PostConstruct
     public void init() {
         ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
+    }
+
+    </#if>
+    <#if preferredHeight??>
+    @Override
+    public Integer preferredHeight() {
+       return ${preferredHeight};
+    }
+
+    </#if>
+    <#if preferredWidth??>
+    @Override
+    public Integer preferredWidth() {
+       return ${preferredWidth};
     }
 
     </#if>

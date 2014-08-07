@@ -54,8 +54,6 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
         layout.setStyleName("fill-layout");
     }
 
-    // ------------------------
-
     @Override
     public void addPanel(PanelDefinition panel, WorkbenchPanelView view, Position position) {
         // invoked when this presenter manages a perspective itself (is root)
@@ -66,8 +64,6 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     public boolean removePanel( WorkbenchPanelView<?> child ) {
         return layout.remove( child );
     }
-
-    // ------------------------
 
     @Override
     public Widget asWidget() {
@@ -83,14 +79,6 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     public LayoutPanelPresenter getPresenter() {
         return this.presenter;
     }
-
-    @Override
-    public void clear() {
-        layout.clear();
-    }
-
-
-    // ------------------------
 
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
@@ -113,8 +101,6 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
         layout.add(partManager.selectPart(part));
         return true;
     }
-
-    // ------------------------
 
     @Override
     public void setFocus( boolean hasFocus ) {

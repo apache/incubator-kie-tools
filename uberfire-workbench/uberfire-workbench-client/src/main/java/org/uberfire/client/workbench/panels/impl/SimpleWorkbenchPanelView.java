@@ -87,11 +87,6 @@ extends AbstractWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
     }
 
     @Override
-    public void clear() {
-        listBar.clear();
-    }
-
-    @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
         listBar.addPart( view );
     }

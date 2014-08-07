@@ -15,7 +15,9 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -132,4 +134,21 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
                       result.getExpectedCode() );
     }
 
+    @Test
+    public void testWorkbenchSplashScreenOnStartMultipleMethods() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchSplashScreenTest8";
+
+        final Result result = new Result();
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchSplashScreenProcessor( new GenerationCompleteCallback() {
+
+            @Override
+            public void generationComplete( String code ) {
+                result.setActualCode( code );
+            }
+        } ), pathCompilationUnit );
+        assertFailedCompilation( diagnostics );
+        assertCompilationMessage( diagnostics, Kind.ERROR, -1, -1,
+                                "Found multiple @OnStartup methods. Each class can declare at most one." );
+    }
 }

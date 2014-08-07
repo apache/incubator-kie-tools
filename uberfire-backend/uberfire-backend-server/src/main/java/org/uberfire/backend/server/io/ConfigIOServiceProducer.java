@@ -1,7 +1,5 @@
 package org.uberfire.backend.server.io;
 
-import static org.uberfire.backend.server.repositories.SystemRepository.*;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -11,20 +9,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.security.shared.service.AuthenticationService;
-import org.uberfire.backend.repositories.Repository;
-import org.uberfire.backend.server.repositories.RepositoryServiceImpl;
-import org.uberfire.backend.server.security.JAASAuthenticationService;
-import org.uberfire.backend.server.security.RepositoryAuthorizationManager;
+import org.uberfire.backend.server.security.IOSecurityAuth;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 
 @ApplicationScoped
+@Startup
 public class ConfigIOServiceProducer {
-
-    @Inject
-    private RepositoryServiceImpl repositoryService;
 
     @Inject
     @Named("clusterServiceFactory")
@@ -41,23 +36,14 @@ public class ConfigIOServiceProducer {
             configIOService = new IOServiceNio2WrapperImpl( "config" );
         } else {
             configIOService = new IOServiceClusterImpl(
-                    new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory, clusterServiceFactory.isAutoStart() );
+                                                       new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory, clusterServiceFactory.isAutoStart() );
         }
-
-        AuthenticationService authenticationService;
-        if ( applicationProvidedConfigIOAuthService.isUnsatisfied() ) {
-            authenticationService = new JAASAuthenticationService( JAASAuthenticationService.DEFAULT_DOMAIN );
-        } else {
-            authenticationService = applicationProvidedConfigIOAuthService.get();
-        }
-
-        configIOService.setAuthenticationManager( authenticationService );
-        configIOService.setAuthorizationManager( new RepositoryAuthorizationManager( repositoryService ) );
     }
 
     @PreDestroy
     public void onShutdown() {
         configIOService.dispose();
+        SimpleAsyncExecutorService.shutdownInstances();
     }
 
     @Produces
@@ -66,9 +52,4 @@ public class ConfigIOServiceProducer {
         return configIOService;
     }
 
-    @Produces
-    @Named("system")
-    public Repository systemRepository() {
-        return SYSTEM_REPO;
-    }
 }

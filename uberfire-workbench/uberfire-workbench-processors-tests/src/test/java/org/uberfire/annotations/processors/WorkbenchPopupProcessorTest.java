@@ -15,7 +15,9 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -177,20 +179,13 @@ public class WorkbenchPopupProcessorTest extends AbstractProcessorTest {
     @Test
     public void testWorkbenchPopupOnStartMultipleMethods() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchPopupTest9";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchPopupTest9.expected";
-
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
                 pathCompilationUnit );
 
-        assertSuccessfulCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.WARNING, 24, 17, "There is also an @OnStartup(PlaceRequest) method in this class. That method takes precedence over this one." );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                      result.getExpectedCode() );
+        assertFailedCompilation( diagnostics );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 24, 17, "Found multiple @OnStartup methods. Each class can declare at most one." );
     }
 
     @Test

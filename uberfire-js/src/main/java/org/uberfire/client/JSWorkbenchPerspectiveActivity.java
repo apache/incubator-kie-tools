@@ -88,5 +88,4 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     public Collection<String> getTraits() {
         return nativePerspective.getTraits();
     }
-
 }

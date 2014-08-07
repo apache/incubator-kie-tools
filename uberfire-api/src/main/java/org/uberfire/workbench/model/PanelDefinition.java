@@ -35,9 +35,17 @@ public interface PanelDefinition {
 
     /**
      * Add a Part to the Panel
+     * If the part is linked to an existing panel,
+     * it will be removed from this panel by a call to removePart(part)
      * @param part The Part to add
      */
     public void addPart( final PartDefinition part );
+
+    /**
+     * Remove a Part from the Panel
+     * @param part The Part to be removed
+     */
+    public void removePart( final PartDefinition part );
 
     /**
      * Get the Parts contained in the Panel

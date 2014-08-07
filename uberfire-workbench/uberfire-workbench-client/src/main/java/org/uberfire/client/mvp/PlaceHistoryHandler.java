@@ -101,7 +101,7 @@ public class PlaceHistoryHandler {
      * Create a new PlaceHistoryHandler.
      */
     public PlaceHistoryHandler() {
-        this.historian = (Historian) GWT.create( DefaultHistorian.class );
+        this.historian = GWT.create( DefaultHistorian.class );
     }
 
     /**

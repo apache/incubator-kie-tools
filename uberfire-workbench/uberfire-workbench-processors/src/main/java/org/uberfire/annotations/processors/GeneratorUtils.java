@@ -15,8 +15,10 @@
  */
 package org.uberfire.annotations.processors;
 
-import static java.util.Collections.*;
-import static org.uberfire.annotations.processors.facades.ClientAPIModule.*;
+import static java.util.Collections.singletonList;
+import static org.uberfire.annotations.processors.facades.ClientAPIModule.OWNING_PERSPECTIVE;
+import static org.uberfire.annotations.processors.facades.ClientAPIModule.workbenchEditor;
+import static org.uberfire.annotations.processors.facades.ClientAPIModule.workbenchScreen;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -99,10 +101,10 @@ public class GeneratorUtils {
         }
 
         if ( zeroArgMethod != null && oneArgMethod != null ) {
-            // TODO make this an error (need to take inherited methods into account). See UF-76.
+            // TODO multiple methods should be allowed, but only if inherited. See UF-42.
             processingEnvironment.getMessager().printMessage(
-                    Kind.WARNING,
-                    "There is also an @OnStartup(PlaceRequest) method in this class. That method takes precedence over this one.",
+                    Kind.ERROR,
+                    "Found multiple @OnStartup methods. Each class can declare at most one.",
                     zeroArgMethod );
         }
 

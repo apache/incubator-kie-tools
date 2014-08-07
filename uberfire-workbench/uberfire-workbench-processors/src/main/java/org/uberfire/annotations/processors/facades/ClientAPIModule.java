@@ -28,23 +28,23 @@ public class ClientAPIModule {
 
     private ClientAPIModule() {}
 
-    public static final String workbenchSplashScreen =  "org.uberfire.client.annotations.WorkbenchSplashScreen" ;
-    public static final String workbenchPerspective =  "org.uberfire.client.annotations.WorkbenchPerspective" ;
-    public static final String workbenchPopup =  "org.uberfire.client.annotations.WorkbenchPopup" ;
-    public static final String workbenchScreen =  "org.uberfire.client.annotations.WorkbenchScreen" ;
-    public static final String workbenchContext =  "org.uberfire.client.annotations.WorkbenchContext" ;
-    public static final String workbenchEditor =  "org.uberfire.client.annotations.WorkbenchEditor" ;
-    public static final String defaultPosition =  "org.uberfire.client.annotations.DefaultPosition" ;
-    public static final String workbenchPartTitle =  "org.uberfire.client.annotations.WorkbenchPartTitle" ;
-    public static final String workbenchContextId =  "org.uberfire.client.annotations.WorkbenchContextId" ;
-    public static final String workbenchPartTitleDecoration =  "org.uberfire.client.annotations.WorkbenchPartTitleDecoration" ;
-    public static final String workbenchPartView =  "org.uberfire.client.annotations.WorkbenchPartView" ;
-    public static final String workbenchMenu =  "org.uberfire.client.annotations.WorkbenchMenu" ;
-    public static final String workbenchToolBar =  "org.uberfire.client.annotations.WorkbenchToolBar" ;
-    public static final String perspective =  "org.uberfire.client.annotations.Perspective" ;
-    public static final String splashFilter =  "org.uberfire.client.annotations.SplashFilter" ;
-    public static final String splashBodyHeight =  "org.uberfire.client.annotations.SplashBodyHeight" ;
-    public static final String intercept =  "org.uberfire.client.annotations.Intercept" ;
+    public static final String workbenchSplashScreen =  "org.uberfire.client.annotations.WorkbenchSplashScreen";
+    public static final String workbenchPerspective =  "org.uberfire.client.annotations.WorkbenchPerspective";
+    public static final String workbenchPopup =  "org.uberfire.client.annotations.WorkbenchPopup";
+    public static final String workbenchScreen =  "org.uberfire.client.annotations.WorkbenchScreen";
+    public static final String workbenchContext =  "org.uberfire.client.annotations.WorkbenchContext";
+    public static final String workbenchEditor =  "org.uberfire.client.annotations.WorkbenchEditor";
+    public static final String defaultPosition =  "org.uberfire.client.annotations.DefaultPosition";
+    public static final String workbenchPartTitle =  "org.uberfire.client.annotations.WorkbenchPartTitle";
+    public static final String workbenchContextId =  "org.uberfire.client.annotations.WorkbenchContextId";
+    public static final String workbenchPartTitleDecoration =  "org.uberfire.client.annotations.WorkbenchPartTitleDecoration";
+    public static final String workbenchPartView =  "org.uberfire.client.annotations.WorkbenchPartView";
+    public static final String workbenchMenu =  "org.uberfire.client.annotations.WorkbenchMenu";
+    public static final String workbenchToolBar =  "org.uberfire.client.annotations.WorkbenchToolBar";
+    public static final String perspective =  "org.uberfire.client.annotations.Perspective";
+    public static final String splashFilter =  "org.uberfire.client.annotations.SplashFilter";
+    public static final String splashBodyHeight =  "org.uberfire.client.annotations.SplashBodyHeight";
+    public static final String intercept =  "org.uberfire.client.annotations.Intercept";
     public static final String workbenchPart = "org.uberfire.client.annotations.WorkbenchPart";
     public static final String workbenchParts = "org.uberfire.client.annotations.WorkbenchParts";
     public static final String workbenchPanel = "org.uberfire.client.annotations.WorkbenchPanel";

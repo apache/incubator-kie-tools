@@ -160,20 +160,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     /**
      * Calls the abstract {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)} method supplied by the
-     * subclass. The child panel argument is an empty PanelDefinition of {@link PanelDefinition#PARENT_CHOOSES_TYPE}.
-     */
-    @Override
-    public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
-                                              final Position position ) {
-        final PanelDefinitionImpl childPanel = new PanelDefinitionImpl( PanelDefinition.PARENT_CHOOSES_TYPE );
-        childPanel.setParent(targetPanel);
-        return addWorkbenchPanel( targetPanel,
-                                  childPanel,
-                                  position );
-    }
-
-    /**
-     * Calls the abstract {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)} method supplied by the
      * subclass. The child panel argument is an empty PanelDefinition of {@link PanelDefinition#PARENT_CHOOSES_TYPE}, and its
      * size and minimum sizes have been initialized to the given amounts.
      */

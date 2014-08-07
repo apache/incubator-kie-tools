@@ -15,7 +15,9 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -244,19 +246,12 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
     @Test
     public void testWorkbenchScreenOnStartMultipleMethods() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest13";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest13.expected";
-
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
                 pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.WARNING, 24, 17, "There is also an @OnStartup(PlaceRequest) method in this class. That method takes precedence over this one." );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getActualCode(),
-                result.getExpectedCode() );
+
+        assertCompilationMessage( diagnostics, Kind.ERROR, 24, 17, "Found multiple @OnStartup methods. Each class can declare at most one." );
     }
 
     @Test
@@ -382,4 +377,99 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
         assertCompilationMessage( diagnostics, Kind.ERROR, 13, Diagnostic.NOPOS, "owningPerspective must be a class annotated with @WorkbenchPerspective" );
     }
 
+    @Test
+    public void testWorkbenchScreenHasTitleAndTitleWidgetWithPreferredWidth() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest24";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest24.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
+                                                                                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTitleAndTitleWidgetWithNegativePreferredWidth() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest25";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest25.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
+                                                                                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTitleAndTitleWidgetWithPreferredHeight() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest26";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest26.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
+                                                                                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTitleAndTitleWidgetWithNegativePreferredHeight() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest27";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest27.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
+                                                                                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTitleAndTitleWidgetWithPreferredWidthAndHeight() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest28";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest28.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
+                                                                                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
+    @Test
+    public void testWorkbenchScreenHasTitleAndTitleWidgetWithNegativePreferredWidthAndHeight() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest23";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest23.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
+                                                                                pathCompilationUnit );
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
 }

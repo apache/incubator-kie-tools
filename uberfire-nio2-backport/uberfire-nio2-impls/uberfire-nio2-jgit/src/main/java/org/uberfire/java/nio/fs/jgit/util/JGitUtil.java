@@ -47,6 +47,7 @@ import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheEditor;
 import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.internal.JGitText;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
@@ -61,7 +62,6 @@ import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
@@ -273,12 +273,17 @@ public final class JGitUtil {
                         .setRemote( origin )
                         .call();
 
-                git.branchCreate()
-                        .setName( "master" )
-                        .setUpstreamMode( CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM )
-                        .setStartPoint( "upstream/master" )
-                        .setForce( true )
-                        .call();
+                final List<Ref> branches = git.branchList().setListMode( ListBranchCommand.ListMode.ALL ).call();
+
+                for ( final Ref branch : branches ) {
+                    final String branchName = branch.getName().substring( branch.getName().lastIndexOf( "/" ) + 1 );
+                    git.branchCreate()
+                            .setName( branchName )
+                            .setUpstreamMode( CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM )
+                            .setStartPoint( "upstream/" + branchName )
+                            .setForce( true )
+                            .call();
+                }
 
             } catch ( final InvalidRemoteException e ) {
                 throw e;

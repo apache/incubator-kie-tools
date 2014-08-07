@@ -20,29 +20,33 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.client.annotations.DefaultPosition;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.Position;
+
+import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.markdown.Markdown;
 
 @Dependent
-@WorkbenchScreen(identifier = "TodoListScreen")
+@WorkbenchScreen(identifier = "TodoListScreen", preferredWidth = 400)
 public class TodoListScreen
-        extends Composite
-        implements RequiresResize {
+extends Composite
+implements RequiresResize {
 
     interface ViewBinder
-            extends
-            UiBinder<Widget, TodoListScreen> {
+    extends
+    UiBinder<Widget, TodoListScreen> {
 
     }
 
@@ -52,7 +56,7 @@ public class TodoListScreen
     private Caller<VFSService> vfsServices;
 
     @UiField
-    protected Markdown markdown;
+    protected TextArea markdown;
 
     @PostConstruct
     public void init() {
@@ -65,9 +69,9 @@ public class TodoListScreen
                     @Override
                     public void callback( final String response ) {
                         if ( response == null ) {
-                            markdown.setContent( "<p>-- empty --</p>" );
+                            markdown.setText( "<p>-- empty --</p>" );
                         } else {
-                            markdown.setContent( response );
+                            markdown.setText( response );
                         }
                     }
                 } ).readAllString( o );
@@ -75,6 +79,12 @@ public class TodoListScreen
         } ).get( "default://uf-playground/todo.md" );
     }
 
+    @DefaultPosition
+    public Position getDefaultPosition() {
+        return CompassPosition.EAST;
+    }
+
+    @Override
     @WorkbenchPartTitle
     public String getTitle() {
         return "Todo List";

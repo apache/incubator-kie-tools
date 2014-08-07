@@ -31,7 +31,6 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
-import static org.uberfire.io.FileSystemType.Bootstrap.*;
 
 /**
  *
@@ -98,7 +97,7 @@ public class GitIOServiceDotFileTest extends CommonIOExceptionsServiceDotFileTes
         ioService().newFileSystem( newRepo2, new HashMap<String, Object>() );
 
         final URI newRepo3 = URI.create( "git://" + new Date().getTime() + "-repo3-test" );
-        ioService().newFileSystem( newRepo3, new HashMap<String, Object>(), BOOTSTRAP_INSTANCE );
+        ioService().newFileSystem( newRepo3, new HashMap<String, Object>() );
 
         final Iterator<FileSystem> iterator = ioService.getFileSystems().iterator();
 

@@ -16,12 +16,6 @@
 
 package org.uberfire.java.nio.file.api;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +29,9 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.
  * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/spi/FileSystemProvider.html">Original JavaDoc</a>
@@ -43,19 +40,19 @@ public final class FileSystemProviders {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( FileSystemProviders.class );
 
-    private static List<FileSystemProvider> installedProviders;
-    private static Map<String, FileSystemProvider> mapOfinstalledProviders;
+    private static List<FileSystemProvider> installedProviders = null;
+    private static Map<String, FileSystemProvider> mapOfinstalledProviders = null;
 
-    static {
+    private static void setup() {
         try {
             installedProviders = buildProviders();
             mapOfinstalledProviders = buildProvidersMap();
         } catch ( final Throwable ex ) {
             LOGGER.error( "Can't initialize FileSystemProviders", ex );
         }
-        LOGGER.debug("Initialized FileSystemProviders.\n"
-                + "Installed Providers: " + installedProviders + "\n"
-                + "Provider Map: " + mapOfinstalledProviders);
+        LOGGER.debug( "Initialized FileSystemProviders.\n"
+                              + "Installed Providers: " + installedProviders + "\n"
+                              + "Provider Map: " + mapOfinstalledProviders );
     }
 
     private static synchronized List<FileSystemProvider> buildProviders() {
@@ -90,6 +87,9 @@ public final class FileSystemProviders {
      * @throws ServiceConfigurationError
      */
     public static FileSystemProvider getDefaultProvider() throws ServiceConfigurationError {
+        if ( installedProviders == null ) {
+            setup();
+        }
         return installedProviders.get( 0 );
     }
 
@@ -100,6 +100,9 @@ public final class FileSystemProviders {
      */
     public static FileSystemProvider resolveProvider( final URI uri ) {
         checkNotNull( "uri", uri );
+        if ( installedProviders == null ) {
+            setup();
+        }
 
         return getProvider( uri.getScheme() );
     }
@@ -122,6 +125,9 @@ public final class FileSystemProviders {
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/spi/FileSystemProvider.html#installedProviders()">Original JavaDoc</a>
      */
     public static List<FileSystemProvider> installedProviders() throws ServiceConfigurationError {
+        if ( installedProviders == null ) {
+            setup();
+        }
         return installedProviders;
     }
 

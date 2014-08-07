@@ -52,8 +52,6 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
 
     P getPresenter();
 
-    void clear();
-
     /**
      * Adds the given view to this panel if this panel does not already contain a view that handles the same
      * {@link PlaceRequest} as the given one. If this panel does already contain such a part, the existing one is

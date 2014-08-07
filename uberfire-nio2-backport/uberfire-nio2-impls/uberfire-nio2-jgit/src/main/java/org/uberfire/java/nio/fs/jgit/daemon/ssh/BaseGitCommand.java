@@ -35,14 +35,16 @@ import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemResourceAdaptor;
 import org.uberfire.security.authz.AuthorizationManager;
 
 public abstract class BaseGitCommand implements Command,
-                                                SessionAware,
-                                                Runnable {
+SessionAware,
+Runnable {
 
     public final static Session.AttributeKey<User> SUBJECT_KEY = new Session.AttributeKey<User>();
 
@@ -74,10 +76,12 @@ public abstract class BaseGitCommand implements Command,
 
     protected abstract String getCommandName();
 
+    @Override
     public void setInputStream( InputStream in ) {
         this.in = in;
     }
 
+    @Override
     public void setOutputStream( OutputStream out ) {
         this.out = out;
         if ( out instanceof ChannelOutputStream ) {
@@ -85,6 +89,7 @@ public abstract class BaseGitCommand implements Command,
         }
     }
 
+    @Override
     public void setErrorStream( OutputStream err ) {
         this.err = err;
         if ( err instanceof ChannelOutputStream ) {
@@ -92,14 +97,27 @@ public abstract class BaseGitCommand implements Command,
         }
     }
 
+    @Override
     public void setExitCallback( ExitCallback callback ) {
         this.callback = callback;
     }
 
+    @Override
     public void start( final Environment env ) throws IOException {
-        new Thread( this ).start();
+        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+            @Override
+            public String getDescription() {
+                return "Git Command [" + getClass().getName() + "]";
+            }
+
+            @Override
+            public void run() {
+                BaseGitCommand.this.run();
+            }
+        } );
     }
 
+    @Override
     public void run() {
         try {
             final Repository repository = openRepository( repositoryName );
@@ -113,7 +131,7 @@ public abstract class BaseGitCommand implements Command,
             } else {
                 err.write( "Can't resolve repository name.".getBytes() );
             }
-        } catch ( final Throwable t ) {
+        } catch ( final Throwable ignored ) {
         }
         if ( callback != null ) {
             callback.onExit( 0 );
@@ -156,6 +174,7 @@ public abstract class BaseGitCommand implements Command,
                                      final OutputStream out,
                                      final OutputStream err );
 
+    @Override
     public void destroy() {
     }
 

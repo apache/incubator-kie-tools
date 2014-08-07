@@ -3,8 +3,6 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.uberfire.client.mvp.ContextActivity;
-import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -47,12 +45,6 @@ extends AbstractWorkbenchPanelView<P> {
         this.presenter = presenter;
         widget.setPresenter( presenter );
         widget.setDndManager( dndManager );
-        setupContext( null );
-    }
-
-    @Override
-    public void clear() {
-        widget.clear();
     }
 
     @Override
@@ -69,32 +61,12 @@ extends AbstractWorkbenchPanelView<P> {
 
     @Override
     public boolean selectPart( final PartDefinition part ) {
-        setupContext( part );
         return widget.selectPart( part );
-    }
-
-    private void setupContext( final PartDefinition part ) {
-        final ContextActivity context = presenter.resolveContext( part );
-        if ( context != null ) {
-            final UIPart contextUiPart = new UIPart( context.getTitle(), context.getTitleDecoration(), context.getWidget() );
-            if ( contextWidget.getUiPart() == null ) {
-                context.onAttach( presenter.getDefinition() );
-                contextWidget.setUiPart( contextUiPart );
-            } else if ( !contextUiPart.getWidget().equals( contextWidget.getUiPart().getWidget() ) ) {
-                context.onAttach( presenter.getDefinition() );
-                contextWidget.setUiPart( contextUiPart );
-            }
-        } else {
-            contextWidget.setUiPart( null );
-        }
     }
 
     @Override
     public boolean removePart( final PartDefinition part ) {
         if ( widget.remove( part ) ) {
-            if ( widget.getPartsSize() == 0 ) {
-                setupContext( null );
-            }
             return true;
         }
         return false;

@@ -47,12 +47,11 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.java.nio.security.SecurityAware;
 
 /**
  *
  */
-public interface IOService extends SecurityAware {
+public interface IOService {
 
     public static Set<OpenOption> EMPTY_OPTIONS = new HashSet<OpenOption>();
 
@@ -73,20 +72,12 @@ public interface IOService extends SecurityAware {
 
     Iterable<FileSystem> getFileSystems();
 
-    Iterable<FileSystem> getFileSystems( final FileSystemType type );
-
     FileSystem getFileSystem( final URI uri )
             throws IllegalArgumentException, FileSystemNotFoundException,
             ProviderNotFoundException, SecurityException;
 
     FileSystem newFileSystem( final URI uri,
                               final Map<String, ?> env )
-            throws IllegalArgumentException, FileSystemAlreadyExistsException,
-            ProviderNotFoundException, IOException, SecurityException;
-
-    FileSystem newFileSystem( final URI uri,
-                              final Map<String, ?> env,
-                              final FileSystemType type )
             throws IllegalArgumentException, FileSystemAlreadyExistsException,
             ProviderNotFoundException, IOException, SecurityException;
 

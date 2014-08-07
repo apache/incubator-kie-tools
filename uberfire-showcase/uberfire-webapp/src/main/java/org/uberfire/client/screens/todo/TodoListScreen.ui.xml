@@ -17,10 +17,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:md="urn:import:org.uberfire.client.markdown">
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
   <g:ResizeLayoutPanel>
-    <md:Markdown ui:field="markdown"/>
+    <b:TextArea ui:field="markdown"/>
   </g:ResizeLayoutPanel>
 
 </ui:UiBinder>

@@ -2,15 +2,16 @@ package org.uberfire.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.backend.server.io.watch.AbstractIOWatchService;
 import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 
 @ApplicationScoped
-public class IOWatchServiceNonDotImpl extends AbstractWatchService {
+public class IOWatchServiceNonDotImpl extends AbstractIOWatchService {
 
     @Override
-    protected boolean filterEvent( WatchEvent<?> object ) {
+    public boolean doFilter( WatchEvent<?> object ) {
         final WatchContext context = (WatchContext) object.context();
         if ( object.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
             if ( context.getOldPath().getFileName().toString().startsWith( "." ) ) {

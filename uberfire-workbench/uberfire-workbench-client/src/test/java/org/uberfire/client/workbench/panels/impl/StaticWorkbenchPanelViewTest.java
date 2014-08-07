@@ -52,12 +52,6 @@ public class StaticWorkbenchPanelViewTest {
     }
 
     @Test
-    public void verifyClearDelegation() {
-        view.clear();
-        verify( panel ).clear();
-    }
-
-    @Test
     public void addPartToPanelWhenPartViewIsNull() {
         WorkbenchPartPresenter.View viewWbPartPresenter = mock( WorkbenchPartPresenter.View.class );
         when( panel.getPartView() ).thenReturn( null );

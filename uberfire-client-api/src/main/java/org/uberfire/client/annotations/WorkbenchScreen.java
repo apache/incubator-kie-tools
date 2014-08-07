@@ -55,9 +55,12 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 public @interface WorkbenchScreen {
 
+    /**
+     * Identifier that should be unique within application.
+     */
     String identifier();
 
     /**
@@ -67,4 +70,16 @@ public @interface WorkbenchScreen {
      * be shown in that perspective.
      */
     Class<?> owningPerspective() default void.class;
+
+    /**
+     * Defines the preferred height. Preferred means that this Height will be used only if this screen
+     * is the trigger to create a new panel, if panel already exists this information is ignored.
+     */
+    int preferredHeight() default -1;
+
+    /**
+     * Defines the preferred width. Preferred means that this Width will be used only if this screen
+     * is the trigger to create a new panel, if panel already exists this information is ignored.
+     */
+    int preferredWidth() default -1;
 }

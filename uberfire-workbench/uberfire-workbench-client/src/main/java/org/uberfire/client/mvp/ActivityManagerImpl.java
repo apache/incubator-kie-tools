@@ -19,6 +19,7 @@ package org.uberfire.client.mvp;
 import static java.util.Collections.*;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -56,6 +58,8 @@ public class ActivityManagerImpl implements ActivityManager {
      * the same type within it (for example, multiple editors of the same type for different files.)
      */
     private final Map<Activity, PlaceRequest> startedActivities = new IdentityHashMap<Activity, PlaceRequest>();
+
+    private final Map<Object, Boolean> containsCache = new HashMap<Object, Boolean>();
 
     @Override
     public <T extends Activity> Set<T> getActivities( final Class<T> clazz ) {
@@ -88,6 +92,34 @@ public class ActivityManagerImpl implements ActivityManager {
         }
 
         return startIfNecessary( secure( beans ), placeRequest );
+    }
+
+    @Override
+    public boolean containsActivity( final PlaceRequest placeRequest ) {
+        if ( containsCache.containsKey( placeRequest.getIdentifier() ) ) {
+            return containsCache.get( placeRequest.getIdentifier() );
+        }
+
+        Path path = null;
+        if ( placeRequest instanceof PathPlaceRequest ) {
+            path = ( (PathPlaceRequest) placeRequest ).getPath();
+            if ( containsCache.containsKey( path ) ) {
+                return containsCache.get( path );
+            }
+        }
+
+        final Activity result = getActivity( placeRequest );
+        containsCache.put( placeRequest.getIdentifier(), result != null );
+        if ( path != null ) {
+            containsCache.put( path, result != null );
+        }
+
+        return result != null;
+    }
+
+    @Override
+    public Activity getActivity( final PlaceRequest placeRequest ) {
+        return getActivity( Activity.class, placeRequest );
     }
 
     @Override

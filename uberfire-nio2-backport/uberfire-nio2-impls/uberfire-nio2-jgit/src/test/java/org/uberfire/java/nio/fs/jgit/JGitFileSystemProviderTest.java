@@ -239,7 +239,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         assertThat( fs.getPath( "file.txt" ).toFile() ).isNotNull().exists();
 
-        commit( ((JGitFileSystem)fs).gitRepo(), "master", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
+        commit( ( (JGitFileSystem) fs ).gitRepo(), "master", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
             put( "fileXXXXX.txt", tempFile( "temp" ) );
         }} );
 

@@ -36,6 +36,7 @@ public class PerspectiveManagerTest {
 
     @Mock PlaceManager placeManager;
     @Mock PanelManager panelManager;
+    @Mock ActivityManager activityManager;
     @Mock WorkbenchServicesProxy wbServices;
     @Mock Event<PerspectiveChange> perspectiveChangeEvent;
 

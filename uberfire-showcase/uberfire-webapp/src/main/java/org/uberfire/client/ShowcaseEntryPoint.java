@@ -83,13 +83,8 @@ public class ShowcaseEntryPoint {
     private final List<String> menuItemsToRemove = new ArrayList<String>() {{
         add( "IFrameScreen" );
         add( "IPInfoGadget" );
-        add( "MarkdownLiveEditor" );
-        add( "MarkdownLiveViewer" );
-        add( "RepositoriesEditor" );
-        add( "RepositoryEditor" );
         add( "SportsNewsGadget" );
         add( "StockQuotesGadget" );
-        add( "TodoListScreen" );
         add( "WeatherGadget" );
         add( "YouTubeScreen" );
         add( "YouTubeVideos" );
@@ -99,10 +94,6 @@ public class ShowcaseEntryPoint {
 
     @AfterInitialization
     public void startApp() {
-        UberFirePreferences.setProperty( "org.uberfire.client.workbench.clone.ou.mandatory.disable", true );
-        //todo {porcelli} context button navigator style is broken, disabling for now
-        UberFirePreferences.setProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable", true );
-
         hideLoadingPopup();
     }
 

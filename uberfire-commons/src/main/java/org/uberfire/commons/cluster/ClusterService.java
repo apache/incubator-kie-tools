@@ -12,4 +12,6 @@ public interface ClusterService extends MessageService,
     void start();
 
     void dispose();
+
+    void onStart( Runnable runnable );
 }

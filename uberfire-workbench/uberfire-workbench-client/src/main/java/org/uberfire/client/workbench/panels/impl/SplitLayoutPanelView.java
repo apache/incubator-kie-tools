@@ -61,8 +61,6 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
         layout.add(centerPanel);
     }
 
-    // ------------------------- panel management
-
     @Override
     public void addPanel(PanelDefinition panel, WorkbenchPanelView view, Position position) {
 
@@ -94,8 +92,6 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
         return westPanel.remove( child ) || centerPanel.remove( child );
     }
 
-    // -------------------------
-
     @Override
     public Widget asWidget() {
         return layout;
@@ -112,15 +108,7 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     }
 
     @Override
-    public void clear() {
-        layout.clear();
-    }
-
-    // -------------------------  part management
-
-    @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
-        //centerPanel.add(view.getWrappedWidget().asWidget());
         throw new IllegalArgumentException("Presenter doesn't manage parts!");
     }
 
@@ -133,8 +121,6 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     public boolean selectPart( final PartDefinition part ) {
         throw new IllegalArgumentException("Presenter doesn't manage parts!");
     }
-
-    // -------------------------
 
     @Override
     public void setFocus( boolean hasFocus ) {

@@ -26,9 +26,9 @@ public class FileExplorerSplashScreen {
 
     @WorkbenchPartView
     public Widget getView() {
-        return new FlowPanel() {{
-            add( new TextNode( "OI MUNDO!" ) );
-        }};
+        FlowPanel p = new FlowPanel();
+        p.add( new TextNode( "OI MUNDO!" ) );
+        return p;
     }
 
     @SplashFilter

@@ -23,6 +23,7 @@ import java.util.Map;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 
 import static org.uberfire.backend.vfs.PathFactory.*;
 
@@ -36,10 +37,14 @@ public final class Paths {
         }
 
         if ( path.getFileName() == null ) {
-            return newPath( convert( path.getFileSystem() ), "/", path.toUri().toString() );
+            return newPath( "/", path.toUri().toString(), new HashMap<String, Object>( 1 ) {{
+                put( PathFactory.VERSION_PROPERTY, path.getFileSystem().supportedFileAttributeViews().contains( "version" ) );
+            }} );
         }
 
-        return newPath( convert( path.getFileSystem() ), path.getFileName().toString(), path.toUri().toString() );
+        return newPath( path.getFileName().toString(), path.toUri().toString(), new HashMap<String, Object>( 1 ) {{
+            put( PathFactory.VERSION_PROPERTY, path.getFileSystem().supportedFileAttributeViews().contains( "version" ) );
+        }} );
     }
 
     public static org.uberfire.java.nio.file.Path convert( final Path path ) {

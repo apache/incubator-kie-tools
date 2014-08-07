@@ -209,9 +209,9 @@ implements IOService {
 
     @Override
     public Map<String, Object> readAttributes( final Path path,
-            final String attributes )
-                    throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException,
-                    IOException, SecurityException {
+                                               final String attributes )
+                                                       throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException,
+                                                       IOException, SecurityException {
         checkNotNull( "path", path );
         checkNotEmpty( "attributes", attributes );
 
@@ -272,7 +272,7 @@ implements IOService {
 
     @Override
     protected Set<? extends OpenOption> buildOptions( final Set<? extends OpenOption> options,
-            final OpenOption... others ) {
+                                                      final OpenOption... others ) {
         return new HashSet<OpenOption>( options ) {{
             add( new DotFileOption() );
             if ( others != null ) {

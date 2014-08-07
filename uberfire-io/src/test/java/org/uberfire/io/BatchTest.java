@@ -13,8 +13,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
@@ -41,10 +43,14 @@ public class BatchTest {
         final URI newRepo = URI.create( "git://amend-repo-test" );
 
         ioService.newFileSystem( newRepo, ImmutableMap.<String, Object>of() );
+        Path init = ioService.get( URI.create( "git://amend-repo-test/init.file" ) );
+        ioService.write( init, "setupFS!" );
 
         final URI newRepo2 = URI.create( "git://check-amend-repo-test" );
 
         ioService.newFileSystem( newRepo2, ImmutableMap.of( "init", "true" ) );
+        init = ioService.get( URI.create( "git://check-amend-repo-test/init.file" ) );
+        ioService.write( init, "setupFS!" );
     }
 
     @After
@@ -60,6 +66,7 @@ public class BatchTest {
     public void testBatch() throws IOException, InterruptedException {
         final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
         final WatchService ws = init.getFileSystem().newWatchService();
+
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
         ioService.write( init, "init 2!", new CommentedOption( "User Tester", "message2" ) );
         {
@@ -93,7 +100,8 @@ public class BatchTest {
         final Path path = ioService.get( URI.create( "git://amend-repo-test/mybatch" + new Random( 10L ).nextInt() + ".txt" ) );
         final Path path2 = ioService.get( URI.create( "git://amend-repo-test/mybatch2" + new Random( 10L ).nextInt() + ".txt" ) );
         ioService.write( path, "ooooo!" );
-        assertNull( ws.poll() );
+        //init.file event
+        assertNotNull( ws.poll() );
         ioService.write( path, "ooooo wdfs fg sdf!" );
         assertNull( ws.poll() );
         ioService.write( path2, "ooooo222!" );
@@ -184,4 +192,36 @@ public class BatchTest {
             assertEquals( 2, v3.readAttributes().history().records().size() );
         }
     }
+
+    @Test
+    public void testFSBatchState() throws IOException, InterruptedException {
+        assertFileSystemState( FileSystemState.NORMAL );
+        ioService.startBatch();
+        assertFileSystemState( FileSystemState.BATCH );
+        ioService.endBatch();
+        assertFileSystemState( FileSystemState.NORMAL );
+    }
+
+    @Test
+    public void allFSShouldBeOnSameState() throws IOException, InterruptedException {
+        assertAllFileSystemState( FileSystemState.NORMAL );
+        ioService.startBatch();
+        assertAllFileSystemState( FileSystemState.BATCH );
+        ioService.endBatch();
+        assertAllFileSystemState( FileSystemState.NORMAL );
+    }
+
+    private void assertAllFileSystemState( FileSystemState state ) {
+        for ( FileSystem fs : ioService.getFileSystems() ) {
+            JGitFileSystemProvider provider = (JGitFileSystemProvider) fs.provider();
+            assertEquals( state, provider.getFileSystemState() );
+        }
+    }
+
+    private void assertFileSystemState( FileSystemState state ) {
+        FileSystem fs = ioService.getFileSystems().iterator().next();
+        JGitFileSystemProvider provider = (JGitFileSystemProvider) fs.provider();
+        assertEquals( state, provider.getFileSystemState() );
+    }
+
 }

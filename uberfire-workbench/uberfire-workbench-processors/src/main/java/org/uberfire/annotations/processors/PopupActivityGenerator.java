@@ -81,7 +81,7 @@ public class PopupActivityGenerator extends AbstractGenerator {
         final String onShutdownMethodName = GeneratorUtils.getOnShutdownMethodName( classElement,
                                                                                     processingEnvironment );
         final String onOpenMethodName = GeneratorUtils.getOnOpenMethodName( classElement,
-                                                                              processingEnvironment );
+                                                                            processingEnvironment );
         final String getTitleMethodName = GeneratorUtils.getTitleMethodName( classElement,
                                                                              processingEnvironment );
         final ExecutableElement getTitleWidgetMethod = GeneratorUtils.getTitleWidgetMethodName( classElement,

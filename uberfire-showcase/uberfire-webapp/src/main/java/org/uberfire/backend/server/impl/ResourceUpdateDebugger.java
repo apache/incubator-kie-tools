@@ -3,12 +3,14 @@ package org.uberfire.backend.server.impl;
 import javax.enterprise.event.Observes;
 import javax.inject.Named;
 
+import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @Named("debug")
+@Startup
 public class ResourceUpdateDebugger {
 
     public void onNewFile( @Observes ResourceAddedEvent event ) {

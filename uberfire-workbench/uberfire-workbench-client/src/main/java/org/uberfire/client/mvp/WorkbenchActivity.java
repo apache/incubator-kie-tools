@@ -74,4 +74,8 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
     ToolBar getToolBar();
 
     String contextId();
+
+    Integer preferredHeight();
+
+    Integer preferredWidth();
 }

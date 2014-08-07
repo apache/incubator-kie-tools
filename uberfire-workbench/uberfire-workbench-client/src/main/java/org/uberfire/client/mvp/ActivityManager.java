@@ -99,6 +99,10 @@ public interface ActivityManager {
      *         actual type checking is performed! If you guess the type wrong, you will have an instance of the
      *         wrong type. The only truly "safe" type to guess is {@link Activity}.</b>.
      */
+    boolean containsActivity( final PlaceRequest placeRequest );
+
+    Activity getActivity( final PlaceRequest placeRequest );
+
     <T extends Activity> T getActivity( final Class<T> clazz,
                                         final PlaceRequest placeRequest );
 

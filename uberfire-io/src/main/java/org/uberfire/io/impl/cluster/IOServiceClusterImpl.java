@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,9 +22,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.cluster.LockExecuteNotifySyncReleaseTemplate;
@@ -33,7 +35,6 @@ import org.uberfire.commons.message.AsyncCallback;
 import org.uberfire.commons.message.MessageHandler;
 import org.uberfire.commons.message.MessageHandlerResolver;
 import org.uberfire.commons.message.MessageType;
-import org.uberfire.io.FileSystemType;
 import org.uberfire.io.IOClusteredService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceIdentifiable;
@@ -56,22 +57,19 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Option;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
-import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.security.SecurityAware;
-import org.uberfire.security.authz.AuthorizationManager;
 
 public class IOServiceClusterImpl implements IOClusteredService {
 
-    private static final Logger logger = LoggerFactory.getLogger(IOServiceClusterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger( IOServiceClusterImpl.class );
 
     private final IOServiceIdentifiable service;
     private final ClusterService clusterService;
+    private final AtomicBoolean started = new AtomicBoolean( false );
+
     private NewFileSystemListener newFileSystemListener = null;
-    private final AtomicBoolean started = new AtomicBoolean(false);
 
     public IOServiceClusterImpl( final IOService service,
                                  final ClusterServiceFactory clusterServiceFactory ) {
@@ -82,9 +80,9 @@ public class IOServiceClusterImpl implements IOClusteredService {
                                  final ClusterServiceFactory clusterServiceFactory,
                                  final boolean autoStart ) {
         checkNotNull( "clusterServiceFactory", clusterServiceFactory );
-        this.service = checkInstanceOf("service", service, IOServiceIdentifiable.class);
+        this.service = checkInstanceOf( "service", service, IOServiceIdentifiable.class );
 
-        logger.debug("Creating instance of cluster service with auto start {}", autoStart);
+        logger.debug( "Creating instance of cluster service with auto start {}", autoStart );
         this.clusterService = clusterServiceFactory.build( new MessageHandlerResolver() {
 
             final MessageHandler newFs = new NewFileSystemMessageHandler();
@@ -114,18 +112,18 @@ public class IOServiceClusterImpl implements IOClusteredService {
             }
         } );
 
-        if ( autoStart ) {
-            start();
-        }
-
+        this.clusterService.onStart( new Runnable() {
+            @Override
+            public void run() {
+                start();
+            }
+        } );
     }
-
 
     @Override
     public void start() {
-        this.clusterService.start();
-        started.set(true);
-        logger.debug("Starting cluster service {}", this);
+        started.set( true );
+        logger.debug( "Starting cluster service {}", this );
         //New cluster members are executed within locked
         new LockExecuteReleaseTemplate<Void>().execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
             @Override
@@ -153,7 +151,12 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
                         onSync.set( true );
 
-                        new Thread() {
+                        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+                            @Override
+                            public String getDescription() {
+                                return "Cluster Messaging Reply [" + service.getId() + "/QUERY_FOR_FS]";
+                            }
+
                             @Override
                             public void run() {
                                 for ( final Map.Entry<String, String> entry : content.entrySet() ) {
@@ -173,20 +176,20 @@ public class IOServiceClusterImpl implements IOClusteredService {
                                     }
                                 }
 
-                                for ( final FileSystemInfo fileSystemInfo : fileSystems.values() ) {
+                                for ( final FileSystemInfo fileSystemInfo : new HashSet<FileSystemInfo>( fileSystems.values() ) ) {
                                     try {
                                         final URI newFS = URI.create( fileSystemInfo.getScheme() + "://" + fileSystemInfo.getId() );
                                         service.newFileSystem( newFS, Collections.<String, Object>emptyMap() );
                                     } catch ( FileSystemAlreadyExistsException ex ) {
                                     }
 
-                                    final URI fs = URI.create( fileSystemInfo.getScheme() + "://" + fileSystemInfo.getId() + "?sync=" + fileSystemInfo.getUri() + "&force" );
+                                    final URI fs = URI.create( fileSystemInfo.getScheme() + "://" + fileSystemInfo.getId() + "?sync=" + fileSystemInfo.getUri().split( "\n" )[ 0 ] + "&force" );
                                     service.getFileSystem( fs );
                                 }
 
                                 msgAnsweredOrTimedout.set( true );
                             }
-                        }.start();
+                        } );
                     }
                 } );
 
@@ -242,11 +245,6 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public Iterable<FileSystem> getFileSystems( final FileSystemType type ) {
-        return service.getFileSystems( type );
-    }
-
-    @Override
     public FileSystem getFileSystem( final URI uri ) throws IllegalArgumentException, FileSystemNotFoundException, ProviderNotFoundException, SecurityException {
         return service.getFileSystem( uri );
     }
@@ -291,49 +289,6 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public FileSystem newFileSystem( final URI uri,
-                                     final Map<String, ?> env,
-                                     final FileSystemType type ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
-        return new LockExecuteNotifySyncReleaseTemplate<FileSystem>() {
-
-            @Override
-            public MessageType getMessageType() {
-                return NEW_FS;
-            }
-
-            @Override
-            public String getServiceId() {
-                return service.getId();
-            }
-
-            @Override
-            public Map<String, String> buildContent() {
-                return new HashMap<String, String>() {{
-                    put( "uri", uri.toString() );
-                    put( "type", type.toString() );
-                    for ( final Map.Entry<String, ?> entry : env.entrySet() ) {
-                        put( entry.getKey(), entry.getValue().toString() );
-                    }
-                }};
-            }
-
-            @Override
-            public int timeOut() {
-                return TIMEOUT;
-            }
-        }.execute( clusterService, new FutureTask<FileSystem>( new Callable<FileSystem>() {
-            @Override
-            public FileSystem call() throws Exception {
-                return service.newFileSystem( uri, new HashMap<String, Object>( env ) {{
-                    put( "clusterService", clusterService );
-                }}, type );
-
-            }
-        } ) );
-
-    }
-
-    @Override
     public void onNewFileSystem( NewFileSystemListener listener ) {
         this.newFileSystemListener = listener;
     }
@@ -351,7 +306,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
     @Override
     public DirectoryStream<Path> newDirectoryStream( final Path dir,
-            final DirectoryStream.Filter<Path> filter ) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
+                                                     final DirectoryStream.Filter<Path> filter ) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
         return service.newDirectoryStream( dir, filter );
     }
 
@@ -521,7 +476,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
     @Override
     public Map<String, Object> readAttributes( final Path path,
-            final String attributes ) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
+                                               final String attributes ) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
         return service.readAttributes( path, attributes );
     }
 
@@ -609,7 +564,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
     @Override
     public List<String> readAllLines( final Path path,
-            final Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
+                                      final Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
         return service.readAllLines( path, cs );
     }
 
@@ -842,32 +797,13 @@ public class IOServiceClusterImpl implements IOClusteredService {
         };
     }
 
-    @Override
-    public void setAuthenticationManager( final AuthenticationService authenticationService ) {
-        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
-            if ( fileSystemProvider instanceof SecurityAware ) {
-                ( (SecurityAware) fileSystemProvider ).setAuthenticationManager( authenticationService );
-            }
-        }
-    }
-
-    @Override
-    public void setAuthorizationManager( final AuthorizationManager authorizationManager ) {
-        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
-            if ( fileSystemProvider instanceof SecurityAware ) {
-                ( (SecurityAware) fileSystemProvider ).setAuthorizationManager( authorizationManager );
-            }
-        }
-    }
-
     class NewFileSystemMessageHandler implements MessageHandler {
 
         @Override
         public Pair<MessageType, Map<String, String>> handleMessage( final MessageType type,
-                final Map<String, String> content ) {
+                                                                     final Map<String, String> content ) {
             if ( NEW_FS.equals( type ) ) {
                 final String _uri = content.get( "uri" );
-                final String fsType = content.get( "type" );
                 final Map<String, String> env = new HashMap<String, String>();
 
                 for ( final Map.Entry<String, String> entry : content.entrySet() ) {
@@ -877,23 +813,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
                 }
 
                 final URI uri = URI.create( _uri );
-                final FileSystem fs;
-                if ( fsType != null ) {
-                    fs = service.newFileSystem( uri, env, new FileSystemType() {
-                        @Override
-                        public String toString() {
-                            return fsType;
-                        }
-
-                        @Override
-                        public int hashCode() {
-                            return fsType.hashCode();
-                        }
-                    } );
-                } else {
-                    fs = service.newFileSystem( uri, env );
-                }
-
+                final FileSystem fs = service.newFileSystem( uri, env );
                 newFileSystemListener.execute( fs, uri.getScheme(), ( (FileSystemId) fs ).id(), env );
             }
             return null;
@@ -904,14 +824,14 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
         @Override
         public Pair<MessageType, Map<String, String>> handleMessage( final MessageType type,
-                final Map<String, String> content ) {
+                                                                     final Map<String, String> content ) {
             if ( SYNC_FS.equals( type ) ) {
                 final String scheme = content.get( "fs_scheme" );
                 final String id = content.get( "fs_id" );
                 String uris = content.get( "fs_uri" );
-                String[] supportedUris = uris.split("\n");
+                String[] supportedUris = uris.split( "\n" );
 
-                for (String supportedUri : supportedUris) {
+                for ( String supportedUri : supportedUris ) {
                     try {
                         String origin;
                         try {
@@ -926,10 +846,10 @@ public class IOServiceClusterImpl implements IOClusteredService {
                             service.getFileSystem( fs );
                         }
                         break;
-                    } catch (Exception e) {
+                    } catch ( Exception e ) {
                         // try the other supported uri in case of failure
-                        logger.warn("File system synchronization for origin {} failed with error {}, trying another if available",
-                                supportedUri, e.getMessage());
+                        logger.warn( "File system synchronization for origin {} failed with error {}, trying another if available",
+                                     supportedUri, e.getMessage() );
                     }
                 }
             }
@@ -942,11 +862,17 @@ public class IOServiceClusterImpl implements IOClusteredService {
 
         @Override
         public Pair<MessageType, Map<String, String>> handleMessage( final MessageType type,
-                final Map<String, String> content ) {
+                                                                     final Map<String, String> content ) {
             if ( QUERY_FOR_FS.equals( type ) ) {
                 Map<String, String> replyContent = new HashMap<String, String>();
                 int i = 0;
+
+                final Set<FileSystem> fileSystems = new HashSet<FileSystem>();
                 for ( FileSystem fs : service.getFileSystems() ) {
+                    fileSystems.add( fs );
+                }
+
+                for ( final FileSystem fs : fileSystems ) {
                     replyContent.put( "fs_scheme_" + i, fs.getRootDirectories().iterator().next().toUri().getScheme() );
                     replyContent.put( "fs_id_" + i, ( (FileSystemId) fs ).id() );
                     replyContent.put( "fs_uri_" + i, fs.toString() );
@@ -969,8 +895,8 @@ public class IOServiceClusterImpl implements IOClusteredService {
         }
 
         FileSystemInfo( String id,
-                String scheme,
-                String uri ) {
+                        String scheme,
+                        String uri ) {
             this.id = id;
             this.scheme = scheme;
             this.uri = uri;

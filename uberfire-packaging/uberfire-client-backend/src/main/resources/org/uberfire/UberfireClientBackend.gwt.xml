@@ -23,6 +23,5 @@
 
   <inherits name="org.uberfire.UberfireBackend"/>
   <inherits name="org.uberfire.UberfireWorkbenchBackend"/>
-  <inherits name="org.uberfire.UberfireWidgetsCore"/>
 
 </module>

@@ -6,6 +6,7 @@ import java.util.Collections;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.perspective.JSPanelDefinition;
 import org.uberfire.client.perspective.JSPartDefinition;
@@ -36,6 +37,9 @@ public class JSNativePerspective {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private ActivityManager activityManager;
 
     @Inject
     private WorkbenchServicesProxy wbServices;
@@ -249,6 +253,10 @@ public class JSNativePerspective {
 
     public PlaceManager getPlaceManager() {
         return placeManager;
+    }
+
+    public ActivityManager getActivityManager() {
+        return activityManager;
     }
 
     public WorkbenchServicesProxy getWbServices() {

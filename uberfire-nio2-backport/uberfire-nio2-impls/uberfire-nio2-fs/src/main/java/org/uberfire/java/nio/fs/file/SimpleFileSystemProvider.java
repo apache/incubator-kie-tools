@@ -31,7 +31,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.commons.httpclient.URIException;
 import org.apache.commons.io.FileUtils;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
@@ -209,21 +208,37 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         final File file = checkNotNull( "path", path ).toFile();
 
         if ( file.exists() ) {
-            if ( !( options != null && options.contains( TRUNCATE_EXISTING ) ) ) {
+            if ( !shouldCreateOrOpenAByteChannel( options ) ) {
                 throw new FileAlreadyExistsException( path.toString() );
             }
         }
 
         try {
-            return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( file, "rw" ).getChannel() ) {
-                @Override
-                public void close() throws java.io.IOException {
-                    super.close();
-                }
-            };
+            if ( options != null && options.contains( READ ) ) {
+                return openAByteChannel( path );
+            } else {
+                return createANewByteChannel( file );
+            }
         } catch ( java.io.IOException e ) {
             throw new IOException( e );
         }
+    }
+
+    private SeekableByteChannelFileBasedImpl createANewByteChannel( final File file ) throws FileNotFoundException {
+        return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( file, "rw" ).getChannel() ) {
+            @Override
+            public void close() throws java.io.IOException {
+                super.close();
+            }
+        };
+    }
+
+    private SeekableByteChannelFileBasedImpl openAByteChannel( Path path ) throws FileNotFoundException {
+        return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( path.toFile(), "r" ).getChannel() );
+    }
+
+    private boolean shouldCreateOrOpenAByteChannel( final Set<? extends OpenOption> options ) {
+        return ( options != null && ( options.contains( TRUNCATE_EXISTING ) || options.contains( READ ) ) );
     }
 
     @Override

@@ -116,4 +116,9 @@ MiscFeaturesPresenter.View {
         presenter.setNewTitle( "NewCoolTitle" );
     }
 
+    @UiHandler("activityNotFound")
+    public void onClickActivityNotFound( final ClickEvent event ) {
+        placeManager.goTo( "some.place.does.not.exists.please!" );
+    }
+
 }

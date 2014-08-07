@@ -43,6 +43,8 @@ import freemarker.template.TemplateException;
  */
 public class PerspectiveActivityGenerator extends AbstractGenerator {
 
+    private final Map<String, String> context = new HashMap<String, String>();
+
     @Override
     public StringBuffer generate( final String packageName,
                                   final PackageElement packageElement,
@@ -118,6 +120,10 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
             throw new GenerationException( "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition.", packageName + "." + className );
         }
 
+        if ( isDefault ) {
+            warningIfMoreThanOneDefaultPerspective( processingEnvironment, identifier );
+        }
+
         //Setup data for template sub-system
         Map<String, Object> root = new HashMap<String, Object>();
         root.put( "packageName",
@@ -182,6 +188,25 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         messager.printMessage( Kind.NOTE, "Successfully generated code for [" + className + "]" );
 
         return sw.getBuffer();
+    }
+
+    private void warningIfMoreThanOneDefaultPerspective( ProcessingEnvironment processingEnvironment,
+                                                         String perspectiveName ) {
+        String defaultPerspectivesName = "defaultPerspectivesName";
+        String defaultPerspectives = context.get( defaultPerspectivesName );
+        if ( defaultPerspectives != null ) {
+            defaultPerspectives = defaultPerspectives + ", " + perspectiveName;
+            generateMoreThanOneDefaultPerspectiveWarning( processingEnvironment, defaultPerspectives );
+            context.put( defaultPerspectivesName, defaultPerspectives );
+        } else {
+            context.put( defaultPerspectivesName, perspectiveName );
+        }
+    }
+
+    private void generateMoreThanOneDefaultPerspectiveWarning( ProcessingEnvironment processingEnvironment,
+                                                               String defaultPerspectives ) {
+        final String msg = "Found too many default WorkbenchPerspectives (expected 1). Found: (" + defaultPerspectives + ").";
+        processingEnvironment.getMessager().printMessage( Kind.ERROR, msg );
     }
 
     private static void setupTemplateElements( Elements elementUtils,

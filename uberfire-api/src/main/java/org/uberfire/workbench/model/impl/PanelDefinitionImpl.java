@@ -79,8 +79,17 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     public void addPart( final PartDefinition part ) {
-        part.setParentPanel( this );
+        if ( part.getParentPanel() != null ) {
+            part.getParentPanel().removePart( part );
+        }
         this.parts.add( part );
+        part.setParentPanel( this );
+    }
+
+    @Override
+    public void removePart( PartDefinition part ) {
+        part.setParentPanel( null );
+        this.parts.remove( part );
     }
 
     @Override

@@ -104,6 +104,20 @@ public class ${className} extends AbstractWorkbenchEditorActivity {
     }
 
     </#if>
+    <#if preferredHeight??>
+    @Override
+    public Integer preferredHeight() {
+       return ${preferredHeight};
+    }
+
+    </#if>
+    <#if preferredWidth??>
+    @Override
+    public Integer preferredWidth() {
+       return ${preferredWidth};
+    }
+
+    </#if>
     <#if onStartup2ParameterMethodName??>
     @Override
     public void onStartup(final ObservablePath path,

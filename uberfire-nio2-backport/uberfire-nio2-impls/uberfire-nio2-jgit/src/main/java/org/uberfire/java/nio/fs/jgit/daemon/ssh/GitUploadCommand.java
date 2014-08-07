@@ -3,8 +3,10 @@ package org.uberfire.java.nio.fs.jgit.daemon.ssh;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.zip.Deflater;
 
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.pack.PackConfig;
 import org.eclipse.jgit.transport.UploadPack;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
@@ -30,6 +32,10 @@ public class GitUploadCommand extends BaseGitCommand {
                             final OutputStream out,
                             final OutputStream err ) {
         final UploadPack up = new UploadPack( repository );
+
+        final PackConfig config = new PackConfig( repository );
+        config.setCompressionLevel( Deflater.BEST_COMPRESSION );
+        up.setPackConfig( config );
 
         try {
             up.upload( in, out, err );

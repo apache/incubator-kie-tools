@@ -24,10 +24,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
@@ -77,6 +80,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The Menu Bar widget
  */
+@Dependent
 public class ListBarWidget
 extends ResizeComposite implements MultiPartWidget {
 
@@ -188,7 +192,12 @@ extends ResizeComposite implements MultiPartWidget {
     }
 
     boolean isPropertyListbarContextDisable() {
-        return UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) != null;
+        try {
+            final IOCBeanDef<ListbarPreferences> beanDef = IOC.getBeanManager().lookupBean( ListbarPreferences.class );
+            return beanDef == null || beanDef.getInstance().isContextEnabled();
+        } catch ( IOCResolutionException exception ) {
+        }
+        return true;
     }
 
     public void enableDnd() {
@@ -196,7 +205,7 @@ extends ResizeComposite implements MultiPartWidget {
     }
 
     public void setExpanderCommand( final Command command ) {
-        if ( UberFirePreferences.getProperty( "org.uberfire.client.workbench.widgets.listbar.context.disable" ) == null ) {
+        if ( !isPropertyListbarContextDisable() ) {
             contextDisplay.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {

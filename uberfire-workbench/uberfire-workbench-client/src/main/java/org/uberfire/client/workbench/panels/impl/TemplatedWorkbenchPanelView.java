@@ -89,11 +89,6 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
     }
 
     @Override
-    public void clear() {
-        throw new UnsupportedOperationException("This view doesn't support parts");
-    }
-
-    @Override
     public void addPart( View view ) {
         throw new UnsupportedOperationException("This view doesn't support parts");
     }

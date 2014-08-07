@@ -75,7 +75,37 @@ PartDefinition {
      */
     @Override
     public void setParentPanel( final PanelDefinition parentPanel ) {
+        if ( !validParentDefinition( parentPanel ) ) {
+            throw new IllegalStateException( "Invalid Parent Panel Attribution to a Part" );
+        }
         this.parentPanel = parentPanel;
+    }
+
+    private boolean validParentDefinition( PanelDefinition parentPanel ) {
+        return validateNullParent( parentPanel ) && validateNotNullParent( parentPanel );
+    }
+
+    private boolean validateNotNullParent( PanelDefinition parentPanel ) {
+        if ( parentPanel != null ) {
+            if ( this.getParentPanel() == null ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        ;
+        return true;
+    }
+
+    private boolean validateNullParent( PanelDefinition parentPanel ) {
+        if ( parentPanel == null ) {
+            if ( this.getParentPanel() != null ) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+        return true;
     }
 
     @Override
@@ -97,7 +127,6 @@ PartDefinition {
     public void setContextDisplayMode( final ContextDisplayMode contextDisplayMode ) {
         this.contextDisplayMode = contextDisplayMode;
     }
-
 
     @Override
     public int hashCode() {

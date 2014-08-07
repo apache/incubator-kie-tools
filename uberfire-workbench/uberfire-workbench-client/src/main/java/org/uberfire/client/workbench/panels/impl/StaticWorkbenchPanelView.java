@@ -17,6 +17,7 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.uberfire.client.mvp.PlaceManager;
@@ -34,7 +35,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 
 /**
  * The view component of {@link StaticWorkbenchPanelPresenter}.
@@ -88,11 +88,6 @@ extends AbstractWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
     @Override
     public StaticWorkbenchPanelPresenter getPresenter() {
         return this.presenter;
-    }
-
-    @Override
-    public void clear() {
-        panel.clear();
     }
 
     @Override

@@ -16,10 +16,12 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static org.eclipse.jgit.lib.Repository.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,19 +55,14 @@ import org.uberfire.java.nio.file.Watchable;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.eclipse.jgit.lib.Repository.*;
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+import com.google.common.collect.ImmutableSet;
 
 public class JGitFileSystem implements FileSystem,
-                                       FileSystemId {
+FileSystemId {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( JGitFileSystem.class );
 
-    private static final Set<String> SUPPORTED_ATTR_VIEWS = Collections.unmodifiableSet( new HashSet<String>() {{
-        add( "basic" );
-        add( "version" );
-    }} );
+    private static final Set<String> SUPPORTED_ATTR_VIEWS = ImmutableSet.of( "basic", "version" );
 
     private final JGitFileSystemProvider provider;
     private final Git gitRepo;
@@ -233,7 +230,7 @@ public class JGitFileSystem implements FileSystem,
     @Override
     public Path getPath( final String first,
                          final String... more )
-            throws InvalidPathException {
+                                 throws InvalidPathException {
         checkClosed();
         if ( first == null || first.trim().isEmpty() ) {
             return new JGitFSPath( this );
@@ -289,18 +286,19 @@ public class JGitFileSystem implements FileSystem,
             }
 
             @Override
-            public WatchKey take() throws ClosedWatchServiceException, InterruptedException {
-                while ( !wsClose && !isClosed ) {
-                    if ( events.get( this ).size() > 0 ) {
+            public synchronized WatchKey take() throws ClosedWatchServiceException, InterruptedException {
+                while ( true ) {
+                    if ( wsClose || isClosed ) {
+                        throw new ClosedWatchServiceException();
+                    } else if ( events.get( this ).size() > 0 ) {
                         return events.get( this ).poll();
                     } else {
                         try {
-                            Thread.sleep( 200 );
-                        } catch ( java.lang.InterruptedException e ) {
+                            this.wait();
+                        } catch ( final java.lang.InterruptedException e ) {
                         }
                     }
                 }
-                return null;
             }
 
             @Override
@@ -309,8 +307,9 @@ public class JGitFileSystem implements FileSystem,
             }
 
             @Override
-            public void close() throws IOException {
+            public synchronized void close() throws IOException {
                 wsClose = true;
+                notifyAll();
                 watchServices.remove( this );
             }
 
@@ -422,7 +421,7 @@ public class JGitFileSystem implements FileSystem,
 
             @Override
             public boolean reset() {
-                return false;
+                return isOpen();
             }
 
             @Override
@@ -435,8 +434,12 @@ public class JGitFileSystem implements FileSystem,
             }
         };
 
-        for ( final Queue<WatchKey> queue : events.values() ) {
-            queue.add( wk );
+        for ( final Map.Entry<WatchService, Queue<WatchKey>> watchServiceQueueEntry : events.entrySet() ) {
+            watchServiceQueueEntry.getValue().add( wk );
+            final WatchService ws = watchServiceQueueEntry.getKey();
+            synchronized ( ws ) {
+                ws.notifyAll();
+            }
         }
     }
 

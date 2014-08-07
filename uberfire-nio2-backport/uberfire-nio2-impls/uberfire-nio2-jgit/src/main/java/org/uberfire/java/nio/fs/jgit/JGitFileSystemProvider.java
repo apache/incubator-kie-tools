@@ -25,6 +25,7 @@ import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.FilterOutputStream;
@@ -59,10 +60,10 @@ import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
+import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.WindowCache;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.PostReceiveHook;
@@ -76,6 +77,7 @@ import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.util.FileUtils;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,10 +143,6 @@ import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
 import org.uberfire.java.nio.security.SecurityAware;
 import org.uberfire.security.authz.AuthorizationManager;
 
-/**
- * Manages a collection of Git repositories all located in a common parent directory. Each repository can be obtained in
- * the form of a {@link JGitFileSystem} via the {@link #getFileSystem(URI)} method. Doing so implicitly opens the requested filesystem.
- */
 public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware {
 
     private static final Logger LOG = LoggerFactory.getLogger( JGitFileSystemProvider.class );
@@ -206,8 +204,8 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
     private final Map<JGitFileSystem, Map<String, NotificationModel>> oldHeadsOfPendingDiffs = new HashMap<JGitFileSystem, Map<String, NotificationModel>>();
 
-    private AuthenticationService authenticationService = null;
     private AuthorizationManager authorizationManager = null;
+    private AuthenticationService authenticationService = null;
 
     private Daemon daemonService = null;
     private GitSSHService gitSSHService = null;
@@ -248,19 +246,14 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
             sshHostName = sshHostNameProp.getValue();
             sshFileCertDir = new File( sshCertDirProp.getValue(), SSH_FILE_CERT_CONTAINER_DIR );
         }
-
     }
 
     public void onCloseFileSystem( final JGitFileSystem fileSystem ) {
         closedFileSystems.add( fileSystem );
         oldHeadsOfPendingDiffs.remove( fileSystem );
         if ( closedFileSystems.size() == fileSystems.size() ) {
-            if ( daemonService != null ) {
-                daemonService.stop();
-            }
-            if ( gitSSHService != null ) {
-                gitSSHService.stop();
-            }
+            forceStopDaemon();
+            shutdownSSH();
         }
     }
 
@@ -424,14 +417,17 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
                         @Override
                         public void onPostReceive( final ReceivePack rp,
                                                    final Collection<ReceiveCommand> commands ) {
+                            final String userName =
+                                    req.getUser().getProperty( User.StandardUserProperties.FIRST_NAME ) + " " +
+                                            req.getUser().getProperty( User.StandardUserProperties.LAST_NAME );
                             for ( Map.Entry<String, ObjectId> oldTreeRef : oldTreeRefs.entrySet() ) {
-                                notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", req.getUser().getIdentifier(), oldTreeRef.getValue(), JGitUtil.getTreeRefObjectId( db, oldTreeRef.getKey() ) );
+                                notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", userName, oldTreeRef.getValue(), JGitUtil.getTreeRefObjectId( db, oldTreeRef.getKey() ) );
                             }
 
                             if ( clusterService != null ) {
                                 //TODO {porcelli} hack, that should be addressed in future
                                 clusterService.broadcast( DEFAULT_IO_SERVICE_NAME,
-                                        new MessageType() {
+                                                          new MessageType() {
 
                                     @Override
                                     public String toString() {
@@ -460,9 +456,21 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
         gitSSHService = new GitSSHService();
 
-        gitSSHService.setup( sshFileCertDir, sshHostAddr, sshPort, authenticationService, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
+        gitSSHService.setup( sshFileCertDir, sshHostAddr, sshPort, null /* will be replaced in upcoming merge */, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
 
         gitSSHService.start();
+    }
+
+    void buildAndStartDaemon() {
+        if ( daemonService == null || !daemonService.isRunning() ) {
+            daemonService = new Daemon( new InetSocketAddress( daemonHostAddr, daemonPort ) );
+            daemonService.setRepositoryResolver( new RepositoryResolverImpl<DaemonClient>() );
+            try {
+                daemonService.start();
+            } catch ( java.io.IOException e ) {
+                throw new IOException( e );
+            }
+        }
     }
 
     private void shutdownSSH() {
@@ -471,17 +479,7 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
         }
     }
 
-    private void buildAndStartDaemon() {
-        daemonService = new Daemon( new InetSocketAddress( daemonHostAddr, daemonPort ) );
-        daemonService.setRepositoryResolver( new RepositoryResolverImpl<DaemonClient>() );
-        try {
-            daemonService.start();
-        } catch ( java.io.IOException e ) {
-            throw new IOException( e );
-        }
-    }
-
-    private void shutdownDaemon() {
+    void forceStopDaemon() {
         if ( daemonService != null && daemonService.isRunning() ) {
             daemonService.stop();
         }
@@ -497,7 +495,7 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
             fs.close();
         }
         shutdownSSH();
-        shutdownDaemon();
+        forceStopDaemon();
     }
 
     /**
@@ -540,10 +538,8 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
         final String name = extractRepoName( uri );
 
-        LOG.debug( "Attempting to create new JGitFileSystem '" + name + "' for URI " + uri );
-
         if ( fileSystems.containsKey( name ) ) {
-            throw new FileSystemAlreadyExistsException( "There is already a GIT filesystem called " + name );
+            throw new FileSystemAlreadyExistsException();
         }
 
         ListBranchCommand.ListMode listMode;
@@ -801,7 +797,7 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
         final JGitPathImpl gPath = toPathImpl( path );
 
         if ( exists( path ) ) {
-            if ( !( options != null && options.contains( TRUNCATE_EXISTING ) ) ) {
+            if ( !shouldCreateOrOpenAByteChannel( options ) ) {
                 throw new FileAlreadyExistsException( path.toString() );
             }
         }
@@ -813,38 +809,58 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
         }
 
         try {
-            final File file = File.createTempFile( "gitz", "woot" );
-
-            return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( file, "rw" ).getChannel() ) {
-                @Override
-                public void close() throws java.io.IOException {
-                    super.close();
-
-                    File tempDot = null;
-                    final boolean hasDotContent;
-                    if ( options != null && options.contains( new DotFileOption() ) ) {
-                        deleteIfExists( dot( path ), extractCommentedOption( options ) );
-                        tempDot = File.createTempFile( "meta", "dot" );
-                        hasDotContent = buildDotFile( path, new FileOutputStream( tempDot ), attrs );
-                    } else {
-                        hasDotContent = false;
-                    }
-
-                    final File dotfile = tempDot;
-
-                    commit( gPath, buildCommitInfo( null, options ), new DefaultCommitContent( new HashMap<String, File>() {{
-                        put( gPath.getPath(), file );
-                        if ( hasDotContent ) {
-                            put( toPathImpl( dot( gPath ) ).getPath(), dotfile );
-                        }
-                    }} ) );
-                }
-            };
+            if ( options != null && options.contains( READ ) ) {
+                return openAByteChannel( path );
+            } else {
+                return createANewByteChannel( path, options, gPath, attrs );
+            }
         } catch ( java.io.IOException e ) {
             throw new IOException( e );
         } finally {
             ( (AbstractPath) path ).clearCache();
         }
+    }
+
+    private SeekableByteChannel createANewByteChannel( final Path path,
+                                                       final Set<? extends OpenOption> options,
+                                                       final JGitPathImpl gPath,
+                                                       final FileAttribute<?>[] attrs ) throws java.io.IOException {
+        final File file = File.createTempFile( "gitz", "woot" );
+
+        return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( file, "rw" ).getChannel() ) {
+            @Override
+            public void close() throws java.io.IOException {
+                super.close();
+
+                File tempDot = null;
+                final boolean hasDotContent;
+                if ( options != null && options.contains( new DotFileOption() ) ) {
+                    deleteIfExists( dot( path ), extractCommentedOption( options ) );
+                    tempDot = File.createTempFile( "meta", "dot" );
+                    hasDotContent = buildDotFile( path, new FileOutputStream( tempDot ), attrs );
+                } else {
+                    hasDotContent = false;
+                }
+
+                final File dotfile = tempDot;
+
+                commit( gPath, buildCommitInfo( null, options ), new DefaultCommitContent( new HashMap<String, File>() {{
+                    put( gPath.getPath(), file );
+                    if ( hasDotContent ) {
+                        put( toPathImpl( dot( gPath ) ).getPath(), dotfile );
+                    }
+                }} ) );
+            }
+
+        };
+    }
+
+    private SeekableByteChannelFileBasedImpl openAByteChannel( Path path ) throws FileNotFoundException {
+        return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( path.toFile(), "r" ).getChannel() );
+    }
+
+    private boolean shouldCreateOrOpenAByteChannel( Set<? extends OpenOption> options ) {
+        return ( options != null && ( options.contains( TRUNCATE_EXISTING ) || options.contains( READ ) ) );
     }
 
     protected boolean exists( final Path path ) {
@@ -858,8 +874,8 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
     @Override
     public DirectoryStream<Path> newDirectoryStream( final Path path,
-            final DirectoryStream.Filter<Path> pfilter )
-                    throws NotDirectoryException, IOException, SecurityException {
+                                                     final DirectoryStream.Filter<Path> pfilter )
+                                                             throws NotDirectoryException, IOException, SecurityException {
         checkNotNull( "path", path );
         final DirectoryStream.Filter<Path> filter;
         if ( pfilter == null ) {
@@ -1436,8 +1452,8 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
     }
 
     private Map<JGitPathImpl, JGitPathImpl> mapDirectoryContent( final JGitPathImpl source,
-            final JGitPathImpl target,
-            final CopyOption... options ) {
+                                                                 final JGitPathImpl target,
+                                                                 final CopyOption... options ) {
         final Map<JGitPathImpl, JGitPathImpl> fromTo = new HashMap<JGitPathImpl, JGitPathImpl>();
         for ( final Path path : newDirectoryStream( source, null ) ) {
             final JGitPathImpl gPath = toPathImpl( path );
@@ -1613,9 +1629,9 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
     @Override
     public Map<String, Object> readAttributes( final Path path,
-            final String attributes,
-            final LinkOption... options )
-                    throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+                                               final String attributes,
+                                               final LinkOption... options )
+                                                       throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
         checkNotNull( "path", path );
         checkNotEmpty( "attributes", attributes );
 
@@ -1857,7 +1873,11 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
                 oldHeadsOfPendingDiffs.put( path.getFileSystem(), new HashMap<String, NotificationModel>() );
             }
 
-            oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName() ) );
+            if ( batchCommitInfo != null ) {
+                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, batchCommitInfo.getSessionId(), batchCommitInfo.getName() ) );
+            } else {
+                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName() ) );
+            }
         }
 
         if ( state == FileSystemState.BATCH && !hadCommitOnBatchState ) {
@@ -1870,11 +1890,11 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
             for ( Map.Entry<String, NotificationModel> branchNameNotificationModelEntry : jGitFileSystemMapEntry.getValue().entrySet() ) {
                 final ObjectId newHead = JGitUtil.getTreeRefObjectId( jGitFileSystemMapEntry.getKey().gitRepo().getRepository(), branchNameNotificationModelEntry.getKey() );
                 notifyDiffs( jGitFileSystemMapEntry.getKey(),
-                        branchNameNotificationModelEntry.getKey(),
-                        branchNameNotificationModelEntry.getValue().getSessionId(),
-                        branchNameNotificationModelEntry.getValue().getUserName(),
-                        branchNameNotificationModelEntry.getValue().getOriginalHead(),
-                        newHead );
+                             branchNameNotificationModelEntry.getKey(),
+                             branchNameNotificationModelEntry.getValue().getSessionId(),
+                             branchNameNotificationModelEntry.getValue().getUserName(),
+                             branchNameNotificationModelEntry.getValue().getOriginalHead(),
+                             newHead );
             }
         }
         oldHeadsOfPendingDiffs.clear();
@@ -1980,5 +2000,9 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
         if ( !events.isEmpty() ) {
             fs.publishEvents( root, events );
         }
+    }
+
+    public FileSystemState getFileSystemState(){
+        return state;
     }
 }

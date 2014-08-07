@@ -60,10 +60,19 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 @Target({ ElementType.TYPE })
 public @interface WorkbenchEditor {
 
+    /**
+     * Identifier that should be unique within application.
+     */
     String identifier();
 
+    /**
+     * Array that defines all supported types of this editor.
+     */
     Class<? extends ClientResourceType>[] supportedTypes() default { };
 
+    /**
+     * Defines the priority of editor over type resolution, editors with same supported type will be resolved by priority.
+     */
     int priority() default 0;
 
     /**
@@ -74,4 +83,15 @@ public @interface WorkbenchEditor {
      */
     Class<?> owningPerspective() default void.class;
 
+    /**
+     * Defines the preferred height. Preferred means that this Height will be used only if this screen
+     * is the trigger to create a new panel, if panel already exists this information is ignored.
+     */
+    int preferredHeight() default -1;
+
+    /**
+     * Defines the preferred width. Preferred means that this Width will be used only if this screen
+     * is the trigger to create a new panel, if panel already exists this information is ignored.
+     */
+    int preferredWidth() default -1;
 }

@@ -54,8 +54,8 @@ public class PerspectiveProcessor extends AbstractErrorAbsorbingProcessor {
     }
 
     //Constructor for tests only, to prevent code being written to file. The generated code will be sent to the call-back
-    PerspectiveProcessor(final GenerationCompleteCallback callback) {
-    	this();
+    PerspectiveProcessor( final GenerationCompleteCallback callback ) {
+        this();
         this.callback = callback;
         System.out.println( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
     }

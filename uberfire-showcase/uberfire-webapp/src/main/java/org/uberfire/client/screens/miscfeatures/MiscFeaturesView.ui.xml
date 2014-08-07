@@ -35,6 +35,10 @@
       Sets a new Title
     </p>
     <b:Button ui:field="setNewTitleButton">New Title</b:Button>
+    <p>
+      Activity not found
+    </p>
+    <b:Button ui:field="activityNotFound">Try</b:Button>
   </g:HTMLPanel>
 
 </ui:UiBinder>

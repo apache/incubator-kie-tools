@@ -23,7 +23,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
@@ -49,6 +48,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 import com.google.gwt.event.shared.EventBus;
@@ -183,49 +183,18 @@ public class PlaceManagerTest {
 
     @Test
     public void testGoToPlaceByPath() throws Exception {
-        final Boolean oldOnDeletePref = (Boolean) UberFirePreferences.getProperty( "org.uberfire.client.workbench.path.automatic.close.onDelete" );
+        Path yellowBrickRoadPath = mock( Path.class );
+        PathPlaceRequest yellowBrickRoad = new PathPlaceRequest( yellowBrickRoadPath, "YellowBrickRoadID" );
+        WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
 
-        try {
-            UberFirePreferences.setProperty( "org.uberfire.client.workbench.path.automatic.close.onDelete", true );
-            Path yellowBrickRoadPath = mock( Path.class );
-            PathPlaceRequest yellowBrickRoad = new PathPlaceRequest( yellowBrickRoadPath, "YellowBrickRoadID" );
-            WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
+        when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
 
-            when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
+        placeManager.goTo( yellowBrickRoad, (PanelDefinition) null );
 
-            placeManager.goTo( yellowBrickRoad, (PanelDefinition) null );
+        verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity );
 
-            verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity );
-
-            // special contract just for path-type place requests (subject to preference)
-            verify( yellowBrickRoad.getPath() ).onDelete( any( Command.class ) );
-        } finally {
-            UberFirePreferences.setProperty( "org.uberfire.client.workbench.path.automatic.close.onDelete", oldOnDeletePref );
-        }
-    }
-
-    @Test
-    public void testGoToPlaceByPathWithOnDeleteDisabled() throws Exception {
-        final Boolean oldOnDeletePref = (Boolean) UberFirePreferences.getProperty( "org.uberfire.client.workbench.path.automatic.close.onDelete" );
-
-        try {
-            UberFirePreferences.setProperty( "org.uberfire.client.workbench.path.automatic.close.onDelete", false );
-            Path yellowBrickRoadPath = mock( Path.class );
-            PathPlaceRequest yellowBrickRoad = new PathPlaceRequest( yellowBrickRoadPath, "YellowBrickRoadID" );
-            WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
-
-            when( activityManager.getActivities( yellowBrickRoad ) ).thenReturn( singleton( (Activity) ozActivity ) );
-
-            placeManager.goTo( yellowBrickRoad, (PanelDefinition) null );
-
-            verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity );
-
-            // special contract just for path-type place requests (subject to preference)
-            verify( yellowBrickRoad.getPath(), never() ).onDelete( any( Command.class ) );
-
-        } finally {
-            UberFirePreferences.setProperty( "org.uberfire.client.workbench.path.automatic.close.onDelete", oldOnDeletePref );
-        }
+        // special contract just for path-type place requests (subject to preference)
+        verify( yellowBrickRoad.getPath(), never() ).onDelete( any( Command.class ) );
     }
 
     @Test
@@ -625,7 +594,8 @@ public class PlaceManagerTest {
 
         // contract between PlaceManager and PanelManager
         PanelDefinition rootPanel = panelManager.getRoot();
-        verify( panelManager ).addWorkbenchPanel( rootPanel, null );
+        verify( panelManager ).addWorkbenchPanel( rootPanel, null,
+                                                  activity.preferredHeight(), activity.preferredWidth(), null, null );
 
         // contract between PlaceManager and PlaceHistoryHandler
         verify( placeHistoryHandler ).onPlaceChange( placeRequest );
@@ -653,7 +623,13 @@ public class PlaceManagerTest {
     private void verifyNoActivityLaunchSideEffects(PlaceRequest expectedCurrentPlace, WorkbenchScreenActivity activity) {
 
         // contract between PlaceManager and PanelManager
-        verify( panelManager, never() ).addWorkbenchPanel( panelManager.getRoot(), null );
+        verify( panelManager, never() ).addWorkbenchPanel( eq( panelManager.getRoot() ), any( Position.class ),
+                                                           any( Integer.class ), any( Integer.class ),
+                                                           any( Integer.class ), any( Integer.class ) );
+
+        verify( panelManager, never() ).addWorkbenchPanel( eq( panelManager.getRoot() ),
+                                                           any( PanelDefinition.class ),
+                                                           any( Position.class ) );
 
         // contract between PlaceManager and PlaceHistoryHandler
         verify( placeHistoryHandler, never() ).onPlaceChange( any( PlaceRequest.class ) );
