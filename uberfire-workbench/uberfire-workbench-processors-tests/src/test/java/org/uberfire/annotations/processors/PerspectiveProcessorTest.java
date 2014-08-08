@@ -28,9 +28,6 @@ import javax.tools.JavaFileObject;
 
 import org.junit.Test;
 
-/**
- * Tests for Pop-up related class generation
- */
 public class PerspectiveProcessorTest extends AbstractProcessorTest {
 
     final Result result = new Result();
@@ -62,7 +59,7 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/PerspectiveTest2" );
 
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.PerspectiveTest2Activity: The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 10, 17, "Methods annotated with @Perspective must return org.uberfire.workbench.model.PerspectiveDefinition" );
         assertNull( result.getActualCode() );
     }
 
@@ -72,7 +69,7 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
                 getProcessorUnderTest(),
                 "org/uberfire/annotations/processors/PerspectiveTest3" );
 
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.PerspectiveTest3Activity: The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition." );
+        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "A WorkbenchPerspective class must have either a valid @Perspective method or at least one @WorkbenchPanel field." );
         assertNull( result.getActualCode() );
     }
 
@@ -224,16 +221,9 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest12";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest12.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
         printDiagnostics( diagnostics );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -247,16 +237,9 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest13";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest13.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
         printDiagnostics( diagnostics );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -268,39 +251,17 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
     @Test
     public void testWorkbenchTemplateAnnotationMustHaveWorkbenchPanelsOrParts() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest14";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest13.expected";
 
-        final Result result = new Result();
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
-        printDiagnostics( diagnostics );
-        assertNull( result.getActualCode() );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
+        assertFailedCompilation( diagnostics );
     }
 
     @Test
     public void testWorkbenchTemplateAnnotationShouldNotAllowTwoDefaultWorkbenchPanels() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest15";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest13.expected";
 
-        final Result result = new Result();
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "The Template WorkbenchPerspective must provide only one @WorkbenchPanel annotated field." );
-        assertNull( result.getActualCode() );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 15, 8, "Found more than one @WorkbenchPanel with isDefault=true." );
     }
 
     @Test
@@ -308,16 +269,9 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest16";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest16.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
         assertNotNull( result.getExpectedCode() );
@@ -330,16 +284,9 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest17";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest17.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
         printDiagnostics( diagnostics );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -353,16 +300,9 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest18";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest18.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
         printDiagnostics( diagnostics );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -376,16 +316,9 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest19";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest19.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
         printDiagnostics( diagnostics );
         assertSuccessfulCompilation( diagnostics );
         assertNotNull( result.getActualCode() );
@@ -436,17 +369,9 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit2 = "org/uberfire/annotations/processors/PerspectiveTest7";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/PerspectiveTest19.expected";
 
-        final Result result = new Result();
         result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit, pathCompilationUnit2 );
-        printDiagnostics( diagnostics );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit, pathCompilationUnit2 );
         assertFailedCompilation( diagnostics );
         assertCompilationMessage( diagnostics, Kind.ERROR, -1, -1, "Found too many default WorkbenchPerspectives (expected 1). Found: (HomePerspective, PerspectiveTest7)." );
         assertNotNull( result.getActualCode() );
@@ -457,17 +382,18 @@ public class PerspectiveProcessorTest extends AbstractProcessorTest {
     public void testWorkbenchPerspectivesOnStartMultipleMethods() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest22";
 
-        final Result result = new Result();
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new PerspectiveProcessor( new GenerationCompleteCallback() {
-
-            @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
-        assertCompilationMessage( diagnostics, Kind.ERROR, 38, 17, "Found multiple @OnStartup methods. Each class can declare at most one." );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 36, 17, "Found multiple @OnStartup methods. Each class can declare at most one." );
         assertFailedCompilation( diagnostics );
+    }
+
+    @Test
+    public void combiningPerspectiveMethodAndWorkbenchPanelFieldsShouldGenerateAnError() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/PerspectiveTest23";
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
+        assertFailedCompilation( diagnostics );
+        assertCompilationMessage( diagnostics, Kind.ERROR, 19, 8, "This WorkbenchPerspective has both a @Perspective method and a @WorkbenchPanel field. Only one or the other is allowed." );
     }
 
     private void printDiagnostics( List<Diagnostic<? extends JavaFileObject>> diagnostics ) {

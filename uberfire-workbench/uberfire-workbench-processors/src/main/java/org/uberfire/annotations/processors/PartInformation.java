@@ -1,25 +1,68 @@
 package org.uberfire.annotations.processors;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PartInformation {
 
     private final String partName;
-    private Map<String, String> parameters;
+    private final Map<String, String> parameters;
 
-    public PartInformation( String partName) {
-        this.partName = partName;
-    }
+    public PartInformation( CharSequence partNameAndParams ) {
+        parameters = new LinkedHashMap<String, String>();
 
-    public PartInformation( String partName,
-                            Map<String, String> parameters ) {
-        this.partName = partName;
-        if ( parameters==null||parameters.isEmpty() ) {
-            this.parameters = null;
-        } else {
+        StringBuilder nextToken = new StringBuilder( 50 );
+        String foundPartName = null;
+        String key = null;
+        for ( int i = 0; i < partNameAndParams.length(); i++ ) {
+            char ch = partNameAndParams.charAt( i );
+            switch ( ch ) {
+                case '%':
+                    StringBuilder hexVal = new StringBuilder( 2 );
+                    hexVal.append( partNameAndParams.charAt( i + 1 ) );
+                    hexVal.append( partNameAndParams.charAt( i + 2 ) );
+                    nextToken.append( (char) Integer.parseInt( hexVal.toString(), 16 ) );
+                    i += 2;
+                    break;
 
-            this.parameters = parameters;
+                case '?':
+                    if ( foundPartName == null ) {
+                        foundPartName = nextToken.toString();
+                        nextToken = new StringBuilder( 50 );
+                    } else {
+                        nextToken.append( '?' );
+                    }
+                    break;
+
+                case '=':
+                    if ( foundPartName == null ) {
+                        nextToken.append( '=' );
+                    } else {
+                        key = nextToken.toString();
+                        nextToken = new StringBuilder( 50 );
+                    }
+                    break;
+
+                case '&':
+                    parameters.put( key, nextToken.toString() );
+                    nextToken = new StringBuilder( 50 );
+                    key = null;
+                    break;
+
+                default:
+                    nextToken.append( ch );
+            }
         }
+
+        if ( foundPartName == null ) {
+            foundPartName = nextToken.toString();
+        } else if ( key != null ) {
+            parameters.put( key, nextToken.toString() );
+        } else if ( nextToken.length() > 0 ) {
+            parameters.put( nextToken.toString(), "" );
+        }
+
+        this.partName = foundPartName;
     }
 
     public String getPartName() {

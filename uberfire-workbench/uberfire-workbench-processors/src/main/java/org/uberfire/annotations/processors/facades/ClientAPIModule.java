@@ -1,6 +1,5 @@
 package org.uberfire.annotations.processors.facades;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.lang.model.element.AnnotationMirror;
@@ -45,10 +44,7 @@ public class ClientAPIModule {
     public static final String splashFilter =  "org.uberfire.client.annotations.SplashFilter";
     public static final String splashBodyHeight =  "org.uberfire.client.annotations.SplashBodyHeight";
     public static final String intercept =  "org.uberfire.client.annotations.Intercept";
-    public static final String workbenchPart = "org.uberfire.client.annotations.WorkbenchPart";
-    public static final String workbenchParts = "org.uberfire.client.annotations.WorkbenchParts";
     public static final String workbenchPanel = "org.uberfire.client.annotations.WorkbenchPanel";
-    public static final String parameterMapping = "org.uberfire.client.annotations.ParameterMapping";
 
     public static String getWorkbenchScreenClass() {
         return workbenchScreen;
@@ -116,18 +112,6 @@ public class ClientAPIModule {
 
     public static String getWorkbenchPerspectiveClass() {
         return workbenchPerspective;
-    }
-
-    public static String getWorkbenchPart() {
-        return workbenchPart;
-    }
-
-    public static String getWorkbenchParts() {
-        return workbenchParts;
-    }
-
-    public static String getParameterMapping() {
-        return parameterMapping;
     }
 
     public static String getWorkbenchPanel() {
@@ -207,20 +191,7 @@ public class ClientAPIModule {
         return getAnnotationStringParam( classElement, workbenchContext, IDENTIFIER );
     }
 
-    public static boolean getWbPerspectiveScreenIsATemplate( Elements elementUtils, TypeElement classElement ) {
-        List<? extends Element> enclosedElements = classElement.getEnclosedElements();
-        for ( Element element: enclosedElements ) {
-            if (isATemplate( elementUtils, element )) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static boolean isATemplate( Elements elementUtils, Element element ) {
-        if ( GeneratorUtils.getAnnotation( elementUtils, element, workbenchParts ) != null) return true;
-        if ( GeneratorUtils.getAnnotation( elementUtils, element, workbenchPart ) != null) return true;
-        if ( GeneratorUtils.getAnnotation( elementUtils, element, workbenchPanel ) != null) return true;
-        return false;
+        return GeneratorUtils.getAnnotation( elementUtils, element, workbenchPanel ) != null;
     }
 }

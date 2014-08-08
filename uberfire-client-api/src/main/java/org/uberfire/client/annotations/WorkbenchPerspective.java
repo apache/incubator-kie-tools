@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -21,30 +21,50 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 /**
- * Classes annotated with this are considered Perspective providers.
+ * Indicates that the target class defines a Perspective in the workbench.
  * <p>
- * Developers will need to provide a zero-argument method annotated with
- * {@code @Perspective} with return type
- * {@code org.uberfire.client.workbench.model.PerspectiveDefinition}.
- * </p>
- * <p>
- * WorkbenchPerspectives can receive the following life-cycle calls:
+ * There are two options for defining the arrangement of panels and parts within the perspective: either
+ * programmatically build a {@link PerspectiveDefinition} object, or declare panel structure and content using Errai UI
+ * templates. Note that you cannot mix the two approaches.
+ *
+ * <h3>Programmatic Perspective Definition</h3>
+ * To define the perspective layout programmatically, create a zero-argument method annotated with {@code @Perspective}
+ * that returns a {@link PerspectiveDefinition}.
+ *
+ * <h3>Templated Perspective Definition</h3>
+ * To declare perspective layout using templates, make the class an Errai UI templated component, and then add the
+ * {@link WorkbenchPanel} annotation to one or more of its {@code @DataField} widgets. This designates them as panel
+ * containers and allows you to specify which parts should be added to them when the perspective launches.
+ *
+ * <h3>Perspective Lifecycle</h3>
+ * WorkbenchPerspectives receive the standard set of lifecycle calls for a Workbench component:
  * <ul>
- * <li>{@code @OnClose}</li>
  * <li>{@code @OnStartup}</li>
  * <li>{@code @OnOpen}</li>
- * </p>
+ * <li>{@code @OnClose}</li>
+ * <li>{@code @OnShutdown}</li>
+ * </ul>
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface WorkbenchPerspective {
 
+    /**
+     * The place ID to associate with this perspective.
+     *
+     * @see PlaceRequest
+     */
     String identifier();
 
+    /**
+     * Indicates that this perspective should be opened by default when the workbench first starts. Exactly one
+     * perspective in the whole application should be marked as default.
+     */
     boolean isDefault() default false;
 
     /**

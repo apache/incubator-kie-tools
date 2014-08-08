@@ -118,7 +118,7 @@ public class PerspectiveTest18Activity extends AbstractWorkbenchPerspectiveActiv
             new PartDefinitionImpl(new DefaultPlaceRequest( "TesteScreen" ) ) );
         p.getRoot().appendChild( new NamedPosition( "teste1" ), panelDefinition );
 
-        PanelDefinition panelDefinition0 = new PanelDefinitionImpl( "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter" );
+        PanelDefinition panelDefinition0 = new PanelDefinitionImpl( "PARENT_CHOOSES_TYPE" );
         panelDefinition0.addPart(
                 new PartDefinitionImpl( new DefaultPlaceRequest( "HelloWorldScreen1" ) ) );
         panelDefinition0.addPart(

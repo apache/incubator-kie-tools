@@ -62,7 +62,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
         String identifier = ClientAPIModule.getWbPerspectiveScreenIdentifierValueOnClass( classElement );
         boolean isDefault = ClientAPIModule.getWbPerspectiveScreenIsDefaultValueOnClass( classElement );
         boolean isTransient = ClientAPIModule.getWbPerspectiveScreenIsTransientValueOnClass( classElement );
-        boolean isTemplate = ClientAPIModule.getWbPerspectiveScreenIsATemplate( elementUtils, classElement );
 
         final String beanActivatorClass = GeneratorUtils.getBeanActivatorClassName( classElement, processingEnvironment );
 
@@ -102,7 +101,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
             messager.printMessage( Kind.NOTE, "isDefault: " + isDefault );
             messager.printMessage( Kind.NOTE, "isTransient: " + isTransient );
-            messager.printMessage( Kind.NOTE, "isTemplate: " + isTemplate );
             messager.printMessage( Kind.NOTE, "onStartup0ParameterMethodName: " + onStartup0ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onStartup1ParameterMethodName: " + onStartup1ParameterMethodName );
             messager.printMessage( Kind.NOTE, "onCloseMethodName: " + onCloseMethodName );
@@ -115,24 +113,35 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
             messager.printMessage( Kind.NOTE, "rolesList: " + rolesList );
         }
 
-        //Validate getPerspectiveMethodName
-        if ( getPerspectiveMethodName == null && !isTemplate ) {
-            throw new GenerationException( "The WorkbenchPerspective must provide a @Perspective annotated method to return a org.uberfire.client.workbench.model.PerspectiveDefinition.", packageName + "." + className );
+        Map<String, Object> root = new HashMap<String, Object>();
+
+        TemplateInformation helper = extractWbTemplatePerspectiveInformation( elementUtils, classElement );
+
+        if ( helper.getDefaultPanel() != null ) {
+            root.put( "defaultPanel", helper.getDefaultPanel() );
+        }
+        root.put( "wbPanels", helper.getTemplateFields() );
+
+        if ( getPerspectiveMethodName == null && !helper.thereIsTemplateFields() ) {
+            throw new GenerationException( "A WorkbenchPerspective class must have either a valid @Perspective method or at least one @WorkbenchPanel field.", packageName + "." + className );
+        }
+
+        if ( getPerspectiveMethodName != null && helper.thereIsTemplateFields() ) {
+            throw new GenerationException( "This WorkbenchPerspective has both a @Perspective method and a @WorkbenchPanel field. Only one or the other is allowed." );
         }
 
         if ( isDefault ) {
             warningIfMoreThanOneDefaultPerspective( processingEnvironment, identifier );
         }
 
-        //Setup data for template sub-system
-        Map<String, Object> root = new HashMap<String, Object>();
+        //Setup data for FreeMarker
         root.put( "packageName",
                   packageName );
         root.put( "className",
                   className );
         root.put( "identifier",
                   identifier );
-        root.put( "isTemplate", isTemplate );
+        root.put( "isTemplate", helper.thereIsTemplateFields() );
         root.put( "isDefault",
                 isDefault );
         root.put( "isTransient",
@@ -161,10 +170,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                   securityTraitList );
         root.put( "rolesList",
                   rolesList );
-
-        if ( isTemplate ) {
-            setupTemplateElements( elementUtils, root, classElement );
-        }
 
         //Generate code
         final StringWriter sw = new StringWriter();
@@ -207,19 +212,6 @@ public class PerspectiveActivityGenerator extends AbstractGenerator {
                                                                String defaultPerspectives ) {
         final String msg = "Found too many default WorkbenchPerspectives (expected 1). Found: (" + defaultPerspectives + ").";
         processingEnvironment.getMessager().printMessage( Kind.ERROR, msg );
-    }
-
-    private static void setupTemplateElements( Elements elementUtils,
-                                               Map<String, Object> root,
-                                               TypeElement classElement ) throws GenerationException {
-
-        TemplateInformation helper = extractWbTemplatePerspectiveInformation( elementUtils, classElement );
-
-        if ( helper.getDefaultPanel() != null ) {
-            root.put( "defaultPanel", helper.getDefaultPanel() );
-        }
-        root.put( "wbPanels", helper.getTemplateFields() );
-
     }
 
 }

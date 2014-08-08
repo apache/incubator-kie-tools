@@ -42,6 +42,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 
@@ -1200,6 +1201,13 @@ public class GeneratorUtils {
         return collectionAsString( result );
     }
 
+    /**
+     * Provides a uniform way of working with single- and multi-valued AnnotationValue objects.
+     *
+     * @return the annotation values as strings. For multi-valued annotation params, the collection's iteration order matches the
+     * order the values appeared in the source code. Single-valued params are wrapped in a single-element collection.
+     * In either case, don't attempt to modify the returned collection.
+     */
     public static Collection<String> extractValue( final AnnotationValue value ) {
         if ( value.getValue() instanceof Collection ) {
             final Collection<?> varray = (List<?>) value.getValue();
@@ -1211,6 +1219,42 @@ public class GeneratorUtils {
         }
         return Collections.singleton( value.getValue().toString() );
     }
+
+    /**
+     * Pulls nested annotations out of the annotation that contains them.
+     *
+     * @param elementUtils the current Elements object from this round of annotation processing.
+     * @param element The element targeted by the containing annotation.
+     * @param annotationName The containing annotation's fully-qualified name.
+     * @param paramName The name of the parameter on the containing annotation. The parameter's type must be an array of annotations.
+     */
+    public static List<AnnotationMirror> extractAnnotationsFromAnnotation( Elements elementUtils,
+                                                                            Element element,
+                                                                            String annotationName,
+                                                                            String paramName ) {
+            final AnnotationMirror am = getAnnotation( elementUtils, element, annotationName );
+            AnnotationValue nestedAnnotations = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, am, paramName );
+            if ( nestedAnnotations == null ) {
+                return Collections.emptyList();
+            }
+            final List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
+            nestedAnnotations.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
+                @Override
+                public Void visitArray( List<? extends AnnotationValue> vals, Void x ) {
+                    for ( AnnotationValue av : vals ) {
+                        av.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
+                            @Override
+                            public Void visitAnnotation( AnnotationMirror am, Void x ) {
+                                result.add( am );
+                                return null;
+                            }
+                        }, null );
+                    }
+                    return null;
+                }
+            }, null );
+            return result;
+        }
 
     private static String collectionAsString( final Collection<String> collection ) {
         final StringBuilder sb = new StringBuilder();
@@ -1260,7 +1304,7 @@ public class GeneratorUtils {
     }
 
     public static String extractAnnotationStringValue( Elements elementUtils, AnnotationMirror annotation, CharSequence paramName ) {
-        final AnnotationValue av = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, annotation, paramName );
+        final AnnotationValue av = extractAnnotationPropertyValue( elementUtils, annotation, paramName );
         if ( av != null && av.getValue() != null ) {
             return av.getValue().toString();
         }

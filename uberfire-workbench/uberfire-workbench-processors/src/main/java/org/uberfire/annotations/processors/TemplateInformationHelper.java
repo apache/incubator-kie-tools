@@ -3,17 +3,13 @@ package org.uberfire.annotations.processors;
 import static org.uberfire.annotations.processors.GeneratorUtils.getAnnotation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
@@ -23,44 +19,28 @@ public class TemplateInformationHelper {
     public static final String VALUE = "value";
     public static final String PANEL_TYPE = "panelType";
     public static final String IS_DEFAULT = "isDefault";
-    public static final String DEFAULT_PANEL_TYPE = "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter";
     public static final String PARENT_CHOOSES_PANEL_TYPE = "PARENT_CHOOSES_TYPE"; // must match PanelDefinition.PARENT_CHOOSES_TYPE
-    public static final String PART = "part";
-    public static final String PARAMETERS = "parameters";
-    public static final String PARAMETERS_NAME_PARAM = "name";
-    public static final String PARAMETERS_VAL_PARAM = "val";
+    public static final String PARTS = "parts";
 
     public static TemplateInformation extractWbTemplatePerspectiveInformation( Elements elementUtils, TypeElement classElement ) throws GenerationException {
 
         TemplateInformation template = new TemplateInformation();
 
         for ( Element element : classElement.getEnclosedElements() ) {
-            if ( isAWorkbenchPanel( elementUtils, element ) ) {
-                extractInformationFromWorkbenchPanel( elementUtils, template, element );
-            } else if ( onlyWorkbenchPartWithoutPanel( elementUtils, element ) ) {
-                extractInformationFromGeneratedWorkbenchPanel( elementUtils, template, element );
-            }
-
+            extractInformationFromWorkbenchPanel( elementUtils, template, element );
         }
-        if ( template.thereIsTemplateFields() ) {
-            return template;
-        }
-        throw new GenerationException( "The Template WorkbenchPerspective must provide a @WorkbenchPanel or @WorkbenchPart annotated field." );
-    }
-
-    private static boolean onlyWorkbenchPartWithoutPanel( Elements elementUtils, Element element ) {
-        boolean ufPart = getAnnotation( elementUtils, element, ClientAPIModule.getWorkbenchPart() ) != null;
-        boolean ufParts = getAnnotation( elementUtils, element, ClientAPIModule.getWorkbenchParts() ) != null;
-        return !isAWorkbenchPanel( elementUtils, element ) && ( ufPart || ufParts );
-    }
-
-    private static boolean isAWorkbenchPanel( Elements elementUtils, Element element ) {
-        return getAnnotation( elementUtils, element, ClientAPIModule.getWorkbenchPanel() ) != null;
+        return template;
     }
 
     private static void extractInformationFromWorkbenchPanel( Elements elementUtils,
                                                               TemplateInformation template,
                                                               Element element ) throws GenerationException {
+
+        if ( GeneratorUtils.getAnnotation( elementUtils, element, ClientAPIModule.getWorkbenchPanel() ) == null ) {
+            // this element is not of interest
+            return;
+        }
+
         WorkbenchPanelInformation wbPanel = new WorkbenchPanelInformation();
         if ( workbenchPanelIsDefault( elementUtils, element ) ) {
             wbPanel.setDefault( true );
@@ -69,28 +49,13 @@ public class TemplateInformationHelper {
         wbPanel.setWbParts( getWorkbenchPartsFrom( elementUtils, element ) );
         wbPanel.setPanelType( extractPanelType( elementUtils, element ) );
         if ( wbPanel.isDefault() ) {
-            if ( shouldHaveOnlyOneDefaultPanel( template ) ) {
-                throw new GenerationException( "The Template WorkbenchPerspective must provide only one @WorkbenchPanel annotated field." );
+            if ( template.getDefaultPanel() != null ) {
+                throw new GenerationException( "Found more than one @WorkbenchPanel with isDefault=true." );
             }
             template.setDefaultPanel( wbPanel );
         } else {
             template.addTemplateField( wbPanel );
         }
-    }
-
-    private static void extractInformationFromGeneratedWorkbenchPanel( Elements elementUtils,
-                                                                       TemplateInformation template,
-                                                                       Element element ) throws GenerationException {
-        WorkbenchPanelInformation generatedWbPanel = new WorkbenchPanelInformation();
-
-        generatedWbPanel.setFieldName( element.getSimpleName().toString() );
-        generatedWbPanel.setWbParts( getWorkbenchPartsFrom( elementUtils, element ) );
-        generatedWbPanel.setPanelType( DEFAULT_PANEL_TYPE );
-        template.addTemplateField( generatedWbPanel );
-    }
-
-    private static boolean shouldHaveOnlyOneDefaultPanel( TemplateInformation template ) {
-        return template.getDefaultPanel() != null;
     }
 
     private static String extractPanelType( Elements elementUtils, Element element ) throws GenerationException {
@@ -108,85 +73,14 @@ public class TemplateInformationHelper {
     }
 
     private static List<PartInformation> getWorkbenchPartsFrom( Elements elementUtils, Element wbPanel ) throws GenerationException {
-        List<PartInformation> parts = new ArrayList<PartInformation>();
-        if ( thereIsWbParts( elementUtils, wbPanel ) ) {
-            extractWbPartFromWbParts( elementUtils, wbPanel, parts );
-        } else {
-            AnnotationMirror wbPartAnnotation = getAnnotation( elementUtils, wbPanel, ClientAPIModule.getWorkbenchPart() );
-            String partName = GeneratorUtils.extractAnnotationStringValue( elementUtils, wbPartAnnotation, PART );
-            Map<String, String> parameters = extractParametersFromPart( elementUtils, wbPartAnnotation );
-            parts.add( new PartInformation( partName, parameters ) );
-        }
-        return parts;
-    }
+        AnnotationMirror wbPartAnnotation = getAnnotation( elementUtils, wbPanel, ClientAPIModule.getWorkbenchPanel() );
+        AnnotationValue partsParam = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, wbPartAnnotation, PARTS );
 
-    private static boolean thereIsWbParts( Elements elementUtils, Element element ) {
-        if ( getAnnotation( elementUtils, element, ClientAPIModule.getWorkbenchParts() ) != null ) {
-            return true;
+        List<PartInformation> partInfos = new ArrayList<PartInformation>();
+        for ( String partNameAndParams : GeneratorUtils.extractValue( partsParam ) ) {
+            partInfos.add( new PartInformation( partNameAndParams ) );
         }
-        return false;
-    }
-
-    private static void extractWbPartFromWbParts( Elements elementUtils,
-                                                  Element ufPanel,
-                                                  List<PartInformation> parts ) {
-        List<AnnotationMirror> annotations = extractAnnotationsFromAnnotation( elementUtils, ufPanel, ClientAPIModule.getWorkbenchParts(), VALUE );
-        for ( AnnotationMirror annotation : annotations ) {
-            final AnnotationValue av = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, annotation, PART );
-            String partName = av.getValue().toString();
-            parts.add( new PartInformation( partName ) );
-        }
-    }
-
-    private static Map<String, String> extractParametersFromPart( final Elements elementUtils,
-                                                                  final AnnotationMirror wbPartAnnotation ) {
-        final Map<String, String> map = new TreeMap<String, String>();
-        AnnotationValue mappingAnnotations = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, wbPartAnnotation, PARAMETERS );
-        mappingAnnotations.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
-            @Override
-            public Void visitArray( List<? extends AnnotationValue> vals, Void p ) {
-                for ( AnnotationValue val : vals ) {
-                    val.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
-                        @Override
-                        public Void visitAnnotation( AnnotationMirror a, Void p ) {
-                            map.put( GeneratorUtils.extractAnnotationStringValue( elementUtils, a, PARAMETERS_NAME_PARAM ),
-                                     GeneratorUtils.extractAnnotationStringValue( elementUtils, a, PARAMETERS_VAL_PARAM ) );
-                            return null;
-                        }
-                    }, null );
-                }
-                return null;
-            }
-        }, null);
-        return map;
-    }
-
-    private static List<AnnotationMirror> extractAnnotationsFromAnnotation( Elements elementUtils,
-                                                                        Element element,
-                                                                        String annotationName,
-                                                                        String methodName ) {
-        final AnnotationMirror am = getAnnotation( elementUtils, element, annotationName );
-        AnnotationValue nestedAnnotations = GeneratorUtils.extractAnnotationPropertyValue( elementUtils, am, methodName );
-        if ( nestedAnnotations == null ) {
-            return Collections.emptyList();
-        }
-        final List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
-        nestedAnnotations.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
-            @Override
-            public Void visitArray( List<? extends AnnotationValue> vals, Void x ) {
-                for ( AnnotationValue av : vals ) {
-                    av.accept( new SimpleAnnotationValueVisitor6<Void, Void>() {
-                        @Override
-                        public Void visitAnnotation( AnnotationMirror am, Void x ) {
-                            result.add( am );
-                            return null;
-                        }
-                    }, null );
-                }
-                return null;
-            }
-        }, null );
-        return result;
+        return partInfos;
     }
 
 }

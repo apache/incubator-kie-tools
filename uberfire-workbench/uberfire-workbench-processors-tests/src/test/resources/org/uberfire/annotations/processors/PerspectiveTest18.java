@@ -6,8 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 import org.uberfire.client.annotations.WorkbenchPanel;
-import org.uberfire.client.annotations.WorkbenchPart;
-import org.uberfire.client.annotations.WorkbenchParts;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 @ApplicationScoped
@@ -16,11 +14,10 @@ import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresente
         isDefault = true)
 public class PerspectiveTest18 {
 
-    @WorkbenchPanel(panelType = MultiListWorkbenchPanelPresenter.class, isDefault =  true)
-    @WorkbenchPart(part = "TesteScreen")
+    @WorkbenchPanel(panelType = MultiListWorkbenchPanelPresenter.class, isDefault = true, parts = "TesteScreen")
     Object teste1 = new FlowPanel();
 
-    @WorkbenchParts({@WorkbenchPart(part = "HelloWorldScreen1"),@WorkbenchPart(part = "HelloWorldScreen2")})
+    @WorkbenchPanel(parts = { "HelloWorldScreen1", "HelloWorldScreen2" })
     Object teste2 = new Object();
 
     @PostConstruct

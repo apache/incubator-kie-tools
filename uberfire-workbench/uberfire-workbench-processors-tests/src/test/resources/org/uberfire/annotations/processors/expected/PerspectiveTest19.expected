@@ -123,11 +123,11 @@ public class PerspectiveTest19Activity extends AbstractWorkbenchPerspectiveActiv
             new PartDefinitionImpl(new DefaultPlaceRequest( "oneParameterScreen", properties  ) ) );
         p.getRoot().appendChild( new NamedPosition( "oneParameter" ), panelDefinition );
 
-        PanelDefinition panelDefinition0 = new PanelDefinitionImpl( "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter" );
+        PanelDefinition panelDefinition0 = new PanelDefinitionImpl( "PARENT_CHOOSES_TYPE" );
         panelDefinition0.addPart(
                 new PartDefinitionImpl( new DefaultPlaceRequest( "noParameterScreen" ) ) );
         p.getRoot().appendChild( new NamedPosition( "nopParameter" ), panelDefinition0 );
-        PanelDefinition panelDefinition1 = new PanelDefinitionImpl( "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter" );
+        PanelDefinition panelDefinition1 = new PanelDefinitionImpl( "PARENT_CHOOSES_TYPE" );
         Map properties1 = new HashMap<String,String>();
         properties1.put( "uber","fire" );
         properties1.put( "uber1","fire1" );

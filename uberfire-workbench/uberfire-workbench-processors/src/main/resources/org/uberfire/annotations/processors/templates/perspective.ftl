@@ -217,7 +217,7 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
         <#if defaultPanel??>
         PanelDefinition panelDefinition = new PanelDefinitionImpl( "${defaultPanel.panelType}" );
             <#list defaultPanel.wbParts as wbPart>
-                <#if wbPart.parameters??>
+                <#if (wbPart.parameters?size > 0)>
         Map properties = new HashMap<String,String>();
                     <#list wbPart.parameters?keys as key>
         properties.put("${key}","${ wbPart.parameters[key]}");
@@ -235,7 +235,7 @@ private static final Collection<String> ROLES = Arrays.asList(${rolesList});
         <#list wbPanels as wbPanel>
         PanelDefinition panelDefinition${wbPanel_index} = new PanelDefinitionImpl( "${wbPanel.panelType}" );
             <#list wbPanel.wbParts as wbPart>
-                <#if wbPart.parameters??>
+                <#if (wbPart.parameters?size > 0)>
         Map properties${wbPanel_index} = new HashMap<String,String>();
                     <#list wbPart.parameters?keys as key>
         properties${wbPanel_index}.put( "${key}","${ wbPart.parameters[key]}" );

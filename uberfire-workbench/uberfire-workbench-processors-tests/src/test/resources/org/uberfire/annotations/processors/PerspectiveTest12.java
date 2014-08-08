@@ -4,8 +4,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.WorkbenchPanel;
-import org.uberfire.client.annotations.WorkbenchPart;
-import org.uberfire.client.annotations.WorkbenchParts;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 
@@ -15,20 +13,18 @@ import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter
         isDefault = true)
 public class PerspectiveTest12 {
 
-    @WorkbenchPanel(panelType = MultiTabWorkbenchPanelPresenter.class, isDefault =  true)
-    @WorkbenchParts({@WorkbenchPart(part = "HelloWorldScreen1"),@WorkbenchPart(part = "HelloWorldScreen2")})
+    @WorkbenchPanel(panelType = MultiTabWorkbenchPanelPresenter.class,
+                    isDefault = true,
+                    parts = { "HelloWorldScreen1", "HelloWorldScreen2" } )
     Object teste = new Object();
 
-    @WorkbenchPanel
-    @WorkbenchPart(part = "HelloWorldScreen3")
+    @WorkbenchPanel( parts = "HelloWorldScreen3" )
     Object teste2 = new Object();
 
-    @WorkbenchPanel
-    @WorkbenchPart(part = "HelloWorldScreen4")
+    @WorkbenchPanel( parts = "HelloWorldScreen4" )
     Object teste3 = new Object();
 
-    @WorkbenchPanel
-    @WorkbenchPart(part = "HelloWorldScreen5")
+    @WorkbenchPanel( parts = "HelloWorldScreen5" )
     Object teste4 = new Object();
 
     @PostConstruct
