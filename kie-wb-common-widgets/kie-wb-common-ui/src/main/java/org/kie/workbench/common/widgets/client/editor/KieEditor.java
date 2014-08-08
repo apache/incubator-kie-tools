@@ -45,7 +45,7 @@ public abstract class KieEditor {
 
     protected boolean isReadOnly;
 
-    private GuvnorEditorView baseView;
+    private KieEditorView baseView;
 
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
@@ -74,7 +74,7 @@ public abstract class KieEditor {
     }
 
     protected KieEditor(
-            GuvnorEditorView baseView) {
+            KieEditorView baseView) {
         this.baseView = baseView;
     }
 
