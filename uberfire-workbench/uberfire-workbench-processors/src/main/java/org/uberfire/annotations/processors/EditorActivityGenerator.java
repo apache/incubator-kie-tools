@@ -64,28 +64,29 @@ public class EditorActivityGenerator extends AbstractGenerator {
 
         final String owningPlace = GeneratorUtils.getOwningPerspectivePlaceRequest( classElement, processingEnvironment );
 
-        String identifier = null;
         Integer priority = 0;
         Collection<String> associatedResources = null;
+        String identifier = null;
         Integer preferredHeight = null;
         Integer preferredWidth = null;
 
         for ( final AnnotationMirror am : classElement.getAnnotationMirrors() ) {
             if ( annotationName.equals( am.getAnnotationType().toString() ) ) {
                 for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet() ) {
+                    AnnotationValue aval = entry.getValue();
                     if ( "identifier".equals( entry.getKey().getSimpleName().toString() ) ) {
-                        identifier = entry.getValue().toString();
+                        identifier = aval.getValue().toString();
                     } else if ( "priority".equals( entry.getKey().getSimpleName().toString() ) ) {
-                        priority = (Integer) entry.getValue().getValue();
+                        priority = (Integer) aval.getValue();
                     } else if ( "supportedTypes".equals( entry.getKey().getSimpleName().toString() ) ) {
-                        associatedResources = GeneratorUtils.extractValue( entry.getValue() );
+                        associatedResources = GeneratorUtils.extractValue( aval );
                     } else if ( "preferredHeight".equals( entry.getKey().getSimpleName().toString() ) ) {
-                        final int _preferredHeight = (Integer) entry.getValue().getValue();
+                        final int _preferredHeight = (Integer) aval.getValue();
                         if ( _preferredHeight > 0 ) {
                             preferredHeight = _preferredHeight;
                         }
                     } else if ( "preferredWidth".equals( entry.getKey().getSimpleName().toString() ) ) {
-                        final int _preferredWidth = (Integer) entry.getValue().getValue();
+                        final int _preferredWidth = (Integer) aval.getValue();
                         if ( _preferredWidth > 0 ) {
                             preferredWidth = _preferredWidth;
                         }

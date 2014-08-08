@@ -58,7 +58,7 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
 </#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchScreenProcessor")
-@Named(${identifier})
+@Named("${identifier}")
 <#if beanActivatorClass??>
 @ActivatedBy(${beanActivatorClass}.class)
 </#if>

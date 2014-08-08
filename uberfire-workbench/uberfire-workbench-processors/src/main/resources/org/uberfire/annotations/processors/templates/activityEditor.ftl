@@ -63,7 +63,7 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
 </#if>
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchEditorProcessor")
-@Named(${identifier})
+@Named("${identifier}")
 <#if associatedResources??>
 ${associatedResources}
 </#if>
