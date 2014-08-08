@@ -32,7 +32,9 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 /**
  * Guided Rule Template Data View implementation
  */
-public class GuidedRuleTemplateDataViewImpl extends Composite implements GuidedRuleTemplateDataView {
+public class GuidedRuleTemplateDataViewImpl
+        extends Composite
+        implements GuidedRuleTemplateDataView {
 
     private final VerticalPanel widgetContainer = new VerticalPanel();
 

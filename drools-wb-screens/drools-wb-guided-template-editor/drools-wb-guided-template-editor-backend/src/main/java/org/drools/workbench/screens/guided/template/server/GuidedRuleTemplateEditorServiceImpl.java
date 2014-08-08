@@ -51,6 +51,7 @@ import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -65,7 +66,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEditorService {
+public class GuidedRuleTemplateEditorServiceImpl
+        extends KieService
+        implements GuidedRuleTemplateEditorService {
 
     //Filters to include *all* applicable resources
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
@@ -79,9 +82,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private MetadataService metadataService;
 
     @Inject
     private CopyService copyService;
@@ -100,12 +100,6 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
 
     @Inject
     private DataModelService dataModelService;
-
-    @Inject
-    private SourceServices sourceServices;
-
-    @Inject
-    private KieProjectService projectService;
 
     @Inject
     private GenericValidator genericValidator;
@@ -178,6 +172,7 @@ public class GuidedRuleTemplateEditorServiceImpl implements GuidedRuleTemplateEd
                                                                sessionInfo ) );
 
             return new GuidedTemplateEditorContent( model,
+                                                    loadOverview(path),
                                                     dataModel );
 
         } catch ( Exception e ) {

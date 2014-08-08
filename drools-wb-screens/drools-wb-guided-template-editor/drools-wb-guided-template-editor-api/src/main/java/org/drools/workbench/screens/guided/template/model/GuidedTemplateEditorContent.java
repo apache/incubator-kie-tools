@@ -17,6 +17,8 @@
 package org.drools.workbench.screens.guided.template.model;
 
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -29,14 +31,18 @@ public class GuidedTemplateEditorContent {
 
     private TemplateModel model;
     private PackageDataModelOracleBaselinePayload dataModel;
+    private Overview overview;
 
     public GuidedTemplateEditorContent() {
     }
 
     public GuidedTemplateEditorContent( final TemplateModel model,
+                                        final Overview overview,
                                         final PackageDataModelOracleBaselinePayload dataModel ) {
         this.model = PortablePreconditions.checkNotNull( "model",
                                                          model );
+        this.overview = PortablePreconditions.checkNotNull( "overview",
+                                                            overview );
         this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
                                                              dataModel );
     }
@@ -49,4 +55,7 @@ public class GuidedTemplateEditorContent {
         return dataModel;
     }
 
+    public Overview getOverview() {
+        return overview;
+    }
 }

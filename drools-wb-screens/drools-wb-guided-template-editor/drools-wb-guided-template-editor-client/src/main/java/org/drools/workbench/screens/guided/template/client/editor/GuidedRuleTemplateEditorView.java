@@ -4,15 +4,15 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.editor.KieEditorView;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Guided Rule Template Editor View definition
  */
-public interface GuidedRuleTemplateEditorView extends HasBusyIndicator,
+public interface GuidedRuleTemplateEditorView extends KieEditorView,
                                                       IsWidget {
 
     void setContent( final Path path,

@@ -2,11 +2,10 @@ package org.drools.workbench.screens.guided.scorecard.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
+import org.kie.workbench.common.widgets.client.editor.KieEditorView;
 
-public interface GuidedScoreCardEditorView extends GuvnorEditorView,
+public interface GuidedScoreCardEditorView extends KieEditorView,
                                                    IsWidget {
 
     void setContent( final ScoreCardModel model,

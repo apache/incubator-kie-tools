@@ -30,6 +30,7 @@ import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -183,17 +184,20 @@ public class TemplateDataHeaderWidget
                 redrawHeaderRow( iRow );
             }
 
-            // Schedule resize event after header has been drawn
+            fireResizeEvent();
+        }
+
+        // Schedule resize event after header has been drawn or resized
+        private void fireResizeEvent() {
             Scheduler.get().scheduleDeferred( new ScheduledCommand() {
                 public void execute() {
                     ResizeEvent.fire( TemplateDataHeaderWidget.this,
-                                      widget.getOffsetWidth(),
-                                      widget.getOffsetHeight() );
+                            widget.getOffsetWidth(),
+                            widget.getOffsetHeight() );
                 }
             } );
 
         }
-
         // Redraw a single row obviously
         private void redrawHeaderRow( int iRow ) {
             Element tce = null;
@@ -290,6 +294,15 @@ public class TemplateDataHeaderWidget
         //Wire-up event handlers
         eventBus.addHandler( SetInternalTemplateDataModelEvent.TYPE,
                              this );
+
+        addResizeHandler( new ResizeHandler() {
+            @Override
+            public void onResize( final ResizeEvent event ) {
+                final int width = event.getWidth();
+                panel.setWidth( width + "px" );
+            }
+        } );
+
     }
 
     @Override

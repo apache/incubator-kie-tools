@@ -3,11 +3,10 @@ package org.drools.workbench.screens.drltext.client.editor;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.kie.uberfire.client.common.HasBusyIndicator;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
+import org.kie.workbench.common.widgets.client.editor.KieEditorView;
 import org.uberfire.client.mvp.UberView;
 
-public interface DRLEditorView extends GuvnorEditorView,
+public interface DRLEditorView extends KieEditorView,
                                        UberView<DRLEditorPresenter> {
 
     void setContent( final String drl,

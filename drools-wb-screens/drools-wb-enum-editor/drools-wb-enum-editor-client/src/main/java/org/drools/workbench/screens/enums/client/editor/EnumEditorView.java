@@ -1,13 +1,12 @@
 package org.drools.workbench.screens.enums.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.uberfire.client.common.HasBusyIndicator;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
+import org.kie.workbench.common.widgets.client.editor.KieEditorView;
 
 /**
  * Enum Editor View definition
  */
-public interface EnumEditorView extends GuvnorEditorView,
+public interface EnumEditorView extends KieEditorView,
                                         IsWidget {
 
     void setContent( String content );

@@ -6,16 +6,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.editor.GuvnorEditorView;
+import org.kie.workbench.common.widgets.client.editor.KieEditorView;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Guided Decision Table Editor View definition
  */
-public interface GuidedDecisionTableEditorView extends GuvnorEditorView,
+public interface GuidedDecisionTableEditorView extends KieEditorView,
                                                        IsWidget {
 
     void setContent( final Path path,

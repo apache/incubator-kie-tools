@@ -39,4 +39,7 @@ public interface GuidedTemplateEditorConstants
     public String GuidedTemplateEditorTitle();
 
     String guidedTemplateResourceTypeDescription();
+
+    String Data();
+
 }
