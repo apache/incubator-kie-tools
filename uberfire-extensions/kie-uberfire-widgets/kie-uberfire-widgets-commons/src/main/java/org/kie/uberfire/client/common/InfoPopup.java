@@ -1,5 +1,5 @@
-/*
- * Copyright 2012 JBoss Inc
+/**
+ *   Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,38 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.uberfire.client.common;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiConstructor;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import org.kie.uberfire.client.resources.CommonImages;
-import org.kie.uberfire.client.resources.i18n.CommonConstants;
+import com.github.gwtbootstrap.client.ui.Icon;
+import com.github.gwtbootstrap.client.ui.Popover;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.constants.Placement;
+import com.github.gwtbootstrap.client.ui.constants.Trigger;
+import com.google.gwt.dom.client.Element;
 
 /**
  * This is handy for in-place context help.
  */
-public class InfoPopup extends Composite {
+public class InfoPopup extends Popover {
 
-    @UiConstructor
-    public InfoPopup( final String title,
-                      final String message ) {
-        Image info = new Image( CommonImages.INSTANCE.information() );
-        info.setTitle( message );
-        info.setAltText( message );
-        info.addClickHandler( new ClickHandler() {
-
-            public void onClick( ClickEvent event ) {
-                Image image = new Image( CommonImages.INSTANCE.information() );
-                image.setAltText( CommonConstants.INSTANCE.Information() );
-                final FormStylePopup pop = new FormStylePopup( image, title );
-                pop.addRow( new SmallLabel( message ) );
-                pop.show();
-            }
-        } );
-        initWidget( info );
+    public InfoPopup( final String text ) {
+        configure();
+        setText( text );
     }
+
+    public InfoPopup( final String heading,
+                      final String text ) {
+        configure();
+        setHeading( heading );
+        setText( text );
+    }
+
+    private void configure() {
+        setPlacement( Placement.RIGHT );
+        setTrigger( Trigger.HOVER );
+
+        final Icon icon = new Icon( IconType.QUESTION_SIGN );
+        icon.addStyleName( "help-inline" );
+        setWidget( icon );
+
+        configurePopoverContainer( this.getWidget().getElement() );
+        getWidget().getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+    }
+
+    private native void configurePopoverContainer( Element e ) /*-{
+        $wnd.jQuery(e).popover({
+            container: 'body'
+        });
+    }-*/;
+
 }

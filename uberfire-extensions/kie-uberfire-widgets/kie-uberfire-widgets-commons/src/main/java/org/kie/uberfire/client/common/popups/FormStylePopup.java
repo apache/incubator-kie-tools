@@ -14,93 +14,75 @@
  * limitations under the License.
  */
 
-package org.kie.uberfire.client.common;
+package org.kie.uberfire.client.common.popups;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfire.client.common.FormStyleLayout;
 
 /**
  * This builds on the FormStyleLayout for providing common popup features in a
  * columnar form layout, with a title and a large (ish) icon.
  */
-public class FormStylePopup extends Popup {
+public class FormStylePopup extends KieBaseModal {
 
+    interface FormStylePopupWidgetBinder
+            extends
+            UiBinder<Widget, FormStylePopup> {
+
+    }
+
+    private static FormStylePopupWidgetBinder uiBinder = GWT.create( FormStylePopupWidgetBinder.class );
+
+    @UiField(provided = true)
     protected FormStyleLayout form;
+
+    public FormStylePopup( final String title ) {
+        setTitle( title );
+        form = new FormStyleLayout();
+        add( uiBinder.createAndBindUi( this ) );
+    }
 
     public FormStylePopup( final Image image,
                            final String title ) {
-        setup( image, title );
-    }
-
-    protected void setup( final Image image,
-                          final String title ) {
-        form = new FormStyleLayout( image, title );
-
-        setModal( true );
-
         setTitle( title );
-    }
-
-    public FormStylePopup( final Image image,
-                           final String title,
-                           final Integer width ) {
-        this( image, title );
-        setWidth( width + "px" );
+        form = new FormStyleLayout( image,
+                                    title );
+        add( uiBinder.createAndBindUi( this ) );
     }
 
     public FormStylePopup( final ImageResource image,
                            final String title ) {
-
-        setup( image, title );
-    }
-
-    protected void setup( final ImageResource image,
-                        final String title ) {
-        form = new FormStyleLayout( image, title );
-
-        setModal( true );
-
         setTitle( title );
-    }
-
-    public FormStylePopup() {
-        form = new FormStyleLayout();
-    }
-
-    public FormStylePopup( ImageResource image,
-                           final String title,
-                           Integer width ) {
-        this( image,
-              title );
-        setWidth( width + "px" );
-    }
-
-    @Override
-    public Widget getContent() {
-        return form;
+        form = new FormStyleLayout( image,
+                                    title );
+        add( uiBinder.createAndBindUi( this ) );
     }
 
     public void clear() {
         this.form.clear();
     }
 
-    public int addAttribute( String label,
-                             IsWidget wid ) {
+    public int addAttribute( final String label,
+                             final IsWidget wid ) {
         return form.addAttribute( label,
                                   wid );
     }
 
-    public int addAttribute( String label,
-                             Widget wid,
-                             boolean isVisible ) {
+    public int addAttribute( final String label,
+                             final Widget wid,
+                             final boolean isVisible ) {
         return form.addAttribute( label,
                                   wid,
                                   isVisible );
     }
 
-    public int addRow( Widget wid ) {
+    public int addRow( final Widget wid ) {
         return form.addRow( wid );
     }
 
@@ -109,9 +91,10 @@ public class FormStylePopup extends Popup {
      * @param row
      * @param isVisible
      */
-    public void setAttributeVisibility( int row,
-                                        boolean isVisible ) {
-        form.setAttributeVisibility( row, isVisible );
+    public void setAttributeVisibility( final int row,
+                                        final boolean isVisible ) {
+        form.setAttributeVisibility( row,
+                                     isVisible );
     }
 
 }

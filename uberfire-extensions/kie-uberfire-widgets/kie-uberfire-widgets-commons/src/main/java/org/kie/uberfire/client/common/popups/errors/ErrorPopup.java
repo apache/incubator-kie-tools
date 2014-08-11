@@ -15,8 +15,6 @@
  */
 package org.kie.uberfire.client.common.popups.errors;
 
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.event.HiddenEvent;
 import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
 import com.github.gwtbootstrap.client.ui.event.ShowEvent;
@@ -26,16 +24,16 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
 import org.kie.uberfire.client.resources.i18n.CommonConstants;
 
 /**
  * A popup that shows an error message
  */
-public class ErrorPopup extends Modal {
+public class ErrorPopup extends KieBaseModal {
 
     interface ErrorPopupWidgetBinder
             extends
@@ -52,12 +50,6 @@ public class ErrorPopup extends Modal {
 
     private ErrorPopup() {
         setTitle( CommonConstants.INSTANCE.Error() );
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
-        setHideOthers( false );
 
         add( uiBinder.createAndBindUi( this ) );
         add( new ModalFooterOKButton( new Command() {

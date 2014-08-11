@@ -21,27 +21,24 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 
 /**
  * The generic Wizard view implementation
  */
 @Dependent
-public class WizardViewImpl extends Modal
+public class WizardViewImpl extends KieBaseModal
         implements
         WizardView {
 
@@ -78,13 +75,6 @@ public class WizardViewImpl extends Modal
     private static WizardActivityViewImplBinder uiBinder = GWT.create( WizardActivityViewImplBinder.class );
 
     public WizardViewImpl() {
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
-        setHideOthers( false );
-
         footer = new WizardPopupFooter(
                 new Command() {
                     @Override
