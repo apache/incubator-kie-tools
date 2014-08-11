@@ -5,6 +5,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
@@ -34,10 +35,10 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Base class for implementations of PanelManager. This class relies on ErraiIOC field injection, so all subclasses must
- * be instantiated via the BeanManager. Subclasses instantiated with <tt>new</tt> will not behave properly.
+ * Standard implementation of {@link PanelManager}.
  */
-public abstract class AbstractPanelManagerImpl implements PanelManager  {
+@ApplicationScoped
+public class PanelManagerImpl implements PanelManager {
 
     @Inject
     protected Event<PlaceGainFocusEvent> placeGainFocusEvent;
@@ -73,7 +74,12 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
     @Inject
     LayoutSelection layoutSelection;
 
-    protected abstract BeanFactory getBeanFactory();
+    @Inject
+    private BeanFactory beanFactory;
+
+    protected BeanFactory getBeanFactory() {
+        return beanFactory;
+    }
 
     @Override
     public PanelDefinition getRoot() {
@@ -422,5 +428,45 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
                                    westOrphan );
     }
 
+    @Override
+    public PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
+                                              final PanelDefinition childPanel,
+                                              final Position position ) {
+
+        WorkbenchPanelPresenter targetPanelPresenter = mapPanelDefinitionToPresenter.get( targetPanel );
+
+        if ( targetPanelPresenter == null ) {
+            targetPanelPresenter = beanFactory.newWorkbenchPanel( targetPanel );
+            mapPanelDefinitionToPresenter.put( targetPanel,
+                                               targetPanelPresenter );
+        }
+
+        if ( childPanel.getPanelType().equals( PanelDefinition.PARENT_CHOOSES_TYPE ) ) {
+            childPanel.setPanelType( targetPanelPresenter.getDefaultChildType() );
+        }
+
+        PanelDefinition newPanel;
+        if ( position == CompassPosition.ROOT ) {
+            // TODO not sure if this is needed/used anymore
+            newPanel = rootPanelDef;
+        } else if ( position == CompassPosition.SELF ) {
+            // TODO not sure if this is needed/used anymore
+            newPanel = targetPanelPresenter.getDefinition();
+        } else {
+            final WorkbenchPanelPresenter childPanelPresenter = beanFactory.newWorkbenchPanel( childPanel );
+            mapPanelDefinitionToPresenter.put( childPanel,
+                                               childPanelPresenter );
+
+            // TODO (hbraun): why no remove callback before the addPanel invocation?
+            targetPanelPresenter.addPanel( childPanel,
+                                           childPanelPresenter.getPanelView(),
+                                           position );
+            newPanel = childPanel;
+        }
+
+        onPanelFocus( newPanel );
+
+        return newPanel;
+    }
 
 }

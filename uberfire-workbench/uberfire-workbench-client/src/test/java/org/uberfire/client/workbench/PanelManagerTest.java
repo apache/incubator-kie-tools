@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.PanelFocusEvent;
@@ -30,21 +32,18 @@ import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class AbstractPanelManagerTest {
+public class PanelManagerTest {
 
     @Mock BeanFactory beanFactory;
     @Mock StubPlaceGainFocusEvent placeGainFocusEvent;
@@ -55,7 +54,7 @@ public class AbstractPanelManagerTest {
     @Mock(answer=Answers.RETURNS_DEEP_STUBS) LayoutSelection layoutSelection;
 
     @InjectMocks
-    TestingPanelManagerImpl panelManager;
+    PanelManagerImpl panelManager;
 
     /**
      * This is the part presenter that will be returned by the mock BeanFactory in response to any newWorkbenchPart()
@@ -90,6 +89,15 @@ public class AbstractPanelManagerTest {
                                             any( String.class ),
                                             any( IsWidget.class ),
                                             any( PartDefinition.class ) ) ).thenReturn( partPresenter );
+
+        when( beanFactory.newWorkbenchPanel( any( PanelDefinition.class ) ) ).thenAnswer( new Answer<WorkbenchPanelPresenter>() {
+            @Override
+            public WorkbenchPanelPresenter answer( InvocationOnMock invocation ) throws Throwable {
+                WorkbenchPanelPresenter newPanelPresenter = mock( WorkbenchPanelPresenter.class );
+                when( newPanelPresenter.getDefinition() ).thenReturn( (PanelDefinition) invocation.getArguments()[0] );
+                return newPanelPresenter;
+            }
+        } );
 
         PerspectiveActivity testPerspectiveActivity = mock( PerspectiveActivity.class );
         panelManager.setRoot( testPerspectiveActivity, testPerspectiveDef.getRoot() );
@@ -208,6 +216,7 @@ public class AbstractPanelManagerTest {
 
         // need to remember this for later
         WorkbenchPanelPresenter subPanelPresenter = panelManager.mapPanelDefinitionToPresenter.get( subPanel );
+        assertSame( subPanel, subPanelPresenter.getDefinition() );
 
         PlaceRequest partPlace = new DefaultPlaceRequest( "partPlace" );
         PartDefinition part = new PartDefinitionImpl( partPlace );
@@ -255,48 +264,6 @@ public class AbstractPanelManagerTest {
     // After UF-117:
     // TODO test part disposal (not NORTH/SOUTH/EAST/WEST) side effect of AbstractPanelManagerImpl.removePart()
     // TODO test part reattachment (NORTH/SOUTH/EAST/WEST) side effect of AbstractPanelManagerImpl.removePart()
-
-    public static class TestingPanelManagerImpl extends AbstractPanelManagerImpl {
-
-        private BeanFactory beanFactory;
-
-        Multimap<PanelDefinition, PanelDefinition> panelHierarchy = ArrayListMultimap.create();
-        PanelDefinition rootPanel = new PanelDefinitionImpl();
-
-        @Override
-        public boolean removePartForPlace( PlaceRequest toRemove ) {
-            PartDefinition part = getPartForPlace( toRemove );
-            if ( part != null ) {
-                super.removePart( part );
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public PanelDefinition addWorkbenchPanel( PanelDefinition targetPanel,
-                                                  PanelDefinition childPanel,
-                                                  Position position ) {
-            panelHierarchy.put( targetPanel, childPanel );
-
-            WorkbenchPanelPresenter childPanelPresenter = mock( WorkbenchPanelPresenter.class );
-            when( childPanelPresenter.getDefinition() ).thenReturn( childPanel );
-
-            mapPanelDefinitionToPresenter.put( childPanel, childPanelPresenter );
-            return childPanel;
-        }
-
-        @Override
-        public void removeWorkbenchPanel( PanelDefinition toRemove ) throws IllegalStateException {
-            panelHierarchy.remove( toRemove.getParent(), toRemove );
-            super.removeWorkbenchPanel( toRemove );
-        }
-
-        @Override
-        protected BeanFactory getBeanFactory() {
-            return beanFactory;
-        }
-    };
 
     /**
      * Mockito fails to produce a valid mock for a raw {@code Event<Anything>} due to classloader issues. Trivial
