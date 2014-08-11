@@ -33,8 +33,8 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.kie.uberfire.client.common.DirtyableHorizontalPane;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 
 public class AttributeSelectorPopup extends FormStylePopup {
 
@@ -45,7 +45,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
                                    boolean lockRHS,
                                    final Command refresh ) {
         super( getImage(),
-                GuidedRuleEditorResources.CONSTANTS.AddAnOptionToTheRule() );
+               GuidedRuleEditorResources.CONSTANTS.AddAnOptionToTheRule() );
 
         setTextBox( model,
                     refresh );
@@ -149,7 +149,7 @@ public class AttributeSelectorPopup extends FormStylePopup {
             hz.add( freezeActions );
         }
         hz.add( new InfoPopup( GuidedRuleEditorResources.CONSTANTS.FrozenAreas(),
-                GuidedRuleEditorResources.CONSTANTS.FrozenExplanation() ) );
+                               GuidedRuleEditorResources.CONSTANTS.FrozenExplanation() ) );
 
         if ( hz.getWidgetCount() > 1 ) {
             addAttribute( GuidedRuleEditorResources.CONSTANTS.FreezeAreasForEditing(),

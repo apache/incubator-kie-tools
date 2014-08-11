@@ -40,12 +40,12 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.FormStylePopup;
-import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * This widget is for modifying facts bound to a variable.
@@ -306,8 +306,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
             }
         } );
-        popup.setPopupPosition( w.getAbsoluteLeft(),
-                                w.getAbsoluteTop() );
+        //{manstis} TODO
+//        popup.setPopupPosition( w.getAbsoluteLeft(),
+//                                w.getAbsoluteTop() );
         popup.show();
 
     }

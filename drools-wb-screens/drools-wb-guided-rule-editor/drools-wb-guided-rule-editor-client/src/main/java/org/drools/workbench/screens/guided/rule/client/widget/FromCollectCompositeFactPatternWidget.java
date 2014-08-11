@@ -39,12 +39,12 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.kie.uberfire.client.common.ClickableLabel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.FormStylePopup;
 
 public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 
@@ -192,7 +192,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     @Override
     protected void showFactTypeSelector( final Widget w ) {
 
-        final FormStylePopup popup = new FormStylePopup();
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
         popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
 
         final ListBox box = new ListBox();
@@ -238,8 +238,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         }
         box.setSelectedIndex( 0 );
 
-        final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
         popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
@@ -314,12 +313,12 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
         // We allow the use of Set, List or Collection, even when they are not added as imports
         // Because of this, we also need to add them as known fact types
-        if (factType.equals("java.util.Set")
-                || factType.equals("java.util.List")
-                || factType.equals("java.util.Collection")) {
+        if ( factType.equals( "java.util.Set" )
+                || factType.equals( "java.util.List" )
+                || factType.equals( "java.util.Collection" ) ) {
             this.isFactTypeKnown = true;
         } else {
-            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized(factType);
+            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized( factType );
         }
 
         if ( this.pattern.getFactPattern() != null ) {

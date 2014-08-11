@@ -23,16 +23,17 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.kie.uberfire.client.common.FormStyleLayout;
-import org.kie.uberfire.client.common.Popup;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 /**
  * Base class for Pop-ups used by RuleModeller
  */
-public abstract class AbstractRuleModellerSelectorPopup extends Popup {
+public abstract class AbstractRuleModellerSelectorPopup extends KieBaseModal {
 
     protected static final String SECTION_SEPARATOR = "..................";
 
@@ -61,6 +62,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
         this.ruleModeller = ruleModeller;
         this.oracle = oracle;
         this.setTitle( getPopupTitle() );
+        this.add( getContent() );
     }
 
     /**
@@ -68,6 +70,12 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
      * @return
      */
     protected abstract String getPopupTitle();
+
+    /**
+     * Get content for the pop-up
+     * @return
+     */
+    protected abstract Widget getContent();
 
     /**
      * Executed when a selection has been made. Refreshes the underlying

@@ -50,12 +50,12 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.ImageButton;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.client.callbacks.Callback;
 
 /**
  * A popup to define an Action to insert a new Fact and set one of its fields to
@@ -94,15 +94,13 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                           final ActionWorkItemInsertFactCol52 col,
                                           final boolean isNew,
                                           final boolean isReadOnly ) {
+        super( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItemInsertFact() );
         this.editingCol = cloneActionInsertColumn( col );
         this.model = model;
         this.oracle = oracle;
         this.utils = new GuidedDecisionTableUtils( model,
                                                    oracle );
         this.isReadOnly = isReadOnly;
-
-        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItemInsertFact() );
-        setModal( false );
 
         //Fact being inserted
         HorizontalPanel pattern = new HorizontalPanel();
@@ -136,7 +134,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                                  } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       field );
         doFieldLabel();
 
@@ -155,7 +153,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                       header );
 
         //Logical insertion
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.LogicallyInsert()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.LogicallyInsert() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       doInsertLogical() );
 
         //Bind field to a WorkItem result parameter
@@ -179,7 +177,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         }
 
         //Hide column tick-box
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
@@ -299,9 +297,9 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
     }
 
     private void showFieldChange() {
-        final FormStylePopup pop = new FormStylePopup();
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.Field() );
         final ListBox box = new ListBox();
-        pop.setModal( false );
+
         this.oracle.getFieldCompletions( this.editingCol.getFactType(),
                                          FieldAccessorsAndMutators.MUTATOR,
                                          new Callback<ModelField[]>() {
@@ -313,7 +311,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                                              }
                                          } );
 
-        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
+        pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
@@ -348,7 +346,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
             showNewPatternDialog();
             return;
         }
-        final FormStylePopup pop = new FormStylePopup();
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.FactType() );
         Button ok = new Button( "OK" );
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( pats );
@@ -386,7 +384,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
     }
 
     protected void showNewPatternDialog() {
-        final FormStylePopup pop = new FormStylePopup();
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.FactType() );
         pop.setTitle( GuidedDecisionTableConstants.INSTANCE.NewFactSelectTheType() );
         final ListBox types = new ListBox();
         for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
@@ -395,7 +393,7 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.FactType(),
                           types );
         final TextBox binding = new BindingTextBox();
-        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Binding()).append(GuidedDecisionTableConstants.COLON).toString(),
+        pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Binding() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           binding );
 
         Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );

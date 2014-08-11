@@ -34,11 +34,11 @@ import org.drools.workbench.screens.categories.client.resources.i18n.Constants;
 import org.drools.workbench.screens.categories.client.widget.CategoryTreeEditorWidget;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.PrettyFormLayout;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 /**
  *
@@ -161,6 +161,7 @@ public class CategoriesEditorViewImpl
          * This is used when creating a new category
          */
         public CategoryEditor( final CategoryItem parent ) {
+            super( Constants.INSTANCE.CreateANewTopLevelCategory() );
             super.setTitle( getTitle( parent ) );
             this.parent = parent;
 

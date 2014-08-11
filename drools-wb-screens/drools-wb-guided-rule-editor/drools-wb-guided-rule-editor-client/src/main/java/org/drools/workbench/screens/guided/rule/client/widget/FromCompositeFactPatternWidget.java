@@ -32,12 +32,12 @@ import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.uberfire.client.common.ClickableLabel;
 import org.kie.uberfire.client.common.DirtyableFlexTable;
 import org.kie.uberfire.client.common.DirtyableHorizontalPane;
-import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 
 public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
@@ -201,8 +201,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         }
         box.setSelectedIndex( 0 );
 
-        final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
         popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
@@ -244,7 +243,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     protected void calculateReadOnly() {
         if ( this.pattern.getFactPattern() != null ) {
 
-            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized(this.pattern.getFactPattern().getFactType());
+            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() );
 
             this.readOnly = !this.isFactTypeKnown;
         }

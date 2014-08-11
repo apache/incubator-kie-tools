@@ -21,8 +21,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.uberfire.client.common.FormStylePopup;
 
 abstract class AddFieldClickHandler
         implements SelectionHandler<String>,
@@ -39,9 +39,7 @@ abstract class AddFieldClickHandler
 
     @Override
     public void onClick( final ClickEvent event ) {
-        final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( TestScenarioConstants.INSTANCE.ChooseDotDotDot() );
-
+        final FormStylePopup pop = new FormStylePopup( TestScenarioConstants.INSTANCE.ChooseDotDotDot() );
         pop.addAttribute( TestScenarioConstants.INSTANCE.ChooseAFieldToAdd(), createAddNewField( pop ) );
 
         pop.show();

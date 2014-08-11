@@ -39,12 +39,12 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.FormStylePopup;
-import org.kie.uberfire.client.common.InfoPopup;
-import org.kie.uberfire.client.common.SmallLabel;
 
 public class PopupCreator {
 
@@ -116,7 +116,7 @@ public class PopupCreator {
                                     final SingleFieldConstraint con,
                                     final ModelField[] fields,
                                     final PopupCreator popupCreator ) {
-        final FormStylePopup popup = new FormStylePopup();
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.AddAField() );
         popup.setWidth( 500 + "px" );
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new BindingTextBox();

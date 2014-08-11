@@ -30,9 +30,9 @@ import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.ImageButton;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 abstract class TestScenarioButton extends ImageButton {
 

@@ -60,8 +60,8 @@ import org.drools.workbench.screens.guided.rule.client.editor.HasExpressionTypeC
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
@@ -483,7 +483,7 @@ public class ExpressionBuilder extends RuleModellerWidget
     }
 
     private void showBindingPopUp() {
-        final FormStylePopup popup = new FormStylePopup();
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() );
         popup.setWidth( 500 + "px" );
         HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();

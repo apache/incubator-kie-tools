@@ -20,14 +20,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -43,13 +40,28 @@ import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 /**
  * Pop-up for adding Actions to the (RuleModeller) guided editor
  */
 public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelectorPopup {
+
+    private final Command okCommand = new Command() {
+        @Override
+        public void execute() {
+            selectSomething();
+        }
+    };
+
+    private final Command cancelCommand = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
 
     public RuleModellerActionSelectorPopup( final RuleModel model,
                                             final RuleModeller ruleModeller,
@@ -59,6 +71,8 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
                ruleModeller,
                position,
                oracle );
+        add( new ModalFooterOKCancelButtons( okCommand,
+                                             cancelCommand ) );
     }
 
     @Override
@@ -95,30 +109,12 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             hp0.add( new InfoPopup( GuidedRuleEditorResources.CONSTANTS.PositionColon(),
                                     GuidedRuleEditorResources.CONSTANTS.ActionPositionExplanation() ) );
             layoutPanel.addRow( hp0 );
+            layoutPanel.addRow( new HTML( "<hr/>" ) );
         }
 
         choices = makeChoicesListBox();
         choicesPanel.add( choices );
         layoutPanel.addRow( choicesPanel );
-
-        HorizontalPanel hp = new HorizontalPanel();
-        Button ok = new Button( GuidedRuleEditorResources.CONSTANTS.OK() );
-        hp.add( ok );
-        ok.addClickHandler( new ClickHandler() {
-
-            public void onClick( ClickEvent event ) {
-                selectSomething();
-            }
-        } );
-
-        Button cancel = new Button( GuidedRuleEditorResources.CONSTANTS.Cancel() );
-        hp.add( cancel );
-        cancel.addClickHandler( new ClickHandler() {
-
-            public void onClick( ClickEvent event ) {
-                hide();
-            }
-        } );
 
         //DSL might be prohibited (e.g. editing a DRL file. Only DSLR files can contain DSL)
         if ( ruleModeller.isDSLEnabled() ) {
@@ -136,16 +132,13 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             layoutPanel.addRow( chkOnlyDisplayDSLConditions );
         }
 
-        layoutPanel.addRow( hp );
-
-        this.setAfterShow( new Command() {
-
-            public void execute() {
-                choices.setFocus( true );
-            }
-        } );
-
         return layoutPanel;
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        choices.setFocus( true );
     }
 
     private ListBox makeChoicesListBox() {

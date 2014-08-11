@@ -53,13 +53,13 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
-import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.uberfire.client.common.DirtyableComposite;
 import org.kie.uberfire.client.common.DropDownValueChanged;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
+import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 
 /**
  * This provides for editing of fields in the RHS of a rule.
@@ -379,7 +379,7 @@ public class ActionValueEditor
 
     protected void showTypeChoice( Widget w ) {
         final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                GuidedRuleEditorResources.CONSTANTS.FieldValue() );
+                                                        GuidedRuleEditorResources.CONSTANTS.FieldValue() );
         Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
 
@@ -393,7 +393,7 @@ public class ActionValueEditor
         form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
                            widgets( lit,
                                     new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
-                                            GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+                                                   GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
 
         if ( modeller.isTemplate() ) {
             Button templateButton = new Button( GuidedRuleEditorResources.CONSTANTS.TemplateKey() );
@@ -407,7 +407,7 @@ public class ActionValueEditor
             form.addAttribute( GuidedRuleEditorResources.CONSTANTS.TemplateKey() + ":",
                                widgets( templateButton,
                                         new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
-                                                GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+                                                       GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
         }
 
         form.addRow( new HTML( "<hr/>" ) );

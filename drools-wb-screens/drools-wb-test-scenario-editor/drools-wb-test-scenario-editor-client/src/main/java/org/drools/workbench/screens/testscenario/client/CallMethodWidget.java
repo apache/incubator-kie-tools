@@ -23,15 +23,15 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.ImageButton;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.FormStylePopup;
-import org.kie.uberfire.client.common.ImageButton;
-import org.kie.uberfire.client.common.SmallLabel;
 
 public class CallMethodWidget extends DirtyableComposite {
 
@@ -209,8 +209,9 @@ public class CallMethodWidget extends DirtyableComposite {
             }
         } );
 
-        popup.setPopupPosition( w.getAbsoluteLeft(),
-                                w.getAbsoluteTop() );
+        //TODO {manstis}
+        //popup.setPopupPosition( w.getAbsoluteLeft(),
+        //                        w.getAbsoluteTop() );
         popup.show();
 
     }
@@ -246,7 +247,6 @@ public class CallMethodWidget extends DirtyableComposite {
     private Widget fieldSelector( final CallFieldValue val ) {
         return new SmallLabel( val.type );
     }
-
 
     public boolean isDirty() {
         return layout.hasDirty();

@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -45,17 +46,17 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DropDownValueChanged;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.ValueChanged;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.DropDownValueChanged;
-import org.kie.uberfire.client.common.FormStylePopup;
-import org.kie.uberfire.client.common.InfoPopup;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.ValueChanged;
 
 /**
  * Constraint editor for the VerifyField of the expect part
@@ -292,8 +293,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         form.hide();
     }
 
-    private Panel widgets( final Widget left,
-                           final Widget right ) {
+    private Panel widgets( final IsWidget left,
+                           final IsWidget right ) {
         HorizontalPanel panel = new HorizontalPanel();
         panel.add( left );
         panel.add( right );

@@ -38,12 +38,12 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.kie.uberfire.client.common.ClickableLabel;
+import org.kie.uberfire.client.common.DirtyableFlexTable;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.FormStylePopup;
 
 public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 
@@ -178,7 +178,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         codeTable.setWidget( codeTableRow,
                              codeTableCol++,
-                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Init() +":</div>" ) );
+                             new HTML( "<div class='form-field'>" + GuidedRuleEditorResources.CONSTANTS.Init() + ":</div>" ) );
 
         final TextBox initField = new TextBox();
         initField.setTitle( GuidedRuleEditorResources.CONSTANTS.InitCode() );
@@ -226,7 +226,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         codePanel.add( codeTable );
 
         tPanel.add( codePanel,
-                GuidedRuleEditorResources.CONSTANTS.CustomCode() );
+                    GuidedRuleEditorResources.CONSTANTS.CustomCode() );
 
         DirtyableFlexTable functionTable = new DirtyableFlexTable();
 
@@ -247,7 +247,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         functionPanel.add( functionTable );
 
         tPanel.add( functionPanel,
-                GuidedRuleEditorResources.CONSTANTS.Function() );
+                    GuidedRuleEditorResources.CONSTANTS.Function() );
         ChangeHandler changehandler = new ChangeHandler() {
 
             public void onChange( ChangeEvent event ) {
@@ -315,8 +315,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         }
         box.setSelectedIndex( 0 );
 
-        final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
         popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {
@@ -345,8 +344,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         }
         box.setSelectedIndex( 0 );
 
-        final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
+        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorResources.CONSTANTS.NewFactPattern() );
         popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                             box );
         box.addChangeHandler( new ChangeHandler() {

@@ -23,6 +23,7 @@ import java.util.Set;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.RadioButton;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -62,13 +63,13 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.HumanReadable;
-import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.ImageButton;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.resources.HumanReadable;
+import org.uberfire.client.callbacks.Callback;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
@@ -119,6 +120,7 @@ public class ConditionPopup extends FormStylePopup {
                            final ConditionCol52 col,
                            final boolean isNew,
                            final boolean isReadOnly ) {
+        super( GuidedDecisionTableConstants.INSTANCE.ConditionColumnConfiguration() );
         this.rm = new BRLRuleModel( model );
         Pattern52 originalPattern = model.getPattern( col );
         this.editingPattern = originalPattern != null ? originalPattern.clonePattern() : null;
@@ -137,9 +139,6 @@ public class ConditionPopup extends FormStylePopup {
                                                         oracle,
                                                         isReadOnly,
                                                         allowEmptyValues() );
-
-        setTitle( GuidedDecisionTableConstants.INSTANCE.ConditionColumnConfiguration() );
-        setModal( false );
 
         HorizontalPanel pattern = new HorizontalPanel();
         pattern.add( patternLabel );
@@ -167,7 +166,7 @@ public class ConditionPopup extends FormStylePopup {
                 valueTypes.add( literal );
                 valueTypes.add( formula );
                 valueTypes.add( predicate );
-                addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.CalculationType()).append(GuidedDecisionTableConstants.COLON).toString(),
+                addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.CalculationType() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                               valueTypes );
 
                 switch ( editingCol.getConstraintValueType() ) {
@@ -229,7 +228,7 @@ public class ConditionPopup extends FormStylePopup {
                                           } );
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       field );
         doFieldLabel();
 
@@ -267,7 +266,7 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.DTLabelFromEntryPoint()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DTLabelFromEntryPoint() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       entryPointName );
 
         //Column header
@@ -335,7 +334,7 @@ public class ConditionPopup extends FormStylePopup {
 
         //Default value
         if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            defaultValueWidgetContainerIndex = addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.DefaultValue()).append(GuidedDecisionTableConstants.COLON).toString(),
+            defaultValueWidgetContainerIndex = addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.DefaultValue() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                                                              defaultValueWidgetContainer );
             makeDefaultValueWidget();
         }
@@ -356,11 +355,11 @@ public class ConditionPopup extends FormStylePopup {
                 }
             } );
         }
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Binding()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Binding() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       binding );
 
         //Hide column tick-box
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         //Initialise view
@@ -579,13 +578,13 @@ public class ConditionPopup extends FormStylePopup {
             } else {
                 fieldLabel.setText( this.editingCol.getFactField() );
             }
-            fieldLabelInterpolationInfo.setVisible( true );
+            fieldLabelInterpolationInfo.getWidget().getElement().getStyle().setDisplay( Style.Display.INLINE );
         } else if ( nil( editingPattern.getFactType() ) ) {
             fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAPatternFirst() );
-            fieldLabelInterpolationInfo.setVisible( false );
+            fieldLabelInterpolationInfo.getWidget().getElement().getStyle().setDisplay( Style.Display.NONE );
         } else if ( nil( editingCol.getFactField() ) ) {
             fieldLabel.setText( GuidedDecisionTableConstants.INSTANCE.pleaseSelectAField() );
-            fieldLabelInterpolationInfo.setVisible( false );
+            fieldLabelInterpolationInfo.getWidget().getElement().getStyle().setDisplay( Style.Display.NONE );
         } else {
             fieldLabel.setText( this.editingCol.getFactField() );
         }
@@ -727,9 +726,7 @@ public class ConditionPopup extends FormStylePopup {
     private void doShowOperatorChange( final String factType,
                                        final String factField,
                                        final String[] ops ) {
-        final FormStylePopup pop = new FormStylePopup();
-        pop.setTitle( GuidedDecisionTableConstants.INSTANCE.SetTheOperator() );
-        pop.setModal( false );
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.SetTheOperator() );
 
         //Operators "in" and "not in" are only allowed if the Calculation Type is a Literal
         final List<String> filteredOps = new ArrayList<String>();
@@ -786,7 +783,7 @@ public class ConditionPopup extends FormStylePopup {
             showNewPatternDialog();
             return;
         }
-        final FormStylePopup pop = new FormStylePopup();
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.FactType() );
         Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( pats );
@@ -836,9 +833,8 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     protected void showFieldChange() {
-        final FormStylePopup pop = new FormStylePopup();
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.Field() );
         final ListBox box = new ListBox();
-        pop.setModal( false );
 
         this.oracle.getFieldCompletions( this.editingPattern.getFactType(),
                                          FieldAccessorsAndMutators.ACCESSOR,
@@ -873,7 +869,7 @@ public class ConditionPopup extends FormStylePopup {
                                              }
                                          } );
 
-        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
+        pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",
@@ -904,7 +900,7 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     protected void showNewPatternDialog() {
-        final FormStylePopup pop = new FormStylePopup();
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.FactType() );
         pop.setTitle( GuidedDecisionTableConstants.INSTANCE.CreateANewFactPattern() );
         final ListBox types = new ListBox();
         for ( int i = 0; i < oracle.getFactTypes().length; i++ ) {
@@ -919,7 +915,7 @@ public class ConditionPopup extends FormStylePopup {
                                                             "" ) );
             }
         } );
-        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Binding()).append(GuidedDecisionTableConstants.COLON).toString(),
+        pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Binding() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           binding );
 
         //Patterns can be negated, i.e. "not Pattern(...)"

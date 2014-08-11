@@ -46,12 +46,12 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.ImageButton;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.client.callbacks.Callback;
 
 /**
  * A popup to define an Action to set a field on an existing Fact to the value
@@ -90,15 +90,13 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                                         final ActionWorkItemSetFieldCol52 col,
                                         final boolean isNew,
                                         final boolean isReadOnly ) {
+        super( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItemSetField() );
         this.editingCol = cloneActionSetColumn( col );
         this.model = model;
         this.oracle = oracle;
         this.utils = new GuidedDecisionTableUtils( model,
                                                    oracle );
         this.isReadOnly = isReadOnly;
-
-        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItemSetField() );
-        setModal( false );
 
         //Fact on which field will be set
         HorizontalPanel pattern = new HorizontalPanel();
@@ -119,7 +117,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                                                      } );
         changePattern.setEnabled( !isReadOnly );
         pattern.add( changePattern );
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Fact()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Fact() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       pattern );
 
         //Fact Field being set
@@ -129,7 +127,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         ImageButton editField = createEditField();
         editField.setEnabled( !isReadOnly );
         field.add( editField );
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       field );
         doFieldLabel();
 
@@ -148,7 +146,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                       header );
 
         //Update Engine with changes
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.UpdateEngineWithChanges()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.UpdateEngineWithChanges() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       doUpdate() );
 
         //Bind field to a WorkItem result parameter
@@ -172,7 +170,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         }
 
         //Hide column tick-box
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
@@ -423,7 +421,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
     }
 
     private void showChangeFact( ClickEvent w ) {
-        final FormStylePopup pop = new FormStylePopup();
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.FactType() );
 
         final ListBox pats = this.loadBoundFacts();
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.ChooseFact(),
@@ -449,9 +447,8 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
     }
 
     private void showFieldChange() {
-        final FormStylePopup pop = new FormStylePopup();
+        final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.Field() );
         final ListBox box = new ListBox();
-        pop.setModal( false );
 
         final String factType = getFactType();
         this.oracle.getFieldCompletions( factType,
@@ -463,7 +460,7 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
                                                  }
                                              }
                                          } );
-        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Field()).append(GuidedDecisionTableConstants.COLON).toString(),
+        pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           box );
         Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
         pop.addAttribute( "",

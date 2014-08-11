@@ -25,15 +25,15 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 
 public class TypeChoiceFormPopup
         extends FormStylePopup
@@ -112,7 +112,7 @@ public class TypeChoiceFormPopup
         addAttribute( GuidedRuleEditorResources.CONSTANTS.AVariable(),
                       widgets( variable,
                                new InfoPopup( GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
-                                       GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
+                                              GuidedRuleEditorResources.CONSTANTS.BoundVariableTip() ) ) );
     }
 
     private void fireSelection( final int type ) {
@@ -126,8 +126,8 @@ public class TypeChoiceFormPopup
                            SelectionEvent.getType() );
     }
 
-    private Panel widgets( final Widget left,
-                           final Widget right ) {
+    private Panel widgets( final IsWidget left,
+                           final IsWidget right ) {
         HorizontalPanel panel = new HorizontalPanel();
         panel.add( left );
         panel.add( right );

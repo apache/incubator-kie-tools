@@ -34,7 +34,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.kie.uberfire.client.common.FormStylePopup;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 
 /**
  * A popup to define the parameters of an Action to retract a Fact
@@ -50,12 +50,10 @@ public class ActionRetractFactPopup extends FormStylePopup {
                                    final ActionRetractFactCol52 col,
                                    final boolean isNew,
                                    final boolean isReadOnly ) {
+        super( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationDeleteAFact() );
         this.rm = new BRLRuleModel( model );
         this.editingCol = cloneActionRetractColumn( col );
         this.model = model;
-
-        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationDeleteAFact() );
-        setModal( false );
 
         //Show available pattern bindings, if Limited Entry
         if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
@@ -93,7 +91,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
                       header );
 
         //Hide column tick-box
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );

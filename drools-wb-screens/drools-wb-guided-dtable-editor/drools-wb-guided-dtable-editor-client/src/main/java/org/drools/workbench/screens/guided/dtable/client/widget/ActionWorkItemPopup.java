@@ -42,10 +42,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.kie.workbench.common.widgets.client.workitems.WorkItemParametersWidget;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.FormStylePopup;
 
 /**
  * A popup to define an Action to execute a Work Item
@@ -68,15 +68,13 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                 final Set<PortableWorkDefinition> workItemDefinitions,
                                 final boolean isNew,
                                 final boolean isReadOnly ) {
+        super( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItem() );
         this.editingCol = cloneActionWorkItemColumn( col );
         this.model = model;
         this.isReadOnly = isReadOnly;
 
         this.workItemInputParameters = new WorkItemParametersWidget( bindingProvider,
                                                                      isReadOnly );
-
-        setTitle( GuidedDecisionTableConstants.INSTANCE.ColumnConfigurationWorkItem() );
-        setModal( false );
 
         //Column header
         final TextBox header = new TextBox();
@@ -106,7 +104,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
                         String selectedWorkItemName = workItemsListBox.getValue( index );
                         editingCol.setWorkItemDefinition( workItemDefinitionsMap.get( selectedWorkItemName ) );
                         showWorkItemParameters();
-                        center();
                     }
                 }
 
@@ -121,7 +118,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
                         workItemDefinitions );
 
         //Hide column tick-box
-        addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString(),
+        addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
@@ -282,7 +279,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
             setAttributeVisibility( workItemInputParametersIndex,
                                     isWorkItemSelected );
             showWorkItemParameters();
-            center();
         }
     }
 

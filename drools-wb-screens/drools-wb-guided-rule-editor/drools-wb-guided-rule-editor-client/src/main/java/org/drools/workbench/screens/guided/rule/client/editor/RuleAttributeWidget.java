@@ -31,6 +31,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -39,13 +40,13 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.workbench.common.widgets.client.resources.ItemImages;
-import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
-import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.uberfire.client.common.DirtyableHorizontalPane;
 import org.kie.uberfire.client.common.FormStyleLayout;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.workbench.common.widgets.client.resources.ItemImages;
+import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
+import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 
 /**
  * Displays a list of rule options (attributes).
@@ -275,11 +276,11 @@ public class RuleAttributeWidget extends Composite {
     private Widget getEditorWidget( final RuleMetadata rm,
                                     final int idx,
                                     final boolean isReadOnly ) {
-        Widget editor;
+        IsWidget editor;
 
         if ( rm.getAttributeName().equals( LOCK_LHS ) || rm.getAttributeName().equals( LOCK_RHS ) ) {
             editor = new InfoPopup( GuidedRuleEditorResources.CONSTANTS.FrozenAreas(),
-                    GuidedRuleEditorResources.CONSTANTS.FrozenExplanation() );
+                                    GuidedRuleEditorResources.CONSTANTS.FrozenExplanation() );
         } else {
             editor = textBoxEditor( rm,
                                     isReadOnly );

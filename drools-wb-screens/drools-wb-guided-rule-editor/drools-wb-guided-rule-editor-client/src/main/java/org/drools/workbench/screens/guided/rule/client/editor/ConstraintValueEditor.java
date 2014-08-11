@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -64,16 +65,16 @@ import org.drools.workbench.screens.guided.rule.client.widget.ExpressionBuilder;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.uberfire.client.common.DirtyableComposite;
+import org.kie.uberfire.client.common.DropDownValueChanged;
+import org.kie.uberfire.client.common.InfoPopup;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.DropDownValueChanged;
-import org.kie.uberfire.client.common.FormStylePopup;
-import org.kie.uberfire.client.common.InfoPopup;
-import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * This is an editor for constraint values. How this behaves depends on the
@@ -696,8 +697,8 @@ public class ConstraintValueEditor
         form.hide();
     }
 
-    private Panel widgets( Widget left,
-                           Widget right ) {
+    private Panel widgets( IsWidget left,
+                           IsWidget right ) {
         HorizontalPanel panel = new HorizontalPanel();
         panel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
         panel.add( left );

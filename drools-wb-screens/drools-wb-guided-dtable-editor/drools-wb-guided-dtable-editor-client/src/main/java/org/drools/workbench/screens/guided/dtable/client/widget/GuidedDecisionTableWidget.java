@@ -51,26 +51,51 @@ import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.UpdateColumnAuditLogEntry;
-import org.drools.workbench.models.guided.dtable.shared.model.*;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
+import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDecisionTableWidget;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.common.AddButton;
+import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
+import org.kie.uberfire.client.common.DirtyableHorizontalPane;
+import org.kie.uberfire.client.common.ImageButton;
+import org.kie.uberfire.client.common.PrettyFormLayout;
+import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.AddButton;
-import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
-import org.kie.uberfire.client.common.DirtyableHorizontalPane;
-import org.kie.uberfire.client.common.FormStylePopup;
-import org.kie.uberfire.client.common.ImageButton;
-import org.kie.uberfire.client.common.PrettyFormLayout;
-import org.kie.uberfire.client.common.SmallLabel;
 import org.uberfire.security.Identity;
 
 /**
@@ -203,7 +228,7 @@ public class GuidedDecisionTableWidget extends Composite
             public void callback( Collection<String> ruleNames ) {
                 ruleSelector.setRuleNames( ruleNames );
             }
-        } ).getRuleNames(path, model.getPackageName());
+        } ).getRuleNames( path, model.getPackageName() );
 
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
@@ -644,8 +669,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         addButton.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent w ) {
-                final FormStylePopup pop = new FormStylePopup();
-                pop.setModal( false );
+                final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.AddNewColumn() );
 
                 //List of basic column types
                 final ListBox choice = new ListBox();
@@ -690,7 +714,6 @@ public class GuidedDecisionTableWidget extends Composite
                             removeItem( NewColumnTypes.ACTION_WORKITEM_INSERT_FACT_FIELD.name() );
                             removeItem( NewColumnTypes.ACTION_BRL_FRAGMENT.name() );
                         }
-                        pop.center();
                     }
 
                     private void addItem( int index,
@@ -825,10 +848,10 @@ public class GuidedDecisionTableWidget extends Composite
                         horiz.add( box );
                         horiz.add( addbutton );
 
-                        pop.addAttribute( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Metadata1())
-                                .append(GuidedDecisionTableConstants.COLON).toString(), horiz );
+                        pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Metadata1() )
+                                                  .append( GuidedDecisionTableConstants.COLON ).toString(), horiz );
                         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Attribute(),
-                                list );
+                                          list );
                         pop.show();
                     }
 
@@ -1279,8 +1302,8 @@ public class GuidedDecisionTableWidget extends Composite
         if ( model.getMetadataCols().size() > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( new SmallLabel( new StringBuilder(GuidedDecisionTableConstants.INSTANCE.Metadata1())
-                    .append(GuidedDecisionTableConstants.COLON).toString() ));
+            hp.add( new SmallLabel( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Metadata1() )
+                                            .append( GuidedDecisionTableConstants.COLON ).toString() ) );
             attributeConfigWidget.add( hp );
         }
         for ( MetadataCol52 atc : model.getMetadataCols() ) {
@@ -1305,7 +1328,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
-                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
+                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1337,8 +1360,8 @@ public class GuidedDecisionTableWidget extends Composite
                 @Override
                 public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
                     final AttributeCol52 clonedAt = at.cloneColumn();
-                    clonedAt.setDefaultValue(event.getOldDefaultValue());
-                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
+                    clonedAt.setDefaultValue( event.getOldDefaultValue() );
+                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
                 }
             } );
 
@@ -1362,7 +1385,7 @@ public class GuidedDecisionTableWidget extends Composite
                         at.setUseRowNumber( useRowNumber.getValue() );
                         reverseOrder.setEnabled( useRowNumber.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
+                        fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
                     }
                 } );
 
@@ -1371,7 +1394,7 @@ public class GuidedDecisionTableWidget extends Composite
                         final AttributeCol52 clonedAt = at.cloneColumn();
                         at.setReverseOrder( reverseOrder.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
+                        fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
                     }
                 } );
                 hp.add( reverseOrder );
@@ -1392,7 +1415,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
-                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff(at) );
+                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1414,7 +1437,7 @@ public class GuidedDecisionTableWidget extends Composite
     private void fireUpdateColumn( String userName,
                                    BaseColumn originCol,
                                    BaseColumn newCol,
-                                   List<BaseColumnFieldDiff> diffs) {
+                                   List<BaseColumnFieldDiff> diffs ) {
         UpdateColumnAuditLogEntry entry = new UpdateColumnAuditLogEntry( userName, originCol, newCol, diffs );
         model.getAuditLog().add( entry );
     }
