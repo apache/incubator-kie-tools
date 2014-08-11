@@ -184,8 +184,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     @Override
     public void removeWorkbenchPanel( final PanelDefinition toRemove ) throws IllegalStateException {
-        System.out.println( "Removing: " + toRemove.getPanelType() + "@" + System.identityHashCode( toRemove ));
-        dumpKnownPanels();
         if ( !toRemove.getParts().isEmpty() ) {
             throw new IllegalStateException( "Panel still contains parts: " + toRemove.getParts() );
         }
@@ -209,14 +207,6 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
         parentDef.removeChild( toRemove.getPosition() );
 
         getBeanFactory().destroy( presenterToRemove );
-        System.out.println("removed panel " + toRemove);
-        System.out.println("remaining panels: " + mapPanelDefinitionToPresenter);
-    }
-
-    protected void dumpKnownPanels() {
-        for ( PanelDefinition knownDef : mapPanelDefinitionToPresenter.keySet() ) {
-            System.out.println( "Known Panel: " + knownDef.getPanelType() + "@" + System.identityHashCode( knownDef ));
-        }
     }
 
     @Override
@@ -273,7 +263,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
 
     /**
      * Returns the first live (associated with an active presenter) PartDefinition whose place matches the given one.
-     * 
+     *
      * @return the definition for the live part servicing the given place, or null if no such part can be found.
      */
     protected PartDefinition getPartForPlace( final PlaceRequest place ) {
@@ -312,7 +302,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
      * Children in the NORTH, SOUTH, EAST, or WEST Positions of the removed panel are reconnected to the layout by
      * appending them to the same Position within the removed panel's parent. Children in other Positions within the
      * removed panel will not be reconnected, but they will be properly disposed.
-     * 
+     *
      * @param part
      *            the definition of the workbench part (screen or editor) to remove from the layout.
      */
@@ -349,7 +339,7 @@ public abstract class AbstractPanelManagerImpl implements PanelManager  {
      * <p>
      * TODO: move this logic into the panel presenters themselves (for panel types that want to support this behaviour;
      * probably only the north/south/east/west panels will want this)
-     * 
+     *
      * @param panelToRemove
      *            the panel to remove (children will be preserved).
      * @param panelToSearch

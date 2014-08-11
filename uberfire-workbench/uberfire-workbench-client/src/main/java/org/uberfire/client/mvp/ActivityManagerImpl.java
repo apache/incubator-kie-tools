@@ -152,7 +152,7 @@ public class ActivityManagerImpl implements ActivityManager {
      * Returns the scope of the given activity bean, first by checking with the activity cache (the only way to look up
      * the BeanDef for a runtime plugin activity) and then falling back on the Errai bean manager. Beans that are not
      * started (or were started but have been shut down) will cause an NPE.
-     * 
+     *
      * @param startedActivity
      *            an activity that is in the <i>started</i> or <i>open</i> state.
      */
@@ -213,7 +213,7 @@ public class ActivityManagerImpl implements ActivityManager {
 
     /**
      * Gets the bean definition of the activity associated with the given place ID, if one exists.
-     * 
+     *
      * @param identifier
      *            the place ID. Null is permitted, but always resolves to an empty collection.
      * @return an unmodifiable collection with zero or one item, depending on if the resolution was successful.
@@ -225,8 +225,6 @@ public class ActivityManagerImpl implements ActivityManager {
 
         IOCBeanDef<Activity> beanDefActivity = activityBeansCache.getActivity(identifier);
         if (beanDefActivity == null) {
-            //throw new RuntimeException("No such activity: " + identifier);
-            System.out.println("No such activity: " + identifier + " .. returning an empty list");
             return emptyList();
         }
         return singletonList(beanDefActivity);

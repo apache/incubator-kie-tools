@@ -229,7 +229,7 @@ implements PlaceManager {
      * <p>
      * The behaviour of this method is affected by the boolean-valued
      * {@code org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces} property in {@link UberFirePreferences}.
-     * 
+     *
      * @param place
      *            A non-null place request that could have originated from within application code, from within the
      *            framework, or by parsing a hash fragment from a browser history event.
@@ -255,7 +255,6 @@ implements PlaceManager {
         final Set<Activity> activities = activityManager.getActivities( place );
 
         if ( activities == null || activities.size() == 0 ) {
-            System.out.println("Launching notfound activity for placeRequest " + place);
             final PlaceRequest notFoundPopup = new DefaultPlaceRequest( "workbench.activity.notfound" );
             notFoundPopup.addParameter( "requestedPlaceIdentifier", place.getIdentifier() );
 
@@ -438,7 +437,7 @@ implements PlaceManager {
      * Launches the given splash screen, associating it with the given place in {@link #activeSplashScreens} for later
      * disposal. For every call to this method, you must call {@link #closeSplashScreen(PlaceRequest)} with the same
      * PlaceRequest at some point in the future, or call {@link #closeAllSplashScreens()}.
-     * 
+     *
      * @param place
      *            the place that wanted the splash screen to launch.
      * @param splashScreen
@@ -476,7 +475,7 @@ implements PlaceManager {
     /**
      * Returns all the PlaceRequests that map to activies that are currently in the open state and accessible
      * somewhere in the current perspective.
-     * 
+     *
      * @return an unmodifiable view of the current active place requests. This view may or may not update after
      * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
      * set; instead, call this method again for current information.
@@ -488,7 +487,7 @@ implements PlaceManager {
     /**
      * Returns all the PathPlaceRequests that map to activies that are currently in the open state and accessible
      * somewhere in the current perspective.
-     * 
+     *
      * @return an unmodifiable view of the current active place requests. This view may or may not update after
      * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
      * set; instead, call this method again for current information.

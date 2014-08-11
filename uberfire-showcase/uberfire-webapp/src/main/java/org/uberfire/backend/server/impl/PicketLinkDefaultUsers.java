@@ -41,7 +41,6 @@ public class PicketLinkDefaultUsers {
      */
     @PostConstruct
     public void create() {
-        System.out.println("CREATING USERS!");
         final IdentityManager identityManager = partitionManager.createIdentityManager();
         final RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
 
