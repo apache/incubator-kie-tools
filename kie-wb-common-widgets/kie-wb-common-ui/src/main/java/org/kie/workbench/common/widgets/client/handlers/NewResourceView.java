@@ -25,10 +25,8 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.github.gwtbootstrap.client.ui.event.ShownEvent;
 import com.github.gwtbootstrap.client.ui.event.ShownHandler;
@@ -38,17 +36,17 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.commons.data.Pair;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.commons.data.Pair;
 
 @ApplicationScoped
-public class NewResourceView extends Modal implements NewResourcePresenter.View {
+public class NewResourceView extends KieBaseModal implements NewResourcePresenter.View {
 
     interface NewResourceViewBinder
             extends
@@ -94,12 +92,6 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
     VerticalPanel handlerExtensions;
 
     public NewResourceView() {
-        setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
-
         footer.enableOkButton( true );
 
         add( uiBinder.createAndBindUi( this ) );
@@ -118,7 +110,7 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
     @Override
     public void init( final NewResourcePresenter presenter ) {
         this.presenter = presenter;
-        
+
     }
 
     @Override
@@ -228,10 +220,10 @@ public class NewResourceView extends Modal implements NewResourcePresenter.View 
 
                             } );
     }
-    
+
     @Override
-    public void setTitle(String title){
-        super.setTitle(title);
+    public void setTitle( String title ) {
+        super.setTitle( title );
     }
 
 }

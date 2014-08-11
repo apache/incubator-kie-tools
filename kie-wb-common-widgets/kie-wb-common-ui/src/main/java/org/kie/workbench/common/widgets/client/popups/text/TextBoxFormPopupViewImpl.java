@@ -17,22 +17,20 @@
 package org.kie.workbench.common.widgets.client.popups.text;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.Popup;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class TextBoxFormPopupViewImpl
-        extends Popup
+        extends KieBaseModal
         implements TextBoxFormPopupView {
 
-    private final Widget widget;
     private Presenter presenter;
 
     interface AddNewKBasePopupViewImplBinder
@@ -46,31 +44,29 @@ public class TextBoxFormPopupViewImpl
     @UiField
     TextBox nameTextBox;
 
-    @UiField
-    Button okButton;
-
-    @UiField
-    Button cancelButton;
-
     public TextBoxFormPopupViewImpl() {
-        widget = uiBinder.createAndBindUi( this );
+        final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
+                presenter.onOk();
+                hide();
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
+                hide();
+            }
+        }
+        );
+
+        add( uiBinder.createAndBindUi( this ) );
+        add( footer );
         setTitle( CommonConstants.INSTANCE.New() );
     }
 
     @Override
     public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
-    }
-
-    @Override
-    public Widget getContent() {
-        return widget;
-    }
-
-    @UiHandler("okButton")
-    public void ok( ClickEvent clickEvent ) {
-        presenter.onOk();
-        hide();
     }
 
     @Override
@@ -86,11 +82,6 @@ public class TextBoxFormPopupViewImpl
     @Override
     public void showFieldEmptyWarning() {
         ErrorPopup.showMessage( CommonConstants.INSTANCE.PleaseSetAName() );
-    }
-
-    @UiHandler("cancelButton")
-    public void cancel( ClickEvent clickEvent ) {
-        hide();
     }
 
 }

@@ -35,7 +35,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.HasBusyIndicator;
-import org.kie.uberfire.client.common.YesNoCancelPopup;
+import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;

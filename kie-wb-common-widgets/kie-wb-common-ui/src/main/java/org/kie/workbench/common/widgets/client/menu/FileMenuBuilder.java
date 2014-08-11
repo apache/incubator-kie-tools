@@ -20,8 +20,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.ResourceTypeDefinition;
-import sun.font.LayoutPathImpl;
 
 public interface FileMenuBuilder {
 

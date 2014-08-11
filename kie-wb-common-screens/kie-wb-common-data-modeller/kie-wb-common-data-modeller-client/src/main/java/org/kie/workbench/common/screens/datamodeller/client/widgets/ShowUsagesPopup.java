@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -41,12 +40,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.tables.SimpleTable;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
-public class ShowUsagesPopup extends Modal {
+public class ShowUsagesPopup extends KieBaseModal {
 
     interface ShowUsagesPopupWidgetBinder
             extends
@@ -79,16 +79,16 @@ public class ShowUsagesPopup extends Modal {
     Command cancelCommand;
 
     protected ShowUsagesPopup( final String title,
-            final String message,
-            final List<Path> usedByFiles,
-            final Command yesCommand,
-            final String yesButtonText,
-            final ButtonType yesButtonType,
-            final IconType yesButtonIconType,
-            final Command cancelCommand,
-            final String cancelButtonText,
-            final ButtonType cancelButtonType,
-            final IconType cancelButtonIconType ) {
+                               final String message,
+                               final List<Path> usedByFiles,
+                               final Command yesCommand,
+                               final String yesButtonText,
+                               final ButtonType yesButtonType,
+                               final IconType yesButtonIconType,
+                               final Command cancelCommand,
+                               final String cancelButtonText,
+                               final ButtonType cancelButtonType,
+                               final IconType cancelButtonIconType ) {
 
         setTitle( title );
         setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
@@ -134,103 +134,104 @@ public class ShowUsagesPopup extends Modal {
         this.message.setHTML( SafeHtmlUtils.fromTrustedString( message ) );
         initTable();
         addShownHandler( new ShownHandler() {
-            @Override public void onShown( ShownEvent shownEvent ) {
+            @Override
+            public void onShown( ShownEvent shownEvent ) {
                 loadTable();
             }
         } );
     }
 
     protected ShowUsagesPopup( final String message,
-            final List<Path> usedByFiles,
-            final Command yesCommand,
-            final String yesButtonText,
-            final Command cancelCommand,
-            final String cancelButtonText ) {
+                               final List<Path> usedByFiles,
+                               final Command yesCommand,
+                               final String yesButtonText,
+                               final Command cancelCommand,
+                               final String cancelButtonText ) {
 
         this( Constants.INSTANCE.usages_popup_title(),
-                message,
-                usedByFiles,
-                yesCommand,
-                yesButtonText,
-                null,
-                null,
-                cancelCommand,
-                cancelButtonText,
-                null,
-                null );
+              message,
+              usedByFiles,
+              yesCommand,
+              yesButtonText,
+              null,
+              null,
+              cancelCommand,
+              cancelButtonText,
+              null,
+              null );
     }
 
     public static ShowUsagesPopup newUsagesPopup( final String message,
-            final List<Path> usedByFiles,
-            final Command yesCommand,
-            final String yesButtonText,
-            final Command cancelCommand,
-            final String cancelButtonText ) {
+                                                  final List<Path> usedByFiles,
+                                                  final Command yesCommand,
+                                                  final String yesButtonText,
+                                                  final Command cancelCommand,
+                                                  final String cancelButtonText ) {
 
         return new ShowUsagesPopup( message,
-                usedByFiles,
-                yesCommand,
-                yesButtonText,
-                cancelCommand,
-                cancelButtonText );
+                                    usedByFiles,
+                                    yesCommand,
+                                    yesButtonText,
+                                    cancelCommand,
+                                    cancelButtonText );
     }
 
     public static ShowUsagesPopup newUsagesPopup( final String message,
-            final List<Path> usedByFiles,
-            final Command yesCommand,
-            final String yesButtonText,
-            final ButtonType yesButtonType,
-            final IconType yesButtonIconType,
-            final Command cancelCommand,
-            final String cancelButtonText,
-            final ButtonType cancelButtonType,
-            final IconType cancelButtonIconType ) {
+                                                  final List<Path> usedByFiles,
+                                                  final Command yesCommand,
+                                                  final String yesButtonText,
+                                                  final ButtonType yesButtonType,
+                                                  final IconType yesButtonIconType,
+                                                  final Command cancelCommand,
+                                                  final String cancelButtonText,
+                                                  final ButtonType cancelButtonType,
+                                                  final IconType cancelButtonIconType ) {
 
         return new ShowUsagesPopup( Constants.INSTANCE.usages_popup_title(),
-                message,
-                usedByFiles,
-                yesCommand,
-                yesButtonText,
-                yesButtonType,
-                yesButtonIconType,
-                cancelCommand,
-                cancelButtonText,
-                cancelButtonType,
-                cancelButtonIconType );
+                                    message,
+                                    usedByFiles,
+                                    yesCommand,
+                                    yesButtonText,
+                                    yesButtonType,
+                                    yesButtonIconType,
+                                    cancelCommand,
+                                    cancelButtonText,
+                                    cancelButtonType,
+                                    cancelButtonIconType );
     }
 
     public static ShowUsagesPopup newUsagesPopupForDeletion( final String message,
-            final List<Path> usedByFiles,
-            final Command yesCommand,
-            final Command cancelCommand ) {
+                                                             final List<Path> usedByFiles,
+                                                             final Command yesCommand,
+                                                             final Command cancelCommand ) {
 
         return newUsagesPopup( message,
-                usedByFiles,
-                yesCommand,
-                Constants.INSTANCE.usages_popup_action_yes_delete_anyway(),
-                ButtonType.DANGER,
-                IconType.MINUS_SIGN,
-                cancelCommand,
-                null,
-                ButtonType.PRIMARY,
-                null );
+                               usedByFiles,
+                               yesCommand,
+                               Constants.INSTANCE.usages_popup_action_yes_delete_anyway(),
+                               ButtonType.DANGER,
+                               IconType.MINUS_SIGN,
+                               cancelCommand,
+                               null,
+                               ButtonType.PRIMARY,
+                               null );
     }
 
     public static ShowUsagesPopup newUsagesPopupForRenaming( final String message,
-            final List<Path> usedByFiles,
-            final Command yesCommand,
-            final Command cancelCommand ) {
+                                                             final List<Path> usedByFiles,
+                                                             final Command yesCommand,
+                                                             final Command cancelCommand ) {
 
         return newUsagesPopup( message,
-                usedByFiles,
-                yesCommand,
-                Constants.INSTANCE.usages_popup_action_yes_rename_anyway(),
-                ButtonType.DANGER,
-                IconType.MINUS_SIGN,
-                cancelCommand,
-                null,
-                ButtonType.PRIMARY,
-                null );
+                               usedByFiles,
+                               yesCommand,
+                               Constants.INSTANCE.usages_popup_action_yes_rename_anyway(),
+                               ButtonType.DANGER,
+                               IconType.MINUS_SIGN,
+                               cancelCommand,
+                               null,
+                               ButtonType.PRIMARY,
+                               null );
     }
 
     private void initTable() {
@@ -238,10 +239,15 @@ public class ShowUsagesPopup extends Modal {
 
         usedByFilesProvider.addDataDisplay( usedByTable );
         Column<UsedByRow, String> nameColumn = new TextColumn<UsedByRow>() {
-            @Override public String getValue( UsedByRow row ) {
+            @Override
+            public String getValue( UsedByRow row ) {
                 return row.getPath() != null ? row.getPath().getFileName() : null;
             }
-            @Override public void render( Cell.Context context, UsedByRow object, SafeHtmlBuilder sb ) {
+
+            @Override
+            public void render( Cell.Context context,
+                                UsedByRow object,
+                                SafeHtmlBuilder sb ) {
                 final String currentValue = getValue( object );
                 if ( currentValue != null ) {
                     sb.append( SafeHtmlUtils.fromTrustedString( "<div title=\"" ) );
@@ -258,15 +264,19 @@ public class ShowUsagesPopup extends Modal {
         usedByTable.setColumnWidth( nameColumn, 40, Style.Unit.PCT );
 
         Column<UsedByRow, String> pathColumn = new TextColumn<UsedByRow>() {
-            @Override public String getValue( UsedByRow row ) {
+            @Override
+            public String getValue( UsedByRow row ) {
                 String pathStr = null;
-                if ( row.getPath() != null && row.getPath().getFileName() != null) {
+                if ( row.getPath() != null && row.getPath().getFileName() != null ) {
                     pathStr = row.getPath().toURI().substring( 0, row.getPath().toURI().lastIndexOf( '/' ) );
                 }
                 return pathStr;
             }
 
-            @Override public void render( Cell.Context context, UsedByRow object, SafeHtmlBuilder sb ) {
+            @Override
+            public void render( Cell.Context context,
+                                UsedByRow object,
+                                SafeHtmlBuilder sb ) {
                 final String currentValue = getValue( object );
                 if ( currentValue != null ) {
                     sb.append( SafeHtmlUtils.fromTrustedString( "<div title=\"" ) );
@@ -276,7 +286,7 @@ public class ShowUsagesPopup extends Modal {
                 super.render( context, object, sb );
                 if ( currentValue != null ) {
                     sb.append( SafeHtmlUtils.fromTrustedString( "</div>" ) );
-                 }
+                }
             }
         };
         usedByTable.addColumn( pathColumn, Constants.INSTANCE.usages_popup_file_path_column() );
@@ -289,7 +299,7 @@ public class ShowUsagesPopup extends Modal {
         }
     }
 
-    @UiHandler( "yesButton" )
+    @UiHandler("yesButton")
     public void onYesButtonClick( final ClickEvent e ) {
         if ( yesCommand != null ) {
             yesCommand.execute();
@@ -297,7 +307,7 @@ public class ShowUsagesPopup extends Modal {
         hide();
     }
 
-    @UiHandler( "cancelButton" )
+    @UiHandler("cancelButton")
     public void onCancelButtonClick( final ClickEvent e ) {
         if ( cancelCommand != null ) {
             cancelCommand.execute();

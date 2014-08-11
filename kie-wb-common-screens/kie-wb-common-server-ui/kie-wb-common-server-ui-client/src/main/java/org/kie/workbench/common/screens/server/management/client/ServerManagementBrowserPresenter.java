@@ -16,7 +16,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.common.YesNoCancelPopup;
+import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
 import org.kie.workbench.common.screens.server.management.client.artifact.NewContainerForm;
 import org.kie.workbench.common.screens.server.management.client.box.BoxPresenter;
 import org.kie.workbench.common.screens.server.management.client.box.BoxType;
@@ -195,7 +195,8 @@ public class ServerManagementBrowserPresenter {
                         null,
                         null,
                         null,
-                        null ).show();
+                        null
+                                                    ).show();
             }
         } );
 

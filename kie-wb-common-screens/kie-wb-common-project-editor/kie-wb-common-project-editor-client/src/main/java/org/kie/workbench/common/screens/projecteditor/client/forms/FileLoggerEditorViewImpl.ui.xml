@@ -19,20 +19,25 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'
-             xmlns:bootstrapBase='urn:import:com.github.gwtbootstrap.client.ui.base'>
+             xmlns:bootstrapBase='urn:import:com.github.gwtbootstrap.client.ui.base'
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
-  <ui:with field="i18n"
-           type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
-  <ui:with field="resources"
-           type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
+  <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
+  <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <bootstrap:Container>
-    <bootstrapBase:InlineLabel text="{i18n.Name}" />
-    <bootstrap:TextBox ui:field="nameTextBox"/>
-    <bootstrapBase:InlineLabel text="{i18n.FileName}" />
-    <bootstrap:TextBox ui:field="fileNameTextBox"/>
-    <bootstrapBase:InlineLabel text="{i18n.Interval}" />
-    <bootstrap:TextBox ui:field="intervalTextBox"/>
-  </bootstrap:Container>
+  <gwt:VerticalPanel>
+    <gwt:HorizontalPanel>
+      <bootstrapBase:InlineLabel text="{i18n.Name}"/>
+      <bootstrap:TextBox ui:field="nameTextBox"/>
+    </gwt:HorizontalPanel>
+    <gwt:HorizontalPanel>
+      <bootstrapBase:InlineLabel text="{i18n.FileName}"/>
+      <bootstrap:TextBox ui:field="fileNameTextBox"/>
+    </gwt:HorizontalPanel>
+    <gwt:HorizontalPanel>
+      <bootstrapBase:InlineLabel text="{i18n.Interval}"/>
+      <bootstrap:TextBox ui:field="intervalTextBox"/>
+    </gwt:HorizontalPanel>
+  </gwt:VerticalPanel>
 
 </ui:UiBinder>

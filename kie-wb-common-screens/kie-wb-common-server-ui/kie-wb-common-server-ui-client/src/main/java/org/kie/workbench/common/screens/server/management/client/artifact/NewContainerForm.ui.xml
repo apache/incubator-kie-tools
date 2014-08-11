@@ -18,7 +18,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
+             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
+             xmlns:kie='urn:import:org.kie.uberfire.client.common.popups'>
 
   <ui:style>
     .margin {
@@ -26,9 +27,8 @@
     }
   </ui:style>
 
-
   <g:HTMLPanel>
-    <b:Modal ui:field="popup" title="Create Container" backdrop="STATIC" keyboard="true" animation="true">
+    <kie:KieBaseModal ui:field="popup" title="Create Container" backdrop="STATIC" keyboard="true" animation="true">
       <b:Fieldset>
         <b:FluidContainer addStyleNames="well">
           <b:FluidRow>
@@ -80,7 +80,7 @@
       <b:FluidContainer addStyleNames="{style.margin}">
         <b:FluidRow ui:field="content"/>
       </b:FluidContainer>
-    </b:Modal>
+    </kie:KieBaseModal>
   </g:HTMLPanel>
 
 </ui:UiBinder>

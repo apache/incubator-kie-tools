@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
@@ -39,9 +38,10 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.workbench.common.screens.server.management.model.Server;
-import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
 import org.kie.workbench.common.screens.server.management.service.ServerAlreadyRegisteredException;
+import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.common.ErrorPopup;
 import org.uberfire.mvp.Command;
@@ -96,7 +96,7 @@ public class ServerRegistryEndpointForm
     PasswordTextBox passwordTextBox;
 
     @UiField
-    Modal popup;
+    KieBaseModal popup;
 
     @PostConstruct
     public void init() {

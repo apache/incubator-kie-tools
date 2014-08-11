@@ -19,21 +19,20 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.base.Style;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.uberfire.client.common.Popup;
+import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 
 public class KSessionModelOptionsPopUpViewImpl
-        extends Popup
+        extends KieBaseModal
         implements KSessionModelOptionsPopUpView {
 
     private static final Style PANEL_ENABLED = new Style() {
@@ -53,7 +52,6 @@ public class KSessionModelOptionsPopUpViewImpl
     private static final String AGENDA_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.AgendaEventListener();
     private static final String PROCESS_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.ProcessEventListener();
 
-    private final Widget content;
     private final String CONSOLE_LOGGER = ProjectEditorResources.CONSTANTS.ConsoleLogger();
     private final String FILE_LOGGER = ProjectEditorResources.CONSTANTS.FileLogger();
     private Presenter presenter;
@@ -64,16 +62,13 @@ public class KSessionModelOptionsPopUpViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField(provided = true)
     ListenersPanel listenersPanel;
 
     @UiField(provided = true)
     WorkItemHandlersPanel workItemHandlersPanel;
-
-    @UiField
-    Button closeButton;
 
     //    @UiField
 //    CheckBox loggerCheckBox;
@@ -88,29 +83,30 @@ public class KSessionModelOptionsPopUpViewImpl
 //    Container loggerContainer;
 
     @Inject
-    public KSessionModelOptionsPopUpViewImpl(ListenersPanel listenersPanel,
-            WorkItemHandlersPanel workItemHandlersPanel) {
+    public KSessionModelOptionsPopUpViewImpl( ListenersPanel listenersPanel,
+                                              WorkItemHandlersPanel workItemHandlersPanel ) {
         this.listenersPanel = listenersPanel;
         this.workItemHandlersPanel = workItemHandlersPanel;
 
-        content = uiBinder.createAndBindUi(this);
+        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalFooterOKButton( new Command() {
+            @Override
+            public void execute() {
+                hide();
+            }
+        } ) );
 
 //        loggerTypeListBox.addItem(CONSOLE_LOGGER);
 //        loggerTypeListBox.addItem(FILE_LOGGER);
     }
 
     @Override
-    public Widget getContent() {
-        return content;
-    }
-
-    @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setLoggerEditor(LoggerEditorPanel loggerEditor) {
+    public void setLoggerEditor( LoggerEditorPanel loggerEditor ) {
         clearLoggerEditor();
 //        loggerEditorPanel.add(loggerEditor);
     }
@@ -150,17 +146,13 @@ public class KSessionModelOptionsPopUpViewImpl
 //    }
 
     @Override
-    public void setListeners(List<ListenerModel> listeners) {
-        listenersPanel.setListeners(listeners);
+    public void setListeners( List<ListenerModel> listeners ) {
+        listenersPanel.setListeners( listeners );
     }
 
     @Override
-    public void setWorkItemHandlers(List<WorkItemHandlerModel> workItemHandlerModels) {
-        workItemHandlersPanel.setHandlerModels(workItemHandlerModels);
+    public void setWorkItemHandlers( List<WorkItemHandlerModel> workItemHandlerModels ) {
+        workItemHandlersPanel.setHandlerModels( workItemHandlerModels );
     }
 
-    @UiHandler("closeButton")
-    public void handleClick(ClickEvent event) {
-        hide();
-    }
 }

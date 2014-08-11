@@ -18,23 +18,21 @@ package org.kie.workbench.common.widgets.client.popups.validation;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.CellTable;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 /**
  * A popup that lists BuildMessages
  */
-public class ValidationPopup extends Modal {
+public class ValidationPopup extends KieBaseModal {
 
     interface ValidationPopupWidgetBinder
             extends
@@ -51,11 +49,6 @@ public class ValidationPopup extends Modal {
 
     private ValidationPopup() {
         setTitle( CommonConstants.INSTANCE.ValidationErrors() );
-        setMaxHeigth( ( Window.getClientHeight() * 0.50 ) + "px" );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
         setHideOthers( false );
 
         add( uiBinder.createAndBindUi( this ) );

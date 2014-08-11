@@ -18,14 +18,13 @@ package org.kie.workbench.common.widgets.client.popups.file;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.FormStylePopup;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -45,7 +44,6 @@ public class SavePopup extends FormStylePopup {
 
         //Make sure it appears on top of other popups
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
-        setGlassEnabled( true );
 
         checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.CheckInComment() );
         checkInCommentTextBox.setWidth( "200px" );
@@ -75,11 +73,6 @@ public class SavePopup extends FormStylePopup {
     }
 
     public void show() {
-        setAfterShow( new Command() {
-            public void execute() {
-                checkInCommentTextBox.setFocus( true );
-            }
-        } );
         super.show();
         checkInCommentTextBox.setFocus( true );
     }

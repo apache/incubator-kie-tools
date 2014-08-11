@@ -16,8 +16,8 @@
   ~ limitations under the License.
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.widgets.client.resources.CommonsResources"/>
@@ -32,8 +32,6 @@
       </div>
       <div style='clear:both;'/>
     </div>
-    <gwt:Button ui:field="okButton" text='{i18n.OK}'/>
-    <gwt:Button ui:field="cancelButton" text='{i18n.Cancel}'/>
   </gwt:HTMLPanel>
 
 </ui:UiBinder>

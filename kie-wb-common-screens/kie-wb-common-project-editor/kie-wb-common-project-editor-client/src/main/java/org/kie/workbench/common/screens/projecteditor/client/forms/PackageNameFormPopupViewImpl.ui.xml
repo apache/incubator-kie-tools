@@ -35,8 +35,6 @@
         <bootstrap:Dropdown ui:field="nameDropDown"/>
       </bootstrap:Column>
     </bootstrap:Row>
-    <bootstrap:Button ui:field="okButton" text='{i18n.OK}'/>
-    <bootstrap:Button ui:field="cancelButton" text='{i18n.Cancel}'/>
   </gwt:HTMLPanel>
 
 </ui:UiBinder>

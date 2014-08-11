@@ -43,7 +43,7 @@ import org.kie.uberfire.client.common.ConcurrentChangePopup;
 import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
-import org.kie.uberfire.client.common.YesNoCancelPopup;
+import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
 import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
@@ -89,7 +89,6 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.type.ClientTypeRegistry;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
@@ -106,14 +105,15 @@ import org.uberfire.workbench.type.FileNameUtil;
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 @Dependent
-@WorkbenchEditor( identifier = "DataModelerEditor",
-        supportedTypes = { JavaResourceType.class },
-        priority = Integer.MAX_VALUE )
+@WorkbenchEditor(identifier = "DataModelerEditor",
+                 supportedTypes = { JavaResourceType.class },
+                 priority = Integer.MAX_VALUE)
 public class DataModelerScreenPresenter {
 
     public interface DataModelerScreenView
             extends
-            UberView<DataModelerScreenPresenter>, HasBusyIndicator {
+            UberView<DataModelerScreenPresenter>,
+            HasBusyIndicator {
 
         void setContext( DataModelerContext context );
 
@@ -225,7 +225,8 @@ public class DataModelerScreenPresenter {
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path, final PlaceRequest place ) {
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
         makeMenuBar();
         initContext();
         open = true;
@@ -239,16 +240,18 @@ public class DataModelerScreenPresenter {
 
         multiPage.clear();
         multiPage.addPage( new Page( overview.asWidget(),
-                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Overview() ) {
-            @Override public void onFocus() {
+                                     org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Overview() ) {
+            @Override
+            public void onFocus() {
             }
 
-            @Override public void onLostFocus() {
+            @Override
+            public void onLostFocus() {
             }
         } );
 
         multiPage.addPage( new Page( view,
-                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.EditTabTitle() ) {
+                                     org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.EditTabTitle() ) {
             @Override
             public void onFocus() {
                 if ( uiStarted ) {
@@ -262,7 +265,7 @@ public class DataModelerScreenPresenter {
         } );
 
         multiPage.addPage( new Page( javaSourceEditor,
-                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
+                                     org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 if ( uiStarted ) {
@@ -276,7 +279,8 @@ public class DataModelerScreenPresenter {
         } );
 
         javaSourceEditor.addChangeHandler( new ChangeHandler() {
-            @Override public void onChange( ChangeEvent event ) {
+            @Override
+            public void onChange( ChangeEvent event ) {
                 if ( getContext() != null ) {
                     getContext().setEditionStatus( DataModelerContext.EditionStatus.SOURCE_CHANGED );
                     getContext().setDirty( true );
@@ -289,17 +293,19 @@ public class DataModelerScreenPresenter {
         initVersionSelectionCallback( path );
 
         loadModel( path,
-                new Command() {
-                    @Override public void execute() {
-                        setSelectedTab( OVERVIEW_TAB_INDEX );
-                    }
-                },
-                new Command() {
-                    @Override public void execute() {
-                        setSelectedTab( OVERVIEW_TAB_INDEX );
-                    }
-                }
-        );
+                   new Command() {
+                       @Override
+                       public void execute() {
+                           setSelectedTab( OVERVIEW_TAB_INDEX );
+                       }
+                   },
+                   new Command() {
+                       @Override
+                       public void execute() {
+                           setSelectedTab( OVERVIEW_TAB_INDEX );
+                       }
+                   }
+                 );
 
     }
 
@@ -320,22 +326,22 @@ public class DataModelerScreenPresenter {
             @Override
             public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
                 newConcurrentRename( info.getSource(),
-                        info.getTarget(),
-                        info.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                disableMenus();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( info.getTarget() ),
-                                        true );
-                            }
-                        }
-                ).show();
+                                     info.getTarget(),
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( info.getTarget() ),
+                                                     true );
+                                         }
+                                     }
+                                   ).show();
             }
         } );
 
@@ -343,20 +349,20 @@ public class DataModelerScreenPresenter {
             @Override
             public void execute( final ObservablePath.OnConcurrentDelete info ) {
                 newConcurrentDelete( info.getPath(),
-                        info.getIdentity(),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                disableMenus();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.closePlace( place );
-                            }
-                        }
-                ).show();
+                                     info.getIdentity(),
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             disableMenus();
+                                         }
+                                     },
+                                     new Command() {
+                                         @Override
+                                         public void execute() {
+                                             placeManager.closePlace( place );
+                                         }
+                                     }
+                                   ).show();
             }
         } );
     }
@@ -392,26 +398,26 @@ public class DataModelerScreenPresenter {
 
         if ( concurrentUpdateSessionInfo != null ) {
             ConcurrentChangePopup.newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                    concurrentUpdateSessionInfo.getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            onSafeSave();
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel?
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            reload( path, true );
-                        }
-                    }
-            ).show();
+                                                       concurrentUpdateSessionInfo.getIdentity(),
+                                                       new Command() {
+                                                           @Override
+                                                           public void execute() {
+                                                               onSafeSave();
+                                                           }
+                                                       },
+                                                       new Command() {
+                                                           @Override
+                                                           public void execute() {
+                                                               //cancel?
+                                                           }
+                                                       },
+                                                       new Command() {
+                                                           @Override
+                                                           public void execute() {
+                                                               reload( path, true );
+                                                           }
+                                                       }
+                                                     ).show();
         } else {
             onSafeSave();
         }
@@ -426,7 +432,8 @@ public class DataModelerScreenPresenter {
             final String className = getContext().getEditorModel().getOriginalClassName();
             modelerService.call( new RemoteCallback<List<Path>>() {
 
-                @Override public void callback( List<Path> paths ) {
+                @Override
+                public void callback( List<Path> paths ) {
 
                     if ( paths != null && paths.size() > 0 ) {
                         //If usages for this class were detected in project assets
@@ -442,11 +449,12 @@ public class DataModelerScreenPresenter {
                                     }
                                 },
                                 new Command() {
-                                    @Override public void execute() {
+                                    @Override
+                                    public void execute() {
                                         //do nothing.
                                     }
                                 }
-                        );
+                                                                                                   );
 
                         showUsagesPopup.setCloseVisible( false );
                         showUsagesPopup.show();
@@ -470,7 +478,7 @@ public class DataModelerScreenPresenter {
             public void execute( final String comment ) {
                 view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting() );
                 modelerService.call( getDeleteSuccessCallback( path ), new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_deleting_error() ) ).delete( path,
-                        comment );
+                                                                                                                                                                 comment );
             }
         } );
         popup.show();
@@ -478,18 +486,18 @@ public class DataModelerScreenPresenter {
 
     private void onCopy() {
         final CopyPopup popup = new CopyPopup( path,
-                javaFileNameValidator,
-                new CommandWithFileNameAndCommitMessage() {
-                    @Override
-                    public void execute( final FileNameAndCommitMessage details ) {
-                        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying() );
-                        modelerService.call( getCopySuccessCallback( path ),
-                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_copying_error() ) ).copy( path,
-                                details.getNewFileName(),
-                                details.getCommitMessage(),
-                                true );
-                    }
-                } );
+                                               javaFileNameValidator,
+                                               new CommandWithFileNameAndCommitMessage() {
+                                                   @Override
+                                                   public void execute( final FileNameAndCommitMessage details ) {
+                                                       view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying() );
+                                                       modelerService.call( getCopySuccessCallback( path ),
+                                                                            new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_copying_error() ) ).copy( path,
+                                                                                                                                                                   details.getNewFileName(),
+                                                                                                                                                                   details.getCommitMessage(),
+                                                                                                                                                                   true );
+                                                   }
+                                               } );
         popup.show();
     }
 
@@ -504,7 +512,8 @@ public class DataModelerScreenPresenter {
 
             modelerService.call( new RemoteCallback<List<Path>>() {
 
-                @Override public void callback( List<Path> paths ) {
+                @Override
+                public void callback( List<Path> paths ) {
 
                     if ( paths != null && paths.size() > 0 ) {
                         //If usages for this class were detected in project assets
@@ -525,7 +534,7 @@ public class DataModelerScreenPresenter {
                                         //do nothing.
                                     }
                                 }
-                        );
+                                                                                                   );
 
                         showUsagesPopup.setCloseVisible( false );
                         showUsagesPopup.show();
@@ -546,23 +555,26 @@ public class DataModelerScreenPresenter {
     private void onRename() {
         if ( getContext().isDirty() ) {
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                    Constants.INSTANCE.modelEditor_confirm_save_before_rename(),
-                    new Command() {
-                        @Override public void execute() {
-                            rename( true );
-                        }
-                    },
-                    new Command() {
-                        @Override public void execute() {
-                            rename( false );
-                        }
-                    },
-                    new Command() {
-                        @Override public void execute() {
-                            //do nothing.
-                        }
-                    }
-            );
+                                                                                      Constants.INSTANCE.modelEditor_confirm_save_before_rename(),
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              rename( true );
+                                                                                          }
+                                                                                      },
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              rename( false );
+                                                                                          }
+                                                                                      },
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //do nothing.
+                                                                                          }
+                                                                                      }
+                                                                                    );
             yesNoCancelPopup.setCloseVisible( false );
             yesNoCancelPopup.show();
         } else {
@@ -594,7 +606,7 @@ public class DataModelerScreenPresenter {
             public void callback( final List<ValidationMessage> results ) {
                 if ( results == null || results.isEmpty() ) {
                     notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                            NotificationEvent.NotificationType.SUCCESS ) );
+                                                              NotificationEvent.NotificationType.SUCCESS ) );
                 } else {
                     ValidationPopup.showMessages( results );
                 }
@@ -647,38 +659,40 @@ public class DataModelerScreenPresenter {
                 readonly = !versionRecordManager.isLatest( versionRecord );
 
                 loadModel( DataModelerScreenPresenter.this.path,
-                        new Command() {
-                            @Override public void execute() {
-                                setSelectedTab( OVERVIEW_TAB_INDEX );
-                            }
-                        },
-                        new Command() {
-                            @Override public void execute() {
-                                setSelectedTab( OVERVIEW_TAB_INDEX );
-                            }
-                        }
-                );
+                           new Command() {
+                               @Override
+                               public void execute() {
+                                   setSelectedTab( OVERVIEW_TAB_INDEX );
+                               }
+                           },
+                           new Command() {
+                               @Override
+                               public void execute() {
+                                   setSelectedTab( OVERVIEW_TAB_INDEX );
+                               }
+                           }
+                         );
             }
         };
     }
 
     private void onSafeSave() {
 
-        final String[] newClassName = new String[1];
+        final String[] newClassName = new String[ 1 ];
         if ( getContext().isDirty() ) {
             if ( getContext().isEditorChanged() ) {
-                newClassName[0] = getContext().getDataObject().getName();
-                save( newClassName[0] );
+                newClassName[ 0 ] = getContext().getDataObject().getName();
+                save( newClassName[ 0 ] );
             } else {
-                view.showBusyIndicator(  org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
+                view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
                 modelerService.call( new RemoteCallback<TypeInfoResult>() {
                     @Override
                     public void callback( TypeInfoResult typeInfoResult ) {
                         view.hideBusyIndicator();
                         if ( !typeInfoResult.hasErrors() && typeInfoResult.getJavaTypeInfo() != null ) {
-                            newClassName[0] = typeInfoResult.getJavaTypeInfo().getName();
+                            newClassName[ 0 ] = typeInfoResult.getJavaTypeInfo().getName();
                         }
-                        save( newClassName[0] );
+                        save( newClassName[ 0 ] );
                     }
                 } ).loadJavaTypeInfo( getSource() );
             }
@@ -687,44 +701,48 @@ public class DataModelerScreenPresenter {
         }
     }
 
-    private void save(final String newClassName) {
+    private void save( final String newClassName ) {
 
         String currentFileName = DataModelerUtils.extractSimpleFileName( path );
-        if ( currentFileName != null && newClassName != null && !currentFileName.equals( newClassName )) {
+        if ( currentFileName != null && newClassName != null && !currentFileName.equals( newClassName ) ) {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                    Constants.INSTANCE.modelEditor_confirm_file_name_refactoring( newClassName ),
-                    new Command() {
-                        @Override public void execute() {
-                            new SaveOperationService().save( path , getSaveCommand( newClassName ) );
-                        }
-                    },
-                    Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
-                    ButtonType.PRIMARY,
-                    new Command() {
-                        @Override public void execute() {
-                            new SaveOperationService().save( path , getSaveCommand( null ) );
-                        }
-                    },
-                    Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
-                    ButtonType.DANGER,
-                    new Command() {
-                        @Override public void execute() {
-                            //do nothing
-                        }
-                    },
-                    null,
-                    null);
+                                                                                      Constants.INSTANCE.modelEditor_confirm_file_name_refactoring( newClassName ),
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              new SaveOperationService().save( path, getSaveCommand( newClassName ) );
+                                                                                          }
+                                                                                      },
+                                                                                      Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
+                                                                                      ButtonType.PRIMARY,
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              new SaveOperationService().save( path, getSaveCommand( null ) );
+                                                                                          }
+                                                                                      },
+                                                                                      Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
+                                                                                      ButtonType.DANGER,
+                                                                                      new Command() {
+                                                                                          @Override
+                                                                                          public void execute() {
+                                                                                              //do nothing
+                                                                                          }
+                                                                                      },
+                                                                                      null,
+                                                                                      null
+                                                                                    );
 
             yesNoCancelPopup.setCloseVisible( false );
             yesNoCancelPopup.show();
 
         } else {
-            new SaveOperationService().save( path , getSaveCommand( null ) );
+            new SaveOperationService().save( path, getSaveCommand( null ) );
         }
     }
 
-    private CommandWithCommitMessage getSaveCommand(final String newFileName) {
+    private CommandWithCommitMessage getSaveCommand( final String newFileName ) {
         return new CommandWithCommitMessage() {
             @Override
             public void execute( final String commitMessage ) {
@@ -746,7 +764,7 @@ public class DataModelerScreenPresenter {
                 view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Saving() );
 
                 modelerService.call( getSaveSuccessCallback( newFileName ),
-                    new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), path, modifiedDataObject[ 0 ], metadata, commitMessage, newFileName );
+                                     new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), path, modifiedDataObject[ 0 ], metadata, commitMessage, newFileName );
 
             }
         };
@@ -769,15 +787,15 @@ public class DataModelerScreenPresenter {
                         //un common case
 
                         showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
-                                true,
-                                result.getErrors(),
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        //return to the source tab
-                                        multiPage.selectPage( EDITABLE_SOURCE_TAB );
-                                    }
-                                } );
+                                               true,
+                                               result.getErrors(),
+                                               new Command() {
+                                                   @Override
+                                                   public void execute() {
+                                                       //return to the source tab
+                                                       multiPage.selectPage( EDITABLE_SOURCE_TAB );
+                                                   }
+                                               } );
 
                     }
                 } else {
@@ -798,9 +816,9 @@ public class DataModelerScreenPresenter {
 
                 notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
                 dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
-                        getDataModel(),
-                        oldDirtyStatus,
-                        getContext().isDirty() ) );
+                                                                       getDataModel(),
+                                                                       oldDirtyStatus,
+                                                                       getContext().isDirty() ) );
 
                 dataModelerEvent.fire( new DataModelSaved( null, getDataModel() ) );
 
@@ -811,7 +829,9 @@ public class DataModelerScreenPresenter {
         };
     }
 
-    private void loadModel( final Path path, final Command onParseSuccess, final Command onParseErrors ) {
+    private void loadModel( final Path path,
+                            final Command onParseSuccess,
+                            final Command onParseErrors ) {
 
         view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
 
@@ -822,13 +842,14 @@ public class DataModelerScreenPresenter {
                 context.setAnnotationDefinitions( defs );
 
                 modelerService.call( getLoadModelSuccessCallback( onParseSuccess, onParseErrors ),
-                        new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel( path );
+                                     new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadModel( path );
             }
         }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
-        ).getAnnotationDefinitions();
+                           ).getAnnotationDefinitions();
     }
 
-    private RemoteCallback<EditorModel> getLoadModelSuccessCallback( final Command onParseSuccess, final Command onParseErrors ) {
+    private RemoteCallback<EditorModel> getLoadModelSuccessCallback( final Command onParseSuccess,
+                                                                     final Command onParseErrors ) {
         return new RemoteCallback<EditorModel>() {
 
             @Override
@@ -878,21 +899,21 @@ public class DataModelerScreenPresenter {
         }
 
         final RenamePopup popup = new RenamePopup( path,
-                javaFileNameValidator,
-                new CommandWithFileNameAndCommitMessage() {
-                    @Override
-                    public void execute( final FileNameAndCommitMessage details ) {
-                        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Renaming() );
+                                                   javaFileNameValidator,
+                                                   new CommandWithFileNameAndCommitMessage() {
+                                                       @Override
+                                                       public void execute( final FileNameAndCommitMessage details ) {
+                                                           view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Renaming() );
 
-                        modelerService.call( getRenameSuccessCallback( path ),
-                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_renaming_error() ) ).rename( path,
-                                details.getNewFileName(),
-                                details.getCommitMessage(),
-                                true,
-                                saveCurrentChanges,
-                                getSource(), modifiedDataObject[ 0 ], metadata );
-                    }
-                } );
+                                                           modelerService.call( getRenameSuccessCallback( path ),
+                                                                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_renaming_error() ) ).rename( path,
+                                                                                                                                                                          details.getNewFileName(),
+                                                                                                                                                                          details.getCommitMessage(),
+                                                                                                                                                                          true,
+                                                                                                                                                                          saveCurrentChanges,
+                                                                                                                                                                          getSource(), modifiedDataObject[ 0 ], metadata );
+                                                       }
+                                                   } );
         popup.show();
     }
 
@@ -1005,18 +1026,19 @@ public class DataModelerScreenPresenter {
                     view.hideBusyIndicator();
                     if ( result.hasErrors() ) {
 
-                        showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors() ,
-                                true,
-                                result.getErrors(),
-                                new Command() {
-                                    @Override public void execute() {
-                                        //return to the source tab
-                                        multiPage.selectPage( EDITABLE_SOURCE_TAB );
-                                        getContext().setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
-                                        updateEditorView( null );
-                                        getContext().setDataObject( null );
-                                    }
-                                } );
+                        showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
+                                               true,
+                                               result.getErrors(),
+                                               new Command() {
+                                                   @Override
+                                                   public void execute() {
+                                                       //return to the source tab
+                                                       multiPage.selectPage( EDITABLE_SOURCE_TAB );
+                                                       getContext().setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
+                                                       updateEditorView( null );
+                                                       getContext().setDataObject( null );
+                                                   }
+                                               } );
 
                     } else {
                         //ok, we can reload the editor tab.
@@ -1036,37 +1058,41 @@ public class DataModelerScreenPresenter {
             if ( getContext().isParseErrors() ) {
                 //there are parse errors, the editor tab couldn't be loaded.  (errors are already published)
                 showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
-                        false,
-                        null,
-                        new Command() {
-                            @Override public void execute() {
-                                multiPage.selectPage( EDITABLE_SOURCE_TAB );
-                            }
-                        } );
+                                       false,
+                                       null,
+                                       new Command() {
+                                           @Override
+                                           public void execute() {
+                                               multiPage.selectPage( EDITABLE_SOURCE_TAB );
+                                           }
+                                       } );
             }
         }
     }
 
-    private void showParseErrorsDialog( final String message, final boolean publishErrors, final List<DataModelerError> errors, final Command command ) {
+    private void showParseErrorsDialog( final String message,
+                                        final boolean publishErrors,
+                                        final List<DataModelerError> errors,
+                                        final Command command ) {
 
         if ( publishErrors && errors != null && !errors.isEmpty() ) {
             publishSystemMessages( getCurrentMessageType(), true, errors );
         }
 
         YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                message,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        command.execute();
-                    }
-                },
-                CommonConstants.INSTANCE.OK(),
-                null,
-                null,
-                null,
-                null
-        );
+                                                                                  message,
+                                                                                  new Command() {
+                                                                                      @Override
+                                                                                      public void execute() {
+                                                                                          command.execute();
+                                                                                      }
+                                                                                  },
+                                                                                  CommonConstants.INSTANCE.OK(),
+                                                                                  null,
+                                                                                  null,
+                                                                                  null,
+                                                                                  null
+                                                                                );
         yesNoCancelPopup.setCloseVisible( false );
         yesNoCancelPopup.show();
     }
@@ -1075,7 +1101,8 @@ public class DataModelerScreenPresenter {
         return open;
     }
 
-    private void reload( final ObservablePath targetPath, final boolean cleanConcurrencyInfo ) {
+    private void reload( final ObservablePath targetPath,
+                         final boolean cleanConcurrencyInfo ) {
         if ( cleanConcurrencyInfo ) {
             concurrentUpdateSessionInfo = null;
         }
@@ -1090,32 +1117,33 @@ public class DataModelerScreenPresenter {
         changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
 
         loadModel( path,
-                new Command() {
-                    @Override
-                    public void execute() {
-                    }
-                },
-                new Command() {
-                    @Override
-                    public void execute() {
-                        if ( isEditorTabSelected() ) {
-                            showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
-                                    false,
-                                    getContext().getEditorModel().getErrors(),
-                                    new Command() {
-                                        @Override public void execute() {
-                                            //we need to go directly to the sources tab
-                                            loadSourceTab();
-                                            setSelectedTab( EDITABLE_SOURCE_TAB );
-                                        }
-                                    } );
-                        }
-                    }
-                }
-        );
+                   new Command() {
+                       @Override
+                       public void execute() {
+                       }
+                   },
+                   new Command() {
+                       @Override
+                       public void execute() {
+                           if ( isEditorTabSelected() ) {
+                               showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
+                                                      false,
+                                                      getContext().getEditorModel().getErrors(),
+                                                      new Command() {
+                                                          @Override
+                                                          public void execute() {
+                                                              //we need to go directly to the sources tab
+                                                              loadSourceTab();
+                                                              setSelectedTab( EDITABLE_SOURCE_TAB );
+                                                          }
+                                                      } );
+                           }
+                       }
+                   }
+                 );
     }
 
-    private void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
+    private void onDataObjectDeleted( @Observes DataObjectDeletedEvent event ) {
         if ( getContext() != null &&
                 event.isFrom( getContext().getCurrentProject() ) &&
                 event.getCurrentDataObject() != null &&
@@ -1126,7 +1154,7 @@ public class DataModelerScreenPresenter {
 
             //check deleted object is referenced by current data object.
             if ( validatorService.isReferencedByCurrentObject( event.getCurrentDataObject(), getContext().getDataObject() ) ) {
-                notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataObject_referenced_has_been_deleted(event.getCurrentDataObject().getClassName(), getContext().getDataObject().getClassName()) ) );
+                notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataObject_referenced_has_been_deleted( event.getCurrentDataObject().getClassName(), getContext().getDataObject().getClassName() ) ) );
             } else if ( !getDataModel().isExternal( event.getCurrentDataObject().getClassName() ) ) {
                 getDataModel().removeDataObject( event.getCurrentDataObject().getClassName() );
                 view.refreshTypeLists( true );
@@ -1134,7 +1162,7 @@ public class DataModelerScreenPresenter {
         }
     }
 
-    private void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
+    private void onDataObjectCreated( @Observes DataObjectCreatedEvent event ) {
         if ( getContext() != null &&
                 event.isFrom( getContext().getCurrentProject() ) &&
                 event.getCurrentDataObject() != null &&
@@ -1154,7 +1182,9 @@ public class DataModelerScreenPresenter {
         unpublishMessagesEvent.fire( unpublishMessage );
     }
 
-    private void publishSystemMessages( String messageType, boolean cleanExisting, List<DataModelerError> errors ) {
+    private void publishSystemMessages( String messageType,
+                                        boolean cleanExisting,
+                                        List<DataModelerError> errors ) {
         PublishBatchMessagesEvent publishMessage = new PublishBatchMessagesEvent();
         publishMessage.setCleanExisting( cleanExisting );
         publishMessage.setMessageType( messageType );
@@ -1197,23 +1227,27 @@ public class DataModelerScreenPresenter {
                     }
                 } )
                 .addDelete( new Command() {
-                    @Override public void execute() {
+                    @Override
+                    public void execute() {
                         onSafeDelete();
                     }
                 } )
                 .addValidate( new Command() {
-                    @Override public void execute() {
+                    @Override
+                    public void execute() {
                         onValidate();
                     }
                 } )
                 .addNewTopLevelMenu( versionRecordManager.buildMenu() )
                 .addCommand( "ShowStatus (testing)", new Command() {
-                    @Override public void execute() {
+                    @Override
+                    public void execute() {
                         showStatus();
                     }
                 } )
                 .addCommand( "TestReload (testing)", new Command() {
-                    @Override public void execute() {
+                    @Override
+                    public void execute() {
                         reload( path, true );
                     }
                 } )
@@ -1239,7 +1273,7 @@ public class DataModelerScreenPresenter {
                     }
                 },
                 new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_propertyType_loading_error() )
-        ).getBasePropertyTypes();
+                           ).getBasePropertyTypes();
     }
 
     private void clearContext() {

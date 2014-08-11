@@ -23,12 +23,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.services.shared.validation.Validator;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -66,7 +66,6 @@ public class RenamePopup extends FormStylePopup {
 
         //Make sure it appears on top of other popups
         getElement().getStyle().setZIndex( Integer.MAX_VALUE );
-        setGlassEnabled( true );
 
         nameTextBox.setTitle( CommonConstants.INSTANCE.NewName() );
         nameTextBox.setWidth( "200px" );

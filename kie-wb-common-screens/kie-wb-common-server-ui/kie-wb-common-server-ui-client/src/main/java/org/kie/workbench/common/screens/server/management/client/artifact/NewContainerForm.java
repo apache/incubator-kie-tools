@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.Row;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
@@ -38,6 +37,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.workbench.common.screens.server.management.model.ServerRef;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -64,7 +64,7 @@ public class NewContainerForm
     private Caller<ServerManagementService> service;
 
     @UiField
-    Modal popup;
+    KieBaseModal popup;
 
     @UiField
     ControlGroup containerNameGroup;

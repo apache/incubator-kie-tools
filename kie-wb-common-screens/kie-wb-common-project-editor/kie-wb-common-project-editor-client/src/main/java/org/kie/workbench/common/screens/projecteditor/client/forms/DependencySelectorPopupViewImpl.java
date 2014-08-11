@@ -2,14 +2,14 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Modal;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class DependencySelectorPopupViewImpl
-        extends Modal
+        extends KieBaseModal
         implements DependencySelectorPopupView {
 
     private DependencySelectorPresenter presenter;

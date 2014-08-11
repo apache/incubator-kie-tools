@@ -18,9 +18,7 @@ package org.kie.workbench.common.widgets.configresource.client.widget.unbound;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -29,10 +27,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 
-public class AddImportPopup extends Modal {
+public class AddImportPopup extends KieBaseModal {
 
     interface AddGlobalPopupBinder
             extends
@@ -72,10 +71,6 @@ public class AddImportPopup extends Modal {
 
     public AddImportPopup() {
         setTitle( ImportConstants.INSTANCE.addImportPopupTitle() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
 
         add( uiBinder.createAndBindUi( this ) );
         add( footer );

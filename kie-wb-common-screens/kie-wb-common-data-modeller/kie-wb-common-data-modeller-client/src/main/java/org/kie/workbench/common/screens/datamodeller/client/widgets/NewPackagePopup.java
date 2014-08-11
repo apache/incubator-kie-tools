@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
@@ -26,25 +28,21 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.uberfire.client.common.Popup;
+import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.uberfire.mvp.Command;
 
-import javax.inject.Inject;
-
-
-public class NewPackagePopup extends Popup {
+public class NewPackagePopup extends KieBaseModal {
 
     private TextBox newPackageName = new TextBox();
 
-    private Button newPackageButton = new Button(Constants.INSTANCE.packageSelector_popup_add());
+    private Button newPackageButton = new Button( Constants.INSTANCE.packageSelector_popup_add() );
 
     private String packageName;
 
-    private HtmlWidget newPackageHelpHtml = new HtmlWidget("P", Constants.INSTANCE.validPackageHelp("<br>"));
+    private HtmlWidget newPackageHelpHtml = new HtmlWidget( "P", Constants.INSTANCE.validPackageHelp( "<br>" ) );
 
     private HelpInline errorMessages = new HelpInline();
 
@@ -62,56 +60,47 @@ public class NewPackagePopup extends Popup {
     ValidatorService validatorService;
 
     public NewPackagePopup() {
-        setModal(true);
+        newPackageName.setPlaceholder( Constants.INSTANCE.package_id_placeholder() );
+        newPackageControlGroup.add( newPackageName );
+        errorMessagesGroup.add( errorMessages );
+        dataPanel.add( newPackageControlGroup );
+        dataPanel.add( newPackageButton );
+        mainPanel.add( dataPanel );
+        mainPanel.add( newPackageHelpHtml );
+        mainPanel.add( errorMessagesGroup );
 
-        newPackageName.setPlaceholder(Constants.INSTANCE.package_id_placeholder());
-        newPackageControlGroup.add(newPackageName);
-        errorMessagesGroup.add(errorMessages);
-        dataPanel.add(newPackageControlGroup);
-        dataPanel.add(newPackageButton);
-        mainPanel.add(dataPanel);
-        mainPanel.add(newPackageHelpHtml);
-        mainPanel.add(errorMessagesGroup);
-
-        newPackageButton.addClickHandler(new ClickHandler() {
+        newPackageButton.addClickHandler( new ClickHandler() {
 
             @Override
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
 
-                setPackageName(null);
+                setPackageName( null );
                 final String packgeName = newPackageName.getText() != null ? newPackageName.getText().trim().toLowerCase() : "";
-                validatorService.isValidPackageIdentifier(packgeName, new ValidatorCallback() {
+                validatorService.isValidPackageIdentifier( packgeName, new ValidatorCallback() {
                     @Override
                     public void onFailure() {
-                        setErrorMessage(Constants.INSTANCE.validation_error_invalid_package_identifier(packgeName));
+                        setErrorMessage( Constants.INSTANCE.validation_error_invalid_package_identifier( packgeName ) );
                     }
 
                     @Override
                     public void onSuccess() {
-                        setPackageName(packgeName);
+                        setPackageName( packgeName );
                         clean();
                         hide();
-                        if (afterAddCommand != null) {
+                        if ( afterAddCommand != null ) {
                             afterAddCommand.execute();
                         }
                     }
-                });
+                } );
             }
-        });
-
-        super.setAfterCloseEvent(new com.google.gwt.user.client.Command() {
-            @Override
-            public void execute() {
-                clean();
-            }
-        });
+        } );
     }
 
     public String getPackageName() {
         return packageName;
     }
 
-    public void setPackageName(String packageName) {
+    public void setPackageName( String packageName ) {
         this.packageName = packageName;
     }
 
@@ -119,7 +108,7 @@ public class NewPackagePopup extends Popup {
         return afterAddCommand;
     }
 
-    public void setAfterAddCommand(Command afterAddCommand) {
+    public void setAfterAddCommand( Command afterAddCommand ) {
         this.afterAddCommand = afterAddCommand;
     }
 
@@ -129,24 +118,25 @@ public class NewPackagePopup extends Popup {
     }
 
     @Override
-    public Widget getContent() {
-        return mainPanel;
+    public void hide() {
+        super.hide();
+        clear();
     }
 
     public void clean() {
-        newPackageName.setText("");
+        newPackageName.setText( "" );
         cleanErrors();
     }
 
     public void cleanErrors() {
-        errorMessages.setText("");
-        newPackageControlGroup.setType(ControlGroupType.NONE);
-        errorMessagesGroup.setType(ControlGroupType.NONE);
+        errorMessages.setText( "" );
+        newPackageControlGroup.setType( ControlGroupType.NONE );
+        errorMessagesGroup.setType( ControlGroupType.NONE );
     }
 
-    public void setErrorMessage(String errorMessage) {
-        newPackageControlGroup.setType(ControlGroupType.ERROR);
-        errorMessages.setText(errorMessage);
-        errorMessagesGroup.setType(ControlGroupType.ERROR);
+    public void setErrorMessage( String errorMessage ) {
+        newPackageControlGroup.setType( ControlGroupType.ERROR );
+        errorMessages.setText( errorMessage );
+        errorMessagesGroup.setType( ControlGroupType.ERROR );
     }
 }

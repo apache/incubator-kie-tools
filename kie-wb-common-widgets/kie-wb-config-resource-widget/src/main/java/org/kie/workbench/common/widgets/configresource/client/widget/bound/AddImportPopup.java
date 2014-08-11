@@ -20,8 +20,6 @@ import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -31,10 +29,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.imports.Import;
-import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 
-public class AddImportPopup extends Modal {
+public class AddImportPopup extends KieBaseModal {
 
     interface AddGlobalPopupBinder
             extends
@@ -71,10 +70,6 @@ public class AddImportPopup extends Modal {
 
     public AddImportPopup() {
         setTitle( ImportConstants.INSTANCE.addImportPopupTitle() );
-        setBackdrop( BackdropType.STATIC );
-        setKeyboard( true );
-        setAnimation( true );
-        setDynamicSafe( true );
 
         add( uiBinder.createAndBindUi( this ) );
         add( footer );

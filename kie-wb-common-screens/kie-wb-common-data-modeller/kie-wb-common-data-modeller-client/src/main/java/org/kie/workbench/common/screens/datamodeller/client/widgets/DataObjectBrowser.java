@@ -45,7 +45,6 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -57,6 +56,9 @@ import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
@@ -67,8 +69,6 @@ import org.kie.workbench.common.screens.datamodeller.client.util.ObjectPropertyC
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
@@ -81,24 +81,20 @@ import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.YesNoCancelPopup;
-import org.kie.uberfire.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-
-import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.*;
-
 
 public class DataObjectBrowser extends Composite {
 
     interface DataObjectEditorUIBinder
             extends UiBinder<Widget, DataObjectBrowser> {
 
-    };
+    }
 
-    private static DataObjectEditorUIBinder uiBinder = GWT.create(DataObjectEditorUIBinder.class);
+    ;
+
+    private static DataObjectEditorUIBinder uiBinder = GWT.create( DataObjectEditorUIBinder.class );
 
     @UiField
     VerticalPanel mainPanel;
@@ -107,7 +103,7 @@ public class DataObjectBrowser extends Composite {
     Label objectName;
 
     @UiField(provided = true)
-    CellTable<ObjectPropertyTO> dataObjectPropertiesTable = new CellTable<ObjectPropertyTO>(1000, GWT.<CellTable.SelectableResources>create(CellTable.SelectableResources.class));
+    CellTable<ObjectPropertyTO> dataObjectPropertiesTable = new CellTable<ObjectPropertyTO>( 1000, GWT.<CellTable.SelectableResources>create( CellTable.SelectableResources.class ) );
 
     @UiField
     Label newPropertyHeader;
@@ -154,47 +150,46 @@ public class DataObjectBrowser extends Composite {
     private boolean readonly = true;
 
     public DataObjectBrowser() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
-        newPropertyId.getElement().getStyle().setWidth(180, Style.Unit.PX);
-        newPropertyLabel.getElement().getStyle().setWidth(160, Style.Unit.PX);
-        newPropertyType.getElement().getStyle().setWidth(200, Style.Unit.PX);
+        newPropertyId.getElement().getStyle().setWidth( 180, Style.Unit.PX );
+        newPropertyLabel.getElement().getStyle().setWidth( 160, Style.Unit.PX );
+        newPropertyType.getElement().getStyle().setWidth( 200, Style.Unit.PX );
 
-        objectName.setText("");
+        objectName.setText( "" );
 
-        dataObjectPropertiesProvider.setList(new ArrayList<ObjectPropertyTO>());
+        dataObjectPropertiesProvider.setList( new ArrayList<ObjectPropertyTO>() );
 
         //Init data objects table
 
-        dataObjectPropertiesTable.setEmptyTableWidget(new com.github.gwtbootstrap.client.ui.Label(Constants.INSTANCE.objectBrowser_emptyTable()));
+        dataObjectPropertiesTable.setEmptyTableWidget( new com.github.gwtbootstrap.client.ui.Label( Constants.INSTANCE.objectBrowser_emptyTable() ) );
 
         //Init position column
 
         final TextColumn<ObjectPropertyTO> propertyPositionColumn = new TextColumn<ObjectPropertyTO>() {
 
             @Override
-            public String getValue( final ObjectPropertyTO objectProperty) {
-                return AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "");
+            public String getValue( final ObjectPropertyTO objectProperty ) {
+                return AnnotationValueHandler.getInstance().getStringValue( objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "" );
             }
         };
 
-
-        propertyPositionColumn.setSortable(true);
-        dataObjectPropertiesTable.addColumn(propertyPositionColumn, Constants.INSTANCE.objectBrowser_columnPosition());
+        propertyPositionColumn.setSortable( true );
+        dataObjectPropertiesTable.addColumn( propertyPositionColumn, Constants.INSTANCE.objectBrowser_columnPosition() );
         //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
 
-
-        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyPositionColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());
-        propertyPositionColHandler.setComparator(propertyPositionColumn, new ObjectPropertyComparator("position"));
-        dataObjectPropertiesTable.addColumnSortHandler(propertyPositionColHandler);
-
+        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyPositionColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>( dataObjectPropertiesProvider.getList() );
+        propertyPositionColHandler.setComparator( propertyPositionColumn, new ObjectPropertyComparator( "position" ) );
+        dataObjectPropertiesTable.addColumnSortHandler( propertyPositionColHandler );
 
         //Init property name column
 
         final TextColumn<ObjectPropertyTO> propertyNameColumn = new TextColumn<ObjectPropertyTO>() {
 
             @Override
-            public void render(Cell.Context context, ObjectPropertyTO object, SafeHtmlBuilder sb) {
+            public void render( Cell.Context context,
+                                ObjectPropertyTO object,
+                                SafeHtmlBuilder sb ) {
                 SafeHtml startDiv = new SafeHtml() {
                     @Override
                     public String asString() {
@@ -208,34 +203,33 @@ public class DataObjectBrowser extends Composite {
                     }
                 };
 
-                sb.append(startDiv);
-                super.render(context, object, sb);
-                sb.append(endDiv);
+                sb.append( startDiv );
+                super.render( context, object, sb );
+                sb.append( endDiv );
             }
 
             @Override
-            public String getValue( final ObjectPropertyTO objectProperty) {
+            public String getValue( final ObjectPropertyTO objectProperty ) {
                 return objectProperty.getName();
             }
         };
 
-
-        propertyNameColumn.setSortable(true);
-        dataObjectPropertiesTable.addColumn(propertyNameColumn, Constants.INSTANCE.objectBrowser_columnName());
+        propertyNameColumn.setSortable( true );
+        dataObjectPropertiesTable.addColumn( propertyNameColumn, Constants.INSTANCE.objectBrowser_columnName() );
         //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
 
-
-        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyNameColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());
-        propertyNameColHandler.setComparator(propertyNameColumn, new ObjectPropertyComparator("name"));
-        dataObjectPropertiesTable.addColumnSortHandler(propertyNameColHandler);
-
+        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyNameColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>( dataObjectPropertiesProvider.getList() );
+        propertyNameColHandler.setComparator( propertyNameColumn, new ObjectPropertyComparator( "name" ) );
+        dataObjectPropertiesTable.addColumnSortHandler( propertyNameColHandler );
 
         //Init property Label column
 
         final TextColumn<ObjectPropertyTO> propertyLabelColumn = new TextColumn<ObjectPropertyTO>() {
 
             @Override
-            public void render(Cell.Context context, ObjectPropertyTO object, SafeHtmlBuilder sb) {
+            public void render( Cell.Context context,
+                                ObjectPropertyTO object,
+                                SafeHtmlBuilder sb ) {
                 SafeHtml startDiv = new SafeHtml() {
                     @Override
                     public String asString() {
@@ -249,38 +243,37 @@ public class DataObjectBrowser extends Composite {
                     }
                 };
 
-                sb.append(startDiv);
-                super.render(context, object, sb);
-                sb.append(endDiv);
+                sb.append( startDiv );
+                super.render( context, object, sb );
+                sb.append( endDiv );
             }
 
             @Override
-            public String getValue( final ObjectPropertyTO objectProperty) {
-                return AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            public String getValue( final ObjectPropertyTO objectProperty ) {
+                return AnnotationValueHandler.getInstance().getStringValue( objectProperty, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM );
             }
         };
 
-        propertyLabelColumn.setSortable(true);
-        dataObjectPropertiesTable.addColumn(propertyLabelColumn, Constants.INSTANCE.objectBrowser_columnLabel());
+        propertyLabelColumn.setSortable( true );
+        dataObjectPropertiesTable.addColumn( propertyLabelColumn, Constants.INSTANCE.objectBrowser_columnLabel() );
         //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
 
-        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyLabelColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());
-        propertyNameColHandler.setComparator(propertyLabelColumn, new ObjectPropertyComparator("label"));
-        dataObjectPropertiesTable.addColumnSortHandler(propertyLabelColHandler);
-
+        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyLabelColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>( dataObjectPropertiesProvider.getList() );
+        propertyNameColHandler.setComparator( propertyLabelColumn, new ObjectPropertyComparator( "label" ) );
+        dataObjectPropertiesTable.addColumnSortHandler( propertyLabelColHandler );
 
         //Init property type browsing column
-        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell(true);
-        final TooltipCellDecorator<ImageResource> typeImageDecorator = new TooltipCellDecorator<ImageResource>(typeImageCell);
-        typeImageDecorator.setText(Constants.INSTANCE.objectBrowser_action_goToDataObjectDefinition());
+        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell( true );
+        final TooltipCellDecorator<ImageResource> typeImageDecorator = new TooltipCellDecorator<ImageResource>( typeImageCell );
+        typeImageDecorator.setText( Constants.INSTANCE.objectBrowser_action_goToDataObjectDefinition() );
 
-        final Column<ObjectPropertyTO, ImageResource> typeImageColumn = new Column<ObjectPropertyTO, ImageResource>(typeImageDecorator) {
+        final Column<ObjectPropertyTO, ImageResource> typeImageColumn = new Column<ObjectPropertyTO, ImageResource>( typeImageDecorator ) {
             @Override
             public ImageResource getValue( final ObjectPropertyTO property ) {
 
-                if (!property.isBaseType() &&
-                        !getDataObject().getClassName().equals(property.getClassName()) &&
-                        !getDataModel().isExternal(property.getClassName()) &&
+                if ( !property.isBaseType() &&
+                        !getDataObject().getClassName().equals( property.getClassName() ) &&
+                        !getDataModel().isExternal( property.getClassName() ) &&
                         getDataObject().getPath() != null ) {
                     return ImagesResources.INSTANCE.BrowseObject();
                 } else {
@@ -291,22 +284,23 @@ public class DataObjectBrowser extends Composite {
 
         typeImageColumn.setFieldUpdater( new FieldUpdater<ObjectPropertyTO, ImageResource>() {
             public void update( final int index,
-                    final ObjectPropertyTO property,
-                    final ImageResource value ) {
+                                final ObjectPropertyTO property,
+                                final ImageResource value ) {
 
-                onTypeCellSelection(property);
+                onTypeCellSelection( property );
             }
         } );
 
-        dataObjectPropertiesTable.addColumn(typeImageColumn);
-        dataObjectPropertiesTable.setColumnWidth(typeImageColumn, 32, Style.Unit.PX);
-
+        dataObjectPropertiesTable.addColumn( typeImageColumn );
+        dataObjectPropertiesTable.setColumnWidth( typeImageColumn, 32, Style.Unit.PX );
 
         //Init property type column
         final TextColumn<ObjectPropertyTO> propertyTypeColumn = new TextColumn<ObjectPropertyTO>() {
 
             @Override
-            public void render(Cell.Context context, ObjectPropertyTO object, SafeHtmlBuilder sb) {
+            public void render( Cell.Context context,
+                                ObjectPropertyTO object,
+                                SafeHtmlBuilder sb ) {
                 SafeHtml startDiv = new SafeHtml() {
                     @Override
                     public String asString() {
@@ -320,30 +314,30 @@ public class DataObjectBrowser extends Composite {
                     }
                 };
 
-                sb.append(startDiv);
-                super.render(context, object, sb);
-                sb.append(endDiv);
+                sb.append( startDiv );
+                super.render( context, object, sb );
+                sb.append( endDiv );
             }
 
             @Override
-            public String getValue( final ObjectPropertyTO objectProperty) {
-                return propertyTypeDisplay(objectProperty);
+            public String getValue( final ObjectPropertyTO objectProperty ) {
+                return propertyTypeDisplay( objectProperty );
             }
         };
-        propertyTypeColumn.setSortable(true);
-        dataObjectPropertiesTable.addColumn(propertyTypeColumn, Constants.INSTANCE.objectBrowser_columnType());
+        propertyTypeColumn.setSortable( true );
+        dataObjectPropertiesTable.addColumn( propertyTypeColumn, Constants.INSTANCE.objectBrowser_columnType() );
         //dataObjectPropertiesTable.setColumnWidth(propertyTypeColumn, 100, Style.Unit.PX);
 
         //Init delete column
-        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true);
-        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(clickableImageResourceCell);
-        decorator.setPlacement(Placement.LEFT);
-        decorator.setText(Constants.INSTANCE.objectBrowser_action_deleteProperty());
+        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell( true );
+        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>( clickableImageResourceCell );
+        decorator.setPlacement( Placement.LEFT );
+        decorator.setText( Constants.INSTANCE.objectBrowser_action_deleteProperty() );
 
-        final Column<ObjectPropertyTO, ImageResource> deletePropertyColumnImg = new Column<ObjectPropertyTO, ImageResource>(decorator) {
+        final Column<ObjectPropertyTO, ImageResource> deletePropertyColumnImg = new Column<ObjectPropertyTO, ImageResource>( decorator ) {
             @Override
             public ImageResource getValue( final ObjectPropertyTO global ) {
-                if (!isReadonly()) {
+                if ( !isReadonly() ) {
                     return ImagesResources.INSTANCE.Delete();
                 } else {
                     return null;
@@ -353,60 +347,57 @@ public class DataObjectBrowser extends Composite {
 
         deletePropertyColumnImg.setFieldUpdater( new FieldUpdater<ObjectPropertyTO, ImageResource>() {
             public void update( final int index,
-                    final ObjectPropertyTO property,
-                    final ImageResource value ) {
+                                final ObjectPropertyTO property,
+                                final ImageResource value ) {
 
-                if (!isReadonly()) {
-                    checkAndDeleteDataObjectProperty(property, index);
+                if ( !isReadonly() ) {
+                    checkAndDeleteDataObjectProperty( property, index );
                 }
             }
         } );
 
+        dataObjectPropertiesTable.addColumn( deletePropertyColumnImg );
+        dataObjectPropertiesTable.setColumnWidth( deletePropertyColumnImg, 32, Style.Unit.PX );
 
-        dataObjectPropertiesTable.addColumn(deletePropertyColumnImg);
-        dataObjectPropertiesTable.setColumnWidth(deletePropertyColumnImg, 32, Style.Unit.PX);
-
-
-        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyTypeColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>(dataObjectPropertiesProvider.getList());
-        propertyTypeColHandler.setComparator(propertyTypeColumn, new ObjectPropertyComparator("className"));
-        dataObjectPropertiesTable.addColumnSortHandler(propertyTypeColHandler);
-
+        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyTypeColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>( dataObjectPropertiesProvider.getList() );
+        propertyTypeColHandler.setComparator( propertyTypeColumn, new ObjectPropertyComparator( "className" ) );
+        dataObjectPropertiesTable.addColumnSortHandler( propertyTypeColHandler );
 
         //dataObjectPropertiesTable.getColumnSortList().push(propertyTypeColumn);
-        dataObjectPropertiesTable.getColumnSortList().push(propertyNameColumn);
+        dataObjectPropertiesTable.getColumnSortList().push( propertyNameColumn );
 
         //Init the selection model
         SingleSelectionModel<ObjectPropertyTO> selectionModel = new SingleSelectionModel<ObjectPropertyTO>();
-        dataObjectPropertiesTable.setSelectionModel(selectionModel);
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+        dataObjectPropertiesTable.setSelectionModel( selectionModel );
+        selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             @Override
-            public void onSelectionChange(SelectionChangeEvent event) {
-                ObjectPropertyTO selectedPropertyTO = ((SingleSelectionModel<ObjectPropertyTO>)dataObjectPropertiesTable.getSelectionModel()).getSelectedObject();
-                notifyFieldSelected(selectedPropertyTO);
+            public void onSelectionChange( SelectionChangeEvent event ) {
+                ObjectPropertyTO selectedPropertyTO = ( (SingleSelectionModel<ObjectPropertyTO>) dataObjectPropertiesTable.getSelectionModel() ).getSelectedObject();
+                notifyFieldSelected( selectedPropertyTO );
             }
-        });
+        } );
 
-        dataObjectPropertiesTable.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION);
+        dataObjectPropertiesTable.setKeyboardSelectionPolicy( HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION );
 
-        dataObjectPropertiesProvider.addDataDisplay(dataObjectPropertiesTable);
+        dataObjectPropertiesProvider.addDataDisplay( dataObjectPropertiesTable );
         dataObjectPropertiesProvider.refresh();
 
-        newPropertyButton.setIcon(IconType.PLUS_SIGN);
+        newPropertyButton.setIcon( IconType.PLUS_SIGN );
 
-        setReadonly(true);
+        setReadonly( true );
     }
 
     public DataModelerContext getContext() {
         return context;
     }
 
-    public void setContext(DataModelerContext context) {
+    public void setContext( DataModelerContext context ) {
         this.context = context;
     }
 
     private void initTypeList() {
-        if (getDataModel() != null) {
+        if ( getDataModel() != null ) {
             DataModelerUtils.initTypeList( newPropertyType, getContext().getHelper().getOrderedBaseTypes().values(), getDataModel().getDataObjects(), getDataModel().getExternalClasses(), true );
         } else {
             DataModelerUtils.initList( newPropertyType, true );
@@ -421,9 +412,12 @@ public class DataObjectBrowser extends Composite {
         }
     }
 
-    private void createNewProperty(final DataObjectTO dataObject, final String propertyName, final String propertyLabel, final String propertyType) {
-        if (dataObject != null) {
-            validatorService.isValidIdentifier(propertyName, new ValidatorCallback() {
+    private void createNewProperty( final DataObjectTO dataObject,
+                                    final String propertyName,
+                                    final String propertyLabel,
+                                    final String propertyType ) {
+        if ( dataObject != null ) {
+            validatorService.isValidIdentifier( propertyName, new ValidatorCallback() {
                 @Override
                 public void onFailure() {
                     ErrorPopup.showMessage( Constants.INSTANCE.validation_error_invalid_object_attribute_identifier( propertyName ) );
@@ -431,43 +425,43 @@ public class DataObjectBrowser extends Composite {
 
                 @Override
                 public void onSuccess() {
-                    validatorService.isUniqueAttributeName(propertyName, dataObject, new ValidatorCallback() {
+                    validatorService.isUniqueAttributeName( propertyName, dataObject, new ValidatorCallback() {
                         @Override
                         public void onFailure() {
-                            ErrorPopup.showMessage(Constants.INSTANCE.validation_error_object_attribute_already_exists(propertyName));
+                            ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists( propertyName ) );
                         }
 
                         @Override
                         public void onSuccess() {
-                            if (propertyType != null && !"".equals(propertyType) && !DataModelerUtils.NOT_SELECTED.equals(propertyType)) {
-                                Boolean isMultiple = DataModelerUtils.isMultipleType(propertyType);
-                                String canonicalType = isMultiple ? DataModelerUtils.getCanonicalClassName(propertyType) : propertyType;
-                                ObjectPropertyTO property = new ObjectPropertyTO(propertyName,
-                                        canonicalType,
-                                        isMultiple,
-                                        getContext().getHelper().isBaseType(canonicalType));
-                                if (propertyLabel != null && !"".equals(propertyLabel)) {
-                                    property.addAnnotation( getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
+                            if ( propertyType != null && !"".equals( propertyType ) && !DataModelerUtils.NOT_SELECTED.equals( propertyType ) ) {
+                                Boolean isMultiple = DataModelerUtils.isMultipleType( propertyType );
+                                String canonicalType = isMultiple ? DataModelerUtils.getCanonicalClassName( propertyType ) : propertyType;
+                                ObjectPropertyTO property = new ObjectPropertyTO( propertyName,
+                                                                                  canonicalType,
+                                                                                  isMultiple,
+                                                                                  getContext().getHelper().isBaseType( canonicalType ) );
+                                if ( propertyLabel != null && !"".equals( propertyLabel ) ) {
+                                    property.addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.LABEL_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
                                 }
 
-                                Integer position = DataModelerUtils.getMaxPosition(getDataObject()) + 1;
-                                property.addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.POSITION_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, position.toString());
+                                Integer position = DataModelerUtils.getMaxPosition( getDataObject() ) + 1;
+                                property.addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.POSITION_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, position.toString() );
 
-                                addDataObjectProperty(property);
+                                addDataObjectProperty( property );
                                 resetInput();
                             } else {
                                 ErrorPopup.showMessage( Constants.INSTANCE.validation_error_missing_object_attribute_type() );
                             }
                         }
-                    });
+                    } );
                 }
-            });
+            } );
         }
     }
 
-    private void setDataObject(DataObjectTO dataObject) {
+    private void setDataObject( DataObjectTO dataObject ) {
         this.dataObject = dataObject;
-        objectName.setText(DataModelerUtils.getDataObjectFullLabel(getDataObject()));
+        objectName.setText( DataModelerUtils.getDataObjectFullLabel( getDataObject() ) );
 
         //We create a new selection model due to a bug found in GWT when we change e.g. from one data object with 9 rows
         // to one with 3 rows and the table was sorted.
@@ -477,56 +471,61 @@ public class DataObjectBrowser extends Composite {
         // 3) populate the table with new items
         // 3) select the first row
         SingleSelectionModel selectionModel2 = new SingleSelectionModel<ObjectPropertyTO>();
-        dataObjectPropertiesTable.setSelectionModel(selectionModel2);
+        dataObjectPropertiesTable.setSelectionModel( selectionModel2 );
 
-        selectionModel2.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+        selectionModel2.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             @Override
-            public void onSelectionChange(SelectionChangeEvent event) {
-                ObjectPropertyTO selectedPropertyTO = ((SingleSelectionModel<ObjectPropertyTO>)dataObjectPropertiesTable.getSelectionModel()).getSelectedObject();
-                notifyFieldSelected(selectedPropertyTO);
+            public void onSelectionChange( SelectionChangeEvent event ) {
+                ObjectPropertyTO selectedPropertyTO = ( (SingleSelectionModel<ObjectPropertyTO>) dataObjectPropertiesTable.getSelectionModel() ).getSelectedObject();
+                notifyFieldSelected( selectedPropertyTO );
             }
-        });
+        } );
 
-        List<ObjectPropertyTO> dataObjectProperties = (dataObject != null) ? DataModelerUtils.getManagedProperties( dataObject ) : Collections.<ObjectPropertyTO>emptyList();
+        List<ObjectPropertyTO> dataObjectProperties = ( dataObject != null ) ? DataModelerUtils.getManagedProperties( dataObject ) : Collections.<ObjectPropertyTO>emptyList();
 
         ArrayList<ObjectPropertyTO> sortBuffer = new ArrayList<ObjectPropertyTO>();
-        if (dataObject != null) sortBuffer.addAll(dataObjectProperties);
-        Collections.sort(sortBuffer, new ObjectPropertyComparator("name"));
+        if ( dataObject != null ) {
+            sortBuffer.addAll( dataObjectProperties );
+        }
+        Collections.sort( sortBuffer, new ObjectPropertyComparator( "name" ) );
 
         dataObjectPropertiesProvider.getList().clear();
-        dataObjectPropertiesProvider.getList().addAll(sortBuffer);
+        dataObjectPropertiesProvider.getList().addAll( sortBuffer );
         dataObjectPropertiesProvider.flush();
         dataObjectPropertiesProvider.refresh();
 
-        dataObjectPropertiesTable.getColumnSortList().push(new ColumnSortList.ColumnSortInfo(dataObjectPropertiesTable.getColumn(2), true));
+        dataObjectPropertiesTable.getColumnSortList().push( new ColumnSortList.ColumnSortInfo( dataObjectPropertiesTable.getColumn( 2 ), true ) );
 
-        if (dataObjectProperties.size() > 0) {
-            dataObjectPropertiesTable.setKeyboardSelectedRow(0);
-            selectionModel2.setSelected(sortBuffer.get(0), true);
+        if ( dataObjectProperties.size() > 0 ) {
+            dataObjectPropertiesTable.setKeyboardSelectedRow( 0 );
+            selectionModel2.setSelected( sortBuffer.get( 0 ), true );
         }
 
         //set the first row selected again. Sounds crazy, but's part of the workaround, don't remove this line.
-        if (dataObjectProperties.size() > 0) {
-            dataObjectPropertiesTable.setKeyboardSelectedRow(0);
+        if ( dataObjectProperties.size() > 0 ) {
+            dataObjectPropertiesTable.setKeyboardSelectedRow( 0 );
         }
     }
 
-    private void addDataObjectProperty(ObjectPropertyTO objectProperty) {
-        if (dataObject != null) {
-            dataObject.getProperties().add(objectProperty);
+    private void addDataObjectProperty( ObjectPropertyTO objectProperty ) {
+        if ( dataObject != null ) {
+            dataObject.getProperties().add( objectProperty );
 
-            if (!objectProperty.isBaseType()) getContext().getHelper().dataObjectReferenced(objectProperty.getClassName(), dataObject.getClassName());
+            if ( !objectProperty.isBaseType() ) {
+                getContext().getHelper().dataObjectReferenced( objectProperty.getClassName(), dataObject.getClassName() );
+            }
 
-            dataObjectPropertiesProvider.getList().add(objectProperty);
+            dataObjectPropertiesProvider.getList().add( objectProperty );
             dataObjectPropertiesProvider.flush();
             dataObjectPropertiesProvider.refresh();
-            dataObjectPropertiesTable.setKeyboardSelectedRow(dataObjectPropertiesProvider.getList().size() - 1);
-            notifyFieldCreated(objectProperty);
+            dataObjectPropertiesTable.setKeyboardSelectedRow( dataObjectPropertiesProvider.getList().size() - 1 );
+            notifyFieldCreated( objectProperty );
         }
     }
 
-    private void checkAndDeleteDataObjectProperty(final ObjectPropertyTO objectPropertyTO, final int index) {
+    private void checkAndDeleteDataObjectProperty( final ObjectPropertyTO objectPropertyTO,
+                                                   final int index ) {
         /*if (getContext().isDMOInvalidated()) {
             newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
                     getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
@@ -550,18 +549,19 @@ public class DataObjectBrowser extends Composite {
         //}
     }
 
-    private void deleteDataObjectProperty(final ObjectPropertyTO objectProperty, final int index) {
-        if (dataObject != null) {
-            dataObject.getProperties().remove(objectProperty);
+    private void deleteDataObjectProperty( final ObjectPropertyTO objectProperty,
+                                           final int index ) {
+        if ( dataObject != null ) {
+            dataObject.getProperties().remove( objectProperty );
 
-            dataObjectPropertiesProvider.getList().remove(index);
+            dataObjectPropertiesProvider.getList().remove( index );
             dataObjectPropertiesProvider.flush();
             dataObjectPropertiesProvider.refresh();
 
-            String sPosRemoved = AnnotationValueHandler.getInstance().getStringValue(objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1");
-            if (sPosRemoved != null && sPosRemoved.length() > 0) {
-                Integer posRemoved = Integer.parseInt(sPosRemoved);
-                DataModelerUtils.recalculatePositions(dataObject, posRemoved);
+            String sPosRemoved = AnnotationValueHandler.getInstance().getStringValue( objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1" );
+            if ( sPosRemoved != null && sPosRemoved.length() > 0 ) {
+                Integer posRemoved = Integer.parseInt( sPosRemoved );
+                DataModelerUtils.recalculatePositions( dataObject, posRemoved );
             }
 
 //            List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
@@ -569,19 +569,21 @@ public class DataObjectBrowser extends Composite {
 //                dataObjectPropertiesTable.redrawRow(i);
 //            }
 
-            getContext().getHelper().dataObjectUnReferenced(objectProperty.getClassName(), dataObject.getClassName());
-            notifyFieldDeleted(objectProperty);
+            getContext().getHelper().dataObjectUnReferenced( objectProperty.getClassName(), dataObject.getClassName() );
+            notifyFieldDeleted( objectProperty );
         }
     }
 
-    private void checkUsageAndDeleteDataObjectProperty( final ObjectPropertyTO objectProperty, final int index ) {
+    private void checkUsageAndDeleteDataObjectProperty( final ObjectPropertyTO objectProperty,
+                                                        final int index ) {
 
         final String className = dataObject.getClassName();
         final String fieldName = objectProperty.getName();
 
         modelerService.call( new RemoteCallback<List<Path>>() {
 
-            @Override public void callback( List<Path> paths ) {
+            @Override
+            public void callback( List<Path> paths ) {
 
                 if ( paths != null && paths.size() > 0 ) {
                     //If usages for this field were detected in project assets
@@ -597,11 +599,12 @@ public class DataObjectBrowser extends Composite {
                                 }
                             },
                             new Command() {
-                                @Override public void execute() {
+                                @Override
+                                public void execute() {
                                     //do nothing.
                                 }
                             }
-                    );
+                                                                                               );
 
                     showUsagesPopup.setCloseVisible( false );
                     showUsagesPopup.show();
@@ -614,17 +617,19 @@ public class DataObjectBrowser extends Composite {
         } ).findFieldUsages( className, fieldName );
     }
 
-    private String propertyTypeDisplay(ObjectPropertyTO property) {
+    private String propertyTypeDisplay( ObjectPropertyTO property ) {
         String displayName = property.getClassName();
 
-        if (property.isBaseType()) {
-            displayName =  DataModelerUtils.extractClassName(displayName);
+        if ( property.isBaseType() ) {
+            displayName = DataModelerUtils.extractClassName( displayName );
         } else {
-            String label = getContext().getHelper().getObjectLabelByClassName(displayName);
-            if (label != null && !"".equals(label)) displayName = label;
+            String label = getContext().getHelper().getObjectLabelByClassName( displayName );
+            if ( label != null && !"".equals( label ) ) {
+                displayName = label;
+            }
         }
 
-        if (property.isMultiple()) {
+        if ( property.isMultiple() ) {
             displayName += DataModelerUtils.MULTIPLE;
         }
         return displayName;
@@ -642,31 +647,31 @@ public class DataObjectBrowser extends Composite {
         return dataObject;
     }
 
-    public void onTypeCellSelection(ObjectPropertyTO property) {
+    public void onTypeCellSelection( ObjectPropertyTO property ) {
 
-        DataObjectTO dataObject = getDataModel().getDataObjectByClassName(property.getClassName());
-        if (dataObject != null) {
+        DataObjectTO dataObject = getDataModel().getDataObjectByClassName( property.getClassName() );
+        if ( dataObject != null ) {
             openDataObject( dataObject );
         }
     }
 
-    private void enableNewPropertyAction(boolean enable) {
-        newPropertyId.setEnabled(enable);
-        newPropertyLabel.setEnabled(enable);
-        newPropertyType.setEnabled(enable);
-        newPropertyButton.setEnabled(enable);
+    private void enableNewPropertyAction( boolean enable ) {
+        newPropertyId.setEnabled( enable );
+        newPropertyLabel.setEnabled( enable );
+        newPropertyType.setEnabled( enable );
+        newPropertyButton.setEnabled( enable );
     }
 
     private void resetInput() {
-        newPropertyId.setText(null);
-        newPropertyLabel.setText(null);
+        newPropertyId.setText( null );
+        newPropertyLabel.setText( null );
         initTypeList();
-        newPropertyType.setSelectedValue(DataModelerUtils.NOT_SELECTED);
+        newPropertyType.setSelectedValue( DataModelerUtils.NOT_SELECTED );
     }
 
-    private void setReadonly(boolean readonly) {
+    private void setReadonly( boolean readonly ) {
         this.readonly = readonly;
-        enableNewPropertyAction(!readonly);
+        enableNewPropertyAction( !readonly );
     }
 
     public boolean isReadonly() {
@@ -676,7 +681,7 @@ public class DataObjectBrowser extends Composite {
     //Event handlers
 
     @UiHandler("newPropertyButton")
-    void newPropertyClick(ClickEvent event) {
+    void newPropertyClick( ClickEvent event ) {
         /*if (getContext().isDMOInvalidated()) {
             newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
                     getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
@@ -697,21 +702,21 @@ public class DataObjectBrowser extends Composite {
                     }
             ).show();
         } else {*/
-        createNewProperty(dataObject,
-                DataModelerUtils.unCapitalize(newPropertyId.getText()),
-                newPropertyLabel.getText(),
-                newPropertyType.getValue());
+        createNewProperty( dataObject,
+                           DataModelerUtils.unCapitalize( newPropertyId.getText() ),
+                           newPropertyLabel.getText(),
+                           newPropertyType.getValue() );
         //}
     }
 
     //Event Observers
 
-    private void onDataObjectSelected(@Observes DataObjectSelectedEvent event) {
-        if (event.isFrom(getDataModel())) {
+    private void onDataObjectSelected( @Observes DataObjectSelectedEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
             DataObjectTO dataObject = event.getCurrentDataObject();
             resetInput();
-            setDataObject(dataObject);
-            if ( dataObject == null) {
+            setDataObject( dataObject );
+            if ( dataObject == null ) {
                 setReadonly( true );
             } else {
                 setReadonly( getContext() == null || getContext().isReadonly() );
@@ -719,38 +724,38 @@ public class DataObjectBrowser extends Composite {
         }
     }
 
-    private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
-        if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName()) ||
-                    "packageName".equals(event.getPropertyName()) ||
-                    "label".equals(event.getPropertyName())) {
+    private void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
+            if ( "name".equals( event.getPropertyName() ) ||
+                    "packageName".equals( event.getPropertyName() ) ||
+                    "label".equals( event.getPropertyName() ) ) {
 
                 // For self references: in case name or package changes redraw properties table
-                if (dataObject.getClassName().equals( event.getCurrentDataObject().getClassName() )) {
+                if ( dataObject.getClassName().equals( event.getCurrentDataObject().getClassName() ) ) {
                     dataObjectPropertiesProvider.refresh();
                     dataObjectPropertiesTable.redraw();
                 }
 
-                objectName.setText(DataModelerUtils.getDataObjectFullLabel(getDataObject()));
+                objectName.setText( DataModelerUtils.getDataObjectFullLabel( getDataObject() ) );
                 initTypeList();
             }
         }
     }
 
-    private void onDataObjectPropertyChange(@Observes DataObjectFieldChangeEvent event) {
-        if (event.isFrom(getDataModel())) {
-            if ( "name".equals(event.getPropertyName()) ||
-                    "className".equals(event.getPropertyName()) ||
-                    "label".equals(event.getPropertyName()) ) {
+    private void onDataObjectPropertyChange( @Observes DataObjectFieldChangeEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
+            if ( "name".equals( event.getPropertyName() ) ||
+                    "className".equals( event.getPropertyName() ) ||
+                    "label".equals( event.getPropertyName() ) ) {
 
                 List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
-                for (int i = 0; i < props.size(); i++) {
-                    if (event.getCurrentField() == props.get(i)) {
-                        dataObjectPropertiesTable.redrawRow(i);
+                for ( int i = 0; i < props.size(); i++ ) {
+                    if ( event.getCurrentField() == props.get( i ) ) {
+                        dataObjectPropertiesTable.redrawRow( i );
                         break;
                     }
                 }
-            } else if ( AnnotationDefinitionTO.POSITION_ANNOTATION.equals(event.getPropertyName()) ) {
+            } else if ( AnnotationDefinitionTO.POSITION_ANNOTATION.equals( event.getPropertyName() ) ) {
                 // TODO redraw only affected rows
                 dataObjectPropertiesTable.redraw();
             }
@@ -758,50 +763,50 @@ public class DataObjectBrowser extends Composite {
     }
 
     // Event notifications
-    private void notifyFieldSelected(ObjectPropertyTO selectedPropertyTO) {
-        dataModelerEvent.fire(new DataObjectFieldSelectedEvent(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), getDataObject(), selectedPropertyTO));
+    private void notifyFieldSelected( ObjectPropertyTO selectedPropertyTO ) {
+        dataModelerEvent.fire( new DataObjectFieldSelectedEvent( DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), getDataObject(), selectedPropertyTO ) );
     }
 
-    private void notifyFieldDeleted(ObjectPropertyTO deletedPropertyTO) {
-        dataModelerEvent.fire(new DataObjectFieldDeletedEvent(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), getDataObject(), deletedPropertyTO));
+    private void notifyFieldDeleted( ObjectPropertyTO deletedPropertyTO ) {
+        dataModelerEvent.fire( new DataObjectFieldDeletedEvent( DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), getDataObject(), deletedPropertyTO ) );
     }
 
-    private void notifyFieldCreated(ObjectPropertyTO createdPropertyTO) {
-        dataModelerEvent.fire(new DataObjectFieldCreatedEvent(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), getDataObject(), createdPropertyTO));
+    private void notifyFieldCreated( ObjectPropertyTO createdPropertyTO ) {
+        dataModelerEvent.fire( new DataObjectFieldCreatedEvent( DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), getDataObject(), createdPropertyTO ) );
     }
 
-    private void openDataObject(final DataObjectTO dataObject) {
+    private void openDataObject( final DataObjectTO dataObject ) {
         if ( dataObject.getPath() != null ) {
             BusyPopup.showMessage( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
             modelerService.call( new RemoteCallback<Boolean>() {
                 @Override
                 public void callback( Boolean exists ) {
                     BusyPopup.close();
-                    if (Boolean.TRUE.equals( exists )) {
+                    if ( Boolean.TRUE.equals( exists ) ) {
                         placeManager.goTo( new PathPlaceRequest( dataObject.getPath() ) );
                     } else {
                         YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
-                                Constants.INSTANCE.objectBrowser_message_file_not_exists_or_renamed( dataObject.getPath().toURI() ),
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        //do nothing.
-                                    }
-                                },
-                                CommonConstants.INSTANCE.Close(),
-                                ButtonType.WARNING,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null
-                        );
+                                                                                                  Constants.INSTANCE.objectBrowser_message_file_not_exists_or_renamed( dataObject.getPath().toURI() ),
+                                                                                                  new Command() {
+                                                                                                      @Override
+                                                                                                      public void execute() {
+                                                                                                          //do nothing.
+                                                                                                      }
+                                                                                                  },
+                                                                                                  CommonConstants.INSTANCE.Close(),
+                                                                                                  ButtonType.WARNING,
+                                                                                                  null,
+                                                                                                  null,
+                                                                                                  null,
+                                                                                                  null,
+                                                                                                  null,
+                                                                                                  null
+                                                                                                );
                         yesNoCancelPopup.setCloseVisible( false );
                         yesNoCancelPopup.show();
                     }
                 }
-            }, new DataModelerErrorCallback( CommonConstants.INSTANCE.ExceptionNoSuchFile0( dataObject.getPath().toURI() )) ).exists( dataObject.getPath() );
+            }, new DataModelerErrorCallback( CommonConstants.INSTANCE.ExceptionNoSuchFile0( dataObject.getPath().toURI() ) ) ).exists( dataObject.getPath() );
         }
     }
 }

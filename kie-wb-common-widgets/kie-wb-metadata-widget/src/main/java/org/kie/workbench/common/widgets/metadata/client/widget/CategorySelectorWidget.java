@@ -23,12 +23,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.widgets.metadata.client.resources.Images;
-import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.uberfire.client.common.DirtyableComposite;
 import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.FormStylePopup;
 import org.kie.uberfire.client.common.SmallLabel;
+import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.widgets.metadata.client.resources.Images;
+import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 
 /**
  * This is a viewer/selector for categories.
@@ -45,16 +45,17 @@ public class CategorySelectorWidget
     private FlexTable list;
     private boolean readOnly;
 
-    /**
-     * @param d The meta data.
-     * @param readOnly If it is to be non editable.
-     */
-    public CategorySelectorWidget( ) {
+    public CategorySelectorWidget() {
 
         initWidget( layout );
     }
 
-    public void setContent(Metadata d, boolean readOnly) {
+    /**
+     * @param d The meta data.
+     * @param readOnly If it is to be non editable.
+     */
+    public void setContent( Metadata d,
+                            boolean readOnly ) {
         this.data = d;
 
         list = new FlexTable();
@@ -147,7 +148,7 @@ public class CategorySelectorWidget
         public String selectedPath;
 
         public CategorySelector() {
-            setTitle( MetadataConstants.INSTANCE.SelectCategoryToAdd() );
+            super( MetadataConstants.INSTANCE.SelectCategoryToAdd() );
             final VerticalPanel vert = new VerticalPanel();
 
             selector = new CategoryExplorerWidget( data.getPath(),
