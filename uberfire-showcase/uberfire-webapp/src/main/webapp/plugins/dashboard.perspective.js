@@ -64,7 +64,7 @@ $registerPerspective({
                         panel_type: "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter",
                         parts: [
                             {
-                                place: "IPInfoGadget"
+                                place: "welcome"
                             }
                         ]
                     }
