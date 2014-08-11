@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchPart;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -66,7 +65,7 @@ public interface PlaceManager {
      * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match
      * by path, but see {@link ActivityManagerImpl#resolveExistingParts(PlaceRequest)} for a variant that does.
      * (TODO: should this method care about paths? if not, should the other method be added to the interface?)
-     * 
+     *
      * @param place
      *            the PlaceRequest whose activity to search for
      * @return the activity that currently exists in service of the given PlaceRequest's ID. Null if no current activity
@@ -103,7 +102,7 @@ public interface PlaceManager {
     /**
      * Closes the splash screen associated with the given place request, if any. It is safe to call this method even if
      * no splash screen is associated with the given place.
-     * 
+     *
      * @param place
      *            the place whose opening triggered the splash screen to launch. Must not be null.
      */
