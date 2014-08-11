@@ -27,6 +27,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.util.Layouts;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
@@ -61,6 +62,7 @@ implements RequiresResize {
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        Layouts.setToFillParent( markdown );
 
         vfsServices.call( new RemoteCallback<Path>() {
             @Override
