@@ -9,12 +9,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Filter;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
@@ -33,6 +36,8 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 public abstract class AbstractIOWatchService implements IOWatchService,
                                                         Filter<WatchEvent<?>> {
 
+    private static final Logger LOG = LoggerFactory.getLogger( AbstractIOWatchService.class );
+
     private final ExecutorService executorService = Executors.newCachedThreadPool( new DescriptiveThreadFactory() );
 
     private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
@@ -40,7 +45,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
     protected boolean isDisposed = false;
 
     private boolean started;
-    private Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
+    private final Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
     @Inject
     private Event<ResourceBatchChangesEvent> resourceBatchChanges;
     @Inject
@@ -102,7 +107,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
                 executorService.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
-                    System.err.println( "Pool did not terminate" );
+                    LOG.error( "Thread pool did not terminate" );
                 }
             }
         } catch ( InterruptedException ie ) {

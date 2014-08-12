@@ -1,24 +1,31 @@
 package org.uberfire.commons.async;
 
+import static javax.ejb.TransactionAttributeType.*;
+
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.ejb.Asynchronous;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.naming.InitialContext;
 
-import static javax.ejb.TransactionAttributeType.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @Startup
 @TransactionAttribute(NOT_SUPPORTED)
-public class SimpleAsyncExecutorService {
+public class SimpleAsyncExecutorService implements Executor {
+
+    private static final Logger LOG = LoggerFactory.getLogger( SimpleAsyncExecutorService.class );
 
     private final ExecutorService executorService;
 
@@ -73,6 +80,7 @@ public class SimpleAsyncExecutorService {
         executorService = Executors.newCachedThreadPool( new DescriptiveThreadFactory() );
     }
 
+    @Override
     @Asynchronous
     public void execute( final Runnable r ) {
         if ( executorService != null ) {
@@ -98,7 +106,7 @@ public class SimpleAsyncExecutorService {
                     executorService.shutdownNow(); // Cancel currently executing tasks
                     // Wait a while for tasks to respond to being cancelled
                     if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
-                        System.err.println( "Pool did not terminate" );
+                        LOG.error( "Thread pool did not terminate." );
                     }
                 }
             } catch ( InterruptedException ie ) {

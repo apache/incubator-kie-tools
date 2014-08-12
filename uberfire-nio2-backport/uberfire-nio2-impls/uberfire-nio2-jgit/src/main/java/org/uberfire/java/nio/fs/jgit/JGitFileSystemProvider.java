@@ -83,6 +83,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.config.ConfigProperties;
 import org.uberfire.backend.server.config.ConfigProperties.ConfigProperty;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.message.MessageType;
@@ -463,7 +464,8 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
     void buildAndStartDaemon() {
         if ( daemonService == null || !daemonService.isRunning() ) {
-            daemonService = new Daemon( new InetSocketAddress( daemonHostAddr, daemonPort ) );
+            daemonService = new Daemon( new InetSocketAddress( daemonHostAddr, daemonPort ),
+                                        SimpleAsyncExecutorService.getUnmanagedInstance() );
             daemonService.setRepositoryResolver( new RepositoryResolverImpl<DaemonClient>() );
             try {
                 daemonService.start();

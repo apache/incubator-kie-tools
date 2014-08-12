@@ -1,13 +1,17 @@
 package org.uberfire.java.nio.fs.jgit.daemon.git;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.Deflater;
 
@@ -42,8 +46,6 @@ public class Daemon {
 
     private final AtomicBoolean run = new AtomicBoolean( false );
 
-    //    private Thread acceptThread;
-
     private int timeout;
 
     private volatile RepositoryResolver<DaemonClient> repositoryResolver;
@@ -52,20 +54,22 @@ public class Daemon {
 
     private ServerSocket listenSock = null;
 
-    /**
-     * Configure a daemon to listen on any available network port.
-     */
-    public Daemon() {
-        this( null );
-    }
+    private final Executor acceptThreadPool;
 
     /**
-     * Configure a new daemon for the specified network address.
-     * @param addr address to listen for connections on. If null, any available
-     * port will be chosen on all network interfaces.
+     * Configures a new daemon for the specified network address. The daemon will not attempt to bind to an address or
+     * accept connections until a call to {@link #start()}.
+     *
+     * @param addr
+     *            address to listen for connections on. If null, any available port will be chosen on all network
+     *            interfaces.
+     * @param acceptThreadPool
+     *            source of threads for waiting for inbound socket connections. Every time the daemon is started or
+     *            restarted, a new task will be submitted to this pool. When the daemon is stopped, the task completes.
      */
-    public Daemon( final InetSocketAddress addr ) {
+    public Daemon( final InetSocketAddress addr, Executor acceptThreadPool ) {
         myAddress = addr;
+        this.acceptThreadPool = checkNotNull( "acceptThreadPool", acceptThreadPool );
 
         repositoryResolver = (RepositoryResolver<DaemonClient>) RepositoryResolver.NONE;
 
@@ -148,7 +152,8 @@ public class Daemon {
     }
 
     /**
-     * Set the resolver used to locate a repository by name.
+     * Sets the resolver that locates repositories by name.
+     *
      * @param resolver the resolver instance.
      */
     public void setRepositoryResolver( RepositoryResolver<DaemonClient> resolver ) {
@@ -156,7 +161,8 @@ public class Daemon {
     }
 
     /**
-     * Set the factory to construct and configure per-request UploadPack.
+     * Sets the factory that constructs and configures the per-request UploadPack.
+     *
      * @param factory the factory. If null upload-pack is disabled.
      */
     @SuppressWarnings("unchecked")
@@ -169,22 +175,31 @@ public class Daemon {
     }
 
     /**
-     * Start this daemon on a background thread.
-     * @throws IOException the server socket could not be opened.
-     * @throws IllegalStateException the daemon is already running.
+     * Starts this daemon listening for connections on a thread supplied by the executor service given to the
+     * constructor. The daemon can be stopped by a call to {@link #stop()} or by shutting down the ExecutorService.
+     *
+     * @throws IOException
+     *             the server socket could not be opened.
+     * @throws IllegalStateException
+     *             the daemon is already running.
      */
     public synchronized void start() throws IOException {
         if ( run.get() ) {
             throw new IllegalStateException( JGitText.get().daemonAlreadyRunning );
         }
 
-        this.listenSock = new ServerSocket(
-                                           myAddress != null ? myAddress.getPort() : 0, BACKLOG,
-                                                   myAddress != null ? myAddress.getAddress() : null );
+        InetAddress listenAddress = myAddress != null ? myAddress.getAddress() : null;
+        int listenPort = myAddress != null ? myAddress.getPort() : 0;
+
+        try {
+            this.listenSock = new ServerSocket( listenPort, BACKLOG, listenAddress );
+        } catch ( IOException e ) {
+            throw new IOException( "Failed to open server socket for " + listenAddress + ":" + listenPort, e );
+        }
         myAddress = (InetSocketAddress) listenSock.getLocalSocketAddress();
 
         run.set( true );
-        SimpleAsyncExecutorService.getUnmanagedInstance().execute( new DescriptiveRunnable() {
+        acceptThreadPool.execute( new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Git-Daemon-Accept";
@@ -192,8 +207,9 @@ public class Daemon {
 
             @Override
             public void run() {
-                while ( isRunning() ) {
+                while ( isRunning() && !Thread.currentThread().isInterrupted() ) {
                     try {
+                        listenSock.setSoTimeout( 5000 );
                         startClient( listenSock.accept() );
                     } catch ( InterruptedIOException e ) {
                         // Test again to see if we should keep accepting.
@@ -202,12 +218,7 @@ public class Daemon {
                     }
                 }
 
-                try {
-                    if ( !listenSock.isClosed() ) {
-                        listenSock.close();
-                    }
-                } catch ( final IOException ignored ) {
-                }
+                stop();
             }
         } );
     }
@@ -220,7 +231,8 @@ public class Daemon {
     }
 
     /**
-     * Stop this daemon.
+     * Stops this daemon. It is safe to call this method on a daemon which is already stopped, in which case the call
+     * has no effect.
      */
     public synchronized void stop() {
         if ( run.getAndSet( false ) ) {
