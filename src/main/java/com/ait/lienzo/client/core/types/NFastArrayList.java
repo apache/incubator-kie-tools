@@ -229,7 +229,6 @@ public final class NFastArrayList<M>
     {
         protected FastArrayListJSO()
         {
-
         }
 
         public static final JavaScriptObject make()
