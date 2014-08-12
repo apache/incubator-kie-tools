@@ -182,6 +182,10 @@ public class ActivityBeansCache {
         return ActivityMetaInfo.generate( activityBean );
     }
 
+    public List<String> getActivitiesById() {
+      return new ArrayList<String>(activitiesById.keySet());
+    }
+
     class ActivityAndMetaInfo {
 
         private final IOCBeanDef<Activity> activityBean;
