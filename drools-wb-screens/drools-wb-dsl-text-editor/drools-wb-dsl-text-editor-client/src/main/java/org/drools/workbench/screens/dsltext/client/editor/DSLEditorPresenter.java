@@ -32,16 +32,12 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
-import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
-import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -72,24 +68,10 @@ public class DSLEditorPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
-    @Inject
-    private PlaceManager placeManager;
-
     private DSLEditorView view;
 
     @Inject
-    private OverviewWidgetPresenter overview;
-
-    @Inject
-    private MultiPageEditor multiPage;
-
-    @Inject
     private DSLResourceType type;
-
-    @Inject
-    private DefaultFileNameValidator fileNameValidator;
-
-    private Metadata metadata;
 
     @Inject
     public DSLEditorPresenter(DSLEditorView baseView) {
@@ -104,12 +86,10 @@ public class DSLEditorPresenter
     }
 
     protected void loadContent() {
-        dslTextEditorService.call(getModelSuccessCallback(),
-                new CommandDrivenErrorCallback(view,
-                        new CommandBuilder().addNoSuchFileException(view,
-                                multiPage,
-                                menus).build()
-                )).loadContent(versionRecordManager.getCurrentPath());
+        dslTextEditorService.call(
+                getModelSuccessCallback(),
+                getNoSuchFileExceptionErrorCallback()
+        ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<DSLTextEditorContent> getModelSuccessCallback() {
@@ -122,18 +102,7 @@ public class DSLEditorPresenter
                     return;
                 }
 
-                multiPage.clear();
-                
-                multiPage.addWidget(overview,
-                        CommonConstants.INSTANCE.Overview());
-                overview.setContent(content.getOverview(), versionRecordManager.getCurrentPath());
-
-                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
-
-                metadata = content.getOverview().getMetadata();
-
-                multiPage.addWidget(view,
-                        DSLTextEditorConstants.INSTANCE.DSL());
+                resetEditorPages(content.getOverview());
 
                 view.setContent(content.getModel());
                 view.hideBusyIndicator();
@@ -209,7 +178,7 @@ public class DSLEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
     }
 
     @WorkbenchMenu

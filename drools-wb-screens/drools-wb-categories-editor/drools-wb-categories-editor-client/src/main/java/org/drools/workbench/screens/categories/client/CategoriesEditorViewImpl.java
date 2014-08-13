@@ -142,6 +142,11 @@ public class CategoriesEditorViewImpl
     }
 
     @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
     public void setNotDirty() {
         isDirty = false;
     }

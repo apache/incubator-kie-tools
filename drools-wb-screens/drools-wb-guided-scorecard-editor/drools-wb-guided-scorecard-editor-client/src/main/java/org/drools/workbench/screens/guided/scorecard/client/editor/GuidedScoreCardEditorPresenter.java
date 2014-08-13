@@ -34,21 +34,17 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
-import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
-import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -65,20 +61,14 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedScoreCardEditor", supportedTypes = { GuidedScoreCardResourceType.class })
+@WorkbenchEditor(identifier = "GuidedScoreCardEditor", supportedTypes = {GuidedScoreCardResourceType.class})
 public class GuidedScoreCardEditorPresenter
-    extends KieEditor {
+        extends KieEditor {
 
     @Inject
     private Caller<GuidedScoreCardEditorService> scoreCardEditorService;
 
-    @Inject
-    private OverviewWidgetPresenter overview;
-
     private GuidedScoreCardEditorView view;
-
-    @Inject
-    private MultiPageEditor multiPage;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -89,14 +79,11 @@ public class GuidedScoreCardEditorPresenter
     @Inject
     private AsyncPackageDataModelOracleFactory oracleFactory;
 
-
     private ScoreCardModel model;
     private AsyncPackageDataModelOracle oracle;
 
     @Inject
     private ImportsWidgetPresenter importsWidget;
-
-    private Metadata metadata;
 
     @Inject
     public GuidedScoreCardEditorPresenter(GuidedScoreCardEditorView baseView) {
@@ -105,71 +92,58 @@ public class GuidedScoreCardEditorPresenter
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
+    public void onStartup(final ObservablePath path,
+            final PlaceRequest place) {
         super.init(path, place);
     }
 
     protected void loadContent() {
-        scoreCardEditorService.call( getModelSuccessCallback(),
-                                     new CommandDrivenErrorCallback( view,
-                                                                     new CommandBuilder().addNoSuchFileException( view,
-                                                                                                                  multiPage,
-                                                                                                                  menus ).build()
-                                     ) ).loadContent( versionRecordManager.getCurrentPath() );
+        scoreCardEditorService.call(
+                getModelSuccessCallback(),
+                getNoSuchFileExceptionErrorCallback()
+        ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<ScoreCardModelContent> getModelSuccessCallback() {
         return new RemoteCallback<ScoreCardModelContent>() {
 
             @Override
-            public void callback( final ScoreCardModelContent content ) {
+            public void callback(final ScoreCardModelContent content) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( versionRecordManager.getCurrentPath() == null ) {
+                if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
-                metadata = content.getOverview().getMetadata();
+                resetEditorPages(content.getOverview());
 
-                multiPage.clear();
-                multiPage.addWidget(overview,
-                        CommonConstants.INSTANCE.Overview());
-                overview.setContent(content.getOverview(), versionRecordManager.getCurrentPath());
-
-                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
-
-                multiPage.addWidget(view,
-                        CommonConstants.INSTANCE.EditTabTitle());
-
-                multiPage.addWidget(importsWidget,
-                        CommonConstants.INSTANCE.ConfigTabTitle());
+                addImportsTab(importsWidget);
 
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
-                                                                        model,
-                                                                        dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
+                        model,
+                        dataModel);
 
-                view.setContent( model,
-                                 oracle );
-                importsWidget.setContent( oracle,
-                                          model.getImports(),
-                                          isReadOnly );
+                view.setContent(model,
+                        oracle);
+                importsWidget.setContent(oracle,
+                        model.getImports(),
+                        isReadOnly);
 
                 view.hideBusyIndicator();
             }
         };
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportAddedEvent(@Observes ImportAddedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
         view.refreshFactTypes();
     }
 
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportRemovedEvent(@Observes ImportRemovedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
         view.refreshFactTypes();
@@ -179,61 +153,61 @@ public class GuidedScoreCardEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                scoreCardEditorService.call( new RemoteCallback<List<ValidationMessage>>() {
+                scoreCardEditorService.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            ValidationPopup.showMessages( results );
+                            ValidationPopup.showMessages(results);
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
-                                                          view.getModel() );
+                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
+                        view.getModel());
             }
         };
     }
 
     protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 scoreCardEditorService.call( getSaveSuccessCallback(),
-                                                                              new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                                       view.getModel(),
-                                                                                                                                       metadata,
-                                                                                                                                       comment );
-                                             }
-                                         }
-                                       );
+        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute(final String comment) {
+                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        scoreCardEditorService.call(getSaveSuccessCallback(),
+                                new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                view.getModel(),
+                                metadata,
+                                comment);
+                    }
+                }
+        );
         concurrentUpdateSessionInfo = null;
     }
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
     }
 
     @OnClose
     public void onClose() {
         this.versionRecordManager.clear();
-        this.oracleFactory.destroy( oracle );
+        this.oracleFactory.destroy(oracle);
     }
 
     @IsDirty
     public boolean isDirty() {
-        if ( isReadOnly ) {
+        if (isReadOnly) {
             return false;
         }
-        return ( view.isDirty() );
+        return (view.isDirty());
     }
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if ( isDirty() ) {
+        if (isDirty()) {
             return view.confirmClose();
         }
         return true;
@@ -241,13 +215,13 @@ public class GuidedScoreCardEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(),
-                                                        type );
-        if ( versionRecordManager.getVersion() != null ) {
+        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
+                type);
+        if (versionRecordManager.getVersion() != null) {
             fileName = fileName + " v" + versionRecordManager.getVersion();
         }
 
-        if ( isReadOnly ) {
+        if (isReadOnly) {
             return "Read Only Score Card Viewer [" + fileName + "]";
         }
         return GuidedScoreCardConstants.INSTANCE.ScoreCardEditorTitle() + " [" + fileName + "]";

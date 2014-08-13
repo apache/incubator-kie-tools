@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import java.util.Map;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
@@ -32,21 +31,18 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
-import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
-import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
@@ -65,7 +61,6 @@ public class ScenarioEditorPresenter
 
     private Scenario scenario;
     private AsyncPackageDataModelOracle oracle;
-    private Metadata metadata;
 
     @Inject
     public ScenarioEditorPresenter(
@@ -95,22 +90,10 @@ public class ScenarioEditorPresenter
     }
 
     protected void loadContent() {
-        service.call(getModelSuccessCallback(),
-                new CommandDrivenErrorCallback(view,
-                        makeNoSuchFileExceptionCommand())).loadContent(versionRecordManager.getCurrentPath());
-    }
-
-    private Map<Class<? extends Throwable>, Command> makeNoSuchFileExceptionCommand() {
-        final CommandBuilder builder = new CommandBuilder();
-        builder.add(NoSuchFileException.class,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        view.handleNoSuchFileException();
-                        view.hideBusyIndicator();
-                    }
-                });
-        return builder.build();
+        service.call(
+                getModelSuccessCallback(),
+                getNoSuchFileExceptionErrorCallback()
+        ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<TestScenarioModelContent> getModelSuccessCallback() {
@@ -130,10 +113,6 @@ public class ScenarioEditorPresenter
                         scenario,
                         dataModel);
 
-                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
-
-                metadata = content.getOverview().getMetadata();
-
                 view.setContent(
                         versionRecordManager.getCurrentPath(),
                         isReadOnly,
@@ -141,7 +120,6 @@ public class ScenarioEditorPresenter
                         content.getOverview(),
                         oracle,
                         service);
-
 
                 view.hideBusyIndicator();
             }

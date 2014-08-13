@@ -37,7 +37,7 @@ import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
-import org.kie.workbench.common.widgets.client.editor.KieEditor;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
@@ -73,36 +73,13 @@ public class EnumEditorPresenter
     private EnumEditorView view;
 
     @Inject
-    private ViewSourceView viewSource;
-
-    @Inject
-    private MultiPageEditor multiPage;
-
-    @Inject
     private Caller<EnumService> enumService;
 
     @Inject
     private Event<NotificationEvent> notification;
 
     @Inject
-    private Event<ChangeTitleWidgetEvent> changeTitleNotification;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private Caller<MetadataService> metadataService;
-
-    @Inject
     private EnumResourceType type;
-
-    @Inject
-    private DefaultFileNameValidator fileNameValidator;
-
-    @Inject
-    private OverviewWidgetPresenter overview;
-
-    private Metadata metadata;
 
     @Inject
     public EnumEditorPresenter(EnumEditorView baseView) {
@@ -117,12 +94,10 @@ public class EnumEditorPresenter
     }
 
     protected void loadContent() {
-        enumService.call( getModelSuccessCallback(),
-                          new CommandDrivenErrorCallback( view,
-                                                          new CommandBuilder().addNoSuchFileException( view,
-                                                                                                       multiPage,
-                                                                                                       menus ).build()
-                          ) ).loadContent( versionRecordManager.getCurrentPath() );
+        enumService.call(
+                getModelSuccessCallback(),
+                getNoSuchFileExceptionErrorCallback()
+        ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<EnumModelContent> getModelSuccessCallback() {
@@ -135,29 +110,7 @@ public class EnumEditorPresenter
                     return;
                 }
 
-                multiPage.clear();
-
-                multiPage.addWidget(overview,
-                        CommonConstants.INSTANCE.Overview());
-                overview.setContent(content.getOverview(), versionRecordManager.getCurrentPath());
-
-                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
-
-                multiPage.addWidget( view,
-                                     CommonConstants.INSTANCE.EditTabTitle() );
-
-                multiPage.addPage( new Page( viewSource,
-                                             CommonConstants.INSTANCE.SourceTabTitle() ) {
-                    @Override
-                    public void onFocus() {
-                        viewSource.setContent( view.getContent() );
-                    }
-
-                    @Override
-                    public void onLostFocus() {
-                        viewSource.clear();
-                    }
-                } );
+                resetEditorPages(content.getOverview());
 
                 view.setContent(content.getModel().getDRL());
                 view.hideBusyIndicator();
@@ -232,7 +185,7 @@ public class EnumEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
     }
 
     @WorkbenchMenu

@@ -19,7 +19,7 @@ import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
-import org.kie.workbench.common.widgets.client.editor.KieEditor;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -53,20 +53,12 @@ public class GlobalsEditorPresenter
     private GlobalsEditorView view;
 
     @Inject
-    private OverviewWidgetPresenter overview;
-
-    @Inject
-    private MultiPageEditor multiPage;
-
-    @Inject
     private Event<NotificationEvent> notification;
 
     @Inject
     private GlobalResourceType type;
 
     private GlobalsModel model;
-
-    private Metadata metadata;
 
     public GlobalsEditorPresenter() {
     }
@@ -84,12 +76,10 @@ public class GlobalsEditorPresenter
     }
 
     protected void loadContent() {
-        globalsEditorService.call( getModelSuccessCallback(),
-                                   new CommandDrivenErrorCallback( view,
-                                                                   new CommandBuilder().addNoSuchFileException( view,
-                                                                                                                multiPage,
-                                                                                                                menus ).build()
-                                   ) ).loadContent( versionRecordManager.getCurrentPath() );
+        globalsEditorService.call(
+                getModelSuccessCallback(),
+                getNoSuchFileExceptionErrorCallback()
+        ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<GlobalsEditorContent> getModelSuccessCallback() {
@@ -102,19 +92,8 @@ public class GlobalsEditorPresenter
                     return;
                 }
 
-                multiPage.clear();
+                resetEditorPages(content.getOverview());
 
-                multiPage.addWidget(overview,
-                        CommonConstants.INSTANCE.Overview());
-                overview.setContent(content.getOverview(), versionRecordManager.getCurrentPath());
-
-                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
-
-                multiPage.addWidget(view,
-                        CommonConstants.INSTANCE.EditTabTitle());
-
-
-                metadata = content.getOverview().getMetadata();
                 model = content.getModel();
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
 
@@ -166,7 +145,7 @@ public class GlobalsEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
     }
 
     @OnClose

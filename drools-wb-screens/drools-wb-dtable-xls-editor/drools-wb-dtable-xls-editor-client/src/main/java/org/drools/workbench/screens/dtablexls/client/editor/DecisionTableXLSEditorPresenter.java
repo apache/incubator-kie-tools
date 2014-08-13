@@ -36,8 +36,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.workbench.common.widgets.client.editor.KieEditor;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -68,28 +67,13 @@ public class DecisionTableXLSEditorPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
-    @Inject
-    private Event<ChangeTitleWidgetEvent> changeTitleNotification;
-
-    @Inject
-    private PlaceManager placeManager;
-
     private DecisionTableXLSEditorView view;
-//
-//    @Inject
-//    private OverviewWidgetPresenter overview;
-
-    @Inject
-    private MultiPageEditor multiPage;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
     private DecisionTableXLSResourceType type;
-
-    @Inject
-    private DefaultFileNameValidator fileNameValidator;
 
     public DecisionTableXLSEditorPresenter() {
     }
@@ -110,11 +94,7 @@ public class DecisionTableXLSEditorPresenter
             final PlaceRequest place) {
         super.init(path, place);
 
-//        multiPage.addWidget(overview,
-//                CommonConstants.INSTANCE.Overview());
-
-        multiPage.addWidget(view,
-                DecisionTableXLSEditorConstants.INSTANCE.DecisionTable());
+        resetEditorPages(null);
 
         view.setPath(path);
         view.setReadOnly(isReadOnly);
@@ -132,9 +112,7 @@ public class DecisionTableXLSEditorPresenter
                     @Override
                     public void callback(Overview overview) {
 
-//                        DecisionTableXLSEditorPresenter.this.overview.setContent(overview, versionRecordManager.getCurrentPath());
-
-                        versionRecordManager.setVersions(overview.getMetadata().getVersion());
+                        resetEditorPages(overview);
 
                     }
                 }
@@ -205,7 +183,7 @@ public class DecisionTableXLSEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
     }
 
     @WorkbenchMenu

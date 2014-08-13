@@ -36,32 +36,24 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
-import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
-import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
-import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
-import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -73,9 +65,9 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = { GuidedRuleTemplateResourceType.class })
+@WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = {GuidedRuleTemplateResourceType.class})
 public class GuidedRuleTemplateEditorPresenter
-    extends KieEditor {
+        extends KieEditor {
 
     private GuidedRuleTemplateEditorView view;
 
@@ -86,19 +78,10 @@ public class GuidedRuleTemplateEditorPresenter
     private ImportsWidgetPresenter importsWidget;
 
     @Inject
-    private OverviewWidgetPresenter overview;
-
-    @Inject
-    private MultiPageEditor multiPage;
-
-    @Inject
     private Caller<GuidedRuleTemplateEditorService> service;
 
     @Inject
     private Event<NotificationEvent> notification;
-
-    @Inject
-    private Caller<RuleNamesService> ruleNamesService;
 
     @Inject
     private GuidedRuleTemplateResourceType type;
@@ -110,7 +93,9 @@ public class GuidedRuleTemplateEditorPresenter
 
     private TemplateModel model;
     private AsyncPackageDataModelOracle oracle;
-    private Metadata metadata;
+
+    @Inject
+    private Caller<RuleNamesService> ruleNamesService;
 
     @Inject
     public GuidedRuleTemplateEditorPresenter(GuidedRuleTemplateEditorView baseView) {
@@ -119,92 +104,80 @@ public class GuidedRuleTemplateEditorPresenter
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
+    public void onStartup(final ObservablePath path,
+            final PlaceRequest place) {
         super.init(path, place);
     }
 
     protected void loadContent() {
-        service.call( getModelSuccessCallback(),
-                      new CommandDrivenErrorCallback( view,
-                                                      new CommandBuilder().addNoSuchFileException( view,
-                                                                                                   multiPage,
-                                                                                                   menus ).build()
-                      ) ).loadContent( versionRecordManager.getCurrentPath() );
+        service.call(
+                getModelSuccessCallback(),
+                getNoSuchFileExceptionErrorCallback()
+        ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<GuidedTemplateEditorContent> getModelSuccessCallback() {
         return new RemoteCallback<GuidedTemplateEditorContent>() {
 
             @Override
-            public void callback( final GuidedTemplateEditorContent content ) {
+            public void callback(final GuidedTemplateEditorContent content) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( versionRecordManager.getCurrentPath() == null ) {
+                if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
-                metadata = content.getOverview().getMetadata();
+                resetEditorPages(content.getOverview());
 
-                multiPage.clear();
-                multiPage.addWidget(overview,
-                        CommonConstants.INSTANCE.Overview());
-                overview.setContent(content.getOverview(), versionRecordManager.getCurrentPath());
+                addPage(
+                        new Page(dataView,
+                                GuidedTemplateEditorConstants.INSTANCE.Data()) {
 
-                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
+                            @Override
+                            public void onFocus() {
+                                dataView.setContent(model,
+                                        oracle,
+                                        eventBus,
+                                        isReadOnly);
+                            }
 
-                multiPage.addWidget( view,
-                                     CommonConstants.INSTANCE.EditTabTitle() );
+                            @Override
+                            public void onLostFocus() {
+                                // Nothing to do here
+                            }
+                        });
 
-                multiPage.addPage( new Page( dataView,
-                                             GuidedTemplateEditorConstants.INSTANCE.Data() ) {
-
-                    @Override
-                    public void onFocus() {
-                        dataView.setContent( model,
-                                             oracle,
-                                             eventBus,
-                                             isReadOnly );
-                    }
-
-                    @Override
-                    public void onLostFocus() {
-                        // Nothing to do here
-                    }
-                } );
-
-                multiPage.addWidget( importsWidget,
-                                     CommonConstants.INSTANCE.ConfigTabTitle() );
+                addImportsTab(importsWidget);
 
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
-                                                                        model,
-                                                                        dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
+                        model,
+                        dataModel);
 
-                view.setContent( versionRecordManager.getCurrentPath(),
-                                 model,
-                                 oracle,
-                                 ruleNamesService,
-                                 eventBus,
-                                 isReadOnly );
-                importsWidget.setContent( oracle,
-                                          model.getImports(),
-                                          isReadOnly );
+                view.setContent(versionRecordManager.getCurrentPath(),
+                        model,
+                        oracle,
+                        ruleNamesService,
+                        eventBus,
+                        isReadOnly);
+                importsWidget.setContent(oracle,
+                        model.getImports(),
+                        isReadOnly);
 
                 view.hideBusyIndicator();
             }
         };
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportAddedEvent(@Observes ImportAddedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
         view.refresh();
     }
 
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportRemovedEvent(@Observes ImportRemovedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
         view.refresh();
@@ -214,36 +187,36 @@ public class GuidedRuleTemplateEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                service.call( new RemoteCallback<List<ValidationMessage>>() {
+                service.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            ValidationPopup.showMessages( results );
+                            ValidationPopup.showMessages(results);
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
-                                                          view.getContent() );
+                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
+                        view.getContent());
             }
         };
     }
 
     protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 service.call( getSaveSuccessCallback(),
-                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                        view.getContent(),
-                                                                                                                        metadata,
-                                                                                                                        commitMessage );
-                                             }
-                                         }
-                                       );
+        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute(final String commitMessage) {
+                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        service.call(getSaveSuccessCallback(),
+                                new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                view.getContent(),
+                                metadata,
+                                commitMessage);
+                    }
+                }
+        );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -255,12 +228,12 @@ public class GuidedRuleTemplateEditorPresenter
     @OnClose
     public void onClose() {
         this.versionRecordManager.clear();
-        this.oracleFactory.destroy( oracle );
+        this.oracleFactory.destroy(oracle);
     }
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if ( isDirty() ) {
+        if (isDirty()) {
             return view.confirmClose();
         }
         return true;
@@ -268,9 +241,9 @@ public class GuidedRuleTemplateEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(),
-                                                        type );
-        if ( versionRecordManager.getVersion() != null ) {
+        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
+                type);
+        if (versionRecordManager.getVersion() != null) {
             fileName = fileName + " v" + versionRecordManager.getVersion();
         }
         return GuidedTemplateEditorConstants.INSTANCE.GuidedTemplateEditorTitle() + " [" + fileName + "]";
@@ -278,7 +251,7 @@ public class GuidedRuleTemplateEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
     }
 
     @WorkbenchMenu

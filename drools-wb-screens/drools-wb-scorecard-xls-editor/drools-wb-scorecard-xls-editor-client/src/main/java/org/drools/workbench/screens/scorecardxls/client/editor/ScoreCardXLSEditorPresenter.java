@@ -17,31 +17,25 @@
 package org.drools.workbench.screens.scorecardxls.client.editor;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
+import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSContent;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.Page;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -52,17 +46,15 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
-
 @Dependent
-@WorkbenchEditor(identifier = "ScoreCardXLSEditor", supportedTypes = { ScoreCardXLSResourceType.class })
+@WorkbenchEditor(identifier = "ScoreCardXLSEditor", supportedTypes = {ScoreCardXLSResourceType.class})
 public class ScoreCardXLSEditorPresenter
+        extends KieEditor
         implements ScoreCardXLSEditorView.Presenter {
 
     @Inject
@@ -84,12 +76,6 @@ public class ScoreCardXLSEditorPresenter
     private ScoreCardXLSEditorView view;
 
     @Inject
-    private MetadataWidget metadataWidget;
-
-    @Inject
-    private MultiPageEditor multiPage;
-
-    @Inject
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
@@ -99,180 +85,78 @@ public class ScoreCardXLSEditorPresenter
     private DefaultFileNameValidator fileNameValidator;
 
     @Inject
-    @New
-    private FileMenuBuilder menuBuilder;
-    private Menus menus;
+    public ScoreCardXLSEditorPresenter(ScoreCardXLSEditorView baseView) {
+        super(baseView);
+        view = baseView;
 
-    private ObservablePath path;
-    private PlaceRequest place;
-    private boolean isReadOnly;
-    private String version;
-
-    @PostConstruct
-    public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        this.path = path;
-        this.place = place;
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
-        this.version = place.getParameter( "version", null );
-
-        this.path.onRename( new Command() {
-            @Override
-            public void execute() {
-                changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
-            }
-        } );
-        this.path.onDelete( new Command() {
-            @Override
-            public void execute() {
-                placeManager.forceClosePlace( place );
-            }
-        } );
-
-        this.path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
-                view.setConcurrentUpdateSessionInfo( eventInfo );
-            }
-        } );
-
-        this.path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
-                newConcurrentRename( info.getSource(),
-                                     info.getTarget(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             reload();
-                                         }
-                                     }
-                                   ).show();
-            }
-        } );
-
-        this.path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
-            @Override
-            public void execute( final ObservablePath.OnConcurrentDelete info ) {
-                newConcurrentDelete( info.getPath(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             placeManager.closePlace( place );
-                                         }
-                                     }
-                                   ).show();
-            }
-        } );
-
-        makeMenuBar();
-
-        multiPage.addWidget( view,
-                             ScoreCardXLSEditorConstants.INSTANCE.ScoreCard() );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-                metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                   isReadOnly ),
-                                      new HasBusyIndicatorDefaultErrorCallback( metadataWidget ) ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                //Nothing to do
-            }
-        } );
-
-        view.setPath( path );
-        view.setReadOnly( isReadOnly );
+    public void onStartup(final ObservablePath path,
+            final PlaceRequest place) {
+        super.init(path, place);
     }
 
-    public void reload() {
-        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitle(), null ) );
-    }
-
-    private void disableMenus() {
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
-    }
-
-    private void makeMenuBar() {
-        if ( isReadOnly ) {
-            menus = menuBuilder.addRestoreVersion( path ).build();
-        } else {
-            menus = menuBuilder
-                    .addCopy( path,
-                              fileNameValidator )
-                    .addRename( path,
-                                fileNameValidator )
-                    .addDelete( path )
-                    .addValidate( onValidate() )
-                    .build();
-        }
-    }
-
-    private Command onValidate() {
+    protected Command onValidate() {
         return new Command() {
             @Override
             public void execute() {
-                scoreCardXLSService.call( new RemoteCallback<List<ValidationMessage>>() {
+                scoreCardXLSService.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            ValidationPopup.showMessages( results );
+                            ValidationPopup.showMessages(results);
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( path,
-                                                          path );
+                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
+                        versionRecordManager.getCurrentPath());
             }
         };
     }
 
     @OnClose
     public void onClose() {
-        this.path = null;
+        this.versionRecordManager.clear();
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( path,
-                                                        type );
-        if ( version != null ) {
-            fileName = fileName + " v" + version;
+        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
+                type);
+        if (versionRecordManager.getVersion() != null) {
+            fileName = fileName + " v" + versionRecordManager.getVersion();
         }
         return ScoreCardXLSEditorConstants.INSTANCE.ScoreCardXLEditorTitle() + " [" + fileName + "]";
     }
 
+    @Override
+    protected void loadContent() {
+
+        scoreCardXLSService.call(new RemoteCallback<ScoreCardXLSContent>() {
+            @Override
+            public void callback(ScoreCardXLSContent content) {
+
+                resetEditorPages(content.getOverview());
+
+                view.setPath(versionRecordManager.getCurrentPath());
+                view.setReadOnly(isReadOnly);
+            }
+        }).loadContent(versionRecordManager.getCurrentPath());
+
+    }
+
+    @Override
+    protected void save() {
+
+    }
+
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
     }
 
     @WorkbenchMenu

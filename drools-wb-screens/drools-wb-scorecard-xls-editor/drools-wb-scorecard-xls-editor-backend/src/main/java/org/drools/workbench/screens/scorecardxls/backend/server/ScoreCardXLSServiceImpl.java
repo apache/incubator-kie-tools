@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSContent;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
@@ -37,6 +38,7 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.StandardOpenOption;
@@ -52,8 +54,10 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @ApplicationScoped
 // Implementation needs to implement both interfaces even though one extends the other
 // otherwise the implementation discovery mechanism for the @Service annotation fails.
-public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
-                                                ExtendedScoreCardXLSService {
+public class ScoreCardXLSServiceImpl
+        extends KieService
+        implements ScoreCardXLSService,
+                   ExtendedScoreCardXLSService {
 
     private static final Logger log = LoggerFactory.getLogger( ScoreCardXLSServiceImpl.class );
 
@@ -62,9 +66,6 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private MetadataService metadataService;
 
     @Inject
     private CopyService copyService;
@@ -83,6 +84,15 @@ public class ScoreCardXLSServiceImpl implements ScoreCardXLSService,
 
     @Inject
     private GenericValidator genericValidator;
+
+    @Override
+    public ScoreCardXLSContent loadContent(Path path) {
+        ScoreCardXLSContent content = new ScoreCardXLSContent();
+
+        content.setOverview(loadOverview(path));
+
+        return content;
+    }
 
     public InputStream load( final Path path,
                              final String sessionId ) {

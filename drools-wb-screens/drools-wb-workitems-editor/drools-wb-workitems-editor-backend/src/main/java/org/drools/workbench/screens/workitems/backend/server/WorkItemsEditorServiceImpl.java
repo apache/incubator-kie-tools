@@ -64,6 +64,7 @@ import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,16 +79,15 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
+public class WorkItemsEditorServiceImpl
+        extends KieService
+        implements WorkItemsEditorService {
 
     private static final Logger log = LoggerFactory.getLogger( WorkItemsEditorServiceImpl.class );
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private MetadataService metadataService;
 
     @Inject
     private CopyService copyService;
@@ -112,9 +112,6 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
 
     @Inject
     private ConfigWorkDefinitionsLoader configWorkDefinitionsLoader;
-
-    @Inject
-    private KieProjectService projectService;
 
     @Inject
     private Identity identity;
@@ -205,6 +202,7 @@ public class WorkItemsEditorServiceImpl implements WorkItemsEditorService {
                                                                sessionInfo ) );
 
             return new WorkItemsModelContent( definition,
+                                              loadOverview(path),
                                               workItemImages );
 
         } catch ( Exception e ) {

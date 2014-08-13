@@ -36,23 +36,19 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
-import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
-import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
-import org.kie.workbench.common.widgets.client.editor.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -81,13 +77,7 @@ public class GuidedRuleEditorPresenter
     private GuidedRuleEditorView view;
 
     @Inject
-    private OverviewWidgetPresenter overview;
-
-    @Inject
     private ViewSourceView viewSource;
-
-    @Inject
-    private MultiPageEditor multiPage;
 
     @Inject
     private Caller<GuidedRuleEditorService> service;
@@ -104,14 +94,10 @@ public class GuidedRuleEditorPresenter
     @Inject
     private AsyncPackageDataModelOracleFactory oracleFactory;
 
-    @Inject
-    private Caller<ProjectService> projectService;
-
     private boolean isDSLEnabled;
 
     private RuleModel model;
     private AsyncPackageDataModelOracle oracle;
-    private Metadata metadata;
 
     @Inject
     public GuidedRuleEditorPresenter(
@@ -133,12 +119,10 @@ public class GuidedRuleEditorPresenter
     protected void loadContent() {
         view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
-        service.call(getModelSuccessCallback(),
-                new CommandDrivenErrorCallback(view,
-                        new CommandBuilder().addNoSuchFileException(view,
-                                multiPage,
-                                menus).build()
-                )).loadContent(versionRecordManager.getCurrentPath());
+        service.call(
+                getModelSuccessCallback(),
+                getNoSuchFileExceptionErrorCallback()
+        ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
@@ -151,26 +135,16 @@ public class GuidedRuleEditorPresenter
                     return;
                 }
 
-                multiPage.clear();
-                multiPage.addWidget(overview,
-                        CommonConstants.INSTANCE.Overview());
-                overview.setContent(content.getOverview(), versionRecordManager.getCurrentPath());
+                resetEditorPages(content.getOverview());
 
-                multiPage.addWidget(view,
-                        CommonConstants.INSTANCE.EditTabTitle());
-
-                multiPage.addWidget(importsWidget,
-                        CommonConstants.INSTANCE.ConfigTabTitle());
+                addImportsTab(importsWidget);
 
                 GuidedRuleEditorPresenter.this.model = content.getModel();
-                GuidedRuleEditorPresenter.this.metadata = content.getOverview().getMetadata();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
                 oracle = oracleFactory.makeAsyncPackageDataModelOracle(
                         versionRecordManager.getPathToLatest(),
                         model,
                         dataModel);
-
-                versionRecordManager.setVersions(content.getOverview().getMetadata().getVersion());
 
                 view.setContent(
                         versionRecordManager.getCurrentPath(),
@@ -283,8 +257,7 @@ public class GuidedRuleEditorPresenter
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-
-        return multiPage;
+        return super.getWidget();
     }
 
     @WorkbenchMenu

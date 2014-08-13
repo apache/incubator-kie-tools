@@ -2,6 +2,7 @@ package org.drools.workbench.screens.workitems.model;
 
 import java.util.List;
 
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -10,14 +11,18 @@ public class WorkItemsModelContent {
 
     private String definition;
     private List<String> workItemImages;
+    private Overview overview;
 
     public WorkItemsModelContent() {
     }
 
     public WorkItemsModelContent( final String definition,
+                                  final Overview overview,
                                   final List<String> workItemImages ) {
         this.definition = PortablePreconditions.checkNotNull( "definition",
                                                               definition );
+        this.overview = PortablePreconditions.checkNotNull( "overview",
+                                                              overview );
         this.workItemImages = PortablePreconditions.checkNotNull( "workItemImages",
                                                                   workItemImages );
 
@@ -29,6 +34,10 @@ public class WorkItemsModelContent {
 
     public List<String> getWorkItemImages() {
         return this.workItemImages;
+    }
+
+    public Overview getOverview() {
+        return overview;
     }
 
 }

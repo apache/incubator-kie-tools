@@ -3,7 +3,7 @@ package org.drools.workbench.screens.drltext.client.editor;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.kie.workbench.common.widgets.client.editor.KieEditorView;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.client.mvp.UberView;
 
 public interface DRLEditorView extends KieEditorView,

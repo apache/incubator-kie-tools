@@ -3,7 +3,8 @@ package org.drools.workbench.screens.testscenario.client.resources.i18n;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
-public interface TestScenarioConstants
+public interface
+        TestScenarioConstants
         extends Messages {
 
     public static final TestScenarioConstants INSTANCE = GWT.create(TestScenarioConstants.class);

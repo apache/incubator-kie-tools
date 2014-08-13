@@ -184,4 +184,24 @@ public class ScoreCardXLSEditorViewImpl
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
     }
 
+    @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
+    public void showBusyIndicator( final String message ) {
+        BusyPopup.showMessage( message );
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
+
+    @Override
+    public void setNotDirty() {
+
+    }
+
 }

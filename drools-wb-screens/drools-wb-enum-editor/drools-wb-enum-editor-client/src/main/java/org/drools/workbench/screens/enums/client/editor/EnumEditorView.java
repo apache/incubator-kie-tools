@@ -1,7 +1,7 @@
 package org.drools.workbench.screens.enums.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.widgets.client.editor.KieEditorView;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 
 /**
  * Enum Editor View definition

@@ -22,11 +22,19 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.categories.client.resources.i18n.Constants;
+import org.drools.workbench.screens.categories.client.type.CategoryDefinitionResourceType;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.CategoriesModelContent;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.uberfire.client.common.MultiPageEditor;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
+import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -34,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -42,8 +51,26 @@ import org.uberfire.workbench.model.menu.Menus;
  */
 @Dependent
 @WorkbenchScreen(identifier = "CategoryManager")
-public class CategoriesRepositoryEditorPresenter
-        extends CategoriesEditorBasePresenter {
+public class CategoriesRepositoryEditorPresenter {
+
+    @Inject
+    protected CategoriesEditorView view;
+
+    @Inject
+    protected Caller<CategoriesService> categoryService;
+
+    @Inject
+    private FileMenuBuilder menuBuilder;
+
+    @Inject
+    private CategoryDefinitionResourceType type;
+
+    @Inject
+    protected MultiPageEditor multiPage;
+
+    protected Path path;
+
+    protected Menus menus;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -75,7 +102,44 @@ public class CategoriesRepositoryEditorPresenter
                 view.setContent(content.getCategories());
                 view.hideBusyIndicator();
 
-                addMetadataPage();
+            }
+        };
+    }
+
+    protected void makeMenuBar() {
+        menus = menuBuilder.addSave(new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        }).build();
+    }
+
+    public void onSave() {
+        new SaveOperationService().save(path,
+                new CommandWithCommitMessage() {
+                    @Override
+                    public void execute(final String commitMessage) {
+                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        categoryService.call(getSaveSuccessCallback(),
+                                new HasBusyIndicatorDefaultErrorCallback(view)).save(
+                                path,
+                                view.getContent(),
+                                null,
+                                commitMessage
+                        );
+                    }
+                });
+    }
+
+    protected RemoteCallback<Path> getSaveSuccessCallback() {
+        return new RemoteCallback<Path>() {
+
+            @Override
+            public void callback(final Path path) {
+                view.setNotDirty();
+                view.hideBusyIndicator();
+                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
             }
         };
     }
