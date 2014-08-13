@@ -56,6 +56,24 @@ public final class LinearGradient implements FillGradient
 
         return this;
     }
+    
+    @Override
+    public LinearGradient asLinearGradient()
+    {
+        return this;
+    }
+
+    @Override
+    public RadialGradient asRadialGradient()
+    {
+        return null;
+    }
+
+    @Override
+    public PatternGradient asPatternGradient()
+    {
+        return null;
+    }
 
     public final LinearGradientJSO getJSO()
     {
@@ -92,4 +110,6 @@ public final class LinearGradient implements FillGradient
 			});
         }-*/;
     }
+
+    
 }

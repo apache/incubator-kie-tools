@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -61,16 +60,22 @@ import com.ait.lienzo.client.core.event.NodeTouchMoveEvent;
 import com.ait.lienzo.client.core.event.NodeTouchMoveHandler;
 import com.ait.lienzo.client.core.event.NodeTouchStartEvent;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
+import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.IContainerFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.FillGradient;
+import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
@@ -165,6 +170,34 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
                 else
                 {
                     m_attr = new Attributes(ajso);
+
+                    if (m_attr.isDefined(Attribute.FILL))
+                    {
+                        FillGradient grad = m_attr.getFillGradient();
+
+                        if (null != grad)
+                        {
+                            final PatternGradient patg = grad.asPatternGradient();
+
+                            if (null != patg)
+                            {
+                                new ImageLoader(patg.getSrc())
+                                {
+                                    @Override
+                                    public void onLoad(ImageElement image)
+                                    {
+                                        m_attr.setFillGradient(new PatternGradient(image, patg.getRepeat()));
+                                    }
+
+                                    @Override
+                                    public void onError(String message)
+                                    {
+                                        Console.log(message);
+                                    }
+                                };
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -381,13 +414,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     {
         Transform xfrm = new Transform();
 
-        ArrayList<Node<?>> list = new ArrayList<Node<?>>();
+        NFastArrayList<Node<?>> list = new NFastArrayList<Node<?>>();
 
         list.add(this);
 
         Node<?> parent = this.getParent();
 
-        while (parent != null)
+        while (null != parent)
         {
             list.add(parent);
 
@@ -416,21 +449,22 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         {
             xfrm.translate(x, y);
         }
-        Transform t2 = getTransform();
+        Transform tran;
 
-        if (t2 != null) // Use the Transform if it's defined
+        if ((attr.isDefined(Attribute.TRANSFORM)) && (null != (tran = getTransform())))
         {
-            xfrm.multiply(t2);
+            xfrm.multiply(tran);
         }
         else
-        // Otherwise use ROTATION, SCALE and OFFSET
         {
-            Point2D offset = attr.getOffset();
+            // Otherwise use ROTATION, SCALE and OFFSET
 
             double r = attr.getRotation();
 
             if (r != 0)
             {
+                Point2D offset = attr.getOffset();
+
                 if (null != offset)
                 {
                     x = offset.getX();

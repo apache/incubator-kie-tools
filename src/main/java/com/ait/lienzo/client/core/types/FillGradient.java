@@ -26,6 +26,12 @@ public interface FillGradient
 {
     public String getType();
 
+    public LinearGradient asLinearGradient();
+
+    public RadialGradient asRadialGradient();
+
+    public PatternGradient asPatternGradient();
+
     public static class GradientJSO extends JavaScriptObject
     {
         protected GradientJSO()
@@ -34,7 +40,7 @@ public interface FillGradient
 
         public final native String getType()
         /*-{
-			return this.type;
+        	return this.type;
         }-*/;
     }
 }

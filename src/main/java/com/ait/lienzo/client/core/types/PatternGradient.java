@@ -45,9 +45,37 @@ public final class PatternGradient implements FillGradient
     }
 
     @Override
+    public LinearGradient asLinearGradient()
+    {
+        return null;
+    }
+
+    @Override
+    public RadialGradient asRadialGradient()
+    {
+        return null;
+    }
+
+    @Override
+    public PatternGradient asPatternGradient()
+    {
+        return this;
+    }
+
+    @Override
     public String getType()
     {
         return TYPE;
+    }
+
+    public String getSrc()
+    {
+        return m_jso.getSrc();
+    }
+
+    public FillRepeat getRepeat()
+    {
+        return FillRepeat.lookup(m_jso.getRepeat());
     }
 
     public final PatternGradientJSO getJSO()
@@ -71,6 +99,16 @@ public final class PatternGradient implements FillGradient
         		    return e;
         		}
         	}
+        }-*/;
+
+        public final native String getSrc()
+        /*-{
+            return this.src;
+        }-*/;
+
+        public final native String getRepeat()
+        /*-{
+            return this.repeat;
         }-*/;
     }
 }

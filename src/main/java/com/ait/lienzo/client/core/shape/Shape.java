@@ -30,14 +30,10 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.FillGradient;
-import com.ait.lienzo.client.core.types.FillGradient.GradientJSO;
 import com.ait.lienzo.client.core.types.LinearGradient;
-import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.PatternGradient;
-import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.RadialGradient;
-import com.ait.lienzo.client.core.types.RadialGradient.RadialGradientJSO;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
@@ -49,7 +45,6 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 
@@ -210,31 +205,29 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             }
             else
             {
-                JavaScriptObject grad = attr.getObject(Attribute.FILL.getProperty());
+                FillGradient grad = attr.getFillGradient();
 
                 if (null != grad)
                 {
-                    GradientJSO base = grad.cast();
-
-                    if (LinearGradient.TYPE.equals(base.getType()))
+                    if (LinearGradient.TYPE.equals(grad.getType()))
                     {
-                        context.setFillGradient(new LinearGradient((LinearGradientJSO) base));
+                        context.setFillGradient(grad.asLinearGradient());
 
                         context.fill();
 
                         setWasFilledFlag(true);
                     }
-                    else if (RadialGradient.TYPE.equals(base.getType()))
+                    else if (RadialGradient.TYPE.equals(grad.getType()))
                     {
-                        context.setFillGradient(new RadialGradient((RadialGradientJSO) base));
+                        context.setFillGradient(grad.asRadialGradient());
 
                         context.fill();
 
                         setWasFilledFlag(true);
                     }
-                    else if (PatternGradient.TYPE.equals(base.getType()))
+                    else if (PatternGradient.TYPE.equals(grad.getType()))
                     {
-                        context.setFillGradient(new PatternGradient((PatternGradientJSO) base));
+                        context.setFillGradient(grad.asPatternGradient());
 
                         context.fill();
 
@@ -1327,7 +1320,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getShapeType().getValue()));
-        
+
         if (false == getMetaData().isEmpty())
         {
             object.put("meta", new JSONObject(getMetaData().getJSO()));

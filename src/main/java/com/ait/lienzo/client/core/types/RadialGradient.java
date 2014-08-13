@@ -71,6 +71,24 @@ public final class RadialGradient implements FillGradient
         return this;
     };
 
+    @Override
+    public LinearGradient asLinearGradient()
+    {
+        return null;
+    }
+
+    @Override
+    public RadialGradient asRadialGradient()
+    {
+        return this;
+    }
+
+    @Override
+    public PatternGradient asPatternGradient()
+    {
+        return null;
+    }
+
     public final RadialGradientJSO getJSO()
     {
         return m_jso;
@@ -84,28 +102,28 @@ public final class RadialGradient implements FillGradient
 
         public static final native RadialGradientJSO make(double sx, double sy, double sr, double ex, double ey, double er)
         /*-{
-			return {
-				start : {
-					x : sx,
-					y : sy,
-					radius : sr
-				},
-				end : {
-					x : ex,
-					y : ey,
-					radius : er
-				},
-				colorStops : [],
-				type : "RadialGradient"
-			};
+        	return {
+        		start : {
+        			x : sx,
+        			y : sy,
+        			radius : sr
+        		},
+        		end : {
+        			x : ex,
+        			y : ey,
+        			radius : er
+        		},
+        		colorStops : [],
+        		type : "RadialGradient"
+        	};
         }-*/;
 
         public final native void addColorStop(double stop, String color)
         /*-{
-			this.colorStops.push({
-				stop : stop,
-				color : color
-			});
+        	this.colorStops.push({
+        		stop : stop,
+        		color : color
+        	});
         }-*/;
     }
 }

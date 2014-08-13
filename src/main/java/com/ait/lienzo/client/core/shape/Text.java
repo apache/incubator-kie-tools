@@ -22,18 +22,14 @@ import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.FillGradient.GradientJSO;
+import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
-import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.PatternGradient;
-import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
 import com.ait.lienzo.client.core.types.RadialGradient;
-import com.ait.lienzo.client.core.types.RadialGradient.RadialGradientJSO;
 import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
 /**
@@ -198,31 +194,29 @@ public class Text extends Shape<Text>
             }
             else
             {
-                JavaScriptObject grad = attr.getObject(Attribute.FILL.getProperty());
+                FillGradient grad = attr.getFillGradient();
 
                 if (null != grad)
                 {
-                    GradientJSO base = grad.cast();
-
-                    if (LinearGradient.TYPE.equals(base.getType()))
+                    if (LinearGradient.TYPE.equals(grad.getType()))
                     {
-                        context.setFillGradient(new LinearGradient((LinearGradientJSO) base));
+                        context.setFillGradient(grad.asLinearGradient());
 
                         context.fillText(getText(), 0, 0);
 
                         setWasFilledFlag(true);
                     }
-                    else if (RadialGradient.TYPE.equals(base.getType()))
+                    else if (RadialGradient.TYPE.equals(grad.getType()))
                     {
-                        context.setFillGradient(new RadialGradient((RadialGradientJSO) base));
+                        context.setFillGradient(grad.asRadialGradient());
 
                         context.fillText(getText(), 0, 0);
 
                         setWasFilledFlag(true);
                     }
-                    else if (PatternGradient.TYPE.equals(base.getType()))
+                    else if (PatternGradient.TYPE.equals(grad.getType()))
                     {
-                        context.setFillGradient(new PatternGradient((PatternGradientJSO) base));
+                        context.setFillGradient(grad.asPatternGradient());
 
                         context.fillText(getText(), 0, 0);
 
