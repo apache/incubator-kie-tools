@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.widgets.client.popups.file;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.uberfire.client.common.popups.footers.GenericModalFooter;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
@@ -50,31 +49,26 @@ public class SavePopup extends FormStylePopup {
         addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(),
                       checkInCommentTextBox );
 
-        final HorizontalPanel hp = new HorizontalPanel();
-        final Button create = new Button( CommonConstants.INSTANCE.Save() );
-        create.addClickHandler( new ClickHandler() {
-            public void onClick( final ClickEvent arg0 ) {
-                hide();
-                command.execute( checkInCommentTextBox.getText() );
-            }
-        } );
-        hp.add( create );
-
-        final Button cancel = new Button( CommonConstants.INSTANCE.Cancel() );
-        cancel.addClickHandler( new ClickHandler() {
-            public void onClick( final ClickEvent arg0 ) {
-                hide();
-            }
-        } );
-        hp.add( new HTML( "&nbsp" ) );
-        hp.add( cancel );
-        addAttribute( "",
-                      hp );
-    }
-
-    public void show() {
-        super.show();
-        checkInCommentTextBox.setFocus( true );
+        final GenericModalFooter footer = new GenericModalFooter();
+        footer.addButton( CommonConstants.INSTANCE.Save(),
+                          new Command() {
+                              @Override
+                              public void execute() {
+                                  hide();
+                                  command.execute( checkInCommentTextBox.getText() );
+                              }
+                          },
+                          IconType.SAVE,
+                          ButtonType.PRIMARY );
+        footer.addButton( CommonConstants.INSTANCE.Cancel(),
+                          new Command() {
+                              @Override
+                              public void execute() {
+                                  hide();
+                              }
+                          },
+                          ButtonType.DEFAULT );
+        add( footer );
     }
 
 }

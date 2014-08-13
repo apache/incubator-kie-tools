@@ -16,14 +16,13 @@
 
 package org.kie.workbench.common.widgets.client.popups.file;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.TextBox;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.uberfire.client.common.popups.footers.GenericModalFooter;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
@@ -48,31 +47,30 @@ public class DeletePopup extends FormStylePopup {
         addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(),
                       checkInCommentTextBox );
 
-        final HorizontalPanel hp = new HorizontalPanel();
-        final Button create = new Button( CommonConstants.INSTANCE.DeletePopupDelete() );
-        create.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+        final GenericModalFooter footer = new GenericModalFooter();
+        footer.addButton( CommonConstants.INSTANCE.DeletePopupDelete(),
+                          new Command() {
+                              @Override
+                              public void execute() {
+                                  if ( !Window.confirm( CommonConstants.INSTANCE.DeletePopupRenameNamePrompt() ) ) {
+                                      return;
+                                  }
 
-                if ( !Window.confirm( CommonConstants.INSTANCE.DeletePopupRenameNamePrompt() ) ) {
-                    return;
-                }
-
-                hide();
-                command.execute( checkInCommentTextBox.getText() );
-            }
-        } );
-        hp.add( create );
-
-        final Button cancel = new Button( "Cancel" );
-        cancel.addClickHandler( new ClickHandler() {
-            public void onClick( final ClickEvent arg0 ) {
-                hide();
-            }
-        } );
-        hp.add( new HTML( "&nbsp" ) );
-        hp.add( cancel );
-        addAttribute( "", hp );
-
+                                  hide();
+                                  command.execute( checkInCommentTextBox.getText() );
+                              }
+                          },
+                          IconType.REMOVE,
+                          ButtonType.PRIMARY );
+        footer.addButton( CommonConstants.INSTANCE.Cancel(),
+                          new Command() {
+                              @Override
+                              public void execute() {
+                                  hide();
+                              }
+                          },
+                          ButtonType.DEFAULT );
+        add( footer );
     }
 
 }
