@@ -31,12 +31,26 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Window;
 
 /**
  * Text implementation for Canvas.
  */
 public class Text extends Shape<Text>
 {
+    private static final boolean SAFARI = isSafari();
+
+    private static final boolean isSafari()
+    {
+        String ua = Window.Navigator.getUserAgent();
+
+        if (ua.indexOf("Safari") >= 0 && ua.indexOf("Chrome") < 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Constructor. Creates an instance of text.
      * 
@@ -162,10 +176,31 @@ public class Text extends Shape<Text>
 
                 context.setGlobalAlpha(1);
 
-                Layer layer = getLayer();
+                if (SAFARI)
+                {
+                    TextMetrics size = measureWithIdentityTransform(context);
 
-                context.getJSO().fillTextWithGradient(getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), getColorKey());
+                    if (null != size)
+                    {
+                        double wide = size.getWidth();
 
+                        double high = size.getHeight();
+
+                        context.getJSO().fillTextWithGradient(getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), getColorKey());
+                    }
+                    else
+                    {
+                        Layer layer = getLayer();
+
+                        context.getJSO().fillTextWithGradient(getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), getColorKey());
+                    }
+                }
+                else
+                {
+                    context.setFillColor(getColorKey());
+
+                    context.fillText(getText(), 0, 0);
+                }
                 context.restore();
 
                 setWasFilledFlag(true);
@@ -297,6 +332,26 @@ public class Text extends Shape<Text>
         double height = context.measureText("M").getWidth();
 
         size.setHeight(height - height / 6);
+
+        context.restore();
+
+        return size;
+    }
+
+    /**
+     * Returns TextMetrics, which includes an approximate value for
+     * height. As close as we can estimate it at this time.
+     * 
+     * @param context
+     * @return TextMetric or null if the text is empty or null
+     */
+    public TextMetrics measureWithIdentityTransform(Context2D context)
+    {
+        context.save();
+
+        context.setToIdentityTransform();
+
+        TextMetrics size = measure(context);
 
         context.restore();
 
