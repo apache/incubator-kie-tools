@@ -22,8 +22,8 @@ import java.util.NoSuchElementException;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.NativeContext2D;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.OrientationChangeEvent;
 import com.ait.lienzo.client.core.event.OrientationChangeHandler;
 import com.ait.lienzo.client.core.event.ResizeChangeEvent;
@@ -237,7 +237,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     @Override
     public final Viewport add(Scene scene)
     {
-        if ((null != scene) && (LienzoGlobals.get().isCanvasSupported()))
+        if ((null != scene) && (LienzoCore.get().isCanvasSupported()))
         {
             if (false == scene.adopt(this))
             {
@@ -745,7 +745,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         {
             CanvasElement element = null;
 
-            if (LienzoGlobals.get().isCanvasSupported())
+            if (LienzoCore.get().isCanvasSupported())
             {
                 element = super.getCanvasElement();
 
@@ -763,7 +763,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         @Override
         public final void setPixelSize(int wide, int high)
         {
-            if (LienzoGlobals.get().isCanvasSupported())
+            if (LienzoCore.get().isCanvasSupported())
             {
                 super.setPixelSize(wide, high);
 

@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.shape;
 
 import java.util.ArrayList;
 
-import com.ait.lienzo.client.core.LienzoGlobals;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
@@ -357,7 +357,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     @Override
     public final Scene add(Layer layer)
     {
-        if ((null != layer) && (LienzoGlobals.get().isCanvasSupported()))
+        if ((null != layer) && (LienzoCore.get().isCanvasSupported()))
         {
             CanvasElement element = layer.getCanvasElement();
 
@@ -382,7 +382,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     @Override
     public final Scene remove(Layer layer)
     {
-        if ((null != layer) && (LienzoGlobals.get().isCanvasSupported()))
+        if ((null != layer) && (LienzoCore.get().isCanvasSupported()))
         {
             CanvasElement element = layer.getCanvasElement();
 
@@ -399,7 +399,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     @Override
     public final Scene removeAll()
     {
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             while (getElement().getChildCount() > 0)
             {
@@ -420,7 +420,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     @Override
     public final Scene moveDown(Layer layer)
     {
-        if ((null != layer) && (LienzoGlobals.get().isCanvasSupported()))
+        if ((null != layer) && (LienzoCore.get().isCanvasSupported()))
         {
             CanvasElement element = layer.getCanvasElement();
 
@@ -465,7 +465,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     @Override
     public final Scene moveUp(Layer layer)
     {
-        if ((null != layer) && (LienzoGlobals.get().isCanvasSupported()))
+        if ((null != layer) && (LienzoCore.get().isCanvasSupported()))
         {
             final int size = getElement().getChildCount();
 
@@ -512,7 +512,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     @Override
     public final Scene moveToTop(Layer layer)
     {
-        if ((null != layer) && (LienzoGlobals.get().isCanvasSupported()))
+        if ((null != layer) && (LienzoCore.get().isCanvasSupported()))
         {
             final int size = getElement().getChildCount();
 
@@ -544,7 +544,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     @Override
     public final Scene moveToBottom(Layer layer)
     {
-        if ((null != layer) && (LienzoGlobals.get().isCanvasSupported()))
+        if ((null != layer) && (LienzoCore.get().isCanvasSupported()))
         {
             final int size = getElement().getChildCount();
 
@@ -614,7 +614,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
     public final String toDataURL()
     {
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
 
@@ -646,7 +646,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
     final String toDataURL(Layer background)
     {
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
 
@@ -680,7 +680,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
     public final String toDataURL(DataURLType mimetype)
     {
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
 
@@ -712,7 +712,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
     final String toDataURL(DataURLType mimetype, Layer background)
     {
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
 

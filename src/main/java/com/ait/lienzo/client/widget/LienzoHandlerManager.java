@@ -18,7 +18,7 @@ package com.ait.lienzo.client.widget;
 
 import java.util.ArrayList;
 
-import com.ait.lienzo.client.core.LienzoGlobals;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -408,7 +408,7 @@ final class LienzoHandlerManager
 
             if (null == cursor)
             {
-                cursor = LienzoGlobals.get().getDefaultNormalCursor();
+                cursor = LienzoCore.get().getDefaultNormalCursor();
 
                 if (null == cursor)
                 {
@@ -460,7 +460,7 @@ final class LienzoHandlerManager
 
         if (null == cursor)
         {
-            cursor = LienzoGlobals.get().getDefaultSelectCursor();
+            cursor = LienzoCore.get().getDefaultSelectCursor();
 
             if (null == cursor)
             {

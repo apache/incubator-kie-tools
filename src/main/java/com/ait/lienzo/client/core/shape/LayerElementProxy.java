@@ -17,8 +17,8 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.NativeContext2D;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 
@@ -40,7 +40,7 @@ public class LayerElementProxy
      */
     public CanvasElement getCanvasElement()
     {
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             if (null == m_element)
             {

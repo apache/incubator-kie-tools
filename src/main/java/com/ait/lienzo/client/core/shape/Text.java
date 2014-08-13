@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.LienzoGlobals;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -31,25 +31,13 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Window;
 
 /**
  * Text implementation for Canvas.
  */
 public class Text extends Shape<Text>
 {
-    private static final boolean SAFARI = isSafari();
-
-    private static final boolean isSafari()
-    {
-        String ua = Window.Navigator.getUserAgent();
-
-        if (ua.indexOf("Safari") >= 0 && ua.indexOf("Chrome") < 0)
-        {
-            return true;
-        }
-        return false;
-    }
+    private static final boolean IS_SAFARI = LienzoCore.get().isSafari();
 
     /**
      * Constructor. Creates an instance of text.
@@ -60,7 +48,7 @@ public class Text extends Shape<Text>
     {
         super(ShapeType.TEXT);
 
-        LienzoGlobals globals = LienzoGlobals.get();
+        LienzoCore globals = LienzoCore.get();
 
         if (null == text)
         {
@@ -80,7 +68,7 @@ public class Text extends Shape<Text>
     {
         super(ShapeType.TEXT);
 
-        LienzoGlobals globals = LienzoGlobals.get();
+        LienzoCore globals = LienzoCore.get();
 
         if (null == text)
         {
@@ -109,7 +97,7 @@ public class Text extends Shape<Text>
     {
         super(ShapeType.TEXT);
 
-        LienzoGlobals globals = LienzoGlobals.get();
+        LienzoCore globals = LienzoCore.get();
 
         if (null == text)
         {
@@ -176,7 +164,7 @@ public class Text extends Shape<Text>
 
                 context.setGlobalAlpha(1);
 
-                if (SAFARI)
+                if (IS_SAFARI)
                 {
                     TextMetrics size = measureWithIdentityTransform(context);
 

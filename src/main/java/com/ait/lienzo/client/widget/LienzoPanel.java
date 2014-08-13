@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.widget;
 
-import com.ait.lienzo.client.core.LienzoGlobals;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.i18n.MessageConstants;
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
@@ -114,7 +114,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
         m_flex = flex;
 
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             getElement().appendChild(m_view.getElement());
 

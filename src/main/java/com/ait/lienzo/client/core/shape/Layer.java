@@ -20,9 +20,9 @@ import java.util.ArrayList;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -333,7 +333,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         m_high = high;
 
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             m_element.setWidth(wide);
 
@@ -473,7 +473,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      */
     public CanvasElement getCanvasElement()
     {
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             if (null == m_element)
             {
@@ -521,7 +521,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      */
     public void draw()
     {
-        if (LienzoGlobals.get().isCanvasSupported())
+        if (LienzoCore.get().isCanvasSupported())
         {
             boolean clear = isClearLayerBeforeDraw();
 
@@ -659,7 +659,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     {
         if (false == m_virgin)
         {
-            if (LienzoGlobals.get().getLayerClearMode() == LayerClearMode.CLEAR)
+            if (LienzoCore.get().getLayerClearMode() == LayerClearMode.CLEAR)
             {
                 Context2D context = getContext();
 
@@ -917,7 +917,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         {
             CanvasElement element = null;
 
-            if (LienzoGlobals.get().isCanvasSupported())
+            if (LienzoCore.get().isCanvasSupported())
             {
                 element = super.getCanvasElement();
 
@@ -935,7 +935,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         @Override
         public void setPixelSize(int wide, int high)
         {
-            if (LienzoGlobals.get().isCanvasSupported())
+            if (LienzoCore.get().isCanvasSupported())
             {
                 CanvasElement element = getCanvasElement();
 

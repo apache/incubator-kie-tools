@@ -20,11 +20,11 @@ import java.util.Collection;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.animation.IAnimation;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.IndefiniteAnimation;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.i18n.MessageConstants;
 import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
@@ -166,11 +166,11 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
     private final String getTextBestFit(Context2D context, String text, int wide)
     {
-        double pt = LienzoGlobals.get().getDefaultFontSize();
+        double pt = LienzoCore.get().getDefaultFontSize();
 
-        String st = LienzoGlobals.get().getDefaultFontStyle();
+        String st = LienzoCore.get().getDefaultFontStyle();
 
-        String fm = LienzoGlobals.get().getDefaultFontFamily();
+        String fm = LienzoCore.get().getDefaultFontFamily();
 
         String tf = st + " " + pt + "pt " + fm;
 

@@ -14,10 +14,16 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core;
+package com.ait.lienzo.client.core.config;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.IColor;
@@ -26,57 +32,88 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
+import com.google.gwt.user.client.Window;
 
 /**
  * A Global Configuration Manager.
  */
-public final class LienzoGlobals
+public final class LienzoCore
 {
-    private static final LienzoGlobals INSTANCE                 = new LienzoGlobals();
+    private static final LienzoCore  INSTANCE                 = new LienzoCore();
 
-    public static final double         DEFAULT_FONT_SIZE        = 48;
+    public static final double       DEFAULT_FONT_SIZE        = 48;
 
-    public static final String         DEFAULT_FONT_STYLE       = "normal";
+    public static final String       DEFAULT_FONT_STYLE       = "normal";
 
-    public static final String         DEFAULT_FONT_FAMILY      = "Helvetica";
+    public static final String       DEFAULT_FONT_FAMILY      = "Helvetica";
 
-    private double                     m_strokeWidth            = 1;
+    private double                   m_strokeWidth            = 1;
 
-    private double                     m_backingStorePixelRatio = 0;
+    private double                   m_backingStorePixelRatio = 0;
 
-    private String                     m_strokeColor            = "black";
+    private String                   m_strokeColor            = "black";
 
-    private boolean                    m_fillShapeForSelection  = true;
+    private boolean                  m_fillShapeForSelection  = true;
 
-    private boolean                    m_globalLineDashSupport  = true;
+    private boolean                  m_globalLineDashSupport  = true;
 
-    private boolean                    m_nativeLineDashSupport  = false;
+    private boolean                  m_nativeLineDashSupport  = false;
 
-    private boolean                    m_enableBlobIfSupported  = true;
+    private boolean                  m_enableBlobIfSupported  = true;
 
-    private boolean                    m_nativeLineDashExamine  = false;
+    private boolean                  m_nativeLineDashExamine  = false;
 
-    private Cursor                     m_normal_cursor          = null;
+    private Cursor                   m_normal_cursor          = null;
 
-    private Cursor                     m_select_cursor          = null;
+    private Cursor                   m_select_cursor          = null;
 
-    private final boolean              m_canvasSupported        = Canvas.isSupported();
+    private final boolean            m_canvasSupported        = Canvas.isSupported();
 
-    private LayerClearMode             m_layerClearMode         = LayerClearMode.CLEAR;
+    private LayerClearMode           m_layerClearMode         = LayerClearMode.CLEAR;
 
-    private LienzoGlobals()
+    private ArrayList<ILienzoPlugin> m_plugins                = new ArrayList<ILienzoPlugin>();
+
+    private LienzoCore()
     {
     }
 
-    @Deprecated
-    public static final LienzoGlobals getInstance()
+    public static final LienzoCore get()
     {
         return INSTANCE;
     }
 
-    public static final LienzoGlobals get()
+    public final void addPlugin(ILienzoPlugin plugin)
     {
-        return INSTANCE;
+        if (GWT.isScript())
+        {
+            Console.log("Lienzo adding plugin: " + plugin.getNameSpace());
+        }
+        else
+        {
+            GWT.log("Lienzo adding plugin: " + plugin.getNameSpace());
+        }
+        m_plugins.add(plugin);
+    }
+
+    public final Collection<ILienzoPlugin> getPlugins()
+    {
+        return Collections.unmodifiableCollection(m_plugins);
+    }
+
+    public final String getUserAgent()
+    {
+        return Window.Navigator.getUserAgent();
+    }
+
+    public final boolean isSafari()
+    {
+        String ua = getUserAgent();
+
+        if ((ua.indexOf("Safari") >= 0) && (ua.indexOf("Chrome") < 0))
+        {
+            return true;
+        }
+        return false;
     }
 
     public final boolean isBlobAPIEnabled()
@@ -190,7 +227,7 @@ public final class LienzoGlobals
 
     public final native double getDevicePixelRatio()
     /*-{
-		return $wnd.devicePixelRatio || 1;
+    	return $wnd.devicePixelRatio || 1;
     }-*/;
 
     public final void setLayerClearMode(LayerClearMode mode)

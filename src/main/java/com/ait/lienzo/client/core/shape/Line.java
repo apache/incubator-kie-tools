@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.LienzoGlobals;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -78,7 +78,7 @@ public class Line extends Shape<Line>
         {
             if (attr.isDefined(Attribute.DASH_ARRAY))
             {
-                if (false == LienzoGlobals.get().isNativeLineDashSupported())
+                if (false == LienzoCore.get().isNativeLineDashSupported())
                 {
                     DashArray dash = getDashArray();
 

@@ -18,12 +18,12 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.LienzoGlobals;
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.TweeningAnimation;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -256,12 +256,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         {
             if (width > 0)
             {
-                color = LienzoGlobals.get().getDefaultStrokeColor();
+                color = LienzoCore.get().getDefaultStrokeColor();
             }
         }
         else if (width <= 0)
         {
-            width = LienzoGlobals.get().getDefaultStrokeWidth();
+            width = LienzoCore.get().getDefaultStrokeWidth();
         }
         if ((null == color) && (width <= 0))
         {
@@ -269,9 +269,9 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             {
                 return false;
             }
-            color = LienzoGlobals.get().getDefaultStrokeColor();
+            color = LienzoCore.get().getDefaultStrokeColor();
 
-            width = LienzoGlobals.get().getDefaultStrokeWidth();
+            width = LienzoCore.get().getDefaultStrokeWidth();
         }
         if (context.isSelection())
         {
@@ -291,7 +291,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
         if (attr.isDefined(Attribute.DASH_ARRAY))
         {
-            if (LienzoGlobals.get().isLineDashSupported())
+            if (LienzoCore.get().isLineDashSupported())
             {
                 DashArray dash = attr.getDashArray();
 

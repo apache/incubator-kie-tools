@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.LienzoGlobals;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DashArray.DashArrayJSO;
 import com.ait.lienzo.client.core.types.DragBounds;
@@ -373,7 +373,7 @@ public class Attributes
         {
             return getBoolean(Attribute.FILL_SHAPE_FOR_SELECTION.getProperty());
         }
-        return LienzoGlobals.get().getDefaultFillShapeForSelection();
+        return LienzoCore.get().getDefaultFillShapeForSelection();
     }
 
     public final void setListening(boolean listening)
@@ -695,7 +695,7 @@ public class Attributes
     {
         if (points <= 0.0)
         {
-            points = LienzoGlobals.get().getDefaultFontSize();
+            points = LienzoCore.get().getDefaultFontSize();
         }
         put(Attribute.FONT_SIZE.getProperty(), points);
     }
@@ -706,7 +706,7 @@ public class Attributes
 
         if (points <= 0.0)
         {
-            points = LienzoGlobals.get().getDefaultFontSize();
+            points = LienzoCore.get().getDefaultFontSize();
         }
         return points;
     }
@@ -720,7 +720,7 @@ public class Attributes
     {
         if ((null == family) || (family = family.trim()).isEmpty())
         {
-            put(Attribute.FONT_FAMILY.getProperty(), LienzoGlobals.get().getDefaultFontFamily());
+            put(Attribute.FONT_FAMILY.getProperty(), LienzoCore.get().getDefaultFontFamily());
         }
         else
         {
@@ -734,7 +734,7 @@ public class Attributes
 
         if ((null == family) || (family = family.trim()).isEmpty())
         {
-            family = LienzoGlobals.get().getDefaultFontFamily();
+            family = LienzoCore.get().getDefaultFontFamily();
         }
         return family;
     }
@@ -743,7 +743,7 @@ public class Attributes
     {
         if ((null == style) || (style = style.trim()).isEmpty())
         {
-            put(Attribute.FONT_STYLE.getProperty(), LienzoGlobals.get().getDefaultFontStyle());
+            put(Attribute.FONT_STYLE.getProperty(), LienzoCore.get().getDefaultFontStyle());
         }
         else
         {
@@ -757,7 +757,7 @@ public class Attributes
 
         if ((null == style) || (style = style.trim()).isEmpty())
         {
-            style = LienzoGlobals.get().getDefaultFontStyle();
+            style = LienzoCore.get().getDefaultFontStyle();
         }
         return style;
     }
